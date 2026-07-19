@@ -84,21 +84,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(custom_fields),
-                Some(default_payment_method),
-                Some(footer),
-                Some(rendering_options),
-            ) = (
-                self.custom_fields.take(),
-                self.default_payment_method.take(),
-                self.footer.take(),
-                self.rendering_options.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { custom_fields, default_payment_method, footer, rendering_options })
+            Some(Self::Out {
+                custom_fields: self.custom_fields.take().flatten(),
+                default_payment_method: self.default_payment_method.take().flatten(),
+                footer: self.footer.take().flatten(),
+                rendering_options: self.rendering_options.take().flatten(),
+            })
         }
     }
 

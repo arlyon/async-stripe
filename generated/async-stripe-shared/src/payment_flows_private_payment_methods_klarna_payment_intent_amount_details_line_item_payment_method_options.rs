@@ -81,18 +81,12 @@ subscription_reference: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(image_url),
-Some(product_url),
-Some(reference),
-Some(subscription_reference),
-) = (self.image_url.take(),
-self.product_url.take(),
-self.reference.take(),
-self.subscription_reference.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { image_url,product_url,reference,subscription_reference })
+        Some(Self::Out {
+image_url: self.image_url.take().flatten(),
+product_url: self.product_url.take().flatten(),
+reference: self.reference.take().flatten(),
+subscription_reference: self.subscription_reference.take().flatten(),
+})
     }
 }
 

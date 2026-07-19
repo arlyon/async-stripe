@@ -90,16 +90,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer), Some(customer_account), Some(email), Some(name), Some(phone)) = (
-                self.customer.take(),
-                self.customer_account.take(),
-                self.email.take(),
-                self.name.take(),
-                self.phone.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { customer, customer_account, email, name, phone })
+            Some(Self::Out {
+                customer: self.customer.take().flatten(),
+                customer_account: self.customer_account.take().flatten(),
+                email: self.email.take().flatten(),
+                name: self.name.take().flatten(),
+                phone: self.phone.take().flatten(),
+            })
         }
     }
 

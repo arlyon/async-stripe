@@ -94,31 +94,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(arrival_airport_code),
-                Some(carrier),
-                Some(departure_airport_code),
-                Some(flight_number),
-                Some(service_class),
-                Some(stopover_allowed),
-            ) = (
-                self.arrival_airport_code.take(),
-                self.carrier.take(),
-                self.departure_airport_code.take(),
-                self.flight_number.take(),
-                self.service_class.take(),
-                self.stopover_allowed,
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                arrival_airport_code,
-                carrier,
-                departure_airport_code,
-                flight_number,
-                service_class,
-                stopover_allowed,
+                arrival_airport_code: self.arrival_airport_code.take().flatten(),
+                carrier: self.carrier.take().flatten(),
+                departure_airport_code: self.departure_airport_code.take().flatten(),
+                flight_number: self.flight_number.take().flatten(),
+                service_class: self.service_class.take().flatten(),
+                stopover_allowed: self.stopover_allowed.flatten(),
             })
         }
     }

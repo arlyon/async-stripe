@@ -73,12 +73,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(display_name), Some(timezone)) =
-                (self.display_name.take(), self.timezone.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { display_name, timezone })
+            Some(Self::Out {
+                display_name: self.display_name.take().flatten(),
+                timezone: self.timezone.take().flatten(),
+            })
         }
     }
 

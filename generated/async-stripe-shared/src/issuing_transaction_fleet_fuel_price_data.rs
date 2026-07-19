@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(gross_amount_decimal),) = (self.gross_amount_decimal.take(),) else {
-                return None;
-            };
-            Some(Self::Out { gross_amount_decimal })
+            Some(Self::Out { gross_amount_decimal: self.gross_amount_decimal.take().flatten() })
         }
     }
 

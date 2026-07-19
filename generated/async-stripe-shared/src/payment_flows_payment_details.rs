@@ -76,12 +76,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer_reference), Some(order_reference)) =
-                (self.customer_reference.take(), self.order_reference.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { customer_reference, order_reference })
+            Some(Self::Out {
+                customer_reference: self.customer_reference.take().flatten(),
+                order_reference: self.order_reference.take().flatten(),
+            })
         }
     }
 

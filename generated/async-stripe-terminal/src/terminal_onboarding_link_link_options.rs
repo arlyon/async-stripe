@@ -72,11 +72,9 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(apple_terms_and_conditions),) = (self.apple_terms_and_conditions.take(),)
-            else {
-                return None;
-            };
-            Some(Self::Out { apple_terms_and_conditions })
+            Some(Self::Out {
+                apple_terms_and_conditions: self.apple_terms_and_conditions.take().flatten(),
+            })
         }
     }
 

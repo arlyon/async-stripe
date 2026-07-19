@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(custom_message),) = (self.custom_message.take(),) else {
-                return None;
-            };
-            Some(Self::Out { custom_message })
+            Some(Self::Out { custom_message: self.custom_message.take().flatten() })
         }
     }
 

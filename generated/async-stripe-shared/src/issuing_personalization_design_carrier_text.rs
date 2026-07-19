@@ -84,15 +84,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(footer_body), Some(footer_title), Some(header_body), Some(header_title)) = (
-                self.footer_body.take(),
-                self.footer_title.take(),
-                self.header_body.take(),
-                self.header_title.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { footer_body, footer_title, header_body, header_title })
+            Some(Self::Out {
+                footer_body: self.footer_body.take().flatten(),
+                footer_title: self.footer_title.take().flatten(),
+                header_body: self.header_body.take().flatten(),
+                header_title: self.header_title.take().flatten(),
+            })
         }
     }
 

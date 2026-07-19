@@ -68,10 +68,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(user_terms_acceptance),) = (self.user_terms_acceptance.take(),) else {
-                return None;
-            };
-            Some(Self::Out { user_terms_acceptance })
+            Some(Self::Out { user_terms_acceptance: self.user_terms_acceptance.take().flatten() })
         }
     }
 

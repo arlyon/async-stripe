@@ -118,43 +118,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_id),
-                Some(account_trust_score),
-                Some(card_number_source),
-                Some(cardholder_address),
-                Some(cardholder_name),
-                Some(device_trust_score),
-                Some(hashed_account_email_address),
-                Some(reason_codes),
-                Some(suggested_decision),
-                Some(suggested_decision_version),
-            ) = (
-                self.account_id.take(),
-                self.account_trust_score,
-                self.card_number_source.take(),
-                self.cardholder_address.take(),
-                self.cardholder_name.take(),
-                self.device_trust_score,
-                self.hashed_account_email_address.take(),
-                self.reason_codes.take(),
-                self.suggested_decision.take(),
-                self.suggested_decision_version.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                account_id,
-                account_trust_score,
-                card_number_source,
-                cardholder_address,
-                cardholder_name,
-                device_trust_score,
-                hashed_account_email_address,
-                reason_codes,
-                suggested_decision,
-                suggested_decision_version,
+                account_id: self.account_id.take().flatten(),
+                account_trust_score: self.account_trust_score.flatten(),
+                card_number_source: self.card_number_source.take().flatten(),
+                cardholder_address: self.cardholder_address.take().flatten(),
+                cardholder_name: self.cardholder_name.take().flatten(),
+                device_trust_score: self.device_trust_score.flatten(),
+                hashed_account_email_address: self.hashed_account_email_address.take().flatten(),
+                reason_codes: self.reason_codes.take().flatten(),
+                suggested_decision: self.suggested_decision.take().flatten(),
+                suggested_decision_version: self.suggested_decision_version.take().flatten(),
             })
         }
     }

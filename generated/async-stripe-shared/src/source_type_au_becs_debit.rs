@@ -72,12 +72,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bsb_number), Some(fingerprint), Some(last4)) =
-                (self.bsb_number.take(), self.fingerprint.take(), self.last4.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { bsb_number, fingerprint, last4 })
+            Some(Self::Out {
+                bsb_number: self.bsb_number.take().flatten(),
+                fingerprint: self.fingerprint.take().flatten(),
+                last4: self.last4.take().flatten(),
+            })
         }
     }
 

@@ -80,14 +80,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(currency), Some(mandate_options), Some(verification_method)) = (
-                self.currency.take(),
-                self.mandate_options.take(),
-                self.verification_method.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { currency, mandate_options, verification_method })
+            Some(Self::Out {
+                currency: self.currency.take().flatten(),
+                mandate_options: self.mandate_options.take().flatten(),
+                verification_method: self.verification_method.take().flatten(),
+            })
         }
     }
 

@@ -85,14 +85,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options), Some(network), Some(request_three_d_secure)) = (
-                self.mandate_options.take(),
-                self.network.take(),
-                self.request_three_d_secure.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { mandate_options, network, request_three_d_secure })
+            Some(Self::Out {
+                mandate_options: self.mandate_options.take().flatten(),
+                network: self.network.take().flatten(),
+                request_three_d_secure: self.request_three_d_secure.take().flatten(),
+            })
         }
     }
 

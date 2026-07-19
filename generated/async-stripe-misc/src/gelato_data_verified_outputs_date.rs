@@ -76,10 +76,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(day), Some(month), Some(year)) = (self.day, self.month, self.year) else {
-                return None;
-            };
-            Some(Self::Out { day, month, year })
+            Some(Self::Out {
+                day: self.day.flatten(),
+                month: self.month.flatten(),
+                year: self.year.flatten(),
+            })
         }
     }
 

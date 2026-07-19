@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(statement_descriptor),) = (self.statement_descriptor.take(),) else {
-                return None;
-            };
-            Some(Self::Out { statement_descriptor })
+            Some(Self::Out { statement_descriptor: self.statement_descriptor.take().flatten() })
         }
     }
 

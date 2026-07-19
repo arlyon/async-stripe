@@ -79,12 +79,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(creditor_identifier), Some(last4), Some(mandate_reference)) =
-                (self.creditor_identifier.take(), self.last4.take(), self.mandate_reference.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { creditor_identifier, last4, mandate_reference })
+            Some(Self::Out {
+                creditor_identifier: self.creditor_identifier.take().flatten(),
+                last4: self.last4.take().flatten(),
+                mandate_reference: self.mandate_reference.take().flatten(),
+            })
         }
     }
 

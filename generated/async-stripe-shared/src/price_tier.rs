@@ -86,28 +86,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(flat_amount),
-                Some(flat_amount_decimal),
-                Some(unit_amount),
-                Some(unit_amount_decimal),
-                Some(up_to),
-            ) = (
-                self.flat_amount,
-                self.flat_amount_decimal.take(),
-                self.unit_amount,
-                self.unit_amount_decimal.take(),
-                self.up_to,
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                flat_amount,
-                flat_amount_decimal,
-                unit_amount,
-                unit_amount_decimal,
-                up_to,
+                flat_amount: self.flat_amount.flatten(),
+                flat_amount_decimal: self.flat_amount_decimal.take().flatten(),
+                unit_amount: self.unit_amount.flatten(),
+                unit_amount_decimal: self.unit_amount_decimal.take().flatten(),
+                up_to: self.up_to.flatten(),
             })
         }
     }

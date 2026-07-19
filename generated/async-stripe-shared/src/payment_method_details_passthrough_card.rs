@@ -96,25 +96,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(brand),
-                Some(country),
-                Some(exp_month),
-                Some(exp_year),
-                Some(funding),
-                Some(last4),
-            ) = (
-                self.brand.take(),
-                self.country.take(),
-                self.exp_month,
-                self.exp_year,
-                self.funding.take(),
-                self.last4.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { brand, country, exp_month, exp_year, funding, last4 })
+            Some(Self::Out {
+                brand: self.brand.take().flatten(),
+                country: self.country.take().flatten(),
+                exp_month: self.exp_month.flatten(),
+                exp_year: self.exp_year.flatten(),
+                funding: self.funding.take().flatten(),
+                last4: self.last4.take().flatten(),
+            })
         }
     }
 

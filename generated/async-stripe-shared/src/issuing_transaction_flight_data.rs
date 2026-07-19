@@ -89,23 +89,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(departure_at),
-                Some(passenger_name),
-                Some(refundable),
-                Some(segments),
-                Some(travel_agency),
-            ) = (
-                self.departure_at,
-                self.passenger_name.take(),
-                self.refundable,
-                self.segments.take(),
-                self.travel_agency.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { departure_at, passenger_name, refundable, segments, travel_agency })
+            Some(Self::Out {
+                departure_at: self.departure_at.flatten(),
+                passenger_name: self.passenger_name.take().flatten(),
+                refundable: self.refundable.flatten(),
+                segments: self.segments.take().flatten(),
+                travel_agency: self.travel_agency.take().flatten(),
+            })
         }
     }
 

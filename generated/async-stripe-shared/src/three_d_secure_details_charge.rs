@@ -114,37 +114,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(authentication_flow),
-                Some(electronic_commerce_indicator),
-                Some(exemption_indicator),
-                Some(exemption_indicator_applied),
-                Some(result),
-                Some(result_reason),
-                Some(transaction_id),
-                Some(version),
-            ) = (
-                self.authentication_flow.take(),
-                self.electronic_commerce_indicator.take(),
-                self.exemption_indicator.take(),
-                self.exemption_indicator_applied,
-                self.result.take(),
-                self.result_reason.take(),
-                self.transaction_id.take(),
-                self.version.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                authentication_flow,
-                electronic_commerce_indicator,
-                exemption_indicator,
-                exemption_indicator_applied,
-                result,
-                result_reason,
-                transaction_id,
-                version,
+                authentication_flow: self.authentication_flow.take().flatten(),
+                electronic_commerce_indicator: self.electronic_commerce_indicator.take().flatten(),
+                exemption_indicator: self.exemption_indicator.take().flatten(),
+                exemption_indicator_applied: self.exemption_indicator_applied.flatten(),
+                result: self.result.take().flatten(),
+                result_reason: self.result_reason.take().flatten(),
+                transaction_id: self.transaction_id.take().flatten(),
+                version: self.version.take().flatten(),
             })
         }
     }

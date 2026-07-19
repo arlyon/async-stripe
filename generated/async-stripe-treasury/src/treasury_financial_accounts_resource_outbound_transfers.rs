@@ -72,12 +72,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(ach), Some(us_domestic_wire)) =
-                (self.ach.take(), self.us_domestic_wire.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { ach, us_domestic_wire })
+            Some(Self::Out {
+                ach: self.ach.take().flatten(),
+                us_domestic_wire: self.us_domestic_wire.take().flatten(),
+            })
         }
     }
 

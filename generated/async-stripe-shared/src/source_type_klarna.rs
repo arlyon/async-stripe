@@ -184,91 +184,45 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(background_image_url),
-                Some(client_token),
-                Some(first_name),
-                Some(last_name),
-                Some(locale),
-                Some(logo_url),
-                Some(page_title),
-                Some(pay_later_asset_urls_descriptive),
-                Some(pay_later_asset_urls_standard),
-                Some(pay_later_name),
-                Some(pay_later_redirect_url),
-                Some(pay_now_asset_urls_descriptive),
-                Some(pay_now_asset_urls_standard),
-                Some(pay_now_name),
-                Some(pay_now_redirect_url),
-                Some(pay_over_time_asset_urls_descriptive),
-                Some(pay_over_time_asset_urls_standard),
-                Some(pay_over_time_name),
-                Some(pay_over_time_redirect_url),
-                Some(payment_method_categories),
-                Some(purchase_country),
-                Some(purchase_type),
-                Some(redirect_url),
-                Some(shipping_delay),
-                Some(shipping_first_name),
-                Some(shipping_last_name),
-            ) = (
-                self.background_image_url.take(),
-                self.client_token.take(),
-                self.first_name.take(),
-                self.last_name.take(),
-                self.locale.take(),
-                self.logo_url.take(),
-                self.page_title.take(),
-                self.pay_later_asset_urls_descriptive.take(),
-                self.pay_later_asset_urls_standard.take(),
-                self.pay_later_name.take(),
-                self.pay_later_redirect_url.take(),
-                self.pay_now_asset_urls_descriptive.take(),
-                self.pay_now_asset_urls_standard.take(),
-                self.pay_now_name.take(),
-                self.pay_now_redirect_url.take(),
-                self.pay_over_time_asset_urls_descriptive.take(),
-                self.pay_over_time_asset_urls_standard.take(),
-                self.pay_over_time_name.take(),
-                self.pay_over_time_redirect_url.take(),
-                self.payment_method_categories.take(),
-                self.purchase_country.take(),
-                self.purchase_type.take(),
-                self.redirect_url.take(),
-                self.shipping_delay,
-                self.shipping_first_name.take(),
-                self.shipping_last_name.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                background_image_url,
-                client_token,
-                first_name,
-                last_name,
-                locale,
-                logo_url,
-                page_title,
-                pay_later_asset_urls_descriptive,
-                pay_later_asset_urls_standard,
-                pay_later_name,
-                pay_later_redirect_url,
-                pay_now_asset_urls_descriptive,
-                pay_now_asset_urls_standard,
-                pay_now_name,
-                pay_now_redirect_url,
-                pay_over_time_asset_urls_descriptive,
-                pay_over_time_asset_urls_standard,
-                pay_over_time_name,
-                pay_over_time_redirect_url,
-                payment_method_categories,
-                purchase_country,
-                purchase_type,
-                redirect_url,
-                shipping_delay,
-                shipping_first_name,
-                shipping_last_name,
+                background_image_url: self.background_image_url.take().flatten(),
+                client_token: self.client_token.take().flatten(),
+                first_name: self.first_name.take().flatten(),
+                last_name: self.last_name.take().flatten(),
+                locale: self.locale.take().flatten(),
+                logo_url: self.logo_url.take().flatten(),
+                page_title: self.page_title.take().flatten(),
+                pay_later_asset_urls_descriptive: self
+                    .pay_later_asset_urls_descriptive
+                    .take()
+                    .flatten(),
+                pay_later_asset_urls_standard: self.pay_later_asset_urls_standard.take().flatten(),
+                pay_later_name: self.pay_later_name.take().flatten(),
+                pay_later_redirect_url: self.pay_later_redirect_url.take().flatten(),
+                pay_now_asset_urls_descriptive: self
+                    .pay_now_asset_urls_descriptive
+                    .take()
+                    .flatten(),
+                pay_now_asset_urls_standard: self.pay_now_asset_urls_standard.take().flatten(),
+                pay_now_name: self.pay_now_name.take().flatten(),
+                pay_now_redirect_url: self.pay_now_redirect_url.take().flatten(),
+                pay_over_time_asset_urls_descriptive: self
+                    .pay_over_time_asset_urls_descriptive
+                    .take()
+                    .flatten(),
+                pay_over_time_asset_urls_standard: self
+                    .pay_over_time_asset_urls_standard
+                    .take()
+                    .flatten(),
+                pay_over_time_name: self.pay_over_time_name.take().flatten(),
+                pay_over_time_redirect_url: self.pay_over_time_redirect_url.take().flatten(),
+                payment_method_categories: self.payment_method_categories.take().flatten(),
+                purchase_country: self.purchase_country.take().flatten(),
+                purchase_type: self.purchase_type.take().flatten(),
+                redirect_url: self.redirect_url.take().flatten(),
+                shipping_delay: self.shipping_delay.flatten(),
+                shipping_first_name: self.shipping_first_name.take().flatten(),
+                shipping_last_name: self.shipping_last_name.take().flatten(),
             })
         }
     }

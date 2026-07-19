@@ -79,12 +79,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(default_value), Some(maximum_length), Some(minimum_length)) =
-                (self.default_value.take(), self.maximum_length, self.minimum_length)
-            else {
-                return None;
-            };
-            Some(Self::Out { default_value, maximum_length, minimum_length })
+            Some(Self::Out {
+                default_value: self.default_value.take().flatten(),
+                maximum_length: self.maximum_length.flatten(),
+                minimum_length: self.minimum_length.flatten(),
+            })
         }
     }
 

@@ -72,12 +72,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(deadline), Some(restricted_reason)) =
-                (self.deadline, self.restricted_reason.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { deadline, restricted_reason })
+            Some(Self::Out {
+                deadline: self.deadline.flatten(),
+                restricted_reason: self.restricted_reason.take().flatten(),
+            })
         }
     }
 

@@ -80,16 +80,11 @@ sender_name: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(bic),
-Some(iban_last4),
-Some(sender_name),
-) = (self.bic.take(),
-self.iban_last4.take(),
-self.sender_name.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { bic,iban_last4,sender_name })
+        Some(Self::Out {
+bic: self.bic.take().flatten(),
+iban_last4: self.iban_last4.take().flatten(),
+sender_name: self.sender_name.take().flatten(),
+})
     }
 }
 

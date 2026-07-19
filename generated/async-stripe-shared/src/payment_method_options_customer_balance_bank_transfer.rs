@@ -85,14 +85,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(eu_bank_transfer), Some(requested_address_types), Some(type_)) = (
-                self.eu_bank_transfer.take(),
-                self.requested_address_types.take(),
-                self.type_.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { eu_bank_transfer, requested_address_types, type_ })
+            Some(Self::Out {
+                eu_bank_transfer: self.eu_bank_transfer.take().flatten(),
+                requested_address_types: self.requested_address_types.take().flatten(),
+                type_: self.type_.take().flatten(),
+            })
         }
     }
 

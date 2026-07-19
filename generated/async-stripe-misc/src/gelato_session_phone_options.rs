@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(require_verification),) = (self.require_verification,) else {
-                return None;
-            };
-            Some(Self::Out { require_verification })
+            Some(Self::Out { require_verification: self.require_verification.flatten() })
         }
     }
 

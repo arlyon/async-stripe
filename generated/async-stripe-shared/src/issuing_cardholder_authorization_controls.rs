@@ -115,31 +115,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(allowed_categories),
-                Some(allowed_merchant_countries),
-                Some(blocked_categories),
-                Some(blocked_merchant_countries),
-                Some(spending_limits),
-                Some(spending_limits_currency),
-            ) = (
-                self.allowed_categories.take(),
-                self.allowed_merchant_countries.take(),
-                self.blocked_categories.take(),
-                self.blocked_merchant_countries.take(),
-                self.spending_limits.take(),
-                self.spending_limits_currency.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                allowed_categories,
-                allowed_merchant_countries,
-                blocked_categories,
-                blocked_merchant_countries,
-                spending_limits,
-                spending_limits_currency,
+                allowed_categories: self.allowed_categories.take().flatten(),
+                allowed_merchant_countries: self.allowed_merchant_countries.take().flatten(),
+                blocked_categories: self.blocked_categories.take().flatten(),
+                blocked_merchant_countries: self.blocked_merchant_countries.take().flatten(),
+                spending_limits: self.spending_limits.take().flatten(),
+                spending_limits_currency: self.spending_limits_currency.take().flatten(),
             })
         }
     }

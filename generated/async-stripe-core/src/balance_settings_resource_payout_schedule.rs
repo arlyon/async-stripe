@@ -83,14 +83,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(interval), Some(monthly_payout_days), Some(weekly_payout_days)) = (
-                self.interval.take(),
-                self.monthly_payout_days.take(),
-                self.weekly_payout_days.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { interval, monthly_payout_days, weekly_payout_days })
+            Some(Self::Out {
+                interval: self.interval.take().flatten(),
+                monthly_payout_days: self.monthly_payout_days.take().flatten(),
+                weekly_payout_days: self.weekly_payout_days.take().flatten(),
+            })
         }
     }
 

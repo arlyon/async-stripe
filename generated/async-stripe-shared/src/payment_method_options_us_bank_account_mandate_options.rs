@@ -68,10 +68,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(collection_method),) = (self.collection_method.take(),) else {
-                return None;
-            };
-            Some(Self::Out { collection_method })
+            Some(Self::Out { collection_method: self.collection_method.take().flatten() })
         }
     }
 

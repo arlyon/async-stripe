@@ -91,28 +91,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(additional_documentation),
-                Some(canceled_at),
-                Some(cancellation_reason),
-                Some(explanation),
-                Some(received_at),
-            ) = (
-                self.additional_documentation.take(),
-                self.canceled_at,
-                self.cancellation_reason.take(),
-                self.explanation.take(),
-                self.received_at,
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                additional_documentation,
-                canceled_at,
-                cancellation_reason,
-                explanation,
-                received_at,
+                additional_documentation: self.additional_documentation.take().flatten(),
+                canceled_at: self.canceled_at.flatten(),
+                cancellation_reason: self.cancellation_reason.take().flatten(),
+                explanation: self.explanation.take().flatten(),
+                received_at: self.received_at.flatten(),
             })
         }
     }

@@ -101,34 +101,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_tax_ids),
-                Some(custom_fields),
-                Some(description),
-                Some(footer),
-                Some(issuer),
-                Some(metadata),
-                Some(rendering_options),
-            ) = (
-                self.account_tax_ids.take(),
-                self.custom_fields.take(),
-                self.description.take(),
-                self.footer.take(),
-                self.issuer.take(),
-                self.metadata.take(),
-                self.rendering_options.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                account_tax_ids,
-                custom_fields,
-                description,
-                footer,
-                issuer,
-                metadata,
-                rendering_options,
+                account_tax_ids: self.account_tax_ids.take().flatten(),
+                custom_fields: self.custom_fields.take().flatten(),
+                description: self.description.take().flatten(),
+                footer: self.footer.take().flatten(),
+                issuer: self.issuer.take().flatten(),
+                metadata: self.metadata.take().flatten(),
+                rendering_options: self.rendering_options.take().flatten(),
             })
         }
     }

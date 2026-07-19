@@ -84,15 +84,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_at), Some(hosted_voucher_url), Some(number), Some(pdf)) = (
-                self.expires_at,
-                self.hosted_voucher_url.take(),
-                self.number.take(),
-                self.pdf.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { expires_at, hosted_voucher_url, number, pdf })
+            Some(Self::Out {
+                expires_at: self.expires_at.flatten(),
+                hosted_voucher_url: self.hosted_voucher_url.take().flatten(),
+                number: self.number.take().flatten(),
+                pdf: self.pdf.take().flatten(),
+            })
         }
     }
 

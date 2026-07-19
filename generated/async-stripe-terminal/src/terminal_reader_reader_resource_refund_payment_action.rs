@@ -117,40 +117,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(charge),
-                Some(metadata),
-                Some(payment_intent),
-                Some(reason),
-                Some(refund),
-                Some(refund_application_fee),
-                Some(refund_payment_config),
-                Some(reverse_transfer),
-            ) = (
-                self.amount,
-                self.charge.take(),
-                self.metadata.take(),
-                self.payment_intent.take(),
-                self.reason.take(),
-                self.refund.take(),
-                self.refund_application_fee,
-                self.refund_payment_config,
-                self.reverse_transfer,
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                amount,
-                charge,
-                metadata,
-                payment_intent,
-                reason,
-                refund,
-                refund_application_fee,
-                refund_payment_config,
-                reverse_transfer,
+                amount: self.amount.flatten(),
+                charge: self.charge.take().flatten(),
+                metadata: self.metadata.take().flatten(),
+                payment_intent: self.payment_intent.take().flatten(),
+                reason: self.reason.take().flatten(),
+                refund: self.refund.take().flatten(),
+                refund_application_fee: self.refund_application_fee.flatten(),
+                refund_payment_config: self.refund_payment_config.flatten(),
+                reverse_transfer: self.reverse_transfer.flatten(),
             })
         }
     }

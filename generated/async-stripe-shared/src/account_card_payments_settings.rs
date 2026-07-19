@@ -95,25 +95,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(decline_on),
-                Some(statement_descriptor_prefix),
-                Some(statement_descriptor_prefix_kana),
-                Some(statement_descriptor_prefix_kanji),
-            ) = (
-                self.decline_on,
-                self.statement_descriptor_prefix.take(),
-                self.statement_descriptor_prefix_kana.take(),
-                self.statement_descriptor_prefix_kanji.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                decline_on,
-                statement_descriptor_prefix,
-                statement_descriptor_prefix_kana,
-                statement_descriptor_prefix_kanji,
+                decline_on: self.decline_on.flatten(),
+                statement_descriptor_prefix: self.statement_descriptor_prefix.take().flatten(),
+                statement_descriptor_prefix_kana: self
+                    .statement_descriptor_prefix_kana
+                    .take()
+                    .flatten(),
+                statement_descriptor_prefix_kanji: self
+                    .statement_descriptor_prefix_kanji
+                    .take()
+                    .flatten(),
             })
         }
     }

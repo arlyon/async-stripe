@@ -78,12 +78,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(preferred_language), Some(setup_future_usage)) =
-                (self.preferred_language.take(), self.setup_future_usage.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { preferred_language, setup_future_usage })
+            Some(Self::Out {
+                preferred_language: self.preferred_language.take().flatten(),
+                setup_future_usage: self.setup_future_usage.take().flatten(),
+            })
         }
     }
 

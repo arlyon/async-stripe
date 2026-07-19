@@ -90,23 +90,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(bank_name),
-                Some(fingerprint),
-                Some(institution_number),
-                Some(last4),
-                Some(transit_number),
-            ) = (
-                self.bank_name.take(),
-                self.fingerprint.take(),
-                self.institution_number.take(),
-                self.last4.take(),
-                self.transit_number.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { bank_name, fingerprint, institution_number, last4, transit_number })
+            Some(Self::Out {
+                bank_name: self.bank_name.take().flatten(),
+                fingerprint: self.fingerprint.take().flatten(),
+                institution_number: self.institution_number.take().flatten(),
+                last4: self.last4.take().flatten(),
+                transit_number: self.transit_number.take().flatten(),
+            })
         }
     }
 

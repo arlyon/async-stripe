@@ -73,10 +73,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(missing_fields),) = (self.missing_fields.take(),) else {
-                return None;
-            };
-            Some(Self::Out { missing_fields })
+            Some(Self::Out { missing_fields: self.missing_fields.take().flatten() })
         }
     }
 

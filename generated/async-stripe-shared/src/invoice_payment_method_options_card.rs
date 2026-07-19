@@ -72,12 +72,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(installments), Some(request_three_d_secure)) =
-                (self.installments, self.request_three_d_secure.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { installments, request_three_d_secure })
+            Some(Self::Out {
+                installments: self.installments.flatten(),
+                request_three_d_secure: self.request_three_d_secure.take().flatten(),
+            })
         }
     }
 

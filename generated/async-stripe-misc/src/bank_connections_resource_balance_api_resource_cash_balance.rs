@@ -76,10 +76,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(available),) = (self.available.take(),) else {
-                return None;
-            };
-            Some(Self::Out { available })
+            Some(Self::Out { available: self.available.take().flatten() })
         }
     }
 

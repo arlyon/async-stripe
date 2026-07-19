@@ -73,12 +73,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(local_amount_decimal), Some(national_amount_decimal)) =
-                (self.local_amount_decimal.take(), self.national_amount_decimal.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { local_amount_decimal, national_amount_decimal })
+            Some(Self::Out {
+                local_amount_decimal: self.local_amount_decimal.take().flatten(),
+                national_amount_decimal: self.national_amount_decimal.take().flatten(),
+            })
         }
     }
 

@@ -75,12 +75,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(location), Some(reader), Some(reference)) =
-                (self.location.take(), self.reader.take(), self.reference.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { location, reader, reference })
+            Some(Self::Out {
+                location: self.location.take().flatten(),
+                reader: self.reader.take().flatten(),
+                reference: self.reference.take().flatten(),
+            })
         }
     }
 

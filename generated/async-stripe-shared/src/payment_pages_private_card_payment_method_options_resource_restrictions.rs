@@ -72,10 +72,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(brands_blocked),) = (self.brands_blocked.take(),) else {
-                return None;
-            };
-            Some(Self::Out { brands_blocked })
+            Some(Self::Out { brands_blocked: self.brands_blocked.take().flatten() })
         }
     }
 

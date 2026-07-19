@@ -71,11 +71,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(network_code), Some(reason)) = (self.network_code.take(), self.reason.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { network_code, reason })
+            Some(Self::Out {
+                network_code: self.network_code.take().flatten(),
+                reason: self.reason.take().flatten(),
+            })
         }
     }
 

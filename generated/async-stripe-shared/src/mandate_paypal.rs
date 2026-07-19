@@ -72,12 +72,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(billing_agreement_id), Some(payer_id)) =
-                (self.billing_agreement_id.take(), self.payer_id.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { billing_agreement_id, payer_id })
+            Some(Self::Out {
+                billing_agreement_id: self.billing_agreement_id.take().flatten(),
+                payer_id: self.payer_id.take().flatten(),
+            })
         }
     }
 

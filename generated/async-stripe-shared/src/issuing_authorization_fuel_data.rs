@@ -90,28 +90,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(industry_product_code),
-                Some(quantity_decimal),
-                Some(type_),
-                Some(unit),
-                Some(unit_cost_decimal),
-            ) = (
-                self.industry_product_code.take(),
-                self.quantity_decimal.take(),
-                self.type_.take(),
-                self.unit.take(),
-                self.unit_cost_decimal.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                industry_product_code,
-                quantity_decimal,
-                type_,
-                unit,
-                unit_cost_decimal,
+                industry_product_code: self.industry_product_code.take().flatten(),
+                quantity_decimal: self.quantity_decimal.take().flatten(),
+                type_: self.type_.take().flatten(),
+                unit: self.unit.take().flatten(),
+                unit_cost_decimal: self.unit_cost_decimal.take().flatten(),
             })
         }
     }

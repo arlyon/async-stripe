@@ -71,10 +71,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(check_in_at), Some(nights)) = (self.check_in_at, self.nights) else {
-                return None;
-            };
-            Some(Self::Out { check_in_at, nights })
+            Some(Self::Out {
+                check_in_at: self.check_in_at.flatten(),
+                nights: self.nights.flatten(),
+            })
         }
     }
 

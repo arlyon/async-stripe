@@ -69,10 +69,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(document), Some(id_number)) = (self.document.take(), self.id_number) else {
-                return None;
-            };
-            Some(Self::Out { document, id_number })
+            Some(Self::Out {
+                document: self.document.take().flatten(),
+                id_number: self.id_number.flatten(),
+            })
         }
     }
 

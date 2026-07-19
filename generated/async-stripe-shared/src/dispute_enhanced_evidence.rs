@@ -73,12 +73,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(visa_compelling_evidence_3), Some(visa_compliance)) =
-                (self.visa_compelling_evidence_3.take(), self.visa_compliance)
-            else {
-                return None;
-            };
-            Some(Self::Out { visa_compelling_evidence_3, visa_compliance })
+            Some(Self::Out {
+                visa_compelling_evidence_3: self.visa_compelling_evidence_3.take().flatten(),
+                visa_compliance: self.visa_compliance.flatten(),
+            })
         }
     }
 

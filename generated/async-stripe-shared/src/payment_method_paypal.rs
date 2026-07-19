@@ -78,12 +78,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(country), Some(payer_email), Some(payer_id)) =
-                (self.country.take(), self.payer_email.take(), self.payer_id.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { country, payer_email, payer_id })
+            Some(Self::Out {
+                country: self.country.take().flatten(),
+                payer_email: self.payer_email.take().flatten(),
+                payer_id: self.payer_id.take().flatten(),
+            })
         }
     }
 

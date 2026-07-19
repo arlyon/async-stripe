@@ -118,43 +118,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(additional_documentation),
-                Some(canceled_at),
-                Some(cancellation_policy_provided),
-                Some(cancellation_reason),
-                Some(expected_at),
-                Some(explanation),
-                Some(product_description),
-                Some(product_type),
-                Some(return_status),
-                Some(returned_at),
-            ) = (
-                self.additional_documentation.take(),
-                self.canceled_at,
-                self.cancellation_policy_provided,
-                self.cancellation_reason.take(),
-                self.expected_at,
-                self.explanation.take(),
-                self.product_description.take(),
-                self.product_type.take(),
-                self.return_status.take(),
-                self.returned_at,
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                additional_documentation,
-                canceled_at,
-                cancellation_policy_provided,
-                cancellation_reason,
-                expected_at,
-                explanation,
-                product_description,
-                product_type,
-                return_status,
-                returned_at,
+                additional_documentation: self.additional_documentation.take().flatten(),
+                canceled_at: self.canceled_at.flatten(),
+                cancellation_policy_provided: self.cancellation_policy_provided.flatten(),
+                cancellation_reason: self.cancellation_reason.take().flatten(),
+                expected_at: self.expected_at.flatten(),
+                explanation: self.explanation.take().flatten(),
+                product_description: self.product_description.take().flatten(),
+                product_type: self.product_type.take().flatten(),
+                return_status: self.return_status.take().flatten(),
+                returned_at: self.returned_at.flatten(),
             })
         }
     }

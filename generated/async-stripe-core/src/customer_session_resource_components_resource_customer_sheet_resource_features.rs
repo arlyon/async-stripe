@@ -86,13 +86,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payment_method_allow_redisplay_filters), Some(payment_method_remove)) = (
-                self.payment_method_allow_redisplay_filters.take(),
-                self.payment_method_remove.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { payment_method_allow_redisplay_filters, payment_method_remove })
+            Some(Self::Out {
+                payment_method_allow_redisplay_filters: self
+                    .payment_method_allow_redisplay_filters
+                    .take()
+                    .flatten(),
+                payment_method_remove: self.payment_method_remove.take().flatten(),
+            })
         }
     }
 

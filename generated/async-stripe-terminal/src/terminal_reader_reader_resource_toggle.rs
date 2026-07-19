@@ -85,15 +85,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(default_value), Some(description), Some(title), Some(value)) = (
-                self.default_value.take(),
-                self.description.take(),
-                self.title.take(),
-                self.value.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { default_value, description, title, value })
+            Some(Self::Out {
+                default_value: self.default_value.take().flatten(),
+                description: self.description.take().flatten(),
+                title: self.title.take().flatten(),
+                value: self.value.take().flatten(),
+            })
         }
     }
 

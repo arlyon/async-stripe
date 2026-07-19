@@ -79,14 +79,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(network_decline_code), Some(reference), Some(reference_status)) = (
-                self.network_decline_code.take(),
-                self.reference.take(),
-                self.reference_status.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { network_decline_code, reference, reference_status })
+            Some(Self::Out {
+                network_decline_code: self.network_decline_code.take().flatten(),
+                reference: self.reference.take().flatten(),
+                reference_status: self.reference_status.take().flatten(),
+            })
         }
     }
 

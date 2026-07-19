@@ -88,31 +88,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(bank_code),
-                Some(bank_name),
-                Some(bic),
-                Some(iban_last4),
-                Some(preferred_language),
-                Some(statement_descriptor),
-            ) = (
-                self.bank_code.take(),
-                self.bank_name.take(),
-                self.bic.take(),
-                self.iban_last4.take(),
-                self.preferred_language.take(),
-                self.statement_descriptor.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                bank_code,
-                bank_name,
-                bic,
-                iban_last4,
-                preferred_language,
-                statement_descriptor,
+                bank_code: self.bank_code.take().flatten(),
+                bank_name: self.bank_name.take().flatten(),
+                bic: self.bic.take().flatten(),
+                iban_last4: self.iban_last4.take().flatten(),
+                preferred_language: self.preferred_language.take().flatten(),
+                statement_descriptor: self.statement_descriptor.take().flatten(),
             })
         }
     }

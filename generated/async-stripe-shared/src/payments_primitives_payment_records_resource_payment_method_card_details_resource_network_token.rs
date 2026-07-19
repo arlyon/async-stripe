@@ -83,9 +83,11 @@ const _: () = {
         let (Some(used),
 ) = (self.used,
 ) else {
-            return None;
-        };
-        Some(Self::Out { used })
+    return None;
+};
+Some(Self::Out {
+used,
+})
     }
 }
 

@@ -86,15 +86,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(filters), Some(permissions), Some(prefetch), Some(return_url)) = (
-                self.filters.take(),
-                self.permissions.take(),
-                self.prefetch.take(),
-                self.return_url.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { filters, permissions, prefetch, return_url })
+            Some(Self::Out {
+                filters: self.filters.take().flatten(),
+                permissions: self.permissions.take().flatten(),
+                prefetch: self.prefetch.take().flatten(),
+                return_url: self.return_url.take().flatten(),
+            })
         }
     }
 

@@ -108,37 +108,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(authorizer),
-                Some(director),
-                Some(executive),
-                Some(legal_guardian),
-                Some(owner),
-                Some(percent_ownership),
-                Some(representative),
-                Some(title),
-            ) = (
-                self.authorizer,
-                self.director,
-                self.executive,
-                self.legal_guardian,
-                self.owner,
-                self.percent_ownership,
-                self.representative,
-                self.title.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                authorizer,
-                director,
-                executive,
-                legal_guardian,
-                owner,
-                percent_ownership,
-                representative,
-                title,
+                authorizer: self.authorizer.flatten(),
+                director: self.director.flatten(),
+                executive: self.executive.flatten(),
+                legal_guardian: self.legal_guardian.flatten(),
+                owner: self.owner.flatten(),
+                percent_ownership: self.percent_ownership.flatten(),
+                representative: self.representative.flatten(),
+                title: self.title.take().flatten(),
             })
         }
     }

@@ -70,10 +70,9 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enable_customer_cancellation),) = (self.enable_customer_cancellation,) else {
-                return None;
-            };
-            Some(Self::Out { enable_customer_cancellation })
+            Some(Self::Out {
+                enable_customer_cancellation: self.enable_customer_cancellation.flatten(),
+            })
         }
     }
 

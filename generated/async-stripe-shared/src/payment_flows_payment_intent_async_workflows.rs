@@ -66,10 +66,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(inputs),) = (self.inputs.take(),) else {
-                return None;
-            };
-            Some(Self::Out { inputs })
+            Some(Self::Out { inputs: self.inputs.take().flatten() })
         }
     }
 

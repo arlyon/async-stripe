@@ -86,15 +86,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(icon), Some(logo), Some(primary_color), Some(secondary_color)) = (
-                self.icon.take(),
-                self.logo.take(),
-                self.primary_color.take(),
-                self.secondary_color.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { icon, logo, primary_color, secondary_color })
+            Some(Self::Out {
+                icon: self.icon.take().flatten(),
+                logo: self.logo.take().flatten(),
+                primary_color: self.primary_color.take().flatten(),
+                secondary_color: self.secondary_color.take().flatten(),
+            })
         }
     }
 

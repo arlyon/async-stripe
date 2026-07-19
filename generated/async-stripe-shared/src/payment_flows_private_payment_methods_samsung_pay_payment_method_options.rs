@@ -71,10 +71,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(capture_method),) = (self.capture_method.take(),) else {
-                return None;
-            };
-            Some(Self::Out { capture_method })
+            Some(Self::Out { capture_method: self.capture_method.take().flatten() })
         }
     }
 

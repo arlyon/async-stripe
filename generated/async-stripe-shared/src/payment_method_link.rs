@@ -71,12 +71,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(email), Some(persistent_token)) =
-                (self.email.take(), self.persistent_token.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { email, persistent_token })
+            Some(Self::Out {
+                email: self.email.take().flatten(),
+                persistent_token: self.persistent_token.take().flatten(),
+            })
         }
     }
 

@@ -95,25 +95,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(city),
-                Some(country),
-                Some(line1),
-                Some(line2),
-                Some(postal_code),
-                Some(state),
-            ) = (
-                self.city.take(),
-                self.country.take(),
-                self.line1.take(),
-                self.line2.take(),
-                self.postal_code.take(),
-                self.state.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { city, country, line1, line2, postal_code, state })
+            Some(Self::Out {
+                city: self.city.take().flatten(),
+                country: self.country.take().flatten(),
+                line1: self.line1.take().flatten(),
+                line2: self.line2.take().flatten(),
+                postal_code: self.postal_code.take().flatten(),
+                state: self.state.take().flatten(),
+            })
         }
     }
 

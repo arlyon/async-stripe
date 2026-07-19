@@ -122,9 +122,16 @@ self.issuing_card.take(),
 self.type_.take(),
 self.us_bank_account.take(),
 ) else {
-            return None;
-        };
-        Some(Self::Out { balance,billing_details,financial_account,issuing_card,type_,us_bank_account })
+    return None;
+};
+Some(Self::Out {
+balance,
+billing_details,
+financial_account,
+issuing_card,
+type_,
+us_bank_account,
+})
     }
 }
 

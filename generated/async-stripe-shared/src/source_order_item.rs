@@ -97,25 +97,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(currency),
-                Some(description),
-                Some(parent),
-                Some(quantity),
-                Some(type_),
-            ) = (
-                self.amount,
-                self.currency.take(),
-                self.description.take(),
-                self.parent.take(),
-                self.quantity,
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { amount, currency, description, parent, quantity, type_ })
+            Some(Self::Out {
+                amount: self.amount.flatten(),
+                currency: self.currency.take().flatten(),
+                description: self.description.take().flatten(),
+                parent: self.parent.take().flatten(),
+                quantity: self.quantity.flatten(),
+                type_: self.type_.take().flatten(),
+            })
         }
     }
 

@@ -125,40 +125,22 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_type),
-                Some(application_cryptogram),
-                Some(application_preferred_name),
-                Some(authorization_code),
-                Some(authorization_response_code),
-                Some(cardholder_verification_method),
-                Some(dedicated_file_name),
-                Some(terminal_verification_results),
-                Some(transaction_status_information),
-            ) = (
-                self.account_type.take(),
-                self.application_cryptogram.take(),
-                self.application_preferred_name.take(),
-                self.authorization_code.take(),
-                self.authorization_response_code.take(),
-                self.cardholder_verification_method.take(),
-                self.dedicated_file_name.take(),
-                self.terminal_verification_results.take(),
-                self.transaction_status_information.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                account_type,
-                application_cryptogram,
-                application_preferred_name,
-                authorization_code,
-                authorization_response_code,
-                cardholder_verification_method,
-                dedicated_file_name,
-                terminal_verification_results,
-                transaction_status_information,
+                account_type: self.account_type.take().flatten(),
+                application_cryptogram: self.application_cryptogram.take().flatten(),
+                application_preferred_name: self.application_preferred_name.take().flatten(),
+                authorization_code: self.authorization_code.take().flatten(),
+                authorization_response_code: self.authorization_response_code.take().flatten(),
+                cardholder_verification_method: self
+                    .cardholder_verification_method
+                    .take()
+                    .flatten(),
+                dedicated_file_name: self.dedicated_file_name.take().flatten(),
+                terminal_verification_results: self.terminal_verification_results.take().flatten(),
+                transaction_status_information: self
+                    .transaction_status_information
+                    .take()
+                    .flatten(),
             })
         }
     }

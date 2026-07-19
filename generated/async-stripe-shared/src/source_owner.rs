@@ -112,37 +112,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(address),
-                Some(email),
-                Some(name),
-                Some(phone),
-                Some(verified_address),
-                Some(verified_email),
-                Some(verified_name),
-                Some(verified_phone),
-            ) = (
-                self.address.take(),
-                self.email.take(),
-                self.name.take(),
-                self.phone.take(),
-                self.verified_address.take(),
-                self.verified_email.take(),
-                self.verified_name.take(),
-                self.verified_phone.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                address,
-                email,
-                name,
-                phone,
-                verified_address,
-                verified_email,
-                verified_name,
-                verified_phone,
+                address: self.address.take().flatten(),
+                email: self.email.take().flatten(),
+                name: self.name.take().flatten(),
+                phone: self.phone.take().flatten(),
+                verified_address: self.verified_address.take().flatten(),
+                verified_email: self.verified_email.take().flatten(),
+                verified_name: self.verified_name.take().flatten(),
+                verified_phone: self.verified_phone.take().flatten(),
             })
         }
     }

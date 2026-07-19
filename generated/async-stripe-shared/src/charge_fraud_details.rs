@@ -71,12 +71,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(stripe_report), Some(user_report)) =
-                (self.stripe_report.take(), self.user_report.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { stripe_report, user_report })
+            Some(Self::Out {
+                stripe_report: self.stripe_report.take().flatten(),
+                user_report: self.user_report.take().flatten(),
+            })
         }
     }
 

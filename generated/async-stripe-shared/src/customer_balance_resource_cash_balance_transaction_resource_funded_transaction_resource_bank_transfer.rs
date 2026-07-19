@@ -108,9 +108,16 @@ self.reference.take(),
 self.type_.take(),
 self.us_bank_transfer.take(),
 ) else {
-            return None;
-        };
-        Some(Self::Out { eu_bank_transfer,gb_bank_transfer,jp_bank_transfer,reference,type_,us_bank_transfer })
+    return None;
+};
+Some(Self::Out {
+eu_bank_transfer,
+gb_bank_transfer,
+jp_bank_transfer,
+reference,
+type_,
+us_bank_transfer,
+})
     }
 }
 

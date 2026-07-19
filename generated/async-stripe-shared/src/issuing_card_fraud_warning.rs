@@ -74,10 +74,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(started_at), Some(type_)) = (self.started_at, self.type_.take()) else {
-                return None;
-            };
-            Some(Self::Out { started_at, type_ })
+            Some(Self::Out {
+                started_at: self.started_at.flatten(),
+                type_: self.type_.take().flatten(),
+            })
         }
     }
 

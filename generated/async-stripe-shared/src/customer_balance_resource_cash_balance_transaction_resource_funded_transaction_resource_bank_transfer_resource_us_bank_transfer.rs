@@ -75,14 +75,10 @@ sender_name: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(network),
-Some(sender_name),
-) = (self.network.take(),
-self.sender_name.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { network,sender_name })
+        Some(Self::Out {
+network: self.network.take().flatten(),
+sender_name: self.sender_name.take().flatten(),
+})
     }
 }
 

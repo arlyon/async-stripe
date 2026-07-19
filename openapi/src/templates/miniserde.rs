@@ -200,8 +200,11 @@ fn miniserde_struct_inner(
     let mut builder_new_inner = String::new();
     let mut from_obj_inner = String::new();
 
-    let mut take_out_left = String::new();
-    let mut take_out_right = String::new();
+    let mut tuple_left = String::new();
+    let mut tuple_right = String::new();
+    let mut tuple_struct_init = String::new();
+    let mut all_optional_struct_init = String::new();
+    let mut has_required = false;
     for field in fields {
         let f_name = &field.variable_name();
         let wire_name = field.wire_name();
@@ -217,22 +220,40 @@ fn miniserde_struct_inner(
             "{wire_name}" => b.{f_name} = FromValueOpt::from_value(v),"#
         );
         let is_copy = field.rust_type.is_copy(components);
+        let is_optional = field.rust_type.is_option();
 
-        let _ = writeln!(take_out_left, "Some({f_name}),");
         // For types which implement `Copy`, we don't need to call `.take()`. Does not affect
         // behavior, but helps a bit according to `llvm-lines` and binary size, so may as well since
         // unnecessary `take()` is not optimized out
         let take = if is_copy { "" } else { ".take()" };
-        let _ = writeln!(take_out_right, "self.{f_name}{take},");
+
+        if !is_optional {
+            has_required = true;
+        }
+        let _ = writeln!(tuple_left, "Some({f_name}),");
+        let _ = writeln!(tuple_right, "self.{f_name}{take},");
+        let _ = writeln!(tuple_struct_init, "{f_name},");
+        let _ = writeln!(all_optional_struct_init, "{f_name}: self.{f_name}{take}.flatten(),");
 
         // NB: matches miniserde::Deserialize::default(), but generates smaller artifacts. `None` vs `Some(None)`
         // is how missing required values are detected
-        let builder_default = if field.rust_type.is_option() { "Some(None)" } else { "None" };
+        let builder_default = if is_optional { "Some(None)" } else { "None" };
         let _ = writeln!(builder_new_inner, "{f_name}: {builder_default},");
     }
 
-    let comma_sep_fields =
-        fields.iter().map(|f| f.variable_name().clone()).collect::<Vec<_>>().join(",");
+    let take_out_body = if fields.is_empty() {
+        "Some(Self::Out {})".to_string()
+    } else if has_required {
+        format!(
+            "let ({tuple_left}) = ({tuple_right}) else {{\n    return None;\n}};\nSome(Self::Out {{\n{tuple_struct_init}}})"
+        )
+    } else {
+        // Every field is Option<T>, so every builder slot is Option<Option<T>> seeded to
+        // Some(None) and only ever overwritten with another Some(_). The outer tag is
+        // invariantly Some, so .flatten() peels the redundant tag without a let-else
+        // early-return path.
+        format!("Some(Self::Out {{\n{all_optional_struct_init}}})")
+    };
 
     formatdoc! {r#"
     impl Deserialize for {ident} {{
@@ -268,10 +289,7 @@ fn miniserde_struct_inner(
         }}
 
         fn take_out(&mut self) -> Option<Self::Out> {{
-            let ({take_out_left}) = ({take_out_right}) else {{
-                return None;
-            }};
-            Some(Self::Out {{ {comma_sep_fields} }})
+            {take_out_body}
         }}
     }}
 

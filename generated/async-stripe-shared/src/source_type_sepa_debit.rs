@@ -92,34 +92,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(bank_code),
-                Some(branch_code),
-                Some(country),
-                Some(fingerprint),
-                Some(last4),
-                Some(mandate_reference),
-                Some(mandate_url),
-            ) = (
-                self.bank_code.take(),
-                self.branch_code.take(),
-                self.country.take(),
-                self.fingerprint.take(),
-                self.last4.take(),
-                self.mandate_reference.take(),
-                self.mandate_url.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                bank_code,
-                branch_code,
-                country,
-                fingerprint,
-                last4,
-                mandate_reference,
-                mandate_url,
+                bank_code: self.bank_code.take().flatten(),
+                branch_code: self.branch_code.take().flatten(),
+                country: self.country.take().flatten(),
+                fingerprint: self.fingerprint.take().flatten(),
+                last4: self.last4.take().flatten(),
+                mandate_reference: self.mandate_reference.take().flatten(),
+                mandate_url: self.mandate_url.take().flatten(),
             })
         }
     }

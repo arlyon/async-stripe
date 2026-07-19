@@ -84,15 +84,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(native_data), Some(native_url), Some(return_url), Some(url)) = (
-                self.native_data.take(),
-                self.native_url.take(),
-                self.return_url.take(),
-                self.url.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { native_data, native_url, return_url, url })
+            Some(Self::Out {
+                native_data: self.native_data.take().flatten(),
+                native_url: self.native_url.take().flatten(),
+                return_url: self.return_url.take().flatten(),
+                url: self.url.take().flatten(),
+            })
         }
     }
 

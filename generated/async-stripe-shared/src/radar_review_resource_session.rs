@@ -84,15 +84,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(browser), Some(device), Some(platform), Some(version)) = (
-                self.browser.take(),
-                self.device.take(),
-                self.platform.take(),
-                self.version.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { browser, device, platform, version })
+            Some(Self::Out {
+                browser: self.browser.take().flatten(),
+                device: self.device.take().flatten(),
+                platform: self.platform.take().flatten(),
+                version: self.version.take().flatten(),
+            })
         }
     }
 

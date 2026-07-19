@@ -86,14 +86,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_includes_iof), Some(expires_after_seconds), Some(setup_future_usage)) = (
-                self.amount_includes_iof.take(),
-                self.expires_after_seconds,
-                self.setup_future_usage.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { amount_includes_iof, expires_after_seconds, setup_future_usage })
+            Some(Self::Out {
+                amount_includes_iof: self.amount_includes_iof.take().flatten(),
+                expires_after_seconds: self.expires_after_seconds.flatten(),
+                setup_future_usage: self.setup_future_usage.take().flatten(),
+            })
         }
     }
 

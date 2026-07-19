@@ -87,15 +87,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(back), Some(details), Some(details_code), Some(front)) = (
-                self.back.take(),
-                self.details.take(),
-                self.details_code.take(),
-                self.front.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { back, details, details_code, front })
+            Some(Self::Out {
+                back: self.back.take().flatten(),
+                details: self.details.take().flatten(),
+                details_code: self.details_code.take().flatten(),
+                front: self.front.take().flatten(),
+            })
         }
     }
 

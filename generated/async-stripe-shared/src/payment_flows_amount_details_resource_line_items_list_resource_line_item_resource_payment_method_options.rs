@@ -83,18 +83,12 @@ paypal: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(card),
-Some(card_present),
-Some(klarna),
-Some(paypal),
-) = (self.card.take(),
-self.card_present.take(),
-self.klarna.take(),
-self.paypal.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { card,card_present,klarna,paypal })
+        Some(Self::Out {
+card: self.card.take().flatten(),
+card_present: self.card_present.take().flatten(),
+klarna: self.klarna.take().flatten(),
+paypal: self.paypal.take().flatten(),
+})
     }
 }
 

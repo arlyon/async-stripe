@@ -71,12 +71,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(generated_card), Some(offline)) =
-                (self.generated_card.take(), self.offline.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { generated_card, offline })
+            Some(Self::Out {
+                generated_card: self.generated_card.take().flatten(),
+                offline: self.offline.take().flatten(),
+            })
         }
     }
 

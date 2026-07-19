@@ -76,12 +76,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(prepay_id), Some(qr_code_url), Some(statement_descriptor)) =
-                (self.prepay_id.take(), self.qr_code_url.take(), self.statement_descriptor.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { prepay_id, qr_code_url, statement_descriptor })
+            Some(Self::Out {
+                prepay_id: self.prepay_id.take().flatten(),
+                qr_code_url: self.qr_code_url.take().flatten(),
+                statement_descriptor: self.statement_descriptor.take().flatten(),
+            })
         }
     }
 

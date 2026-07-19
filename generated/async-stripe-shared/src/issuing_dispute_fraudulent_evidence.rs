@@ -73,12 +73,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(additional_documentation), Some(explanation)) =
-                (self.additional_documentation.take(), self.explanation.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { additional_documentation, explanation })
+            Some(Self::Out {
+                additional_documentation: self.additional_documentation.take().flatten(),
+                explanation: self.explanation.take().flatten(),
+            })
         }
     }
 

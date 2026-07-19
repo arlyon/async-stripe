@@ -88,25 +88,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(capture_method),
-                Some(request_extended_authorization),
-                Some(request_incremental_authorization_support),
-                Some(routing),
-            ) = (
-                self.capture_method.take(),
-                self.request_extended_authorization,
-                self.request_incremental_authorization_support,
-                self.routing.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                capture_method,
-                request_extended_authorization,
-                request_incremental_authorization_support,
-                routing,
+                capture_method: self.capture_method.take().flatten(),
+                request_extended_authorization: self.request_extended_authorization.flatten(),
+                request_incremental_authorization_support: self
+                    .request_incremental_authorization_support
+                    .flatten(),
+                routing: self.routing.take().flatten(),
             })
         }
     }

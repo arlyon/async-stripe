@@ -83,9 +83,11 @@ const _: () = {
         let (Some(refund),
 ) = (self.refund.take(),
 ) else {
-            return None;
-        };
-        Some(Self::Out { refund })
+    return None;
+};
+Some(Self::Out {
+refund,
+})
     }
 }
 

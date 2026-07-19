@@ -105,34 +105,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(card_issuing),
-                Some(deposit_insurance),
-                Some(financial_addresses),
-                Some(inbound_transfers),
-                Some(intra_stripe_flows),
-                Some(outbound_payments),
-                Some(outbound_transfers),
-            ) = (
-                self.card_issuing.take(),
-                self.deposit_insurance.take(),
-                self.financial_addresses.take(),
-                self.inbound_transfers.take(),
-                self.intra_stripe_flows.take(),
-                self.outbound_payments.take(),
-                self.outbound_transfers.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                card_issuing,
-                deposit_insurance,
-                financial_addresses,
-                inbound_transfers,
-                intra_stripe_flows,
-                outbound_payments,
-                outbound_transfers,
+                card_issuing: self.card_issuing.take().flatten(),
+                deposit_insurance: self.deposit_insurance.take().flatten(),
+                financial_addresses: self.financial_addresses.take().flatten(),
+                inbound_transfers: self.inbound_transfers.take().flatten(),
+                intra_stripe_flows: self.intra_stripe_flows.take().flatten(),
+                outbound_payments: self.outbound_payments.take().flatten(),
+                outbound_transfers: self.outbound_transfers.take().flatten(),
             })
         }
     }

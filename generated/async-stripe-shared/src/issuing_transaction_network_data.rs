@@ -84,14 +84,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(authorization_code), Some(processing_date), Some(transaction_id)) = (
-                self.authorization_code.take(),
-                self.processing_date.take(),
-                self.transaction_id.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { authorization_code, processing_date, transaction_id })
+            Some(Self::Out {
+                authorization_code: self.authorization_code.take().flatten(),
+                processing_date: self.processing_date.take().flatten(),
+                transaction_id: self.transaction_id.take().flatten(),
+            })
         }
     }
 

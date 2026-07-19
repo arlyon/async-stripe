@@ -93,23 +93,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(card_issuing),
-                Some(dob),
-                Some(first_name),
-                Some(last_name),
-                Some(verification),
-            ) = (
-                self.card_issuing.take(),
-                self.dob,
-                self.first_name.take(),
-                self.last_name.take(),
-                self.verification.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { card_issuing, dob, first_name, last_name, verification })
+            Some(Self::Out {
+                card_issuing: self.card_issuing.take().flatten(),
+                dob: self.dob.flatten(),
+                first_name: self.first_name.take().flatten(),
+                last_name: self.last_name.take().flatten(),
+                verification: self.verification.take().flatten(),
+            })
         }
     }
 

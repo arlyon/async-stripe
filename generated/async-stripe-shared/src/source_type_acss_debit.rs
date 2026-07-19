@@ -106,43 +106,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(bank_address_city),
-                Some(bank_address_line_1),
-                Some(bank_address_line_2),
-                Some(bank_address_postal_code),
-                Some(bank_name),
-                Some(category),
-                Some(country),
-                Some(fingerprint),
-                Some(last4),
-                Some(routing_number),
-            ) = (
-                self.bank_address_city.take(),
-                self.bank_address_line_1.take(),
-                self.bank_address_line_2.take(),
-                self.bank_address_postal_code.take(),
-                self.bank_name.take(),
-                self.category.take(),
-                self.country.take(),
-                self.fingerprint.take(),
-                self.last4.take(),
-                self.routing_number.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                bank_address_city,
-                bank_address_line_1,
-                bank_address_line_2,
-                bank_address_postal_code,
-                bank_name,
-                category,
-                country,
-                fingerprint,
-                last4,
-                routing_number,
+                bank_address_city: self.bank_address_city.take().flatten(),
+                bank_address_line_1: self.bank_address_line_1.take().flatten(),
+                bank_address_line_2: self.bank_address_line_2.take().flatten(),
+                bank_address_postal_code: self.bank_address_postal_code.take().flatten(),
+                bank_name: self.bank_name.take().flatten(),
+                category: self.category.take().flatten(),
+                country: self.country.take().flatten(),
+                fingerprint: self.fingerprint.take().flatten(),
+                last4: self.last4.take().flatten(),
+                routing_number: self.routing_number.take().flatten(),
             })
         }
     }

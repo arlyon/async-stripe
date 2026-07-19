@@ -76,12 +76,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(data_string), Some(native_url), Some(statement_descriptor)) =
-                (self.data_string.take(), self.native_url.take(), self.statement_descriptor.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { data_string, native_url, statement_descriptor })
+            Some(Self::Out {
+                data_string: self.data_string.take().flatten(),
+                native_url: self.native_url.take().flatten(),
+                statement_descriptor: self.statement_descriptor.take().flatten(),
+            })
         }
     }
 

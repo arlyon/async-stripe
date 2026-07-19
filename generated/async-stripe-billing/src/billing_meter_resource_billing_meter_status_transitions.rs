@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(deactivated_at),) = (self.deactivated_at,) else {
-                return None;
-            };
-            Some(Self::Out { deactivated_at })
+            Some(Self::Out { deactivated_at: self.deactivated_at.flatten() })
         }
     }
 

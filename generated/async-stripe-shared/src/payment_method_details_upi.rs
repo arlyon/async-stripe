@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(vpa),) = (self.vpa.take(),) else {
-                return None;
-            };
-            Some(Self::Out { vpa })
+            Some(Self::Out { vpa: self.vpa.take().flatten() })
         }
     }
 

@@ -69,10 +69,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(page_size),) = (self.page_size.take(),) else {
-                return None;
-            };
-            Some(Self::Out { page_size })
+            Some(Self::Out { page_size: self.page_size.take().flatten() })
         }
     }
 

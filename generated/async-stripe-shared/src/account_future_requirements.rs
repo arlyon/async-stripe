@@ -113,37 +113,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(alternatives),
-                Some(current_deadline),
-                Some(currently_due),
-                Some(disabled_reason),
-                Some(errors),
-                Some(eventually_due),
-                Some(past_due),
-                Some(pending_verification),
-            ) = (
-                self.alternatives.take(),
-                self.current_deadline,
-                self.currently_due.take(),
-                self.disabled_reason.take(),
-                self.errors.take(),
-                self.eventually_due.take(),
-                self.past_due.take(),
-                self.pending_verification.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                alternatives,
-                current_deadline,
-                currently_due,
-                disabled_reason,
-                errors,
-                eventually_due,
-                past_due,
-                pending_verification,
+                alternatives: self.alternatives.take().flatten(),
+                current_deadline: self.current_deadline.flatten(),
+                currently_due: self.currently_due.take().flatten(),
+                disabled_reason: self.disabled_reason.take().flatten(),
+                errors: self.errors.take().flatten(),
+                eventually_due: self.eventually_due.take().flatten(),
+                past_due: self.past_due.take().flatten(),
+                pending_verification: self.pending_verification.take().flatten(),
             })
         }
     }

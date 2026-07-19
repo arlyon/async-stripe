@@ -71,12 +71,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(currency), Some(preferred_locale)) =
-                (self.currency.take(), self.preferred_locale.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { currency, preferred_locale })
+            Some(Self::Out {
+                currency: self.currency.take().flatten(),
+                preferred_locale: self.preferred_locale.take().flatten(),
+            })
         }
     }
 

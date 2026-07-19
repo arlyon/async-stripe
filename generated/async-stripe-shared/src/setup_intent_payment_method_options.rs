@@ -112,49 +112,19 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(acss_debit),
-                Some(amazon_pay),
-                Some(bacs_debit),
-                Some(card),
-                Some(card_present),
-                Some(klarna),
-                Some(link),
-                Some(paypal),
-                Some(payto),
-                Some(sepa_debit),
-                Some(upi),
-                Some(us_bank_account),
-            ) = (
-                self.acss_debit.take(),
-                self.amazon_pay,
-                self.bacs_debit.take(),
-                self.card.take(),
-                self.card_present,
-                self.klarna.take(),
-                self.link.take(),
-                self.paypal.take(),
-                self.payto.take(),
-                self.sepa_debit.take(),
-                self.upi.take(),
-                self.us_bank_account.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                acss_debit,
-                amazon_pay,
-                bacs_debit,
-                card,
-                card_present,
-                klarna,
-                link,
-                paypal,
-                payto,
-                sepa_debit,
-                upi,
-                us_bank_account,
+                acss_debit: self.acss_debit.take().flatten(),
+                amazon_pay: self.amazon_pay.flatten(),
+                bacs_debit: self.bacs_debit.take().flatten(),
+                card: self.card.take().flatten(),
+                card_present: self.card_present.flatten(),
+                klarna: self.klarna.take().flatten(),
+                link: self.link.take().flatten(),
+                paypal: self.paypal.take().flatten(),
+                payto: self.payto.take().flatten(),
+                sepa_debit: self.sepa_debit.take().flatten(),
+                upi: self.upi.take().flatten(),
+                us_bank_account: self.us_bank_account.take().flatten(),
             })
         }
     }

@@ -75,12 +75,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(accepted_at), Some(canceled_at), Some(finalized_at)) =
-                (self.accepted_at, self.canceled_at, self.finalized_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { accepted_at, canceled_at, finalized_at })
+            Some(Self::Out {
+                accepted_at: self.accepted_at.flatten(),
+                canceled_at: self.canceled_at.flatten(),
+                finalized_at: self.finalized_at.flatten(),
+            })
         }
     }
 

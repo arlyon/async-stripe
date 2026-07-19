@@ -89,16 +89,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(city), Some(country), Some(latitude), Some(longitude), Some(region)) = (
-                self.city.take(),
-                self.country.take(),
-                self.latitude,
-                self.longitude,
-                self.region.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { city, country, latitude, longitude, region })
+            Some(Self::Out {
+                city: self.city.take().flatten(),
+                country: self.country.take().flatten(),
+                latitude: self.latitude.flatten(),
+                longitude: self.longitude.flatten(),
+                region: self.region.take().flatten(),
+            })
         }
     }
 

@@ -83,9 +83,11 @@ const _: () = {
         let (Some(payment_intent),
 ) = (self.payment_intent.take(),
 ) else {
-            return None;
-        };
-        Some(Self::Out { payment_intent })
+    return None;
+};
+Some(Self::Out {
+payment_intent,
+})
     }
 }
 

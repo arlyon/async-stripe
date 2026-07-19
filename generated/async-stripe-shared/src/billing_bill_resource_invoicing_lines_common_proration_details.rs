@@ -70,10 +70,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(credited_items),) = (self.credited_items.take(),) else {
-                return None;
-            };
-            Some(Self::Out { credited_items })
+            Some(Self::Out { credited_items: self.credited_items.take().flatten() })
         }
     }
 

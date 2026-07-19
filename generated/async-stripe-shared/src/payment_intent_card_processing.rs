@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer_notification),) = (self.customer_notification,) else {
-                return None;
-            };
-            Some(Self::Out { customer_notification })
+            Some(Self::Out { customer_notification: self.customer_notification.flatten() })
         }
     }
 

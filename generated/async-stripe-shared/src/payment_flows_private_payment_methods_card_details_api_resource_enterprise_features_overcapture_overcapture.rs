@@ -80,9 +80,12 @@ Some(status),
 ) = (self.maximum_amount_capturable,
 self.status.take(),
 ) else {
-            return None;
-        };
-        Some(Self::Out { maximum_amount_capturable,status })
+    return None;
+};
+Some(Self::Out {
+maximum_amount_capturable,
+status,
+})
     }
 }
 

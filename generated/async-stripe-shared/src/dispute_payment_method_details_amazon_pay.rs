@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(dispute_type),) = (self.dispute_type.take(),) else {
-                return None;
-            };
-            Some(Self::Out { dispute_type })
+            Some(Self::Out { dispute_type: self.dispute_type.take().flatten() })
         }
     }
 

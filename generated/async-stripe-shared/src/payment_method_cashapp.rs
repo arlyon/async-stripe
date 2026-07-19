@@ -71,11 +71,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buyer_id), Some(cashtag)) = (self.buyer_id.take(), self.cashtag.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { buyer_id, cashtag })
+            Some(Self::Out {
+                buyer_id: self.buyer_id.take().flatten(),
+                cashtag: self.cashtag.take().flatten(),
+            })
         }
     }
 

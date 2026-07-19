@@ -74,9 +74,11 @@ const _: () = {
         let (Some(type_),
 ) = (self.type_.take(),
 ) else {
-            return None;
-        };
-        Some(Self::Out { type_ })
+    return None;
+};
+Some(Self::Out {
+type_,
+})
     }
 }
 

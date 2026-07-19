@@ -90,23 +90,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(driver_id),
-                Some(odometer),
-                Some(unspecified_id),
-                Some(user_id),
-                Some(vehicle_number),
-            ) = (
-                self.driver_id.take(),
-                self.odometer,
-                self.unspecified_id.take(),
-                self.user_id.take(),
-                self.vehicle_number.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { driver_id, odometer, unspecified_id, user_id, vehicle_number })
+            Some(Self::Out {
+                driver_id: self.driver_id.take().flatten(),
+                odometer: self.odometer.flatten(),
+                unspecified_id: self.unspecified_id.take().flatten(),
+                user_id: self.user_id.take().flatten(),
+                vehicle_number: self.vehicle_number.take().flatten(),
+            })
         }
     }
 

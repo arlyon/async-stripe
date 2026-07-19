@@ -87,22 +87,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(payment_method_options),
-                Some(payment_method_types),
-                Some(save_default_payment_method),
-            ) = (
-                self.payment_method_options.take(),
-                self.payment_method_types.take(),
-                self.save_default_payment_method.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                payment_method_options,
-                payment_method_types,
-                save_default_payment_method,
+                payment_method_options: self.payment_method_options.take().flatten(),
+                payment_method_types: self.payment_method_types.take().flatten(),
+                save_default_payment_method: self.save_default_payment_method.take().flatten(),
             })
         }
     }

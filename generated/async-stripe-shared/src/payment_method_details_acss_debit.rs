@@ -100,34 +100,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(bank_name),
-                Some(expected_debit_date),
-                Some(fingerprint),
-                Some(institution_number),
-                Some(last4),
-                Some(mandate),
-                Some(transit_number),
-            ) = (
-                self.bank_name.take(),
-                self.expected_debit_date.take(),
-                self.fingerprint.take(),
-                self.institution_number.take(),
-                self.last4.take(),
-                self.mandate.take(),
-                self.transit_number.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                bank_name,
-                expected_debit_date,
-                fingerprint,
-                institution_number,
-                last4,
-                mandate,
-                transit_number,
+                bank_name: self.bank_name.take().flatten(),
+                expected_debit_date: self.expected_debit_date.take().flatten(),
+                fingerprint: self.fingerprint.take().flatten(),
+                institution_number: self.institution_number.take().flatten(),
+                last4: self.last4.take().flatten(),
+                mandate: self.mandate.take().flatten(),
+                transit_number: self.transit_number.take().flatten(),
             })
         }
     }

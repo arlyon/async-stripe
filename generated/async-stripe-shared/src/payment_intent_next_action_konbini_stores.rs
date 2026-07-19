@@ -84,15 +84,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(familymart), Some(lawson), Some(ministop), Some(seicomart)) = (
-                self.familymart.take(),
-                self.lawson.take(),
-                self.ministop.take(),
-                self.seicomart.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { familymart, lawson, ministop, seicomart })
+            Some(Self::Out {
+                familymart: self.familymart.take().flatten(),
+                lawson: self.lawson.take().flatten(),
+                ministop: self.ministop.take().flatten(),
+                seicomart: self.seicomart.take().flatten(),
+            })
         }
     }
 

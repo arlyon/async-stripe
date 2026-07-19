@@ -109,37 +109,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(columns),
-                Some(connected_account),
-                Some(currency),
-                Some(interval_end),
-                Some(interval_start),
-                Some(payout),
-                Some(reporting_category),
-                Some(timezone),
-            ) = (
-                self.columns.take(),
-                self.connected_account.take(),
-                self.currency.take(),
-                self.interval_end,
-                self.interval_start,
-                self.payout.take(),
-                self.reporting_category.take(),
-                self.timezone.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                columns,
-                connected_account,
-                currency,
-                interval_end,
-                interval_start,
-                payout,
-                reporting_category,
-                timezone,
+                columns: self.columns.take().flatten(),
+                connected_account: self.connected_account.take().flatten(),
+                currency: self.currency.take().flatten(),
+                interval_end: self.interval_end.flatten(),
+                interval_start: self.interval_start.flatten(),
+                payout: self.payout.take().flatten(),
+                reporting_category: self.reporting_category.take().flatten(),
+                timezone: self.timezone.take().flatten(),
             })
         }
     }

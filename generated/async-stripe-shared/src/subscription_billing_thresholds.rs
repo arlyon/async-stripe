@@ -75,12 +75,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_gte), Some(reset_billing_cycle_anchor)) =
-                (self.amount_gte, self.reset_billing_cycle_anchor)
-            else {
-                return None;
-            };
-            Some(Self::Out { amount_gte, reset_billing_cycle_anchor })
+            Some(Self::Out {
+                amount_gte: self.amount_gte.flatten(),
+                reset_billing_cycle_anchor: self.reset_billing_cycle_anchor.flatten(),
+            })
         }
     }
 

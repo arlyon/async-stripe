@@ -84,12 +84,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(finalized_at), Some(marked_uncollectible_at), Some(paid_at), Some(voided_at)) =
-                (self.finalized_at, self.marked_uncollectible_at, self.paid_at, self.voided_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { finalized_at, marked_uncollectible_at, paid_at, voided_at })
+            Some(Self::Out {
+                finalized_at: self.finalized_at.flatten(),
+                marked_uncollectible_at: self.marked_uncollectible_at.flatten(),
+                paid_at: self.paid_at.flatten(),
+                voided_at: self.voided_at.flatten(),
+            })
         }
     }
 

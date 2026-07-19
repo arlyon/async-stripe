@@ -96,28 +96,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(custom_unit_amount),
-                Some(tax_behavior),
-                Some(tiers),
-                Some(unit_amount),
-                Some(unit_amount_decimal),
-            ) = (
-                self.custom_unit_amount,
-                self.tax_behavior.take(),
-                self.tiers.take(),
-                self.unit_amount,
-                self.unit_amount_decimal.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                custom_unit_amount,
-                tax_behavior,
-                tiers,
-                unit_amount,
-                unit_amount_decimal,
+                custom_unit_amount: self.custom_unit_amount.flatten(),
+                tax_behavior: self.tax_behavior.take().flatten(),
+                tiers: self.tiers.take().flatten(),
+                unit_amount: self.unit_amount.flatten(),
+                unit_amount_decimal: self.unit_amount_decimal.take().flatten(),
             })
         }
     }

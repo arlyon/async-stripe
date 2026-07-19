@@ -68,10 +68,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(splashscreen),) = (self.splashscreen.take(),) else {
-                return None;
-            };
-            Some(Self::Out { splashscreen })
+            Some(Self::Out { splashscreen: self.splashscreen.take().flatten() })
         }
     }
 

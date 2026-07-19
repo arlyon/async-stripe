@@ -97,9 +97,13 @@ Some(type_),
 self.interval.take(),
 self.type_.take(),
 ) else {
-            return None;
-        };
-        Some(Self::Out { count,interval,type_ })
+    return None;
+};
+Some(Self::Out {
+count,
+interval,
+type_,
+})
     }
 }
 

@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank_transaction_id),) = (self.bank_transaction_id.take(),) else {
-                return None;
-            };
-            Some(Self::Out { bank_transaction_id })
+            Some(Self::Out { bank_transaction_id: self.bank_transaction_id.take().flatten() })
         }
     }
 

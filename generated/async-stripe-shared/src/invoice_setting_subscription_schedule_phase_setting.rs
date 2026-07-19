@@ -78,12 +78,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account_tax_ids), Some(days_until_due), Some(issuer)) =
-                (self.account_tax_ids.take(), self.days_until_due, self.issuer.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { account_tax_ids, days_until_due, issuer })
+            Some(Self::Out {
+                account_tax_ids: self.account_tax_ids.take().flatten(),
+                days_until_due: self.days_until_due.flatten(),
+                issuer: self.issuer.take().flatten(),
+            })
         }
     }
 

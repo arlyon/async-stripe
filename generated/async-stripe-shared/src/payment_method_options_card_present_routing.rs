@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(requested_priority),) = (self.requested_priority.take(),) else {
-                return None;
-            };
-            Some(Self::Out { requested_priority })
+            Some(Self::Out { requested_priority: self.requested_priority.take().flatten() })
         }
     }
 

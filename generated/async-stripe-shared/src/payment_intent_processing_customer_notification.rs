@@ -72,12 +72,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(approval_requested), Some(completes_at)) =
-                (self.approval_requested, self.completes_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { approval_requested, completes_at })
+            Some(Self::Out {
+                approval_requested: self.approval_requested.flatten(),
+                completes_at: self.completes_at.flatten(),
+            })
         }
     }
 

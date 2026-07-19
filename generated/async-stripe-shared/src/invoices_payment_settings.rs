@@ -82,14 +82,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(default_mandate), Some(payment_method_options), Some(payment_method_types)) = (
-                self.default_mandate.take(),
-                self.payment_method_options.take(),
-                self.payment_method_types.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { default_mandate, payment_method_options, payment_method_types })
+            Some(Self::Out {
+                default_mandate: self.default_mandate.take().flatten(),
+                payment_method_options: self.payment_method_options.take().flatten(),
+                payment_method_types: self.payment_method_types.take().flatten(),
+            })
         }
     }
 

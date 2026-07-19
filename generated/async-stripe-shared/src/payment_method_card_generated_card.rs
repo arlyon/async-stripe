@@ -79,12 +79,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(charge), Some(payment_method_details), Some(setup_attempt)) =
-                (self.charge.take(), self.payment_method_details.take(), self.setup_attempt.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { charge, payment_method_details, setup_attempt })
+            Some(Self::Out {
+                charge: self.charge.take().flatten(),
+                payment_method_details: self.payment_method_details.take().flatten(),
+                setup_attempt: self.setup_attempt.take().flatten(),
+            })
         }
     }
 

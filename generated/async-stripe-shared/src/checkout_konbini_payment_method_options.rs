@@ -79,12 +79,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_after_days), Some(setup_future_usage)) =
-                (self.expires_after_days, self.setup_future_usage.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { expires_after_days, setup_future_usage })
+            Some(Self::Out {
+                expires_after_days: self.expires_after_days.flatten(),
+                setup_future_usage: self.setup_future_usage.take().flatten(),
+            })
         }
     }
 

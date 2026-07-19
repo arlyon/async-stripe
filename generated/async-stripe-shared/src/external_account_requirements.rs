@@ -88,15 +88,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(currently_due), Some(errors), Some(past_due), Some(pending_verification)) = (
-                self.currently_due.take(),
-                self.errors.take(),
-                self.past_due.take(),
-                self.pending_verification.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { currently_due, errors, past_due, pending_verification })
+            Some(Self::Out {
+                currently_due: self.currently_due.take().flatten(),
+                errors: self.errors.take().flatten(),
+                past_due: self.past_due.take().flatten(),
+                pending_verification: self.pending_verification.take().flatten(),
+            })
         }
     }
 

@@ -74,12 +74,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(allow_redirects), Some(enabled)) =
-                (self.allow_redirects.take(), self.enabled)
-            else {
-                return None;
-            };
-            Some(Self::Out { allow_redirects, enabled })
+            Some(Self::Out {
+                allow_redirects: self.allow_redirects.take().flatten(),
+                enabled: self.enabled.flatten(),
+            })
         }
     }
 

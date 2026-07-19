@@ -144,55 +144,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(brand),
-                Some(checks),
-                Some(country),
-                Some(description),
-                Some(exp_month),
-                Some(exp_year),
-                Some(fingerprint),
-                Some(funding),
-                Some(iin),
-                Some(issuer),
-                Some(last4),
-                Some(network),
-                Some(three_d_secure),
-                Some(wallet),
-            ) = (
-                self.brand.take(),
-                self.checks.take(),
-                self.country.take(),
-                self.description.take(),
-                self.exp_month,
-                self.exp_year,
-                self.fingerprint.take(),
-                self.funding.take(),
-                self.iin.take(),
-                self.issuer.take(),
-                self.last4.take(),
-                self.network.take(),
-                self.three_d_secure.take(),
-                self.wallet.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                brand,
-                checks,
-                country,
-                description,
-                exp_month,
-                exp_year,
-                fingerprint,
-                funding,
-                iin,
-                issuer,
-                last4,
-                network,
-                three_d_secure,
-                wallet,
+                brand: self.brand.take().flatten(),
+                checks: self.checks.take().flatten(),
+                country: self.country.take().flatten(),
+                description: self.description.take().flatten(),
+                exp_month: self.exp_month.flatten(),
+                exp_year: self.exp_year.flatten(),
+                fingerprint: self.fingerprint.take().flatten(),
+                funding: self.funding.take().flatten(),
+                iin: self.iin.take().flatten(),
+                issuer: self.issuer.take().flatten(),
+                last4: self.last4.take().flatten(),
+                network: self.network.take().flatten(),
+                three_d_secure: self.three_d_secure.take().flatten(),
+                wallet: self.wallet.take().flatten(),
             })
         }
     }

@@ -76,12 +76,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(inbound_flows), Some(outbound_flows)) =
-                (self.inbound_flows.take(), self.outbound_flows.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { inbound_flows, outbound_flows })
+            Some(Self::Out {
+                inbound_flows: self.inbound_flows.take().flatten(),
+                outbound_flows: self.outbound_flows.take().flatten(),
+            })
         }
     }
 

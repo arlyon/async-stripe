@@ -73,9 +73,11 @@ const _: () = {
         let (Some(status),
 ) = (self.status.take(),
 ) else {
-            return None;
-        };
-        Some(Self::Out { status })
+    return None;
+};
+Some(Self::Out {
+status,
+})
     }
 }
 

@@ -61,9 +61,6 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
-                return None;
-            };
             Some(Self::Out {})
         }
     }

@@ -92,21 +92,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(capture_method),
-                Some(preferred_locale),
-                Some(reference),
-                Some(setup_future_usage),
-            ) = (
-                self.capture_method.take(),
-                self.preferred_locale.take(),
-                self.reference.take(),
-                self.setup_future_usage.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { capture_method, preferred_locale, reference, setup_future_usage })
+            Some(Self::Out {
+                capture_method: self.capture_method.take().flatten(),
+                preferred_locale: self.preferred_locale.take().flatten(),
+                reference: self.reference.take().flatten(),
+                setup_future_usage: self.setup_future_usage.take().flatten(),
+            })
         }
     }
 

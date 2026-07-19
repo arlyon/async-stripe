@@ -111,37 +111,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(customer_account_id),
-                Some(customer_device_fingerprint),
-                Some(customer_device_id),
-                Some(customer_email_address),
-                Some(customer_purchase_ip),
-                Some(merchandise_or_services),
-                Some(product_description),
-                Some(shipping_address),
-            ) = (
-                self.customer_account_id.take(),
-                self.customer_device_fingerprint.take(),
-                self.customer_device_id.take(),
-                self.customer_email_address.take(),
-                self.customer_purchase_ip.take(),
-                self.merchandise_or_services.take(),
-                self.product_description.take(),
-                self.shipping_address.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                customer_account_id,
-                customer_device_fingerprint,
-                customer_device_id,
-                customer_email_address,
-                customer_purchase_ip,
-                merchandise_or_services,
-                product_description,
-                shipping_address,
+                customer_account_id: self.customer_account_id.take().flatten(),
+                customer_device_fingerprint: self.customer_device_fingerprint.take().flatten(),
+                customer_device_id: self.customer_device_id.take().flatten(),
+                customer_email_address: self.customer_email_address.take().flatten(),
+                customer_purchase_ip: self.customer_purchase_ip.take().flatten(),
+                merchandise_or_services: self.merchandise_or_services.take().flatten(),
+                product_description: self.product_description.take().flatten(),
+                shipping_address: self.shipping_address.take().flatten(),
             })
         }
     }

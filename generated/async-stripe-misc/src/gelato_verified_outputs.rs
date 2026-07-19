@@ -119,46 +119,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(address),
-                Some(dob),
-                Some(email),
-                Some(first_name),
-                Some(id_number),
-                Some(id_number_type),
-                Some(last_name),
-                Some(phone),
-                Some(sex),
-                Some(unparsed_place_of_birth),
-                Some(unparsed_sex),
-            ) = (
-                self.address.take(),
-                self.dob,
-                self.email.take(),
-                self.first_name.take(),
-                self.id_number.take(),
-                self.id_number_type.take(),
-                self.last_name.take(),
-                self.phone.take(),
-                self.sex.take(),
-                self.unparsed_place_of_birth.take(),
-                self.unparsed_sex.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                address,
-                dob,
-                email,
-                first_name,
-                id_number,
-                id_number_type,
-                last_name,
-                phone,
-                sex,
-                unparsed_place_of_birth,
-                unparsed_sex,
+                address: self.address.take().flatten(),
+                dob: self.dob.flatten(),
+                email: self.email.take().flatten(),
+                first_name: self.first_name.take().flatten(),
+                id_number: self.id_number.take().flatten(),
+                id_number_type: self.id_number_type.take().flatten(),
+                last_name: self.last_name.take().flatten(),
+                phone: self.phone.take().flatten(),
+                sex: self.sex.take().flatten(),
+                unparsed_place_of_birth: self.unparsed_place_of_birth.take().flatten(),
+                unparsed_sex: self.unparsed_sex.take().flatten(),
             })
         }
     }

@@ -98,28 +98,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(confirmation_number),
-                Some(expires_after_days),
-                Some(expires_at),
-                Some(product_description),
-                Some(setup_future_usage),
-            ) = (
-                self.confirmation_number.take(),
-                self.expires_after_days,
-                self.expires_at,
-                self.product_description.take(),
-                self.setup_future_usage.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                confirmation_number,
-                expires_after_days,
-                expires_at,
-                product_description,
-                setup_future_usage,
+                confirmation_number: self.confirmation_number.take().flatten(),
+                expires_after_days: self.expires_after_days.flatten(),
+                expires_at: self.expires_at.flatten(),
+                product_description: self.product_description.take().flatten(),
+                setup_future_usage: self.setup_future_usage.take().flatten(),
             })
         }
     }

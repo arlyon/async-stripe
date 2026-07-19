@@ -75,12 +75,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fuel), Some(non_fuel), Some(tax)) =
-                (self.fuel.take(), self.non_fuel.take(), self.tax.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { fuel, non_fuel, tax })
+            Some(Self::Out {
+                fuel: self.fuel.take().flatten(),
+                non_fuel: self.non_fuel.take().flatten(),
+                tax: self.tax.take().flatten(),
+            })
         }
     }
 

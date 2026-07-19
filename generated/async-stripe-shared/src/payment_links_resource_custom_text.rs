@@ -87,21 +87,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(after_submit),
-                Some(shipping_address),
-                Some(submit),
-                Some(terms_of_service_acceptance),
-            ) = (
-                self.after_submit.take(),
-                self.shipping_address.take(),
-                self.submit.take(),
-                self.terms_of_service_acceptance.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { after_submit, shipping_address, submit, terms_of_service_acceptance })
+            Some(Self::Out {
+                after_submit: self.after_submit.take().flatten(),
+                shipping_address: self.shipping_address.take().flatten(),
+                submit: self.submit.take().flatten(),
+                terms_of_service_acceptance: self.terms_of_service_acceptance.take().flatten(),
+            })
         }
     }
 

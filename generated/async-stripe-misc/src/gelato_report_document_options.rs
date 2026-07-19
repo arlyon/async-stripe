@@ -86,25 +86,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(allowed_types),
-                Some(require_id_number),
-                Some(require_live_capture),
-                Some(require_matching_selfie),
-            ) = (
-                self.allowed_types.take(),
-                self.require_id_number,
-                self.require_live_capture,
-                self.require_matching_selfie,
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                allowed_types,
-                require_id_number,
-                require_live_capture,
-                require_matching_selfie,
+                allowed_types: self.allowed_types.take().flatten(),
+                require_id_number: self.require_id_number.flatten(),
+                require_live_capture: self.require_live_capture.flatten(),
+                require_matching_selfie: self.require_matching_selfie.flatten(),
             })
         }
     }

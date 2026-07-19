@@ -89,28 +89,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(data),
-                Some(expires_at),
-                Some(hosted_instructions_url),
-                Some(image_url_png),
-                Some(image_url_svg),
-            ) = (
-                self.data.take(),
-                self.expires_at,
-                self.hosted_instructions_url.take(),
-                self.image_url_png.take(),
-                self.image_url_svg.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                data,
-                expires_at,
-                hosted_instructions_url,
-                image_url_png,
-                image_url_svg,
+                data: self.data.take().flatten(),
+                expires_at: self.expires_at.flatten(),
+                hosted_instructions_url: self.hosted_instructions_url.take().flatten(),
+                image_url_png: self.image_url_png.take().flatten(),
+                image_url_svg: self.image_url_svg.take().flatten(),
             })
         }
     }

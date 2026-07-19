@@ -71,12 +71,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(disabled_reason), Some(past_due)) =
-                (self.disabled_reason.take(), self.past_due.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { disabled_reason, past_due })
+            Some(Self::Out {
+                disabled_reason: self.disabled_reason.take().flatten(),
+                past_due: self.past_due.take().flatten(),
+            })
         }
     }
 

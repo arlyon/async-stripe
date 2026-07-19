@@ -75,12 +75,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(reference), Some(sender_iban), Some(sender_name)) =
-                (self.reference.take(), self.sender_iban.take(), self.sender_name.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { reference, sender_iban, sender_name })
+            Some(Self::Out {
+                reference: self.reference.take().flatten(),
+                sender_iban: self.sender_iban.take().flatten(),
+                sender_name: self.sender_name.take().flatten(),
+            })
         }
     }
 

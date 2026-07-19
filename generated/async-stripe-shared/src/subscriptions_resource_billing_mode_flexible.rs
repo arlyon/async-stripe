@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(proration_discounts),) = (self.proration_discounts.take(),) else {
-                return None;
-            };
-            Some(Self::Out { proration_discounts })
+            Some(Self::Out { proration_discounts: self.proration_discounts.take().flatten() })
         }
     }
 

@@ -91,25 +91,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(custom_mandate_url),
-                Some(interval_description),
-                Some(payment_schedule),
-                Some(transaction_type),
-            ) = (
-                self.custom_mandate_url.take(),
-                self.interval_description.take(),
-                self.payment_schedule.take(),
-                self.transaction_type.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                custom_mandate_url,
-                interval_description,
-                payment_schedule,
-                transaction_type,
+                custom_mandate_url: self.custom_mandate_url.take().flatten(),
+                interval_description: self.interval_description.take().flatten(),
+                payment_schedule: self.payment_schedule.take().flatten(),
+                transaction_type: self.transaction_type.take().flatten(),
             })
         }
     }

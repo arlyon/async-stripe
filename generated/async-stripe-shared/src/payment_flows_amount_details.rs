@@ -95,25 +95,14 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(discount_amount),
-                Some(error),
-                Some(line_items),
-                Some(shipping),
-                Some(tax),
-                Some(tip),
-            ) = (
-                self.discount_amount,
-                self.error.take(),
-                self.line_items.take(),
-                self.shipping.take(),
-                self.tax,
-                self.tip,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { discount_amount, error, line_items, shipping, tax, tip })
+            Some(Self::Out {
+                discount_amount: self.discount_amount.flatten(),
+                error: self.error.take().flatten(),
+                line_items: self.line_items.take().flatten(),
+                shipping: self.shipping.take().flatten(),
+                tax: self.tax.flatten(),
+                tip: self.tip.flatten(),
+            })
         }
     }
 

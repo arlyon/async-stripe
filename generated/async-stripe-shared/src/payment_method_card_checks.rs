@@ -81,14 +81,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(address_line1_check), Some(address_postal_code_check), Some(cvc_check)) = (
-                self.address_line1_check.take(),
-                self.address_postal_code_check.take(),
-                self.cvc_check.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { address_line1_check, address_postal_code_check, cvc_check })
+            Some(Self::Out {
+                address_line1_check: self.address_line1_check.take().flatten(),
+                address_postal_code_check: self.address_postal_code_check.take().flatten(),
+                cvc_check: self.cvc_check.take().flatten(),
+            })
         }
     }
 

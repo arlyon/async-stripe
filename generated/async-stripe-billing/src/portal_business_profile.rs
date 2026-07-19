@@ -79,14 +79,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(headline), Some(privacy_policy_url), Some(terms_of_service_url)) = (
-                self.headline.take(),
-                self.privacy_policy_url.take(),
-                self.terms_of_service_url.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { headline, privacy_policy_url, terms_of_service_url })
+            Some(Self::Out {
+                headline: self.headline.take().flatten(),
+                privacy_policy_url: self.privacy_policy_url.take().flatten(),
+                terms_of_service_url: self.terms_of_service_url.take().flatten(),
+            })
         }
     }
 

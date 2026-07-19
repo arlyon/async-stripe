@@ -132,49 +132,22 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(annual_revenue),
-                Some(estimated_worker_count),
-                Some(mcc),
-                Some(minority_owned_business_designation),
-                Some(monthly_estimated_revenue),
-                Some(name),
-                Some(product_description),
-                Some(support_address),
-                Some(support_email),
-                Some(support_phone),
-                Some(support_url),
-                Some(url),
-            ) = (
-                self.annual_revenue.take(),
-                self.estimated_worker_count,
-                self.mcc.take(),
-                self.minority_owned_business_designation.take(),
-                self.monthly_estimated_revenue.take(),
-                self.name.take(),
-                self.product_description.take(),
-                self.support_address.take(),
-                self.support_email.take(),
-                self.support_phone.take(),
-                self.support_url.take(),
-                self.url.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                annual_revenue,
-                estimated_worker_count,
-                mcc,
-                minority_owned_business_designation,
-                monthly_estimated_revenue,
-                name,
-                product_description,
-                support_address,
-                support_email,
-                support_phone,
-                support_url,
-                url,
+                annual_revenue: self.annual_revenue.take().flatten(),
+                estimated_worker_count: self.estimated_worker_count.flatten(),
+                mcc: self.mcc.take().flatten(),
+                minority_owned_business_designation: self
+                    .minority_owned_business_designation
+                    .take()
+                    .flatten(),
+                monthly_estimated_revenue: self.monthly_estimated_revenue.take().flatten(),
+                name: self.name.take().flatten(),
+                product_description: self.product_description.take().flatten(),
+                support_address: self.support_address.take().flatten(),
+                support_email: self.support_email.take().flatten(),
+                support_phone: self.support_phone.take().flatten(),
+                support_url: self.support_url.take().flatten(),
+                url: self.url.take().flatten(),
             })
         }
     }

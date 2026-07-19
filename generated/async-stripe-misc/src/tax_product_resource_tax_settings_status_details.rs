@@ -69,10 +69,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(active), Some(pending)) = (self.active, self.pending.take()) else {
-                return None;
-            };
-            Some(Self::Out { active, pending })
+            Some(Self::Out {
+                active: self.active.flatten(),
+                pending: self.pending.take().flatten(),
+            })
         }
     }
 

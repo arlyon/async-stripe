@@ -85,15 +85,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(description), Some(skip_button), Some(submit_button), Some(title)) = (
-                self.description.take(),
-                self.skip_button.take(),
-                self.submit_button.take(),
-                self.title.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { description, skip_button, submit_button, title })
+            Some(Self::Out {
+                description: self.description.take().flatten(),
+                skip_button: self.skip_button.take().flatten(),
+                submit_button: self.submit_button.take().flatten(),
+                title: self.title.take().flatten(),
+            })
         }
     }
 

@@ -86,25 +86,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(cardholder_prompt_data),
-                Some(purchase_type),
-                Some(reported_breakdown),
-                Some(service_type),
-            ) = (
-                self.cardholder_prompt_data.take(),
-                self.purchase_type.take(),
-                self.reported_breakdown.take(),
-                self.service_type.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                cardholder_prompt_data,
-                purchase_type,
-                reported_breakdown,
-                service_type,
+                cardholder_prompt_data: self.cardholder_prompt_data.take().flatten(),
+                purchase_type: self.purchase_type.take().flatten(),
+                reported_breakdown: self.reported_breakdown.take().flatten(),
+                service_type: self.service_type.take().flatten(),
             })
         }
     }

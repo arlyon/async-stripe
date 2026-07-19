@@ -71,10 +71,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(maximum), Some(minimum)) = (self.maximum.take(), self.minimum.take()) else {
-                return None;
-            };
-            Some(Self::Out { maximum, minimum })
+            Some(Self::Out {
+                maximum: self.maximum.take().flatten(),
+                minimum: self.minimum.take().flatten(),
+            })
         }
     }
 

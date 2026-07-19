@@ -102,28 +102,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(statement_descriptor),
-                Some(statement_descriptor_kana),
-                Some(statement_descriptor_kanji),
-                Some(statement_descriptor_prefix_kana),
-                Some(statement_descriptor_prefix_kanji),
-            ) = (
-                self.statement_descriptor.take(),
-                self.statement_descriptor_kana.take(),
-                self.statement_descriptor_kanji.take(),
-                self.statement_descriptor_prefix_kana.take(),
-                self.statement_descriptor_prefix_kanji.take(),
-            )
-            else {
-                return None;
-            };
             Some(Self::Out {
-                statement_descriptor,
-                statement_descriptor_kana,
-                statement_descriptor_kanji,
-                statement_descriptor_prefix_kana,
-                statement_descriptor_prefix_kanji,
+                statement_descriptor: self.statement_descriptor.take().flatten(),
+                statement_descriptor_kana: self.statement_descriptor_kana.take().flatten(),
+                statement_descriptor_kanji: self.statement_descriptor_kanji.take().flatten(),
+                statement_descriptor_prefix_kana: self
+                    .statement_descriptor_prefix_kana
+                    .take()
+                    .flatten(),
+                statement_descriptor_prefix_kanji: self
+                    .statement_descriptor_prefix_kanji
+                    .take()
+                    .flatten(),
             })
         }
     }

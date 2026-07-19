@@ -85,19 +85,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(acquiring_institution_id),
-                Some(system_trace_audit_number),
-                Some(transaction_id),
-            ) = (
-                self.acquiring_institution_id.take(),
-                self.system_trace_audit_number.take(),
-                self.transaction_id.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { acquiring_institution_id, system_trace_audit_number, transaction_id })
+            Some(Self::Out {
+                acquiring_institution_id: self.acquiring_institution_id.take().flatten(),
+                system_trace_audit_number: self.system_trace_audit_number.take().flatten(),
+                transaction_id: self.transaction_id.take().flatten(),
+            })
         }
     }
 

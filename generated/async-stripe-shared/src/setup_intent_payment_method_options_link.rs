@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(persistent_token),) = (self.persistent_token.take(),) else {
-                return None;
-            };
-            Some(Self::Out { persistent_token })
+            Some(Self::Out { persistent_token: self.persistent_token.take().flatten() })
         }
     }
 

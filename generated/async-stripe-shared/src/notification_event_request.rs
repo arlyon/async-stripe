@@ -74,11 +74,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(id), Some(idempotency_key)) = (self.id.take(), self.idempotency_key.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { id, idempotency_key })
+            Some(Self::Out {
+                id: self.id.take().flatten(),
+                idempotency_key: self.idempotency_key.take().flatten(),
+            })
         }
     }
 

@@ -72,10 +72,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(reference_prefix),) = (self.reference_prefix.take(),) else {
-                return None;
-            };
-            Some(Self::Out { reference_prefix })
+            Some(Self::Out { reference_prefix: self.reference_prefix.take().flatten() })
         }
     }
 

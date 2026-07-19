@@ -75,12 +75,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(date), Some(ip), Some(user_agent)) =
-                (self.date, self.ip.take(), self.user_agent.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { date, ip, user_agent })
+            Some(Self::Out {
+                date: self.date.flatten(),
+                ip: self.ip.take().flatten(),
+                user_agent: self.user_agent.take().flatten(),
+            })
         }
     }
 

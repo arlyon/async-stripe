@@ -71,11 +71,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(entity), Some(reference)) = (self.entity.take(), self.reference.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { entity, reference })
+            Some(Self::Out {
+                entity: self.entity.take().flatten(),
+                reference: self.reference.take().flatten(),
+            })
         }
     }
 

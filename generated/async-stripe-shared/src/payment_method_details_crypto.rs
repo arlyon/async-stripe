@@ -84,15 +84,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buyer_address), Some(network), Some(token_currency), Some(transaction_hash)) = (
-                self.buyer_address.take(),
-                self.network.take(),
-                self.token_currency.take(),
-                self.transaction_hash.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { buyer_address, network, token_currency, transaction_hash })
+            Some(Self::Out {
+                buyer_address: self.buyer_address.take().flatten(),
+                network: self.network.take().flatten(),
+                token_currency: self.token_currency.take().flatten(),
+                transaction_hash: self.transaction_hash.take().flatten(),
+            })
         }
     }
 

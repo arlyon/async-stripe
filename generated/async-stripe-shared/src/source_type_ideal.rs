@@ -80,15 +80,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank), Some(bic), Some(iban_last4), Some(statement_descriptor)) = (
-                self.bank.take(),
-                self.bic.take(),
-                self.iban_last4.take(),
-                self.statement_descriptor.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { bank, bic, iban_last4, statement_descriptor })
+            Some(Self::Out {
+                bank: self.bank.take().flatten(),
+                bic: self.bic.take().flatten(),
+                iban_last4: self.iban_last4.take().flatten(),
+                statement_descriptor: self.statement_descriptor.take().flatten(),
+            })
         }
     }
 

@@ -70,10 +70,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled),) = (self.enabled,) else {
-                return None;
-            };
-            Some(Self::Out { enabled })
+            Some(Self::Out { enabled: self.enabled.flatten() })
         }
     }
 

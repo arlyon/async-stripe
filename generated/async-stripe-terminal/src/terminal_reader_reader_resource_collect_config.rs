@@ -81,12 +81,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enable_customer_cancellation), Some(skip_tipping), Some(tipping)) =
-                (self.enable_customer_cancellation, self.skip_tipping, self.tipping)
-            else {
-                return None;
-            };
-            Some(Self::Out { enable_customer_cancellation, skip_tipping, tipping })
+            Some(Self::Out {
+                enable_customer_cancellation: self.enable_customer_cancellation.flatten(),
+                skip_tipping: self.skip_tipping.flatten(),
+                tipping: self.tipping.flatten(),
+            })
         }
     }
 
