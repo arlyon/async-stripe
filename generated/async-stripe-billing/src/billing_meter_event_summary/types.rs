@@ -41,16 +41,14 @@ pub struct BillingMeterEventSummaryBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -69,37 +67,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BillingMeterEventSummaryBuilder::deser_default(),
+                builder: BillingMeterEventSummaryBuilder {
+                    aggregated_value: Deserialize::default(),
+                    end_time: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    meter: Deserialize::default(),
+                    start_time: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for BillingMeterEventSummaryBuilder {
-        type Out = BillingMeterEventSummary;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "aggregated_value" => Deserialize::begin(&mut self.aggregated_value),
-                "end_time" => Deserialize::begin(&mut self.end_time),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "meter" => Deserialize::begin(&mut self.meter),
-                "start_time" => Deserialize::begin(&mut self.start_time),
+                "aggregated_value" => Deserialize::begin(&mut self.builder.aggregated_value),
+                "end_time" => Deserialize::begin(&mut self.builder.end_time),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "meter" => Deserialize::begin(&mut self.builder.meter),
+                "start_time" => Deserialize::begin(&mut self.builder.start_time),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                aggregated_value: Deserialize::default(),
-                end_time: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                meter: Deserialize::default(),
-                start_time: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(aggregated_value),
                 Some(end_time),
@@ -108,53 +101,25 @@ const _: () = {
                 Some(meter),
                 Some(start_time),
             ) = (
-                self.aggregated_value,
-                self.end_time,
-                self.id.take(),
-                self.livemode,
-                self.meter.take(),
-                self.start_time,
+                self.builder.aggregated_value,
+                self.builder.end_time,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.meter.take(),
+                self.builder.start_time,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { aggregated_value, end_time, id, livemode, meter, start_time })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(BillingMeterEventSummary {
+                aggregated_value,
+                end_time,
+                id,
+                livemode,
+                meter,
+                start_time,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingMeterEventSummary {
-        type Builder = BillingMeterEventSummaryBuilder;
-    }
-
-    impl FromValueOpt for BillingMeterEventSummary {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingMeterEventSummaryBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "aggregated_value" => b.aggregated_value = FromValueOpt::from_value(v),
-                    "end_time" => b.end_time = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "meter" => b.meter = FromValueOpt::from_value(v),
-                    "start_time" => b.start_time = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -39,16 +39,14 @@ pub struct PaymentMethodDetailsAcssDebitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,39 +65,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsAcssDebitBuilder::deser_default(),
+                builder: PaymentMethodDetailsAcssDebitBuilder {
+                    bank_name: Deserialize::default(),
+                    expected_debit_date: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    institution_number: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    mandate: Deserialize::default(),
+                    transit_number: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodDetailsAcssDebitBuilder {
-        type Out = PaymentMethodDetailsAcssDebit;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "expected_debit_date" => Deserialize::begin(&mut self.expected_debit_date),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "institution_number" => Deserialize::begin(&mut self.institution_number),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "mandate" => Deserialize::begin(&mut self.mandate),
-                "transit_number" => Deserialize::begin(&mut self.transit_number),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "expected_debit_date" => Deserialize::begin(&mut self.builder.expected_debit_date),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "institution_number" => Deserialize::begin(&mut self.builder.institution_number),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "mandate" => Deserialize::begin(&mut self.builder.mandate),
+                "transit_number" => Deserialize::begin(&mut self.builder.transit_number),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bank_name: Deserialize::default(),
-                expected_debit_date: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                institution_number: Deserialize::default(),
-                last4: Deserialize::default(),
-                mandate: Deserialize::default(),
-                transit_number: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bank_name),
                 Some(expected_debit_date),
@@ -109,18 +102,18 @@ const _: () = {
                 Some(mandate),
                 Some(transit_number),
             ) = (
-                self.bank_name.take(),
-                self.expected_debit_date.take(),
-                self.fingerprint.take(),
-                self.institution_number.take(),
-                self.last4.take(),
-                self.mandate.take(),
-                self.transit_number.take(),
+                self.builder.bank_name.take(),
+                self.builder.expected_debit_date.take(),
+                self.builder.fingerprint.take(),
+                self.builder.institution_number.take(),
+                self.builder.last4.take(),
+                self.builder.mandate.take(),
+                self.builder.transit_number.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodDetailsAcssDebit {
                 bank_name,
                 expected_debit_date,
                 fingerprint,
@@ -128,44 +121,8 @@ const _: () = {
                 last4,
                 mandate,
                 transit_number,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsAcssDebit {
-        type Builder = PaymentMethodDetailsAcssDebitBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsAcssDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsAcssDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "expected_debit_date" => b.expected_debit_date = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "institution_number" => b.institution_number = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "mandate" => b.mandate = FromValueOpt::from_value(v),
-                    "transit_number" => b.transit_number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

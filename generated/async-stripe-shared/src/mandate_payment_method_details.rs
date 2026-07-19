@@ -58,16 +58,14 @@ pub struct MandatePaymentMethodDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -86,63 +84,58 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: MandatePaymentMethodDetailsBuilder::deser_default(),
+                builder: MandatePaymentMethodDetailsBuilder {
+                    acss_debit: Deserialize::default(),
+                    amazon_pay: Deserialize::default(),
+                    au_becs_debit: Deserialize::default(),
+                    bacs_debit: Deserialize::default(),
+                    card: Deserialize::default(),
+                    cashapp: Deserialize::default(),
+                    kakao_pay: Deserialize::default(),
+                    klarna: Deserialize::default(),
+                    kr_card: Deserialize::default(),
+                    link: Deserialize::default(),
+                    naver_pay: Deserialize::default(),
+                    nz_bank_account: Deserialize::default(),
+                    paypal: Deserialize::default(),
+                    payto: Deserialize::default(),
+                    revolut_pay: Deserialize::default(),
+                    sepa_debit: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    upi: Deserialize::default(),
+                    us_bank_account: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for MandatePaymentMethodDetailsBuilder {
-        type Out = MandatePaymentMethodDetails;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "acss_debit" => Deserialize::begin(&mut self.acss_debit),
-                "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
-                "au_becs_debit" => Deserialize::begin(&mut self.au_becs_debit),
-                "bacs_debit" => Deserialize::begin(&mut self.bacs_debit),
-                "card" => Deserialize::begin(&mut self.card),
-                "cashapp" => Deserialize::begin(&mut self.cashapp),
-                "kakao_pay" => Deserialize::begin(&mut self.kakao_pay),
-                "klarna" => Deserialize::begin(&mut self.klarna),
-                "kr_card" => Deserialize::begin(&mut self.kr_card),
-                "link" => Deserialize::begin(&mut self.link),
-                "naver_pay" => Deserialize::begin(&mut self.naver_pay),
-                "nz_bank_account" => Deserialize::begin(&mut self.nz_bank_account),
-                "paypal" => Deserialize::begin(&mut self.paypal),
-                "payto" => Deserialize::begin(&mut self.payto),
-                "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
-                "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
-                "type" => Deserialize::begin(&mut self.type_),
-                "upi" => Deserialize::begin(&mut self.upi),
-                "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
+                "acss_debit" => Deserialize::begin(&mut self.builder.acss_debit),
+                "amazon_pay" => Deserialize::begin(&mut self.builder.amazon_pay),
+                "au_becs_debit" => Deserialize::begin(&mut self.builder.au_becs_debit),
+                "bacs_debit" => Deserialize::begin(&mut self.builder.bacs_debit),
+                "card" => Deserialize::begin(&mut self.builder.card),
+                "cashapp" => Deserialize::begin(&mut self.builder.cashapp),
+                "kakao_pay" => Deserialize::begin(&mut self.builder.kakao_pay),
+                "klarna" => Deserialize::begin(&mut self.builder.klarna),
+                "kr_card" => Deserialize::begin(&mut self.builder.kr_card),
+                "link" => Deserialize::begin(&mut self.builder.link),
+                "naver_pay" => Deserialize::begin(&mut self.builder.naver_pay),
+                "nz_bank_account" => Deserialize::begin(&mut self.builder.nz_bank_account),
+                "paypal" => Deserialize::begin(&mut self.builder.paypal),
+                "payto" => Deserialize::begin(&mut self.builder.payto),
+                "revolut_pay" => Deserialize::begin(&mut self.builder.revolut_pay),
+                "sepa_debit" => Deserialize::begin(&mut self.builder.sepa_debit),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "upi" => Deserialize::begin(&mut self.builder.upi),
+                "us_bank_account" => Deserialize::begin(&mut self.builder.us_bank_account),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                acss_debit: Deserialize::default(),
-                amazon_pay: Deserialize::default(),
-                au_becs_debit: Deserialize::default(),
-                bacs_debit: Deserialize::default(),
-                card: Deserialize::default(),
-                cashapp: Deserialize::default(),
-                kakao_pay: Deserialize::default(),
-                klarna: Deserialize::default(),
-                kr_card: Deserialize::default(),
-                link: Deserialize::default(),
-                naver_pay: Deserialize::default(),
-                nz_bank_account: Deserialize::default(),
-                paypal: Deserialize::default(),
-                payto: Deserialize::default(),
-                revolut_pay: Deserialize::default(),
-                sepa_debit: Deserialize::default(),
-                type_: Deserialize::default(),
-                upi: Deserialize::default(),
-                us_bank_account: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(acss_debit),
                 Some(amazon_pay),
@@ -164,30 +157,30 @@ const _: () = {
                 Some(upi),
                 Some(us_bank_account),
             ) = (
-                self.acss_debit.take(),
-                self.amazon_pay,
-                self.au_becs_debit.take(),
-                self.bacs_debit.take(),
-                self.card,
-                self.cashapp,
-                self.kakao_pay,
-                self.klarna,
-                self.kr_card,
-                self.link,
-                self.naver_pay,
-                self.nz_bank_account,
-                self.paypal.take(),
-                self.payto.take(),
-                self.revolut_pay,
-                self.sepa_debit.take(),
-                self.type_.take(),
-                self.upi.take(),
-                self.us_bank_account.take(),
+                self.builder.acss_debit.take(),
+                self.builder.amazon_pay,
+                self.builder.au_becs_debit.take(),
+                self.builder.bacs_debit.take(),
+                self.builder.card,
+                self.builder.cashapp,
+                self.builder.kakao_pay,
+                self.builder.klarna,
+                self.builder.kr_card,
+                self.builder.link,
+                self.builder.naver_pay,
+                self.builder.nz_bank_account,
+                self.builder.paypal.take(),
+                self.builder.payto.take(),
+                self.builder.revolut_pay,
+                self.builder.sepa_debit.take(),
+                self.builder.type_.take(),
+                self.builder.upi.take(),
+                self.builder.us_bank_account.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(MandatePaymentMethodDetails {
                 acss_debit,
                 amazon_pay,
                 au_becs_debit,
@@ -207,56 +200,8 @@ const _: () = {
                 type_,
                 upi,
                 us_bank_account,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for MandatePaymentMethodDetails {
-        type Builder = MandatePaymentMethodDetailsBuilder;
-    }
-
-    impl FromValueOpt for MandatePaymentMethodDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandatePaymentMethodDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
-                    "amazon_pay" => b.amazon_pay = FromValueOpt::from_value(v),
-                    "au_becs_debit" => b.au_becs_debit = FromValueOpt::from_value(v),
-                    "bacs_debit" => b.bacs_debit = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "cashapp" => b.cashapp = FromValueOpt::from_value(v),
-                    "kakao_pay" => b.kakao_pay = FromValueOpt::from_value(v),
-                    "klarna" => b.klarna = FromValueOpt::from_value(v),
-                    "kr_card" => b.kr_card = FromValueOpt::from_value(v),
-                    "link" => b.link = FromValueOpt::from_value(v),
-                    "naver_pay" => b.naver_pay = FromValueOpt::from_value(v),
-                    "nz_bank_account" => b.nz_bank_account = FromValueOpt::from_value(v),
-                    "paypal" => b.paypal = FromValueOpt::from_value(v),
-                    "payto" => b.payto = FromValueOpt::from_value(v),
-                    "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),
-                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "upi" => b.upi = FromValueOpt::from_value(v),
-                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

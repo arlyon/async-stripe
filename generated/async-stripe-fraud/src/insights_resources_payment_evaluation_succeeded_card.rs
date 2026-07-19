@@ -29,16 +29,14 @@ pub struct InsightsResourcesPaymentEvaluationSucceededCardBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,76 +55,41 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InsightsResourcesPaymentEvaluationSucceededCardBuilder::deser_default(),
+                builder: InsightsResourcesPaymentEvaluationSucceededCardBuilder {
+                    address_line1_check: Deserialize::default(),
+                    address_postal_code_check: Deserialize::default(),
+                    cvc_check: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InsightsResourcesPaymentEvaluationSucceededCardBuilder {
-        type Out = InsightsResourcesPaymentEvaluationSucceededCard;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "address_line1_check" => Deserialize::begin(&mut self.address_line1_check),
-                "address_postal_code_check" => {
-                    Deserialize::begin(&mut self.address_postal_code_check)
-                }
-                "cvc_check" => Deserialize::begin(&mut self.cvc_check),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                address_line1_check: Deserialize::default(),
-                address_postal_code_check: Deserialize::default(),
-                cvc_check: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(address_line1_check), Some(address_postal_code_check), Some(cvc_check)) = (
-                self.address_line1_check.take(),
-                self.address_postal_code_check.take(),
-                self.cvc_check.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { address_line1_check, address_postal_code_check, cvc_check })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "address_line1_check" => Deserialize::begin(&mut self.builder.address_line1_check),
+                "address_postal_code_check" => {
+                    Deserialize::begin(&mut self.builder.address_postal_code_check)
+                }
+                "cvc_check" => Deserialize::begin(&mut self.builder.cvc_check),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InsightsResourcesPaymentEvaluationSucceededCard {
-        type Builder = InsightsResourcesPaymentEvaluationSucceededCardBuilder;
-    }
-
-    impl FromValueOpt for InsightsResourcesPaymentEvaluationSucceededCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(address_line1_check), Some(address_postal_code_check), Some(cvc_check)) = (
+                self.builder.address_line1_check.take(),
+                self.builder.address_postal_code_check.take(),
+                self.builder.cvc_check.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = InsightsResourcesPaymentEvaluationSucceededCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address_line1_check" => b.address_line1_check = FromValueOpt::from_value(v),
-                    "address_postal_code_check" => {
-                        b.address_postal_code_check = FromValueOpt::from_value(v)
-                    }
-                    "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InsightsResourcesPaymentEvaluationSucceededCard {
+                address_line1_check,
+                address_postal_code_check,
+                cvc_check,
+            });
+            Ok(())
         }
     }
 };
@@ -202,16 +165,16 @@ impl serde::Serialize for InsightsResourcesPaymentEvaluationSucceededCardAddress
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check::from_str(s)
@@ -220,10 +183,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check
@@ -308,18 +267,18 @@ impl serde::Serialize for InsightsResourcesPaymentEvaluationSucceededCardAddress
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
+impl stripe_miniserde::Deserialize
     for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck::from_str(s)
@@ -328,10 +287,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck
@@ -414,16 +369,16 @@ impl serde::Serialize for InsightsResourcesPaymentEvaluationSucceededCardCvcChec
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<InsightsResourcesPaymentEvaluationSucceededCardCvcCheck>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             InsightsResourcesPaymentEvaluationSucceededCardCvcCheck::from_str(s)
@@ -432,8 +387,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(InsightsResourcesPaymentEvaluationSucceededCardCvcCheck);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

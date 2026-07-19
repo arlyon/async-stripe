@@ -74,16 +74,14 @@ pub struct CustomerBalanceTransactionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -102,53 +100,48 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CustomerBalanceTransactionBuilder::deser_default(),
+                builder: CustomerBalanceTransactionBuilder {
+                    amount: Deserialize::default(),
+                    checkout_session: Deserialize::default(),
+                    created: Deserialize::default(),
+                    credit_note: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    description: Deserialize::default(),
+                    ending_balance: Deserialize::default(),
+                    id: Deserialize::default(),
+                    invoice: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CustomerBalanceTransactionBuilder {
-        type Out = CustomerBalanceTransaction;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "checkout_session" => Deserialize::begin(&mut self.checkout_session),
-                "created" => Deserialize::begin(&mut self.created),
-                "credit_note" => Deserialize::begin(&mut self.credit_note),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "description" => Deserialize::begin(&mut self.description),
-                "ending_balance" => Deserialize::begin(&mut self.ending_balance),
-                "id" => Deserialize::begin(&mut self.id),
-                "invoice" => Deserialize::begin(&mut self.invoice),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "type" => Deserialize::begin(&mut self.type_),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "checkout_session" => Deserialize::begin(&mut self.builder.checkout_session),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "credit_note" => Deserialize::begin(&mut self.builder.credit_note),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "ending_balance" => Deserialize::begin(&mut self.builder.ending_balance),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "invoice" => Deserialize::begin(&mut self.builder.invoice),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                checkout_session: Deserialize::default(),
-                created: Deserialize::default(),
-                credit_note: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                description: Deserialize::default(),
-                ending_balance: Deserialize::default(),
-                id: Deserialize::default(),
-                invoice: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(checkout_session),
@@ -165,25 +158,25 @@ const _: () = {
                 Some(metadata),
                 Some(type_),
             ) = (
-                self.amount,
-                self.checkout_session.take(),
-                self.created,
-                self.credit_note.take(),
-                self.currency.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.description.take(),
-                self.ending_balance,
-                self.id.take(),
-                self.invoice.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.type_.take(),
+                self.builder.amount,
+                self.builder.checkout_session.take(),
+                self.builder.created,
+                self.builder.credit_note.take(),
+                self.builder.currency.take(),
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.description.take(),
+                self.builder.ending_balance,
+                self.builder.id.take(),
+                self.builder.invoice.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(CustomerBalanceTransaction {
                 amount,
                 checkout_session,
                 created,
@@ -198,51 +191,8 @@ const _: () = {
                 livemode,
                 metadata,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CustomerBalanceTransaction {
-        type Builder = CustomerBalanceTransactionBuilder;
-    }
-
-    impl FromValueOpt for CustomerBalanceTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerBalanceTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "checkout_session" => b.checkout_session = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "credit_note" => b.credit_note = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "ending_balance" => b.ending_balance = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -370,21 +320,19 @@ impl serde::Serialize for CustomerBalanceTransactionType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CustomerBalanceTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CustomerBalanceTransactionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CustomerBalanceTransactionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CustomerBalanceTransactionType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CustomerBalanceTransactionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CustomerBalanceTransactionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerBalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

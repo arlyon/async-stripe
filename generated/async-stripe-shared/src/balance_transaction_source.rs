@@ -66,125 +66,75 @@ pub enum BalanceTransactionSource {
     TransferReversal(stripe_shared::TransferReversal),
 }
 
-#[derive(Default)]
-pub struct BalanceTransactionSourceBuilder {
-    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
-}
-
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::MapBuilder;
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_miniserde::de::Visitor;
+    use stripe_miniserde::{Deserialize, Error, Result, make_place};
+    use stripe_miniserde::json::peek_object_tag;
 
     use super::*;
 
     make_place!(Place);
 
-    struct Builder<'a> {
-        out: &'a mut Option<BalanceTransactionSource>,
-        builder: BalanceTransactionSourceBuilder,
-    }
-
     impl Deserialize for BalanceTransactionSource {
+        const WANTS_RAW: bool = true;
+
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     impl Visitor for Place<BalanceTransactionSource> {
-        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+        fn wants_raw(&self) -> bool {
+            true
         }
 
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl MapBuilder for BalanceTransactionSourceBuilder {
-        type Out = BalanceTransactionSource;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.inner.key_inner(k)
-        }
-
-        fn deser_default() -> Self {
-            Self::default()
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (k, o) = self.inner.finish_inner()?;
-            BalanceTransactionSource::construct(&k, o)
-        }
-    }
-
-    impl stripe_types::ObjectDeser for BalanceTransactionSource {
-        type Builder = BalanceTransactionSourceBuilder;
-    }
-    impl BalanceTransactionSource {
-        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
-            Some(match key {
+        fn raw(&mut self, bytes: &str) -> Result<()> {
+            let tag = peek_object_tag(bytes).ok_or(Error)?;
+            self.out = Some(match tag.as_str() {
                 "application_fee" => {
-                    Self::ApplicationFee(FromValueOpt::from_value(Value::Object(o))?)
+                    BalanceTransactionSource::ApplicationFee(stripe_miniserde::json::from_str(bytes)?)
                 }
-                "charge" => Self::Charge(FromValueOpt::from_value(Value::Object(o))?),
+                "charge" => BalanceTransactionSource::Charge(stripe_miniserde::json::from_str(bytes)?),
                 "connect_collection_transfer" => {
-                    Self::ConnectCollectionTransfer(FromValueOpt::from_value(Value::Object(o))?)
+                    BalanceTransactionSource::ConnectCollectionTransfer(stripe_miniserde::json::from_str(
+                        bytes,
+                    )?)
                 }
-                "customer_cash_balance_transaction" => Self::CustomerCashBalanceTransaction(
-                    FromValueOpt::from_value(Value::Object(o))?,
+                "customer_cash_balance_transaction" => {
+                    BalanceTransactionSource::CustomerCashBalanceTransaction(
+                        stripe_miniserde::json::from_str(bytes)?,
+                    )
+                }
+                "dispute" => BalanceTransactionSource::Dispute(stripe_miniserde::json::from_str(bytes)?),
+                "fee_refund" => BalanceTransactionSource::ApplicationFeeRefund(
+                    stripe_miniserde::json::from_str(bytes)?,
                 ),
-                "dispute" => Self::Dispute(FromValueOpt::from_value(Value::Object(o))?),
-                "fee_refund" => {
-                    Self::ApplicationFeeRefund(FromValueOpt::from_value(Value::Object(o))?)
-                }
-                "issuing.authorization" => {
-                    Self::IssuingAuthorization(FromValueOpt::from_value(Value::Object(o))?)
-                }
+                "issuing.authorization" => BalanceTransactionSource::IssuingAuthorization(
+                    stripe_miniserde::json::from_str(bytes)?,
+                ),
                 "issuing.dispute" => {
-                    Self::IssuingDispute(FromValueOpt::from_value(Value::Object(o))?)
+                    BalanceTransactionSource::IssuingDispute(stripe_miniserde::json::from_str(bytes)?)
                 }
                 "issuing.transaction" => {
-                    Self::IssuingTransaction(FromValueOpt::from_value(Value::Object(o))?)
+                    BalanceTransactionSource::IssuingTransaction(stripe_miniserde::json::from_str(bytes)?)
                 }
-                "payout" => Self::Payout(FromValueOpt::from_value(Value::Object(o))?),
-                "refund" => Self::Refund(FromValueOpt::from_value(Value::Object(o))?),
+                "payout" => BalanceTransactionSource::Payout(stripe_miniserde::json::from_str(bytes)?),
+                "refund" => BalanceTransactionSource::Refund(stripe_miniserde::json::from_str(bytes)?),
                 "reserve_transaction" => {
-                    Self::ReserveTransaction(FromValueOpt::from_value(Value::Object(o))?)
+                    BalanceTransactionSource::ReserveTransaction(stripe_miniserde::json::from_str(bytes)?)
                 }
                 "tax_deducted_at_source" => {
-                    Self::TaxDeductedAtSource(FromValueOpt::from_value(Value::Object(o))?)
+                    BalanceTransactionSource::TaxDeductedAtSource(stripe_miniserde::json::from_str(bytes)?)
                 }
-                "topup" => Self::Topup(FromValueOpt::from_value(Value::Object(o))?),
-                "transfer" => Self::Transfer(FromValueOpt::from_value(Value::Object(o))?),
+                "topup" => BalanceTransactionSource::Topup(stripe_miniserde::json::from_str(bytes)?),
+                "transfer" => BalanceTransactionSource::Transfer(stripe_miniserde::json::from_str(bytes)?),
                 "transfer_reversal" => {
-                    Self::TransferReversal(FromValueOpt::from_value(Value::Object(o))?)
+                    BalanceTransactionSource::TransferReversal(stripe_miniserde::json::from_str(bytes)?)
                 }
 
-                _ => {
-                    tracing::warn!(
-                        "Unknown object type '{}' for enum '{}'",
-                        key,
-                        "BalanceTransactionSource"
-                    );
-                    return None;
-                }
-            })
-        }
-    }
-
-    impl FromValueOpt for BalanceTransactionSource {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
+                _ => return Err(Error),
+            });
+            Ok(())
         }
     }
 };

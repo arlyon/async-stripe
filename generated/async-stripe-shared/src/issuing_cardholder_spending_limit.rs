@@ -28,16 +28,14 @@ pub struct IssuingCardholderSpendingLimitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,70 +54,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingCardholderSpendingLimitBuilder::deser_default(),
+                builder: IssuingCardholderSpendingLimitBuilder {
+                    amount: Deserialize::default(),
+                    categories: Deserialize::default(),
+                    interval: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingCardholderSpendingLimitBuilder {
-        type Out = IssuingCardholderSpendingLimit;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "categories" => Deserialize::begin(&mut self.categories),
-                "interval" => Deserialize::begin(&mut self.interval),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                categories: Deserialize::default(),
-                interval: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(categories), Some(interval)) =
-                (self.amount, self.categories.take(), self.interval.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { amount, categories, interval })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "categories" => Deserialize::begin(&mut self.builder.categories),
+                "interval" => Deserialize::begin(&mut self.builder.interval),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingCardholderSpendingLimit {
-        type Builder = IssuingCardholderSpendingLimitBuilder;
-    }
-
-    impl FromValueOpt for IssuingCardholderSpendingLimit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount), Some(categories), Some(interval)) =
+                (self.builder.amount, self.builder.categories.take(), self.builder.interval.take())
+            else {
+                return Ok(());
             };
-            let mut b = IssuingCardholderSpendingLimitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "categories" => b.categories = FromValueOpt::from_value(v),
-                    "interval" => b.interval = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(IssuingCardholderSpendingLimit { amount, categories, interval });
+            Ok(())
         }
     }
 };
@@ -1160,21 +1121,19 @@ impl serde::Serialize for IssuingCardholderSpendingLimitCategories {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingCardholderSpendingLimitCategories {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingCardholderSpendingLimitCategories {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingCardholderSpendingLimitCategories> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingCardholderSpendingLimitCategories> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingCardholderSpendingLimitCategories::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingCardholderSpendingLimitCategories);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderSpendingLimitCategories {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1260,21 +1219,19 @@ impl serde::Serialize for IssuingCardholderSpendingLimitInterval {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingCardholderSpendingLimitInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingCardholderSpendingLimitInterval {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingCardholderSpendingLimitInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingCardholderSpendingLimitInterval> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingCardholderSpendingLimitInterval::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingCardholderSpendingLimitInterval);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderSpendingLimitInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

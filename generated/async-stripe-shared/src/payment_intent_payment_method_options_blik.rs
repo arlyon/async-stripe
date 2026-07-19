@@ -27,16 +27,14 @@ pub struct PaymentIntentPaymentMethodOptionsBlikBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,60 +53,27 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentPaymentMethodOptionsBlikBuilder::deser_default(),
+                builder: PaymentIntentPaymentMethodOptionsBlikBuilder {
+                    setup_future_usage: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentPaymentMethodOptionsBlikBuilder {
-        type Out = PaymentIntentPaymentMethodOptionsBlik;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { setup_future_usage: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(setup_future_usage),) = (self.setup_future_usage.take(),) else {
-                return None;
-            };
-            Some(Self::Out { setup_future_usage })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "setup_future_usage" => Deserialize::begin(&mut self.builder.setup_future_usage),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentPaymentMethodOptionsBlik {
-        type Builder = PaymentIntentPaymentMethodOptionsBlikBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentPaymentMethodOptionsBlik {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(setup_future_usage),) = (self.builder.setup_future_usage.take(),) else {
+                return Ok(());
             };
-            let mut b = PaymentIntentPaymentMethodOptionsBlikBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentIntentPaymentMethodOptionsBlik { setup_future_usage });
+            Ok(())
         }
     }
 };
@@ -182,16 +147,16 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage 
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage::from_str(s).expect("infallible"),
@@ -199,8 +164,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

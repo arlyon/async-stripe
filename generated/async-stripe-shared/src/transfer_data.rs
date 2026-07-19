@@ -27,16 +27,14 @@ pub struct TransferDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,62 +53,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TransferDataBuilder::deser_default(),
+                builder: TransferDataBuilder {
+                    amount: Deserialize::default(),
+                    destination: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TransferDataBuilder {
-        type Out = TransferData;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "destination" => Deserialize::begin(&mut self.destination),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { amount: Deserialize::default(), destination: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(destination)) = (self.amount, self.destination.take()) else {
-                return None;
-            };
-            Some(Self::Out { amount, destination })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "destination" => Deserialize::begin(&mut self.builder.destination),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TransferData {
-        type Builder = TransferDataBuilder;
-    }
-
-    impl FromValueOpt for TransferData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount), Some(destination)) =
+                (self.builder.amount, self.builder.destination.take())
+            else {
+                return Ok(());
             };
-            let mut b = TransferDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "destination" => b.destination = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TransferData { amount, destination });
+            Ok(())
         }
     }
 };

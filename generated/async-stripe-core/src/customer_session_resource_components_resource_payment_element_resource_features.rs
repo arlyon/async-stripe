@@ -55,16 +55,14 @@ payment_method_save_usage: Option<Option<CustomerSessionResourceComponentsResour
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -83,46 +81,44 @@ const _: () = {
     impl Visitor for Place<CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
-            out: &mut self.out,
-            builder: CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesBuilder::deser_default(),
-        }))
+                out: &mut self.out,
+                builder:
+                    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesBuilder {
+                        payment_method_allow_redisplay_filters: Deserialize::default(),
+                        payment_method_redisplay: Deserialize::default(),
+                        payment_method_redisplay_limit: Deserialize::default(),
+                        payment_method_remove: Deserialize::default(),
+                        payment_method_save: Deserialize::default(),
+                        payment_method_save_usage: Deserialize::default(),
+                    },
+            }))
         }
     }
 
-    impl MapBuilder for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesBuilder {
-        type Out = CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "payment_method_allow_redisplay_filters" => {
-                    Deserialize::begin(&mut self.payment_method_allow_redisplay_filters)
+                    Deserialize::begin(&mut self.builder.payment_method_allow_redisplay_filters)
                 }
                 "payment_method_redisplay" => {
-                    Deserialize::begin(&mut self.payment_method_redisplay)
+                    Deserialize::begin(&mut self.builder.payment_method_redisplay)
                 }
                 "payment_method_redisplay_limit" => {
-                    Deserialize::begin(&mut self.payment_method_redisplay_limit)
+                    Deserialize::begin(&mut self.builder.payment_method_redisplay_limit)
                 }
-                "payment_method_remove" => Deserialize::begin(&mut self.payment_method_remove),
-                "payment_method_save" => Deserialize::begin(&mut self.payment_method_save),
+                "payment_method_remove" => {
+                    Deserialize::begin(&mut self.builder.payment_method_remove)
+                }
+                "payment_method_save" => Deserialize::begin(&mut self.builder.payment_method_save),
                 "payment_method_save_usage" => {
-                    Deserialize::begin(&mut self.payment_method_save_usage)
+                    Deserialize::begin(&mut self.builder.payment_method_save_usage)
                 }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                payment_method_allow_redisplay_filters: Deserialize::default(),
-                payment_method_redisplay: Deserialize::default(),
-                payment_method_redisplay_limit: Deserialize::default(),
-                payment_method_remove: Deserialize::default(),
-                payment_method_save: Deserialize::default(),
-                payment_method_save_usage: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(payment_method_allow_redisplay_filters),
                 Some(payment_method_redisplay),
@@ -131,71 +127,26 @@ const _: () = {
                 Some(payment_method_save),
                 Some(payment_method_save_usage),
             ) = (
-                self.payment_method_allow_redisplay_filters.take(),
-                self.payment_method_redisplay.take(),
-                self.payment_method_redisplay_limit,
-                self.payment_method_remove.take(),
-                self.payment_method_save.take(),
-                self.payment_method_save_usage.take(),
+                self.builder.payment_method_allow_redisplay_filters.take(),
+                self.builder.payment_method_redisplay.take(),
+                self.builder.payment_method_redisplay_limit,
+                self.builder.payment_method_remove.take(),
+                self.builder.payment_method_save.take(),
+                self.builder.payment_method_save_usage.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
-                payment_method_allow_redisplay_filters,
-                payment_method_redisplay,
-                payment_method_redisplay_limit,
-                payment_method_remove,
-                payment_method_save,
-                payment_method_save_usage,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out =
+                Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures {
+                    payment_method_allow_redisplay_filters,
+                    payment_method_redisplay,
+                    payment_method_redisplay_limit,
+                    payment_method_remove,
+                    payment_method_save,
+                    payment_method_save_usage,
+                });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures {
-        type Builder =
-            CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesBuilder;
-    }
-
-    impl FromValueOpt for CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "payment_method_allow_redisplay_filters" => {
-                        b.payment_method_allow_redisplay_filters = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_redisplay" => {
-                        b.payment_method_redisplay = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_redisplay_limit" => {
-                        b.payment_method_redisplay_limit = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_remove" => {
-                        b.payment_method_remove = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_save" => b.payment_method_save = FromValueOpt::from_value(v),
-                    "payment_method_save_usage" => {
-                        b.payment_method_save_usage = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -263,21 +214,19 @@ impl serde::Serialize for CustomerSessionResourceComponentsResourcePaymentElemen
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -344,23 +293,19 @@ impl serde::Serialize for CustomerSessionResourceComponentsResourcePaymentElemen
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -449,29 +394,25 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
+impl stripe_miniserde::Deserialize
     for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<
         CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove,
     >
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
@@ -561,29 +502,25 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
+impl stripe_miniserde::Deserialize
     for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<
         CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave,
     >
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
@@ -653,23 +590,19 @@ impl serde::Serialize for CustomerSessionResourceComponentsResourcePaymentElemen
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

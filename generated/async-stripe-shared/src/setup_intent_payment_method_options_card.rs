@@ -32,16 +32,14 @@ pub struct SetupIntentPaymentMethodOptionsCardBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,74 +58,41 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SetupIntentPaymentMethodOptionsCardBuilder::deser_default(),
+                builder: SetupIntentPaymentMethodOptionsCardBuilder {
+                    mandate_options: Deserialize::default(),
+                    network: Deserialize::default(),
+                    request_three_d_secure: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SetupIntentPaymentMethodOptionsCardBuilder {
-        type Out = SetupIntentPaymentMethodOptionsCard;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "network" => Deserialize::begin(&mut self.network),
-                "request_three_d_secure" => Deserialize::begin(&mut self.request_three_d_secure),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                mandate_options: Deserialize::default(),
-                network: Deserialize::default(),
-                request_three_d_secure: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options), Some(network), Some(request_three_d_secure)) = (
-                self.mandate_options.take(),
-                self.network.take(),
-                self.request_three_d_secure.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { mandate_options, network, request_three_d_secure })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "mandate_options" => Deserialize::begin(&mut self.builder.mandate_options),
+                "network" => Deserialize::begin(&mut self.builder.network),
+                "request_three_d_secure" => {
+                    Deserialize::begin(&mut self.builder.request_three_d_secure)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SetupIntentPaymentMethodOptionsCard {
-        type Builder = SetupIntentPaymentMethodOptionsCardBuilder;
-    }
-
-    impl FromValueOpt for SetupIntentPaymentMethodOptionsCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(mandate_options), Some(network), Some(request_three_d_secure)) = (
+                self.builder.mandate_options.take(),
+                self.builder.network.take(),
+                self.builder.request_three_d_secure.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = SetupIntentPaymentMethodOptionsCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "request_three_d_secure" => {
-                        b.request_three_d_secure = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SetupIntentPaymentMethodOptionsCard {
+                mandate_options,
+                network,
+                request_three_d_secure,
+            });
+            Ok(())
         }
     }
 };
@@ -233,22 +198,20 @@ impl serde::Serialize for SetupIntentPaymentMethodOptionsCardNetwork {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SetupIntentPaymentMethodOptionsCardNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SetupIntentPaymentMethodOptionsCardNetwork {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SetupIntentPaymentMethodOptionsCardNetwork> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SetupIntentPaymentMethodOptionsCardNetwork> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(SetupIntentPaymentMethodOptionsCardNetwork::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SetupIntentPaymentMethodOptionsCardNetwork);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -329,16 +292,16 @@ impl serde::Serialize for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             SetupIntentPaymentMethodOptionsCardRequestThreeDSecure::from_str(s)
@@ -347,8 +310,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SetupIntentPaymentMethodOptionsCardRequestThreeDSecure);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

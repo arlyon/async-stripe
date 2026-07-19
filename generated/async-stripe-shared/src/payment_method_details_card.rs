@@ -110,16 +110,14 @@ wallet: Option<Option<stripe_shared::PaymentMethodDetailsCardWallet>>,
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -138,81 +136,80 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsCardBuilder::deser_default(),
+                builder: PaymentMethodDetailsCardBuilder {
+                    amount_authorized: Deserialize::default(),
+                    authorization_code: Deserialize::default(),
+                    brand: Deserialize::default(),
+                    capture_before: Deserialize::default(),
+                    checks: Deserialize::default(),
+                    country: Deserialize::default(),
+                    description: Deserialize::default(),
+                    exp_month: Deserialize::default(),
+                    exp_year: Deserialize::default(),
+                    extended_authorization: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    funding: Deserialize::default(),
+                    iin: Deserialize::default(),
+                    incremental_authorization: Deserialize::default(),
+                    installments: Deserialize::default(),
+                    issuer: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    mandate: Deserialize::default(),
+                    moto: Deserialize::default(),
+                    multicapture: Deserialize::default(),
+                    network: Deserialize::default(),
+                    network_token: Deserialize::default(),
+                    network_transaction_id: Deserialize::default(),
+                    overcapture: Deserialize::default(),
+                    regulated_status: Deserialize::default(),
+                    three_d_secure: Deserialize::default(),
+                    wallet: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodDetailsCardBuilder {
-        type Out = PaymentMethodDetailsCard;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_authorized" => Deserialize::begin(&mut self.amount_authorized),
-                "authorization_code" => Deserialize::begin(&mut self.authorization_code),
-                "brand" => Deserialize::begin(&mut self.brand),
-                "capture_before" => Deserialize::begin(&mut self.capture_before),
-                "checks" => Deserialize::begin(&mut self.checks),
-                "country" => Deserialize::begin(&mut self.country),
-                "description" => Deserialize::begin(&mut self.description),
-                "exp_month" => Deserialize::begin(&mut self.exp_month),
-                "exp_year" => Deserialize::begin(&mut self.exp_year),
-                "extended_authorization" => Deserialize::begin(&mut self.extended_authorization),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "funding" => Deserialize::begin(&mut self.funding),
-                "iin" => Deserialize::begin(&mut self.iin),
-                "incremental_authorization" => {
-                    Deserialize::begin(&mut self.incremental_authorization)
+                "amount_authorized" => Deserialize::begin(&mut self.builder.amount_authorized),
+                "authorization_code" => Deserialize::begin(&mut self.builder.authorization_code),
+                "brand" => Deserialize::begin(&mut self.builder.brand),
+                "capture_before" => Deserialize::begin(&mut self.builder.capture_before),
+                "checks" => Deserialize::begin(&mut self.builder.checks),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "exp_month" => Deserialize::begin(&mut self.builder.exp_month),
+                "exp_year" => Deserialize::begin(&mut self.builder.exp_year),
+                "extended_authorization" => {
+                    Deserialize::begin(&mut self.builder.extended_authorization)
                 }
-                "installments" => Deserialize::begin(&mut self.installments),
-                "issuer" => Deserialize::begin(&mut self.issuer),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "mandate" => Deserialize::begin(&mut self.mandate),
-                "moto" => Deserialize::begin(&mut self.moto),
-                "multicapture" => Deserialize::begin(&mut self.multicapture),
-                "network" => Deserialize::begin(&mut self.network),
-                "network_token" => Deserialize::begin(&mut self.network_token),
-                "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
-                "overcapture" => Deserialize::begin(&mut self.overcapture),
-                "regulated_status" => Deserialize::begin(&mut self.regulated_status),
-                "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
-                "wallet" => Deserialize::begin(&mut self.wallet),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "funding" => Deserialize::begin(&mut self.builder.funding),
+                "iin" => Deserialize::begin(&mut self.builder.iin),
+                "incremental_authorization" => {
+                    Deserialize::begin(&mut self.builder.incremental_authorization)
+                }
+                "installments" => Deserialize::begin(&mut self.builder.installments),
+                "issuer" => Deserialize::begin(&mut self.builder.issuer),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "mandate" => Deserialize::begin(&mut self.builder.mandate),
+                "moto" => Deserialize::begin(&mut self.builder.moto),
+                "multicapture" => Deserialize::begin(&mut self.builder.multicapture),
+                "network" => Deserialize::begin(&mut self.builder.network),
+                "network_token" => Deserialize::begin(&mut self.builder.network_token),
+                "network_transaction_id" => {
+                    Deserialize::begin(&mut self.builder.network_transaction_id)
+                }
+                "overcapture" => Deserialize::begin(&mut self.builder.overcapture),
+                "regulated_status" => Deserialize::begin(&mut self.builder.regulated_status),
+                "three_d_secure" => Deserialize::begin(&mut self.builder.three_d_secure),
+                "wallet" => Deserialize::begin(&mut self.builder.wallet),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount_authorized: Deserialize::default(),
-                authorization_code: Deserialize::default(),
-                brand: Deserialize::default(),
-                capture_before: Deserialize::default(),
-                checks: Deserialize::default(),
-                country: Deserialize::default(),
-                description: Deserialize::default(),
-                exp_month: Deserialize::default(),
-                exp_year: Deserialize::default(),
-                extended_authorization: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                funding: Deserialize::default(),
-                iin: Deserialize::default(),
-                incremental_authorization: Deserialize::default(),
-                installments: Deserialize::default(),
-                issuer: Deserialize::default(),
-                last4: Deserialize::default(),
-                mandate: Deserialize::default(),
-                moto: Deserialize::default(),
-                multicapture: Deserialize::default(),
-                network: Deserialize::default(),
-                network_token: Deserialize::default(),
-                network_transaction_id: Deserialize::default(),
-                overcapture: Deserialize::default(),
-                regulated_status: Deserialize::default(),
-                three_d_secure: Deserialize::default(),
-                wallet: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount_authorized),
                 Some(authorization_code),
@@ -242,38 +239,38 @@ const _: () = {
                 Some(three_d_secure),
                 Some(wallet),
             ) = (
-                self.amount_authorized,
-                self.authorization_code.take(),
-                self.brand.take(),
-                self.capture_before,
-                self.checks.take(),
-                self.country.take(),
-                self.description.take(),
-                self.exp_month,
-                self.exp_year,
-                self.extended_authorization.take(),
-                self.fingerprint.take(),
-                self.funding.take(),
-                self.iin.take(),
-                self.incremental_authorization.take(),
-                self.installments.take(),
-                self.issuer.take(),
-                self.last4.take(),
-                self.mandate.take(),
-                self.moto,
-                self.multicapture.take(),
-                self.network.take(),
-                self.network_token,
-                self.network_transaction_id.take(),
-                self.overcapture.take(),
-                self.regulated_status.take(),
-                self.three_d_secure.take(),
-                self.wallet.take(),
+                self.builder.amount_authorized,
+                self.builder.authorization_code.take(),
+                self.builder.brand.take(),
+                self.builder.capture_before,
+                self.builder.checks.take(),
+                self.builder.country.take(),
+                self.builder.description.take(),
+                self.builder.exp_month,
+                self.builder.exp_year,
+                self.builder.extended_authorization.take(),
+                self.builder.fingerprint.take(),
+                self.builder.funding.take(),
+                self.builder.iin.take(),
+                self.builder.incremental_authorization.take(),
+                self.builder.installments.take(),
+                self.builder.issuer.take(),
+                self.builder.last4.take(),
+                self.builder.mandate.take(),
+                self.builder.moto,
+                self.builder.multicapture.take(),
+                self.builder.network.take(),
+                self.builder.network_token,
+                self.builder.network_transaction_id.take(),
+                self.builder.overcapture.take(),
+                self.builder.regulated_status.take(),
+                self.builder.three_d_secure.take(),
+                self.builder.wallet.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodDetailsCard {
                 amount_authorized,
                 authorization_code,
                 brand,
@@ -301,70 +298,8 @@ const _: () = {
                 regulated_status,
                 three_d_secure,
                 wallet,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsCard {
-        type Builder = PaymentMethodDetailsCardBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_authorized" => b.amount_authorized = FromValueOpt::from_value(v),
-                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "capture_before" => b.capture_before = FromValueOpt::from_value(v),
-                    "checks" => b.checks = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "extended_authorization" => {
-                        b.extended_authorization = FromValueOpt::from_value(v)
-                    }
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "incremental_authorization" => {
-                        b.incremental_authorization = FromValueOpt::from_value(v)
-                    }
-                    "installments" => b.installments = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "mandate" => b.mandate = FromValueOpt::from_value(v),
-                    "moto" => b.moto = FromValueOpt::from_value(v),
-                    "multicapture" => b.multicapture = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "network_token" => b.network_token = FromValueOpt::from_value(v),
-                    "network_transaction_id" => {
-                        b.network_transaction_id = FromValueOpt::from_value(v)
-                    }
-                    "overcapture" => b.overcapture = FromValueOpt::from_value(v),
-                    "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
-                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
-                    "wallet" => b.wallet = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -433,21 +368,19 @@ impl serde::Serialize for PaymentMethodDetailsCardRegulatedStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodDetailsCardRegulatedStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodDetailsCardRegulatedStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardRegulatedStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardRegulatedStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentMethodDetailsCardRegulatedStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsCardRegulatedStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardRegulatedStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -70,16 +70,14 @@ pub struct ConfirmationTokenBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -98,51 +96,50 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ConfirmationTokenBuilder::deser_default(),
+                builder: ConfirmationTokenBuilder {
+                    created: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    mandate_data: Deserialize::default(),
+                    payment_intent: Deserialize::default(),
+                    payment_method_options: Deserialize::default(),
+                    payment_method_preview: Deserialize::default(),
+                    return_url: Deserialize::default(),
+                    setup_future_usage: Deserialize::default(),
+                    setup_intent: Deserialize::default(),
+                    shipping: Deserialize::default(),
+                    use_stripe_sdk: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ConfirmationTokenBuilder {
-        type Out = ConfirmationToken;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "mandate_data" => Deserialize::begin(&mut self.mandate_data),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
-                "payment_method_preview" => Deserialize::begin(&mut self.payment_method_preview),
-                "return_url" => Deserialize::begin(&mut self.return_url),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-                "setup_intent" => Deserialize::begin(&mut self.setup_intent),
-                "shipping" => Deserialize::begin(&mut self.shipping),
-                "use_stripe_sdk" => Deserialize::begin(&mut self.use_stripe_sdk),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "mandate_data" => Deserialize::begin(&mut self.builder.mandate_data),
+                "payment_intent" => Deserialize::begin(&mut self.builder.payment_intent),
+                "payment_method_options" => {
+                    Deserialize::begin(&mut self.builder.payment_method_options)
+                }
+                "payment_method_preview" => {
+                    Deserialize::begin(&mut self.builder.payment_method_preview)
+                }
+                "return_url" => Deserialize::begin(&mut self.builder.return_url),
+                "setup_future_usage" => Deserialize::begin(&mut self.builder.setup_future_usage),
+                "setup_intent" => Deserialize::begin(&mut self.builder.setup_intent),
+                "shipping" => Deserialize::begin(&mut self.builder.shipping),
+                "use_stripe_sdk" => Deserialize::begin(&mut self.builder.use_stripe_sdk),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                mandate_data: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                payment_method_options: Deserialize::default(),
-                payment_method_preview: Deserialize::default(),
-                return_url: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-                setup_intent: Deserialize::default(),
-                shipping: Deserialize::default(),
-                use_stripe_sdk: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(created),
                 Some(expires_at),
@@ -158,24 +155,24 @@ const _: () = {
                 Some(shipping),
                 Some(use_stripe_sdk),
             ) = (
-                self.created,
-                self.expires_at,
-                self.id.take(),
-                self.livemode,
-                self.mandate_data.take(),
-                self.payment_intent.take(),
-                self.payment_method_options.take(),
-                self.payment_method_preview.take(),
-                self.return_url.take(),
-                self.setup_future_usage.take(),
-                self.setup_intent.take(),
-                self.shipping.take(),
-                self.use_stripe_sdk,
+                self.builder.created,
+                self.builder.expires_at,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.mandate_data.take(),
+                self.builder.payment_intent.take(),
+                self.builder.payment_method_options.take(),
+                self.builder.payment_method_preview.take(),
+                self.builder.return_url.take(),
+                self.builder.setup_future_usage.take(),
+                self.builder.setup_intent.take(),
+                self.builder.shipping.take(),
+                self.builder.use_stripe_sdk,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ConfirmationToken {
                 created,
                 expires_at,
                 id,
@@ -189,54 +186,8 @@ const _: () = {
                 setup_intent,
                 shipping,
                 use_stripe_sdk,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ConfirmationToken {
-        type Builder = ConfirmationTokenBuilder;
-    }
-
-    impl FromValueOpt for ConfirmationToken {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ConfirmationTokenBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "mandate_data" => b.mandate_data = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_preview" => {
-                        b.payment_method_preview = FromValueOpt::from_value(v)
-                    }
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    "use_stripe_sdk" => b.use_stripe_sdk = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -337,21 +288,19 @@ impl serde::Serialize for ConfirmationTokenSetupFutureUsage {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ConfirmationTokenSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ConfirmationTokenSetupFutureUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ConfirmationTokenSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ConfirmationTokenSetupFutureUsage> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ConfirmationTokenSetupFutureUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ConfirmationTokenSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ConfirmationTokenSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

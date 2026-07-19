@@ -51,16 +51,14 @@ pub struct PaymentMethodOptionsCardMandateOptionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -79,43 +77,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodOptionsCardMandateOptionsBuilder::deser_default(),
+                builder: PaymentMethodOptionsCardMandateOptionsBuilder {
+                    amount: Deserialize::default(),
+                    amount_type: Deserialize::default(),
+                    description: Deserialize::default(),
+                    end_date: Deserialize::default(),
+                    interval: Deserialize::default(),
+                    interval_count: Deserialize::default(),
+                    reference: Deserialize::default(),
+                    start_date: Deserialize::default(),
+                    supported_types: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodOptionsCardMandateOptionsBuilder {
-        type Out = PaymentMethodOptionsCardMandateOptions;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_type" => Deserialize::begin(&mut self.amount_type),
-                "description" => Deserialize::begin(&mut self.description),
-                "end_date" => Deserialize::begin(&mut self.end_date),
-                "interval" => Deserialize::begin(&mut self.interval),
-                "interval_count" => Deserialize::begin(&mut self.interval_count),
-                "reference" => Deserialize::begin(&mut self.reference),
-                "start_date" => Deserialize::begin(&mut self.start_date),
-                "supported_types" => Deserialize::begin(&mut self.supported_types),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_type" => Deserialize::begin(&mut self.builder.amount_type),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "end_date" => Deserialize::begin(&mut self.builder.end_date),
+                "interval" => Deserialize::begin(&mut self.builder.interval),
+                "interval_count" => Deserialize::begin(&mut self.builder.interval_count),
+                "reference" => Deserialize::begin(&mut self.builder.reference),
+                "start_date" => Deserialize::begin(&mut self.builder.start_date),
+                "supported_types" => Deserialize::begin(&mut self.builder.supported_types),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                amount_type: Deserialize::default(),
-                description: Deserialize::default(),
-                end_date: Deserialize::default(),
-                interval: Deserialize::default(),
-                interval_count: Deserialize::default(),
-                reference: Deserialize::default(),
-                start_date: Deserialize::default(),
-                supported_types: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(amount_type),
@@ -127,20 +120,20 @@ const _: () = {
                 Some(start_date),
                 Some(supported_types),
             ) = (
-                self.amount,
-                self.amount_type.take(),
-                self.description.take(),
-                self.end_date,
-                self.interval.take(),
-                self.interval_count,
-                self.reference.take(),
-                self.start_date,
-                self.supported_types.take(),
+                self.builder.amount,
+                self.builder.amount_type.take(),
+                self.builder.description.take(),
+                self.builder.end_date,
+                self.builder.interval.take(),
+                self.builder.interval_count,
+                self.builder.reference.take(),
+                self.builder.start_date,
+                self.builder.supported_types.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodOptionsCardMandateOptions {
                 amount,
                 amount_type,
                 description,
@@ -150,46 +143,8 @@ const _: () = {
                 reference,
                 start_date,
                 supported_types,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodOptionsCardMandateOptions {
-        type Builder = PaymentMethodOptionsCardMandateOptionsBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodOptionsCardMandateOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodOptionsCardMandateOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_type" => b.amount_type = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "end_date" => b.end_date = FromValueOpt::from_value(v),
-                    "interval" => b.interval = FromValueOpt::from_value(v),
-                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "start_date" => b.start_date = FromValueOpt::from_value(v),
-                    "supported_types" => b.supported_types = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -261,14 +216,14 @@ impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsAmountType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodOptionsCardMandateOptionsAmountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodOptionsCardMandateOptionsAmountType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOptionsAmountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOptionsAmountType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentMethodOptionsCardMandateOptionsAmountType::from_str(s).expect("infallible"),
@@ -276,8 +231,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOpti
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsCardMandateOptionsAmountType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -361,22 +314,20 @@ impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsInterval {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodOptionsCardMandateOptionsInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodOptionsCardMandateOptionsInterval {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOptionsInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOptionsInterval> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(PaymentMethodOptionsCardMandateOptionsInterval::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsCardMandateOptionsInterval);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -448,14 +399,14 @@ impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOptionsSupportedTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOptionsSupportedTypes> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentMethodOptionsCardMandateOptionsSupportedTypes::from_str(s).expect("infallible"),
@@ -463,8 +414,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOpti
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsCardMandateOptionsSupportedTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

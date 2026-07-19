@@ -57,16 +57,14 @@ pub struct ReservePlanBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -85,49 +83,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ReservePlanBuilder::deser_default(),
+                builder: ReservePlanBuilder {
+                    created: Deserialize::default(),
+                    created_by: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    disabled_at: Deserialize::default(),
+                    fixed_release: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    percent: Deserialize::default(),
+                    rolling_release: Deserialize::default(),
+                    status: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ReservePlanBuilder {
-        type Out = ReservePlan;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "created_by" => Deserialize::begin(&mut self.created_by),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "disabled_at" => Deserialize::begin(&mut self.disabled_at),
-                "fixed_release" => Deserialize::begin(&mut self.fixed_release),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "percent" => Deserialize::begin(&mut self.percent),
-                "rolling_release" => Deserialize::begin(&mut self.rolling_release),
-                "status" => Deserialize::begin(&mut self.status),
-                "type" => Deserialize::begin(&mut self.type_),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "created_by" => Deserialize::begin(&mut self.builder.created_by),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "disabled_at" => Deserialize::begin(&mut self.builder.disabled_at),
+                "fixed_release" => Deserialize::begin(&mut self.builder.fixed_release),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "percent" => Deserialize::begin(&mut self.builder.percent),
+                "rolling_release" => Deserialize::begin(&mut self.builder.rolling_release),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                created_by: Deserialize::default(),
-                currency: Deserialize::default(),
-                disabled_at: Deserialize::default(),
-                fixed_release: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                percent: Deserialize::default(),
-                rolling_release: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(created),
                 Some(created_by),
@@ -142,23 +135,23 @@ const _: () = {
                 Some(status),
                 Some(type_),
             ) = (
-                self.created,
-                self.created_by.take(),
-                self.currency.take(),
-                self.disabled_at,
-                self.fixed_release,
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.percent,
-                self.rolling_release,
-                self.status.take(),
-                self.type_.take(),
+                self.builder.created,
+                self.builder.created_by.take(),
+                self.builder.currency.take(),
+                self.builder.disabled_at,
+                self.builder.fixed_release,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.percent,
+                self.builder.rolling_release,
+                self.builder.status.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ReservePlan {
                 created,
                 created_by,
                 currency,
@@ -171,49 +164,8 @@ const _: () = {
                 rolling_release,
                 status,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ReservePlan {
-        type Builder = ReservePlanBuilder;
-    }
-
-    impl FromValueOpt for ReservePlan {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReservePlanBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "created_by" => b.created_by = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "disabled_at" => b.disabled_at = FromValueOpt::from_value(v),
-                    "fixed_release" => b.fixed_release = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "percent" => b.percent = FromValueOpt::from_value(v),
-                    "rolling_release" => b.rolling_release = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -300,21 +252,19 @@ impl serde::Serialize for ReservePlanCreatedBy {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ReservePlanCreatedBy {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ReservePlanCreatedBy {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ReservePlanCreatedBy> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ReservePlanCreatedBy> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ReservePlanCreatedBy::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ReservePlanCreatedBy);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReservePlanCreatedBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -387,21 +337,19 @@ impl serde::Serialize for ReservePlanStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ReservePlanStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ReservePlanStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ReservePlanStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ReservePlanStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ReservePlanStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ReservePlanStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReservePlanStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -471,21 +419,19 @@ impl serde::Serialize for ReservePlanType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ReservePlanType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ReservePlanType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ReservePlanType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ReservePlanType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ReservePlanType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ReservePlanType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReservePlanType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

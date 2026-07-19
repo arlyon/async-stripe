@@ -28,16 +28,14 @@ pub struct ApplePayDomainBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,73 +54,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ApplePayDomainBuilder::deser_default(),
+                builder: ApplePayDomainBuilder {
+                    created: Deserialize::default(),
+                    domain_name: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ApplePayDomainBuilder {
-        type Out = ApplePayDomain;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "domain_name" => Deserialize::begin(&mut self.domain_name),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                domain_name: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(created), Some(domain_name), Some(id), Some(livemode)) =
-                (self.created, self.domain_name.take(), self.id.take(), self.livemode)
-            else {
-                return None;
-            };
-            Some(Self::Out { created, domain_name, id, livemode })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "domain_name" => Deserialize::begin(&mut self.builder.domain_name),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ApplePayDomain {
-        type Builder = ApplePayDomainBuilder;
-    }
-
-    impl FromValueOpt for ApplePayDomain {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(created), Some(domain_name), Some(id), Some(livemode)) = (
+                self.builder.created,
+                self.builder.domain_name.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+            ) else {
+                return Ok(());
             };
-            let mut b = ApplePayDomainBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "domain_name" => b.domain_name = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(ApplePayDomain { created, domain_name, id, livemode });
+            Ok(())
         }
     }
 };

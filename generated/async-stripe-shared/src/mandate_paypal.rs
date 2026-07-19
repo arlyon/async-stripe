@@ -24,16 +24,14 @@ pub struct MandatePaypalBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,64 +50,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: MandatePaypalBuilder::deser_default(),
+                builder: MandatePaypalBuilder {
+                    billing_agreement_id: Deserialize::default(),
+                    payer_id: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for MandatePaypalBuilder {
-        type Out = MandatePaypal;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "billing_agreement_id" => Deserialize::begin(&mut self.billing_agreement_id),
-                "payer_id" => Deserialize::begin(&mut self.payer_id),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { billing_agreement_id: Deserialize::default(), payer_id: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(billing_agreement_id), Some(payer_id)) =
-                (self.billing_agreement_id.take(), self.payer_id.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { billing_agreement_id, payer_id })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "billing_agreement_id" => {
+                    Deserialize::begin(&mut self.builder.billing_agreement_id)
+                }
+                "payer_id" => Deserialize::begin(&mut self.builder.payer_id),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for MandatePaypal {
-        type Builder = MandatePaypalBuilder;
-    }
-
-    impl FromValueOpt for MandatePaypal {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(billing_agreement_id), Some(payer_id)) =
+                (self.builder.billing_agreement_id.take(), self.builder.payer_id.take())
+            else {
+                return Ok(());
             };
-            let mut b = MandatePaypalBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_agreement_id" => b.billing_agreement_id = FromValueOpt::from_value(v),
-                    "payer_id" => b.payer_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(MandatePaypal { billing_agreement_id, payer_id });
+            Ok(())
         }
     }
 };

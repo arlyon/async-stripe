@@ -25,16 +25,14 @@ pub struct PaymentMethodDomainResourcePaymentMethodStatusBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,64 +51,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDomainResourcePaymentMethodStatusBuilder::deser_default(),
+                builder: PaymentMethodDomainResourcePaymentMethodStatusBuilder {
+                    status: Deserialize::default(),
+                    status_details: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDomainResourcePaymentMethodStatusBuilder {
-        type Out = PaymentMethodDomainResourcePaymentMethodStatus;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "status" => Deserialize::begin(&mut self.status),
-                "status_details" => Deserialize::begin(&mut self.status_details),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { status: Deserialize::default(), status_details: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(status), Some(status_details)) =
-                (self.status.take(), self.status_details.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { status, status_details })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "status_details" => Deserialize::begin(&mut self.builder.status_details),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDomainResourcePaymentMethodStatus {
-        type Builder = PaymentMethodDomainResourcePaymentMethodStatusBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDomainResourcePaymentMethodStatus {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(status), Some(status_details)) =
+                (self.builder.status.take(), self.builder.status_details.take())
+            else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDomainResourcePaymentMethodStatusBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_details" => b.status_details = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PaymentMethodDomainResourcePaymentMethodStatus { status, status_details });
+            Ok(())
         }
     }
 };
@@ -180,14 +146,14 @@ impl serde::Serialize for PaymentMethodDomainResourcePaymentMethodStatusStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodDomainResourcePaymentMethodStatusStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodDomainResourcePaymentMethodStatusStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDomainResourcePaymentMethodStatusStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodDomainResourcePaymentMethodStatusStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentMethodDomainResourcePaymentMethodStatusStatus::from_str(s).expect("infallible"),
@@ -195,8 +161,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodDomainResourcePaymentM
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDomainResourcePaymentMethodStatusStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDomainResourcePaymentMethodStatusStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

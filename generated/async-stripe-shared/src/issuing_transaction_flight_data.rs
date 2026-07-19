@@ -32,16 +32,14 @@ pub struct IssuingTransactionFlightDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,35 +58,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingTransactionFlightDataBuilder::deser_default(),
+                builder: IssuingTransactionFlightDataBuilder {
+                    departure_at: Deserialize::default(),
+                    passenger_name: Deserialize::default(),
+                    refundable: Deserialize::default(),
+                    segments: Deserialize::default(),
+                    travel_agency: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingTransactionFlightDataBuilder {
-        type Out = IssuingTransactionFlightData;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "departure_at" => Deserialize::begin(&mut self.departure_at),
-                "passenger_name" => Deserialize::begin(&mut self.passenger_name),
-                "refundable" => Deserialize::begin(&mut self.refundable),
-                "segments" => Deserialize::begin(&mut self.segments),
-                "travel_agency" => Deserialize::begin(&mut self.travel_agency),
+                "departure_at" => Deserialize::begin(&mut self.builder.departure_at),
+                "passenger_name" => Deserialize::begin(&mut self.builder.passenger_name),
+                "refundable" => Deserialize::begin(&mut self.builder.refundable),
+                "segments" => Deserialize::begin(&mut self.builder.segments),
+                "travel_agency" => Deserialize::begin(&mut self.builder.travel_agency),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                departure_at: Deserialize::default(),
-                passenger_name: Deserialize::default(),
-                refundable: Deserialize::default(),
-                segments: Deserialize::default(),
-                travel_agency: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(departure_at),
                 Some(passenger_name),
@@ -96,51 +89,23 @@ const _: () = {
                 Some(segments),
                 Some(travel_agency),
             ) = (
-                self.departure_at,
-                self.passenger_name.take(),
-                self.refundable,
-                self.segments.take(),
-                self.travel_agency.take(),
+                self.builder.departure_at,
+                self.builder.passenger_name.take(),
+                self.builder.refundable,
+                self.builder.segments.take(),
+                self.builder.travel_agency.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { departure_at, passenger_name, refundable, segments, travel_agency })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(IssuingTransactionFlightData {
+                departure_at,
+                passenger_name,
+                refundable,
+                segments,
+                travel_agency,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingTransactionFlightData {
-        type Builder = IssuingTransactionFlightDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionFlightData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionFlightDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "departure_at" => b.departure_at = FromValueOpt::from_value(v),
-                    "passenger_name" => b.passenger_name = FromValueOpt::from_value(v),
-                    "refundable" => b.refundable = FromValueOpt::from_value(v),
-                    "segments" => b.segments = FromValueOpt::from_value(v),
-                    "travel_agency" => b.travel_agency = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

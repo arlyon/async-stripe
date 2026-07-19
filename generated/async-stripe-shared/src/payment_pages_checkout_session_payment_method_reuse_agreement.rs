@@ -24,16 +24,14 @@ pub struct PaymentPagesCheckoutSessionPaymentMethodReuseAgreementBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,62 +50,27 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    PaymentPagesCheckoutSessionPaymentMethodReuseAgreementBuilder::deser_default(),
+                builder: PaymentPagesCheckoutSessionPaymentMethodReuseAgreementBuilder {
+                    position: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementBuilder {
-        type Out = PaymentPagesCheckoutSessionPaymentMethodReuseAgreement;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "position" => Deserialize::begin(&mut self.position),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { position: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(position),) = (self.position.take(),) else {
-                return None;
-            };
-            Some(Self::Out { position })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "position" => Deserialize::begin(&mut self.builder.position),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentPagesCheckoutSessionPaymentMethodReuseAgreement {
-        type Builder = PaymentPagesCheckoutSessionPaymentMethodReuseAgreementBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionPaymentMethodReuseAgreement {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(position),) = (self.builder.position.take(),) else {
+                return Ok(());
             };
-            let mut b =
-                PaymentPagesCheckoutSessionPaymentMethodReuseAgreementBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "position" => b.position = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentPagesCheckoutSessionPaymentMethodReuseAgreement { position });
+            Ok(())
         }
     }
 };
@@ -180,16 +143,16 @@ impl serde::Serialize for PaymentPagesCheckoutSessionPaymentMethodReuseAgreement
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition::from_str(s)
@@ -198,10 +161,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition

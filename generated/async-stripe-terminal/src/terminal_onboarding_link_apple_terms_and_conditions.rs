@@ -24,16 +24,14 @@ pub struct TerminalOnboardingLinkAppleTermsAndConditionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,69 +50,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalOnboardingLinkAppleTermsAndConditionsBuilder::deser_default(),
+                builder: TerminalOnboardingLinkAppleTermsAndConditionsBuilder {
+                    allow_relinking: Deserialize::default(),
+                    merchant_display_name: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TerminalOnboardingLinkAppleTermsAndConditionsBuilder {
-        type Out = TerminalOnboardingLinkAppleTermsAndConditions;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "allow_relinking" => Deserialize::begin(&mut self.allow_relinking),
-                "merchant_display_name" => Deserialize::begin(&mut self.merchant_display_name),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                allow_relinking: Deserialize::default(),
-                merchant_display_name: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(allow_relinking), Some(merchant_display_name)) =
-                (self.allow_relinking, self.merchant_display_name.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { allow_relinking, merchant_display_name })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "allow_relinking" => Deserialize::begin(&mut self.builder.allow_relinking),
+                "merchant_display_name" => {
+                    Deserialize::begin(&mut self.builder.merchant_display_name)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalOnboardingLinkAppleTermsAndConditions {
-        type Builder = TerminalOnboardingLinkAppleTermsAndConditionsBuilder;
-    }
-
-    impl FromValueOpt for TerminalOnboardingLinkAppleTermsAndConditions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(allow_relinking), Some(merchant_display_name)) =
+                (self.builder.allow_relinking, self.builder.merchant_display_name.take())
+            else {
+                return Ok(());
             };
-            let mut b = TerminalOnboardingLinkAppleTermsAndConditionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allow_relinking" => b.allow_relinking = FromValueOpt::from_value(v),
-                    "merchant_display_name" => {
-                        b.merchant_display_name = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TerminalOnboardingLinkAppleTermsAndConditions {
+                allow_relinking,
+                merchant_display_name,
+            });
+            Ok(())
         }
     }
 };

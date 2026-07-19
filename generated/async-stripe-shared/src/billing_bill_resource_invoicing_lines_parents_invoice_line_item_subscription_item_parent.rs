@@ -39,16 +39,14 @@ pub struct BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionIt
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -72,37 +70,29 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParentBuilder::deser_default(),
+            builder: BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParentBuilder { invoice_item: Deserialize::default(),
+proration: Deserialize::default(),
+proration_details: Deserialize::default(),
+subscription: Deserialize::default(),
+subscription_item: Deserialize::default(),
+ },
         }))
         }
     }
 
-    impl MapBuilder
-        for BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParentBuilder
-    {
-        type Out = BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParent;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "invoice_item" => Deserialize::begin(&mut self.invoice_item),
-                "proration" => Deserialize::begin(&mut self.proration),
-                "proration_details" => Deserialize::begin(&mut self.proration_details),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                "subscription_item" => Deserialize::begin(&mut self.subscription_item),
+                "invoice_item" => Deserialize::begin(&mut self.builder.invoice_item),
+                "proration" => Deserialize::begin(&mut self.builder.proration),
+                "proration_details" => Deserialize::begin(&mut self.builder.proration_details),
+                "subscription" => Deserialize::begin(&mut self.builder.subscription),
+                "subscription_item" => Deserialize::begin(&mut self.builder.subscription_item),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                invoice_item: Deserialize::default(),
-                proration: Deserialize::default(),
-                proration_details: Deserialize::default(),
-                subscription: Deserialize::default(),
-                subscription_item: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(invoice_item),
                 Some(proration),
@@ -110,60 +100,25 @@ const _: () = {
                 Some(subscription),
                 Some(subscription_item),
             ) = (
-                self.invoice_item.take(),
-                self.proration,
-                self.proration_details.take(),
-                self.subscription.take(),
-                self.subscription_item.take(),
+                self.builder.invoice_item.take(),
+                self.builder.proration,
+                self.builder.proration_details.take(),
+                self.builder.subscription.take(),
+                self.builder.subscription_item.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
-                invoice_item,
-                proration,
-                proration_details,
-                subscription,
-                subscription_item,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(
+                BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParent {
+                    invoice_item,
+                    proration,
+                    proration_details,
+                    subscription,
+                    subscription_item,
+                },
+            );
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParent {
-        type Builder =
-            BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParentBuilder;
-    }
-
-    impl FromValueOpt
-        for BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParent
-    {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "invoice_item" => b.invoice_item = FromValueOpt::from_value(v),
-                    "proration" => b.proration = FromValueOpt::from_value(v),
-                    "proration_details" => b.proration_details = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

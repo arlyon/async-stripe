@@ -138,16 +138,14 @@ pub struct SourceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -164,100 +162,102 @@ const _: () = {
 
     impl Visitor for Place<Source> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: SourceBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: SourceBuilder {
+                    ach_credit_transfer: Deserialize::default(),
+                    ach_debit: Deserialize::default(),
+                    acss_debit: Deserialize::default(),
+                    alipay: Deserialize::default(),
+                    allow_redisplay: Deserialize::default(),
+                    amount: Deserialize::default(),
+                    au_becs_debit: Deserialize::default(),
+                    bancontact: Deserialize::default(),
+                    card: Deserialize::default(),
+                    card_present: Deserialize::default(),
+                    client_secret: Deserialize::default(),
+                    code_verification: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    eps: Deserialize::default(),
+                    flow: Deserialize::default(),
+                    giropay: Deserialize::default(),
+                    id: Deserialize::default(),
+                    ideal: Deserialize::default(),
+                    klarna: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    multibanco: Deserialize::default(),
+                    owner: Deserialize::default(),
+                    p24: Deserialize::default(),
+                    receiver: Deserialize::default(),
+                    redirect: Deserialize::default(),
+                    sepa_credit_transfer: Deserialize::default(),
+                    sepa_debit: Deserialize::default(),
+                    sofort: Deserialize::default(),
+                    source_order: Deserialize::default(),
+                    statement_descriptor: Deserialize::default(),
+                    status: Deserialize::default(),
+                    three_d_secure: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    usage: Deserialize::default(),
+                    wechat: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for SourceBuilder {
-        type Out = Source;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "ach_credit_transfer" => Deserialize::begin(&mut self.ach_credit_transfer),
-                "ach_debit" => Deserialize::begin(&mut self.ach_debit),
-                "acss_debit" => Deserialize::begin(&mut self.acss_debit),
-                "alipay" => Deserialize::begin(&mut self.alipay),
-                "allow_redisplay" => Deserialize::begin(&mut self.allow_redisplay),
-                "amount" => Deserialize::begin(&mut self.amount),
-                "au_becs_debit" => Deserialize::begin(&mut self.au_becs_debit),
-                "bancontact" => Deserialize::begin(&mut self.bancontact),
-                "card" => Deserialize::begin(&mut self.card),
-                "card_present" => Deserialize::begin(&mut self.card_present),
-                "client_secret" => Deserialize::begin(&mut self.client_secret),
-                "code_verification" => Deserialize::begin(&mut self.code_verification),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "eps" => Deserialize::begin(&mut self.eps),
-                "flow" => Deserialize::begin(&mut self.flow),
-                "giropay" => Deserialize::begin(&mut self.giropay),
-                "id" => Deserialize::begin(&mut self.id),
-                "ideal" => Deserialize::begin(&mut self.ideal),
-                "klarna" => Deserialize::begin(&mut self.klarna),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "multibanco" => Deserialize::begin(&mut self.multibanco),
-                "owner" => Deserialize::begin(&mut self.owner),
-                "p24" => Deserialize::begin(&mut self.p24),
-                "receiver" => Deserialize::begin(&mut self.receiver),
-                "redirect" => Deserialize::begin(&mut self.redirect),
-                "sepa_credit_transfer" => Deserialize::begin(&mut self.sepa_credit_transfer),
-                "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
-                "sofort" => Deserialize::begin(&mut self.sofort),
-                "source_order" => Deserialize::begin(&mut self.source_order),
-                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-                "status" => Deserialize::begin(&mut self.status),
-                "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
-                "type" => Deserialize::begin(&mut self.type_),
-                "usage" => Deserialize::begin(&mut self.usage),
-                "wechat" => Deserialize::begin(&mut self.wechat),
+                "ach_credit_transfer" => Deserialize::begin(&mut self.builder.ach_credit_transfer),
+                "ach_debit" => Deserialize::begin(&mut self.builder.ach_debit),
+                "acss_debit" => Deserialize::begin(&mut self.builder.acss_debit),
+                "alipay" => Deserialize::begin(&mut self.builder.alipay),
+                "allow_redisplay" => Deserialize::begin(&mut self.builder.allow_redisplay),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "au_becs_debit" => Deserialize::begin(&mut self.builder.au_becs_debit),
+                "bancontact" => Deserialize::begin(&mut self.builder.bancontact),
+                "card" => Deserialize::begin(&mut self.builder.card),
+                "card_present" => Deserialize::begin(&mut self.builder.card_present),
+                "client_secret" => Deserialize::begin(&mut self.builder.client_secret),
+                "code_verification" => Deserialize::begin(&mut self.builder.code_verification),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "eps" => Deserialize::begin(&mut self.builder.eps),
+                "flow" => Deserialize::begin(&mut self.builder.flow),
+                "giropay" => Deserialize::begin(&mut self.builder.giropay),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "ideal" => Deserialize::begin(&mut self.builder.ideal),
+                "klarna" => Deserialize::begin(&mut self.builder.klarna),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "multibanco" => Deserialize::begin(&mut self.builder.multibanco),
+                "owner" => Deserialize::begin(&mut self.builder.owner),
+                "p24" => Deserialize::begin(&mut self.builder.p24),
+                "receiver" => Deserialize::begin(&mut self.builder.receiver),
+                "redirect" => Deserialize::begin(&mut self.builder.redirect),
+                "sepa_credit_transfer" => {
+                    Deserialize::begin(&mut self.builder.sepa_credit_transfer)
+                }
+                "sepa_debit" => Deserialize::begin(&mut self.builder.sepa_debit),
+                "sofort" => Deserialize::begin(&mut self.builder.sofort),
+                "source_order" => Deserialize::begin(&mut self.builder.source_order),
+                "statement_descriptor" => {
+                    Deserialize::begin(&mut self.builder.statement_descriptor)
+                }
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "three_d_secure" => Deserialize::begin(&mut self.builder.three_d_secure),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "usage" => Deserialize::begin(&mut self.builder.usage),
+                "wechat" => Deserialize::begin(&mut self.builder.wechat),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                ach_credit_transfer: Deserialize::default(),
-                ach_debit: Deserialize::default(),
-                acss_debit: Deserialize::default(),
-                alipay: Deserialize::default(),
-                allow_redisplay: Deserialize::default(),
-                amount: Deserialize::default(),
-                au_becs_debit: Deserialize::default(),
-                bancontact: Deserialize::default(),
-                card: Deserialize::default(),
-                card_present: Deserialize::default(),
-                client_secret: Deserialize::default(),
-                code_verification: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                eps: Deserialize::default(),
-                flow: Deserialize::default(),
-                giropay: Deserialize::default(),
-                id: Deserialize::default(),
-                ideal: Deserialize::default(),
-                klarna: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                multibanco: Deserialize::default(),
-                owner: Deserialize::default(),
-                p24: Deserialize::default(),
-                receiver: Deserialize::default(),
-                redirect: Deserialize::default(),
-                sepa_credit_transfer: Deserialize::default(),
-                sepa_debit: Deserialize::default(),
-                sofort: Deserialize::default(),
-                source_order: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-                status: Deserialize::default(),
-                three_d_secure: Deserialize::default(),
-                type_: Deserialize::default(),
-                usage: Deserialize::default(),
-                wechat: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(ach_credit_transfer),
                 Some(ach_debit),
@@ -298,49 +298,49 @@ const _: () = {
                 Some(usage),
                 Some(wechat),
             ) = (
-                self.ach_credit_transfer.take(),
-                self.ach_debit.take(),
-                self.acss_debit.take(),
-                self.alipay.take(),
-                self.allow_redisplay.take(),
-                self.amount,
-                self.au_becs_debit.take(),
-                self.bancontact.take(),
-                self.card.take(),
-                self.card_present.take(),
-                self.client_secret.take(),
-                self.code_verification.take(),
-                self.created,
-                self.currency.take(),
-                self.customer.take(),
-                self.eps.take(),
-                self.flow.take(),
-                self.giropay.take(),
-                self.id.take(),
-                self.ideal.take(),
-                self.klarna.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.multibanco.take(),
-                self.owner.take(),
-                self.p24.take(),
-                self.receiver.take(),
-                self.redirect.take(),
-                self.sepa_credit_transfer.take(),
-                self.sepa_debit.take(),
-                self.sofort.take(),
-                self.source_order.take(),
-                self.statement_descriptor.take(),
-                self.status.take(),
-                self.three_d_secure.take(),
-                self.type_.take(),
-                self.usage.take(),
-                self.wechat.take(),
+                self.builder.ach_credit_transfer.take(),
+                self.builder.ach_debit.take(),
+                self.builder.acss_debit.take(),
+                self.builder.alipay.take(),
+                self.builder.allow_redisplay.take(),
+                self.builder.amount,
+                self.builder.au_becs_debit.take(),
+                self.builder.bancontact.take(),
+                self.builder.card.take(),
+                self.builder.card_present.take(),
+                self.builder.client_secret.take(),
+                self.builder.code_verification.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.customer.take(),
+                self.builder.eps.take(),
+                self.builder.flow.take(),
+                self.builder.giropay.take(),
+                self.builder.id.take(),
+                self.builder.ideal.take(),
+                self.builder.klarna.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.multibanco.take(),
+                self.builder.owner.take(),
+                self.builder.p24.take(),
+                self.builder.receiver.take(),
+                self.builder.redirect.take(),
+                self.builder.sepa_credit_transfer.take(),
+                self.builder.sepa_debit.take(),
+                self.builder.sofort.take(),
+                self.builder.source_order.take(),
+                self.builder.statement_descriptor.take(),
+                self.builder.status.take(),
+                self.builder.three_d_secure.take(),
+                self.builder.type_.take(),
+                self.builder.usage.take(),
+                self.builder.wechat.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Source {
                 ach_credit_transfer,
                 ach_debit,
                 acss_debit,
@@ -379,75 +379,8 @@ const _: () = {
                 type_,
                 usage,
                 wechat,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Source {
-        type Builder = SourceBuilder;
-    }
-
-    impl FromValueOpt for Source {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ach_credit_transfer" => b.ach_credit_transfer = FromValueOpt::from_value(v),
-                    "ach_debit" => b.ach_debit = FromValueOpt::from_value(v),
-                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
-                    "alipay" => b.alipay = FromValueOpt::from_value(v),
-                    "allow_redisplay" => b.allow_redisplay = FromValueOpt::from_value(v),
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "au_becs_debit" => b.au_becs_debit = FromValueOpt::from_value(v),
-                    "bancontact" => b.bancontact = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "card_present" => b.card_present = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "code_verification" => b.code_verification = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "eps" => b.eps = FromValueOpt::from_value(v),
-                    "flow" => b.flow = FromValueOpt::from_value(v),
-                    "giropay" => b.giropay = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "ideal" => b.ideal = FromValueOpt::from_value(v),
-                    "klarna" => b.klarna = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "multibanco" => b.multibanco = FromValueOpt::from_value(v),
-                    "owner" => b.owner = FromValueOpt::from_value(v),
-                    "p24" => b.p24 = FromValueOpt::from_value(v),
-                    "receiver" => b.receiver = FromValueOpt::from_value(v),
-                    "redirect" => b.redirect = FromValueOpt::from_value(v),
-                    "sepa_credit_transfer" => b.sepa_credit_transfer = FromValueOpt::from_value(v),
-                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
-                    "sofort" => b.sofort = FromValueOpt::from_value(v),
-                    "source_order" => b.source_order = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "usage" => b.usage = FromValueOpt::from_value(v),
-                    "wechat" => b.wechat = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -565,21 +498,19 @@ impl serde::Serialize for SourceAllowRedisplay {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SourceAllowRedisplay {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SourceAllowRedisplay {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SourceAllowRedisplay> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SourceAllowRedisplay> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(SourceAllowRedisplay::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SourceAllowRedisplay);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SourceAllowRedisplay {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -703,21 +634,19 @@ impl serde::Serialize for SourceType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SourceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SourceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SourceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SourceType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(SourceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SourceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SourceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

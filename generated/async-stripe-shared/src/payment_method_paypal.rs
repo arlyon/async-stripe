@@ -29,16 +29,14 @@ pub struct PaymentMethodPaypalBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,70 +55,35 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodPaypalBuilder::deser_default(),
+                builder: PaymentMethodPaypalBuilder {
+                    country: Deserialize::default(),
+                    payer_email: Deserialize::default(),
+                    payer_id: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodPaypalBuilder {
-        type Out = PaymentMethodPaypal;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "country" => Deserialize::begin(&mut self.country),
-                "payer_email" => Deserialize::begin(&mut self.payer_email),
-                "payer_id" => Deserialize::begin(&mut self.payer_id),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                country: Deserialize::default(),
-                payer_email: Deserialize::default(),
-                payer_id: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(country), Some(payer_email), Some(payer_id)) =
-                (self.country.take(), self.payer_email.take(), self.payer_id.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { country, payer_email, payer_id })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "payer_email" => Deserialize::begin(&mut self.builder.payer_email),
+                "payer_id" => Deserialize::begin(&mut self.builder.payer_id),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodPaypal {
-        type Builder = PaymentMethodPaypalBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodPaypal {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(country), Some(payer_email), Some(payer_id)) = (
+                self.builder.country.take(),
+                self.builder.payer_email.take(),
+                self.builder.payer_id.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodPaypalBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "payer_email" => b.payer_email = FromValueOpt::from_value(v),
-                    "payer_id" => b.payer_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodPaypal { country, payer_email, payer_id });
+            Ok(())
         }
     }
 };

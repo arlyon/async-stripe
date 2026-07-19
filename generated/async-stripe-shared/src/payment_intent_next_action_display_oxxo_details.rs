@@ -26,16 +26,14 @@ pub struct PaymentIntentNextActionDisplayOxxoDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionDisplayOxxoDetailsBuilder::deser_default(),
+                builder: PaymentIntentNextActionDisplayOxxoDetailsBuilder {
+                    expires_after: Deserialize::default(),
+                    hosted_voucher_url: Deserialize::default(),
+                    number: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentNextActionDisplayOxxoDetailsBuilder {
-        type Out = PaymentIntentNextActionDisplayOxxoDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "expires_after" => Deserialize::begin(&mut self.expires_after),
-                "hosted_voucher_url" => Deserialize::begin(&mut self.hosted_voucher_url),
-                "number" => Deserialize::begin(&mut self.number),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                expires_after: Deserialize::default(),
-                hosted_voucher_url: Deserialize::default(),
-                number: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_after), Some(hosted_voucher_url), Some(number)) =
-                (self.expires_after, self.hosted_voucher_url.take(), self.number.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { expires_after, hosted_voucher_url, number })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "expires_after" => Deserialize::begin(&mut self.builder.expires_after),
+                "hosted_voucher_url" => Deserialize::begin(&mut self.builder.hosted_voucher_url),
+                "number" => Deserialize::begin(&mut self.builder.number),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionDisplayOxxoDetails {
-        type Builder = PaymentIntentNextActionDisplayOxxoDetailsBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionDisplayOxxoDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(expires_after), Some(hosted_voucher_url), Some(number)) = (
+                self.builder.expires_after,
+                self.builder.hosted_voucher_url.take(),
+                self.builder.number.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentIntentNextActionDisplayOxxoDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expires_after" => b.expires_after = FromValueOpt::from_value(v),
-                    "hosted_voucher_url" => b.hosted_voucher_url = FromValueOpt::from_value(v),
-                    "number" => b.number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentIntentNextActionDisplayOxxoDetails {
+                expires_after,
+                hosted_voucher_url,
+                number,
+            });
+            Ok(())
         }
     }
 };

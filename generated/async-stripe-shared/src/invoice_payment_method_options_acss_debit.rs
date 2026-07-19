@@ -23,16 +23,14 @@ pub struct InvoicePaymentMethodOptionsAcssDebitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,67 +49,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoicePaymentMethodOptionsAcssDebitBuilder::deser_default(),
+                builder: InvoicePaymentMethodOptionsAcssDebitBuilder {
+                    mandate_options: Deserialize::default(),
+                    verification_method: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoicePaymentMethodOptionsAcssDebitBuilder {
-        type Out = InvoicePaymentMethodOptionsAcssDebit;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "verification_method" => Deserialize::begin(&mut self.verification_method),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                mandate_options: Deserialize::default(),
-                verification_method: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options), Some(verification_method)) =
-                (self.mandate_options.take(), self.verification_method.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { mandate_options, verification_method })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "mandate_options" => Deserialize::begin(&mut self.builder.mandate_options),
+                "verification_method" => Deserialize::begin(&mut self.builder.verification_method),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoicePaymentMethodOptionsAcssDebit {
-        type Builder = InvoicePaymentMethodOptionsAcssDebitBuilder;
-    }
-
-    impl FromValueOpt for InvoicePaymentMethodOptionsAcssDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(mandate_options), Some(verification_method)) =
+                (self.builder.mandate_options.take(), self.builder.verification_method.take())
+            else {
+                return Ok(());
             };
-            let mut b = InvoicePaymentMethodOptionsAcssDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
-                    "verification_method" => b.verification_method = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(InvoicePaymentMethodOptionsAcssDebit { mandate_options, verification_method });
+            Ok(())
         }
     }
 };
@@ -184,16 +147,16 @@ impl serde::Serialize for InvoicePaymentMethodOptionsAcssDebitVerificationMethod
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             InvoicePaymentMethodOptionsAcssDebitVerificationMethod::from_str(s)
@@ -202,8 +165,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(InvoicePaymentMethodOptionsAcssDebitVerificationMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

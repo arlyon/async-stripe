@@ -61,16 +61,14 @@ pub struct IssuingCardShippingBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -89,51 +87,46 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingCardShippingBuilder::deser_default(),
+                builder: IssuingCardShippingBuilder {
+                    address: Deserialize::default(),
+                    address_validation: Deserialize::default(),
+                    carrier: Deserialize::default(),
+                    customs: Deserialize::default(),
+                    eta: Deserialize::default(),
+                    name: Deserialize::default(),
+                    phone_number: Deserialize::default(),
+                    require_signature: Deserialize::default(),
+                    service: Deserialize::default(),
+                    status: Deserialize::default(),
+                    tracking_number: Deserialize::default(),
+                    tracking_url: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingCardShippingBuilder {
-        type Out = IssuingCardShipping;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
-                "address_validation" => Deserialize::begin(&mut self.address_validation),
-                "carrier" => Deserialize::begin(&mut self.carrier),
-                "customs" => Deserialize::begin(&mut self.customs),
-                "eta" => Deserialize::begin(&mut self.eta),
-                "name" => Deserialize::begin(&mut self.name),
-                "phone_number" => Deserialize::begin(&mut self.phone_number),
-                "require_signature" => Deserialize::begin(&mut self.require_signature),
-                "service" => Deserialize::begin(&mut self.service),
-                "status" => Deserialize::begin(&mut self.status),
-                "tracking_number" => Deserialize::begin(&mut self.tracking_number),
-                "tracking_url" => Deserialize::begin(&mut self.tracking_url),
-                "type" => Deserialize::begin(&mut self.type_),
+                "address" => Deserialize::begin(&mut self.builder.address),
+                "address_validation" => Deserialize::begin(&mut self.builder.address_validation),
+                "carrier" => Deserialize::begin(&mut self.builder.carrier),
+                "customs" => Deserialize::begin(&mut self.builder.customs),
+                "eta" => Deserialize::begin(&mut self.builder.eta),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "phone_number" => Deserialize::begin(&mut self.builder.phone_number),
+                "require_signature" => Deserialize::begin(&mut self.builder.require_signature),
+                "service" => Deserialize::begin(&mut self.builder.service),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "tracking_number" => Deserialize::begin(&mut self.builder.tracking_number),
+                "tracking_url" => Deserialize::begin(&mut self.builder.tracking_url),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                address: Deserialize::default(),
-                address_validation: Deserialize::default(),
-                carrier: Deserialize::default(),
-                customs: Deserialize::default(),
-                eta: Deserialize::default(),
-                name: Deserialize::default(),
-                phone_number: Deserialize::default(),
-                require_signature: Deserialize::default(),
-                service: Deserialize::default(),
-                status: Deserialize::default(),
-                tracking_number: Deserialize::default(),
-                tracking_url: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(address),
                 Some(address_validation),
@@ -149,24 +142,24 @@ const _: () = {
                 Some(tracking_url),
                 Some(type_),
             ) = (
-                self.address.take(),
-                self.address_validation.take(),
-                self.carrier.take(),
-                self.customs.take(),
-                self.eta,
-                self.name.take(),
-                self.phone_number.take(),
-                self.require_signature,
-                self.service.take(),
-                self.status.take(),
-                self.tracking_number.take(),
-                self.tracking_url.take(),
-                self.type_.take(),
+                self.builder.address.take(),
+                self.builder.address_validation.take(),
+                self.builder.carrier.take(),
+                self.builder.customs.take(),
+                self.builder.eta,
+                self.builder.name.take(),
+                self.builder.phone_number.take(),
+                self.builder.require_signature,
+                self.builder.service.take(),
+                self.builder.status.take(),
+                self.builder.tracking_number.take(),
+                self.builder.tracking_url.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingCardShipping {
                 address,
                 address_validation,
                 carrier,
@@ -180,50 +173,8 @@ const _: () = {
                 tracking_number,
                 tracking_url,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingCardShipping {
-        type Builder = IssuingCardShippingBuilder;
-    }
-
-    impl FromValueOpt for IssuingCardShipping {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardShippingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_validation" => b.address_validation = FromValueOpt::from_value(v),
-                    "carrier" => b.carrier = FromValueOpt::from_value(v),
-                    "customs" => b.customs = FromValueOpt::from_value(v),
-                    "eta" => b.eta = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone_number" => b.phone_number = FromValueOpt::from_value(v),
-                    "require_signature" => b.require_signature = FromValueOpt::from_value(v),
-                    "service" => b.service = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "tracking_number" => b.tracking_number = FromValueOpt::from_value(v),
-                    "tracking_url" => b.tracking_url = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -294,21 +245,19 @@ impl serde::Serialize for IssuingCardShippingCarrier {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingCardShippingCarrier {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingCardShippingCarrier {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingCardShippingCarrier> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingCardShippingCarrier> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingCardShippingCarrier::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingCarrier);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingCarrier {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -381,21 +330,19 @@ impl serde::Serialize for IssuingCardShippingService {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingCardShippingService {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingCardShippingService {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingCardShippingService> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingCardShippingService> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingCardShippingService::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingService);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -480,21 +427,19 @@ impl serde::Serialize for IssuingCardShippingStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingCardShippingStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingCardShippingStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingCardShippingStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingCardShippingStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingCardShippingStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -564,21 +509,19 @@ impl serde::Serialize for IssuingCardShippingType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingCardShippingType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingCardShippingType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingCardShippingType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingCardShippingType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingCardShippingType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

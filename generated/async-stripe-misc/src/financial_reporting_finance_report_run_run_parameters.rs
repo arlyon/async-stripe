@@ -46,16 +46,14 @@ pub struct FinancialReportingFinanceReportRunRunParametersBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -74,41 +72,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: FinancialReportingFinanceReportRunRunParametersBuilder::deser_default(),
+                builder: FinancialReportingFinanceReportRunRunParametersBuilder {
+                    columns: Deserialize::default(),
+                    connected_account: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    interval_end: Deserialize::default(),
+                    interval_start: Deserialize::default(),
+                    payout: Deserialize::default(),
+                    reporting_category: Deserialize::default(),
+                    timezone: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for FinancialReportingFinanceReportRunRunParametersBuilder {
-        type Out = FinancialReportingFinanceReportRunRunParameters;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "columns" => Deserialize::begin(&mut self.columns),
-                "connected_account" => Deserialize::begin(&mut self.connected_account),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "interval_end" => Deserialize::begin(&mut self.interval_end),
-                "interval_start" => Deserialize::begin(&mut self.interval_start),
-                "payout" => Deserialize::begin(&mut self.payout),
-                "reporting_category" => Deserialize::begin(&mut self.reporting_category),
-                "timezone" => Deserialize::begin(&mut self.timezone),
+                "columns" => Deserialize::begin(&mut self.builder.columns),
+                "connected_account" => Deserialize::begin(&mut self.builder.connected_account),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "interval_end" => Deserialize::begin(&mut self.builder.interval_end),
+                "interval_start" => Deserialize::begin(&mut self.builder.interval_start),
+                "payout" => Deserialize::begin(&mut self.builder.payout),
+                "reporting_category" => Deserialize::begin(&mut self.builder.reporting_category),
+                "timezone" => Deserialize::begin(&mut self.builder.timezone),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                columns: Deserialize::default(),
-                connected_account: Deserialize::default(),
-                currency: Deserialize::default(),
-                interval_end: Deserialize::default(),
-                interval_start: Deserialize::default(),
-                payout: Deserialize::default(),
-                reporting_category: Deserialize::default(),
-                timezone: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(columns),
                 Some(connected_account),
@@ -119,19 +112,19 @@ const _: () = {
                 Some(reporting_category),
                 Some(timezone),
             ) = (
-                self.columns.take(),
-                self.connected_account.take(),
-                self.currency.take(),
-                self.interval_end,
-                self.interval_start,
-                self.payout.take(),
-                self.reporting_category.take(),
-                self.timezone.take(),
+                self.builder.columns.take(),
+                self.builder.connected_account.take(),
+                self.builder.currency.take(),
+                self.builder.interval_end,
+                self.builder.interval_start,
+                self.builder.payout.take(),
+                self.builder.reporting_category.take(),
+                self.builder.timezone.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(FinancialReportingFinanceReportRunRunParameters {
                 columns,
                 connected_account,
                 currency,
@@ -140,45 +133,8 @@ const _: () = {
                 payout,
                 reporting_category,
                 timezone,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for FinancialReportingFinanceReportRunRunParameters {
-        type Builder = FinancialReportingFinanceReportRunRunParametersBuilder;
-    }
-
-    impl FromValueOpt for FinancialReportingFinanceReportRunRunParameters {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FinancialReportingFinanceReportRunRunParametersBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "columns" => b.columns = FromValueOpt::from_value(v),
-                    "connected_account" => b.connected_account = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "interval_end" => b.interval_end = FromValueOpt::from_value(v),
-                    "interval_start" => b.interval_start = FromValueOpt::from_value(v),
-                    "payout" => b.payout = FromValueOpt::from_value(v),
-                    "reporting_category" => b.reporting_category = FromValueOpt::from_value(v),
-                    "timezone" => b.timezone = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

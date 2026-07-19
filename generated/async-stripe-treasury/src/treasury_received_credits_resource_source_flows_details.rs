@@ -29,16 +29,14 @@ pub struct TreasuryReceivedCreditsResourceSourceFlowsDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,35 +55,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TreasuryReceivedCreditsResourceSourceFlowsDetailsBuilder::deser_default(),
+                builder: TreasuryReceivedCreditsResourceSourceFlowsDetailsBuilder {
+                    credit_reversal: Deserialize::default(),
+                    outbound_payment: Deserialize::default(),
+                    outbound_transfer: Deserialize::default(),
+                    payout: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TreasuryReceivedCreditsResourceSourceFlowsDetailsBuilder {
-        type Out = TreasuryReceivedCreditsResourceSourceFlowsDetails;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "credit_reversal" => Deserialize::begin(&mut self.credit_reversal),
-                "outbound_payment" => Deserialize::begin(&mut self.outbound_payment),
-                "outbound_transfer" => Deserialize::begin(&mut self.outbound_transfer),
-                "payout" => Deserialize::begin(&mut self.payout),
-                "type" => Deserialize::begin(&mut self.type_),
+                "credit_reversal" => Deserialize::begin(&mut self.builder.credit_reversal),
+                "outbound_payment" => Deserialize::begin(&mut self.builder.outbound_payment),
+                "outbound_transfer" => Deserialize::begin(&mut self.builder.outbound_transfer),
+                "payout" => Deserialize::begin(&mut self.builder.payout),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                credit_reversal: Deserialize::default(),
-                outbound_payment: Deserialize::default(),
-                outbound_transfer: Deserialize::default(),
-                payout: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(credit_reversal),
                 Some(outbound_payment),
@@ -93,51 +86,23 @@ const _: () = {
                 Some(payout),
                 Some(type_),
             ) = (
-                self.credit_reversal.take(),
-                self.outbound_payment.take(),
-                self.outbound_transfer.take(),
-                self.payout.take(),
-                self.type_.take(),
+                self.builder.credit_reversal.take(),
+                self.builder.outbound_payment.take(),
+                self.builder.outbound_transfer.take(),
+                self.builder.payout.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { credit_reversal, outbound_payment, outbound_transfer, payout, type_ })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(TreasuryReceivedCreditsResourceSourceFlowsDetails {
+                credit_reversal,
+                outbound_payment,
+                outbound_transfer,
+                payout,
+                type_,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryReceivedCreditsResourceSourceFlowsDetails {
-        type Builder = TreasuryReceivedCreditsResourceSourceFlowsDetailsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryReceivedCreditsResourceSourceFlowsDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryReceivedCreditsResourceSourceFlowsDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "credit_reversal" => b.credit_reversal = FromValueOpt::from_value(v),
-                    "outbound_payment" => b.outbound_payment = FromValueOpt::from_value(v),
-                    "outbound_transfer" => b.outbound_transfer = FromValueOpt::from_value(v),
-                    "payout" => b.payout = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -216,16 +181,16 @@ impl serde::Serialize for TreasuryReceivedCreditsResourceSourceFlowsDetailsType 
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<TreasuryReceivedCreditsResourceSourceFlowsDetailsType>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             TreasuryReceivedCreditsResourceSourceFlowsDetailsType::from_str(s).expect("infallible"),
@@ -233,8 +198,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TreasuryReceivedCreditsResourceSourceFlowsDetailsType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

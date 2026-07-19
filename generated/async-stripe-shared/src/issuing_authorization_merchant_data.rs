@@ -52,16 +52,14 @@ pub struct IssuingAuthorizationMerchantDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -80,47 +78,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingAuthorizationMerchantDataBuilder::deser_default(),
+                builder: IssuingAuthorizationMerchantDataBuilder {
+                    category: Deserialize::default(),
+                    category_code: Deserialize::default(),
+                    city: Deserialize::default(),
+                    country: Deserialize::default(),
+                    name: Deserialize::default(),
+                    network_id: Deserialize::default(),
+                    postal_code: Deserialize::default(),
+                    state: Deserialize::default(),
+                    tax_id: Deserialize::default(),
+                    terminal_id: Deserialize::default(),
+                    url: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingAuthorizationMerchantDataBuilder {
-        type Out = IssuingAuthorizationMerchantData;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "category" => Deserialize::begin(&mut self.category),
-                "category_code" => Deserialize::begin(&mut self.category_code),
-                "city" => Deserialize::begin(&mut self.city),
-                "country" => Deserialize::begin(&mut self.country),
-                "name" => Deserialize::begin(&mut self.name),
-                "network_id" => Deserialize::begin(&mut self.network_id),
-                "postal_code" => Deserialize::begin(&mut self.postal_code),
-                "state" => Deserialize::begin(&mut self.state),
-                "tax_id" => Deserialize::begin(&mut self.tax_id),
-                "terminal_id" => Deserialize::begin(&mut self.terminal_id),
-                "url" => Deserialize::begin(&mut self.url),
+                "category" => Deserialize::begin(&mut self.builder.category),
+                "category_code" => Deserialize::begin(&mut self.builder.category_code),
+                "city" => Deserialize::begin(&mut self.builder.city),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "network_id" => Deserialize::begin(&mut self.builder.network_id),
+                "postal_code" => Deserialize::begin(&mut self.builder.postal_code),
+                "state" => Deserialize::begin(&mut self.builder.state),
+                "tax_id" => Deserialize::begin(&mut self.builder.tax_id),
+                "terminal_id" => Deserialize::begin(&mut self.builder.terminal_id),
+                "url" => Deserialize::begin(&mut self.builder.url),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                category: Deserialize::default(),
-                category_code: Deserialize::default(),
-                city: Deserialize::default(),
-                country: Deserialize::default(),
-                name: Deserialize::default(),
-                network_id: Deserialize::default(),
-                postal_code: Deserialize::default(),
-                state: Deserialize::default(),
-                tax_id: Deserialize::default(),
-                terminal_id: Deserialize::default(),
-                url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(category),
                 Some(category_code),
@@ -134,22 +127,22 @@ const _: () = {
                 Some(terminal_id),
                 Some(url),
             ) = (
-                self.category.take(),
-                self.category_code.take(),
-                self.city.take(),
-                self.country.take(),
-                self.name.take(),
-                self.network_id.take(),
-                self.postal_code.take(),
-                self.state.take(),
-                self.tax_id.take(),
-                self.terminal_id.take(),
-                self.url.take(),
+                self.builder.category.take(),
+                self.builder.category_code.take(),
+                self.builder.city.take(),
+                self.builder.country.take(),
+                self.builder.name.take(),
+                self.builder.network_id.take(),
+                self.builder.postal_code.take(),
+                self.builder.state.take(),
+                self.builder.tax_id.take(),
+                self.builder.terminal_id.take(),
+                self.builder.url.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingAuthorizationMerchantData {
                 category,
                 category_code,
                 city,
@@ -161,48 +154,8 @@ const _: () = {
                 tax_id,
                 terminal_id,
                 url,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingAuthorizationMerchantData {
-        type Builder = IssuingAuthorizationMerchantDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationMerchantData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationMerchantDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "category" => b.category = FromValueOpt::from_value(v),
-                    "category_code" => b.category_code = FromValueOpt::from_value(v),
-                    "city" => b.city = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "network_id" => b.network_id = FromValueOpt::from_value(v),
-                    "postal_code" => b.postal_code = FromValueOpt::from_value(v),
-                    "state" => b.state = FromValueOpt::from_value(v),
-                    "tax_id" => b.tax_id = FromValueOpt::from_value(v),
-                    "terminal_id" => b.terminal_id = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

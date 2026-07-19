@@ -27,16 +27,14 @@ pub struct GelatoPhoneReportBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,70 +53,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: GelatoPhoneReportBuilder::deser_default(),
+                builder: GelatoPhoneReportBuilder {
+                    error: Deserialize::default(),
+                    phone: Deserialize::default(),
+                    status: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for GelatoPhoneReportBuilder {
-        type Out = GelatoPhoneReport;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "error" => Deserialize::begin(&mut self.error),
-                "phone" => Deserialize::begin(&mut self.phone),
-                "status" => Deserialize::begin(&mut self.status),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                error: Deserialize::default(),
-                phone: Deserialize::default(),
-                status: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(error), Some(phone), Some(status)) =
-                (self.error.take(), self.phone.take(), self.status.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { error, phone, status })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "error" => Deserialize::begin(&mut self.builder.error),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for GelatoPhoneReport {
-        type Builder = GelatoPhoneReportBuilder;
-    }
-
-    impl FromValueOpt for GelatoPhoneReport {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(error), Some(phone), Some(status)) =
+                (self.builder.error.take(), self.builder.phone.take(), self.builder.status.take())
+            else {
+                return Ok(());
             };
-            let mut b = GelatoPhoneReportBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "error" => b.error = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(GelatoPhoneReport { error, phone, status });
+            Ok(())
         }
     }
 };
@@ -183,21 +144,19 @@ impl serde::Serialize for GelatoPhoneReportStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for GelatoPhoneReportStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for GelatoPhoneReportStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<GelatoPhoneReportStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<GelatoPhoneReportStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(GelatoPhoneReportStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(GelatoPhoneReportStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoPhoneReportStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

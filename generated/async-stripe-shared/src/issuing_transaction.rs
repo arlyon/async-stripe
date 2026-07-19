@@ -94,16 +94,14 @@ pub struct IssuingTransactionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -122,67 +120,62 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingTransactionBuilder::deser_default(),
+                builder: IssuingTransactionBuilder {
+                    amount: Deserialize::default(),
+                    amount_details: Deserialize::default(),
+                    authorization: Deserialize::default(),
+                    balance_transaction: Deserialize::default(),
+                    card: Deserialize::default(),
+                    cardholder: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    dispute: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    merchant_amount: Deserialize::default(),
+                    merchant_currency: Deserialize::default(),
+                    merchant_data: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    network_data: Deserialize::default(),
+                    purchase_details: Deserialize::default(),
+                    token: Deserialize::default(),
+                    treasury: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    wallet: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingTransactionBuilder {
-        type Out = IssuingTransaction;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_details" => Deserialize::begin(&mut self.amount_details),
-                "authorization" => Deserialize::begin(&mut self.authorization),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
-                "card" => Deserialize::begin(&mut self.card),
-                "cardholder" => Deserialize::begin(&mut self.cardholder),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "dispute" => Deserialize::begin(&mut self.dispute),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "merchant_amount" => Deserialize::begin(&mut self.merchant_amount),
-                "merchant_currency" => Deserialize::begin(&mut self.merchant_currency),
-                "merchant_data" => Deserialize::begin(&mut self.merchant_data),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "network_data" => Deserialize::begin(&mut self.network_data),
-                "purchase_details" => Deserialize::begin(&mut self.purchase_details),
-                "token" => Deserialize::begin(&mut self.token),
-                "treasury" => Deserialize::begin(&mut self.treasury),
-                "type" => Deserialize::begin(&mut self.type_),
-                "wallet" => Deserialize::begin(&mut self.wallet),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_details" => Deserialize::begin(&mut self.builder.amount_details),
+                "authorization" => Deserialize::begin(&mut self.builder.authorization),
+                "balance_transaction" => Deserialize::begin(&mut self.builder.balance_transaction),
+                "card" => Deserialize::begin(&mut self.builder.card),
+                "cardholder" => Deserialize::begin(&mut self.builder.cardholder),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "dispute" => Deserialize::begin(&mut self.builder.dispute),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "merchant_amount" => Deserialize::begin(&mut self.builder.merchant_amount),
+                "merchant_currency" => Deserialize::begin(&mut self.builder.merchant_currency),
+                "merchant_data" => Deserialize::begin(&mut self.builder.merchant_data),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "network_data" => Deserialize::begin(&mut self.builder.network_data),
+                "purchase_details" => Deserialize::begin(&mut self.builder.purchase_details),
+                "token" => Deserialize::begin(&mut self.builder.token),
+                "treasury" => Deserialize::begin(&mut self.builder.treasury),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "wallet" => Deserialize::begin(&mut self.builder.wallet),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                amount_details: Deserialize::default(),
-                authorization: Deserialize::default(),
-                balance_transaction: Deserialize::default(),
-                card: Deserialize::default(),
-                cardholder: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                dispute: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                merchant_amount: Deserialize::default(),
-                merchant_currency: Deserialize::default(),
-                merchant_data: Deserialize::default(),
-                metadata: Deserialize::default(),
-                network_data: Deserialize::default(),
-                purchase_details: Deserialize::default(),
-                token: Deserialize::default(),
-                treasury: Deserialize::default(),
-                type_: Deserialize::default(),
-                wallet: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(amount_details),
@@ -206,32 +199,32 @@ const _: () = {
                 Some(type_),
                 Some(wallet),
             ) = (
-                self.amount,
-                self.amount_details,
-                self.authorization.take(),
-                self.balance_transaction.take(),
-                self.card.take(),
-                self.cardholder.take(),
-                self.created,
-                self.currency.take(),
-                self.dispute.take(),
-                self.id.take(),
-                self.livemode,
-                self.merchant_amount,
-                self.merchant_currency.take(),
-                self.merchant_data.take(),
-                self.metadata.take(),
-                self.network_data.take(),
-                self.purchase_details.take(),
-                self.token.take(),
-                self.treasury.take(),
-                self.type_.take(),
-                self.wallet.take(),
+                self.builder.amount,
+                self.builder.amount_details,
+                self.builder.authorization.take(),
+                self.builder.balance_transaction.take(),
+                self.builder.card.take(),
+                self.builder.cardholder.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.dispute.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.merchant_amount,
+                self.builder.merchant_currency.take(),
+                self.builder.merchant_data.take(),
+                self.builder.metadata.take(),
+                self.builder.network_data.take(),
+                self.builder.purchase_details.take(),
+                self.builder.token.take(),
+                self.builder.treasury.take(),
+                self.builder.type_.take(),
+                self.builder.wallet.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingTransaction {
                 amount,
                 amount_details,
                 authorization,
@@ -253,58 +246,8 @@ const _: () = {
                 treasury,
                 type_,
                 wallet,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingTransaction {
-        type Builder = IssuingTransactionBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_details" => b.amount_details = FromValueOpt::from_value(v),
-                    "authorization" => b.authorization = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "cardholder" => b.cardholder = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "dispute" => b.dispute = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "merchant_amount" => b.merchant_amount = FromValueOpt::from_value(v),
-                    "merchant_currency" => b.merchant_currency = FromValueOpt::from_value(v),
-                    "merchant_data" => b.merchant_data = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "network_data" => b.network_data = FromValueOpt::from_value(v),
-                    "purchase_details" => b.purchase_details = FromValueOpt::from_value(v),
-                    "token" => b.token = FromValueOpt::from_value(v),
-                    "treasury" => b.treasury = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "wallet" => b.wallet = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -403,21 +346,19 @@ impl serde::Serialize for IssuingTransactionWallet {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingTransactionWallet {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingTransactionWallet {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingTransactionWallet> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingTransactionWallet> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingTransactionWallet::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingTransactionWallet);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingTransactionWallet {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -496,21 +437,19 @@ impl serde::Serialize for IssuingTransactionType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingTransactionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingTransactionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingTransactionType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingTransactionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingTransactionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

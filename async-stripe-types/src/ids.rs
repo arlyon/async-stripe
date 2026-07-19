@@ -152,19 +152,18 @@ macro_rules! def_id {
             }
         }
 
-        impl miniserde::Deserialize for $struct_name {
-            fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        impl stripe_miniserde::Deserialize for $struct_name {
+            fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
                 crate::Place::new(out)
             }
         }
 
-        impl miniserde::de::Visitor for crate::Place<$struct_name> {
-            fn string(&mut self, s: &str) -> miniserde::Result<()> {
-                self.out = Some(s.parse::<$struct_name>().map_err(|_| miniserde::Error)?);
+        impl stripe_miniserde::de::Visitor for crate::Place<$struct_name> {
+            fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
+                self.out = Some(s.parse::<$struct_name>().map_err(|_| stripe_miniserde::Error)?);
                 Ok(())
             }
         }
-        $crate::impl_from_val_with_from_str!($struct_name);
     };
 }
 
@@ -180,12 +179,12 @@ mod tests {
 
     fn assert_ser_de_roundtrip<T>(id: &str)
     where
-        T: miniserde::Deserialize + Serialize + FromStr + std::fmt::Display + std::fmt::Debug,
+        T: stripe_miniserde::Deserialize + Serialize + FromStr + std::fmt::Display + std::fmt::Debug,
         <T as FromStr>::Err: std::fmt::Debug,
     {
         let parsed_id = T::from_str(id).expect("Could not parse id");
         let ser = serde_json::to_string(&parsed_id).expect("Could not serialize");
-        let deser: T = miniserde::json::from_str(&ser).expect("Could not deserialize id");
+        let deser: T = stripe_miniserde::json::from_str(&ser).expect("Could not deserialize id");
         assert_eq!(deser.to_string(), id.to_string());
     }
 

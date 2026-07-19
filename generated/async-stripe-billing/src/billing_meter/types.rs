@@ -55,16 +55,14 @@ pub struct BillingMeterBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -83,49 +81,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BillingMeterBuilder::deser_default(),
+                builder: BillingMeterBuilder {
+                    created: Deserialize::default(),
+                    customer_mapping: Deserialize::default(),
+                    default_aggregation: Deserialize::default(),
+                    display_name: Deserialize::default(),
+                    event_name: Deserialize::default(),
+                    event_time_window: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    status: Deserialize::default(),
+                    status_transitions: Deserialize::default(),
+                    updated: Deserialize::default(),
+                    value_settings: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for BillingMeterBuilder {
-        type Out = BillingMeter;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "customer_mapping" => Deserialize::begin(&mut self.customer_mapping),
-                "default_aggregation" => Deserialize::begin(&mut self.default_aggregation),
-                "display_name" => Deserialize::begin(&mut self.display_name),
-                "event_name" => Deserialize::begin(&mut self.event_name),
-                "event_time_window" => Deserialize::begin(&mut self.event_time_window),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "status" => Deserialize::begin(&mut self.status),
-                "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-                "updated" => Deserialize::begin(&mut self.updated),
-                "value_settings" => Deserialize::begin(&mut self.value_settings),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "customer_mapping" => Deserialize::begin(&mut self.builder.customer_mapping),
+                "default_aggregation" => Deserialize::begin(&mut self.builder.default_aggregation),
+                "display_name" => Deserialize::begin(&mut self.builder.display_name),
+                "event_name" => Deserialize::begin(&mut self.builder.event_name),
+                "event_time_window" => Deserialize::begin(&mut self.builder.event_time_window),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "status_transitions" => Deserialize::begin(&mut self.builder.status_transitions),
+                "updated" => Deserialize::begin(&mut self.builder.updated),
+                "value_settings" => Deserialize::begin(&mut self.builder.value_settings),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                customer_mapping: Deserialize::default(),
-                default_aggregation: Deserialize::default(),
-                display_name: Deserialize::default(),
-                event_name: Deserialize::default(),
-                event_time_window: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                status: Deserialize::default(),
-                status_transitions: Deserialize::default(),
-                updated: Deserialize::default(),
-                value_settings: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(created),
                 Some(customer_mapping),
@@ -140,23 +133,23 @@ const _: () = {
                 Some(updated),
                 Some(value_settings),
             ) = (
-                self.created,
-                self.customer_mapping.take(),
-                self.default_aggregation.take(),
-                self.display_name.take(),
-                self.event_name.take(),
-                self.event_time_window.take(),
-                self.id.take(),
-                self.livemode,
-                self.status.take(),
-                self.status_transitions,
-                self.updated,
-                self.value_settings.take(),
+                self.builder.created,
+                self.builder.customer_mapping.take(),
+                self.builder.default_aggregation.take(),
+                self.builder.display_name.take(),
+                self.builder.event_name.take(),
+                self.builder.event_time_window.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.status.take(),
+                self.builder.status_transitions,
+                self.builder.updated,
+                self.builder.value_settings.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(BillingMeter {
                 created,
                 customer_mapping,
                 default_aggregation,
@@ -169,49 +162,8 @@ const _: () = {
                 status_transitions,
                 updated,
                 value_settings,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingMeter {
-        type Builder = BillingMeterBuilder;
-    }
-
-    impl FromValueOpt for BillingMeter {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingMeterBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer_mapping" => b.customer_mapping = FromValueOpt::from_value(v),
-                    "default_aggregation" => b.default_aggregation = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "event_name" => b.event_name = FromValueOpt::from_value(v),
-                    "event_time_window" => b.event_time_window = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    "updated" => b.updated = FromValueOpt::from_value(v),
-                    "value_settings" => b.value_settings = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -311,21 +263,19 @@ impl serde::Serialize for BillingMeterEventTimeWindow {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BillingMeterEventTimeWindow {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BillingMeterEventTimeWindow {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BillingMeterEventTimeWindow> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BillingMeterEventTimeWindow> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BillingMeterEventTimeWindow::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BillingMeterEventTimeWindow);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingMeterEventTimeWindow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -393,21 +343,19 @@ impl serde::Serialize for BillingMeterStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BillingMeterStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BillingMeterStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BillingMeterStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BillingMeterStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BillingMeterStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BillingMeterStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingMeterStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -47,16 +47,14 @@ pub struct FinancialConnectionsSessionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -75,43 +73,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: FinancialConnectionsSessionBuilder::deser_default(),
+                builder: FinancialConnectionsSessionBuilder {
+                    account_holder: Deserialize::default(),
+                    accounts: Deserialize::default(),
+                    client_secret: Deserialize::default(),
+                    filters: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    permissions: Deserialize::default(),
+                    prefetch: Deserialize::default(),
+                    return_url: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for FinancialConnectionsSessionBuilder {
-        type Out = FinancialConnectionsSession;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder" => Deserialize::begin(&mut self.account_holder),
-                "accounts" => Deserialize::begin(&mut self.accounts),
-                "client_secret" => Deserialize::begin(&mut self.client_secret),
-                "filters" => Deserialize::begin(&mut self.filters),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "permissions" => Deserialize::begin(&mut self.permissions),
-                "prefetch" => Deserialize::begin(&mut self.prefetch),
-                "return_url" => Deserialize::begin(&mut self.return_url),
+                "account_holder" => Deserialize::begin(&mut self.builder.account_holder),
+                "accounts" => Deserialize::begin(&mut self.builder.accounts),
+                "client_secret" => Deserialize::begin(&mut self.builder.client_secret),
+                "filters" => Deserialize::begin(&mut self.builder.filters),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "permissions" => Deserialize::begin(&mut self.builder.permissions),
+                "prefetch" => Deserialize::begin(&mut self.builder.prefetch),
+                "return_url" => Deserialize::begin(&mut self.builder.return_url),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account_holder: Deserialize::default(),
-                accounts: Deserialize::default(),
-                client_secret: Deserialize::default(),
-                filters: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                permissions: Deserialize::default(),
-                prefetch: Deserialize::default(),
-                return_url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account_holder),
                 Some(accounts),
@@ -123,20 +116,20 @@ const _: () = {
                 Some(prefetch),
                 Some(return_url),
             ) = (
-                self.account_holder.take(),
-                self.accounts.take(),
-                self.client_secret.take(),
-                self.filters.take(),
-                self.id.take(),
-                self.livemode,
-                self.permissions.take(),
-                self.prefetch.take(),
-                self.return_url.take(),
+                self.builder.account_holder.take(),
+                self.builder.accounts.take(),
+                self.builder.client_secret.take(),
+                self.builder.filters.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.permissions.take(),
+                self.builder.prefetch.take(),
+                self.builder.return_url.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(FinancialConnectionsSession {
                 account_holder,
                 accounts,
                 client_secret,
@@ -146,46 +139,8 @@ const _: () = {
                 permissions,
                 prefetch,
                 return_url,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for FinancialConnectionsSession {
-        type Builder = FinancialConnectionsSessionBuilder;
-    }
-
-    impl FromValueOpt for FinancialConnectionsSession {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FinancialConnectionsSessionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder" => b.account_holder = FromValueOpt::from_value(v),
-                    "accounts" => b.accounts = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "filters" => b.filters = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "permissions" => b.permissions = FromValueOpt::from_value(v),
-                    "prefetch" => b.prefetch = FromValueOpt::from_value(v),
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -288,21 +243,19 @@ impl serde::Serialize for FinancialConnectionsSessionPermissions {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FinancialConnectionsSessionPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FinancialConnectionsSessionPermissions {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsSessionPermissions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<FinancialConnectionsSessionPermissions> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(FinancialConnectionsSessionPermissions::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsSessionPermissions);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsSessionPermissions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -377,21 +330,19 @@ impl serde::Serialize for FinancialConnectionsSessionPrefetch {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FinancialConnectionsSessionPrefetch {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FinancialConnectionsSessionPrefetch {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsSessionPrefetch> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<FinancialConnectionsSessionPrefetch> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(FinancialConnectionsSessionPrefetch::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsSessionPrefetch);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsSessionPrefetch {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

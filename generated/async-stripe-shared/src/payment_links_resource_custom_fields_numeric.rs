@@ -26,16 +26,14 @@ pub struct PaymentLinksResourceCustomFieldsNumericBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentLinksResourceCustomFieldsNumericBuilder::deser_default(),
+                builder: PaymentLinksResourceCustomFieldsNumericBuilder {
+                    default_value: Deserialize::default(),
+                    maximum_length: Deserialize::default(),
+                    minimum_length: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentLinksResourceCustomFieldsNumericBuilder {
-        type Out = PaymentLinksResourceCustomFieldsNumeric;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "default_value" => Deserialize::begin(&mut self.default_value),
-                "maximum_length" => Deserialize::begin(&mut self.maximum_length),
-                "minimum_length" => Deserialize::begin(&mut self.minimum_length),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                default_value: Deserialize::default(),
-                maximum_length: Deserialize::default(),
-                minimum_length: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(default_value), Some(maximum_length), Some(minimum_length)) =
-                (self.default_value.take(), self.maximum_length, self.minimum_length)
-            else {
-                return None;
-            };
-            Some(Self::Out { default_value, maximum_length, minimum_length })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "default_value" => Deserialize::begin(&mut self.builder.default_value),
+                "maximum_length" => Deserialize::begin(&mut self.builder.maximum_length),
+                "minimum_length" => Deserialize::begin(&mut self.builder.minimum_length),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentLinksResourceCustomFieldsNumeric {
-        type Builder = PaymentLinksResourceCustomFieldsNumericBuilder;
-    }
-
-    impl FromValueOpt for PaymentLinksResourceCustomFieldsNumeric {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(default_value), Some(maximum_length), Some(minimum_length)) = (
+                self.builder.default_value.take(),
+                self.builder.maximum_length,
+                self.builder.minimum_length,
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentLinksResourceCustomFieldsNumericBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "default_value" => b.default_value = FromValueOpt::from_value(v),
-                    "maximum_length" => b.maximum_length = FromValueOpt::from_value(v),
-                    "minimum_length" => b.minimum_length = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentLinksResourceCustomFieldsNumeric {
+                default_value,
+                maximum_length,
+                minimum_length,
+            });
+            Ok(())
         }
     }
 };

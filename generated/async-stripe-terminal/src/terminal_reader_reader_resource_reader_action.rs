@@ -57,16 +57,14 @@ pub struct TerminalReaderReaderResourceReaderActionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -85,47 +83,50 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderReaderResourceReaderActionBuilder::deser_default(),
+                builder: TerminalReaderReaderResourceReaderActionBuilder {
+                    collect_inputs: Deserialize::default(),
+                    collect_payment_method: Deserialize::default(),
+                    confirm_payment_intent: Deserialize::default(),
+                    failure_code: Deserialize::default(),
+                    failure_message: Deserialize::default(),
+                    process_payment_intent: Deserialize::default(),
+                    process_setup_intent: Deserialize::default(),
+                    refund_payment: Deserialize::default(),
+                    set_reader_display: Deserialize::default(),
+                    status: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TerminalReaderReaderResourceReaderActionBuilder {
-        type Out = TerminalReaderReaderResourceReaderAction;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "collect_inputs" => Deserialize::begin(&mut self.collect_inputs),
-                "collect_payment_method" => Deserialize::begin(&mut self.collect_payment_method),
-                "confirm_payment_intent" => Deserialize::begin(&mut self.confirm_payment_intent),
-                "failure_code" => Deserialize::begin(&mut self.failure_code),
-                "failure_message" => Deserialize::begin(&mut self.failure_message),
-                "process_payment_intent" => Deserialize::begin(&mut self.process_payment_intent),
-                "process_setup_intent" => Deserialize::begin(&mut self.process_setup_intent),
-                "refund_payment" => Deserialize::begin(&mut self.refund_payment),
-                "set_reader_display" => Deserialize::begin(&mut self.set_reader_display),
-                "status" => Deserialize::begin(&mut self.status),
-                "type" => Deserialize::begin(&mut self.type_),
+                "collect_inputs" => Deserialize::begin(&mut self.builder.collect_inputs),
+                "collect_payment_method" => {
+                    Deserialize::begin(&mut self.builder.collect_payment_method)
+                }
+                "confirm_payment_intent" => {
+                    Deserialize::begin(&mut self.builder.confirm_payment_intent)
+                }
+                "failure_code" => Deserialize::begin(&mut self.builder.failure_code),
+                "failure_message" => Deserialize::begin(&mut self.builder.failure_message),
+                "process_payment_intent" => {
+                    Deserialize::begin(&mut self.builder.process_payment_intent)
+                }
+                "process_setup_intent" => {
+                    Deserialize::begin(&mut self.builder.process_setup_intent)
+                }
+                "refund_payment" => Deserialize::begin(&mut self.builder.refund_payment),
+                "set_reader_display" => Deserialize::begin(&mut self.builder.set_reader_display),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                collect_inputs: Deserialize::default(),
-                collect_payment_method: Deserialize::default(),
-                confirm_payment_intent: Deserialize::default(),
-                failure_code: Deserialize::default(),
-                failure_message: Deserialize::default(),
-                process_payment_intent: Deserialize::default(),
-                process_setup_intent: Deserialize::default(),
-                refund_payment: Deserialize::default(),
-                set_reader_display: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(collect_inputs),
                 Some(collect_payment_method),
@@ -139,22 +140,22 @@ const _: () = {
                 Some(status),
                 Some(type_),
             ) = (
-                self.collect_inputs.take(),
-                self.collect_payment_method.take(),
-                self.confirm_payment_intent.take(),
-                self.failure_code.take(),
-                self.failure_message.take(),
-                self.process_payment_intent.take(),
-                self.process_setup_intent.take(),
-                self.refund_payment.take(),
-                self.set_reader_display.take(),
-                self.status.take(),
-                self.type_.take(),
+                self.builder.collect_inputs.take(),
+                self.builder.collect_payment_method.take(),
+                self.builder.confirm_payment_intent.take(),
+                self.builder.failure_code.take(),
+                self.builder.failure_message.take(),
+                self.builder.process_payment_intent.take(),
+                self.builder.process_setup_intent.take(),
+                self.builder.refund_payment.take(),
+                self.builder.set_reader_display.take(),
+                self.builder.status.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TerminalReaderReaderResourceReaderAction {
                 collect_inputs,
                 collect_payment_method,
                 confirm_payment_intent,
@@ -166,54 +167,8 @@ const _: () = {
                 set_reader_display,
                 status,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceReaderAction {
-        type Builder = TerminalReaderReaderResourceReaderActionBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceReaderAction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalReaderReaderResourceReaderActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "collect_inputs" => b.collect_inputs = FromValueOpt::from_value(v),
-                    "collect_payment_method" => {
-                        b.collect_payment_method = FromValueOpt::from_value(v)
-                    }
-                    "confirm_payment_intent" => {
-                        b.confirm_payment_intent = FromValueOpt::from_value(v)
-                    }
-                    "failure_code" => b.failure_code = FromValueOpt::from_value(v),
-                    "failure_message" => b.failure_message = FromValueOpt::from_value(v),
-                    "process_payment_intent" => {
-                        b.process_payment_intent = FromValueOpt::from_value(v)
-                    }
-                    "process_setup_intent" => b.process_setup_intent = FromValueOpt::from_value(v),
-                    "refund_payment" => b.refund_payment = FromValueOpt::from_value(v),
-                    "set_reader_display" => b.set_reader_display = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -286,22 +241,20 @@ impl serde::Serialize for TerminalReaderReaderResourceReaderActionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TerminalReaderReaderResourceReaderActionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TerminalReaderReaderResourceReaderActionStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceReaderActionStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceReaderActionStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(TerminalReaderReaderResourceReaderActionStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderReaderResourceReaderActionStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceReaderActionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -391,22 +344,20 @@ impl serde::Serialize for TerminalReaderReaderResourceReaderActionType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TerminalReaderReaderResourceReaderActionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TerminalReaderReaderResourceReaderActionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceReaderActionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceReaderActionType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(TerminalReaderReaderResourceReaderActionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderReaderResourceReaderActionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceReaderActionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

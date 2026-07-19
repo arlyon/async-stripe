@@ -6,7 +6,7 @@ publish = false
 
 [dev-dependencies]
 serde.workspace = true
-miniserde.workspace = true
+async-stripe-miniserde.workspace = true
 serde_qs.workspace = true
 serde_json.workspace = true
 chrono = "0.4.26"

@@ -17,10 +17,7 @@ pub use pagination::*;
 pub use params::*;
 pub use serde_helpers::{with_serde_json, with_serde_json_opt};
 
-miniserde::make_place!(Place);
-
-#[doc(hidden)]
-pub mod miniserde_helpers;
+stripe_miniserde::make_place!(Place);
 
 #[doc(hidden)]
 pub mod serde_helpers;

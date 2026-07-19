@@ -32,16 +32,14 @@ pub struct SourceOrderBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,80 +58,41 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceOrderBuilder::deser_default(),
+                builder: SourceOrderBuilder {
+                    amount: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    email: Deserialize::default(),
+                    items: Deserialize::default(),
+                    shipping: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SourceOrderBuilder {
-        type Out = SourceOrder;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "email" => Deserialize::begin(&mut self.email),
-                "items" => Deserialize::begin(&mut self.items),
-                "shipping" => Deserialize::begin(&mut self.shipping),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                currency: Deserialize::default(),
-                email: Deserialize::default(),
-                items: Deserialize::default(),
-                shipping: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(currency), Some(email), Some(items), Some(shipping)) = (
-                self.amount,
-                self.currency.take(),
-                self.email.take(),
-                self.items.take(),
-                self.shipping.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { amount, currency, email, items, shipping })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "items" => Deserialize::begin(&mut self.builder.items),
+                "shipping" => Deserialize::begin(&mut self.builder.shipping),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceOrder {
-        type Builder = SourceOrderBuilder;
-    }
-
-    impl FromValueOpt for SourceOrder {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount), Some(currency), Some(email), Some(items), Some(shipping)) = (
+                self.builder.amount,
+                self.builder.currency.take(),
+                self.builder.email.take(),
+                self.builder.items.take(),
+                self.builder.shipping.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = SourceOrderBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "items" => b.items = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SourceOrder { amount, currency, email, items, shipping });
+            Ok(())
         }
     }
 };

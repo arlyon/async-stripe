@@ -24,16 +24,14 @@ pub struct PaymentMethodConfigBizPaymentMethodConfigurationDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,64 +50,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    PaymentMethodConfigBizPaymentMethodConfigurationDetailsBuilder::deser_default(),
+                builder: PaymentMethodConfigBizPaymentMethodConfigurationDetailsBuilder {
+                    id: Deserialize::default(),
+                    parent: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodConfigBizPaymentMethodConfigurationDetailsBuilder {
-        type Out = PaymentMethodConfigBizPaymentMethodConfigurationDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "id" => Deserialize::begin(&mut self.id),
-                "parent" => Deserialize::begin(&mut self.parent),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { id: Deserialize::default(), parent: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(id), Some(parent)) = (self.id.take(), self.parent.take()) else {
-                return None;
-            };
-            Some(Self::Out { id, parent })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "parent" => Deserialize::begin(&mut self.builder.parent),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodConfigBizPaymentMethodConfigurationDetails {
-        type Builder = PaymentMethodConfigBizPaymentMethodConfigurationDetailsBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodConfigBizPaymentMethodConfigurationDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(id), Some(parent)) = (self.builder.id.take(), self.builder.parent.take())
+            else {
+                return Ok(());
             };
-            let mut b =
-                PaymentMethodConfigBizPaymentMethodConfigurationDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "parent" => b.parent = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PaymentMethodConfigBizPaymentMethodConfigurationDetails { id, parent });
+            Ok(())
         }
     }
 };

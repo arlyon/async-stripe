@@ -36,16 +36,14 @@ pub struct IssuingDisputeDuplicateEvidenceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -64,39 +62,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingDisputeDuplicateEvidenceBuilder::deser_default(),
+                builder: IssuingDisputeDuplicateEvidenceBuilder {
+                    additional_documentation: Deserialize::default(),
+                    card_statement: Deserialize::default(),
+                    cash_receipt: Deserialize::default(),
+                    check_image: Deserialize::default(),
+                    explanation: Deserialize::default(),
+                    original_transaction: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingDisputeDuplicateEvidenceBuilder {
-        type Out = IssuingDisputeDuplicateEvidence;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "additional_documentation" => {
-                    Deserialize::begin(&mut self.additional_documentation)
+                    Deserialize::begin(&mut self.builder.additional_documentation)
                 }
-                "card_statement" => Deserialize::begin(&mut self.card_statement),
-                "cash_receipt" => Deserialize::begin(&mut self.cash_receipt),
-                "check_image" => Deserialize::begin(&mut self.check_image),
-                "explanation" => Deserialize::begin(&mut self.explanation),
-                "original_transaction" => Deserialize::begin(&mut self.original_transaction),
+                "card_statement" => Deserialize::begin(&mut self.builder.card_statement),
+                "cash_receipt" => Deserialize::begin(&mut self.builder.cash_receipt),
+                "check_image" => Deserialize::begin(&mut self.builder.check_image),
+                "explanation" => Deserialize::begin(&mut self.builder.explanation),
+                "original_transaction" => {
+                    Deserialize::begin(&mut self.builder.original_transaction)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                additional_documentation: Deserialize::default(),
-                card_statement: Deserialize::default(),
-                cash_receipt: Deserialize::default(),
-                check_image: Deserialize::default(),
-                explanation: Deserialize::default(),
-                original_transaction: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(additional_documentation),
                 Some(card_statement),
@@ -105,62 +100,25 @@ const _: () = {
                 Some(explanation),
                 Some(original_transaction),
             ) = (
-                self.additional_documentation.take(),
-                self.card_statement.take(),
-                self.cash_receipt.take(),
-                self.check_image.take(),
-                self.explanation.take(),
-                self.original_transaction.take(),
+                self.builder.additional_documentation.take(),
+                self.builder.card_statement.take(),
+                self.builder.cash_receipt.take(),
+                self.builder.check_image.take(),
+                self.builder.explanation.take(),
+                self.builder.original_transaction.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingDisputeDuplicateEvidence {
                 additional_documentation,
                 card_statement,
                 cash_receipt,
                 check_image,
                 explanation,
                 original_transaction,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingDisputeDuplicateEvidence {
-        type Builder = IssuingDisputeDuplicateEvidenceBuilder;
-    }
-
-    impl FromValueOpt for IssuingDisputeDuplicateEvidence {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeDuplicateEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "additional_documentation" => {
-                        b.additional_documentation = FromValueOpt::from_value(v)
-                    }
-                    "card_statement" => b.card_statement = FromValueOpt::from_value(v),
-                    "cash_receipt" => b.cash_receipt = FromValueOpt::from_value(v),
-                    "check_image" => b.check_image = FromValueOpt::from_value(v),
-                    "explanation" => b.explanation = FromValueOpt::from_value(v),
-                    "original_transaction" => b.original_transaction = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

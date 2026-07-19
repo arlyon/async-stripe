@@ -46,16 +46,14 @@ pub struct TerminalReaderReaderResourceInputBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -74,47 +72,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderReaderResourceInputBuilder::deser_default(),
+                builder: TerminalReaderReaderResourceInputBuilder {
+                    custom_text: Deserialize::default(),
+                    email: Deserialize::default(),
+                    numeric: Deserialize::default(),
+                    phone: Deserialize::default(),
+                    required: Deserialize::default(),
+                    selection: Deserialize::default(),
+                    signature: Deserialize::default(),
+                    skipped: Deserialize::default(),
+                    text: Deserialize::default(),
+                    toggles: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TerminalReaderReaderResourceInputBuilder {
-        type Out = TerminalReaderReaderResourceInput;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "custom_text" => Deserialize::begin(&mut self.custom_text),
-                "email" => Deserialize::begin(&mut self.email),
-                "numeric" => Deserialize::begin(&mut self.numeric),
-                "phone" => Deserialize::begin(&mut self.phone),
-                "required" => Deserialize::begin(&mut self.required),
-                "selection" => Deserialize::begin(&mut self.selection),
-                "signature" => Deserialize::begin(&mut self.signature),
-                "skipped" => Deserialize::begin(&mut self.skipped),
-                "text" => Deserialize::begin(&mut self.text),
-                "toggles" => Deserialize::begin(&mut self.toggles),
-                "type" => Deserialize::begin(&mut self.type_),
+                "custom_text" => Deserialize::begin(&mut self.builder.custom_text),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "numeric" => Deserialize::begin(&mut self.builder.numeric),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                "required" => Deserialize::begin(&mut self.builder.required),
+                "selection" => Deserialize::begin(&mut self.builder.selection),
+                "signature" => Deserialize::begin(&mut self.builder.signature),
+                "skipped" => Deserialize::begin(&mut self.builder.skipped),
+                "text" => Deserialize::begin(&mut self.builder.text),
+                "toggles" => Deserialize::begin(&mut self.builder.toggles),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                custom_text: Deserialize::default(),
-                email: Deserialize::default(),
-                numeric: Deserialize::default(),
-                phone: Deserialize::default(),
-                required: Deserialize::default(),
-                selection: Deserialize::default(),
-                signature: Deserialize::default(),
-                skipped: Deserialize::default(),
-                text: Deserialize::default(),
-                toggles: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(custom_text),
                 Some(email),
@@ -128,22 +121,22 @@ const _: () = {
                 Some(toggles),
                 Some(type_),
             ) = (
-                self.custom_text.take(),
-                self.email.take(),
-                self.numeric.take(),
-                self.phone.take(),
-                self.required,
-                self.selection.take(),
-                self.signature.take(),
-                self.skipped,
-                self.text.take(),
-                self.toggles.take(),
-                self.type_.take(),
+                self.builder.custom_text.take(),
+                self.builder.email.take(),
+                self.builder.numeric.take(),
+                self.builder.phone.take(),
+                self.builder.required,
+                self.builder.selection.take(),
+                self.builder.signature.take(),
+                self.builder.skipped,
+                self.builder.text.take(),
+                self.builder.toggles.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TerminalReaderReaderResourceInput {
                 custom_text,
                 email,
                 numeric,
@@ -155,48 +148,8 @@ const _: () = {
                 text,
                 toggles,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceInput {
-        type Builder = TerminalReaderReaderResourceInputBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceInput {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalReaderReaderResourceInputBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "custom_text" => b.custom_text = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "numeric" => b.numeric = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "required" => b.required = FromValueOpt::from_value(v),
-                    "selection" => b.selection = FromValueOpt::from_value(v),
-                    "signature" => b.signature = FromValueOpt::from_value(v),
-                    "skipped" => b.skipped = FromValueOpt::from_value(v),
-                    "text" => b.text = FromValueOpt::from_value(v),
-                    "toggles" => b.toggles = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -277,21 +230,19 @@ impl serde::Serialize for TerminalReaderReaderResourceInputType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TerminalReaderReaderResourceInputType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TerminalReaderReaderResourceInputType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceInputType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceInputType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TerminalReaderReaderResourceInputType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderReaderResourceInputType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceInputType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

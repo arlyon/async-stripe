@@ -93,16 +93,14 @@ pub struct FinancialConnectionsAccountBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -121,65 +119,60 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: FinancialConnectionsAccountBuilder::deser_default(),
+                builder: FinancialConnectionsAccountBuilder {
+                    account_holder: Deserialize::default(),
+                    account_numbers: Deserialize::default(),
+                    balance: Deserialize::default(),
+                    balance_refresh: Deserialize::default(),
+                    category: Deserialize::default(),
+                    created: Deserialize::default(),
+                    display_name: Deserialize::default(),
+                    id: Deserialize::default(),
+                    institution_name: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    ownership: Deserialize::default(),
+                    ownership_refresh: Deserialize::default(),
+                    permissions: Deserialize::default(),
+                    status: Deserialize::default(),
+                    subcategory: Deserialize::default(),
+                    subscriptions: Deserialize::default(),
+                    supported_payment_method_types: Deserialize::default(),
+                    transaction_refresh: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for FinancialConnectionsAccountBuilder {
-        type Out = FinancialConnectionsAccount;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder" => Deserialize::begin(&mut self.account_holder),
-                "account_numbers" => Deserialize::begin(&mut self.account_numbers),
-                "balance" => Deserialize::begin(&mut self.balance),
-                "balance_refresh" => Deserialize::begin(&mut self.balance_refresh),
-                "category" => Deserialize::begin(&mut self.category),
-                "created" => Deserialize::begin(&mut self.created),
-                "display_name" => Deserialize::begin(&mut self.display_name),
-                "id" => Deserialize::begin(&mut self.id),
-                "institution_name" => Deserialize::begin(&mut self.institution_name),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "ownership" => Deserialize::begin(&mut self.ownership),
-                "ownership_refresh" => Deserialize::begin(&mut self.ownership_refresh),
-                "permissions" => Deserialize::begin(&mut self.permissions),
-                "status" => Deserialize::begin(&mut self.status),
-                "subcategory" => Deserialize::begin(&mut self.subcategory),
-                "subscriptions" => Deserialize::begin(&mut self.subscriptions),
+                "account_holder" => Deserialize::begin(&mut self.builder.account_holder),
+                "account_numbers" => Deserialize::begin(&mut self.builder.account_numbers),
+                "balance" => Deserialize::begin(&mut self.builder.balance),
+                "balance_refresh" => Deserialize::begin(&mut self.builder.balance_refresh),
+                "category" => Deserialize::begin(&mut self.builder.category),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "display_name" => Deserialize::begin(&mut self.builder.display_name),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "institution_name" => Deserialize::begin(&mut self.builder.institution_name),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "ownership" => Deserialize::begin(&mut self.builder.ownership),
+                "ownership_refresh" => Deserialize::begin(&mut self.builder.ownership_refresh),
+                "permissions" => Deserialize::begin(&mut self.builder.permissions),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "subcategory" => Deserialize::begin(&mut self.builder.subcategory),
+                "subscriptions" => Deserialize::begin(&mut self.builder.subscriptions),
                 "supported_payment_method_types" => {
-                    Deserialize::begin(&mut self.supported_payment_method_types)
+                    Deserialize::begin(&mut self.builder.supported_payment_method_types)
                 }
-                "transaction_refresh" => Deserialize::begin(&mut self.transaction_refresh),
+                "transaction_refresh" => Deserialize::begin(&mut self.builder.transaction_refresh),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account_holder: Deserialize::default(),
-                account_numbers: Deserialize::default(),
-                balance: Deserialize::default(),
-                balance_refresh: Deserialize::default(),
-                category: Deserialize::default(),
-                created: Deserialize::default(),
-                display_name: Deserialize::default(),
-                id: Deserialize::default(),
-                institution_name: Deserialize::default(),
-                last4: Deserialize::default(),
-                livemode: Deserialize::default(),
-                ownership: Deserialize::default(),
-                ownership_refresh: Deserialize::default(),
-                permissions: Deserialize::default(),
-                status: Deserialize::default(),
-                subcategory: Deserialize::default(),
-                subscriptions: Deserialize::default(),
-                supported_payment_method_types: Deserialize::default(),
-                transaction_refresh: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account_holder),
                 Some(account_numbers),
@@ -201,30 +194,30 @@ const _: () = {
                 Some(supported_payment_method_types),
                 Some(transaction_refresh),
             ) = (
-                self.account_holder.take(),
-                self.account_numbers.take(),
-                self.balance.take(),
-                self.balance_refresh.take(),
-                self.category.take(),
-                self.created,
-                self.display_name.take(),
-                self.id.take(),
-                self.institution_name.take(),
-                self.last4.take(),
-                self.livemode,
-                self.ownership.take(),
-                self.ownership_refresh.take(),
-                self.permissions.take(),
-                self.status.take(),
-                self.subcategory.take(),
-                self.subscriptions.take(),
-                self.supported_payment_method_types.take(),
-                self.transaction_refresh.take(),
+                self.builder.account_holder.take(),
+                self.builder.account_numbers.take(),
+                self.builder.balance.take(),
+                self.builder.balance_refresh.take(),
+                self.builder.category.take(),
+                self.builder.created,
+                self.builder.display_name.take(),
+                self.builder.id.take(),
+                self.builder.institution_name.take(),
+                self.builder.last4.take(),
+                self.builder.livemode,
+                self.builder.ownership.take(),
+                self.builder.ownership_refresh.take(),
+                self.builder.permissions.take(),
+                self.builder.status.take(),
+                self.builder.subcategory.take(),
+                self.builder.subscriptions.take(),
+                self.builder.supported_payment_method_types.take(),
+                self.builder.transaction_refresh.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(FinancialConnectionsAccount {
                 account_holder,
                 account_numbers,
                 balance,
@@ -244,58 +237,8 @@ const _: () = {
                 subscriptions,
                 supported_payment_method_types,
                 transaction_refresh,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for FinancialConnectionsAccount {
-        type Builder = FinancialConnectionsAccountBuilder;
-    }
-
-    impl FromValueOpt for FinancialConnectionsAccount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FinancialConnectionsAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder" => b.account_holder = FromValueOpt::from_value(v),
-                    "account_numbers" => b.account_numbers = FromValueOpt::from_value(v),
-                    "balance" => b.balance = FromValueOpt::from_value(v),
-                    "balance_refresh" => b.balance_refresh = FromValueOpt::from_value(v),
-                    "category" => b.category = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "institution_name" => b.institution_name = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "ownership" => b.ownership = FromValueOpt::from_value(v),
-                    "ownership_refresh" => b.ownership_refresh = FromValueOpt::from_value(v),
-                    "permissions" => b.permissions = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "subcategory" => b.subcategory = FromValueOpt::from_value(v),
-                    "subscriptions" => b.subscriptions = FromValueOpt::from_value(v),
-                    "supported_payment_method_types" => {
-                        b.supported_payment_method_types = FromValueOpt::from_value(v)
-                    }
-                    "transaction_refresh" => b.transaction_refresh = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -399,21 +342,19 @@ impl serde::Serialize for FinancialConnectionsAccountCategory {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FinancialConnectionsAccountCategory {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FinancialConnectionsAccountCategory {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountCategory> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountCategory> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(FinancialConnectionsAccountCategory::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsAccountCategory);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountCategory {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -493,21 +434,19 @@ impl serde::Serialize for FinancialConnectionsAccountPermissions {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FinancialConnectionsAccountPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FinancialConnectionsAccountPermissions {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountPermissions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountPermissions> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(FinancialConnectionsAccountPermissions::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsAccountPermissions);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountPermissions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -584,21 +523,19 @@ impl serde::Serialize for FinancialConnectionsAccountStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FinancialConnectionsAccountStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FinancialConnectionsAccountStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(FinancialConnectionsAccountStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsAccountStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -697,21 +634,19 @@ impl serde::Serialize for FinancialConnectionsAccountSubcategory {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FinancialConnectionsAccountSubcategory {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FinancialConnectionsAccountSubcategory {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountSubcategory> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountSubcategory> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(FinancialConnectionsAccountSubcategory::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsAccountSubcategory);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountSubcategory {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -782,21 +717,19 @@ impl serde::Serialize for FinancialConnectionsAccountSubscriptions {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FinancialConnectionsAccountSubscriptions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FinancialConnectionsAccountSubscriptions {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountSubscriptions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountSubscriptions> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(FinancialConnectionsAccountSubscriptions::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsAccountSubscriptions);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountSubscriptions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -871,16 +804,16 @@ impl serde::Serialize for FinancialConnectionsAccountSupportedPaymentMethodTypes
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FinancialConnectionsAccountSupportedPaymentMethodTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FinancialConnectionsAccountSupportedPaymentMethodTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<FinancialConnectionsAccountSupportedPaymentMethodTypes>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             FinancialConnectionsAccountSupportedPaymentMethodTypes::from_str(s)
@@ -889,8 +822,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsAccountSupportedPaymentMethodTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountSupportedPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

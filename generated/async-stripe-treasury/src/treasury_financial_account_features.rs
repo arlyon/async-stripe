@@ -44,16 +44,14 @@ pub struct TreasuryFinancialAccountFeaturesBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -72,39 +70,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TreasuryFinancialAccountFeaturesBuilder::deser_default(),
+                builder: TreasuryFinancialAccountFeaturesBuilder {
+                    card_issuing: Deserialize::default(),
+                    deposit_insurance: Deserialize::default(),
+                    financial_addresses: Deserialize::default(),
+                    inbound_transfers: Deserialize::default(),
+                    intra_stripe_flows: Deserialize::default(),
+                    outbound_payments: Deserialize::default(),
+                    outbound_transfers: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TreasuryFinancialAccountFeaturesBuilder {
-        type Out = TreasuryFinancialAccountFeatures;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card_issuing" => Deserialize::begin(&mut self.card_issuing),
-                "deposit_insurance" => Deserialize::begin(&mut self.deposit_insurance),
-                "financial_addresses" => Deserialize::begin(&mut self.financial_addresses),
-                "inbound_transfers" => Deserialize::begin(&mut self.inbound_transfers),
-                "intra_stripe_flows" => Deserialize::begin(&mut self.intra_stripe_flows),
-                "outbound_payments" => Deserialize::begin(&mut self.outbound_payments),
-                "outbound_transfers" => Deserialize::begin(&mut self.outbound_transfers),
+                "card_issuing" => Deserialize::begin(&mut self.builder.card_issuing),
+                "deposit_insurance" => Deserialize::begin(&mut self.builder.deposit_insurance),
+                "financial_addresses" => Deserialize::begin(&mut self.builder.financial_addresses),
+                "inbound_transfers" => Deserialize::begin(&mut self.builder.inbound_transfers),
+                "intra_stripe_flows" => Deserialize::begin(&mut self.builder.intra_stripe_flows),
+                "outbound_payments" => Deserialize::begin(&mut self.builder.outbound_payments),
+                "outbound_transfers" => Deserialize::begin(&mut self.builder.outbound_transfers),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                card_issuing: Deserialize::default(),
-                deposit_insurance: Deserialize::default(),
-                financial_addresses: Deserialize::default(),
-                inbound_transfers: Deserialize::default(),
-                intra_stripe_flows: Deserialize::default(),
-                outbound_payments: Deserialize::default(),
-                outbound_transfers: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(card_issuing),
                 Some(deposit_insurance),
@@ -114,18 +107,18 @@ const _: () = {
                 Some(outbound_payments),
                 Some(outbound_transfers),
             ) = (
-                self.card_issuing.take(),
-                self.deposit_insurance.take(),
-                self.financial_addresses.take(),
-                self.inbound_transfers.take(),
-                self.intra_stripe_flows.take(),
-                self.outbound_payments.take(),
-                self.outbound_transfers.take(),
+                self.builder.card_issuing.take(),
+                self.builder.deposit_insurance.take(),
+                self.builder.financial_addresses.take(),
+                self.builder.inbound_transfers.take(),
+                self.builder.intra_stripe_flows.take(),
+                self.builder.outbound_payments.take(),
+                self.builder.outbound_transfers.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TreasuryFinancialAccountFeatures {
                 card_issuing,
                 deposit_insurance,
                 financial_addresses,
@@ -133,44 +126,8 @@ const _: () = {
                 intra_stripe_flows,
                 outbound_payments,
                 outbound_transfers,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryFinancialAccountFeatures {
-        type Builder = TreasuryFinancialAccountFeaturesBuilder;
-    }
-
-    impl FromValueOpt for TreasuryFinancialAccountFeatures {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryFinancialAccountFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
-                    "deposit_insurance" => b.deposit_insurance = FromValueOpt::from_value(v),
-                    "financial_addresses" => b.financial_addresses = FromValueOpt::from_value(v),
-                    "inbound_transfers" => b.inbound_transfers = FromValueOpt::from_value(v),
-                    "intra_stripe_flows" => b.intra_stripe_flows = FromValueOpt::from_value(v),
-                    "outbound_payments" => b.outbound_payments = FromValueOpt::from_value(v),
-                    "outbound_transfers" => b.outbound_transfers = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

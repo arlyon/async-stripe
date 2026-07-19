@@ -28,16 +28,14 @@ pub struct ConnectEmbeddedPaymentDisputesFeaturesBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,85 +54,46 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ConnectEmbeddedPaymentDisputesFeaturesBuilder::deser_default(),
+                builder: ConnectEmbeddedPaymentDisputesFeaturesBuilder {
+                    destination_on_behalf_of_charge_management: Deserialize::default(),
+                    dispute_management: Deserialize::default(),
+                    refund_management: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ConnectEmbeddedPaymentDisputesFeaturesBuilder {
-        type Out = ConnectEmbeddedPaymentDisputesFeatures;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "destination_on_behalf_of_charge_management" => {
-                    Deserialize::begin(&mut self.destination_on_behalf_of_charge_management)
-                }
-                "dispute_management" => Deserialize::begin(&mut self.dispute_management),
-                "refund_management" => Deserialize::begin(&mut self.refund_management),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                destination_on_behalf_of_charge_management: Deserialize::default(),
-                dispute_management: Deserialize::default(),
-                refund_management: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(destination_on_behalf_of_charge_management),
-                Some(dispute_management),
-                Some(refund_management),
-            ) = (
-                self.destination_on_behalf_of_charge_management,
-                self.dispute_management,
-                self.refund_management,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                destination_on_behalf_of_charge_management,
-                dispute_management,
-                refund_management,
-            })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "destination_on_behalf_of_charge_management" => {
+                    Deserialize::begin(&mut self.builder.destination_on_behalf_of_charge_management)
+                }
+                "dispute_management" => Deserialize::begin(&mut self.builder.dispute_management),
+                "refund_management" => Deserialize::begin(&mut self.builder.refund_management),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ConnectEmbeddedPaymentDisputesFeatures {
-        type Builder = ConnectEmbeddedPaymentDisputesFeaturesBuilder;
-    }
-
-    impl FromValueOpt for ConnectEmbeddedPaymentDisputesFeatures {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (
+                Some(destination_on_behalf_of_charge_management),
+                Some(dispute_management),
+                Some(refund_management),
+            ) = (
+                self.builder.destination_on_behalf_of_charge_management,
+                self.builder.dispute_management,
+                self.builder.refund_management,
+            )
+            else {
+                return Ok(());
             };
-            let mut b = ConnectEmbeddedPaymentDisputesFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "destination_on_behalf_of_charge_management" => {
-                        b.destination_on_behalf_of_charge_management = FromValueOpt::from_value(v)
-                    }
-                    "dispute_management" => b.dispute_management = FromValueOpt::from_value(v),
-                    "refund_management" => b.refund_management = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(ConnectEmbeddedPaymentDisputesFeatures {
+                destination_on_behalf_of_charge_management,
+                dispute_management,
+                refund_management,
+            });
+            Ok(())
         }
     }
 };

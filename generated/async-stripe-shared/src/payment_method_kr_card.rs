@@ -23,16 +23,14 @@ pub struct PaymentMethodKrCardBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,62 +49,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodKrCardBuilder::deser_default(),
+                builder: PaymentMethodKrCardBuilder {
+                    brand: Deserialize::default(),
+                    last4: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodKrCardBuilder {
-        type Out = PaymentMethodKrCard;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "brand" => Deserialize::begin(&mut self.brand),
-                "last4" => Deserialize::begin(&mut self.last4),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { brand: Deserialize::default(), last4: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(brand), Some(last4)) = (self.brand.take(), self.last4.take()) else {
-                return None;
-            };
-            Some(Self::Out { brand, last4 })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "brand" => Deserialize::begin(&mut self.builder.brand),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodKrCard {
-        type Builder = PaymentMethodKrCardBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodKrCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(brand), Some(last4)) = (self.builder.brand.take(), self.builder.last4.take())
+            else {
+                return Ok(());
             };
-            let mut b = PaymentMethodKrCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodKrCard { brand, last4 });
+            Ok(())
         }
     }
 };
@@ -231,21 +197,19 @@ impl serde::Serialize for PaymentMethodKrCardBrand {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodKrCardBrand {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodKrCardBrand {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodKrCardBrand> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodKrCardBrand> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentMethodKrCardBrand::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodKrCardBrand);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodKrCardBrand {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -29,16 +29,14 @@ pub struct PaymentMethodOptionsCardPresentBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,95 +55,53 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodOptionsCardPresentBuilder::deser_default(),
+                builder: PaymentMethodOptionsCardPresentBuilder {
+                    capture_method: Deserialize::default(),
+                    request_extended_authorization: Deserialize::default(),
+                    request_incremental_authorization_support: Deserialize::default(),
+                    routing: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodOptionsCardPresentBuilder {
-        type Out = PaymentMethodOptionsCardPresent;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
+                "capture_method" => Deserialize::begin(&mut self.builder.capture_method),
                 "request_extended_authorization" => {
-                    Deserialize::begin(&mut self.request_extended_authorization)
+                    Deserialize::begin(&mut self.builder.request_extended_authorization)
                 }
                 "request_incremental_authorization_support" => {
-                    Deserialize::begin(&mut self.request_incremental_authorization_support)
+                    Deserialize::begin(&mut self.builder.request_incremental_authorization_support)
                 }
-                "routing" => Deserialize::begin(&mut self.routing),
+                "routing" => Deserialize::begin(&mut self.builder.routing),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                capture_method: Deserialize::default(),
-                request_extended_authorization: Deserialize::default(),
-                request_incremental_authorization_support: Deserialize::default(),
-                routing: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(capture_method),
                 Some(request_extended_authorization),
                 Some(request_incremental_authorization_support),
                 Some(routing),
             ) = (
-                self.capture_method.take(),
-                self.request_extended_authorization,
-                self.request_incremental_authorization_support,
-                self.routing.take(),
+                self.builder.capture_method.take(),
+                self.builder.request_extended_authorization,
+                self.builder.request_incremental_authorization_support,
+                self.builder.routing.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodOptionsCardPresent {
                 capture_method,
                 request_extended_authorization,
                 request_incremental_authorization_support,
                 routing,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodOptionsCardPresent {
-        type Builder = PaymentMethodOptionsCardPresentBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodOptionsCardPresent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodOptionsCardPresentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
-                    "request_extended_authorization" => {
-                        b.request_extended_authorization = FromValueOpt::from_value(v)
-                    }
-                    "request_incremental_authorization_support" => {
-                        b.request_incremental_authorization_support = FromValueOpt::from_value(v)
-                    }
-                    "routing" => b.routing = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -215,22 +171,20 @@ impl serde::Serialize for PaymentMethodOptionsCardPresentCaptureMethod {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodOptionsCardPresentCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodOptionsCardPresentCaptureMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardPresentCaptureMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardPresentCaptureMethod> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(PaymentMethodOptionsCardPresentCaptureMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsCardPresentCaptureMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardPresentCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -11,7 +11,7 @@
 
 extern crate self as stripe_shared;
 
-miniserde::make_place!(Place);
+stripe_miniserde::make_place!(Place);
 #[doc(hidden)]
 pub mod account;
 #[doc(inline)]

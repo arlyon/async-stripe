@@ -62,16 +62,14 @@ pub struct WebhookEndpointBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -90,47 +88,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: WebhookEndpointBuilder::deser_default(),
+                builder: WebhookEndpointBuilder {
+                    api_version: Deserialize::default(),
+                    application: Deserialize::default(),
+                    created: Deserialize::default(),
+                    description: Deserialize::default(),
+                    enabled_events: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    secret: Deserialize::default(),
+                    status: Deserialize::default(),
+                    url: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for WebhookEndpointBuilder {
-        type Out = WebhookEndpoint;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "api_version" => Deserialize::begin(&mut self.api_version),
-                "application" => Deserialize::begin(&mut self.application),
-                "created" => Deserialize::begin(&mut self.created),
-                "description" => Deserialize::begin(&mut self.description),
-                "enabled_events" => Deserialize::begin(&mut self.enabled_events),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "secret" => Deserialize::begin(&mut self.secret),
-                "status" => Deserialize::begin(&mut self.status),
-                "url" => Deserialize::begin(&mut self.url),
+                "api_version" => Deserialize::begin(&mut self.builder.api_version),
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "enabled_events" => Deserialize::begin(&mut self.builder.enabled_events),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "secret" => Deserialize::begin(&mut self.builder.secret),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "url" => Deserialize::begin(&mut self.builder.url),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                api_version: Deserialize::default(),
-                application: Deserialize::default(),
-                created: Deserialize::default(),
-                description: Deserialize::default(),
-                enabled_events: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                secret: Deserialize::default(),
-                status: Deserialize::default(),
-                url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(api_version),
                 Some(application),
@@ -144,22 +137,22 @@ const _: () = {
                 Some(status),
                 Some(url),
             ) = (
-                self.api_version.take(),
-                self.application.take(),
-                self.created,
-                self.description.take(),
-                self.enabled_events.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.secret.take(),
-                self.status.take(),
-                self.url.take(),
+                self.builder.api_version.take(),
+                self.builder.application.take(),
+                self.builder.created,
+                self.builder.description.take(),
+                self.builder.enabled_events.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.secret.take(),
+                self.builder.status.take(),
+                self.builder.url.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(WebhookEndpoint {
                 api_version,
                 application,
                 created,
@@ -171,48 +164,8 @@ const _: () = {
                 secret,
                 status,
                 url,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for WebhookEndpoint {
-        type Builder = WebhookEndpointBuilder;
-    }
-
-    impl FromValueOpt for WebhookEndpoint {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = WebhookEndpointBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "api_version" => b.api_version = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "enabled_events" => b.enabled_events = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "secret" => b.secret = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -39,16 +39,14 @@ pub struct PaymentMethodDetailsNzBankAccountBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,39 +65,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsNzBankAccountBuilder::deser_default(),
+                builder: PaymentMethodDetailsNzBankAccountBuilder {
+                    account_holder_name: Deserialize::default(),
+                    bank_code: Deserialize::default(),
+                    bank_name: Deserialize::default(),
+                    branch_code: Deserialize::default(),
+                    expected_debit_date: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    suffix: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodDetailsNzBankAccountBuilder {
-        type Out = PaymentMethodDetailsNzBankAccount;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder_name" => Deserialize::begin(&mut self.account_holder_name),
-                "bank_code" => Deserialize::begin(&mut self.bank_code),
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "branch_code" => Deserialize::begin(&mut self.branch_code),
-                "expected_debit_date" => Deserialize::begin(&mut self.expected_debit_date),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "suffix" => Deserialize::begin(&mut self.suffix),
+                "account_holder_name" => Deserialize::begin(&mut self.builder.account_holder_name),
+                "bank_code" => Deserialize::begin(&mut self.builder.bank_code),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "branch_code" => Deserialize::begin(&mut self.builder.branch_code),
+                "expected_debit_date" => Deserialize::begin(&mut self.builder.expected_debit_date),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "suffix" => Deserialize::begin(&mut self.builder.suffix),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account_holder_name: Deserialize::default(),
-                bank_code: Deserialize::default(),
-                bank_name: Deserialize::default(),
-                branch_code: Deserialize::default(),
-                expected_debit_date: Deserialize::default(),
-                last4: Deserialize::default(),
-                suffix: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account_holder_name),
                 Some(bank_code),
@@ -109,18 +102,18 @@ const _: () = {
                 Some(last4),
                 Some(suffix),
             ) = (
-                self.account_holder_name.take(),
-                self.bank_code.take(),
-                self.bank_name.take(),
-                self.branch_code.take(),
-                self.expected_debit_date.take(),
-                self.last4.take(),
-                self.suffix.take(),
+                self.builder.account_holder_name.take(),
+                self.builder.bank_code.take(),
+                self.builder.bank_name.take(),
+                self.builder.branch_code.take(),
+                self.builder.expected_debit_date.take(),
+                self.builder.last4.take(),
+                self.builder.suffix.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodDetailsNzBankAccount {
                 account_holder_name,
                 bank_code,
                 bank_name,
@@ -128,44 +121,8 @@ const _: () = {
                 expected_debit_date,
                 last4,
                 suffix,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsNzBankAccount {
-        type Builder = PaymentMethodDetailsNzBankAccountBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsNzBankAccount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsNzBankAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder_name" => b.account_holder_name = FromValueOpt::from_value(v),
-                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "branch_code" => b.branch_code = FromValueOpt::from_value(v),
-                    "expected_debit_date" => b.expected_debit_date = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "suffix" => b.suffix = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

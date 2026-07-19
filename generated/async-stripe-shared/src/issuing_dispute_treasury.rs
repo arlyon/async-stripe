@@ -23,16 +23,14 @@ pub struct IssuingDisputeTreasuryBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,64 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingDisputeTreasuryBuilder::deser_default(),
+                builder: IssuingDisputeTreasuryBuilder {
+                    debit_reversal: Deserialize::default(),
+                    received_debit: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingDisputeTreasuryBuilder {
-        type Out = IssuingDisputeTreasury;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "debit_reversal" => Deserialize::begin(&mut self.debit_reversal),
-                "received_debit" => Deserialize::begin(&mut self.received_debit),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { debit_reversal: Deserialize::default(), received_debit: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(debit_reversal), Some(received_debit)) =
-                (self.debit_reversal.take(), self.received_debit.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { debit_reversal, received_debit })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "debit_reversal" => Deserialize::begin(&mut self.builder.debit_reversal),
+                "received_debit" => Deserialize::begin(&mut self.builder.received_debit),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingDisputeTreasury {
-        type Builder = IssuingDisputeTreasuryBuilder;
-    }
-
-    impl FromValueOpt for IssuingDisputeTreasury {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(debit_reversal), Some(received_debit)) =
+                (self.builder.debit_reversal.take(), self.builder.received_debit.take())
+            else {
+                return Ok(());
             };
-            let mut b = IssuingDisputeTreasuryBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "debit_reversal" => b.debit_reversal = FromValueOpt::from_value(v),
-                    "received_debit" => b.received_debit = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(IssuingDisputeTreasury { debit_reversal, received_debit });
+            Ok(())
         }
     }
 };

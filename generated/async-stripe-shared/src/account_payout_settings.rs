@@ -28,16 +28,14 @@ pub struct AccountPayoutSettingsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,74 +54,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AccountPayoutSettingsBuilder::deser_default(),
+                builder: AccountPayoutSettingsBuilder {
+                    debit_negative_balances: Deserialize::default(),
+                    schedule: Deserialize::default(),
+                    statement_descriptor: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for AccountPayoutSettingsBuilder {
-        type Out = AccountPayoutSettings;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "debit_negative_balances" => Deserialize::begin(&mut self.debit_negative_balances),
-                "schedule" => Deserialize::begin(&mut self.schedule),
-                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                debit_negative_balances: Deserialize::default(),
-                schedule: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(debit_negative_balances), Some(schedule), Some(statement_descriptor)) = (
-                self.debit_negative_balances,
-                self.schedule.take(),
-                self.statement_descriptor.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { debit_negative_balances, schedule, statement_descriptor })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "debit_negative_balances" => {
+                    Deserialize::begin(&mut self.builder.debit_negative_balances)
+                }
+                "schedule" => Deserialize::begin(&mut self.builder.schedule),
+                "statement_descriptor" => {
+                    Deserialize::begin(&mut self.builder.statement_descriptor)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for AccountPayoutSettings {
-        type Builder = AccountPayoutSettingsBuilder;
-    }
-
-    impl FromValueOpt for AccountPayoutSettings {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(debit_negative_balances), Some(schedule), Some(statement_descriptor)) = (
+                self.builder.debit_negative_balances,
+                self.builder.schedule.take(),
+                self.builder.statement_descriptor.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = AccountPayoutSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "debit_negative_balances" => {
-                        b.debit_negative_balances = FromValueOpt::from_value(v)
-                    }
-                    "schedule" => b.schedule = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(AccountPayoutSettings {
+                debit_negative_balances,
+                schedule,
+                statement_descriptor,
+            });
+            Ok(())
         }
     }
 };

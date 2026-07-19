@@ -484,7 +484,7 @@ impl ExtType {
             Self::RangeQueryTs => "stripe_types::RangeQueryTs",
             Self::Timestamp => "stripe_types::Timestamp",
             Self::AlwaysTrue => "stripe_types::AlwaysTrue",
-            Self::Value => "miniserde::json::Value",
+            Self::Value => "stripe_miniserde::json::Value",
         }
     }
 

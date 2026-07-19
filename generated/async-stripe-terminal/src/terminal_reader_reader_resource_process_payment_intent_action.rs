@@ -24,16 +24,14 @@ pub struct TerminalReaderReaderResourceProcessPaymentIntentActionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,66 +50,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    TerminalReaderReaderResourceProcessPaymentIntentActionBuilder::deser_default(),
+                builder: TerminalReaderReaderResourceProcessPaymentIntentActionBuilder {
+                    payment_intent: Deserialize::default(),
+                    process_config: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TerminalReaderReaderResourceProcessPaymentIntentActionBuilder {
-        type Out = TerminalReaderReaderResourceProcessPaymentIntentAction;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "process_config" => Deserialize::begin(&mut self.process_config),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { payment_intent: Deserialize::default(), process_config: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payment_intent), Some(process_config)) =
-                (self.payment_intent.take(), self.process_config.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { payment_intent, process_config })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "payment_intent" => Deserialize::begin(&mut self.builder.payment_intent),
+                "process_config" => Deserialize::begin(&mut self.builder.process_config),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceProcessPaymentIntentAction {
-        type Builder = TerminalReaderReaderResourceProcessPaymentIntentActionBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceProcessPaymentIntentAction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(payment_intent), Some(process_config)) =
+                (self.builder.payment_intent.take(), self.builder.process_config.take())
+            else {
+                return Ok(());
             };
-            let mut b =
-                TerminalReaderReaderResourceProcessPaymentIntentActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "process_config" => b.process_config = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TerminalReaderReaderResourceProcessPaymentIntentAction {
+                payment_intent,
+                process_config,
+            });
+            Ok(())
         }
     }
 };

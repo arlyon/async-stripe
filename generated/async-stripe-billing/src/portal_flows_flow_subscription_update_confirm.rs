@@ -27,16 +27,14 @@ pub struct PortalFlowsFlowSubscriptionUpdateConfirmBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,70 +53,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PortalFlowsFlowSubscriptionUpdateConfirmBuilder::deser_default(),
+                builder: PortalFlowsFlowSubscriptionUpdateConfirmBuilder {
+                    discounts: Deserialize::default(),
+                    items: Deserialize::default(),
+                    subscription: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PortalFlowsFlowSubscriptionUpdateConfirmBuilder {
-        type Out = PortalFlowsFlowSubscriptionUpdateConfirm;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "discounts" => Deserialize::begin(&mut self.discounts),
-                "items" => Deserialize::begin(&mut self.items),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                discounts: Deserialize::default(),
-                items: Deserialize::default(),
-                subscription: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(discounts), Some(items), Some(subscription)) =
-                (self.discounts.take(), self.items.take(), self.subscription.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { discounts, items, subscription })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "discounts" => Deserialize::begin(&mut self.builder.discounts),
+                "items" => Deserialize::begin(&mut self.builder.items),
+                "subscription" => Deserialize::begin(&mut self.builder.subscription),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PortalFlowsFlowSubscriptionUpdateConfirm {
-        type Builder = PortalFlowsFlowSubscriptionUpdateConfirmBuilder;
-    }
-
-    impl FromValueOpt for PortalFlowsFlowSubscriptionUpdateConfirm {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(discounts), Some(items), Some(subscription)) = (
+                self.builder.discounts.take(),
+                self.builder.items.take(),
+                self.builder.subscription.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PortalFlowsFlowSubscriptionUpdateConfirmBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "items" => b.items = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PortalFlowsFlowSubscriptionUpdateConfirm { discounts, items, subscription });
+            Ok(())
         }
     }
 };

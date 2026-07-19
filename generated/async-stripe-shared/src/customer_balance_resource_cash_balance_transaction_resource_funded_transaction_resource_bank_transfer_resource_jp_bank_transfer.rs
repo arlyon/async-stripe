@@ -28,16 +28,14 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactio
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,73 +54,34 @@ const _: () = {
     fn map(&mut self) -> Result<Box<dyn Map + '_>> {
         Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransferBuilder::deser_default(),
-        }))
-    }
-}
-
-    impl MapBuilder for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransferBuilder {
-    type Out = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransfer;
-    fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-        Ok(match k {
-            "sender_bank" => Deserialize::begin(&mut self.sender_bank),
-            "sender_branch" => Deserialize::begin(&mut self.sender_branch),
-            "sender_name" => Deserialize::begin(&mut self.sender_name),
-            _ => <dyn Visitor>::ignore(),
-        })
-    }
-
-    fn deser_default() -> Self {
-        Self { sender_bank: Deserialize::default(),
+            builder: CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransferBuilder { sender_bank: Deserialize::default(),
 sender_branch: Deserialize::default(),
 sender_name: Deserialize::default(),
- }
-    }
-
-    fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(sender_bank),
-Some(sender_branch),
-Some(sender_name),
-) = (self.sender_bank.take(),
-self.sender_branch.take(),
-self.sender_name.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { sender_bank,sender_branch,sender_name })
+ },
+        }))
     }
 }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "sender_bank" => Deserialize::begin(&mut self.builder.sender_bank),
+                "sender_branch" => Deserialize::begin(&mut self.builder.sender_branch),
+                "sender_name" => Deserialize::begin(&mut self.builder.sender_name),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            let (Some(sender_bank), Some(sender_branch), Some(sender_name)) = (
+                self.builder.sender_bank.take(),
+                self.builder.sender_branch.take(),
+                self.builder.sender_name.take(),
+            ) else {
+                return Ok(());
+            };
+            *self.out = Some(CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransfer { sender_bank,sender_branch,sender_name });
             Ok(())
         }
     }
-
-    impl ObjectDeser for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransfer {
-    type Builder = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransferBuilder;
-}
-
-    impl FromValueOpt for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransfer {
-    fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        let mut b = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransferBuilder::deser_default();
-        for (k, v) in obj {
-            match k.as_str() {
-            "sender_bank" => b.sender_bank = FromValueOpt::from_value(v),
-            "sender_branch" => b.sender_branch = FromValueOpt::from_value(v),
-            "sender_name" => b.sender_name = FromValueOpt::from_value(v),
-                _ => {}
-            }
-        }
-        b.take_out()
-    }
-}
 };

@@ -38,16 +38,14 @@ pub struct LegalEntityJapanAddressBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -66,39 +64,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: LegalEntityJapanAddressBuilder::deser_default(),
+                builder: LegalEntityJapanAddressBuilder {
+                    city: Deserialize::default(),
+                    country: Deserialize::default(),
+                    line1: Deserialize::default(),
+                    line2: Deserialize::default(),
+                    postal_code: Deserialize::default(),
+                    state: Deserialize::default(),
+                    town: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for LegalEntityJapanAddressBuilder {
-        type Out = LegalEntityJapanAddress;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "city" => Deserialize::begin(&mut self.city),
-                "country" => Deserialize::begin(&mut self.country),
-                "line1" => Deserialize::begin(&mut self.line1),
-                "line2" => Deserialize::begin(&mut self.line2),
-                "postal_code" => Deserialize::begin(&mut self.postal_code),
-                "state" => Deserialize::begin(&mut self.state),
-                "town" => Deserialize::begin(&mut self.town),
+                "city" => Deserialize::begin(&mut self.builder.city),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "line1" => Deserialize::begin(&mut self.builder.line1),
+                "line2" => Deserialize::begin(&mut self.builder.line2),
+                "postal_code" => Deserialize::begin(&mut self.builder.postal_code),
+                "state" => Deserialize::begin(&mut self.builder.state),
+                "town" => Deserialize::begin(&mut self.builder.town),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                city: Deserialize::default(),
-                country: Deserialize::default(),
-                line1: Deserialize::default(),
-                line2: Deserialize::default(),
-                postal_code: Deserialize::default(),
-                state: Deserialize::default(),
-                town: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(city),
                 Some(country),
@@ -108,55 +101,27 @@ const _: () = {
                 Some(state),
                 Some(town),
             ) = (
-                self.city.take(),
-                self.country.take(),
-                self.line1.take(),
-                self.line2.take(),
-                self.postal_code.take(),
-                self.state.take(),
-                self.town.take(),
+                self.builder.city.take(),
+                self.builder.country.take(),
+                self.builder.line1.take(),
+                self.builder.line2.take(),
+                self.builder.postal_code.take(),
+                self.builder.state.take(),
+                self.builder.town.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { city, country, line1, line2, postal_code, state, town })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(LegalEntityJapanAddress {
+                city,
+                country,
+                line1,
+                line2,
+                postal_code,
+                state,
+                town,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for LegalEntityJapanAddress {
-        type Builder = LegalEntityJapanAddressBuilder;
-    }
-
-    impl FromValueOpt for LegalEntityJapanAddress {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = LegalEntityJapanAddressBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "city" => b.city = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "line1" => b.line1 = FromValueOpt::from_value(v),
-                    "line2" => b.line2 = FromValueOpt::from_value(v),
-                    "postal_code" => b.postal_code = FromValueOpt::from_value(v),
-                    "state" => b.state = FromValueOpt::from_value(v),
-                    "town" => b.town = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -67,7 +67,7 @@ pub struct EventData {
         serde(with = "stripe_types::with_serde_json_opt")
     )]
     #[cfg_attr(feature = "serialize", serde(skip_serializing_if = "Option::is_none"))]
-    pub previous_attributes: Option<miniserde::json::Value>,
+    pub previous_attributes: Option<stripe_miniserde::json::Value>,
 }
 
 // Custom Deserialize implementation for Event using the Shadow Struct pattern.
@@ -118,13 +118,13 @@ impl<'de> serde::Deserialize<'de> for Event {
                 }
             })?;
 
-        // Extract previous_attributes if present and convert to miniserde::json::Value
+        // Extract previous_attributes if present and convert to stripe_miniserde::json::Value
         let previous_attributes =
             if let Some(prev_attrs) = proxy.data.get("previous_attributes") {
                 let prev_attrs_str = serde_json::to_string(prev_attrs).map_err(|e| {
                     Error::custom(format!("Failed to serialize previous_attributes: {e}"))
                 })?;
-                Some(miniserde::json::from_str(&prev_attrs_str).map_err(|e| {
+                Some(stripe_miniserde::json::from_str(&prev_attrs_str).map_err(|e| {
                     Error::custom(format!("Failed to parse previous_attributes: {e}"))
                 })?)
             } else {
@@ -296,7 +296,7 @@ impl Webhook {
 
     #[tracing::instrument]
     fn parse_payload(self, payload: &str) -> Result<Event, WebhookError> {
-        let base_evt: stripe_shared::Event = miniserde::json::from_str(payload)
+        let base_evt: stripe_shared::Event = stripe_miniserde::json::from_str(payload)
             .map_err(|_| WebhookError::BadParse("could not deserialize webhook event".into()))?;
 
         let event_obj =

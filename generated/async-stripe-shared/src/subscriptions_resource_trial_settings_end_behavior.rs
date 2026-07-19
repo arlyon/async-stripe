@@ -22,16 +22,14 @@ pub struct SubscriptionsResourceTrialSettingsEndBehaviorBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -50,62 +48,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SubscriptionsResourceTrialSettingsEndBehaviorBuilder::deser_default(),
+                builder: SubscriptionsResourceTrialSettingsEndBehaviorBuilder {
+                    missing_payment_method: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SubscriptionsResourceTrialSettingsEndBehaviorBuilder {
-        type Out = SubscriptionsResourceTrialSettingsEndBehavior;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "missing_payment_method" => Deserialize::begin(&mut self.missing_payment_method),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { missing_payment_method: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(missing_payment_method),) = (self.missing_payment_method.take(),) else {
-                return None;
-            };
-            Some(Self::Out { missing_payment_method })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "missing_payment_method" => {
+                    Deserialize::begin(&mut self.builder.missing_payment_method)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SubscriptionsResourceTrialSettingsEndBehavior {
-        type Builder = SubscriptionsResourceTrialSettingsEndBehaviorBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionsResourceTrialSettingsEndBehavior {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(missing_payment_method),) = (self.builder.missing_payment_method.take(),)
+            else {
+                return Ok(());
             };
-            let mut b = SubscriptionsResourceTrialSettingsEndBehaviorBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "missing_payment_method" => {
-                        b.missing_payment_method = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(SubscriptionsResourceTrialSettingsEndBehavior { missing_payment_method });
+            Ok(())
         }
     }
 };
@@ -180,16 +147,16 @@ impl serde::Serialize for SubscriptionsResourceTrialSettingsEndBehaviorMissingPa
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod::from_str(s)
@@ -198,10 +165,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod

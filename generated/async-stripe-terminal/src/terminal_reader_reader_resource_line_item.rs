@@ -28,16 +28,14 @@ pub struct TerminalReaderReaderResourceLineItemBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,70 +54,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderReaderResourceLineItemBuilder::deser_default(),
+                builder: TerminalReaderReaderResourceLineItemBuilder {
+                    amount: Deserialize::default(),
+                    description: Deserialize::default(),
+                    quantity: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TerminalReaderReaderResourceLineItemBuilder {
-        type Out = TerminalReaderReaderResourceLineItem;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "description" => Deserialize::begin(&mut self.description),
-                "quantity" => Deserialize::begin(&mut self.quantity),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                description: Deserialize::default(),
-                quantity: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(description), Some(quantity)) =
-                (self.amount, self.description.take(), self.quantity)
-            else {
-                return None;
-            };
-            Some(Self::Out { amount, description, quantity })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "quantity" => Deserialize::begin(&mut self.builder.quantity),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceLineItem {
-        type Builder = TerminalReaderReaderResourceLineItemBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceLineItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount), Some(description), Some(quantity)) =
+                (self.builder.amount, self.builder.description.take(), self.builder.quantity)
+            else {
+                return Ok(());
             };
-            let mut b = TerminalReaderReaderResourceLineItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(TerminalReaderReaderResourceLineItem { amount, description, quantity });
+            Ok(())
         }
     }
 };

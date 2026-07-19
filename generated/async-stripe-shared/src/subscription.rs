@@ -208,16 +208,14 @@ pub struct SubscriptionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -236,121 +234,128 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SubscriptionBuilder::deser_default(),
+                builder: SubscriptionBuilder {
+                    application: Deserialize::default(),
+                    application_fee_percent: Deserialize::default(),
+                    automatic_tax: Deserialize::default(),
+                    billing_cycle_anchor: Deserialize::default(),
+                    billing_cycle_anchor_config: Deserialize::default(),
+                    billing_mode: Deserialize::default(),
+                    billing_thresholds: Deserialize::default(),
+                    cancel_at: Deserialize::default(),
+                    cancel_at_period_end: Deserialize::default(),
+                    canceled_at: Deserialize::default(),
+                    cancellation_details: Deserialize::default(),
+                    collection_method: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    days_until_due: Deserialize::default(),
+                    default_payment_method: Deserialize::default(),
+                    default_source: Deserialize::default(),
+                    default_tax_rates: Deserialize::default(),
+                    description: Deserialize::default(),
+                    discounts: Deserialize::default(),
+                    ended_at: Deserialize::default(),
+                    id: Deserialize::default(),
+                    invoice_settings: Deserialize::default(),
+                    items: Deserialize::default(),
+                    latest_invoice: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    next_pending_invoice_item_invoice: Deserialize::default(),
+                    on_behalf_of: Deserialize::default(),
+                    pause_collection: Deserialize::default(),
+                    payment_settings: Deserialize::default(),
+                    pending_invoice_item_interval: Deserialize::default(),
+                    pending_setup_intent: Deserialize::default(),
+                    pending_update: Deserialize::default(),
+                    presentment_details: Deserialize::default(),
+                    schedule: Deserialize::default(),
+                    start_date: Deserialize::default(),
+                    status: Deserialize::default(),
+                    test_clock: Deserialize::default(),
+                    transfer_data: Deserialize::default(),
+                    trial_end: Deserialize::default(),
+                    trial_settings: Deserialize::default(),
+                    trial_start: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SubscriptionBuilder {
-        type Out = Subscription;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "application" => Deserialize::begin(&mut self.application),
-                "application_fee_percent" => Deserialize::begin(&mut self.application_fee_percent),
-                "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
-                "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "application_fee_percent" => {
+                    Deserialize::begin(&mut self.builder.application_fee_percent)
+                }
+                "automatic_tax" => Deserialize::begin(&mut self.builder.automatic_tax),
+                "billing_cycle_anchor" => {
+                    Deserialize::begin(&mut self.builder.billing_cycle_anchor)
+                }
                 "billing_cycle_anchor_config" => {
-                    Deserialize::begin(&mut self.billing_cycle_anchor_config)
+                    Deserialize::begin(&mut self.builder.billing_cycle_anchor_config)
                 }
-                "billing_mode" => Deserialize::begin(&mut self.billing_mode),
-                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
-                "cancel_at" => Deserialize::begin(&mut self.cancel_at),
-                "cancel_at_period_end" => Deserialize::begin(&mut self.cancel_at_period_end),
-                "canceled_at" => Deserialize::begin(&mut self.canceled_at),
-                "cancellation_details" => Deserialize::begin(&mut self.cancellation_details),
-                "collection_method" => Deserialize::begin(&mut self.collection_method),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "days_until_due" => Deserialize::begin(&mut self.days_until_due),
-                "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
-                "default_source" => Deserialize::begin(&mut self.default_source),
-                "default_tax_rates" => Deserialize::begin(&mut self.default_tax_rates),
-                "description" => Deserialize::begin(&mut self.description),
-                "discounts" => Deserialize::begin(&mut self.discounts),
-                "ended_at" => Deserialize::begin(&mut self.ended_at),
-                "id" => Deserialize::begin(&mut self.id),
-                "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
-                "items" => Deserialize::begin(&mut self.items),
-                "latest_invoice" => Deserialize::begin(&mut self.latest_invoice),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
+                "billing_mode" => Deserialize::begin(&mut self.builder.billing_mode),
+                "billing_thresholds" => Deserialize::begin(&mut self.builder.billing_thresholds),
+                "cancel_at" => Deserialize::begin(&mut self.builder.cancel_at),
+                "cancel_at_period_end" => {
+                    Deserialize::begin(&mut self.builder.cancel_at_period_end)
+                }
+                "canceled_at" => Deserialize::begin(&mut self.builder.canceled_at),
+                "cancellation_details" => {
+                    Deserialize::begin(&mut self.builder.cancellation_details)
+                }
+                "collection_method" => Deserialize::begin(&mut self.builder.collection_method),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "days_until_due" => Deserialize::begin(&mut self.builder.days_until_due),
+                "default_payment_method" => {
+                    Deserialize::begin(&mut self.builder.default_payment_method)
+                }
+                "default_source" => Deserialize::begin(&mut self.builder.default_source),
+                "default_tax_rates" => Deserialize::begin(&mut self.builder.default_tax_rates),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "discounts" => Deserialize::begin(&mut self.builder.discounts),
+                "ended_at" => Deserialize::begin(&mut self.builder.ended_at),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "invoice_settings" => Deserialize::begin(&mut self.builder.invoice_settings),
+                "items" => Deserialize::begin(&mut self.builder.items),
+                "latest_invoice" => Deserialize::begin(&mut self.builder.latest_invoice),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
                 "next_pending_invoice_item_invoice" => {
-                    Deserialize::begin(&mut self.next_pending_invoice_item_invoice)
+                    Deserialize::begin(&mut self.builder.next_pending_invoice_item_invoice)
                 }
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "pause_collection" => Deserialize::begin(&mut self.pause_collection),
-                "payment_settings" => Deserialize::begin(&mut self.payment_settings),
+                "on_behalf_of" => Deserialize::begin(&mut self.builder.on_behalf_of),
+                "pause_collection" => Deserialize::begin(&mut self.builder.pause_collection),
+                "payment_settings" => Deserialize::begin(&mut self.builder.payment_settings),
                 "pending_invoice_item_interval" => {
-                    Deserialize::begin(&mut self.pending_invoice_item_interval)
+                    Deserialize::begin(&mut self.builder.pending_invoice_item_interval)
                 }
-                "pending_setup_intent" => Deserialize::begin(&mut self.pending_setup_intent),
-                "pending_update" => Deserialize::begin(&mut self.pending_update),
-                "presentment_details" => Deserialize::begin(&mut self.presentment_details),
-                "schedule" => Deserialize::begin(&mut self.schedule),
-                "start_date" => Deserialize::begin(&mut self.start_date),
-                "status" => Deserialize::begin(&mut self.status),
-                "test_clock" => Deserialize::begin(&mut self.test_clock),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
-                "trial_end" => Deserialize::begin(&mut self.trial_end),
-                "trial_settings" => Deserialize::begin(&mut self.trial_settings),
-                "trial_start" => Deserialize::begin(&mut self.trial_start),
+                "pending_setup_intent" => {
+                    Deserialize::begin(&mut self.builder.pending_setup_intent)
+                }
+                "pending_update" => Deserialize::begin(&mut self.builder.pending_update),
+                "presentment_details" => Deserialize::begin(&mut self.builder.presentment_details),
+                "schedule" => Deserialize::begin(&mut self.builder.schedule),
+                "start_date" => Deserialize::begin(&mut self.builder.start_date),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "test_clock" => Deserialize::begin(&mut self.builder.test_clock),
+                "transfer_data" => Deserialize::begin(&mut self.builder.transfer_data),
+                "trial_end" => Deserialize::begin(&mut self.builder.trial_end),
+                "trial_settings" => Deserialize::begin(&mut self.builder.trial_settings),
+                "trial_start" => Deserialize::begin(&mut self.builder.trial_start),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                application: Deserialize::default(),
-                application_fee_percent: Deserialize::default(),
-                automatic_tax: Deserialize::default(),
-                billing_cycle_anchor: Deserialize::default(),
-                billing_cycle_anchor_config: Deserialize::default(),
-                billing_mode: Deserialize::default(),
-                billing_thresholds: Deserialize::default(),
-                cancel_at: Deserialize::default(),
-                cancel_at_period_end: Deserialize::default(),
-                canceled_at: Deserialize::default(),
-                cancellation_details: Deserialize::default(),
-                collection_method: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                days_until_due: Deserialize::default(),
-                default_payment_method: Deserialize::default(),
-                default_source: Deserialize::default(),
-                default_tax_rates: Deserialize::default(),
-                description: Deserialize::default(),
-                discounts: Deserialize::default(),
-                ended_at: Deserialize::default(),
-                id: Deserialize::default(),
-                invoice_settings: Deserialize::default(),
-                items: Deserialize::default(),
-                latest_invoice: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                next_pending_invoice_item_invoice: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                pause_collection: Deserialize::default(),
-                payment_settings: Deserialize::default(),
-                pending_invoice_item_interval: Deserialize::default(),
-                pending_setup_intent: Deserialize::default(),
-                pending_update: Deserialize::default(),
-                presentment_details: Deserialize::default(),
-                schedule: Deserialize::default(),
-                start_date: Deserialize::default(),
-                status: Deserialize::default(),
-                test_clock: Deserialize::default(),
-                transfer_data: Deserialize::default(),
-                trial_end: Deserialize::default(),
-                trial_settings: Deserialize::default(),
-                trial_start: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(application),
                 Some(application_fee_percent),
@@ -398,56 +403,56 @@ const _: () = {
                 Some(trial_settings),
                 Some(trial_start),
             ) = (
-                self.application.take(),
-                self.application_fee_percent,
-                self.automatic_tax.take(),
-                self.billing_cycle_anchor,
-                self.billing_cycle_anchor_config,
-                self.billing_mode.take(),
-                self.billing_thresholds,
-                self.cancel_at,
-                self.cancel_at_period_end,
-                self.canceled_at,
-                self.cancellation_details.take(),
-                self.collection_method.take(),
-                self.created,
-                self.currency.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.days_until_due,
-                self.default_payment_method.take(),
-                self.default_source.take(),
-                self.default_tax_rates.take(),
-                self.description.take(),
-                self.discounts.take(),
-                self.ended_at,
-                self.id.take(),
-                self.invoice_settings.take(),
-                self.items.take(),
-                self.latest_invoice.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.next_pending_invoice_item_invoice,
-                self.on_behalf_of.take(),
-                self.pause_collection.take(),
-                self.payment_settings.take(),
-                self.pending_invoice_item_interval.take(),
-                self.pending_setup_intent.take(),
-                self.pending_update.take(),
-                self.presentment_details.take(),
-                self.schedule.take(),
-                self.start_date,
-                self.status.take(),
-                self.test_clock.take(),
-                self.transfer_data.take(),
-                self.trial_end,
-                self.trial_settings.take(),
-                self.trial_start,
+                self.builder.application.take(),
+                self.builder.application_fee_percent,
+                self.builder.automatic_tax.take(),
+                self.builder.billing_cycle_anchor,
+                self.builder.billing_cycle_anchor_config,
+                self.builder.billing_mode.take(),
+                self.builder.billing_thresholds,
+                self.builder.cancel_at,
+                self.builder.cancel_at_period_end,
+                self.builder.canceled_at,
+                self.builder.cancellation_details.take(),
+                self.builder.collection_method.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.days_until_due,
+                self.builder.default_payment_method.take(),
+                self.builder.default_source.take(),
+                self.builder.default_tax_rates.take(),
+                self.builder.description.take(),
+                self.builder.discounts.take(),
+                self.builder.ended_at,
+                self.builder.id.take(),
+                self.builder.invoice_settings.take(),
+                self.builder.items.take(),
+                self.builder.latest_invoice.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.next_pending_invoice_item_invoice,
+                self.builder.on_behalf_of.take(),
+                self.builder.pause_collection.take(),
+                self.builder.payment_settings.take(),
+                self.builder.pending_invoice_item_interval.take(),
+                self.builder.pending_setup_intent.take(),
+                self.builder.pending_update.take(),
+                self.builder.presentment_details.take(),
+                self.builder.schedule.take(),
+                self.builder.start_date,
+                self.builder.status.take(),
+                self.builder.test_clock.take(),
+                self.builder.transfer_data.take(),
+                self.builder.trial_end,
+                self.builder.trial_settings.take(),
+                self.builder.trial_start,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Subscription {
                 application,
                 application_fee_percent,
                 automatic_tax,
@@ -493,92 +498,8 @@ const _: () = {
                 trial_end,
                 trial_settings,
                 trial_start,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Subscription {
-        type Builder = SubscriptionBuilder;
-    }
-
-    impl FromValueOpt for Subscription {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee_percent" => {
-                        b.application_fee_percent = FromValueOpt::from_value(v)
-                    }
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
-                    "billing_cycle_anchor_config" => {
-                        b.billing_cycle_anchor_config = FromValueOpt::from_value(v)
-                    }
-                    "billing_mode" => b.billing_mode = FromValueOpt::from_value(v),
-                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
-                    "cancel_at" => b.cancel_at = FromValueOpt::from_value(v),
-                    "cancel_at_period_end" => b.cancel_at_period_end = FromValueOpt::from_value(v),
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "cancellation_details" => b.cancellation_details = FromValueOpt::from_value(v),
-                    "collection_method" => b.collection_method = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "days_until_due" => b.days_until_due = FromValueOpt::from_value(v),
-                    "default_payment_method" => {
-                        b.default_payment_method = FromValueOpt::from_value(v)
-                    }
-                    "default_source" => b.default_source = FromValueOpt::from_value(v),
-                    "default_tax_rates" => b.default_tax_rates = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "ended_at" => b.ended_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
-                    "items" => b.items = FromValueOpt::from_value(v),
-                    "latest_invoice" => b.latest_invoice = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "next_pending_invoice_item_invoice" => {
-                        b.next_pending_invoice_item_invoice = FromValueOpt::from_value(v)
-                    }
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "pause_collection" => b.pause_collection = FromValueOpt::from_value(v),
-                    "payment_settings" => b.payment_settings = FromValueOpt::from_value(v),
-                    "pending_invoice_item_interval" => {
-                        b.pending_invoice_item_interval = FromValueOpt::from_value(v)
-                    }
-                    "pending_setup_intent" => b.pending_setup_intent = FromValueOpt::from_value(v),
-                    "pending_update" => b.pending_update = FromValueOpt::from_value(v),
-                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
-                    "schedule" => b.schedule = FromValueOpt::from_value(v),
-                    "start_date" => b.start_date = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    "trial_end" => b.trial_end = FromValueOpt::from_value(v),
-                    "trial_settings" => b.trial_settings = FromValueOpt::from_value(v),
-                    "trial_start" => b.trial_start = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -743,21 +664,19 @@ impl serde::Serialize for SubscriptionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SubscriptionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SubscriptionStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SubscriptionStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SubscriptionStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(SubscriptionStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SubscriptionStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -840,21 +759,19 @@ impl serde::Serialize for SubscriptionCollectionMethod {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SubscriptionCollectionMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SubscriptionCollectionMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SubscriptionCollectionMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SubscriptionCollectionMethod> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(SubscriptionCollectionMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SubscriptionCollectionMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

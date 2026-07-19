@@ -34,16 +34,14 @@ pub struct TaxProductResourceTaxAssociationTransactionAttemptsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -62,77 +60,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TaxProductResourceTaxAssociationTransactionAttemptsBuilder::deser_default(
-                ),
+                builder: TaxProductResourceTaxAssociationTransactionAttemptsBuilder {
+                    committed: Deserialize::default(),
+                    errored: Deserialize::default(),
+                    source: Deserialize::default(),
+                    status: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TaxProductResourceTaxAssociationTransactionAttemptsBuilder {
-        type Out = TaxProductResourceTaxAssociationTransactionAttempts;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "committed" => Deserialize::begin(&mut self.committed),
-                "errored" => Deserialize::begin(&mut self.errored),
-                "source" => Deserialize::begin(&mut self.source),
-                "status" => Deserialize::begin(&mut self.status),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                committed: Deserialize::default(),
-                errored: Deserialize::default(),
-                source: Deserialize::default(),
-                status: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(committed), Some(errored), Some(source), Some(status)) = (
-                self.committed.take(),
-                self.errored.take(),
-                self.source.take(),
-                self.status.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { committed, errored, source, status })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "committed" => Deserialize::begin(&mut self.builder.committed),
+                "errored" => Deserialize::begin(&mut self.builder.errored),
+                "source" => Deserialize::begin(&mut self.builder.source),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TaxProductResourceTaxAssociationTransactionAttempts {
-        type Builder = TaxProductResourceTaxAssociationTransactionAttemptsBuilder;
-    }
-
-    impl FromValueOpt for TaxProductResourceTaxAssociationTransactionAttempts {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(committed), Some(errored), Some(source), Some(status)) = (
+                self.builder.committed.take(),
+                self.builder.errored.take(),
+                self.builder.source.take(),
+                self.builder.status.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = TaxProductResourceTaxAssociationTransactionAttemptsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "committed" => b.committed = FromValueOpt::from_value(v),
-                    "errored" => b.errored = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TaxProductResourceTaxAssociationTransactionAttempts {
+                committed,
+                errored,
+                source,
+                status,
+            });
+            Ok(())
         }
     }
 };

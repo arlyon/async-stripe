@@ -35,16 +35,14 @@ pub struct PaymentMethodOptionsAfterpayClearpayBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -63,70 +61,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodOptionsAfterpayClearpayBuilder::deser_default(),
+                builder: PaymentMethodOptionsAfterpayClearpayBuilder {
+                    capture_method: Deserialize::default(),
+                    reference: Deserialize::default(),
+                    setup_future_usage: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodOptionsAfterpayClearpayBuilder {
-        type Out = PaymentMethodOptionsAfterpayClearpay;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
-                "reference" => Deserialize::begin(&mut self.reference),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                capture_method: Deserialize::default(),
-                reference: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(capture_method), Some(reference), Some(setup_future_usage)) =
-                (self.capture_method.take(), self.reference.take(), self.setup_future_usage.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { capture_method, reference, setup_future_usage })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "capture_method" => Deserialize::begin(&mut self.builder.capture_method),
+                "reference" => Deserialize::begin(&mut self.builder.reference),
+                "setup_future_usage" => Deserialize::begin(&mut self.builder.setup_future_usage),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodOptionsAfterpayClearpay {
-        type Builder = PaymentMethodOptionsAfterpayClearpayBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodOptionsAfterpayClearpay {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(capture_method), Some(reference), Some(setup_future_usage)) = (
+                self.builder.capture_method.take(),
+                self.builder.reference.take(),
+                self.builder.setup_future_usage.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodOptionsAfterpayClearpayBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodOptionsAfterpayClearpay {
+                capture_method,
+                reference,
+                setup_future_usage,
+            });
+            Ok(())
         }
     }
 };
@@ -193,14 +160,14 @@ impl serde::Serialize for PaymentMethodOptionsAfterpayClearpayCaptureMethod {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsAfterpayClearpayCaptureMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodOptionsAfterpayClearpayCaptureMethod> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentMethodOptionsAfterpayClearpayCaptureMethod::from_str(s).expect("infallible"),
@@ -208,8 +175,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsAfterpayClearpa
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsAfterpayClearpayCaptureMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsAfterpayClearpayCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -288,14 +253,14 @@ impl serde::Serialize for PaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsAfterpayClearpaySetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodOptionsAfterpayClearpaySetupFutureUsage> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentMethodOptionsAfterpayClearpaySetupFutureUsage::from_str(s).expect("infallible"),
@@ -303,8 +268,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsAfterpayClearpa
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsAfterpayClearpaySetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -36,16 +36,14 @@ pub struct BillingMeterEventAdjustmentBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -64,80 +62,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BillingMeterEventAdjustmentBuilder::deser_default(),
+                builder: BillingMeterEventAdjustmentBuilder {
+                    cancel: Deserialize::default(),
+                    event_name: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    status: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BillingMeterEventAdjustmentBuilder {
-        type Out = BillingMeterEventAdjustment;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "cancel" => Deserialize::begin(&mut self.cancel),
-                "event_name" => Deserialize::begin(&mut self.event_name),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "status" => Deserialize::begin(&mut self.status),
-                "type" => Deserialize::begin(&mut self.type_),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                cancel: Deserialize::default(),
-                event_name: Deserialize::default(),
-                livemode: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(cancel), Some(event_name), Some(livemode), Some(status), Some(type_)) = (
-                self.cancel.take(),
-                self.event_name.take(),
-                self.livemode,
-                self.status.take(),
-                self.type_.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { cancel, event_name, livemode, status, type_ })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "cancel" => Deserialize::begin(&mut self.builder.cancel),
+                "event_name" => Deserialize::begin(&mut self.builder.event_name),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingMeterEventAdjustment {
-        type Builder = BillingMeterEventAdjustmentBuilder;
-    }
-
-    impl FromValueOpt for BillingMeterEventAdjustment {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(cancel), Some(event_name), Some(livemode), Some(status), Some(type_)) = (
+                self.builder.cancel.take(),
+                self.builder.event_name.take(),
+                self.builder.livemode,
+                self.builder.status.take(),
+                self.builder.type_.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = BillingMeterEventAdjustmentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "cancel" => b.cancel = FromValueOpt::from_value(v),
-                    "event_name" => b.event_name = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(BillingMeterEventAdjustment { cancel, event_name, livemode, status, type_ });
+            Ok(())
         }
     }
 };
@@ -221,21 +181,19 @@ impl serde::Serialize for BillingMeterEventAdjustmentStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BillingMeterEventAdjustmentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BillingMeterEventAdjustmentStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BillingMeterEventAdjustmentStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BillingMeterEventAdjustmentStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BillingMeterEventAdjustmentStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BillingMeterEventAdjustmentStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingMeterEventAdjustmentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -304,21 +262,19 @@ impl serde::Serialize for BillingMeterEventAdjustmentType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BillingMeterEventAdjustmentType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BillingMeterEventAdjustmentType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BillingMeterEventAdjustmentType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BillingMeterEventAdjustmentType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BillingMeterEventAdjustmentType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BillingMeterEventAdjustmentType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingMeterEventAdjustmentType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

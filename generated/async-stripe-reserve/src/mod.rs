@@ -10,7 +10,7 @@
 
 extern crate self as stripe_reserve;
 
-miniserde::make_place!(Place);
+stripe_miniserde::make_place!(Place);
 #[doc(hidden)]
 pub mod reserve_hold;
 #[doc(inline)]

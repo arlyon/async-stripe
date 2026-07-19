@@ -33,11 +33,9 @@ impl<'de> serde::Deserialize<'de> for AlwaysTrue {
 
 #[doc(hidden)]
 mod miniserde_deser {
-    use miniserde::Deserialize;
-    use miniserde::de::Visitor;
-    use miniserde::json::Value;
+    use stripe_miniserde::Deserialize;
+    use stripe_miniserde::de::Visitor;
 
-    use crate::miniserde_helpers::FromValueOpt;
     use crate::{AlwaysTrue, Place};
 
     impl Deserialize for AlwaysTrue {
@@ -47,20 +45,13 @@ mod miniserde_deser {
     }
 
     impl Visitor for Place<AlwaysTrue> {
-        fn boolean(&mut self, b: bool) -> miniserde::Result<()> {
+        fn boolean(&mut self, b: bool) -> stripe_miniserde::Result<()> {
             if b {
                 self.out = Some(AlwaysTrue);
                 Ok(())
             } else {
-                Err(miniserde::Error)
+                Err(stripe_miniserde::Error)
             }
-        }
-    }
-
-    impl FromValueOpt for AlwaysTrue {
-        fn from_value(v: Value) -> Option<Self> {
-            let b = bool::from_value(v)?;
-            if b { Some(AlwaysTrue) } else { None }
         }
     }
 }

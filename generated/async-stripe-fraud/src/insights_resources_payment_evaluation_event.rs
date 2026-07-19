@@ -41,16 +41,14 @@ pub struct InsightsResourcesPaymentEvaluationEventBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -69,45 +67,40 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InsightsResourcesPaymentEvaluationEventBuilder::deser_default(),
+                builder: InsightsResourcesPaymentEvaluationEventBuilder {
+                    dispute_opened: Deserialize::default(),
+                    early_fraud_warning_received: Deserialize::default(),
+                    occurred_at: Deserialize::default(),
+                    refunded: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    user_intervention_raised: Deserialize::default(),
+                    user_intervention_resolved: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for InsightsResourcesPaymentEvaluationEventBuilder {
-        type Out = InsightsResourcesPaymentEvaluationEvent;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "dispute_opened" => Deserialize::begin(&mut self.dispute_opened),
+                "dispute_opened" => Deserialize::begin(&mut self.builder.dispute_opened),
                 "early_fraud_warning_received" => {
-                    Deserialize::begin(&mut self.early_fraud_warning_received)
+                    Deserialize::begin(&mut self.builder.early_fraud_warning_received)
                 }
-                "occurred_at" => Deserialize::begin(&mut self.occurred_at),
-                "refunded" => Deserialize::begin(&mut self.refunded),
-                "type" => Deserialize::begin(&mut self.type_),
+                "occurred_at" => Deserialize::begin(&mut self.builder.occurred_at),
+                "refunded" => Deserialize::begin(&mut self.builder.refunded),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 "user_intervention_raised" => {
-                    Deserialize::begin(&mut self.user_intervention_raised)
+                    Deserialize::begin(&mut self.builder.user_intervention_raised)
                 }
                 "user_intervention_resolved" => {
-                    Deserialize::begin(&mut self.user_intervention_resolved)
+                    Deserialize::begin(&mut self.builder.user_intervention_resolved)
                 }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                dispute_opened: Deserialize::default(),
-                early_fraud_warning_received: Deserialize::default(),
-                occurred_at: Deserialize::default(),
-                refunded: Deserialize::default(),
-                type_: Deserialize::default(),
-                user_intervention_raised: Deserialize::default(),
-                user_intervention_resolved: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(dispute_opened),
                 Some(early_fraud_warning_received),
@@ -117,18 +110,18 @@ const _: () = {
                 Some(user_intervention_raised),
                 Some(user_intervention_resolved),
             ) = (
-                self.dispute_opened.take(),
-                self.early_fraud_warning_received.take(),
-                self.occurred_at,
-                self.refunded.take(),
-                self.type_.take(),
-                self.user_intervention_raised.take(),
-                self.user_intervention_resolved.take(),
+                self.builder.dispute_opened.take(),
+                self.builder.early_fraud_warning_received.take(),
+                self.builder.occurred_at,
+                self.builder.refunded.take(),
+                self.builder.type_.take(),
+                self.builder.user_intervention_raised.take(),
+                self.builder.user_intervention_resolved.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(InsightsResourcesPaymentEvaluationEvent {
                 dispute_opened,
                 early_fraud_warning_received,
                 occurred_at,
@@ -136,50 +129,8 @@ const _: () = {
                 type_,
                 user_intervention_raised,
                 user_intervention_resolved,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for InsightsResourcesPaymentEvaluationEvent {
-        type Builder = InsightsResourcesPaymentEvaluationEventBuilder;
-    }
-
-    impl FromValueOpt for InsightsResourcesPaymentEvaluationEvent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InsightsResourcesPaymentEvaluationEventBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "dispute_opened" => b.dispute_opened = FromValueOpt::from_value(v),
-                    "early_fraud_warning_received" => {
-                        b.early_fraud_warning_received = FromValueOpt::from_value(v)
-                    }
-                    "occurred_at" => b.occurred_at = FromValueOpt::from_value(v),
-                    "refunded" => b.refunded = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "user_intervention_raised" => {
-                        b.user_intervention_raised = FromValueOpt::from_value(v)
-                    }
-                    "user_intervention_resolved" => {
-                        b.user_intervention_resolved = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -258,22 +209,20 @@ impl serde::Serialize for InsightsResourcesPaymentEvaluationEventType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for InsightsResourcesPaymentEvaluationEventType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for InsightsResourcesPaymentEvaluationEventType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<InsightsResourcesPaymentEvaluationEventType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<InsightsResourcesPaymentEvaluationEventType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(InsightsResourcesPaymentEvaluationEventType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(InsightsResourcesPaymentEvaluationEventType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InsightsResourcesPaymentEvaluationEventType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

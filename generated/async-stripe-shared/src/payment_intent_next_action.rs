@@ -35,7 +35,7 @@ pub struct PaymentIntentNextAction {
         any(feature = "deserialize", feature = "serialize"),
         serde(with = "stripe_types::with_serde_json_opt")
     )]
-    pub use_stripe_sdk: Option<miniserde::json::Value>,
+    pub use_stripe_sdk: Option<stripe_miniserde::json::Value>,
     pub verify_with_microdeposits:
         Option<stripe_shared::PaymentIntentNextActionVerifyWithMicrodeposits>,
     pub wechat_pay_display_qr_code:
@@ -77,7 +77,7 @@ pub struct PaymentIntentNextActionBuilder {
     type_: Option<String>,
     upi_handle_redirect_or_display_qr_code:
         Option<Option<stripe_shared::PaymentIntentNextActionUpiHandleRedirectOrDisplayQrCode>>,
-    use_stripe_sdk: Option<Option<miniserde::json::Value>>,
+    use_stripe_sdk: Option<Option<stripe_miniserde::json::Value>>,
     verify_with_microdeposits:
         Option<Option<stripe_shared::PaymentIntentNextActionVerifyWithMicrodeposits>>,
     wechat_pay_display_qr_code:
@@ -91,16 +91,14 @@ pub struct PaymentIntentNextActionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -119,85 +117,92 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionBuilder::deser_default(),
+                builder: PaymentIntentNextActionBuilder {
+                    alipay_handle_redirect: Deserialize::default(),
+                    boleto_display_details: Deserialize::default(),
+                    card_await_notification: Deserialize::default(),
+                    cashapp_handle_redirect_or_display_qr_code: Deserialize::default(),
+                    display_bank_transfer_instructions: Deserialize::default(),
+                    konbini_display_details: Deserialize::default(),
+                    multibanco_display_details: Deserialize::default(),
+                    oxxo_display_details: Deserialize::default(),
+                    paynow_display_qr_code: Deserialize::default(),
+                    pix_display_qr_code: Deserialize::default(),
+                    promptpay_display_qr_code: Deserialize::default(),
+                    redirect_to_url: Deserialize::default(),
+                    swish_handle_redirect_or_display_qr_code: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    upi_handle_redirect_or_display_qr_code: Deserialize::default(),
+                    use_stripe_sdk: Deserialize::default(),
+                    verify_with_microdeposits: Deserialize::default(),
+                    wechat_pay_display_qr_code: Deserialize::default(),
+                    wechat_pay_redirect_to_android_app: Deserialize::default(),
+                    wechat_pay_redirect_to_ios_app: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentIntentNextActionBuilder {
-        type Out = PaymentIntentNextAction;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "alipay_handle_redirect" => Deserialize::begin(&mut self.alipay_handle_redirect),
-                "boleto_display_details" => Deserialize::begin(&mut self.boleto_display_details),
-                "card_await_notification" => Deserialize::begin(&mut self.card_await_notification),
+                "alipay_handle_redirect" => {
+                    Deserialize::begin(&mut self.builder.alipay_handle_redirect)
+                }
+                "boleto_display_details" => {
+                    Deserialize::begin(&mut self.builder.boleto_display_details)
+                }
+                "card_await_notification" => {
+                    Deserialize::begin(&mut self.builder.card_await_notification)
+                }
                 "cashapp_handle_redirect_or_display_qr_code" => {
-                    Deserialize::begin(&mut self.cashapp_handle_redirect_or_display_qr_code)
+                    Deserialize::begin(&mut self.builder.cashapp_handle_redirect_or_display_qr_code)
                 }
                 "display_bank_transfer_instructions" => {
-                    Deserialize::begin(&mut self.display_bank_transfer_instructions)
+                    Deserialize::begin(&mut self.builder.display_bank_transfer_instructions)
                 }
-                "konbini_display_details" => Deserialize::begin(&mut self.konbini_display_details),
+                "konbini_display_details" => {
+                    Deserialize::begin(&mut self.builder.konbini_display_details)
+                }
                 "multibanco_display_details" => {
-                    Deserialize::begin(&mut self.multibanco_display_details)
+                    Deserialize::begin(&mut self.builder.multibanco_display_details)
                 }
-                "oxxo_display_details" => Deserialize::begin(&mut self.oxxo_display_details),
-                "paynow_display_qr_code" => Deserialize::begin(&mut self.paynow_display_qr_code),
-                "pix_display_qr_code" => Deserialize::begin(&mut self.pix_display_qr_code),
+                "oxxo_display_details" => {
+                    Deserialize::begin(&mut self.builder.oxxo_display_details)
+                }
+                "paynow_display_qr_code" => {
+                    Deserialize::begin(&mut self.builder.paynow_display_qr_code)
+                }
+                "pix_display_qr_code" => Deserialize::begin(&mut self.builder.pix_display_qr_code),
                 "promptpay_display_qr_code" => {
-                    Deserialize::begin(&mut self.promptpay_display_qr_code)
+                    Deserialize::begin(&mut self.builder.promptpay_display_qr_code)
                 }
-                "redirect_to_url" => Deserialize::begin(&mut self.redirect_to_url),
+                "redirect_to_url" => Deserialize::begin(&mut self.builder.redirect_to_url),
                 "swish_handle_redirect_or_display_qr_code" => {
-                    Deserialize::begin(&mut self.swish_handle_redirect_or_display_qr_code)
+                    Deserialize::begin(&mut self.builder.swish_handle_redirect_or_display_qr_code)
                 }
-                "type" => Deserialize::begin(&mut self.type_),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 "upi_handle_redirect_or_display_qr_code" => {
-                    Deserialize::begin(&mut self.upi_handle_redirect_or_display_qr_code)
+                    Deserialize::begin(&mut self.builder.upi_handle_redirect_or_display_qr_code)
                 }
-                "use_stripe_sdk" => Deserialize::begin(&mut self.use_stripe_sdk),
+                "use_stripe_sdk" => Deserialize::begin(&mut self.builder.use_stripe_sdk),
                 "verify_with_microdeposits" => {
-                    Deserialize::begin(&mut self.verify_with_microdeposits)
+                    Deserialize::begin(&mut self.builder.verify_with_microdeposits)
                 }
                 "wechat_pay_display_qr_code" => {
-                    Deserialize::begin(&mut self.wechat_pay_display_qr_code)
+                    Deserialize::begin(&mut self.builder.wechat_pay_display_qr_code)
                 }
                 "wechat_pay_redirect_to_android_app" => {
-                    Deserialize::begin(&mut self.wechat_pay_redirect_to_android_app)
+                    Deserialize::begin(&mut self.builder.wechat_pay_redirect_to_android_app)
                 }
                 "wechat_pay_redirect_to_ios_app" => {
-                    Deserialize::begin(&mut self.wechat_pay_redirect_to_ios_app)
+                    Deserialize::begin(&mut self.builder.wechat_pay_redirect_to_ios_app)
                 }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                alipay_handle_redirect: Deserialize::default(),
-                boleto_display_details: Deserialize::default(),
-                card_await_notification: Deserialize::default(),
-                cashapp_handle_redirect_or_display_qr_code: Deserialize::default(),
-                display_bank_transfer_instructions: Deserialize::default(),
-                konbini_display_details: Deserialize::default(),
-                multibanco_display_details: Deserialize::default(),
-                oxxo_display_details: Deserialize::default(),
-                paynow_display_qr_code: Deserialize::default(),
-                pix_display_qr_code: Deserialize::default(),
-                promptpay_display_qr_code: Deserialize::default(),
-                redirect_to_url: Deserialize::default(),
-                swish_handle_redirect_or_display_qr_code: Deserialize::default(),
-                type_: Deserialize::default(),
-                upi_handle_redirect_or_display_qr_code: Deserialize::default(),
-                use_stripe_sdk: Deserialize::default(),
-                verify_with_microdeposits: Deserialize::default(),
-                wechat_pay_display_qr_code: Deserialize::default(),
-                wechat_pay_redirect_to_android_app: Deserialize::default(),
-                wechat_pay_redirect_to_ios_app: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(alipay_handle_redirect),
                 Some(boleto_display_details),
@@ -220,31 +225,31 @@ const _: () = {
                 Some(wechat_pay_redirect_to_android_app),
                 Some(wechat_pay_redirect_to_ios_app),
             ) = (
-                self.alipay_handle_redirect.take(),
-                self.boleto_display_details.take(),
-                self.card_await_notification,
-                self.cashapp_handle_redirect_or_display_qr_code.take(),
-                self.display_bank_transfer_instructions.take(),
-                self.konbini_display_details.take(),
-                self.multibanco_display_details.take(),
-                self.oxxo_display_details.take(),
-                self.paynow_display_qr_code.take(),
-                self.pix_display_qr_code.take(),
-                self.promptpay_display_qr_code.take(),
-                self.redirect_to_url.take(),
-                self.swish_handle_redirect_or_display_qr_code.take(),
-                self.type_.take(),
-                self.upi_handle_redirect_or_display_qr_code.take(),
-                self.use_stripe_sdk.take(),
-                self.verify_with_microdeposits.take(),
-                self.wechat_pay_display_qr_code.take(),
-                self.wechat_pay_redirect_to_android_app.take(),
-                self.wechat_pay_redirect_to_ios_app.take(),
+                self.builder.alipay_handle_redirect.take(),
+                self.builder.boleto_display_details.take(),
+                self.builder.card_await_notification,
+                self.builder.cashapp_handle_redirect_or_display_qr_code.take(),
+                self.builder.display_bank_transfer_instructions.take(),
+                self.builder.konbini_display_details.take(),
+                self.builder.multibanco_display_details.take(),
+                self.builder.oxxo_display_details.take(),
+                self.builder.paynow_display_qr_code.take(),
+                self.builder.pix_display_qr_code.take(),
+                self.builder.promptpay_display_qr_code.take(),
+                self.builder.redirect_to_url.take(),
+                self.builder.swish_handle_redirect_or_display_qr_code.take(),
+                self.builder.type_.take(),
+                self.builder.upi_handle_redirect_or_display_qr_code.take(),
+                self.builder.use_stripe_sdk.take(),
+                self.builder.verify_with_microdeposits.take(),
+                self.builder.wechat_pay_display_qr_code.take(),
+                self.builder.wechat_pay_redirect_to_android_app.take(),
+                self.builder.wechat_pay_redirect_to_ios_app.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentIntentNextAction {
                 alipay_handle_redirect,
                 boleto_display_details,
                 card_await_notification,
@@ -265,87 +270,8 @@ const _: () = {
                 wechat_pay_display_qr_code,
                 wechat_pay_redirect_to_android_app,
                 wechat_pay_redirect_to_ios_app,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextAction {
-        type Builder = PaymentIntentNextActionBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextAction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentNextActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "alipay_handle_redirect" => {
-                        b.alipay_handle_redirect = FromValueOpt::from_value(v)
-                    }
-                    "boleto_display_details" => {
-                        b.boleto_display_details = FromValueOpt::from_value(v)
-                    }
-                    "card_await_notification" => {
-                        b.card_await_notification = FromValueOpt::from_value(v)
-                    }
-                    "cashapp_handle_redirect_or_display_qr_code" => {
-                        b.cashapp_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "display_bank_transfer_instructions" => {
-                        b.display_bank_transfer_instructions = FromValueOpt::from_value(v)
-                    }
-                    "konbini_display_details" => {
-                        b.konbini_display_details = FromValueOpt::from_value(v)
-                    }
-                    "multibanco_display_details" => {
-                        b.multibanco_display_details = FromValueOpt::from_value(v)
-                    }
-                    "oxxo_display_details" => b.oxxo_display_details = FromValueOpt::from_value(v),
-                    "paynow_display_qr_code" => {
-                        b.paynow_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "pix_display_qr_code" => b.pix_display_qr_code = FromValueOpt::from_value(v),
-                    "promptpay_display_qr_code" => {
-                        b.promptpay_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "redirect_to_url" => b.redirect_to_url = FromValueOpt::from_value(v),
-                    "swish_handle_redirect_or_display_qr_code" => {
-                        b.swish_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "upi_handle_redirect_or_display_qr_code" => {
-                        b.upi_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "use_stripe_sdk" => b.use_stripe_sdk = FromValueOpt::from_value(v),
-                    "verify_with_microdeposits" => {
-                        b.verify_with_microdeposits = FromValueOpt::from_value(v)
-                    }
-                    "wechat_pay_display_qr_code" => {
-                        b.wechat_pay_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "wechat_pay_redirect_to_android_app" => {
-                        b.wechat_pay_redirect_to_android_app = FromValueOpt::from_value(v)
-                    }
-                    "wechat_pay_redirect_to_ios_app" => {
-                        b.wechat_pay_redirect_to_ios_app = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

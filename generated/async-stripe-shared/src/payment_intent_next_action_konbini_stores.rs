@@ -29,16 +29,14 @@ pub struct PaymentIntentNextActionKonbiniStoresBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,76 +55,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionKonbiniStoresBuilder::deser_default(),
+                builder: PaymentIntentNextActionKonbiniStoresBuilder {
+                    familymart: Deserialize::default(),
+                    lawson: Deserialize::default(),
+                    ministop: Deserialize::default(),
+                    seicomart: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentNextActionKonbiniStoresBuilder {
-        type Out = PaymentIntentNextActionKonbiniStores;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "familymart" => Deserialize::begin(&mut self.familymart),
-                "lawson" => Deserialize::begin(&mut self.lawson),
-                "ministop" => Deserialize::begin(&mut self.ministop),
-                "seicomart" => Deserialize::begin(&mut self.seicomart),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                familymart: Deserialize::default(),
-                lawson: Deserialize::default(),
-                ministop: Deserialize::default(),
-                seicomart: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(familymart), Some(lawson), Some(ministop), Some(seicomart)) = (
-                self.familymart.take(),
-                self.lawson.take(),
-                self.ministop.take(),
-                self.seicomart.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { familymart, lawson, ministop, seicomart })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "familymart" => Deserialize::begin(&mut self.builder.familymart),
+                "lawson" => Deserialize::begin(&mut self.builder.lawson),
+                "ministop" => Deserialize::begin(&mut self.builder.ministop),
+                "seicomart" => Deserialize::begin(&mut self.builder.seicomart),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionKonbiniStores {
-        type Builder = PaymentIntentNextActionKonbiniStoresBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionKonbiniStores {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(familymart), Some(lawson), Some(ministop), Some(seicomart)) = (
+                self.builder.familymart.take(),
+                self.builder.lawson.take(),
+                self.builder.ministop.take(),
+                self.builder.seicomart.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentIntentNextActionKonbiniStoresBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "familymart" => b.familymart = FromValueOpt::from_value(v),
-                    "lawson" => b.lawson = FromValueOpt::from_value(v),
-                    "ministop" => b.ministop = FromValueOpt::from_value(v),
-                    "seicomart" => b.seicomart = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentIntentNextActionKonbiniStores {
+                familymart,
+                lawson,
+                ministop,
+                seicomart,
+            });
+            Ok(())
         }
     }
 };

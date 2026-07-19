@@ -53,16 +53,14 @@ pub struct TerminalLocationBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -81,47 +79,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalLocationBuilder::deser_default(),
+                builder: TerminalLocationBuilder {
+                    address: Deserialize::default(),
+                    address_kana: Deserialize::default(),
+                    address_kanji: Deserialize::default(),
+                    configuration_overrides: Deserialize::default(),
+                    display_name: Deserialize::default(),
+                    display_name_kana: Deserialize::default(),
+                    display_name_kanji: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    phone: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TerminalLocationBuilder {
-        type Out = TerminalLocation;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
-                "address_kana" => Deserialize::begin(&mut self.address_kana),
-                "address_kanji" => Deserialize::begin(&mut self.address_kanji),
-                "configuration_overrides" => Deserialize::begin(&mut self.configuration_overrides),
-                "display_name" => Deserialize::begin(&mut self.display_name),
-                "display_name_kana" => Deserialize::begin(&mut self.display_name_kana),
-                "display_name_kanji" => Deserialize::begin(&mut self.display_name_kanji),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "phone" => Deserialize::begin(&mut self.phone),
+                "address" => Deserialize::begin(&mut self.builder.address),
+                "address_kana" => Deserialize::begin(&mut self.builder.address_kana),
+                "address_kanji" => Deserialize::begin(&mut self.builder.address_kanji),
+                "configuration_overrides" => {
+                    Deserialize::begin(&mut self.builder.configuration_overrides)
+                }
+                "display_name" => Deserialize::begin(&mut self.builder.display_name),
+                "display_name_kana" => Deserialize::begin(&mut self.builder.display_name_kana),
+                "display_name_kanji" => Deserialize::begin(&mut self.builder.display_name_kanji),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                address: Deserialize::default(),
-                address_kana: Deserialize::default(),
-                address_kanji: Deserialize::default(),
-                configuration_overrides: Deserialize::default(),
-                display_name: Deserialize::default(),
-                display_name_kana: Deserialize::default(),
-                display_name_kanji: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                phone: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(address),
                 Some(address_kana),
@@ -135,22 +130,22 @@ const _: () = {
                 Some(metadata),
                 Some(phone),
             ) = (
-                self.address.take(),
-                self.address_kana.take(),
-                self.address_kanji.take(),
-                self.configuration_overrides.take(),
-                self.display_name.take(),
-                self.display_name_kana.take(),
-                self.display_name_kanji.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.phone.take(),
+                self.builder.address.take(),
+                self.builder.address_kana.take(),
+                self.builder.address_kanji.take(),
+                self.builder.configuration_overrides.take(),
+                self.builder.display_name.take(),
+                self.builder.display_name_kana.take(),
+                self.builder.display_name_kanji.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.phone.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TerminalLocation {
                 address,
                 address_kana,
                 address_kanji,
@@ -162,50 +157,8 @@ const _: () = {
                 livemode,
                 metadata,
                 phone,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalLocation {
-        type Builder = TerminalLocationBuilder;
-    }
-
-    impl FromValueOpt for TerminalLocation {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalLocationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_kana" => b.address_kana = FromValueOpt::from_value(v),
-                    "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
-                    "configuration_overrides" => {
-                        b.configuration_overrides = FromValueOpt::from_value(v)
-                    }
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "display_name_kana" => b.display_name_kana = FromValueOpt::from_value(v),
-                    "display_name_kanji" => b.display_name_kanji = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

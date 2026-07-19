@@ -58,16 +58,14 @@ pub struct TaxTransactionLineItemBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -86,49 +84,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TaxTransactionLineItemBuilder::deser_default(),
+                builder: TaxTransactionLineItemBuilder {
+                    amount: Deserialize::default(),
+                    amount_tax: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    product: Deserialize::default(),
+                    quantity: Deserialize::default(),
+                    reference: Deserialize::default(),
+                    reversal: Deserialize::default(),
+                    tax_behavior: Deserialize::default(),
+                    tax_code: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TaxTransactionLineItemBuilder {
-        type Out = TaxTransactionLineItem;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_tax" => Deserialize::begin(&mut self.amount_tax),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "product" => Deserialize::begin(&mut self.product),
-                "quantity" => Deserialize::begin(&mut self.quantity),
-                "reference" => Deserialize::begin(&mut self.reference),
-                "reversal" => Deserialize::begin(&mut self.reversal),
-                "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
-                "tax_code" => Deserialize::begin(&mut self.tax_code),
-                "type" => Deserialize::begin(&mut self.type_),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_tax" => Deserialize::begin(&mut self.builder.amount_tax),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "product" => Deserialize::begin(&mut self.builder.product),
+                "quantity" => Deserialize::begin(&mut self.builder.quantity),
+                "reference" => Deserialize::begin(&mut self.builder.reference),
+                "reversal" => Deserialize::begin(&mut self.builder.reversal),
+                "tax_behavior" => Deserialize::begin(&mut self.builder.tax_behavior),
+                "tax_code" => Deserialize::begin(&mut self.builder.tax_code),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                amount_tax: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                product: Deserialize::default(),
-                quantity: Deserialize::default(),
-                reference: Deserialize::default(),
-                reversal: Deserialize::default(),
-                tax_behavior: Deserialize::default(),
-                tax_code: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(amount_tax),
@@ -143,23 +136,23 @@ const _: () = {
                 Some(tax_code),
                 Some(type_),
             ) = (
-                self.amount,
-                self.amount_tax,
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.product.take(),
-                self.quantity,
-                self.reference.take(),
-                self.reversal.take(),
-                self.tax_behavior.take(),
-                self.tax_code.take(),
-                self.type_.take(),
+                self.builder.amount,
+                self.builder.amount_tax,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.product.take(),
+                self.builder.quantity,
+                self.builder.reference.take(),
+                self.builder.reversal.take(),
+                self.builder.tax_behavior.take(),
+                self.builder.tax_code.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TaxTransactionLineItem {
                 amount,
                 amount_tax,
                 id,
@@ -172,49 +165,8 @@ const _: () = {
                 tax_behavior,
                 tax_code,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TaxTransactionLineItem {
-        type Builder = TaxTransactionLineItemBuilder;
-    }
-
-    impl FromValueOpt for TaxTransactionLineItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxTransactionLineItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "product" => b.product = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "reversal" => b.reversal = FromValueOpt::from_value(v),
-                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
-                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -306,21 +258,19 @@ impl serde::Serialize for TaxTransactionLineItemTaxBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TaxTransactionLineItemTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TaxTransactionLineItemTaxBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TaxTransactionLineItemTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TaxTransactionLineItemTaxBehavior> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TaxTransactionLineItemTaxBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TaxTransactionLineItemTaxBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxTransactionLineItemTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -390,21 +340,19 @@ impl serde::Serialize for TaxTransactionLineItemType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TaxTransactionLineItemType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TaxTransactionLineItemType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TaxTransactionLineItemType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TaxTransactionLineItemType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TaxTransactionLineItemType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TaxTransactionLineItemType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxTransactionLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

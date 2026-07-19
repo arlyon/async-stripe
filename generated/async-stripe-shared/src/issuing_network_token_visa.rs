@@ -30,16 +30,14 @@ pub struct IssuingNetworkTokenVisaBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -58,87 +56,49 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingNetworkTokenVisaBuilder::deser_default(),
+                builder: IssuingNetworkTokenVisaBuilder {
+                    card_reference_id: Deserialize::default(),
+                    token_reference_id: Deserialize::default(),
+                    token_requestor_id: Deserialize::default(),
+                    token_risk_score: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingNetworkTokenVisaBuilder {
-        type Out = IssuingNetworkTokenVisa;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card_reference_id" => Deserialize::begin(&mut self.card_reference_id),
-                "token_reference_id" => Deserialize::begin(&mut self.token_reference_id),
-                "token_requestor_id" => Deserialize::begin(&mut self.token_requestor_id),
-                "token_risk_score" => Deserialize::begin(&mut self.token_risk_score),
+                "card_reference_id" => Deserialize::begin(&mut self.builder.card_reference_id),
+                "token_reference_id" => Deserialize::begin(&mut self.builder.token_reference_id),
+                "token_requestor_id" => Deserialize::begin(&mut self.builder.token_requestor_id),
+                "token_risk_score" => Deserialize::begin(&mut self.builder.token_risk_score),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                card_reference_id: Deserialize::default(),
-                token_reference_id: Deserialize::default(),
-                token_requestor_id: Deserialize::default(),
-                token_risk_score: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(card_reference_id),
                 Some(token_reference_id),
                 Some(token_requestor_id),
                 Some(token_risk_score),
             ) = (
-                self.card_reference_id.take(),
-                self.token_reference_id.take(),
-                self.token_requestor_id.take(),
-                self.token_risk_score.take(),
+                self.builder.card_reference_id.take(),
+                self.builder.token_reference_id.take(),
+                self.builder.token_requestor_id.take(),
+                self.builder.token_risk_score.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingNetworkTokenVisa {
                 card_reference_id,
                 token_reference_id,
                 token_requestor_id,
                 token_risk_score,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingNetworkTokenVisa {
-        type Builder = IssuingNetworkTokenVisaBuilder;
-    }
-
-    impl FromValueOpt for IssuingNetworkTokenVisa {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingNetworkTokenVisaBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_reference_id" => b.card_reference_id = FromValueOpt::from_value(v),
-                    "token_reference_id" => b.token_reference_id = FromValueOpt::from_value(v),
-                    "token_requestor_id" => b.token_requestor_id = FromValueOpt::from_value(v),
-                    "token_risk_score" => b.token_risk_score = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

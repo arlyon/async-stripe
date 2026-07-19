@@ -25,16 +25,14 @@ pub struct IssuingAuthorizationFleetTaxDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,69 +51,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingAuthorizationFleetTaxDataBuilder::deser_default(),
+                builder: IssuingAuthorizationFleetTaxDataBuilder {
+                    local_amount_decimal: Deserialize::default(),
+                    national_amount_decimal: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingAuthorizationFleetTaxDataBuilder {
-        type Out = IssuingAuthorizationFleetTaxData;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "local_amount_decimal" => Deserialize::begin(&mut self.local_amount_decimal),
-                "national_amount_decimal" => Deserialize::begin(&mut self.national_amount_decimal),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                local_amount_decimal: Deserialize::default(),
-                national_amount_decimal: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(local_amount_decimal), Some(national_amount_decimal)) =
-                (self.local_amount_decimal.take(), self.national_amount_decimal.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { local_amount_decimal, national_amount_decimal })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "local_amount_decimal" => {
+                    Deserialize::begin(&mut self.builder.local_amount_decimal)
+                }
+                "national_amount_decimal" => {
+                    Deserialize::begin(&mut self.builder.national_amount_decimal)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingAuthorizationFleetTaxData {
-        type Builder = IssuingAuthorizationFleetTaxDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationFleetTaxData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(local_amount_decimal), Some(national_amount_decimal)) = (
+                self.builder.local_amount_decimal.take(),
+                self.builder.national_amount_decimal.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = IssuingAuthorizationFleetTaxDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "local_amount_decimal" => b.local_amount_decimal = FromValueOpt::from_value(v),
-                    "national_amount_decimal" => {
-                        b.national_amount_decimal = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(IssuingAuthorizationFleetTaxData {
+                local_amount_decimal,
+                national_amount_decimal,
+            });
+            Ok(())
         }
     }
 };

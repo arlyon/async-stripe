@@ -1,0 +1,38 @@
+[package]
+name = "async-stripe-miniserde"
+version = "0.1.45"
+authors = ["David Tolnay <dtolnay@gmail.com>"]
+categories = ["encoding", "no-std"]
+description = "Vendored fork of miniserde, specialized for async-stripe's deserialization needs."
+documentation = "https://docs.rs/miniserde"
+edition = "2021"
+exclude = ["benches"]
+keywords = ["serde", "serialization"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/dtolnay/miniserde"
+rust-version = "1.71"
+publish = false
+
+[lib]
+name = "stripe_miniserde"
+
+[dependencies]
+itoa = "1.0"
+zmij = "1.0"
+
+[dev-dependencies]
+indoc = "2.0"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+rustdoc-args = [
+    "--generate-link-to-definition",
+    "--generate-macro-expansion",
+    "--extern-html-root-url=core=https://doc.rust-lang.org",
+    "--extern-html-root-url=alloc=https://doc.rust-lang.org",
+    "--extern-html-root-url=std=https://doc.rust-lang.org",
+]
+
+[features]
+default = ["std"]
+std = []

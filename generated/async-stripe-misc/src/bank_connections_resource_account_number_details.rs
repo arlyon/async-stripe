@@ -29,16 +29,14 @@ pub struct BankConnectionsResourceAccountNumberDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,82 +55,51 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BankConnectionsResourceAccountNumberDetailsBuilder::deser_default(),
+                builder: BankConnectionsResourceAccountNumberDetailsBuilder {
+                    expected_expiry_date: Deserialize::default(),
+                    identifier_type: Deserialize::default(),
+                    status: Deserialize::default(),
+                    supported_networks: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for BankConnectionsResourceAccountNumberDetailsBuilder {
-        type Out = BankConnectionsResourceAccountNumberDetails;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "expected_expiry_date" => Deserialize::begin(&mut self.expected_expiry_date),
-                "identifier_type" => Deserialize::begin(&mut self.identifier_type),
-                "status" => Deserialize::begin(&mut self.status),
-                "supported_networks" => Deserialize::begin(&mut self.supported_networks),
+                "expected_expiry_date" => {
+                    Deserialize::begin(&mut self.builder.expected_expiry_date)
+                }
+                "identifier_type" => Deserialize::begin(&mut self.builder.identifier_type),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "supported_networks" => Deserialize::begin(&mut self.builder.supported_networks),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                expected_expiry_date: Deserialize::default(),
-                identifier_type: Deserialize::default(),
-                status: Deserialize::default(),
-                supported_networks: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(expected_expiry_date),
                 Some(identifier_type),
                 Some(status),
                 Some(supported_networks),
             ) = (
-                self.expected_expiry_date,
-                self.identifier_type.take(),
-                self.status.take(),
-                self.supported_networks.take(),
+                self.builder.expected_expiry_date,
+                self.builder.identifier_type.take(),
+                self.builder.status.take(),
+                self.builder.supported_networks.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { expected_expiry_date, identifier_type, status, supported_networks })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(BankConnectionsResourceAccountNumberDetails {
+                expected_expiry_date,
+                identifier_type,
+                status,
+                supported_networks,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for BankConnectionsResourceAccountNumberDetails {
-        type Builder = BankConnectionsResourceAccountNumberDetailsBuilder;
-    }
-
-    impl FromValueOpt for BankConnectionsResourceAccountNumberDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BankConnectionsResourceAccountNumberDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expected_expiry_date" => b.expected_expiry_date = FromValueOpt::from_value(v),
-                    "identifier_type" => b.identifier_type = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "supported_networks" => b.supported_networks = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -202,16 +169,16 @@ impl serde::Serialize for BankConnectionsResourceAccountNumberDetailsIdentifierT
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BankConnectionsResourceAccountNumberDetailsIdentifierType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BankConnectionsResourceAccountNumberDetailsIdentifierType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<BankConnectionsResourceAccountNumberDetailsIdentifierType>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             BankConnectionsResourceAccountNumberDetailsIdentifierType::from_str(s)
@@ -220,10 +187,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    BankConnectionsResourceAccountNumberDetailsIdentifierType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetailsIdentifierType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -298,14 +261,14 @@ impl serde::Serialize for BankConnectionsResourceAccountNumberDetailsStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BankConnectionsResourceAccountNumberDetailsStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BankConnectionsResourceAccountNumberDetailsStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BankConnectionsResourceAccountNumberDetailsStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BankConnectionsResourceAccountNumberDetailsStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             BankConnectionsResourceAccountNumberDetailsStatus::from_str(s).expect("infallible"),
@@ -313,8 +276,6 @@ impl miniserde::de::Visitor for crate::Place<BankConnectionsResourceAccountNumbe
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BankConnectionsResourceAccountNumberDetailsStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetailsStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -386,16 +347,16 @@ impl serde::Serialize for BankConnectionsResourceAccountNumberDetailsSupportedNe
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<BankConnectionsResourceAccountNumberDetailsSupportedNetworks>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             BankConnectionsResourceAccountNumberDetailsSupportedNetworks::from_str(s)
@@ -404,10 +365,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    BankConnectionsResourceAccountNumberDetailsSupportedNetworks
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

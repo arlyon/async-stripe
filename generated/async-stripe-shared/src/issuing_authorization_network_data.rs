@@ -28,16 +28,14 @@ pub struct IssuingAuthorizationNetworkDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,85 +54,48 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingAuthorizationNetworkDataBuilder::deser_default(),
+                builder: IssuingAuthorizationNetworkDataBuilder {
+                    acquiring_institution_id: Deserialize::default(),
+                    system_trace_audit_number: Deserialize::default(),
+                    transaction_id: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingAuthorizationNetworkDataBuilder {
-        type Out = IssuingAuthorizationNetworkData;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "acquiring_institution_id" => {
-                    Deserialize::begin(&mut self.acquiring_institution_id)
-                }
-                "system_trace_audit_number" => {
-                    Deserialize::begin(&mut self.system_trace_audit_number)
-                }
-                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                acquiring_institution_id: Deserialize::default(),
-                system_trace_audit_number: Deserialize::default(),
-                transaction_id: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(acquiring_institution_id),
-                Some(system_trace_audit_number),
-                Some(transaction_id),
-            ) = (
-                self.acquiring_institution_id.take(),
-                self.system_trace_audit_number.take(),
-                self.transaction_id.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { acquiring_institution_id, system_trace_audit_number, transaction_id })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "acquiring_institution_id" => {
+                    Deserialize::begin(&mut self.builder.acquiring_institution_id)
+                }
+                "system_trace_audit_number" => {
+                    Deserialize::begin(&mut self.builder.system_trace_audit_number)
+                }
+                "transaction_id" => Deserialize::begin(&mut self.builder.transaction_id),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingAuthorizationNetworkData {
-        type Builder = IssuingAuthorizationNetworkDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationNetworkData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (
+                Some(acquiring_institution_id),
+                Some(system_trace_audit_number),
+                Some(transaction_id),
+            ) = (
+                self.builder.acquiring_institution_id.take(),
+                self.builder.system_trace_audit_number.take(),
+                self.builder.transaction_id.take(),
+            )
+            else {
+                return Ok(());
             };
-            let mut b = IssuingAuthorizationNetworkDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "acquiring_institution_id" => {
-                        b.acquiring_institution_id = FromValueOpt::from_value(v)
-                    }
-                    "system_trace_audit_number" => {
-                        b.system_trace_audit_number = FromValueOpt::from_value(v)
-                    }
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(IssuingAuthorizationNetworkData {
+                acquiring_institution_id,
+                system_trace_audit_number,
+                transaction_id,
+            });
+            Ok(())
         }
     }
 };

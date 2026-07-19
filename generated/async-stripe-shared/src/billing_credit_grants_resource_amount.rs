@@ -24,16 +24,14 @@ pub struct BillingCreditGrantsResourceAmountBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,62 +50,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BillingCreditGrantsResourceAmountBuilder::deser_default(),
+                builder: BillingCreditGrantsResourceAmountBuilder {
+                    monetary: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BillingCreditGrantsResourceAmountBuilder {
-        type Out = BillingCreditGrantsResourceAmount;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "monetary" => Deserialize::begin(&mut self.monetary),
-                "type" => Deserialize::begin(&mut self.type_),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { monetary: Deserialize::default(), type_: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(monetary), Some(type_)) = (self.monetary.take(), self.type_.take()) else {
-                return None;
-            };
-            Some(Self::Out { monetary, type_ })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "monetary" => Deserialize::begin(&mut self.builder.monetary),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingCreditGrantsResourceAmount {
-        type Builder = BillingCreditGrantsResourceAmountBuilder;
-    }
-
-    impl FromValueOpt for BillingCreditGrantsResourceAmount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(monetary), Some(type_)) =
+                (self.builder.monetary.take(), self.builder.type_.take())
+            else {
+                return Ok(());
             };
-            let mut b = BillingCreditGrantsResourceAmountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "monetary" => b.monetary = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(BillingCreditGrantsResourceAmount { monetary, type_ });
+            Ok(())
         }
     }
 };
@@ -173,21 +140,19 @@ impl serde::Serialize for BillingCreditGrantsResourceAmountType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BillingCreditGrantsResourceAmountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BillingCreditGrantsResourceAmountType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BillingCreditGrantsResourceAmountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BillingCreditGrantsResourceAmountType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BillingCreditGrantsResourceAmountType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BillingCreditGrantsResourceAmountType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingCreditGrantsResourceAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

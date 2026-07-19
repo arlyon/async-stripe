@@ -11,7 +11,7 @@ fn enums_basic() {
     assert_eq!(AccountType::Express.as_str(), "express");
     assert_eq!(serde_json::to_string(&AccountType::Express).unwrap(), r#""express""#);
     assert_eq!(
-        miniserde::json::from_str::<AccountType>(r#""express""#).unwrap(),
+        stripe_miniserde::json::from_str::<AccountType>(r#""express""#).unwrap(),
         AccountType::Express
     );
     assert_eq!(serde_json::from_str::<AccountType>(r#""express""#).unwrap(), AccountType::Express);
@@ -45,7 +45,7 @@ fn from_str_and_deser_behavior_match_on_unknown_variant() {
 
     assert_eq!(EventType::Unknown(String::from("acct")), EventType::from_str("acct").unwrap());
     assert_eq!(
-        miniserde::json::from_str::<EventType>(r#""acct""#).unwrap(),
+        stripe_miniserde::json::from_str::<EventType>(r#""acct""#).unwrap(),
         EventType::Unknown(String::from("acct"))
     );
     assert_eq!(

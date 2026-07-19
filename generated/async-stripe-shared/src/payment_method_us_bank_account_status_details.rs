@@ -19,16 +19,14 @@ pub struct PaymentMethodUsBankAccountStatusDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -47,60 +45,27 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodUsBankAccountStatusDetailsBuilder::deser_default(),
+                builder: PaymentMethodUsBankAccountStatusDetailsBuilder {
+                    blocked: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodUsBankAccountStatusDetailsBuilder {
-        type Out = PaymentMethodUsBankAccountStatusDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "blocked" => Deserialize::begin(&mut self.blocked),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { blocked: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(blocked),) = (self.blocked.take(),) else {
-                return None;
-            };
-            Some(Self::Out { blocked })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "blocked" => Deserialize::begin(&mut self.builder.blocked),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodUsBankAccountStatusDetails {
-        type Builder = PaymentMethodUsBankAccountStatusDetailsBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodUsBankAccountStatusDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(blocked),) = (self.builder.blocked.take(),) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodUsBankAccountStatusDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "blocked" => b.blocked = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodUsBankAccountStatusDetails { blocked });
+            Ok(())
         }
     }
 };

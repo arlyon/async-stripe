@@ -37,16 +37,14 @@ us_bank_transfer: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanc
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -65,90 +63,53 @@ const _: () = {
     fn map(&mut self) -> Result<Box<dyn Map + '_>> {
         Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferBuilder::deser_default(),
-        }))
-    }
-}
-
-    impl MapBuilder for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferBuilder {
-    type Out = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer;
-    fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-        Ok(match k {
-            "eu_bank_transfer" => Deserialize::begin(&mut self.eu_bank_transfer),
-            "gb_bank_transfer" => Deserialize::begin(&mut self.gb_bank_transfer),
-            "jp_bank_transfer" => Deserialize::begin(&mut self.jp_bank_transfer),
-            "reference" => Deserialize::begin(&mut self.reference),
-            "type" => Deserialize::begin(&mut self.type_),
-            "us_bank_transfer" => Deserialize::begin(&mut self.us_bank_transfer),
-            _ => <dyn Visitor>::ignore(),
-        })
-    }
-
-    fn deser_default() -> Self {
-        Self { eu_bank_transfer: Deserialize::default(),
+            builder: CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferBuilder { eu_bank_transfer: Deserialize::default(),
 gb_bank_transfer: Deserialize::default(),
 jp_bank_transfer: Deserialize::default(),
 reference: Deserialize::default(),
 type_: Deserialize::default(),
 us_bank_transfer: Deserialize::default(),
- }
-    }
-
-    fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(eu_bank_transfer),
-Some(gb_bank_transfer),
-Some(jp_bank_transfer),
-Some(reference),
-Some(type_),
-Some(us_bank_transfer),
-) = (self.eu_bank_transfer.take(),
-self.gb_bank_transfer.take(),
-self.jp_bank_transfer.take(),
-self.reference.take(),
-self.type_.take(),
-self.us_bank_transfer.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { eu_bank_transfer,gb_bank_transfer,jp_bank_transfer,reference,type_,us_bank_transfer })
+ },
+        }))
     }
 }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "eu_bank_transfer" => Deserialize::begin(&mut self.builder.eu_bank_transfer),
+                "gb_bank_transfer" => Deserialize::begin(&mut self.builder.gb_bank_transfer),
+                "jp_bank_transfer" => Deserialize::begin(&mut self.builder.jp_bank_transfer),
+                "reference" => Deserialize::begin(&mut self.builder.reference),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "us_bank_transfer" => Deserialize::begin(&mut self.builder.us_bank_transfer),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            let (
+                Some(eu_bank_transfer),
+                Some(gb_bank_transfer),
+                Some(jp_bank_transfer),
+                Some(reference),
+                Some(type_),
+                Some(us_bank_transfer),
+            ) = (
+                self.builder.eu_bank_transfer.take(),
+                self.builder.gb_bank_transfer.take(),
+                self.builder.jp_bank_transfer.take(),
+                self.builder.reference.take(),
+                self.builder.type_.take(),
+                self.builder.us_bank_transfer.take(),
+            )
+            else {
+                return Ok(());
+            };
+            *self.out = Some(CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer { eu_bank_transfer,gb_bank_transfer,jp_bank_transfer,reference,type_,us_bank_transfer });
             Ok(())
         }
     }
-
-    impl ObjectDeser for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer {
-    type Builder = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferBuilder;
-}
-
-    impl FromValueOpt for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer {
-    fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        let mut b = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferBuilder::deser_default();
-        for (k, v) in obj {
-            match k.as_str() {
-            "eu_bank_transfer" => b.eu_bank_transfer = FromValueOpt::from_value(v),
-            "gb_bank_transfer" => b.gb_bank_transfer = FromValueOpt::from_value(v),
-            "jp_bank_transfer" => b.jp_bank_transfer = FromValueOpt::from_value(v),
-            "reference" => b.reference = FromValueOpt::from_value(v),
-            "type" => b.type_ = FromValueOpt::from_value(v),
-            "us_bank_transfer" => b.us_bank_transfer = FromValueOpt::from_value(v),
-                _ => {}
-            }
-        }
-        b.take_out()
-    }
-}
 };
 /// The funding method type used to fund the customer balance.
 /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
@@ -219,23 +180,19 @@ impl serde::Serialize for CustomerBalanceResourceCashBalanceTransactionResourceF
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

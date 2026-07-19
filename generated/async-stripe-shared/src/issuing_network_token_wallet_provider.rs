@@ -47,16 +47,14 @@ pub struct IssuingNetworkTokenWalletProviderBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -75,49 +73,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingNetworkTokenWalletProviderBuilder::deser_default(),
+                builder: IssuingNetworkTokenWalletProviderBuilder {
+                    account_id: Deserialize::default(),
+                    account_trust_score: Deserialize::default(),
+                    card_number_source: Deserialize::default(),
+                    cardholder_address: Deserialize::default(),
+                    cardholder_name: Deserialize::default(),
+                    device_trust_score: Deserialize::default(),
+                    hashed_account_email_address: Deserialize::default(),
+                    reason_codes: Deserialize::default(),
+                    suggested_decision: Deserialize::default(),
+                    suggested_decision_version: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingNetworkTokenWalletProviderBuilder {
-        type Out = IssuingNetworkTokenWalletProvider;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_id" => Deserialize::begin(&mut self.account_id),
-                "account_trust_score" => Deserialize::begin(&mut self.account_trust_score),
-                "card_number_source" => Deserialize::begin(&mut self.card_number_source),
-                "cardholder_address" => Deserialize::begin(&mut self.cardholder_address),
-                "cardholder_name" => Deserialize::begin(&mut self.cardholder_name),
-                "device_trust_score" => Deserialize::begin(&mut self.device_trust_score),
+                "account_id" => Deserialize::begin(&mut self.builder.account_id),
+                "account_trust_score" => Deserialize::begin(&mut self.builder.account_trust_score),
+                "card_number_source" => Deserialize::begin(&mut self.builder.card_number_source),
+                "cardholder_address" => Deserialize::begin(&mut self.builder.cardholder_address),
+                "cardholder_name" => Deserialize::begin(&mut self.builder.cardholder_name),
+                "device_trust_score" => Deserialize::begin(&mut self.builder.device_trust_score),
                 "hashed_account_email_address" => {
-                    Deserialize::begin(&mut self.hashed_account_email_address)
+                    Deserialize::begin(&mut self.builder.hashed_account_email_address)
                 }
-                "reason_codes" => Deserialize::begin(&mut self.reason_codes),
-                "suggested_decision" => Deserialize::begin(&mut self.suggested_decision),
+                "reason_codes" => Deserialize::begin(&mut self.builder.reason_codes),
+                "suggested_decision" => Deserialize::begin(&mut self.builder.suggested_decision),
                 "suggested_decision_version" => {
-                    Deserialize::begin(&mut self.suggested_decision_version)
+                    Deserialize::begin(&mut self.builder.suggested_decision_version)
                 }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account_id: Deserialize::default(),
-                account_trust_score: Deserialize::default(),
-                card_number_source: Deserialize::default(),
-                cardholder_address: Deserialize::default(),
-                cardholder_name: Deserialize::default(),
-                device_trust_score: Deserialize::default(),
-                hashed_account_email_address: Deserialize::default(),
-                reason_codes: Deserialize::default(),
-                suggested_decision: Deserialize::default(),
-                suggested_decision_version: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account_id),
                 Some(account_trust_score),
@@ -130,21 +123,21 @@ const _: () = {
                 Some(suggested_decision),
                 Some(suggested_decision_version),
             ) = (
-                self.account_id.take(),
-                self.account_trust_score,
-                self.card_number_source.take(),
-                self.cardholder_address.take(),
-                self.cardholder_name.take(),
-                self.device_trust_score,
-                self.hashed_account_email_address.take(),
-                self.reason_codes.take(),
-                self.suggested_decision.take(),
-                self.suggested_decision_version.take(),
+                self.builder.account_id.take(),
+                self.builder.account_trust_score,
+                self.builder.card_number_source.take(),
+                self.builder.cardholder_address.take(),
+                self.builder.cardholder_name.take(),
+                self.builder.device_trust_score,
+                self.builder.hashed_account_email_address.take(),
+                self.builder.reason_codes.take(),
+                self.builder.suggested_decision.take(),
+                self.builder.suggested_decision_version.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingNetworkTokenWalletProvider {
                 account_id,
                 account_trust_score,
                 card_number_source,
@@ -155,51 +148,8 @@ const _: () = {
                 reason_codes,
                 suggested_decision,
                 suggested_decision_version,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingNetworkTokenWalletProvider {
-        type Builder = IssuingNetworkTokenWalletProviderBuilder;
-    }
-
-    impl FromValueOpt for IssuingNetworkTokenWalletProvider {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingNetworkTokenWalletProviderBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_id" => b.account_id = FromValueOpt::from_value(v),
-                    "account_trust_score" => b.account_trust_score = FromValueOpt::from_value(v),
-                    "card_number_source" => b.card_number_source = FromValueOpt::from_value(v),
-                    "cardholder_address" => b.cardholder_address = FromValueOpt::from_value(v),
-                    "cardholder_name" => b.cardholder_name = FromValueOpt::from_value(v),
-                    "device_trust_score" => b.device_trust_score = FromValueOpt::from_value(v),
-                    "hashed_account_email_address" => {
-                        b.hashed_account_email_address = FromValueOpt::from_value(v)
-                    }
-                    "reason_codes" => b.reason_codes = FromValueOpt::from_value(v),
-                    "suggested_decision" => b.suggested_decision = FromValueOpt::from_value(v),
-                    "suggested_decision_version" => {
-                        b.suggested_decision_version = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -275,14 +225,14 @@ impl serde::Serialize for IssuingNetworkTokenWalletProviderCardNumberSource {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingNetworkTokenWalletProviderCardNumberSource {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingNetworkTokenWalletProviderCardNumberSource {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderCardNumberSource> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderCardNumberSource> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             IssuingNetworkTokenWalletProviderCardNumberSource::from_str(s).expect("infallible"),
@@ -290,8 +240,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderCa
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingNetworkTokenWalletProviderCardNumberSource);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderCardNumberSource {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -452,22 +400,20 @@ impl serde::Serialize for IssuingNetworkTokenWalletProviderReasonCodes {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingNetworkTokenWalletProviderReasonCodes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingNetworkTokenWalletProviderReasonCodes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderReasonCodes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderReasonCodes> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(IssuingNetworkTokenWalletProviderReasonCodes::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingNetworkTokenWalletProviderReasonCodes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderReasonCodes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -545,14 +491,14 @@ impl serde::Serialize for IssuingNetworkTokenWalletProviderSuggestedDecision {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingNetworkTokenWalletProviderSuggestedDecision {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingNetworkTokenWalletProviderSuggestedDecision {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderSuggestedDecision> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderSuggestedDecision> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             IssuingNetworkTokenWalletProviderSuggestedDecision::from_str(s).expect("infallible"),
@@ -560,8 +506,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderSu
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingNetworkTokenWalletProviderSuggestedDecision);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderSuggestedDecision {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

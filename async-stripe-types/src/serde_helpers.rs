@@ -1,9 +1,9 @@
-use miniserde::json::Number;
-use miniserde::json::Value as MiniValue;
+use stripe_miniserde::json::Number;
+use stripe_miniserde::json::Value as MiniValue;
 use serde::ser::{SerializeMap, SerializeSeq};
 use serde::{Serialize, Serializer};
 
-struct Wrapper<'a>(&'a miniserde::json::Value);
+struct Wrapper<'a>(&'a stripe_miniserde::json::Value);
 
 impl Serialize for Wrapper<'_> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -38,7 +38,7 @@ impl Serialize for Wrapper<'_> {
 }
 
 pub mod with_serde_json {
-    use miniserde::json::Value as MiniValue;
+    use stripe_miniserde::json::Value as MiniValue;
     use serde::{Serialize, Serializer};
 
     use crate::serde_helpers::Wrapper;
@@ -53,7 +53,7 @@ pub mod with_serde_json {
         use crate::serde_helpers::serde_json_to_mini;
         let value = serde_json::Value::deserialize(deserializer)?;
         serde_json_to_mini(value).ok_or_else(|| {
-            serde::de::Error::custom("could not convert serde_json::Value to miniserde::Value")
+            serde::de::Error::custom("could not convert serde_json::Value to stripe_miniserde::Value")
         })
     }
 
@@ -63,7 +63,7 @@ pub mod with_serde_json {
 }
 
 pub mod with_serde_json_opt {
-    use miniserde::json::Value as MiniValue;
+    use stripe_miniserde::json::Value as MiniValue;
     use serde::Serializer;
 
     use crate::serde_helpers::Wrapper;
@@ -78,7 +78,7 @@ pub mod with_serde_json_opt {
         match value {
             None => Ok(None),
             Some(s) => Ok(Some(serde_json_to_mini(s).ok_or_else(|| {
-                serde::de::Error::custom("could not convert serde_json::Value to miniserde::Value")
+                serde::de::Error::custom("could not convert serde_json::Value to stripe_miniserde::Value")
             })?)),
         }
     }
@@ -93,7 +93,7 @@ pub mod with_serde_json_opt {
 
 #[cfg(feature = "deserialize")]
 fn serde_json_to_mini(val: serde_json::Value) -> Option<MiniValue> {
-    use miniserde::json::{Array, Object};
+    use stripe_miniserde::json::{Array, Object};
     Some(match val {
         serde_json::Value::Null => MiniValue::Null,
         serde_json::Value::Bool(bool) => MiniValue::Bool(bool),

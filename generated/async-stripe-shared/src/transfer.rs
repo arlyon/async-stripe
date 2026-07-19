@@ -84,16 +84,14 @@ pub struct TransferBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -110,56 +108,54 @@ const _: () = {
 
     impl Visitor for Place<Transfer> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: TransferBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: TransferBuilder {
+                    amount: Deserialize::default(),
+                    amount_reversed: Deserialize::default(),
+                    balance_transaction: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    description: Deserialize::default(),
+                    destination: Deserialize::default(),
+                    destination_payment: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    reversals: Deserialize::default(),
+                    reversed: Deserialize::default(),
+                    source_transaction: Deserialize::default(),
+                    source_type: Deserialize::default(),
+                    transfer_group: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for TransferBuilder {
-        type Out = Transfer;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_reversed" => Deserialize::begin(&mut self.amount_reversed),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "description" => Deserialize::begin(&mut self.description),
-                "destination" => Deserialize::begin(&mut self.destination),
-                "destination_payment" => Deserialize::begin(&mut self.destination_payment),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "reversals" => Deserialize::begin(&mut self.reversals),
-                "reversed" => Deserialize::begin(&mut self.reversed),
-                "source_transaction" => Deserialize::begin(&mut self.source_transaction),
-                "source_type" => Deserialize::begin(&mut self.source_type),
-                "transfer_group" => Deserialize::begin(&mut self.transfer_group),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_reversed" => Deserialize::begin(&mut self.builder.amount_reversed),
+                "balance_transaction" => Deserialize::begin(&mut self.builder.balance_transaction),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "destination" => Deserialize::begin(&mut self.builder.destination),
+                "destination_payment" => Deserialize::begin(&mut self.builder.destination_payment),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "reversals" => Deserialize::begin(&mut self.builder.reversals),
+                "reversed" => Deserialize::begin(&mut self.builder.reversed),
+                "source_transaction" => Deserialize::begin(&mut self.builder.source_transaction),
+                "source_type" => Deserialize::begin(&mut self.builder.source_type),
+                "transfer_group" => Deserialize::begin(&mut self.builder.transfer_group),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                amount_reversed: Deserialize::default(),
-                balance_transaction: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                destination: Deserialize::default(),
-                destination_payment: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                reversals: Deserialize::default(),
-                reversed: Deserialize::default(),
-                source_transaction: Deserialize::default(),
-                source_type: Deserialize::default(),
-                transfer_group: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(amount_reversed),
@@ -178,27 +174,27 @@ const _: () = {
                 Some(source_type),
                 Some(transfer_group),
             ) = (
-                self.amount,
-                self.amount_reversed,
-                self.balance_transaction.take(),
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.destination.take(),
-                self.destination_payment.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.reversals.take(),
-                self.reversed,
-                self.source_transaction.take(),
-                self.source_type.take(),
-                self.transfer_group.take(),
+                self.builder.amount,
+                self.builder.amount_reversed,
+                self.builder.balance_transaction.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.description.take(),
+                self.builder.destination.take(),
+                self.builder.destination_payment.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.reversals.take(),
+                self.builder.reversed,
+                self.builder.source_transaction.take(),
+                self.builder.source_type.take(),
+                self.builder.transfer_group.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Transfer {
                 amount,
                 amount_reversed,
                 balance_transaction,
@@ -215,53 +211,8 @@ const _: () = {
                 source_transaction,
                 source_type,
                 transfer_group,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Transfer {
-        type Builder = TransferBuilder;
-    }
-
-    impl FromValueOpt for Transfer {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TransferBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_reversed" => b.amount_reversed = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "destination" => b.destination = FromValueOpt::from_value(v),
-                    "destination_payment" => b.destination_payment = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "reversals" => b.reversals = FromValueOpt::from_value(v),
-                    "reversed" => b.reversed = FromValueOpt::from_value(v),
-                    "source_transaction" => b.source_transaction = FromValueOpt::from_value(v),
-                    "source_type" => b.source_type = FromValueOpt::from_value(v),
-                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

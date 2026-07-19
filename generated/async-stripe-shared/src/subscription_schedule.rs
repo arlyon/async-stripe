@@ -83,16 +83,14 @@ pub struct SubscriptionScheduleBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -111,63 +109,60 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SubscriptionScheduleBuilder::deser_default(),
+                builder: SubscriptionScheduleBuilder {
+                    application: Deserialize::default(),
+                    billing_mode: Deserialize::default(),
+                    canceled_at: Deserialize::default(),
+                    completed_at: Deserialize::default(),
+                    created: Deserialize::default(),
+                    current_phase: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    default_settings: Deserialize::default(),
+                    end_behavior: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    phases: Deserialize::default(),
+                    released_at: Deserialize::default(),
+                    released_subscription: Deserialize::default(),
+                    status: Deserialize::default(),
+                    subscription: Deserialize::default(),
+                    test_clock: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SubscriptionScheduleBuilder {
-        type Out = SubscriptionSchedule;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "application" => Deserialize::begin(&mut self.application),
-                "billing_mode" => Deserialize::begin(&mut self.billing_mode),
-                "canceled_at" => Deserialize::begin(&mut self.canceled_at),
-                "completed_at" => Deserialize::begin(&mut self.completed_at),
-                "created" => Deserialize::begin(&mut self.created),
-                "current_phase" => Deserialize::begin(&mut self.current_phase),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "default_settings" => Deserialize::begin(&mut self.default_settings),
-                "end_behavior" => Deserialize::begin(&mut self.end_behavior),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "phases" => Deserialize::begin(&mut self.phases),
-                "released_at" => Deserialize::begin(&mut self.released_at),
-                "released_subscription" => Deserialize::begin(&mut self.released_subscription),
-                "status" => Deserialize::begin(&mut self.status),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                "test_clock" => Deserialize::begin(&mut self.test_clock),
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "billing_mode" => Deserialize::begin(&mut self.builder.billing_mode),
+                "canceled_at" => Deserialize::begin(&mut self.builder.canceled_at),
+                "completed_at" => Deserialize::begin(&mut self.builder.completed_at),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "current_phase" => Deserialize::begin(&mut self.builder.current_phase),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "default_settings" => Deserialize::begin(&mut self.builder.default_settings),
+                "end_behavior" => Deserialize::begin(&mut self.builder.end_behavior),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "phases" => Deserialize::begin(&mut self.builder.phases),
+                "released_at" => Deserialize::begin(&mut self.builder.released_at),
+                "released_subscription" => {
+                    Deserialize::begin(&mut self.builder.released_subscription)
+                }
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "subscription" => Deserialize::begin(&mut self.builder.subscription),
+                "test_clock" => Deserialize::begin(&mut self.builder.test_clock),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                application: Deserialize::default(),
-                billing_mode: Deserialize::default(),
-                canceled_at: Deserialize::default(),
-                completed_at: Deserialize::default(),
-                created: Deserialize::default(),
-                current_phase: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                default_settings: Deserialize::default(),
-                end_behavior: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                phases: Deserialize::default(),
-                released_at: Deserialize::default(),
-                released_subscription: Deserialize::default(),
-                status: Deserialize::default(),
-                subscription: Deserialize::default(),
-                test_clock: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(application),
                 Some(billing_mode),
@@ -189,30 +184,30 @@ const _: () = {
                 Some(subscription),
                 Some(test_clock),
             ) = (
-                self.application.take(),
-                self.billing_mode.take(),
-                self.canceled_at,
-                self.completed_at,
-                self.created,
-                self.current_phase,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.default_settings.take(),
-                self.end_behavior.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.phases.take(),
-                self.released_at,
-                self.released_subscription.take(),
-                self.status.take(),
-                self.subscription.take(),
-                self.test_clock.take(),
+                self.builder.application.take(),
+                self.builder.billing_mode.take(),
+                self.builder.canceled_at,
+                self.builder.completed_at,
+                self.builder.created,
+                self.builder.current_phase,
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.default_settings.take(),
+                self.builder.end_behavior.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.phases.take(),
+                self.builder.released_at,
+                self.builder.released_subscription.take(),
+                self.builder.status.take(),
+                self.builder.subscription.take(),
+                self.builder.test_clock.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SubscriptionSchedule {
                 application,
                 billing_mode,
                 canceled_at,
@@ -232,58 +227,8 @@ const _: () = {
                 status,
                 subscription,
                 test_clock,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SubscriptionSchedule {
-        type Builder = SubscriptionScheduleBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionSchedule {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionScheduleBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "billing_mode" => b.billing_mode = FromValueOpt::from_value(v),
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "completed_at" => b.completed_at = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "current_phase" => b.current_phase = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "default_settings" => b.default_settings = FromValueOpt::from_value(v),
-                    "end_behavior" => b.end_behavior = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "phases" => b.phases = FromValueOpt::from_value(v),
-                    "released_at" => b.released_at = FromValueOpt::from_value(v),
-                    "released_subscription" => {
-                        b.released_subscription = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -388,21 +333,19 @@ impl serde::Serialize for SubscriptionScheduleStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SubscriptionScheduleStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SubscriptionScheduleStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SubscriptionScheduleStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SubscriptionScheduleStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(SubscriptionScheduleStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SubscriptionScheduleStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionScheduleStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -491,21 +434,19 @@ impl serde::Serialize for SubscriptionScheduleEndBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SubscriptionScheduleEndBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SubscriptionScheduleEndBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SubscriptionScheduleEndBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SubscriptionScheduleEndBehavior> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(SubscriptionScheduleEndBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SubscriptionScheduleEndBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionScheduleEndBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

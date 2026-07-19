@@ -30,16 +30,14 @@ pub struct TaxDeductedAtSourceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -58,86 +56,51 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TaxDeductedAtSourceBuilder::deser_default(),
+                builder: TaxDeductedAtSourceBuilder {
+                    id: Deserialize::default(),
+                    period_end: Deserialize::default(),
+                    period_start: Deserialize::default(),
+                    tax_deduction_account_number: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TaxDeductedAtSourceBuilder {
-        type Out = TaxDeductedAtSource;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "id" => Deserialize::begin(&mut self.id),
-                "period_end" => Deserialize::begin(&mut self.period_end),
-                "period_start" => Deserialize::begin(&mut self.period_start),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "period_end" => Deserialize::begin(&mut self.builder.period_end),
+                "period_start" => Deserialize::begin(&mut self.builder.period_start),
                 "tax_deduction_account_number" => {
-                    Deserialize::begin(&mut self.tax_deduction_account_number)
+                    Deserialize::begin(&mut self.builder.tax_deduction_account_number)
                 }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                id: Deserialize::default(),
-                period_end: Deserialize::default(),
-                period_start: Deserialize::default(),
-                tax_deduction_account_number: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(id),
                 Some(period_end),
                 Some(period_start),
                 Some(tax_deduction_account_number),
             ) = (
-                self.id.take(),
-                self.period_end,
-                self.period_start,
-                self.tax_deduction_account_number.take(),
+                self.builder.id.take(),
+                self.builder.period_end,
+                self.builder.period_start,
+                self.builder.tax_deduction_account_number.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { id, period_end, period_start, tax_deduction_account_number })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(TaxDeductedAtSource {
+                id,
+                period_end,
+                period_start,
+                tax_deduction_account_number,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TaxDeductedAtSource {
-        type Builder = TaxDeductedAtSourceBuilder;
-    }
-
-    impl FromValueOpt for TaxDeductedAtSource {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxDeductedAtSourceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "period_end" => b.period_end = FromValueOpt::from_value(v),
-                    "period_start" => b.period_start = FromValueOpt::from_value(v),
-                    "tax_deduction_account_number" => {
-                        b.tax_deduction_account_number = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

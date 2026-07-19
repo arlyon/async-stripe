@@ -24,16 +24,14 @@ pub struct InvoiceSettingCustomerRenderingOptionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,64 +50,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoiceSettingCustomerRenderingOptionsBuilder::deser_default(),
+                builder: InvoiceSettingCustomerRenderingOptionsBuilder {
+                    amount_tax_display: Deserialize::default(),
+                    template: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoiceSettingCustomerRenderingOptionsBuilder {
-        type Out = InvoiceSettingCustomerRenderingOptions;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount_tax_display" => Deserialize::begin(&mut self.amount_tax_display),
-                "template" => Deserialize::begin(&mut self.template),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { amount_tax_display: Deserialize::default(), template: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_tax_display), Some(template)) =
-                (self.amount_tax_display.take(), self.template.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { amount_tax_display, template })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount_tax_display" => Deserialize::begin(&mut self.builder.amount_tax_display),
+                "template" => Deserialize::begin(&mut self.builder.template),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoiceSettingCustomerRenderingOptions {
-        type Builder = InvoiceSettingCustomerRenderingOptionsBuilder;
-    }
-
-    impl FromValueOpt for InvoiceSettingCustomerRenderingOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount_tax_display), Some(template)) =
+                (self.builder.amount_tax_display.take(), self.builder.template.take())
+            else {
+                return Ok(());
             };
-            let mut b = InvoiceSettingCustomerRenderingOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_tax_display" => b.amount_tax_display = FromValueOpt::from_value(v),
-                    "template" => b.template = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(InvoiceSettingCustomerRenderingOptions { amount_tax_display, template });
+            Ok(())
         }
     }
 };

@@ -57,16 +57,14 @@ pub struct SourceTypeThreeDSecureBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -85,65 +83,60 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceTypeThreeDSecureBuilder::deser_default(),
+                builder: SourceTypeThreeDSecureBuilder {
+                    address_line1_check: Deserialize::default(),
+                    address_zip_check: Deserialize::default(),
+                    authenticated: Deserialize::default(),
+                    brand: Deserialize::default(),
+                    card: Deserialize::default(),
+                    country: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    cvc_check: Deserialize::default(),
+                    description: Deserialize::default(),
+                    dynamic_last4: Deserialize::default(),
+                    exp_month: Deserialize::default(),
+                    exp_year: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    funding: Deserialize::default(),
+                    iin: Deserialize::default(),
+                    issuer: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    name: Deserialize::default(),
+                    three_d_secure: Deserialize::default(),
+                    tokenization_method: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SourceTypeThreeDSecureBuilder {
-        type Out = SourceTypeThreeDSecure;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address_line1_check" => Deserialize::begin(&mut self.address_line1_check),
-                "address_zip_check" => Deserialize::begin(&mut self.address_zip_check),
-                "authenticated" => Deserialize::begin(&mut self.authenticated),
-                "brand" => Deserialize::begin(&mut self.brand),
-                "card" => Deserialize::begin(&mut self.card),
-                "country" => Deserialize::begin(&mut self.country),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "cvc_check" => Deserialize::begin(&mut self.cvc_check),
-                "description" => Deserialize::begin(&mut self.description),
-                "dynamic_last4" => Deserialize::begin(&mut self.dynamic_last4),
-                "exp_month" => Deserialize::begin(&mut self.exp_month),
-                "exp_year" => Deserialize::begin(&mut self.exp_year),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "funding" => Deserialize::begin(&mut self.funding),
-                "iin" => Deserialize::begin(&mut self.iin),
-                "issuer" => Deserialize::begin(&mut self.issuer),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "name" => Deserialize::begin(&mut self.name),
-                "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
-                "tokenization_method" => Deserialize::begin(&mut self.tokenization_method),
+                "address_line1_check" => Deserialize::begin(&mut self.builder.address_line1_check),
+                "address_zip_check" => Deserialize::begin(&mut self.builder.address_zip_check),
+                "authenticated" => Deserialize::begin(&mut self.builder.authenticated),
+                "brand" => Deserialize::begin(&mut self.builder.brand),
+                "card" => Deserialize::begin(&mut self.builder.card),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "cvc_check" => Deserialize::begin(&mut self.builder.cvc_check),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "dynamic_last4" => Deserialize::begin(&mut self.builder.dynamic_last4),
+                "exp_month" => Deserialize::begin(&mut self.builder.exp_month),
+                "exp_year" => Deserialize::begin(&mut self.builder.exp_year),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "funding" => Deserialize::begin(&mut self.builder.funding),
+                "iin" => Deserialize::begin(&mut self.builder.iin),
+                "issuer" => Deserialize::begin(&mut self.builder.issuer),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "three_d_secure" => Deserialize::begin(&mut self.builder.three_d_secure),
+                "tokenization_method" => Deserialize::begin(&mut self.builder.tokenization_method),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                address_line1_check: Deserialize::default(),
-                address_zip_check: Deserialize::default(),
-                authenticated: Deserialize::default(),
-                brand: Deserialize::default(),
-                card: Deserialize::default(),
-                country: Deserialize::default(),
-                customer: Deserialize::default(),
-                cvc_check: Deserialize::default(),
-                description: Deserialize::default(),
-                dynamic_last4: Deserialize::default(),
-                exp_month: Deserialize::default(),
-                exp_year: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                funding: Deserialize::default(),
-                iin: Deserialize::default(),
-                issuer: Deserialize::default(),
-                last4: Deserialize::default(),
-                name: Deserialize::default(),
-                three_d_secure: Deserialize::default(),
-                tokenization_method: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(address_line1_check),
                 Some(address_zip_check),
@@ -166,31 +159,31 @@ const _: () = {
                 Some(three_d_secure),
                 Some(tokenization_method),
             ) = (
-                self.address_line1_check.take(),
-                self.address_zip_check.take(),
-                self.authenticated,
-                self.brand.take(),
-                self.card.take(),
-                self.country.take(),
-                self.customer.take(),
-                self.cvc_check.take(),
-                self.description.take(),
-                self.dynamic_last4.take(),
-                self.exp_month,
-                self.exp_year,
-                self.fingerprint.take(),
-                self.funding.take(),
-                self.iin.take(),
-                self.issuer.take(),
-                self.last4.take(),
-                self.name.take(),
-                self.three_d_secure.take(),
-                self.tokenization_method.take(),
+                self.builder.address_line1_check.take(),
+                self.builder.address_zip_check.take(),
+                self.builder.authenticated,
+                self.builder.brand.take(),
+                self.builder.card.take(),
+                self.builder.country.take(),
+                self.builder.customer.take(),
+                self.builder.cvc_check.take(),
+                self.builder.description.take(),
+                self.builder.dynamic_last4.take(),
+                self.builder.exp_month,
+                self.builder.exp_year,
+                self.builder.fingerprint.take(),
+                self.builder.funding.take(),
+                self.builder.iin.take(),
+                self.builder.issuer.take(),
+                self.builder.last4.take(),
+                self.builder.name.take(),
+                self.builder.three_d_secure.take(),
+                self.builder.tokenization_method.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SourceTypeThreeDSecure {
                 address_line1_check,
                 address_zip_check,
                 authenticated,
@@ -211,57 +204,8 @@ const _: () = {
                 name,
                 three_d_secure,
                 tokenization_method,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceTypeThreeDSecure {
-        type Builder = SourceTypeThreeDSecureBuilder;
-    }
-
-    impl FromValueOpt for SourceTypeThreeDSecure {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeThreeDSecureBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address_line1_check" => b.address_line1_check = FromValueOpt::from_value(v),
-                    "address_zip_check" => b.address_zip_check = FromValueOpt::from_value(v),
-                    "authenticated" => b.authenticated = FromValueOpt::from_value(v),
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "dynamic_last4" => b.dynamic_last4 = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
-                    "tokenization_method" => b.tokenization_method = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

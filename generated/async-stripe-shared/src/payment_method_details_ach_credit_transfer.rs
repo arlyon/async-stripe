@@ -29,16 +29,14 @@ pub struct PaymentMethodDetailsAchCreditTransferBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,76 +55,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsAchCreditTransferBuilder::deser_default(),
+                builder: PaymentMethodDetailsAchCreditTransferBuilder {
+                    account_number: Deserialize::default(),
+                    bank_name: Deserialize::default(),
+                    routing_number: Deserialize::default(),
+                    swift_code: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDetailsAchCreditTransferBuilder {
-        type Out = PaymentMethodDetailsAchCreditTransfer;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "account_number" => Deserialize::begin(&mut self.account_number),
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "routing_number" => Deserialize::begin(&mut self.routing_number),
-                "swift_code" => Deserialize::begin(&mut self.swift_code),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                account_number: Deserialize::default(),
-                bank_name: Deserialize::default(),
-                routing_number: Deserialize::default(),
-                swift_code: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account_number), Some(bank_name), Some(routing_number), Some(swift_code)) = (
-                self.account_number.take(),
-                self.bank_name.take(),
-                self.routing_number.take(),
-                self.swift_code.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { account_number, bank_name, routing_number, swift_code })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "account_number" => Deserialize::begin(&mut self.builder.account_number),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "routing_number" => Deserialize::begin(&mut self.builder.routing_number),
+                "swift_code" => Deserialize::begin(&mut self.builder.swift_code),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsAchCreditTransfer {
-        type Builder = PaymentMethodDetailsAchCreditTransferBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsAchCreditTransfer {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(account_number), Some(bank_name), Some(routing_number), Some(swift_code)) = (
+                self.builder.account_number.take(),
+                self.builder.bank_name.take(),
+                self.builder.routing_number.take(),
+                self.builder.swift_code.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDetailsAchCreditTransferBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_number" => b.account_number = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-                    "swift_code" => b.swift_code = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodDetailsAchCreditTransfer {
+                account_number,
+                bank_name,
+                routing_number,
+                swift_code,
+            });
+            Ok(())
         }
     }
 };

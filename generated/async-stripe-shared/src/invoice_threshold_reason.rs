@@ -23,16 +23,14 @@ pub struct InvoiceThresholdReasonBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,64 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoiceThresholdReasonBuilder::deser_default(),
+                builder: InvoiceThresholdReasonBuilder {
+                    amount_gte: Deserialize::default(),
+                    item_reasons: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoiceThresholdReasonBuilder {
-        type Out = InvoiceThresholdReason;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount_gte" => Deserialize::begin(&mut self.amount_gte),
-                "item_reasons" => Deserialize::begin(&mut self.item_reasons),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { amount_gte: Deserialize::default(), item_reasons: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_gte), Some(item_reasons)) =
-                (self.amount_gte, self.item_reasons.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { amount_gte, item_reasons })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount_gte" => Deserialize::begin(&mut self.builder.amount_gte),
+                "item_reasons" => Deserialize::begin(&mut self.builder.item_reasons),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoiceThresholdReason {
-        type Builder = InvoiceThresholdReasonBuilder;
-    }
-
-    impl FromValueOpt for InvoiceThresholdReason {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount_gte), Some(item_reasons)) =
+                (self.builder.amount_gte, self.builder.item_reasons.take())
+            else {
+                return Ok(());
             };
-            let mut b = InvoiceThresholdReasonBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_gte" => b.amount_gte = FromValueOpt::from_value(v),
-                    "item_reasons" => b.item_reasons = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InvoiceThresholdReason { amount_gte, item_reasons });
+            Ok(())
         }
     }
 };

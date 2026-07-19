@@ -45,16 +45,14 @@ pub struct PortalSubscriptionUpdateBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -73,39 +71,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PortalSubscriptionUpdateBuilder::deser_default(),
+                builder: PortalSubscriptionUpdateBuilder {
+                    billing_cycle_anchor: Deserialize::default(),
+                    default_allowed_updates: Deserialize::default(),
+                    enabled: Deserialize::default(),
+                    products: Deserialize::default(),
+                    proration_behavior: Deserialize::default(),
+                    schedule_at_period_end: Deserialize::default(),
+                    trial_update_behavior: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PortalSubscriptionUpdateBuilder {
-        type Out = PortalSubscriptionUpdate;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
-                "default_allowed_updates" => Deserialize::begin(&mut self.default_allowed_updates),
-                "enabled" => Deserialize::begin(&mut self.enabled),
-                "products" => Deserialize::begin(&mut self.products),
-                "proration_behavior" => Deserialize::begin(&mut self.proration_behavior),
-                "schedule_at_period_end" => Deserialize::begin(&mut self.schedule_at_period_end),
-                "trial_update_behavior" => Deserialize::begin(&mut self.trial_update_behavior),
+                "billing_cycle_anchor" => {
+                    Deserialize::begin(&mut self.builder.billing_cycle_anchor)
+                }
+                "default_allowed_updates" => {
+                    Deserialize::begin(&mut self.builder.default_allowed_updates)
+                }
+                "enabled" => Deserialize::begin(&mut self.builder.enabled),
+                "products" => Deserialize::begin(&mut self.builder.products),
+                "proration_behavior" => Deserialize::begin(&mut self.builder.proration_behavior),
+                "schedule_at_period_end" => {
+                    Deserialize::begin(&mut self.builder.schedule_at_period_end)
+                }
+                "trial_update_behavior" => {
+                    Deserialize::begin(&mut self.builder.trial_update_behavior)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                billing_cycle_anchor: Deserialize::default(),
-                default_allowed_updates: Deserialize::default(),
-                enabled: Deserialize::default(),
-                products: Deserialize::default(),
-                proration_behavior: Deserialize::default(),
-                schedule_at_period_end: Deserialize::default(),
-                trial_update_behavior: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(billing_cycle_anchor),
                 Some(default_allowed_updates),
@@ -115,18 +116,18 @@ const _: () = {
                 Some(schedule_at_period_end),
                 Some(trial_update_behavior),
             ) = (
-                self.billing_cycle_anchor.take(),
-                self.default_allowed_updates.take(),
-                self.enabled,
-                self.products.take(),
-                self.proration_behavior.take(),
-                self.schedule_at_period_end.take(),
-                self.trial_update_behavior.take(),
+                self.builder.billing_cycle_anchor.take(),
+                self.builder.default_allowed_updates.take(),
+                self.builder.enabled,
+                self.builder.products.take(),
+                self.builder.proration_behavior.take(),
+                self.builder.schedule_at_period_end.take(),
+                self.builder.trial_update_behavior.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PortalSubscriptionUpdate {
                 billing_cycle_anchor,
                 default_allowed_updates,
                 enabled,
@@ -134,50 +135,8 @@ const _: () = {
                 proration_behavior,
                 schedule_at_period_end,
                 trial_update_behavior,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PortalSubscriptionUpdate {
-        type Builder = PortalSubscriptionUpdateBuilder;
-    }
-
-    impl FromValueOpt for PortalSubscriptionUpdate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PortalSubscriptionUpdateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
-                    "default_allowed_updates" => {
-                        b.default_allowed_updates = FromValueOpt::from_value(v)
-                    }
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    "products" => b.products = FromValueOpt::from_value(v),
-                    "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
-                    "schedule_at_period_end" => {
-                        b.schedule_at_period_end = FromValueOpt::from_value(v)
-                    }
-                    "trial_update_behavior" => {
-                        b.trial_update_behavior = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -250,22 +209,20 @@ impl serde::Serialize for PortalSubscriptionUpdateBillingCycleAnchor {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PortalSubscriptionUpdateBillingCycleAnchor {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PortalSubscriptionUpdateBillingCycleAnchor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateBillingCycleAnchor> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateBillingCycleAnchor> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(PortalSubscriptionUpdateBillingCycleAnchor::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateBillingCycleAnchor);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateBillingCycleAnchor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -344,22 +301,20 @@ impl serde::Serialize for PortalSubscriptionUpdateDefaultAllowedUpdates {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PortalSubscriptionUpdateDefaultAllowedUpdates {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PortalSubscriptionUpdateDefaultAllowedUpdates {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateDefaultAllowedUpdates> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateDefaultAllowedUpdates> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(PortalSubscriptionUpdateDefaultAllowedUpdates::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateDefaultAllowedUpdates);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateDefaultAllowedUpdates {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -439,22 +394,20 @@ impl serde::Serialize for PortalSubscriptionUpdateProrationBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PortalSubscriptionUpdateProrationBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PortalSubscriptionUpdateProrationBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateProrationBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateProrationBehavior> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(PortalSubscriptionUpdateProrationBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateProrationBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -531,22 +484,20 @@ impl serde::Serialize for PortalSubscriptionUpdateTrialUpdateBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PortalSubscriptionUpdateTrialUpdateBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PortalSubscriptionUpdateTrialUpdateBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateTrialUpdateBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateTrialUpdateBehavior> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(PortalSubscriptionUpdateTrialUpdateBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateTrialUpdateBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateTrialUpdateBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

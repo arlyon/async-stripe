@@ -31,16 +31,14 @@ pub struct SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -59,72 +57,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxBuilder::deser_default(),
+                builder: SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxBuilder {
+                    disabled_reason: Deserialize::default(),
+                    enabled: Deserialize::default(),
+                    liability: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxBuilder {
-        type Out = SubscriptionSchedulesResourceDefaultSettingsAutomaticTax;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "disabled_reason" => Deserialize::begin(&mut self.disabled_reason),
-                "enabled" => Deserialize::begin(&mut self.enabled),
-                "liability" => Deserialize::begin(&mut self.liability),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                disabled_reason: Deserialize::default(),
-                enabled: Deserialize::default(),
-                liability: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(disabled_reason), Some(enabled), Some(liability)) =
-                (self.disabled_reason.take(), self.enabled, self.liability.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { disabled_reason, enabled, liability })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "disabled_reason" => Deserialize::begin(&mut self.builder.disabled_reason),
+                "enabled" => Deserialize::begin(&mut self.builder.enabled),
+                "liability" => Deserialize::begin(&mut self.builder.liability),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
-        type Builder = SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(disabled_reason), Some(enabled), Some(liability)) = (
+                self.builder.disabled_reason.take(),
+                self.builder.enabled,
+                self.builder.liability.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b =
-                SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "disabled_reason" => b.disabled_reason = FromValueOpt::from_value(v),
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    "liability" => b.liability = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
+                disabled_reason,
+                enabled,
+                liability,
+            });
+            Ok(())
         }
     }
 };
@@ -193,18 +158,18 @@ impl serde::Serialize for SubscriptionSchedulesResourceDefaultSettingsAutomaticT
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
+impl stripe_miniserde::Deserialize
     for SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason::from_str(s)
@@ -213,10 +178,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason

@@ -24,16 +24,14 @@ pub struct BalanceSettingsResourceSettlementTimingBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,64 +50,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BalanceSettingsResourceSettlementTimingBuilder::deser_default(),
+                builder: BalanceSettingsResourceSettlementTimingBuilder {
+                    delay_days: Deserialize::default(),
+                    delay_days_override: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BalanceSettingsResourceSettlementTimingBuilder {
-        type Out = BalanceSettingsResourceSettlementTiming;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "delay_days" => Deserialize::begin(&mut self.delay_days),
-                "delay_days_override" => Deserialize::begin(&mut self.delay_days_override),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { delay_days: Deserialize::default(), delay_days_override: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(delay_days), Some(delay_days_override)) =
-                (self.delay_days, self.delay_days_override)
-            else {
-                return None;
-            };
-            Some(Self::Out { delay_days, delay_days_override })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "delay_days" => Deserialize::begin(&mut self.builder.delay_days),
+                "delay_days_override" => Deserialize::begin(&mut self.builder.delay_days_override),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BalanceSettingsResourceSettlementTiming {
-        type Builder = BalanceSettingsResourceSettlementTimingBuilder;
-    }
-
-    impl FromValueOpt for BalanceSettingsResourceSettlementTiming {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(delay_days), Some(delay_days_override)) =
+                (self.builder.delay_days, self.builder.delay_days_override)
+            else {
+                return Ok(());
             };
-            let mut b = BalanceSettingsResourceSettlementTimingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "delay_days" => b.delay_days = FromValueOpt::from_value(v),
-                    "delay_days_override" => b.delay_days_override = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(BalanceSettingsResourceSettlementTiming { delay_days, delay_days_override });
+            Ok(())
         }
     }
 };

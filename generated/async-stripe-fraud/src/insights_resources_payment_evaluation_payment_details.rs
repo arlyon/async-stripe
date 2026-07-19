@@ -47,16 +47,14 @@ pub struct InsightsResourcesPaymentEvaluationPaymentDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -75,39 +73,40 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InsightsResourcesPaymentEvaluationPaymentDetailsBuilder::deser_default(),
+                builder: InsightsResourcesPaymentEvaluationPaymentDetailsBuilder {
+                    amount: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    description: Deserialize::default(),
+                    money_movement_details: Deserialize::default(),
+                    payment_method_details: Deserialize::default(),
+                    shipping_details: Deserialize::default(),
+                    statement_descriptor: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for InsightsResourcesPaymentEvaluationPaymentDetailsBuilder {
-        type Out = InsightsResourcesPaymentEvaluationPaymentDetails;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "description" => Deserialize::begin(&mut self.description),
-                "money_movement_details" => Deserialize::begin(&mut self.money_movement_details),
-                "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
-                "shipping_details" => Deserialize::begin(&mut self.shipping_details),
-                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "money_movement_details" => {
+                    Deserialize::begin(&mut self.builder.money_movement_details)
+                }
+                "payment_method_details" => {
+                    Deserialize::begin(&mut self.builder.payment_method_details)
+                }
+                "shipping_details" => Deserialize::begin(&mut self.builder.shipping_details),
+                "statement_descriptor" => {
+                    Deserialize::begin(&mut self.builder.statement_descriptor)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                money_movement_details: Deserialize::default(),
-                payment_method_details: Deserialize::default(),
-                shipping_details: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(currency),
@@ -117,18 +116,18 @@ const _: () = {
                 Some(shipping_details),
                 Some(statement_descriptor),
             ) = (
-                self.amount,
-                self.currency.take(),
-                self.description.take(),
-                self.money_movement_details.take(),
-                self.payment_method_details.take(),
-                self.shipping_details.take(),
-                self.statement_descriptor.take(),
+                self.builder.amount,
+                self.builder.currency.take(),
+                self.builder.description.take(),
+                self.builder.money_movement_details.take(),
+                self.builder.payment_method_details.take(),
+                self.builder.shipping_details.take(),
+                self.builder.statement_descriptor.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(InsightsResourcesPaymentEvaluationPaymentDetails {
                 amount,
                 currency,
                 description,
@@ -136,48 +135,8 @@ const _: () = {
                 payment_method_details,
                 shipping_details,
                 statement_descriptor,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for InsightsResourcesPaymentEvaluationPaymentDetails {
-        type Builder = InsightsResourcesPaymentEvaluationPaymentDetailsBuilder;
-    }
-
-    impl FromValueOpt for InsightsResourcesPaymentEvaluationPaymentDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InsightsResourcesPaymentEvaluationPaymentDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "money_movement_details" => {
-                        b.money_movement_details = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "shipping_details" => b.shipping_details = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

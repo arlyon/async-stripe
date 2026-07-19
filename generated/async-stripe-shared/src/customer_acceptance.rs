@@ -28,16 +28,14 @@ pub struct CustomerAcceptanceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,73 +54,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CustomerAcceptanceBuilder::deser_default(),
+                builder: CustomerAcceptanceBuilder {
+                    accepted_at: Deserialize::default(),
+                    offline: Deserialize::default(),
+                    online: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for CustomerAcceptanceBuilder {
-        type Out = CustomerAcceptance;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "accepted_at" => Deserialize::begin(&mut self.accepted_at),
-                "offline" => Deserialize::begin(&mut self.offline),
-                "online" => Deserialize::begin(&mut self.online),
-                "type" => Deserialize::begin(&mut self.type_),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                accepted_at: Deserialize::default(),
-                offline: Deserialize::default(),
-                online: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(accepted_at), Some(offline), Some(online), Some(type_)) =
-                (self.accepted_at, self.offline, self.online.take(), self.type_.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { accepted_at, offline, online, type_ })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "accepted_at" => Deserialize::begin(&mut self.builder.accepted_at),
+                "offline" => Deserialize::begin(&mut self.builder.offline),
+                "online" => Deserialize::begin(&mut self.builder.online),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for CustomerAcceptance {
-        type Builder = CustomerAcceptanceBuilder;
-    }
-
-    impl FromValueOpt for CustomerAcceptance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(accepted_at), Some(offline), Some(online), Some(type_)) = (
+                self.builder.accepted_at,
+                self.builder.offline,
+                self.builder.online.take(),
+                self.builder.type_.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = CustomerAcceptanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "accepted_at" => b.accepted_at = FromValueOpt::from_value(v),
-                    "offline" => b.offline = FromValueOpt::from_value(v),
-                    "online" => b.online = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(CustomerAcceptance { accepted_at, offline, online, type_ });
+            Ok(())
         }
     }
 };
@@ -187,21 +150,19 @@ impl serde::Serialize for CustomerAcceptanceType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CustomerAcceptanceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CustomerAcceptanceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CustomerAcceptanceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CustomerAcceptanceType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CustomerAcceptanceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CustomerAcceptanceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerAcceptanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

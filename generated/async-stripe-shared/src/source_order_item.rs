@@ -38,16 +38,14 @@ pub struct SourceOrderItemBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -66,37 +64,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceOrderItemBuilder::deser_default(),
+                builder: SourceOrderItemBuilder {
+                    amount: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    description: Deserialize::default(),
+                    parent: Deserialize::default(),
+                    quantity: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SourceOrderItemBuilder {
-        type Out = SourceOrderItem;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "description" => Deserialize::begin(&mut self.description),
-                "parent" => Deserialize::begin(&mut self.parent),
-                "quantity" => Deserialize::begin(&mut self.quantity),
-                "type" => Deserialize::begin(&mut self.type_),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "parent" => Deserialize::begin(&mut self.builder.parent),
+                "quantity" => Deserialize::begin(&mut self.builder.quantity),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                parent: Deserialize::default(),
-                quantity: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(currency),
@@ -105,53 +98,19 @@ const _: () = {
                 Some(quantity),
                 Some(type_),
             ) = (
-                self.amount,
-                self.currency.take(),
-                self.description.take(),
-                self.parent.take(),
-                self.quantity,
-                self.type_.take(),
+                self.builder.amount,
+                self.builder.currency.take(),
+                self.builder.description.take(),
+                self.builder.parent.take(),
+                self.builder.quantity,
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { amount, currency, description, parent, quantity, type_ })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out =
+                Some(SourceOrderItem { amount, currency, description, parent, quantity, type_ });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceOrderItem {
-        type Builder = SourceOrderItemBuilder;
-    }
-
-    impl FromValueOpt for SourceOrderItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceOrderItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "parent" => b.parent = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

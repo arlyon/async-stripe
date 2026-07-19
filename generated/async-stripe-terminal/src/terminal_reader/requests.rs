@@ -272,76 +272,38 @@ pub enum RetrieveTerminalReaderReturned {
     DeletedTerminalReader(stripe_terminal::DeletedTerminalReader),
 }
 
-#[derive(Default)]
-pub struct RetrieveTerminalReaderReturnedBuilder {
-    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
-}
-
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::MapBuilder;
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_miniserde::de::Visitor;
+    use stripe_miniserde::{Deserialize, Result, make_place};
+    use stripe_miniserde::json::peek_deleted_flag;
 
     use super::*;
 
     make_place!(Place);
 
-    struct Builder<'a> {
-        out: &'a mut Option<RetrieveTerminalReaderReturned>,
-        builder: RetrieveTerminalReaderReturnedBuilder,
-    }
-
     impl Deserialize for RetrieveTerminalReaderReturned {
+        const WANTS_RAW: bool = true;
+
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     impl Visitor for Place<RetrieveTerminalReaderReturned> {
-        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+        fn wants_raw(&self) -> bool {
+            true
         }
 
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl MapBuilder for RetrieveTerminalReaderReturnedBuilder {
-        type Out = RetrieveTerminalReaderReturned;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.inner.key_inner(k)
-        }
-
-        fn deser_default() -> Self {
-            Self::default()
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (deleted, o) = self.inner.finish_inner()?;
-            Some(if deleted {
-                RetrieveTerminalReaderReturned::DeletedTerminalReader(FromValueOpt::from_value(
-                    Value::Object(o),
+        fn raw(&mut self, bytes: &str) -> Result<()> {
+            self.out = Some(if peek_deleted_flag(bytes) {
+                RetrieveTerminalReaderReturned::DeletedTerminalReader(stripe_miniserde::json::from_str(
+                    bytes,
                 )?)
             } else {
-                RetrieveTerminalReaderReturned::TerminalReader(FromValueOpt::from_value(
-                    Value::Object(o),
-                )?)
-            })
+                RetrieveTerminalReaderReturned::TerminalReader(stripe_miniserde::json::from_str(bytes)?)
+            });
+            Ok(())
         }
-    }
-
-    impl stripe_types::ObjectDeser for RetrieveTerminalReaderReturned {
-        type Builder = RetrieveTerminalReaderReturnedBuilder;
     }
 };
 
@@ -554,76 +516,38 @@ pub enum UpdateTerminalReaderReturned {
     DeletedTerminalReader(stripe_terminal::DeletedTerminalReader),
 }
 
-#[derive(Default)]
-pub struct UpdateTerminalReaderReturnedBuilder {
-    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
-}
-
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::MapBuilder;
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_miniserde::de::Visitor;
+    use stripe_miniserde::{Deserialize, Result, make_place};
+    use stripe_miniserde::json::peek_deleted_flag;
 
     use super::*;
 
     make_place!(Place);
 
-    struct Builder<'a> {
-        out: &'a mut Option<UpdateTerminalReaderReturned>,
-        builder: UpdateTerminalReaderReturnedBuilder,
-    }
-
     impl Deserialize for UpdateTerminalReaderReturned {
+        const WANTS_RAW: bool = true;
+
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     impl Visitor for Place<UpdateTerminalReaderReturned> {
-        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+        fn wants_raw(&self) -> bool {
+            true
         }
 
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl MapBuilder for UpdateTerminalReaderReturnedBuilder {
-        type Out = UpdateTerminalReaderReturned;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.inner.key_inner(k)
-        }
-
-        fn deser_default() -> Self {
-            Self::default()
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (deleted, o) = self.inner.finish_inner()?;
-            Some(if deleted {
-                UpdateTerminalReaderReturned::DeletedTerminalReader(FromValueOpt::from_value(
-                    Value::Object(o),
+        fn raw(&mut self, bytes: &str) -> Result<()> {
+            self.out = Some(if peek_deleted_flag(bytes) {
+                UpdateTerminalReaderReturned::DeletedTerminalReader(stripe_miniserde::json::from_str(
+                    bytes,
                 )?)
             } else {
-                UpdateTerminalReaderReturned::TerminalReader(FromValueOpt::from_value(
-                    Value::Object(o),
-                )?)
-            })
+                UpdateTerminalReaderReturned::TerminalReader(stripe_miniserde::json::from_str(bytes)?)
+            });
+            Ok(())
         }
-    }
-
-    impl stripe_types::ObjectDeser for UpdateTerminalReaderReturned {
-        type Builder = UpdateTerminalReaderReturnedBuilder;
     }
 };
 

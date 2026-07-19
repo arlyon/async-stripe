@@ -34,16 +34,14 @@ pub struct DisputeEvidenceDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -62,35 +60,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: DisputeEvidenceDetailsBuilder::deser_default(),
+                builder: DisputeEvidenceDetailsBuilder {
+                    due_by: Deserialize::default(),
+                    enhanced_eligibility: Deserialize::default(),
+                    has_evidence: Deserialize::default(),
+                    past_due: Deserialize::default(),
+                    submission_count: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for DisputeEvidenceDetailsBuilder {
-        type Out = DisputeEvidenceDetails;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "due_by" => Deserialize::begin(&mut self.due_by),
-                "enhanced_eligibility" => Deserialize::begin(&mut self.enhanced_eligibility),
-                "has_evidence" => Deserialize::begin(&mut self.has_evidence),
-                "past_due" => Deserialize::begin(&mut self.past_due),
-                "submission_count" => Deserialize::begin(&mut self.submission_count),
+                "due_by" => Deserialize::begin(&mut self.builder.due_by),
+                "enhanced_eligibility" => {
+                    Deserialize::begin(&mut self.builder.enhanced_eligibility)
+                }
+                "has_evidence" => Deserialize::begin(&mut self.builder.has_evidence),
+                "past_due" => Deserialize::begin(&mut self.builder.past_due),
+                "submission_count" => Deserialize::begin(&mut self.builder.submission_count),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                due_by: Deserialize::default(),
-                enhanced_eligibility: Deserialize::default(),
-                has_evidence: Deserialize::default(),
-                past_due: Deserialize::default(),
-                submission_count: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(due_by),
                 Some(enhanced_eligibility),
@@ -98,57 +93,23 @@ const _: () = {
                 Some(past_due),
                 Some(submission_count),
             ) = (
-                self.due_by,
-                self.enhanced_eligibility.take(),
-                self.has_evidence,
-                self.past_due,
-                self.submission_count,
+                self.builder.due_by,
+                self.builder.enhanced_eligibility.take(),
+                self.builder.has_evidence,
+                self.builder.past_due,
+                self.builder.submission_count,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(DisputeEvidenceDetails {
                 due_by,
                 enhanced_eligibility,
                 has_evidence,
                 past_due,
                 submission_count,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for DisputeEvidenceDetails {
-        type Builder = DisputeEvidenceDetailsBuilder;
-    }
-
-    impl FromValueOpt for DisputeEvidenceDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeEvidenceDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "due_by" => b.due_by = FromValueOpt::from_value(v),
-                    "enhanced_eligibility" => b.enhanced_eligibility = FromValueOpt::from_value(v),
-                    "has_evidence" => b.has_evidence = FromValueOpt::from_value(v),
-                    "past_due" => b.past_due = FromValueOpt::from_value(v),
-                    "submission_count" => b.submission_count = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

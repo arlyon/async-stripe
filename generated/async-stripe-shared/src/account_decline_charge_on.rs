@@ -25,16 +25,14 @@ pub struct AccountDeclineChargeOnBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,63 +51,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AccountDeclineChargeOnBuilder::deser_default(),
+                builder: AccountDeclineChargeOnBuilder {
+                    avs_failure: Deserialize::default(),
+                    cvc_failure: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for AccountDeclineChargeOnBuilder {
-        type Out = AccountDeclineChargeOn;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "avs_failure" => Deserialize::begin(&mut self.avs_failure),
-                "cvc_failure" => Deserialize::begin(&mut self.cvc_failure),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { avs_failure: Deserialize::default(), cvc_failure: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(avs_failure), Some(cvc_failure)) = (self.avs_failure, self.cvc_failure)
-            else {
-                return None;
-            };
-            Some(Self::Out { avs_failure, cvc_failure })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "avs_failure" => Deserialize::begin(&mut self.builder.avs_failure),
+                "cvc_failure" => Deserialize::begin(&mut self.builder.cvc_failure),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for AccountDeclineChargeOn {
-        type Builder = AccountDeclineChargeOnBuilder;
-    }
-
-    impl FromValueOpt for AccountDeclineChargeOn {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(avs_failure), Some(cvc_failure)) =
+                (self.builder.avs_failure, self.builder.cvc_failure)
+            else {
+                return Ok(());
             };
-            let mut b = AccountDeclineChargeOnBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "avs_failure" => b.avs_failure = FromValueOpt::from_value(v),
-                    "cvc_failure" => b.cvc_failure = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(AccountDeclineChargeOn { avs_failure, cvc_failure });
+            Ok(())
         }
     }
 };

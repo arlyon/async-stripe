@@ -31,16 +31,14 @@ pub struct GelatoSessionDocumentOptionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -59,89 +57,53 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: GelatoSessionDocumentOptionsBuilder::deser_default(),
+                builder: GelatoSessionDocumentOptionsBuilder {
+                    allowed_types: Deserialize::default(),
+                    require_id_number: Deserialize::default(),
+                    require_live_capture: Deserialize::default(),
+                    require_matching_selfie: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for GelatoSessionDocumentOptionsBuilder {
-        type Out = GelatoSessionDocumentOptions;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "allowed_types" => Deserialize::begin(&mut self.allowed_types),
-                "require_id_number" => Deserialize::begin(&mut self.require_id_number),
-                "require_live_capture" => Deserialize::begin(&mut self.require_live_capture),
-                "require_matching_selfie" => Deserialize::begin(&mut self.require_matching_selfie),
+                "allowed_types" => Deserialize::begin(&mut self.builder.allowed_types),
+                "require_id_number" => Deserialize::begin(&mut self.builder.require_id_number),
+                "require_live_capture" => {
+                    Deserialize::begin(&mut self.builder.require_live_capture)
+                }
+                "require_matching_selfie" => {
+                    Deserialize::begin(&mut self.builder.require_matching_selfie)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                allowed_types: Deserialize::default(),
-                require_id_number: Deserialize::default(),
-                require_live_capture: Deserialize::default(),
-                require_matching_selfie: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(allowed_types),
                 Some(require_id_number),
                 Some(require_live_capture),
                 Some(require_matching_selfie),
             ) = (
-                self.allowed_types.take(),
-                self.require_id_number,
-                self.require_live_capture,
-                self.require_matching_selfie,
+                self.builder.allowed_types.take(),
+                self.builder.require_id_number,
+                self.builder.require_live_capture,
+                self.builder.require_matching_selfie,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(GelatoSessionDocumentOptions {
                 allowed_types,
                 require_id_number,
                 require_live_capture,
                 require_matching_selfie,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for GelatoSessionDocumentOptions {
-        type Builder = GelatoSessionDocumentOptionsBuilder;
-    }
-
-    impl FromValueOpt for GelatoSessionDocumentOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = GelatoSessionDocumentOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allowed_types" => b.allowed_types = FromValueOpt::from_value(v),
-                    "require_id_number" => b.require_id_number = FromValueOpt::from_value(v),
-                    "require_live_capture" => b.require_live_capture = FromValueOpt::from_value(v),
-                    "require_matching_selfie" => {
-                        b.require_matching_selfie = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -214,21 +176,19 @@ impl serde::Serialize for GelatoSessionDocumentOptionsAllowedTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for GelatoSessionDocumentOptionsAllowedTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for GelatoSessionDocumentOptionsAllowedTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<GelatoSessionDocumentOptionsAllowedTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<GelatoSessionDocumentOptionsAllowedTypes> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(GelatoSessionDocumentOptionsAllowedTypes::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(GelatoSessionDocumentOptionsAllowedTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoSessionDocumentOptionsAllowedTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

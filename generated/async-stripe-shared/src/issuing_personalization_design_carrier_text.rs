@@ -29,16 +29,14 @@ pub struct IssuingPersonalizationDesignCarrierTextBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,76 +55,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingPersonalizationDesignCarrierTextBuilder::deser_default(),
+                builder: IssuingPersonalizationDesignCarrierTextBuilder {
+                    footer_body: Deserialize::default(),
+                    footer_title: Deserialize::default(),
+                    header_body: Deserialize::default(),
+                    header_title: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingPersonalizationDesignCarrierTextBuilder {
-        type Out = IssuingPersonalizationDesignCarrierText;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "footer_body" => Deserialize::begin(&mut self.footer_body),
-                "footer_title" => Deserialize::begin(&mut self.footer_title),
-                "header_body" => Deserialize::begin(&mut self.header_body),
-                "header_title" => Deserialize::begin(&mut self.header_title),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                footer_body: Deserialize::default(),
-                footer_title: Deserialize::default(),
-                header_body: Deserialize::default(),
-                header_title: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(footer_body), Some(footer_title), Some(header_body), Some(header_title)) = (
-                self.footer_body.take(),
-                self.footer_title.take(),
-                self.header_body.take(),
-                self.header_title.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { footer_body, footer_title, header_body, header_title })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "footer_body" => Deserialize::begin(&mut self.builder.footer_body),
+                "footer_title" => Deserialize::begin(&mut self.builder.footer_title),
+                "header_body" => Deserialize::begin(&mut self.builder.header_body),
+                "header_title" => Deserialize::begin(&mut self.builder.header_title),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingPersonalizationDesignCarrierText {
-        type Builder = IssuingPersonalizationDesignCarrierTextBuilder;
-    }
-
-    impl FromValueOpt for IssuingPersonalizationDesignCarrierText {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(footer_body), Some(footer_title), Some(header_body), Some(header_title)) = (
+                self.builder.footer_body.take(),
+                self.builder.footer_title.take(),
+                self.builder.header_body.take(),
+                self.builder.header_title.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = IssuingPersonalizationDesignCarrierTextBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "footer_body" => b.footer_body = FromValueOpt::from_value(v),
-                    "footer_title" => b.footer_title = FromValueOpt::from_value(v),
-                    "header_body" => b.header_body = FromValueOpt::from_value(v),
-                    "header_title" => b.header_title = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(IssuingPersonalizationDesignCarrierText {
+                footer_body,
+                footer_title,
+                header_body,
+                header_title,
+            });
+            Ok(())
         }
     }
 };

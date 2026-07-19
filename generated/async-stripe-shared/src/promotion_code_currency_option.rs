@@ -20,16 +20,14 @@ pub struct PromotionCodeCurrencyOptionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -48,60 +46,27 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PromotionCodeCurrencyOptionBuilder::deser_default(),
+                builder: PromotionCodeCurrencyOptionBuilder {
+                    minimum_amount: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PromotionCodeCurrencyOptionBuilder {
-        type Out = PromotionCodeCurrencyOption;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "minimum_amount" => Deserialize::begin(&mut self.minimum_amount),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { minimum_amount: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(minimum_amount),) = (self.minimum_amount,) else {
-                return None;
-            };
-            Some(Self::Out { minimum_amount })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "minimum_amount" => Deserialize::begin(&mut self.builder.minimum_amount),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PromotionCodeCurrencyOption {
-        type Builder = PromotionCodeCurrencyOptionBuilder;
-    }
-
-    impl FromValueOpt for PromotionCodeCurrencyOption {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(minimum_amount),) = (self.builder.minimum_amount,) else {
+                return Ok(());
             };
-            let mut b = PromotionCodeCurrencyOptionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "minimum_amount" => b.minimum_amount = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PromotionCodeCurrencyOption { minimum_amount });
+            Ok(())
         }
     }
 };

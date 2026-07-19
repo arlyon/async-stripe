@@ -27,16 +27,14 @@ pub struct PaymentMethodConfigResourceDisplayPreferenceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,70 +53,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodConfigResourceDisplayPreferenceBuilder::deser_default(),
+                builder: PaymentMethodConfigResourceDisplayPreferenceBuilder {
+                    overridable: Deserialize::default(),
+                    preference: Deserialize::default(),
+                    value: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodConfigResourceDisplayPreferenceBuilder {
-        type Out = PaymentMethodConfigResourceDisplayPreference;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "overridable" => Deserialize::begin(&mut self.overridable),
-                "preference" => Deserialize::begin(&mut self.preference),
-                "value" => Deserialize::begin(&mut self.value),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                overridable: Deserialize::default(),
-                preference: Deserialize::default(),
-                value: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(overridable), Some(preference), Some(value)) =
-                (self.overridable, self.preference.take(), self.value.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { overridable, preference, value })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "overridable" => Deserialize::begin(&mut self.builder.overridable),
+                "preference" => Deserialize::begin(&mut self.builder.preference),
+                "value" => Deserialize::begin(&mut self.builder.value),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodConfigResourceDisplayPreference {
-        type Builder = PaymentMethodConfigResourceDisplayPreferenceBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodConfigResourceDisplayPreference {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(overridable), Some(preference), Some(value)) = (
+                self.builder.overridable,
+                self.builder.preference.take(),
+                self.builder.value.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodConfigResourceDisplayPreferenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "overridable" => b.overridable = FromValueOpt::from_value(v),
-                    "preference" => b.preference = FromValueOpt::from_value(v),
-                    "value" => b.value = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodConfigResourceDisplayPreference {
+                overridable,
+                preference,
+                value,
+            });
+            Ok(())
         }
     }
 };
@@ -191,16 +158,16 @@ impl serde::Serialize for PaymentMethodConfigResourceDisplayPreferencePreference
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodConfigResourceDisplayPreferencePreference {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodConfigResourceDisplayPreferencePreference {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<PaymentMethodConfigResourceDisplayPreferencePreference>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentMethodConfigResourceDisplayPreferencePreference::from_str(s)
@@ -209,8 +176,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodConfigResourceDisplayPreferencePreference);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodConfigResourceDisplayPreferencePreference {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -285,14 +250,14 @@ impl serde::Serialize for PaymentMethodConfigResourceDisplayPreferenceValue {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodConfigResourceDisplayPreferenceValue {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodConfigResourceDisplayPreferenceValue {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodConfigResourceDisplayPreferenceValue> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodConfigResourceDisplayPreferenceValue> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentMethodConfigResourceDisplayPreferenceValue::from_str(s).expect("infallible"),
@@ -300,8 +265,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodConfigResourceDisplayP
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodConfigResourceDisplayPreferenceValue);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodConfigResourceDisplayPreferenceValue {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

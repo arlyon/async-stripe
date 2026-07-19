@@ -81,16 +81,14 @@ pub struct PaymentRecordBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -109,67 +107,64 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentRecordBuilder::deser_default(),
+                builder: PaymentRecordBuilder {
+                    amount: Deserialize::default(),
+                    amount_authorized: Deserialize::default(),
+                    amount_canceled: Deserialize::default(),
+                    amount_failed: Deserialize::default(),
+                    amount_guaranteed: Deserialize::default(),
+                    amount_refunded: Deserialize::default(),
+                    amount_requested: Deserialize::default(),
+                    application: Deserialize::default(),
+                    created: Deserialize::default(),
+                    customer_details: Deserialize::default(),
+                    customer_presence: Deserialize::default(),
+                    description: Deserialize::default(),
+                    id: Deserialize::default(),
+                    latest_payment_attempt_record: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    payment_method_details: Deserialize::default(),
+                    processor_details: Deserialize::default(),
+                    reported_by: Deserialize::default(),
+                    shipping_details: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentRecordBuilder {
-        type Out = PaymentRecord;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_authorized" => Deserialize::begin(&mut self.amount_authorized),
-                "amount_canceled" => Deserialize::begin(&mut self.amount_canceled),
-                "amount_failed" => Deserialize::begin(&mut self.amount_failed),
-                "amount_guaranteed" => Deserialize::begin(&mut self.amount_guaranteed),
-                "amount_refunded" => Deserialize::begin(&mut self.amount_refunded),
-                "amount_requested" => Deserialize::begin(&mut self.amount_requested),
-                "application" => Deserialize::begin(&mut self.application),
-                "created" => Deserialize::begin(&mut self.created),
-                "customer_details" => Deserialize::begin(&mut self.customer_details),
-                "customer_presence" => Deserialize::begin(&mut self.customer_presence),
-                "description" => Deserialize::begin(&mut self.description),
-                "id" => Deserialize::begin(&mut self.id),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_authorized" => Deserialize::begin(&mut self.builder.amount_authorized),
+                "amount_canceled" => Deserialize::begin(&mut self.builder.amount_canceled),
+                "amount_failed" => Deserialize::begin(&mut self.builder.amount_failed),
+                "amount_guaranteed" => Deserialize::begin(&mut self.builder.amount_guaranteed),
+                "amount_refunded" => Deserialize::begin(&mut self.builder.amount_refunded),
+                "amount_requested" => Deserialize::begin(&mut self.builder.amount_requested),
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "customer_details" => Deserialize::begin(&mut self.builder.customer_details),
+                "customer_presence" => Deserialize::begin(&mut self.builder.customer_presence),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "id" => Deserialize::begin(&mut self.builder.id),
                 "latest_payment_attempt_record" => {
-                    Deserialize::begin(&mut self.latest_payment_attempt_record)
+                    Deserialize::begin(&mut self.builder.latest_payment_attempt_record)
                 }
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
-                "processor_details" => Deserialize::begin(&mut self.processor_details),
-                "reported_by" => Deserialize::begin(&mut self.reported_by),
-                "shipping_details" => Deserialize::begin(&mut self.shipping_details),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "payment_method_details" => {
+                    Deserialize::begin(&mut self.builder.payment_method_details)
+                }
+                "processor_details" => Deserialize::begin(&mut self.builder.processor_details),
+                "reported_by" => Deserialize::begin(&mut self.builder.reported_by),
+                "shipping_details" => Deserialize::begin(&mut self.builder.shipping_details),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                amount_authorized: Deserialize::default(),
-                amount_canceled: Deserialize::default(),
-                amount_failed: Deserialize::default(),
-                amount_guaranteed: Deserialize::default(),
-                amount_refunded: Deserialize::default(),
-                amount_requested: Deserialize::default(),
-                application: Deserialize::default(),
-                created: Deserialize::default(),
-                customer_details: Deserialize::default(),
-                customer_presence: Deserialize::default(),
-                description: Deserialize::default(),
-                id: Deserialize::default(),
-                latest_payment_attempt_record: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                payment_method_details: Deserialize::default(),
-                processor_details: Deserialize::default(),
-                reported_by: Deserialize::default(),
-                shipping_details: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(amount_authorized),
@@ -192,31 +187,31 @@ const _: () = {
                 Some(reported_by),
                 Some(shipping_details),
             ) = (
-                self.amount.take(),
-                self.amount_authorized.take(),
-                self.amount_canceled.take(),
-                self.amount_failed.take(),
-                self.amount_guaranteed.take(),
-                self.amount_refunded.take(),
-                self.amount_requested.take(),
-                self.application.take(),
-                self.created,
-                self.customer_details.take(),
-                self.customer_presence.take(),
-                self.description.take(),
-                self.id.take(),
-                self.latest_payment_attempt_record.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.payment_method_details.take(),
-                self.processor_details.take(),
-                self.reported_by.take(),
-                self.shipping_details.take(),
+                self.builder.amount.take(),
+                self.builder.amount_authorized.take(),
+                self.builder.amount_canceled.take(),
+                self.builder.amount_failed.take(),
+                self.builder.amount_guaranteed.take(),
+                self.builder.amount_refunded.take(),
+                self.builder.amount_requested.take(),
+                self.builder.application.take(),
+                self.builder.created,
+                self.builder.customer_details.take(),
+                self.builder.customer_presence.take(),
+                self.builder.description.take(),
+                self.builder.id.take(),
+                self.builder.latest_payment_attempt_record.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.payment_method_details.take(),
+                self.builder.processor_details.take(),
+                self.builder.reported_by.take(),
+                self.builder.shipping_details.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentRecord {
                 amount,
                 amount_authorized,
                 amount_canceled,
@@ -237,61 +232,8 @@ const _: () = {
                 processor_details,
                 reported_by,
                 shipping_details,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentRecord {
-        type Builder = PaymentRecordBuilder;
-    }
-
-    impl FromValueOpt for PaymentRecord {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentRecordBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_authorized" => b.amount_authorized = FromValueOpt::from_value(v),
-                    "amount_canceled" => b.amount_canceled = FromValueOpt::from_value(v),
-                    "amount_failed" => b.amount_failed = FromValueOpt::from_value(v),
-                    "amount_guaranteed" => b.amount_guaranteed = FromValueOpt::from_value(v),
-                    "amount_refunded" => b.amount_refunded = FromValueOpt::from_value(v),
-                    "amount_requested" => b.amount_requested = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
-                    "customer_presence" => b.customer_presence = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "latest_payment_attempt_record" => {
-                        b.latest_payment_attempt_record = FromValueOpt::from_value(v)
-                    }
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "processor_details" => b.processor_details = FromValueOpt::from_value(v),
-                    "reported_by" => b.reported_by = FromValueOpt::from_value(v),
-                    "shipping_details" => b.shipping_details = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -386,21 +328,19 @@ impl serde::Serialize for PaymentRecordReportedBy {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentRecordReportedBy {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentRecordReportedBy {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentRecordReportedBy> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentRecordReportedBy> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentRecordReportedBy::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentRecordReportedBy);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentRecordReportedBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -483,21 +423,19 @@ impl serde::Serialize for PaymentRecordCustomerPresence {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentRecordCustomerPresence {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentRecordCustomerPresence {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentRecordCustomerPresence> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentRecordCustomerPresence> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentRecordCustomerPresence::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentRecordCustomerPresence);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentRecordCustomerPresence {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

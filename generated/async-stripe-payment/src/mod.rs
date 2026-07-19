@@ -11,7 +11,7 @@
 
 extern crate self as stripe_payment;
 
-miniserde::make_place!(Place);
+stripe_miniserde::make_place!(Place);
 pub use stripe_shared::alma_installments::*;
 pub use stripe_shared::amazon_pay_underlying_payment_method_funding_details::*;
 pub mod bank_account;

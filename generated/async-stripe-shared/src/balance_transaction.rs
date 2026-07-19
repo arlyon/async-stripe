@@ -78,16 +78,14 @@ pub struct BalanceTransactionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -106,55 +104,50 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BalanceTransactionBuilder::deser_default(),
+                builder: BalanceTransactionBuilder {
+                    amount: Deserialize::default(),
+                    available_on: Deserialize::default(),
+                    balance_type: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    description: Deserialize::default(),
+                    exchange_rate: Deserialize::default(),
+                    fee: Deserialize::default(),
+                    fee_details: Deserialize::default(),
+                    id: Deserialize::default(),
+                    net: Deserialize::default(),
+                    reporting_category: Deserialize::default(),
+                    source: Deserialize::default(),
+                    status: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for BalanceTransactionBuilder {
-        type Out = BalanceTransaction;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "available_on" => Deserialize::begin(&mut self.available_on),
-                "balance_type" => Deserialize::begin(&mut self.balance_type),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "description" => Deserialize::begin(&mut self.description),
-                "exchange_rate" => Deserialize::begin(&mut self.exchange_rate),
-                "fee" => Deserialize::begin(&mut self.fee),
-                "fee_details" => Deserialize::begin(&mut self.fee_details),
-                "id" => Deserialize::begin(&mut self.id),
-                "net" => Deserialize::begin(&mut self.net),
-                "reporting_category" => Deserialize::begin(&mut self.reporting_category),
-                "source" => Deserialize::begin(&mut self.source),
-                "status" => Deserialize::begin(&mut self.status),
-                "type" => Deserialize::begin(&mut self.type_),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "available_on" => Deserialize::begin(&mut self.builder.available_on),
+                "balance_type" => Deserialize::begin(&mut self.builder.balance_type),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "exchange_rate" => Deserialize::begin(&mut self.builder.exchange_rate),
+                "fee" => Deserialize::begin(&mut self.builder.fee),
+                "fee_details" => Deserialize::begin(&mut self.builder.fee_details),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "net" => Deserialize::begin(&mut self.builder.net),
+                "reporting_category" => Deserialize::begin(&mut self.builder.reporting_category),
+                "source" => Deserialize::begin(&mut self.builder.source),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                available_on: Deserialize::default(),
-                balance_type: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                exchange_rate: Deserialize::default(),
-                fee: Deserialize::default(),
-                fee_details: Deserialize::default(),
-                id: Deserialize::default(),
-                net: Deserialize::default(),
-                reporting_category: Deserialize::default(),
-                source: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(available_on),
@@ -172,26 +165,26 @@ const _: () = {
                 Some(status),
                 Some(type_),
             ) = (
-                self.amount,
-                self.available_on,
-                self.balance_type.take(),
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.exchange_rate,
-                self.fee,
-                self.fee_details.take(),
-                self.id.take(),
-                self.net,
-                self.reporting_category.take(),
-                self.source.take(),
-                self.status.take(),
-                self.type_.take(),
+                self.builder.amount,
+                self.builder.available_on,
+                self.builder.balance_type.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.description.take(),
+                self.builder.exchange_rate,
+                self.builder.fee,
+                self.builder.fee_details.take(),
+                self.builder.id.take(),
+                self.builder.net,
+                self.builder.reporting_category.take(),
+                self.builder.source.take(),
+                self.builder.status.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(BalanceTransaction {
                 amount,
                 available_on,
                 balance_type,
@@ -207,52 +200,8 @@ const _: () = {
                 source,
                 status,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for BalanceTransaction {
-        type Builder = BalanceTransactionBuilder;
-    }
-
-    impl FromValueOpt for BalanceTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BalanceTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "available_on" => b.available_on = FromValueOpt::from_value(v),
-                    "balance_type" => b.balance_type = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "exchange_rate" => b.exchange_rate = FromValueOpt::from_value(v),
-                    "fee" => b.fee = FromValueOpt::from_value(v),
-                    "fee_details" => b.fee_details = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "net" => b.net = FromValueOpt::from_value(v),
-                    "reporting_category" => b.reporting_category = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -352,21 +301,19 @@ impl serde::Serialize for BalanceTransactionBalanceType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BalanceTransactionBalanceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BalanceTransactionBalanceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BalanceTransactionBalanceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BalanceTransactionBalanceType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BalanceTransactionBalanceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BalanceTransactionBalanceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BalanceTransactionBalanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -570,21 +517,19 @@ impl serde::Serialize for BalanceTransactionType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BalanceTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BalanceTransactionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BalanceTransactionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BalanceTransactionType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BalanceTransactionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BalanceTransactionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

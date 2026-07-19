@@ -31,16 +31,14 @@ pub struct SourceTypeSofortBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -59,39 +57,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceTypeSofortBuilder::deser_default(),
+                builder: SourceTypeSofortBuilder {
+                    bank_code: Deserialize::default(),
+                    bank_name: Deserialize::default(),
+                    bic: Deserialize::default(),
+                    country: Deserialize::default(),
+                    iban_last4: Deserialize::default(),
+                    preferred_language: Deserialize::default(),
+                    statement_descriptor: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SourceTypeSofortBuilder {
-        type Out = SourceTypeSofort;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_code" => Deserialize::begin(&mut self.bank_code),
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "bic" => Deserialize::begin(&mut self.bic),
-                "country" => Deserialize::begin(&mut self.country),
-                "iban_last4" => Deserialize::begin(&mut self.iban_last4),
-                "preferred_language" => Deserialize::begin(&mut self.preferred_language),
-                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
+                "bank_code" => Deserialize::begin(&mut self.builder.bank_code),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "bic" => Deserialize::begin(&mut self.builder.bic),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "iban_last4" => Deserialize::begin(&mut self.builder.iban_last4),
+                "preferred_language" => Deserialize::begin(&mut self.builder.preferred_language),
+                "statement_descriptor" => {
+                    Deserialize::begin(&mut self.builder.statement_descriptor)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bank_code: Deserialize::default(),
-                bank_name: Deserialize::default(),
-                bic: Deserialize::default(),
-                country: Deserialize::default(),
-                iban_last4: Deserialize::default(),
-                preferred_language: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bank_code),
                 Some(bank_name),
@@ -101,18 +96,18 @@ const _: () = {
                 Some(preferred_language),
                 Some(statement_descriptor),
             ) = (
-                self.bank_code.take(),
-                self.bank_name.take(),
-                self.bic.take(),
-                self.country.take(),
-                self.iban_last4.take(),
-                self.preferred_language.take(),
-                self.statement_descriptor.take(),
+                self.builder.bank_code.take(),
+                self.builder.bank_name.take(),
+                self.builder.bic.take(),
+                self.builder.country.take(),
+                self.builder.iban_last4.take(),
+                self.builder.preferred_language.take(),
+                self.builder.statement_descriptor.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SourceTypeSofort {
                 bank_code,
                 bank_name,
                 bic,
@@ -120,44 +115,8 @@ const _: () = {
                 iban_last4,
                 preferred_language,
                 statement_descriptor,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceTypeSofort {
-        type Builder = SourceTypeSofortBuilder;
-    }
-
-    impl FromValueOpt for SourceTypeSofort {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeSofortBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "bic" => b.bic = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
-                    "preferred_language" => b.preferred_language = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -26,16 +26,14 @@ pub struct NotificationEventRequestBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,63 +52,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: NotificationEventRequestBuilder::deser_default(),
+                builder: NotificationEventRequestBuilder {
+                    id: Deserialize::default(),
+                    idempotency_key: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for NotificationEventRequestBuilder {
-        type Out = NotificationEventRequest;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "id" => Deserialize::begin(&mut self.id),
-                "idempotency_key" => Deserialize::begin(&mut self.idempotency_key),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { id: Deserialize::default(), idempotency_key: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(id), Some(idempotency_key)) = (self.id.take(), self.idempotency_key.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { id, idempotency_key })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "idempotency_key" => Deserialize::begin(&mut self.builder.idempotency_key),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for NotificationEventRequest {
-        type Builder = NotificationEventRequestBuilder;
-    }
-
-    impl FromValueOpt for NotificationEventRequest {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(id), Some(idempotency_key)) =
+                (self.builder.id.take(), self.builder.idempotency_key.take())
+            else {
+                return Ok(());
             };
-            let mut b = NotificationEventRequestBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "idempotency_key" => b.idempotency_key = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(NotificationEventRequest { id, idempotency_key });
+            Ok(())
         }
     }
 };

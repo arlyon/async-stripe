@@ -24,16 +24,14 @@ pub struct InvoicePaymentMethodOptionsCardBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,69 +50,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoicePaymentMethodOptionsCardBuilder::deser_default(),
+                builder: InvoicePaymentMethodOptionsCardBuilder {
+                    installments: Deserialize::default(),
+                    request_three_d_secure: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoicePaymentMethodOptionsCardBuilder {
-        type Out = InvoicePaymentMethodOptionsCard;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "installments" => Deserialize::begin(&mut self.installments),
-                "request_three_d_secure" => Deserialize::begin(&mut self.request_three_d_secure),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                installments: Deserialize::default(),
-                request_three_d_secure: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(installments), Some(request_three_d_secure)) =
-                (self.installments, self.request_three_d_secure.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { installments, request_three_d_secure })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "installments" => Deserialize::begin(&mut self.builder.installments),
+                "request_three_d_secure" => {
+                    Deserialize::begin(&mut self.builder.request_three_d_secure)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoicePaymentMethodOptionsCard {
-        type Builder = InvoicePaymentMethodOptionsCardBuilder;
-    }
-
-    impl FromValueOpt for InvoicePaymentMethodOptionsCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(installments), Some(request_three_d_secure)) =
+                (self.builder.installments, self.builder.request_three_d_secure.take())
+            else {
+                return Ok(());
             };
-            let mut b = InvoicePaymentMethodOptionsCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "installments" => b.installments = FromValueOpt::from_value(v),
-                    "request_three_d_secure" => {
-                        b.request_three_d_secure = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(InvoicePaymentMethodOptionsCard { installments, request_three_d_secure });
+            Ok(())
         }
     }
 };
@@ -189,14 +152,14 @@ impl serde::Serialize for InvoicePaymentMethodOptionsCardRequestThreeDSecure {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for InvoicePaymentMethodOptionsCardRequestThreeDSecure {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for InvoicePaymentMethodOptionsCardRequestThreeDSecure {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<InvoicePaymentMethodOptionsCardRequestThreeDSecure> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<InvoicePaymentMethodOptionsCardRequestThreeDSecure> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             InvoicePaymentMethodOptionsCardRequestThreeDSecure::from_str(s).expect("infallible"),
@@ -204,8 +167,6 @@ impl miniserde::de::Visitor for crate::Place<InvoicePaymentMethodOptionsCardRequ
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(InvoicePaymentMethodOptionsCardRequestThreeDSecure);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsCardRequestThreeDSecure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

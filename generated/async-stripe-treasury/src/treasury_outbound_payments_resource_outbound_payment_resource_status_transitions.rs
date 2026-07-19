@@ -30,16 +30,14 @@ pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransiti
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,76 +58,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitionsBuilder::deser_default(),
+            builder: TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitionsBuilder { canceled_at: Deserialize::default(),
+failed_at: Deserialize::default(),
+posted_at: Deserialize::default(),
+returned_at: Deserialize::default(),
+ },
         }))
-        }
-    }
-
-    impl MapBuilder
-        for TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitionsBuilder
-    {
-        type Out = TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitions;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "canceled_at" => Deserialize::begin(&mut self.canceled_at),
-                "failed_at" => Deserialize::begin(&mut self.failed_at),
-                "posted_at" => Deserialize::begin(&mut self.posted_at),
-                "returned_at" => Deserialize::begin(&mut self.returned_at),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                canceled_at: Deserialize::default(),
-                failed_at: Deserialize::default(),
-                posted_at: Deserialize::default(),
-                returned_at: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(canceled_at), Some(failed_at), Some(posted_at), Some(returned_at)) =
-                (self.canceled_at, self.failed_at, self.posted_at, self.returned_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { canceled_at, failed_at, posted_at, returned_at })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "canceled_at" => Deserialize::begin(&mut self.builder.canceled_at),
+                "failed_at" => Deserialize::begin(&mut self.builder.failed_at),
+                "posted_at" => Deserialize::begin(&mut self.builder.posted_at),
+                "returned_at" => Deserialize::begin(&mut self.builder.returned_at),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitions {
-        type Builder =
-            TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitionsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(canceled_at), Some(failed_at), Some(posted_at), Some(returned_at)) = (
+                self.builder.canceled_at,
+                self.builder.failed_at,
+                self.builder.posted_at,
+                self.builder.returned_at,
+            ) else {
+                return Ok(());
             };
-            let mut b = TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "failed_at" => b.failed_at = FromValueOpt::from_value(v),
-                    "posted_at" => b.posted_at = FromValueOpt::from_value(v),
-                    "returned_at" => b.returned_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitions {
+                    canceled_at,
+                    failed_at,
+                    posted_at,
+                    returned_at,
+                });
+            Ok(())
         }
     }
 };

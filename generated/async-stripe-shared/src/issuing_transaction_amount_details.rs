@@ -23,16 +23,14 @@ pub struct IssuingTransactionAmountDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,63 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingTransactionAmountDetailsBuilder::deser_default(),
+                builder: IssuingTransactionAmountDetailsBuilder {
+                    atm_fee: Deserialize::default(),
+                    cashback_amount: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingTransactionAmountDetailsBuilder {
-        type Out = IssuingTransactionAmountDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "atm_fee" => Deserialize::begin(&mut self.atm_fee),
-                "cashback_amount" => Deserialize::begin(&mut self.cashback_amount),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { atm_fee: Deserialize::default(), cashback_amount: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(atm_fee), Some(cashback_amount)) = (self.atm_fee, self.cashback_amount)
-            else {
-                return None;
-            };
-            Some(Self::Out { atm_fee, cashback_amount })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "atm_fee" => Deserialize::begin(&mut self.builder.atm_fee),
+                "cashback_amount" => Deserialize::begin(&mut self.builder.cashback_amount),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingTransactionAmountDetails {
-        type Builder = IssuingTransactionAmountDetailsBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionAmountDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(atm_fee), Some(cashback_amount)) =
+                (self.builder.atm_fee, self.builder.cashback_amount)
+            else {
+                return Ok(());
             };
-            let mut b = IssuingTransactionAmountDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "atm_fee" => b.atm_fee = FromValueOpt::from_value(v),
-                    "cashback_amount" => b.cashback_amount = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(IssuingTransactionAmountDetails { atm_fee, cashback_amount });
+            Ok(())
         }
     }
 };

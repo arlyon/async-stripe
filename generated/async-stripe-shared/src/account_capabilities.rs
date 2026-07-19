@@ -203,16 +203,14 @@ pub struct AccountCapabilitiesBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -231,171 +229,178 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AccountCapabilitiesBuilder::deser_default(),
+                builder: AccountCapabilitiesBuilder {
+                    acss_debit_payments: Deserialize::default(),
+                    affirm_payments: Deserialize::default(),
+                    afterpay_clearpay_payments: Deserialize::default(),
+                    alma_payments: Deserialize::default(),
+                    amazon_pay_payments: Deserialize::default(),
+                    au_becs_debit_payments: Deserialize::default(),
+                    bacs_debit_payments: Deserialize::default(),
+                    bancontact_payments: Deserialize::default(),
+                    bank_transfer_payments: Deserialize::default(),
+                    billie_payments: Deserialize::default(),
+                    blik_payments: Deserialize::default(),
+                    boleto_payments: Deserialize::default(),
+                    card_issuing: Deserialize::default(),
+                    card_payments: Deserialize::default(),
+                    cartes_bancaires_payments: Deserialize::default(),
+                    cashapp_payments: Deserialize::default(),
+                    crypto_payments: Deserialize::default(),
+                    eps_payments: Deserialize::default(),
+                    fpx_payments: Deserialize::default(),
+                    gb_bank_transfer_payments: Deserialize::default(),
+                    giropay_payments: Deserialize::default(),
+                    grabpay_payments: Deserialize::default(),
+                    ideal_payments: Deserialize::default(),
+                    india_international_payments: Deserialize::default(),
+                    jcb_payments: Deserialize::default(),
+                    jp_bank_transfer_payments: Deserialize::default(),
+                    kakao_pay_payments: Deserialize::default(),
+                    klarna_payments: Deserialize::default(),
+                    konbini_payments: Deserialize::default(),
+                    kr_card_payments: Deserialize::default(),
+                    legacy_payments: Deserialize::default(),
+                    link_payments: Deserialize::default(),
+                    mb_way_payments: Deserialize::default(),
+                    mobilepay_payments: Deserialize::default(),
+                    multibanco_payments: Deserialize::default(),
+                    mx_bank_transfer_payments: Deserialize::default(),
+                    naver_pay_payments: Deserialize::default(),
+                    nz_bank_account_becs_debit_payments: Deserialize::default(),
+                    oxxo_payments: Deserialize::default(),
+                    p24_payments: Deserialize::default(),
+                    pay_by_bank_payments: Deserialize::default(),
+                    payco_payments: Deserialize::default(),
+                    paynow_payments: Deserialize::default(),
+                    payto_payments: Deserialize::default(),
+                    pix_payments: Deserialize::default(),
+                    promptpay_payments: Deserialize::default(),
+                    revolut_pay_payments: Deserialize::default(),
+                    samsung_pay_payments: Deserialize::default(),
+                    satispay_payments: Deserialize::default(),
+                    sepa_bank_transfer_payments: Deserialize::default(),
+                    sepa_debit_payments: Deserialize::default(),
+                    sofort_payments: Deserialize::default(),
+                    swish_payments: Deserialize::default(),
+                    tax_reporting_us_1099_k: Deserialize::default(),
+                    tax_reporting_us_1099_misc: Deserialize::default(),
+                    transfers: Deserialize::default(),
+                    treasury: Deserialize::default(),
+                    twint_payments: Deserialize::default(),
+                    upi_payments: Deserialize::default(),
+                    us_bank_account_ach_payments: Deserialize::default(),
+                    us_bank_transfer_payments: Deserialize::default(),
+                    zip_payments: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for AccountCapabilitiesBuilder {
-        type Out = AccountCapabilities;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "acss_debit_payments" => Deserialize::begin(&mut self.acss_debit_payments),
-                "affirm_payments" => Deserialize::begin(&mut self.affirm_payments),
+                "acss_debit_payments" => Deserialize::begin(&mut self.builder.acss_debit_payments),
+                "affirm_payments" => Deserialize::begin(&mut self.builder.affirm_payments),
                 "afterpay_clearpay_payments" => {
-                    Deserialize::begin(&mut self.afterpay_clearpay_payments)
+                    Deserialize::begin(&mut self.builder.afterpay_clearpay_payments)
                 }
-                "alma_payments" => Deserialize::begin(&mut self.alma_payments),
-                "amazon_pay_payments" => Deserialize::begin(&mut self.amazon_pay_payments),
-                "au_becs_debit_payments" => Deserialize::begin(&mut self.au_becs_debit_payments),
-                "bacs_debit_payments" => Deserialize::begin(&mut self.bacs_debit_payments),
-                "bancontact_payments" => Deserialize::begin(&mut self.bancontact_payments),
-                "bank_transfer_payments" => Deserialize::begin(&mut self.bank_transfer_payments),
-                "billie_payments" => Deserialize::begin(&mut self.billie_payments),
-                "blik_payments" => Deserialize::begin(&mut self.blik_payments),
-                "boleto_payments" => Deserialize::begin(&mut self.boleto_payments),
-                "card_issuing" => Deserialize::begin(&mut self.card_issuing),
-                "card_payments" => Deserialize::begin(&mut self.card_payments),
+                "alma_payments" => Deserialize::begin(&mut self.builder.alma_payments),
+                "amazon_pay_payments" => Deserialize::begin(&mut self.builder.amazon_pay_payments),
+                "au_becs_debit_payments" => {
+                    Deserialize::begin(&mut self.builder.au_becs_debit_payments)
+                }
+                "bacs_debit_payments" => Deserialize::begin(&mut self.builder.bacs_debit_payments),
+                "bancontact_payments" => Deserialize::begin(&mut self.builder.bancontact_payments),
+                "bank_transfer_payments" => {
+                    Deserialize::begin(&mut self.builder.bank_transfer_payments)
+                }
+                "billie_payments" => Deserialize::begin(&mut self.builder.billie_payments),
+                "blik_payments" => Deserialize::begin(&mut self.builder.blik_payments),
+                "boleto_payments" => Deserialize::begin(&mut self.builder.boleto_payments),
+                "card_issuing" => Deserialize::begin(&mut self.builder.card_issuing),
+                "card_payments" => Deserialize::begin(&mut self.builder.card_payments),
                 "cartes_bancaires_payments" => {
-                    Deserialize::begin(&mut self.cartes_bancaires_payments)
+                    Deserialize::begin(&mut self.builder.cartes_bancaires_payments)
                 }
-                "cashapp_payments" => Deserialize::begin(&mut self.cashapp_payments),
-                "crypto_payments" => Deserialize::begin(&mut self.crypto_payments),
-                "eps_payments" => Deserialize::begin(&mut self.eps_payments),
-                "fpx_payments" => Deserialize::begin(&mut self.fpx_payments),
+                "cashapp_payments" => Deserialize::begin(&mut self.builder.cashapp_payments),
+                "crypto_payments" => Deserialize::begin(&mut self.builder.crypto_payments),
+                "eps_payments" => Deserialize::begin(&mut self.builder.eps_payments),
+                "fpx_payments" => Deserialize::begin(&mut self.builder.fpx_payments),
                 "gb_bank_transfer_payments" => {
-                    Deserialize::begin(&mut self.gb_bank_transfer_payments)
+                    Deserialize::begin(&mut self.builder.gb_bank_transfer_payments)
                 }
-                "giropay_payments" => Deserialize::begin(&mut self.giropay_payments),
-                "grabpay_payments" => Deserialize::begin(&mut self.grabpay_payments),
-                "ideal_payments" => Deserialize::begin(&mut self.ideal_payments),
+                "giropay_payments" => Deserialize::begin(&mut self.builder.giropay_payments),
+                "grabpay_payments" => Deserialize::begin(&mut self.builder.grabpay_payments),
+                "ideal_payments" => Deserialize::begin(&mut self.builder.ideal_payments),
                 "india_international_payments" => {
-                    Deserialize::begin(&mut self.india_international_payments)
+                    Deserialize::begin(&mut self.builder.india_international_payments)
                 }
-                "jcb_payments" => Deserialize::begin(&mut self.jcb_payments),
+                "jcb_payments" => Deserialize::begin(&mut self.builder.jcb_payments),
                 "jp_bank_transfer_payments" => {
-                    Deserialize::begin(&mut self.jp_bank_transfer_payments)
+                    Deserialize::begin(&mut self.builder.jp_bank_transfer_payments)
                 }
-                "kakao_pay_payments" => Deserialize::begin(&mut self.kakao_pay_payments),
-                "klarna_payments" => Deserialize::begin(&mut self.klarna_payments),
-                "konbini_payments" => Deserialize::begin(&mut self.konbini_payments),
-                "kr_card_payments" => Deserialize::begin(&mut self.kr_card_payments),
-                "legacy_payments" => Deserialize::begin(&mut self.legacy_payments),
-                "link_payments" => Deserialize::begin(&mut self.link_payments),
-                "mb_way_payments" => Deserialize::begin(&mut self.mb_way_payments),
-                "mobilepay_payments" => Deserialize::begin(&mut self.mobilepay_payments),
-                "multibanco_payments" => Deserialize::begin(&mut self.multibanco_payments),
+                "kakao_pay_payments" => Deserialize::begin(&mut self.builder.kakao_pay_payments),
+                "klarna_payments" => Deserialize::begin(&mut self.builder.klarna_payments),
+                "konbini_payments" => Deserialize::begin(&mut self.builder.konbini_payments),
+                "kr_card_payments" => Deserialize::begin(&mut self.builder.kr_card_payments),
+                "legacy_payments" => Deserialize::begin(&mut self.builder.legacy_payments),
+                "link_payments" => Deserialize::begin(&mut self.builder.link_payments),
+                "mb_way_payments" => Deserialize::begin(&mut self.builder.mb_way_payments),
+                "mobilepay_payments" => Deserialize::begin(&mut self.builder.mobilepay_payments),
+                "multibanco_payments" => Deserialize::begin(&mut self.builder.multibanco_payments),
                 "mx_bank_transfer_payments" => {
-                    Deserialize::begin(&mut self.mx_bank_transfer_payments)
+                    Deserialize::begin(&mut self.builder.mx_bank_transfer_payments)
                 }
-                "naver_pay_payments" => Deserialize::begin(&mut self.naver_pay_payments),
+                "naver_pay_payments" => Deserialize::begin(&mut self.builder.naver_pay_payments),
                 "nz_bank_account_becs_debit_payments" => {
-                    Deserialize::begin(&mut self.nz_bank_account_becs_debit_payments)
+                    Deserialize::begin(&mut self.builder.nz_bank_account_becs_debit_payments)
                 }
-                "oxxo_payments" => Deserialize::begin(&mut self.oxxo_payments),
-                "p24_payments" => Deserialize::begin(&mut self.p24_payments),
-                "pay_by_bank_payments" => Deserialize::begin(&mut self.pay_by_bank_payments),
-                "payco_payments" => Deserialize::begin(&mut self.payco_payments),
-                "paynow_payments" => Deserialize::begin(&mut self.paynow_payments),
-                "payto_payments" => Deserialize::begin(&mut self.payto_payments),
-                "pix_payments" => Deserialize::begin(&mut self.pix_payments),
-                "promptpay_payments" => Deserialize::begin(&mut self.promptpay_payments),
-                "revolut_pay_payments" => Deserialize::begin(&mut self.revolut_pay_payments),
-                "samsung_pay_payments" => Deserialize::begin(&mut self.samsung_pay_payments),
-                "satispay_payments" => Deserialize::begin(&mut self.satispay_payments),
+                "oxxo_payments" => Deserialize::begin(&mut self.builder.oxxo_payments),
+                "p24_payments" => Deserialize::begin(&mut self.builder.p24_payments),
+                "pay_by_bank_payments" => {
+                    Deserialize::begin(&mut self.builder.pay_by_bank_payments)
+                }
+                "payco_payments" => Deserialize::begin(&mut self.builder.payco_payments),
+                "paynow_payments" => Deserialize::begin(&mut self.builder.paynow_payments),
+                "payto_payments" => Deserialize::begin(&mut self.builder.payto_payments),
+                "pix_payments" => Deserialize::begin(&mut self.builder.pix_payments),
+                "promptpay_payments" => Deserialize::begin(&mut self.builder.promptpay_payments),
+                "revolut_pay_payments" => {
+                    Deserialize::begin(&mut self.builder.revolut_pay_payments)
+                }
+                "samsung_pay_payments" => {
+                    Deserialize::begin(&mut self.builder.samsung_pay_payments)
+                }
+                "satispay_payments" => Deserialize::begin(&mut self.builder.satispay_payments),
                 "sepa_bank_transfer_payments" => {
-                    Deserialize::begin(&mut self.sepa_bank_transfer_payments)
+                    Deserialize::begin(&mut self.builder.sepa_bank_transfer_payments)
                 }
-                "sepa_debit_payments" => Deserialize::begin(&mut self.sepa_debit_payments),
-                "sofort_payments" => Deserialize::begin(&mut self.sofort_payments),
-                "swish_payments" => Deserialize::begin(&mut self.swish_payments),
-                "tax_reporting_us_1099_k" => Deserialize::begin(&mut self.tax_reporting_us_1099_k),
+                "sepa_debit_payments" => Deserialize::begin(&mut self.builder.sepa_debit_payments),
+                "sofort_payments" => Deserialize::begin(&mut self.builder.sofort_payments),
+                "swish_payments" => Deserialize::begin(&mut self.builder.swish_payments),
+                "tax_reporting_us_1099_k" => {
+                    Deserialize::begin(&mut self.builder.tax_reporting_us_1099_k)
+                }
                 "tax_reporting_us_1099_misc" => {
-                    Deserialize::begin(&mut self.tax_reporting_us_1099_misc)
+                    Deserialize::begin(&mut self.builder.tax_reporting_us_1099_misc)
                 }
-                "transfers" => Deserialize::begin(&mut self.transfers),
-                "treasury" => Deserialize::begin(&mut self.treasury),
-                "twint_payments" => Deserialize::begin(&mut self.twint_payments),
-                "upi_payments" => Deserialize::begin(&mut self.upi_payments),
+                "transfers" => Deserialize::begin(&mut self.builder.transfers),
+                "treasury" => Deserialize::begin(&mut self.builder.treasury),
+                "twint_payments" => Deserialize::begin(&mut self.builder.twint_payments),
+                "upi_payments" => Deserialize::begin(&mut self.builder.upi_payments),
                 "us_bank_account_ach_payments" => {
-                    Deserialize::begin(&mut self.us_bank_account_ach_payments)
+                    Deserialize::begin(&mut self.builder.us_bank_account_ach_payments)
                 }
                 "us_bank_transfer_payments" => {
-                    Deserialize::begin(&mut self.us_bank_transfer_payments)
+                    Deserialize::begin(&mut self.builder.us_bank_transfer_payments)
                 }
-                "zip_payments" => Deserialize::begin(&mut self.zip_payments),
+                "zip_payments" => Deserialize::begin(&mut self.builder.zip_payments),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                acss_debit_payments: Deserialize::default(),
-                affirm_payments: Deserialize::default(),
-                afterpay_clearpay_payments: Deserialize::default(),
-                alma_payments: Deserialize::default(),
-                amazon_pay_payments: Deserialize::default(),
-                au_becs_debit_payments: Deserialize::default(),
-                bacs_debit_payments: Deserialize::default(),
-                bancontact_payments: Deserialize::default(),
-                bank_transfer_payments: Deserialize::default(),
-                billie_payments: Deserialize::default(),
-                blik_payments: Deserialize::default(),
-                boleto_payments: Deserialize::default(),
-                card_issuing: Deserialize::default(),
-                card_payments: Deserialize::default(),
-                cartes_bancaires_payments: Deserialize::default(),
-                cashapp_payments: Deserialize::default(),
-                crypto_payments: Deserialize::default(),
-                eps_payments: Deserialize::default(),
-                fpx_payments: Deserialize::default(),
-                gb_bank_transfer_payments: Deserialize::default(),
-                giropay_payments: Deserialize::default(),
-                grabpay_payments: Deserialize::default(),
-                ideal_payments: Deserialize::default(),
-                india_international_payments: Deserialize::default(),
-                jcb_payments: Deserialize::default(),
-                jp_bank_transfer_payments: Deserialize::default(),
-                kakao_pay_payments: Deserialize::default(),
-                klarna_payments: Deserialize::default(),
-                konbini_payments: Deserialize::default(),
-                kr_card_payments: Deserialize::default(),
-                legacy_payments: Deserialize::default(),
-                link_payments: Deserialize::default(),
-                mb_way_payments: Deserialize::default(),
-                mobilepay_payments: Deserialize::default(),
-                multibanco_payments: Deserialize::default(),
-                mx_bank_transfer_payments: Deserialize::default(),
-                naver_pay_payments: Deserialize::default(),
-                nz_bank_account_becs_debit_payments: Deserialize::default(),
-                oxxo_payments: Deserialize::default(),
-                p24_payments: Deserialize::default(),
-                pay_by_bank_payments: Deserialize::default(),
-                payco_payments: Deserialize::default(),
-                paynow_payments: Deserialize::default(),
-                payto_payments: Deserialize::default(),
-                pix_payments: Deserialize::default(),
-                promptpay_payments: Deserialize::default(),
-                revolut_pay_payments: Deserialize::default(),
-                samsung_pay_payments: Deserialize::default(),
-                satispay_payments: Deserialize::default(),
-                sepa_bank_transfer_payments: Deserialize::default(),
-                sepa_debit_payments: Deserialize::default(),
-                sofort_payments: Deserialize::default(),
-                swish_payments: Deserialize::default(),
-                tax_reporting_us_1099_k: Deserialize::default(),
-                tax_reporting_us_1099_misc: Deserialize::default(),
-                transfers: Deserialize::default(),
-                treasury: Deserialize::default(),
-                twint_payments: Deserialize::default(),
-                upi_payments: Deserialize::default(),
-                us_bank_account_ach_payments: Deserialize::default(),
-                us_bank_transfer_payments: Deserialize::default(),
-                zip_payments: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(acss_debit_payments),
                 Some(affirm_payments),
@@ -460,73 +465,73 @@ const _: () = {
                 Some(us_bank_transfer_payments),
                 Some(zip_payments),
             ) = (
-                self.acss_debit_payments.take(),
-                self.affirm_payments.take(),
-                self.afterpay_clearpay_payments.take(),
-                self.alma_payments.take(),
-                self.amazon_pay_payments.take(),
-                self.au_becs_debit_payments.take(),
-                self.bacs_debit_payments.take(),
-                self.bancontact_payments.take(),
-                self.bank_transfer_payments.take(),
-                self.billie_payments.take(),
-                self.blik_payments.take(),
-                self.boleto_payments.take(),
-                self.card_issuing.take(),
-                self.card_payments.take(),
-                self.cartes_bancaires_payments.take(),
-                self.cashapp_payments.take(),
-                self.crypto_payments.take(),
-                self.eps_payments.take(),
-                self.fpx_payments.take(),
-                self.gb_bank_transfer_payments.take(),
-                self.giropay_payments.take(),
-                self.grabpay_payments.take(),
-                self.ideal_payments.take(),
-                self.india_international_payments.take(),
-                self.jcb_payments.take(),
-                self.jp_bank_transfer_payments.take(),
-                self.kakao_pay_payments.take(),
-                self.klarna_payments.take(),
-                self.konbini_payments.take(),
-                self.kr_card_payments.take(),
-                self.legacy_payments.take(),
-                self.link_payments.take(),
-                self.mb_way_payments.take(),
-                self.mobilepay_payments.take(),
-                self.multibanco_payments.take(),
-                self.mx_bank_transfer_payments.take(),
-                self.naver_pay_payments.take(),
-                self.nz_bank_account_becs_debit_payments.take(),
-                self.oxxo_payments.take(),
-                self.p24_payments.take(),
-                self.pay_by_bank_payments.take(),
-                self.payco_payments.take(),
-                self.paynow_payments.take(),
-                self.payto_payments.take(),
-                self.pix_payments.take(),
-                self.promptpay_payments.take(),
-                self.revolut_pay_payments.take(),
-                self.samsung_pay_payments.take(),
-                self.satispay_payments.take(),
-                self.sepa_bank_transfer_payments.take(),
-                self.sepa_debit_payments.take(),
-                self.sofort_payments.take(),
-                self.swish_payments.take(),
-                self.tax_reporting_us_1099_k.take(),
-                self.tax_reporting_us_1099_misc.take(),
-                self.transfers.take(),
-                self.treasury.take(),
-                self.twint_payments.take(),
-                self.upi_payments.take(),
-                self.us_bank_account_ach_payments.take(),
-                self.us_bank_transfer_payments.take(),
-                self.zip_payments.take(),
+                self.builder.acss_debit_payments.take(),
+                self.builder.affirm_payments.take(),
+                self.builder.afterpay_clearpay_payments.take(),
+                self.builder.alma_payments.take(),
+                self.builder.amazon_pay_payments.take(),
+                self.builder.au_becs_debit_payments.take(),
+                self.builder.bacs_debit_payments.take(),
+                self.builder.bancontact_payments.take(),
+                self.builder.bank_transfer_payments.take(),
+                self.builder.billie_payments.take(),
+                self.builder.blik_payments.take(),
+                self.builder.boleto_payments.take(),
+                self.builder.card_issuing.take(),
+                self.builder.card_payments.take(),
+                self.builder.cartes_bancaires_payments.take(),
+                self.builder.cashapp_payments.take(),
+                self.builder.crypto_payments.take(),
+                self.builder.eps_payments.take(),
+                self.builder.fpx_payments.take(),
+                self.builder.gb_bank_transfer_payments.take(),
+                self.builder.giropay_payments.take(),
+                self.builder.grabpay_payments.take(),
+                self.builder.ideal_payments.take(),
+                self.builder.india_international_payments.take(),
+                self.builder.jcb_payments.take(),
+                self.builder.jp_bank_transfer_payments.take(),
+                self.builder.kakao_pay_payments.take(),
+                self.builder.klarna_payments.take(),
+                self.builder.konbini_payments.take(),
+                self.builder.kr_card_payments.take(),
+                self.builder.legacy_payments.take(),
+                self.builder.link_payments.take(),
+                self.builder.mb_way_payments.take(),
+                self.builder.mobilepay_payments.take(),
+                self.builder.multibanco_payments.take(),
+                self.builder.mx_bank_transfer_payments.take(),
+                self.builder.naver_pay_payments.take(),
+                self.builder.nz_bank_account_becs_debit_payments.take(),
+                self.builder.oxxo_payments.take(),
+                self.builder.p24_payments.take(),
+                self.builder.pay_by_bank_payments.take(),
+                self.builder.payco_payments.take(),
+                self.builder.paynow_payments.take(),
+                self.builder.payto_payments.take(),
+                self.builder.pix_payments.take(),
+                self.builder.promptpay_payments.take(),
+                self.builder.revolut_pay_payments.take(),
+                self.builder.samsung_pay_payments.take(),
+                self.builder.satispay_payments.take(),
+                self.builder.sepa_bank_transfer_payments.take(),
+                self.builder.sepa_debit_payments.take(),
+                self.builder.sofort_payments.take(),
+                self.builder.swish_payments.take(),
+                self.builder.tax_reporting_us_1099_k.take(),
+                self.builder.tax_reporting_us_1099_misc.take(),
+                self.builder.transfers.take(),
+                self.builder.treasury.take(),
+                self.builder.twint_payments.take(),
+                self.builder.upi_payments.take(),
+                self.builder.us_bank_account_ach_payments.take(),
+                self.builder.us_bank_transfer_payments.take(),
+                self.builder.zip_payments.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(AccountCapabilities {
                 acss_debit_payments,
                 affirm_payments,
                 afterpay_clearpay_payments,
@@ -589,127 +594,8 @@ const _: () = {
                 us_bank_account_ach_payments,
                 us_bank_transfer_payments,
                 zip_payments,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for AccountCapabilities {
-        type Builder = AccountCapabilitiesBuilder;
-    }
-
-    impl FromValueOpt for AccountCapabilities {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountCapabilitiesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "acss_debit_payments" => b.acss_debit_payments = FromValueOpt::from_value(v),
-                    "affirm_payments" => b.affirm_payments = FromValueOpt::from_value(v),
-                    "afterpay_clearpay_payments" => {
-                        b.afterpay_clearpay_payments = FromValueOpt::from_value(v)
-                    }
-                    "alma_payments" => b.alma_payments = FromValueOpt::from_value(v),
-                    "amazon_pay_payments" => b.amazon_pay_payments = FromValueOpt::from_value(v),
-                    "au_becs_debit_payments" => {
-                        b.au_becs_debit_payments = FromValueOpt::from_value(v)
-                    }
-                    "bacs_debit_payments" => b.bacs_debit_payments = FromValueOpt::from_value(v),
-                    "bancontact_payments" => b.bancontact_payments = FromValueOpt::from_value(v),
-                    "bank_transfer_payments" => {
-                        b.bank_transfer_payments = FromValueOpt::from_value(v)
-                    }
-                    "billie_payments" => b.billie_payments = FromValueOpt::from_value(v),
-                    "blik_payments" => b.blik_payments = FromValueOpt::from_value(v),
-                    "boleto_payments" => b.boleto_payments = FromValueOpt::from_value(v),
-                    "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
-                    "card_payments" => b.card_payments = FromValueOpt::from_value(v),
-                    "cartes_bancaires_payments" => {
-                        b.cartes_bancaires_payments = FromValueOpt::from_value(v)
-                    }
-                    "cashapp_payments" => b.cashapp_payments = FromValueOpt::from_value(v),
-                    "crypto_payments" => b.crypto_payments = FromValueOpt::from_value(v),
-                    "eps_payments" => b.eps_payments = FromValueOpt::from_value(v),
-                    "fpx_payments" => b.fpx_payments = FromValueOpt::from_value(v),
-                    "gb_bank_transfer_payments" => {
-                        b.gb_bank_transfer_payments = FromValueOpt::from_value(v)
-                    }
-                    "giropay_payments" => b.giropay_payments = FromValueOpt::from_value(v),
-                    "grabpay_payments" => b.grabpay_payments = FromValueOpt::from_value(v),
-                    "ideal_payments" => b.ideal_payments = FromValueOpt::from_value(v),
-                    "india_international_payments" => {
-                        b.india_international_payments = FromValueOpt::from_value(v)
-                    }
-                    "jcb_payments" => b.jcb_payments = FromValueOpt::from_value(v),
-                    "jp_bank_transfer_payments" => {
-                        b.jp_bank_transfer_payments = FromValueOpt::from_value(v)
-                    }
-                    "kakao_pay_payments" => b.kakao_pay_payments = FromValueOpt::from_value(v),
-                    "klarna_payments" => b.klarna_payments = FromValueOpt::from_value(v),
-                    "konbini_payments" => b.konbini_payments = FromValueOpt::from_value(v),
-                    "kr_card_payments" => b.kr_card_payments = FromValueOpt::from_value(v),
-                    "legacy_payments" => b.legacy_payments = FromValueOpt::from_value(v),
-                    "link_payments" => b.link_payments = FromValueOpt::from_value(v),
-                    "mb_way_payments" => b.mb_way_payments = FromValueOpt::from_value(v),
-                    "mobilepay_payments" => b.mobilepay_payments = FromValueOpt::from_value(v),
-                    "multibanco_payments" => b.multibanco_payments = FromValueOpt::from_value(v),
-                    "mx_bank_transfer_payments" => {
-                        b.mx_bank_transfer_payments = FromValueOpt::from_value(v)
-                    }
-                    "naver_pay_payments" => b.naver_pay_payments = FromValueOpt::from_value(v),
-                    "nz_bank_account_becs_debit_payments" => {
-                        b.nz_bank_account_becs_debit_payments = FromValueOpt::from_value(v)
-                    }
-                    "oxxo_payments" => b.oxxo_payments = FromValueOpt::from_value(v),
-                    "p24_payments" => b.p24_payments = FromValueOpt::from_value(v),
-                    "pay_by_bank_payments" => b.pay_by_bank_payments = FromValueOpt::from_value(v),
-                    "payco_payments" => b.payco_payments = FromValueOpt::from_value(v),
-                    "paynow_payments" => b.paynow_payments = FromValueOpt::from_value(v),
-                    "payto_payments" => b.payto_payments = FromValueOpt::from_value(v),
-                    "pix_payments" => b.pix_payments = FromValueOpt::from_value(v),
-                    "promptpay_payments" => b.promptpay_payments = FromValueOpt::from_value(v),
-                    "revolut_pay_payments" => b.revolut_pay_payments = FromValueOpt::from_value(v),
-                    "samsung_pay_payments" => b.samsung_pay_payments = FromValueOpt::from_value(v),
-                    "satispay_payments" => b.satispay_payments = FromValueOpt::from_value(v),
-                    "sepa_bank_transfer_payments" => {
-                        b.sepa_bank_transfer_payments = FromValueOpt::from_value(v)
-                    }
-                    "sepa_debit_payments" => b.sepa_debit_payments = FromValueOpt::from_value(v),
-                    "sofort_payments" => b.sofort_payments = FromValueOpt::from_value(v),
-                    "swish_payments" => b.swish_payments = FromValueOpt::from_value(v),
-                    "tax_reporting_us_1099_k" => {
-                        b.tax_reporting_us_1099_k = FromValueOpt::from_value(v)
-                    }
-                    "tax_reporting_us_1099_misc" => {
-                        b.tax_reporting_us_1099_misc = FromValueOpt::from_value(v)
-                    }
-                    "transfers" => b.transfers = FromValueOpt::from_value(v),
-                    "treasury" => b.treasury = FromValueOpt::from_value(v),
-                    "twint_payments" => b.twint_payments = FromValueOpt::from_value(v),
-                    "upi_payments" => b.upi_payments = FromValueOpt::from_value(v),
-                    "us_bank_account_ach_payments" => {
-                        b.us_bank_account_ach_payments = FromValueOpt::from_value(v)
-                    }
-                    "us_bank_transfer_payments" => {
-                        b.us_bank_transfer_payments = FromValueOpt::from_value(v)
-                    }
-                    "zip_payments" => b.zip_payments = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -776,21 +662,19 @@ impl serde::Serialize for AccountCapabilitiesStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for AccountCapabilitiesStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for AccountCapabilitiesStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<AccountCapabilitiesStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<AccountCapabilitiesStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(AccountCapabilitiesStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(AccountCapabilitiesStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountCapabilitiesStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

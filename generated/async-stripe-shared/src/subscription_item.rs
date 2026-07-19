@@ -58,16 +58,14 @@ pub struct SubscriptionItemBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -86,49 +84,46 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SubscriptionItemBuilder::deser_default(),
+                builder: SubscriptionItemBuilder {
+                    billing_thresholds: Deserialize::default(),
+                    created: Deserialize::default(),
+                    current_period_end: Deserialize::default(),
+                    current_period_start: Deserialize::default(),
+                    discounts: Deserialize::default(),
+                    id: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    plan: Deserialize::default(),
+                    price: Deserialize::default(),
+                    quantity: Deserialize::default(),
+                    subscription: Deserialize::default(),
+                    tax_rates: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SubscriptionItemBuilder {
-        type Out = SubscriptionItem;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
-                "created" => Deserialize::begin(&mut self.created),
-                "current_period_end" => Deserialize::begin(&mut self.current_period_end),
-                "current_period_start" => Deserialize::begin(&mut self.current_period_start),
-                "discounts" => Deserialize::begin(&mut self.discounts),
-                "id" => Deserialize::begin(&mut self.id),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "plan" => Deserialize::begin(&mut self.plan),
-                "price" => Deserialize::begin(&mut self.price),
-                "quantity" => Deserialize::begin(&mut self.quantity),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                "tax_rates" => Deserialize::begin(&mut self.tax_rates),
+                "billing_thresholds" => Deserialize::begin(&mut self.builder.billing_thresholds),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "current_period_end" => Deserialize::begin(&mut self.builder.current_period_end),
+                "current_period_start" => {
+                    Deserialize::begin(&mut self.builder.current_period_start)
+                }
+                "discounts" => Deserialize::begin(&mut self.builder.discounts),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "plan" => Deserialize::begin(&mut self.builder.plan),
+                "price" => Deserialize::begin(&mut self.builder.price),
+                "quantity" => Deserialize::begin(&mut self.builder.quantity),
+                "subscription" => Deserialize::begin(&mut self.builder.subscription),
+                "tax_rates" => Deserialize::begin(&mut self.builder.tax_rates),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                billing_thresholds: Deserialize::default(),
-                created: Deserialize::default(),
-                current_period_end: Deserialize::default(),
-                current_period_start: Deserialize::default(),
-                discounts: Deserialize::default(),
-                id: Deserialize::default(),
-                metadata: Deserialize::default(),
-                plan: Deserialize::default(),
-                price: Deserialize::default(),
-                quantity: Deserialize::default(),
-                subscription: Deserialize::default(),
-                tax_rates: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(billing_thresholds),
                 Some(created),
@@ -143,23 +138,23 @@ const _: () = {
                 Some(subscription),
                 Some(tax_rates),
             ) = (
-                self.billing_thresholds,
-                self.created,
-                self.current_period_end,
-                self.current_period_start,
-                self.discounts.take(),
-                self.id.take(),
-                self.metadata.take(),
-                self.plan.take(),
-                self.price.take(),
-                self.quantity,
-                self.subscription.take(),
-                self.tax_rates.take(),
+                self.builder.billing_thresholds,
+                self.builder.created,
+                self.builder.current_period_end,
+                self.builder.current_period_start,
+                self.builder.discounts.take(),
+                self.builder.id.take(),
+                self.builder.metadata.take(),
+                self.builder.plan.take(),
+                self.builder.price.take(),
+                self.builder.quantity,
+                self.builder.subscription.take(),
+                self.builder.tax_rates.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SubscriptionItem {
                 billing_thresholds,
                 created,
                 current_period_end,
@@ -172,49 +167,8 @@ const _: () = {
                 quantity,
                 subscription,
                 tax_rates,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SubscriptionItem {
-        type Builder = SubscriptionItemBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "current_period_end" => b.current_period_end = FromValueOpt::from_value(v),
-                    "current_period_start" => b.current_period_start = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "plan" => b.plan = FromValueOpt::from_value(v),
-                    "price" => b.price = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

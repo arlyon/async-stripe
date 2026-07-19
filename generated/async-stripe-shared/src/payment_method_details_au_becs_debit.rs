@@ -33,16 +33,14 @@ pub struct PaymentMethodDetailsAuBecsDebitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -61,35 +59,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsAuBecsDebitBuilder::deser_default(),
+                builder: PaymentMethodDetailsAuBecsDebitBuilder {
+                    bsb_number: Deserialize::default(),
+                    expected_debit_date: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    mandate: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodDetailsAuBecsDebitBuilder {
-        type Out = PaymentMethodDetailsAuBecsDebit;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bsb_number" => Deserialize::begin(&mut self.bsb_number),
-                "expected_debit_date" => Deserialize::begin(&mut self.expected_debit_date),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "mandate" => Deserialize::begin(&mut self.mandate),
+                "bsb_number" => Deserialize::begin(&mut self.builder.bsb_number),
+                "expected_debit_date" => Deserialize::begin(&mut self.builder.expected_debit_date),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "mandate" => Deserialize::begin(&mut self.builder.mandate),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bsb_number: Deserialize::default(),
-                expected_debit_date: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                last4: Deserialize::default(),
-                mandate: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bsb_number),
                 Some(expected_debit_date),
@@ -97,51 +90,23 @@ const _: () = {
                 Some(last4),
                 Some(mandate),
             ) = (
-                self.bsb_number.take(),
-                self.expected_debit_date.take(),
-                self.fingerprint.take(),
-                self.last4.take(),
-                self.mandate.take(),
+                self.builder.bsb_number.take(),
+                self.builder.expected_debit_date.take(),
+                self.builder.fingerprint.take(),
+                self.builder.last4.take(),
+                self.builder.mandate.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { bsb_number, expected_debit_date, fingerprint, last4, mandate })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(PaymentMethodDetailsAuBecsDebit {
+                bsb_number,
+                expected_debit_date,
+                fingerprint,
+                last4,
+                mandate,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsAuBecsDebit {
-        type Builder = PaymentMethodDetailsAuBecsDebitBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsAuBecsDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsAuBecsDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bsb_number" => b.bsb_number = FromValueOpt::from_value(v),
-                    "expected_debit_date" => b.expected_debit_date = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "mandate" => b.mandate = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

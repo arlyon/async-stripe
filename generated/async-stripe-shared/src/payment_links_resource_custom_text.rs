@@ -30,16 +30,14 @@ pub struct PaymentLinksResourceCustomTextBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -58,86 +56,51 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentLinksResourceCustomTextBuilder::deser_default(),
+                builder: PaymentLinksResourceCustomTextBuilder {
+                    after_submit: Deserialize::default(),
+                    shipping_address: Deserialize::default(),
+                    submit: Deserialize::default(),
+                    terms_of_service_acceptance: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentLinksResourceCustomTextBuilder {
-        type Out = PaymentLinksResourceCustomText;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "after_submit" => Deserialize::begin(&mut self.after_submit),
-                "shipping_address" => Deserialize::begin(&mut self.shipping_address),
-                "submit" => Deserialize::begin(&mut self.submit),
+                "after_submit" => Deserialize::begin(&mut self.builder.after_submit),
+                "shipping_address" => Deserialize::begin(&mut self.builder.shipping_address),
+                "submit" => Deserialize::begin(&mut self.builder.submit),
                 "terms_of_service_acceptance" => {
-                    Deserialize::begin(&mut self.terms_of_service_acceptance)
+                    Deserialize::begin(&mut self.builder.terms_of_service_acceptance)
                 }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                after_submit: Deserialize::default(),
-                shipping_address: Deserialize::default(),
-                submit: Deserialize::default(),
-                terms_of_service_acceptance: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(after_submit),
                 Some(shipping_address),
                 Some(submit),
                 Some(terms_of_service_acceptance),
             ) = (
-                self.after_submit.take(),
-                self.shipping_address.take(),
-                self.submit.take(),
-                self.terms_of_service_acceptance.take(),
+                self.builder.after_submit.take(),
+                self.builder.shipping_address.take(),
+                self.builder.submit.take(),
+                self.builder.terms_of_service_acceptance.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { after_submit, shipping_address, submit, terms_of_service_acceptance })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(PaymentLinksResourceCustomText {
+                after_submit,
+                shipping_address,
+                submit,
+                terms_of_service_acceptance,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentLinksResourceCustomText {
-        type Builder = PaymentLinksResourceCustomTextBuilder;
-    }
-
-    impl FromValueOpt for PaymentLinksResourceCustomText {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentLinksResourceCustomTextBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "after_submit" => b.after_submit = FromValueOpt::from_value(v),
-                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-                    "submit" => b.submit = FromValueOpt::from_value(v),
-                    "terms_of_service_acceptance" => {
-                        b.terms_of_service_acceptance = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

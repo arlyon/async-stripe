@@ -50,16 +50,14 @@ pub struct AccountRequirementsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -78,41 +76,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AccountRequirementsBuilder::deser_default(),
+                builder: AccountRequirementsBuilder {
+                    alternatives: Deserialize::default(),
+                    current_deadline: Deserialize::default(),
+                    currently_due: Deserialize::default(),
+                    disabled_reason: Deserialize::default(),
+                    errors: Deserialize::default(),
+                    eventually_due: Deserialize::default(),
+                    past_due: Deserialize::default(),
+                    pending_verification: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for AccountRequirementsBuilder {
-        type Out = AccountRequirements;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "alternatives" => Deserialize::begin(&mut self.alternatives),
-                "current_deadline" => Deserialize::begin(&mut self.current_deadline),
-                "currently_due" => Deserialize::begin(&mut self.currently_due),
-                "disabled_reason" => Deserialize::begin(&mut self.disabled_reason),
-                "errors" => Deserialize::begin(&mut self.errors),
-                "eventually_due" => Deserialize::begin(&mut self.eventually_due),
-                "past_due" => Deserialize::begin(&mut self.past_due),
-                "pending_verification" => Deserialize::begin(&mut self.pending_verification),
+                "alternatives" => Deserialize::begin(&mut self.builder.alternatives),
+                "current_deadline" => Deserialize::begin(&mut self.builder.current_deadline),
+                "currently_due" => Deserialize::begin(&mut self.builder.currently_due),
+                "disabled_reason" => Deserialize::begin(&mut self.builder.disabled_reason),
+                "errors" => Deserialize::begin(&mut self.builder.errors),
+                "eventually_due" => Deserialize::begin(&mut self.builder.eventually_due),
+                "past_due" => Deserialize::begin(&mut self.builder.past_due),
+                "pending_verification" => {
+                    Deserialize::begin(&mut self.builder.pending_verification)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                alternatives: Deserialize::default(),
-                current_deadline: Deserialize::default(),
-                currently_due: Deserialize::default(),
-                disabled_reason: Deserialize::default(),
-                errors: Deserialize::default(),
-                eventually_due: Deserialize::default(),
-                past_due: Deserialize::default(),
-                pending_verification: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(alternatives),
                 Some(current_deadline),
@@ -123,19 +118,19 @@ const _: () = {
                 Some(past_due),
                 Some(pending_verification),
             ) = (
-                self.alternatives.take(),
-                self.current_deadline,
-                self.currently_due.take(),
-                self.disabled_reason.take(),
-                self.errors.take(),
-                self.eventually_due.take(),
-                self.past_due.take(),
-                self.pending_verification.take(),
+                self.builder.alternatives.take(),
+                self.builder.current_deadline,
+                self.builder.currently_due.take(),
+                self.builder.disabled_reason.take(),
+                self.builder.errors.take(),
+                self.builder.eventually_due.take(),
+                self.builder.past_due.take(),
+                self.builder.pending_verification.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(AccountRequirements {
                 alternatives,
                 current_deadline,
                 currently_due,
@@ -144,45 +139,8 @@ const _: () = {
                 eventually_due,
                 past_due,
                 pending_verification,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for AccountRequirements {
-        type Builder = AccountRequirementsBuilder;
-    }
-
-    impl FromValueOpt for AccountRequirements {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountRequirementsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "alternatives" => b.alternatives = FromValueOpt::from_value(v),
-                    "current_deadline" => b.current_deadline = FromValueOpt::from_value(v),
-                    "currently_due" => b.currently_due = FromValueOpt::from_value(v),
-                    "disabled_reason" => b.disabled_reason = FromValueOpt::from_value(v),
-                    "errors" => b.errors = FromValueOpt::from_value(v),
-                    "eventually_due" => b.eventually_due = FromValueOpt::from_value(v),
-                    "past_due" => b.past_due = FromValueOpt::from_value(v),
-                    "pending_verification" => b.pending_verification = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -291,21 +249,19 @@ impl serde::Serialize for AccountRequirementsDisabledReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for AccountRequirementsDisabledReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for AccountRequirementsDisabledReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<AccountRequirementsDisabledReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<AccountRequirementsDisabledReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(AccountRequirementsDisabledReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(AccountRequirementsDisabledReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountRequirementsDisabledReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

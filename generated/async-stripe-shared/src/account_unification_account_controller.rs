@@ -38,16 +38,14 @@ pub struct AccountUnificationAccountControllerBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -66,37 +64,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AccountUnificationAccountControllerBuilder::deser_default(),
+                builder: AccountUnificationAccountControllerBuilder {
+                    fees: Deserialize::default(),
+                    is_controller: Deserialize::default(),
+                    losses: Deserialize::default(),
+                    requirement_collection: Deserialize::default(),
+                    stripe_dashboard: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for AccountUnificationAccountControllerBuilder {
-        type Out = AccountUnificationAccountController;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "fees" => Deserialize::begin(&mut self.fees),
-                "is_controller" => Deserialize::begin(&mut self.is_controller),
-                "losses" => Deserialize::begin(&mut self.losses),
-                "requirement_collection" => Deserialize::begin(&mut self.requirement_collection),
-                "stripe_dashboard" => Deserialize::begin(&mut self.stripe_dashboard),
-                "type" => Deserialize::begin(&mut self.type_),
+                "fees" => Deserialize::begin(&mut self.builder.fees),
+                "is_controller" => Deserialize::begin(&mut self.builder.is_controller),
+                "losses" => Deserialize::begin(&mut self.builder.losses),
+                "requirement_collection" => {
+                    Deserialize::begin(&mut self.builder.requirement_collection)
+                }
+                "stripe_dashboard" => Deserialize::begin(&mut self.builder.stripe_dashboard),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                fees: Deserialize::default(),
-                is_controller: Deserialize::default(),
-                losses: Deserialize::default(),
-                requirement_collection: Deserialize::default(),
-                stripe_dashboard: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(fees),
                 Some(is_controller),
@@ -105,62 +100,25 @@ const _: () = {
                 Some(stripe_dashboard),
                 Some(type_),
             ) = (
-                self.fees.take(),
-                self.is_controller,
-                self.losses.take(),
-                self.requirement_collection.take(),
-                self.stripe_dashboard.take(),
-                self.type_.take(),
+                self.builder.fees.take(),
+                self.builder.is_controller,
+                self.builder.losses.take(),
+                self.builder.requirement_collection.take(),
+                self.builder.stripe_dashboard.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(AccountUnificationAccountController {
                 fees,
                 is_controller,
                 losses,
                 requirement_collection,
                 stripe_dashboard,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for AccountUnificationAccountController {
-        type Builder = AccountUnificationAccountControllerBuilder;
-    }
-
-    impl FromValueOpt for AccountUnificationAccountController {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountUnificationAccountControllerBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "fees" => b.fees = FromValueOpt::from_value(v),
-                    "is_controller" => b.is_controller = FromValueOpt::from_value(v),
-                    "losses" => b.losses = FromValueOpt::from_value(v),
-                    "requirement_collection" => {
-                        b.requirement_collection = FromValueOpt::from_value(v)
-                    }
-                    "stripe_dashboard" => b.stripe_dashboard = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -231,16 +189,16 @@ impl serde::Serialize for AccountUnificationAccountControllerRequirementCollecti
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for AccountUnificationAccountControllerRequirementCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for AccountUnificationAccountControllerRequirementCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<AccountUnificationAccountControllerRequirementCollection>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             AccountUnificationAccountControllerRequirementCollection::from_str(s)
@@ -249,10 +207,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    AccountUnificationAccountControllerRequirementCollection
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountUnificationAccountControllerRequirementCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -327,21 +281,19 @@ impl serde::Serialize for AccountUnificationAccountControllerType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for AccountUnificationAccountControllerType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for AccountUnificationAccountControllerType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<AccountUnificationAccountControllerType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<AccountUnificationAccountControllerType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(AccountUnificationAccountControllerType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(AccountUnificationAccountControllerType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountUnificationAccountControllerType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

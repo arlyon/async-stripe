@@ -42,16 +42,14 @@ pub struct TransferScheduleBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -70,37 +68,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TransferScheduleBuilder::deser_default(),
+                builder: TransferScheduleBuilder {
+                    delay_days: Deserialize::default(),
+                    interval: Deserialize::default(),
+                    monthly_anchor: Deserialize::default(),
+                    monthly_payout_days: Deserialize::default(),
+                    weekly_anchor: Deserialize::default(),
+                    weekly_payout_days: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TransferScheduleBuilder {
-        type Out = TransferSchedule;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "delay_days" => Deserialize::begin(&mut self.delay_days),
-                "interval" => Deserialize::begin(&mut self.interval),
-                "monthly_anchor" => Deserialize::begin(&mut self.monthly_anchor),
-                "monthly_payout_days" => Deserialize::begin(&mut self.monthly_payout_days),
-                "weekly_anchor" => Deserialize::begin(&mut self.weekly_anchor),
-                "weekly_payout_days" => Deserialize::begin(&mut self.weekly_payout_days),
+                "delay_days" => Deserialize::begin(&mut self.builder.delay_days),
+                "interval" => Deserialize::begin(&mut self.builder.interval),
+                "monthly_anchor" => Deserialize::begin(&mut self.builder.monthly_anchor),
+                "monthly_payout_days" => Deserialize::begin(&mut self.builder.monthly_payout_days),
+                "weekly_anchor" => Deserialize::begin(&mut self.builder.weekly_anchor),
+                "weekly_payout_days" => Deserialize::begin(&mut self.builder.weekly_payout_days),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                delay_days: Deserialize::default(),
-                interval: Deserialize::default(),
-                monthly_anchor: Deserialize::default(),
-                monthly_payout_days: Deserialize::default(),
-                weekly_anchor: Deserialize::default(),
-                weekly_payout_days: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(delay_days),
                 Some(interval),
@@ -109,60 +102,25 @@ const _: () = {
                 Some(weekly_anchor),
                 Some(weekly_payout_days),
             ) = (
-                self.delay_days,
-                self.interval.take(),
-                self.monthly_anchor,
-                self.monthly_payout_days.take(),
-                self.weekly_anchor.take(),
-                self.weekly_payout_days.take(),
+                self.builder.delay_days,
+                self.builder.interval.take(),
+                self.builder.monthly_anchor,
+                self.builder.monthly_payout_days.take(),
+                self.builder.weekly_anchor.take(),
+                self.builder.weekly_payout_days.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TransferSchedule {
                 delay_days,
                 interval,
                 monthly_anchor,
                 monthly_payout_days,
                 weekly_anchor,
                 weekly_payout_days,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TransferSchedule {
-        type Builder = TransferScheduleBuilder;
-    }
-
-    impl FromValueOpt for TransferSchedule {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TransferScheduleBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "delay_days" => b.delay_days = FromValueOpt::from_value(v),
-                    "interval" => b.interval = FromValueOpt::from_value(v),
-                    "monthly_anchor" => b.monthly_anchor = FromValueOpt::from_value(v),
-                    "monthly_payout_days" => b.monthly_payout_days = FromValueOpt::from_value(v),
-                    "weekly_anchor" => b.weekly_anchor = FromValueOpt::from_value(v),
-                    "weekly_payout_days" => b.weekly_payout_days = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -241,21 +199,19 @@ impl serde::Serialize for TransferScheduleWeeklyPayoutDays {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TransferScheduleWeeklyPayoutDays {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TransferScheduleWeeklyPayoutDays {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TransferScheduleWeeklyPayoutDays> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TransferScheduleWeeklyPayoutDays> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TransferScheduleWeeklyPayoutDays::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TransferScheduleWeeklyPayoutDays);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TransferScheduleWeeklyPayoutDays {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

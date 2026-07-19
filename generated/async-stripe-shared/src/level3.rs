@@ -29,16 +29,14 @@ pub struct Level3Builder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,36 +53,36 @@ const _: () = {
 
     impl Visitor for Place<Level3> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: Level3Builder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: Level3Builder {
+                    customer_reference: Deserialize::default(),
+                    line_items: Deserialize::default(),
+                    merchant_reference: Deserialize::default(),
+                    shipping_address_zip: Deserialize::default(),
+                    shipping_amount: Deserialize::default(),
+                    shipping_from_zip: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for Level3Builder {
-        type Out = Level3;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "customer_reference" => Deserialize::begin(&mut self.customer_reference),
-                "line_items" => Deserialize::begin(&mut self.line_items),
-                "merchant_reference" => Deserialize::begin(&mut self.merchant_reference),
-                "shipping_address_zip" => Deserialize::begin(&mut self.shipping_address_zip),
-                "shipping_amount" => Deserialize::begin(&mut self.shipping_amount),
-                "shipping_from_zip" => Deserialize::begin(&mut self.shipping_from_zip),
+                "customer_reference" => Deserialize::begin(&mut self.builder.customer_reference),
+                "line_items" => Deserialize::begin(&mut self.builder.line_items),
+                "merchant_reference" => Deserialize::begin(&mut self.builder.merchant_reference),
+                "shipping_address_zip" => {
+                    Deserialize::begin(&mut self.builder.shipping_address_zip)
+                }
+                "shipping_amount" => Deserialize::begin(&mut self.builder.shipping_amount),
+                "shipping_from_zip" => Deserialize::begin(&mut self.builder.shipping_from_zip),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                customer_reference: Deserialize::default(),
-                line_items: Deserialize::default(),
-                merchant_reference: Deserialize::default(),
-                shipping_address_zip: Deserialize::default(),
-                shipping_amount: Deserialize::default(),
-                shipping_from_zip: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(customer_reference),
                 Some(line_items),
@@ -93,60 +91,25 @@ const _: () = {
                 Some(shipping_amount),
                 Some(shipping_from_zip),
             ) = (
-                self.customer_reference.take(),
-                self.line_items.take(),
-                self.merchant_reference.take(),
-                self.shipping_address_zip.take(),
-                self.shipping_amount,
-                self.shipping_from_zip.take(),
+                self.builder.customer_reference.take(),
+                self.builder.line_items.take(),
+                self.builder.merchant_reference.take(),
+                self.builder.shipping_address_zip.take(),
+                self.builder.shipping_amount,
+                self.builder.shipping_from_zip.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Level3 {
                 customer_reference,
                 line_items,
                 merchant_reference,
                 shipping_address_zip,
                 shipping_amount,
                 shipping_from_zip,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Level3 {
-        type Builder = Level3Builder;
-    }
-
-    impl FromValueOpt for Level3 {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = Level3Builder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "customer_reference" => b.customer_reference = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "merchant_reference" => b.merchant_reference = FromValueOpt::from_value(v),
-                    "shipping_address_zip" => b.shipping_address_zip = FromValueOpt::from_value(v),
-                    "shipping_amount" => b.shipping_amount = FromValueOpt::from_value(v),
-                    "shipping_from_zip" => b.shipping_from_zip = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

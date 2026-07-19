@@ -29,16 +29,14 @@ pub struct InvoiceSettingCustomerSettingBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,84 +55,51 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoiceSettingCustomerSettingBuilder::deser_default(),
+                builder: InvoiceSettingCustomerSettingBuilder {
+                    custom_fields: Deserialize::default(),
+                    default_payment_method: Deserialize::default(),
+                    footer: Deserialize::default(),
+                    rendering_options: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for InvoiceSettingCustomerSettingBuilder {
-        type Out = InvoiceSettingCustomerSetting;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "custom_fields" => Deserialize::begin(&mut self.custom_fields),
-                "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
-                "footer" => Deserialize::begin(&mut self.footer),
-                "rendering_options" => Deserialize::begin(&mut self.rendering_options),
+                "custom_fields" => Deserialize::begin(&mut self.builder.custom_fields),
+                "default_payment_method" => {
+                    Deserialize::begin(&mut self.builder.default_payment_method)
+                }
+                "footer" => Deserialize::begin(&mut self.builder.footer),
+                "rendering_options" => Deserialize::begin(&mut self.builder.rendering_options),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                custom_fields: Deserialize::default(),
-                default_payment_method: Deserialize::default(),
-                footer: Deserialize::default(),
-                rendering_options: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(custom_fields),
                 Some(default_payment_method),
                 Some(footer),
                 Some(rendering_options),
             ) = (
-                self.custom_fields.take(),
-                self.default_payment_method.take(),
-                self.footer.take(),
-                self.rendering_options.take(),
+                self.builder.custom_fields.take(),
+                self.builder.default_payment_method.take(),
+                self.builder.footer.take(),
+                self.builder.rendering_options.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { custom_fields, default_payment_method, footer, rendering_options })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(InvoiceSettingCustomerSetting {
+                custom_fields,
+                default_payment_method,
+                footer,
+                rendering_options,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoiceSettingCustomerSetting {
-        type Builder = InvoiceSettingCustomerSettingBuilder;
-    }
-
-    impl FromValueOpt for InvoiceSettingCustomerSetting {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoiceSettingCustomerSettingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
-                    "default_payment_method" => {
-                        b.default_payment_method = FromValueOpt::from_value(v)
-                    }
-                    "footer" => b.footer = FromValueOpt::from_value(v),
-                    "rendering_options" => b.rendering_options = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

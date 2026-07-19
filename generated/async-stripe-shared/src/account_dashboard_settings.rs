@@ -25,16 +25,14 @@ pub struct AccountDashboardSettingsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,64 +51,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AccountDashboardSettingsBuilder::deser_default(),
+                builder: AccountDashboardSettingsBuilder {
+                    display_name: Deserialize::default(),
+                    timezone: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for AccountDashboardSettingsBuilder {
-        type Out = AccountDashboardSettings;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "display_name" => Deserialize::begin(&mut self.display_name),
-                "timezone" => Deserialize::begin(&mut self.timezone),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { display_name: Deserialize::default(), timezone: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(display_name), Some(timezone)) =
-                (self.display_name.take(), self.timezone.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { display_name, timezone })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "display_name" => Deserialize::begin(&mut self.builder.display_name),
+                "timezone" => Deserialize::begin(&mut self.builder.timezone),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for AccountDashboardSettings {
-        type Builder = AccountDashboardSettingsBuilder;
-    }
-
-    impl FromValueOpt for AccountDashboardSettings {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(display_name), Some(timezone)) =
+                (self.builder.display_name.take(), self.builder.timezone.take())
+            else {
+                return Ok(());
             };
-            let mut b = AccountDashboardSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "timezone" => b.timezone = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(AccountDashboardSettings { display_name, timezone });
+            Ok(())
         }
     }
 };

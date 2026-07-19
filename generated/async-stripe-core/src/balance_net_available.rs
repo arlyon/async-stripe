@@ -25,16 +25,14 @@ pub struct BalanceNetAvailableBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,70 +51,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BalanceNetAvailableBuilder::deser_default(),
+                builder: BalanceNetAvailableBuilder {
+                    amount: Deserialize::default(),
+                    destination: Deserialize::default(),
+                    source_types: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BalanceNetAvailableBuilder {
-        type Out = BalanceNetAvailable;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "destination" => Deserialize::begin(&mut self.destination),
-                "source_types" => Deserialize::begin(&mut self.source_types),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                destination: Deserialize::default(),
-                source_types: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(destination), Some(source_types)) =
-                (self.amount, self.destination.take(), self.source_types)
-            else {
-                return None;
-            };
-            Some(Self::Out { amount, destination, source_types })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "destination" => Deserialize::begin(&mut self.builder.destination),
+                "source_types" => Deserialize::begin(&mut self.builder.source_types),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BalanceNetAvailable {
-        type Builder = BalanceNetAvailableBuilder;
-    }
-
-    impl FromValueOpt for BalanceNetAvailable {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount), Some(destination), Some(source_types)) =
+                (self.builder.amount, self.builder.destination.take(), self.builder.source_types)
+            else {
+                return Ok(());
             };
-            let mut b = BalanceNetAvailableBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "destination" => b.destination = FromValueOpt::from_value(v),
-                    "source_types" => b.source_types = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(BalanceNetAvailable { amount, destination, source_types });
+            Ok(())
         }
     }
 };

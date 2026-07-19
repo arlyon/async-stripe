@@ -23,16 +23,14 @@ pub struct ShippingRateDeliveryEstimateBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,62 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ShippingRateDeliveryEstimateBuilder::deser_default(),
+                builder: ShippingRateDeliveryEstimateBuilder {
+                    maximum: Deserialize::default(),
+                    minimum: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ShippingRateDeliveryEstimateBuilder {
-        type Out = ShippingRateDeliveryEstimate;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "maximum" => Deserialize::begin(&mut self.maximum),
-                "minimum" => Deserialize::begin(&mut self.minimum),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { maximum: Deserialize::default(), minimum: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(maximum), Some(minimum)) = (self.maximum.take(), self.minimum.take()) else {
-                return None;
-            };
-            Some(Self::Out { maximum, minimum })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "maximum" => Deserialize::begin(&mut self.builder.maximum),
+                "minimum" => Deserialize::begin(&mut self.builder.minimum),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ShippingRateDeliveryEstimate {
-        type Builder = ShippingRateDeliveryEstimateBuilder;
-    }
-
-    impl FromValueOpt for ShippingRateDeliveryEstimate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(maximum), Some(minimum)) =
+                (self.builder.maximum.take(), self.builder.minimum.take())
+            else {
+                return Ok(());
             };
-            let mut b = ShippingRateDeliveryEstimateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "maximum" => b.maximum = FromValueOpt::from_value(v),
-                    "minimum" => b.minimum = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(ShippingRateDeliveryEstimate { maximum, minimum });
+            Ok(())
         }
     }
 };

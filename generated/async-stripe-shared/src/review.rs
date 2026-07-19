@@ -65,16 +65,14 @@ pub struct ReviewBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -91,50 +89,48 @@ const _: () = {
 
     impl Visitor for Place<Review> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: ReviewBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: ReviewBuilder {
+                    billing_zip: Deserialize::default(),
+                    charge: Deserialize::default(),
+                    closed_reason: Deserialize::default(),
+                    created: Deserialize::default(),
+                    id: Deserialize::default(),
+                    ip_address: Deserialize::default(),
+                    ip_address_location: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    open: Deserialize::default(),
+                    opened_reason: Deserialize::default(),
+                    payment_intent: Deserialize::default(),
+                    reason: Deserialize::default(),
+                    session: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for ReviewBuilder {
-        type Out = Review;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "billing_zip" => Deserialize::begin(&mut self.billing_zip),
-                "charge" => Deserialize::begin(&mut self.charge),
-                "closed_reason" => Deserialize::begin(&mut self.closed_reason),
-                "created" => Deserialize::begin(&mut self.created),
-                "id" => Deserialize::begin(&mut self.id),
-                "ip_address" => Deserialize::begin(&mut self.ip_address),
-                "ip_address_location" => Deserialize::begin(&mut self.ip_address_location),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "open" => Deserialize::begin(&mut self.open),
-                "opened_reason" => Deserialize::begin(&mut self.opened_reason),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "reason" => Deserialize::begin(&mut self.reason),
-                "session" => Deserialize::begin(&mut self.session),
+                "billing_zip" => Deserialize::begin(&mut self.builder.billing_zip),
+                "charge" => Deserialize::begin(&mut self.builder.charge),
+                "closed_reason" => Deserialize::begin(&mut self.builder.closed_reason),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "ip_address" => Deserialize::begin(&mut self.builder.ip_address),
+                "ip_address_location" => Deserialize::begin(&mut self.builder.ip_address_location),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "open" => Deserialize::begin(&mut self.builder.open),
+                "opened_reason" => Deserialize::begin(&mut self.builder.opened_reason),
+                "payment_intent" => Deserialize::begin(&mut self.builder.payment_intent),
+                "reason" => Deserialize::begin(&mut self.builder.reason),
+                "session" => Deserialize::begin(&mut self.builder.session),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                billing_zip: Deserialize::default(),
-                charge: Deserialize::default(),
-                closed_reason: Deserialize::default(),
-                created: Deserialize::default(),
-                id: Deserialize::default(),
-                ip_address: Deserialize::default(),
-                ip_address_location: Deserialize::default(),
-                livemode: Deserialize::default(),
-                open: Deserialize::default(),
-                opened_reason: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                reason: Deserialize::default(),
-                session: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(billing_zip),
                 Some(charge),
@@ -150,24 +146,24 @@ const _: () = {
                 Some(reason),
                 Some(session),
             ) = (
-                self.billing_zip.take(),
-                self.charge.take(),
-                self.closed_reason.take(),
-                self.created,
-                self.id.take(),
-                self.ip_address.take(),
-                self.ip_address_location.take(),
-                self.livemode,
-                self.open,
-                self.opened_reason.take(),
-                self.payment_intent.take(),
-                self.reason.take(),
-                self.session.take(),
+                self.builder.billing_zip.take(),
+                self.builder.charge.take(),
+                self.builder.closed_reason.take(),
+                self.builder.created,
+                self.builder.id.take(),
+                self.builder.ip_address.take(),
+                self.builder.ip_address_location.take(),
+                self.builder.livemode,
+                self.builder.open,
+                self.builder.opened_reason.take(),
+                self.builder.payment_intent.take(),
+                self.builder.reason.take(),
+                self.builder.session.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Review {
                 billing_zip,
                 charge,
                 closed_reason,
@@ -181,50 +177,8 @@ const _: () = {
                 payment_intent,
                 reason,
                 session,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Review {
-        type Builder = ReviewBuilder;
-    }
-
-    impl FromValueOpt for Review {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReviewBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_zip" => b.billing_zip = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "closed_reason" => b.closed_reason = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "ip_address_location" => b.ip_address_location = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "open" => b.open = FromValueOpt::from_value(v),
-                    "opened_reason" => b.opened_reason = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "session" => b.session = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -331,21 +285,19 @@ impl serde::Serialize for ReviewClosedReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ReviewClosedReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ReviewClosedReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ReviewClosedReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ReviewClosedReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ReviewClosedReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ReviewClosedReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReviewClosedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -415,21 +367,19 @@ impl serde::Serialize for ReviewOpenedReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ReviewOpenedReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ReviewOpenedReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ReviewOpenedReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ReviewOpenedReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ReviewOpenedReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ReviewOpenedReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReviewOpenedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

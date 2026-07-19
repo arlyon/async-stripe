@@ -30,16 +30,14 @@ pub struct SourceTypeAchDebitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -58,37 +56,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceTypeAchDebitBuilder::deser_default(),
+                builder: SourceTypeAchDebitBuilder {
+                    bank_name: Deserialize::default(),
+                    country: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    routing_number: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SourceTypeAchDebitBuilder {
-        type Out = SourceTypeAchDebit;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "country" => Deserialize::begin(&mut self.country),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "routing_number" => Deserialize::begin(&mut self.routing_number),
-                "type" => Deserialize::begin(&mut self.type_),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "routing_number" => Deserialize::begin(&mut self.builder.routing_number),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bank_name: Deserialize::default(),
-                country: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                last4: Deserialize::default(),
-                routing_number: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bank_name),
                 Some(country),
@@ -97,53 +90,25 @@ const _: () = {
                 Some(routing_number),
                 Some(type_),
             ) = (
-                self.bank_name.take(),
-                self.country.take(),
-                self.fingerprint.take(),
-                self.last4.take(),
-                self.routing_number.take(),
-                self.type_.take(),
+                self.builder.bank_name.take(),
+                self.builder.country.take(),
+                self.builder.fingerprint.take(),
+                self.builder.last4.take(),
+                self.builder.routing_number.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { bank_name, country, fingerprint, last4, routing_number, type_ })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(SourceTypeAchDebit {
+                bank_name,
+                country,
+                fingerprint,
+                last4,
+                routing_number,
+                type_,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceTypeAchDebit {
-        type Builder = SourceTypeAchDebitBuilder;
-    }
-
-    impl FromValueOpt for SourceTypeAchDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeAchDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

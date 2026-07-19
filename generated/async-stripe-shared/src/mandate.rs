@@ -47,16 +47,14 @@ pub struct MandateBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -73,44 +71,44 @@ const _: () = {
 
     impl Visitor for Place<Mandate> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: MandateBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: MandateBuilder {
+                    customer_acceptance: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    multi_use: Deserialize::default(),
+                    on_behalf_of: Deserialize::default(),
+                    payment_method: Deserialize::default(),
+                    payment_method_details: Deserialize::default(),
+                    single_use: Deserialize::default(),
+                    status: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for MandateBuilder {
-        type Out = Mandate;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "customer_acceptance" => Deserialize::begin(&mut self.customer_acceptance),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "multi_use" => Deserialize::begin(&mut self.multi_use),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
-                "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
-                "single_use" => Deserialize::begin(&mut self.single_use),
-                "status" => Deserialize::begin(&mut self.status),
-                "type" => Deserialize::begin(&mut self.type_),
+                "customer_acceptance" => Deserialize::begin(&mut self.builder.customer_acceptance),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "multi_use" => Deserialize::begin(&mut self.builder.multi_use),
+                "on_behalf_of" => Deserialize::begin(&mut self.builder.on_behalf_of),
+                "payment_method" => Deserialize::begin(&mut self.builder.payment_method),
+                "payment_method_details" => {
+                    Deserialize::begin(&mut self.builder.payment_method_details)
+                }
+                "single_use" => Deserialize::begin(&mut self.builder.single_use),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                customer_acceptance: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                multi_use: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                payment_method: Deserialize::default(),
-                payment_method_details: Deserialize::default(),
-                single_use: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(customer_acceptance),
                 Some(id),
@@ -123,21 +121,21 @@ const _: () = {
                 Some(status),
                 Some(type_),
             ) = (
-                self.customer_acceptance.take(),
-                self.id.take(),
-                self.livemode,
-                self.multi_use,
-                self.on_behalf_of.take(),
-                self.payment_method.take(),
-                self.payment_method_details.take(),
-                self.single_use.take(),
-                self.status.take(),
-                self.type_.take(),
+                self.builder.customer_acceptance.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.multi_use,
+                self.builder.on_behalf_of.take(),
+                self.builder.payment_method.take(),
+                self.builder.payment_method_details.take(),
+                self.builder.single_use.take(),
+                self.builder.status.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Mandate {
                 customer_acceptance,
                 id,
                 livemode,
@@ -148,49 +146,8 @@ const _: () = {
                 single_use,
                 status,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Mandate {
-        type Builder = MandateBuilder;
-    }
-
-    impl FromValueOpt for Mandate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "customer_acceptance" => b.customer_acceptance = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "multi_use" => b.multi_use = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "single_use" => b.single_use = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -278,21 +235,19 @@ impl serde::Serialize for MandateStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for MandateStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for MandateStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<MandateStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<MandateStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(MandateStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(MandateStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -362,21 +317,19 @@ impl serde::Serialize for MandateType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for MandateType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for MandateType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<MandateType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<MandateType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(MandateType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(MandateType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

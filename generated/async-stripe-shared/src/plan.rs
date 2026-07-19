@@ -104,16 +104,14 @@ pub struct PlanBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -130,62 +128,60 @@ const _: () = {
 
     impl Visitor for Place<Plan> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: PlanBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PlanBuilder {
+                    active: Deserialize::default(),
+                    amount: Deserialize::default(),
+                    amount_decimal: Deserialize::default(),
+                    billing_scheme: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    id: Deserialize::default(),
+                    interval: Deserialize::default(),
+                    interval_count: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    meter: Deserialize::default(),
+                    nickname: Deserialize::default(),
+                    product: Deserialize::default(),
+                    tiers: Deserialize::default(),
+                    tiers_mode: Deserialize::default(),
+                    transform_usage: Deserialize::default(),
+                    trial_period_days: Deserialize::default(),
+                    usage_type: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for PlanBuilder {
-        type Out = Plan;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_decimal" => Deserialize::begin(&mut self.amount_decimal),
-                "billing_scheme" => Deserialize::begin(&mut self.billing_scheme),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "id" => Deserialize::begin(&mut self.id),
-                "interval" => Deserialize::begin(&mut self.interval),
-                "interval_count" => Deserialize::begin(&mut self.interval_count),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "meter" => Deserialize::begin(&mut self.meter),
-                "nickname" => Deserialize::begin(&mut self.nickname),
-                "product" => Deserialize::begin(&mut self.product),
-                "tiers" => Deserialize::begin(&mut self.tiers),
-                "tiers_mode" => Deserialize::begin(&mut self.tiers_mode),
-                "transform_usage" => Deserialize::begin(&mut self.transform_usage),
-                "trial_period_days" => Deserialize::begin(&mut self.trial_period_days),
-                "usage_type" => Deserialize::begin(&mut self.usage_type),
+                "active" => Deserialize::begin(&mut self.builder.active),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_decimal" => Deserialize::begin(&mut self.builder.amount_decimal),
+                "billing_scheme" => Deserialize::begin(&mut self.builder.billing_scheme),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "interval" => Deserialize::begin(&mut self.builder.interval),
+                "interval_count" => Deserialize::begin(&mut self.builder.interval_count),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "meter" => Deserialize::begin(&mut self.builder.meter),
+                "nickname" => Deserialize::begin(&mut self.builder.nickname),
+                "product" => Deserialize::begin(&mut self.builder.product),
+                "tiers" => Deserialize::begin(&mut self.builder.tiers),
+                "tiers_mode" => Deserialize::begin(&mut self.builder.tiers_mode),
+                "transform_usage" => Deserialize::begin(&mut self.builder.transform_usage),
+                "trial_period_days" => Deserialize::begin(&mut self.builder.trial_period_days),
+                "usage_type" => Deserialize::begin(&mut self.builder.usage_type),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                active: Deserialize::default(),
-                amount: Deserialize::default(),
-                amount_decimal: Deserialize::default(),
-                billing_scheme: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                id: Deserialize::default(),
-                interval: Deserialize::default(),
-                interval_count: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                meter: Deserialize::default(),
-                nickname: Deserialize::default(),
-                product: Deserialize::default(),
-                tiers: Deserialize::default(),
-                tiers_mode: Deserialize::default(),
-                transform_usage: Deserialize::default(),
-                trial_period_days: Deserialize::default(),
-                usage_type: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(active),
                 Some(amount),
@@ -207,30 +203,30 @@ const _: () = {
                 Some(trial_period_days),
                 Some(usage_type),
             ) = (
-                self.active,
-                self.amount,
-                self.amount_decimal.take(),
-                self.billing_scheme.take(),
-                self.created,
-                self.currency.take(),
-                self.id.take(),
-                self.interval.take(),
-                self.interval_count,
-                self.livemode,
-                self.metadata.take(),
-                self.meter.take(),
-                self.nickname.take(),
-                self.product.take(),
-                self.tiers.take(),
-                self.tiers_mode.take(),
-                self.transform_usage.take(),
-                self.trial_period_days,
-                self.usage_type.take(),
+                self.builder.active,
+                self.builder.amount,
+                self.builder.amount_decimal.take(),
+                self.builder.billing_scheme.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.id.take(),
+                self.builder.interval.take(),
+                self.builder.interval_count,
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.meter.take(),
+                self.builder.nickname.take(),
+                self.builder.product.take(),
+                self.builder.tiers.take(),
+                self.builder.tiers_mode.take(),
+                self.builder.transform_usage.take(),
+                self.builder.trial_period_days,
+                self.builder.usage_type.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Plan {
                 active,
                 amount,
                 amount_decimal,
@@ -250,56 +246,8 @@ const _: () = {
                 transform_usage,
                 trial_period_days,
                 usage_type,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Plan {
-        type Builder = PlanBuilder;
-    }
-
-    impl FromValueOpt for Plan {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PlanBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_decimal" => b.amount_decimal = FromValueOpt::from_value(v),
-                    "billing_scheme" => b.billing_scheme = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "interval" => b.interval = FromValueOpt::from_value(v),
-                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "meter" => b.meter = FromValueOpt::from_value(v),
-                    "nickname" => b.nickname = FromValueOpt::from_value(v),
-                    "product" => b.product = FromValueOpt::from_value(v),
-                    "tiers" => b.tiers = FromValueOpt::from_value(v),
-                    "tiers_mode" => b.tiers_mode = FromValueOpt::from_value(v),
-                    "transform_usage" => b.transform_usage = FromValueOpt::from_value(v),
-                    "trial_period_days" => b.trial_period_days = FromValueOpt::from_value(v),
-                    "usage_type" => b.usage_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -402,21 +350,19 @@ impl serde::Serialize for PlanBillingScheme {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PlanBillingScheme {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PlanBillingScheme {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PlanBillingScheme> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PlanBillingScheme> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PlanBillingScheme::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PlanBillingScheme);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -490,21 +436,19 @@ impl serde::Serialize for PlanInterval {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PlanInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PlanInterval {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PlanInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PlanInterval> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PlanInterval::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PlanInterval);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PlanInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -572,21 +516,19 @@ impl serde::Serialize for PlanTiersMode {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PlanTiersMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PlanTiersMode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PlanTiersMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PlanTiersMode> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PlanTiersMode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PlanTiersMode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PlanTiersMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -654,21 +596,19 @@ impl serde::Serialize for PlanUsageType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PlanUsageType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PlanUsageType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PlanUsageType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PlanUsageType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PlanUsageType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PlanUsageType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PlanUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

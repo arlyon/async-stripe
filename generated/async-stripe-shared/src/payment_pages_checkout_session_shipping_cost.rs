@@ -32,16 +32,14 @@ pub struct PaymentPagesCheckoutSessionShippingCostBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,35 +58,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentPagesCheckoutSessionShippingCostBuilder::deser_default(),
+                builder: PaymentPagesCheckoutSessionShippingCostBuilder {
+                    amount_subtotal: Deserialize::default(),
+                    amount_tax: Deserialize::default(),
+                    amount_total: Deserialize::default(),
+                    shipping_rate: Deserialize::default(),
+                    taxes: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentPagesCheckoutSessionShippingCostBuilder {
-        type Out = PaymentPagesCheckoutSessionShippingCost;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
-                "amount_tax" => Deserialize::begin(&mut self.amount_tax),
-                "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "shipping_rate" => Deserialize::begin(&mut self.shipping_rate),
-                "taxes" => Deserialize::begin(&mut self.taxes),
+                "amount_subtotal" => Deserialize::begin(&mut self.builder.amount_subtotal),
+                "amount_tax" => Deserialize::begin(&mut self.builder.amount_tax),
+                "amount_total" => Deserialize::begin(&mut self.builder.amount_total),
+                "shipping_rate" => Deserialize::begin(&mut self.builder.shipping_rate),
+                "taxes" => Deserialize::begin(&mut self.builder.taxes),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount_subtotal: Deserialize::default(),
-                amount_tax: Deserialize::default(),
-                amount_total: Deserialize::default(),
-                shipping_rate: Deserialize::default(),
-                taxes: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount_subtotal),
                 Some(amount_tax),
@@ -96,51 +89,23 @@ const _: () = {
                 Some(shipping_rate),
                 Some(taxes),
             ) = (
-                self.amount_subtotal,
-                self.amount_tax,
-                self.amount_total,
-                self.shipping_rate.take(),
-                self.taxes.take(),
+                self.builder.amount_subtotal,
+                self.builder.amount_tax,
+                self.builder.amount_total,
+                self.builder.shipping_rate.take(),
+                self.builder.taxes.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { amount_subtotal, amount_tax, amount_total, shipping_rate, taxes })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(PaymentPagesCheckoutSessionShippingCost {
+                amount_subtotal,
+                amount_tax,
+                amount_total,
+                shipping_rate,
+                taxes,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentPagesCheckoutSessionShippingCost {
-        type Builder = PaymentPagesCheckoutSessionShippingCostBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionShippingCost {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionShippingCostBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "shipping_rate" => b.shipping_rate = FromValueOpt::from_value(v),
-                    "taxes" => b.taxes = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -69,16 +69,14 @@ pub struct SetupAttemptPaymentMethodDetailsCardBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -97,53 +95,48 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SetupAttemptPaymentMethodDetailsCardBuilder::deser_default(),
+                builder: SetupAttemptPaymentMethodDetailsCardBuilder {
+                    brand: Deserialize::default(),
+                    checks: Deserialize::default(),
+                    country: Deserialize::default(),
+                    description: Deserialize::default(),
+                    exp_month: Deserialize::default(),
+                    exp_year: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    funding: Deserialize::default(),
+                    iin: Deserialize::default(),
+                    issuer: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    network: Deserialize::default(),
+                    three_d_secure: Deserialize::default(),
+                    wallet: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SetupAttemptPaymentMethodDetailsCardBuilder {
-        type Out = SetupAttemptPaymentMethodDetailsCard;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "brand" => Deserialize::begin(&mut self.brand),
-                "checks" => Deserialize::begin(&mut self.checks),
-                "country" => Deserialize::begin(&mut self.country),
-                "description" => Deserialize::begin(&mut self.description),
-                "exp_month" => Deserialize::begin(&mut self.exp_month),
-                "exp_year" => Deserialize::begin(&mut self.exp_year),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "funding" => Deserialize::begin(&mut self.funding),
-                "iin" => Deserialize::begin(&mut self.iin),
-                "issuer" => Deserialize::begin(&mut self.issuer),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "network" => Deserialize::begin(&mut self.network),
-                "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
-                "wallet" => Deserialize::begin(&mut self.wallet),
+                "brand" => Deserialize::begin(&mut self.builder.brand),
+                "checks" => Deserialize::begin(&mut self.builder.checks),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "exp_month" => Deserialize::begin(&mut self.builder.exp_month),
+                "exp_year" => Deserialize::begin(&mut self.builder.exp_year),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "funding" => Deserialize::begin(&mut self.builder.funding),
+                "iin" => Deserialize::begin(&mut self.builder.iin),
+                "issuer" => Deserialize::begin(&mut self.builder.issuer),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "network" => Deserialize::begin(&mut self.builder.network),
+                "three_d_secure" => Deserialize::begin(&mut self.builder.three_d_secure),
+                "wallet" => Deserialize::begin(&mut self.builder.wallet),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                brand: Deserialize::default(),
-                checks: Deserialize::default(),
-                country: Deserialize::default(),
-                description: Deserialize::default(),
-                exp_month: Deserialize::default(),
-                exp_year: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                funding: Deserialize::default(),
-                iin: Deserialize::default(),
-                issuer: Deserialize::default(),
-                last4: Deserialize::default(),
-                network: Deserialize::default(),
-                three_d_secure: Deserialize::default(),
-                wallet: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(brand),
                 Some(checks),
@@ -160,25 +153,25 @@ const _: () = {
                 Some(three_d_secure),
                 Some(wallet),
             ) = (
-                self.brand.take(),
-                self.checks.take(),
-                self.country.take(),
-                self.description.take(),
-                self.exp_month,
-                self.exp_year,
-                self.fingerprint.take(),
-                self.funding.take(),
-                self.iin.take(),
-                self.issuer.take(),
-                self.last4.take(),
-                self.network.take(),
-                self.three_d_secure.take(),
-                self.wallet.take(),
+                self.builder.brand.take(),
+                self.builder.checks.take(),
+                self.builder.country.take(),
+                self.builder.description.take(),
+                self.builder.exp_month,
+                self.builder.exp_year,
+                self.builder.fingerprint.take(),
+                self.builder.funding.take(),
+                self.builder.iin.take(),
+                self.builder.issuer.take(),
+                self.builder.last4.take(),
+                self.builder.network.take(),
+                self.builder.three_d_secure.take(),
+                self.builder.wallet.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SetupAttemptPaymentMethodDetailsCard {
                 brand,
                 checks,
                 country,
@@ -193,51 +186,8 @@ const _: () = {
                 network,
                 three_d_secure,
                 wallet,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SetupAttemptPaymentMethodDetailsCard {
-        type Builder = SetupAttemptPaymentMethodDetailsCardBuilder;
-    }
-
-    impl FromValueOpt for SetupAttemptPaymentMethodDetailsCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupAttemptPaymentMethodDetailsCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "checks" => b.checks = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
-                    "wallet" => b.wallet = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

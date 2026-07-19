@@ -44,16 +44,14 @@ pub struct PaymentPagesCheckoutSessionCustomerDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -72,41 +70,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentPagesCheckoutSessionCustomerDetailsBuilder::deser_default(),
+                builder: PaymentPagesCheckoutSessionCustomerDetailsBuilder {
+                    address: Deserialize::default(),
+                    business_name: Deserialize::default(),
+                    email: Deserialize::default(),
+                    individual_name: Deserialize::default(),
+                    name: Deserialize::default(),
+                    phone: Deserialize::default(),
+                    tax_exempt: Deserialize::default(),
+                    tax_ids: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentPagesCheckoutSessionCustomerDetailsBuilder {
-        type Out = PaymentPagesCheckoutSessionCustomerDetails;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
-                "business_name" => Deserialize::begin(&mut self.business_name),
-                "email" => Deserialize::begin(&mut self.email),
-                "individual_name" => Deserialize::begin(&mut self.individual_name),
-                "name" => Deserialize::begin(&mut self.name),
-                "phone" => Deserialize::begin(&mut self.phone),
-                "tax_exempt" => Deserialize::begin(&mut self.tax_exempt),
-                "tax_ids" => Deserialize::begin(&mut self.tax_ids),
+                "address" => Deserialize::begin(&mut self.builder.address),
+                "business_name" => Deserialize::begin(&mut self.builder.business_name),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "individual_name" => Deserialize::begin(&mut self.builder.individual_name),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                "tax_exempt" => Deserialize::begin(&mut self.builder.tax_exempt),
+                "tax_ids" => Deserialize::begin(&mut self.builder.tax_ids),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                address: Deserialize::default(),
-                business_name: Deserialize::default(),
-                email: Deserialize::default(),
-                individual_name: Deserialize::default(),
-                name: Deserialize::default(),
-                phone: Deserialize::default(),
-                tax_exempt: Deserialize::default(),
-                tax_ids: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(address),
                 Some(business_name),
@@ -117,19 +110,19 @@ const _: () = {
                 Some(tax_exempt),
                 Some(tax_ids),
             ) = (
-                self.address.take(),
-                self.business_name.take(),
-                self.email.take(),
-                self.individual_name.take(),
-                self.name.take(),
-                self.phone.take(),
-                self.tax_exempt.take(),
-                self.tax_ids.take(),
+                self.builder.address.take(),
+                self.builder.business_name.take(),
+                self.builder.email.take(),
+                self.builder.individual_name.take(),
+                self.builder.name.take(),
+                self.builder.phone.take(),
+                self.builder.tax_exempt.take(),
+                self.builder.tax_ids.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentPagesCheckoutSessionCustomerDetails {
                 address,
                 business_name,
                 email,
@@ -138,45 +131,8 @@ const _: () = {
                 phone,
                 tax_exempt,
                 tax_ids,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentPagesCheckoutSessionCustomerDetails {
-        type Builder = PaymentPagesCheckoutSessionCustomerDetailsBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionCustomerDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionCustomerDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "business_name" => b.business_name = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "individual_name" => b.individual_name = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "tax_exempt" => b.tax_exempt = FromValueOpt::from_value(v),
-                    "tax_ids" => b.tax_ids = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -249,14 +205,14 @@ impl serde::Serialize for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionCustomerDetailsTaxExempt> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionCustomerDetailsTaxExempt> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentPagesCheckoutSessionCustomerDetailsTaxExempt::from_str(s).expect("infallible"),
@@ -264,8 +220,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionCustomer
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentPagesCheckoutSessionCustomerDetailsTaxExempt);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

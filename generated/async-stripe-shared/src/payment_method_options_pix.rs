@@ -36,16 +36,14 @@ pub struct PaymentMethodOptionsPixBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -64,89 +62,51 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodOptionsPixBuilder::deser_default(),
+                builder: PaymentMethodOptionsPixBuilder {
+                    amount_includes_iof: Deserialize::default(),
+                    expires_after_seconds: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    setup_future_usage: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodOptionsPixBuilder {
-        type Out = PaymentMethodOptionsPix;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_includes_iof" => Deserialize::begin(&mut self.amount_includes_iof),
-                "expires_after_seconds" => Deserialize::begin(&mut self.expires_after_seconds),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "amount_includes_iof" => Deserialize::begin(&mut self.builder.amount_includes_iof),
+                "expires_after_seconds" => {
+                    Deserialize::begin(&mut self.builder.expires_after_seconds)
+                }
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "setup_future_usage" => Deserialize::begin(&mut self.builder.setup_future_usage),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount_includes_iof: Deserialize::default(),
-                expires_after_seconds: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount_includes_iof),
                 Some(expires_after_seconds),
                 Some(expires_at),
                 Some(setup_future_usage),
             ) = (
-                self.amount_includes_iof.take(),
-                self.expires_after_seconds,
-                self.expires_at,
-                self.setup_future_usage.take(),
+                self.builder.amount_includes_iof.take(),
+                self.builder.expires_after_seconds,
+                self.builder.expires_at,
+                self.builder.setup_future_usage.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodOptionsPix {
                 amount_includes_iof,
                 expires_after_seconds,
                 expires_at,
                 setup_future_usage,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodOptionsPix {
-        type Builder = PaymentMethodOptionsPixBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodOptionsPix {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodOptionsPixBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_includes_iof" => b.amount_includes_iof = FromValueOpt::from_value(v),
-                    "expires_after_seconds" => {
-                        b.expires_after_seconds = FromValueOpt::from_value(v)
-                    }
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -215,21 +175,19 @@ impl serde::Serialize for PaymentMethodOptionsPixAmountIncludesIof {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodOptionsPixAmountIncludesIof {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodOptionsPixAmountIncludesIof {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsPixAmountIncludesIof> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodOptionsPixAmountIncludesIof> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentMethodOptionsPixAmountIncludesIof::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsPixAmountIncludesIof);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsPixAmountIncludesIof {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -307,21 +265,19 @@ impl serde::Serialize for PaymentMethodOptionsPixSetupFutureUsage {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodOptionsPixSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodOptionsPixSetupFutureUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsPixSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodOptionsPixSetupFutureUsage> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentMethodOptionsPixSetupFutureUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsPixSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsPixSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

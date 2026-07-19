@@ -39,16 +39,14 @@ pub struct PaymentPagesCheckoutSessionBrandingSettingsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,39 +65,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentPagesCheckoutSessionBrandingSettingsBuilder::deser_default(),
+                builder: PaymentPagesCheckoutSessionBrandingSettingsBuilder {
+                    background_color: Deserialize::default(),
+                    border_style: Deserialize::default(),
+                    button_color: Deserialize::default(),
+                    display_name: Deserialize::default(),
+                    font_family: Deserialize::default(),
+                    icon: Deserialize::default(),
+                    logo: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentPagesCheckoutSessionBrandingSettingsBuilder {
-        type Out = PaymentPagesCheckoutSessionBrandingSettings;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "background_color" => Deserialize::begin(&mut self.background_color),
-                "border_style" => Deserialize::begin(&mut self.border_style),
-                "button_color" => Deserialize::begin(&mut self.button_color),
-                "display_name" => Deserialize::begin(&mut self.display_name),
-                "font_family" => Deserialize::begin(&mut self.font_family),
-                "icon" => Deserialize::begin(&mut self.icon),
-                "logo" => Deserialize::begin(&mut self.logo),
+                "background_color" => Deserialize::begin(&mut self.builder.background_color),
+                "border_style" => Deserialize::begin(&mut self.builder.border_style),
+                "button_color" => Deserialize::begin(&mut self.builder.button_color),
+                "display_name" => Deserialize::begin(&mut self.builder.display_name),
+                "font_family" => Deserialize::begin(&mut self.builder.font_family),
+                "icon" => Deserialize::begin(&mut self.builder.icon),
+                "logo" => Deserialize::begin(&mut self.builder.logo),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                background_color: Deserialize::default(),
-                border_style: Deserialize::default(),
-                button_color: Deserialize::default(),
-                display_name: Deserialize::default(),
-                font_family: Deserialize::default(),
-                icon: Deserialize::default(),
-                logo: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(background_color),
                 Some(border_style),
@@ -109,18 +102,18 @@ const _: () = {
                 Some(icon),
                 Some(logo),
             ) = (
-                self.background_color.take(),
-                self.border_style.take(),
-                self.button_color.take(),
-                self.display_name.take(),
-                self.font_family.take(),
-                self.icon.take(),
-                self.logo.take(),
+                self.builder.background_color.take(),
+                self.builder.border_style.take(),
+                self.builder.button_color.take(),
+                self.builder.display_name.take(),
+                self.builder.font_family.take(),
+                self.builder.icon.take(),
+                self.builder.logo.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentPagesCheckoutSessionBrandingSettings {
                 background_color,
                 border_style,
                 button_color,
@@ -128,44 +121,8 @@ const _: () = {
                 font_family,
                 icon,
                 logo,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentPagesCheckoutSessionBrandingSettings {
-        type Builder = PaymentPagesCheckoutSessionBrandingSettingsBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionBrandingSettings {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionBrandingSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "background_color" => b.background_color = FromValueOpt::from_value(v),
-                    "border_style" => b.border_style = FromValueOpt::from_value(v),
-                    "button_color" => b.button_color = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "font_family" => b.font_family = FromValueOpt::from_value(v),
-                    "icon" => b.icon = FromValueOpt::from_value(v),
-                    "logo" => b.logo = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -238,16 +195,16 @@ impl serde::Serialize for PaymentPagesCheckoutSessionBrandingSettingsBorderStyle
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentPagesCheckoutSessionBrandingSettingsBorderStyle {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentPagesCheckoutSessionBrandingSettingsBorderStyle {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<PaymentPagesCheckoutSessionBrandingSettingsBorderStyle>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentPagesCheckoutSessionBrandingSettingsBorderStyle::from_str(s)
@@ -256,8 +213,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentPagesCheckoutSessionBrandingSettingsBorderStyle);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionBrandingSettingsBorderStyle {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

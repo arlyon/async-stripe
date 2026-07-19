@@ -29,16 +29,14 @@ pub struct InvoiceSettingSubscriptionSchedulePhaseSettingBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,70 +55,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoiceSettingSubscriptionSchedulePhaseSettingBuilder::deser_default(),
+                builder: InvoiceSettingSubscriptionSchedulePhaseSettingBuilder {
+                    account_tax_ids: Deserialize::default(),
+                    days_until_due: Deserialize::default(),
+                    issuer: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoiceSettingSubscriptionSchedulePhaseSettingBuilder {
-        type Out = InvoiceSettingSubscriptionSchedulePhaseSetting;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "account_tax_ids" => Deserialize::begin(&mut self.account_tax_ids),
-                "days_until_due" => Deserialize::begin(&mut self.days_until_due),
-                "issuer" => Deserialize::begin(&mut self.issuer),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                account_tax_ids: Deserialize::default(),
-                days_until_due: Deserialize::default(),
-                issuer: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account_tax_ids), Some(days_until_due), Some(issuer)) =
-                (self.account_tax_ids.take(), self.days_until_due, self.issuer.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { account_tax_ids, days_until_due, issuer })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "account_tax_ids" => Deserialize::begin(&mut self.builder.account_tax_ids),
+                "days_until_due" => Deserialize::begin(&mut self.builder.days_until_due),
+                "issuer" => Deserialize::begin(&mut self.builder.issuer),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoiceSettingSubscriptionSchedulePhaseSetting {
-        type Builder = InvoiceSettingSubscriptionSchedulePhaseSettingBuilder;
-    }
-
-    impl FromValueOpt for InvoiceSettingSubscriptionSchedulePhaseSetting {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(account_tax_ids), Some(days_until_due), Some(issuer)) = (
+                self.builder.account_tax_ids.take(),
+                self.builder.days_until_due,
+                self.builder.issuer.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = InvoiceSettingSubscriptionSchedulePhaseSettingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_tax_ids" => b.account_tax_ids = FromValueOpt::from_value(v),
-                    "days_until_due" => b.days_until_due = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InvoiceSettingSubscriptionSchedulePhaseSetting {
+                account_tax_ids,
+                days_until_due,
+                issuer,
+            });
+            Ok(())
         }
     }
 };

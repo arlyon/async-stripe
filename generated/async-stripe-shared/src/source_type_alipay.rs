@@ -23,16 +23,14 @@ pub struct SourceTypeAlipayBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,70 +49,37 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceTypeAlipayBuilder::deser_default(),
+                builder: SourceTypeAlipayBuilder {
+                    data_string: Deserialize::default(),
+                    native_url: Deserialize::default(),
+                    statement_descriptor: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SourceTypeAlipayBuilder {
-        type Out = SourceTypeAlipay;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "data_string" => Deserialize::begin(&mut self.data_string),
-                "native_url" => Deserialize::begin(&mut self.native_url),
-                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                data_string: Deserialize::default(),
-                native_url: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(data_string), Some(native_url), Some(statement_descriptor)) =
-                (self.data_string.take(), self.native_url.take(), self.statement_descriptor.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { data_string, native_url, statement_descriptor })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "data_string" => Deserialize::begin(&mut self.builder.data_string),
+                "native_url" => Deserialize::begin(&mut self.builder.native_url),
+                "statement_descriptor" => {
+                    Deserialize::begin(&mut self.builder.statement_descriptor)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceTypeAlipay {
-        type Builder = SourceTypeAlipayBuilder;
-    }
-
-    impl FromValueOpt for SourceTypeAlipay {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(data_string), Some(native_url), Some(statement_descriptor)) = (
+                self.builder.data_string.take(),
+                self.builder.native_url.take(),
+                self.builder.statement_descriptor.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = SourceTypeAlipayBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "data_string" => b.data_string = FromValueOpt::from_value(v),
-                    "native_url" => b.native_url = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SourceTypeAlipay { data_string, native_url, statement_descriptor });
+            Ok(())
         }
     }
 };

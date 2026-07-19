@@ -12,13 +12,13 @@ fn fixtures() {
 }
 
 #[track_caller]
-pub fn check_object<T: miniserde::Deserialize + serde::Serialize>(resources: &Value, key: &str) {
+pub fn check_object<T: stripe_miniserde::Deserialize + serde::Serialize>(resources: &Value, key: &str) {
     let Some(fixture) = resources.as_object().unwrap().get(key) else {
         println!("skipping component {key} since it was not found in the fixture data");
         return;
     };
     let as_str = serde_json::to_string(fixture).unwrap();
-    let result: T = miniserde::json::from_str(&as_str).unwrap_or_else(|_| {
+    let result: T = stripe_miniserde::json::from_str(&as_str).unwrap_or_else(|_| {
         panic!("could not deserialize fixture for {key}, data was {as_str}");
     });
 

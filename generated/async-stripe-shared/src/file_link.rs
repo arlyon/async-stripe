@@ -47,16 +47,14 @@ pub struct FileLinkBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -73,40 +71,38 @@ const _: () = {
 
     impl Visitor for Place<FileLink> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: FileLinkBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: FileLinkBuilder {
+                    created: Deserialize::default(),
+                    expired: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    file: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    url: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for FileLinkBuilder {
-        type Out = FileLink;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "expired" => Deserialize::begin(&mut self.expired),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "file" => Deserialize::begin(&mut self.file),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "url" => Deserialize::begin(&mut self.url),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "expired" => Deserialize::begin(&mut self.builder.expired),
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "file" => Deserialize::begin(&mut self.builder.file),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "url" => Deserialize::begin(&mut self.builder.url),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                expired: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                file: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(created),
                 Some(expired),
@@ -117,57 +113,21 @@ const _: () = {
                 Some(metadata),
                 Some(url),
             ) = (
-                self.created,
-                self.expired,
-                self.expires_at,
-                self.file.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.url.take(),
+                self.builder.created,
+                self.builder.expired,
+                self.builder.expires_at,
+                self.builder.file.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.url.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { created, expired, expires_at, file, id, livemode, metadata, url })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out =
+                Some(FileLink { created, expired, expires_at, file, id, livemode, metadata, url });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for FileLink {
-        type Builder = FileLinkBuilder;
-    }
-
-    impl FromValueOpt for FileLink {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FileLinkBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "expired" => b.expired = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "file" => b.file = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

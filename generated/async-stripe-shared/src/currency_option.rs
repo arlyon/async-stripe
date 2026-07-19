@@ -39,16 +39,14 @@ pub struct CurrencyOptionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,35 +65,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CurrencyOptionBuilder::deser_default(),
+                builder: CurrencyOptionBuilder {
+                    custom_unit_amount: Deserialize::default(),
+                    tax_behavior: Deserialize::default(),
+                    tiers: Deserialize::default(),
+                    unit_amount: Deserialize::default(),
+                    unit_amount_decimal: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CurrencyOptionBuilder {
-        type Out = CurrencyOption;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "custom_unit_amount" => Deserialize::begin(&mut self.custom_unit_amount),
-                "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
-                "tiers" => Deserialize::begin(&mut self.tiers),
-                "unit_amount" => Deserialize::begin(&mut self.unit_amount),
-                "unit_amount_decimal" => Deserialize::begin(&mut self.unit_amount_decimal),
+                "custom_unit_amount" => Deserialize::begin(&mut self.builder.custom_unit_amount),
+                "tax_behavior" => Deserialize::begin(&mut self.builder.tax_behavior),
+                "tiers" => Deserialize::begin(&mut self.builder.tiers),
+                "unit_amount" => Deserialize::begin(&mut self.builder.unit_amount),
+                "unit_amount_decimal" => Deserialize::begin(&mut self.builder.unit_amount_decimal),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                custom_unit_amount: Deserialize::default(),
-                tax_behavior: Deserialize::default(),
-                tiers: Deserialize::default(),
-                unit_amount: Deserialize::default(),
-                unit_amount_decimal: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(custom_unit_amount),
                 Some(tax_behavior),
@@ -103,57 +96,23 @@ const _: () = {
                 Some(unit_amount),
                 Some(unit_amount_decimal),
             ) = (
-                self.custom_unit_amount,
-                self.tax_behavior.take(),
-                self.tiers.take(),
-                self.unit_amount,
-                self.unit_amount_decimal.take(),
+                self.builder.custom_unit_amount,
+                self.builder.tax_behavior.take(),
+                self.builder.tiers.take(),
+                self.builder.unit_amount,
+                self.builder.unit_amount_decimal.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(CurrencyOption {
                 custom_unit_amount,
                 tax_behavior,
                 tiers,
                 unit_amount,
                 unit_amount_decimal,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CurrencyOption {
-        type Builder = CurrencyOptionBuilder;
-    }
-
-    impl FromValueOpt for CurrencyOption {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CurrencyOptionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "custom_unit_amount" => b.custom_unit_amount = FromValueOpt::from_value(v),
-                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
-                    "tiers" => b.tiers = FromValueOpt::from_value(v),
-                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
-                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -224,21 +183,19 @@ impl serde::Serialize for CurrencyOptionTaxBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CurrencyOptionTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CurrencyOptionTaxBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CurrencyOptionTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CurrencyOptionTaxBehavior> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CurrencyOptionTaxBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CurrencyOptionTaxBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CurrencyOptionTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

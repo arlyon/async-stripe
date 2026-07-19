@@ -132,16 +132,14 @@ pub struct PaymentLinkBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -160,99 +158,104 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentLinkBuilder::deser_default(),
+                builder: PaymentLinkBuilder {
+                    active: Deserialize::default(),
+                    after_completion: Deserialize::default(),
+                    allow_promotion_codes: Deserialize::default(),
+                    application: Deserialize::default(),
+                    application_fee_amount: Deserialize::default(),
+                    application_fee_percent: Deserialize::default(),
+                    automatic_tax: Deserialize::default(),
+                    billing_address_collection: Deserialize::default(),
+                    consent_collection: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    custom_fields: Deserialize::default(),
+                    custom_text: Deserialize::default(),
+                    customer_creation: Deserialize::default(),
+                    id: Deserialize::default(),
+                    inactive_message: Deserialize::default(),
+                    invoice_creation: Deserialize::default(),
+                    line_items: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    name_collection: Deserialize::default(),
+                    on_behalf_of: Deserialize::default(),
+                    optional_items: Deserialize::default(),
+                    payment_intent_data: Deserialize::default(),
+                    payment_method_collection: Deserialize::default(),
+                    payment_method_types: Deserialize::default(),
+                    phone_number_collection: Deserialize::default(),
+                    restrictions: Deserialize::default(),
+                    shipping_address_collection: Deserialize::default(),
+                    shipping_options: Deserialize::default(),
+                    submit_type: Deserialize::default(),
+                    subscription_data: Deserialize::default(),
+                    tax_id_collection: Deserialize::default(),
+                    transfer_data: Deserialize::default(),
+                    url: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentLinkBuilder {
-        type Out = PaymentLink;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
-                "after_completion" => Deserialize::begin(&mut self.after_completion),
-                "allow_promotion_codes" => Deserialize::begin(&mut self.allow_promotion_codes),
-                "application" => Deserialize::begin(&mut self.application),
-                "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
-                "application_fee_percent" => Deserialize::begin(&mut self.application_fee_percent),
-                "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
+                "active" => Deserialize::begin(&mut self.builder.active),
+                "after_completion" => Deserialize::begin(&mut self.builder.after_completion),
+                "allow_promotion_codes" => {
+                    Deserialize::begin(&mut self.builder.allow_promotion_codes)
+                }
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "application_fee_amount" => {
+                    Deserialize::begin(&mut self.builder.application_fee_amount)
+                }
+                "application_fee_percent" => {
+                    Deserialize::begin(&mut self.builder.application_fee_percent)
+                }
+                "automatic_tax" => Deserialize::begin(&mut self.builder.automatic_tax),
                 "billing_address_collection" => {
-                    Deserialize::begin(&mut self.billing_address_collection)
+                    Deserialize::begin(&mut self.builder.billing_address_collection)
                 }
-                "consent_collection" => Deserialize::begin(&mut self.consent_collection),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "custom_fields" => Deserialize::begin(&mut self.custom_fields),
-                "custom_text" => Deserialize::begin(&mut self.custom_text),
-                "customer_creation" => Deserialize::begin(&mut self.customer_creation),
-                "id" => Deserialize::begin(&mut self.id),
-                "inactive_message" => Deserialize::begin(&mut self.inactive_message),
-                "invoice_creation" => Deserialize::begin(&mut self.invoice_creation),
-                "line_items" => Deserialize::begin(&mut self.line_items),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "name_collection" => Deserialize::begin(&mut self.name_collection),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "optional_items" => Deserialize::begin(&mut self.optional_items),
-                "payment_intent_data" => Deserialize::begin(&mut self.payment_intent_data),
+                "consent_collection" => Deserialize::begin(&mut self.builder.consent_collection),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "custom_fields" => Deserialize::begin(&mut self.builder.custom_fields),
+                "custom_text" => Deserialize::begin(&mut self.builder.custom_text),
+                "customer_creation" => Deserialize::begin(&mut self.builder.customer_creation),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "inactive_message" => Deserialize::begin(&mut self.builder.inactive_message),
+                "invoice_creation" => Deserialize::begin(&mut self.builder.invoice_creation),
+                "line_items" => Deserialize::begin(&mut self.builder.line_items),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "name_collection" => Deserialize::begin(&mut self.builder.name_collection),
+                "on_behalf_of" => Deserialize::begin(&mut self.builder.on_behalf_of),
+                "optional_items" => Deserialize::begin(&mut self.builder.optional_items),
+                "payment_intent_data" => Deserialize::begin(&mut self.builder.payment_intent_data),
                 "payment_method_collection" => {
-                    Deserialize::begin(&mut self.payment_method_collection)
+                    Deserialize::begin(&mut self.builder.payment_method_collection)
                 }
-                "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
-                "phone_number_collection" => Deserialize::begin(&mut self.phone_number_collection),
-                "restrictions" => Deserialize::begin(&mut self.restrictions),
+                "payment_method_types" => {
+                    Deserialize::begin(&mut self.builder.payment_method_types)
+                }
+                "phone_number_collection" => {
+                    Deserialize::begin(&mut self.builder.phone_number_collection)
+                }
+                "restrictions" => Deserialize::begin(&mut self.builder.restrictions),
                 "shipping_address_collection" => {
-                    Deserialize::begin(&mut self.shipping_address_collection)
+                    Deserialize::begin(&mut self.builder.shipping_address_collection)
                 }
-                "shipping_options" => Deserialize::begin(&mut self.shipping_options),
-                "submit_type" => Deserialize::begin(&mut self.submit_type),
-                "subscription_data" => Deserialize::begin(&mut self.subscription_data),
-                "tax_id_collection" => Deserialize::begin(&mut self.tax_id_collection),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
-                "url" => Deserialize::begin(&mut self.url),
+                "shipping_options" => Deserialize::begin(&mut self.builder.shipping_options),
+                "submit_type" => Deserialize::begin(&mut self.builder.submit_type),
+                "subscription_data" => Deserialize::begin(&mut self.builder.subscription_data),
+                "tax_id_collection" => Deserialize::begin(&mut self.builder.tax_id_collection),
+                "transfer_data" => Deserialize::begin(&mut self.builder.transfer_data),
+                "url" => Deserialize::begin(&mut self.builder.url),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                active: Deserialize::default(),
-                after_completion: Deserialize::default(),
-                allow_promotion_codes: Deserialize::default(),
-                application: Deserialize::default(),
-                application_fee_amount: Deserialize::default(),
-                application_fee_percent: Deserialize::default(),
-                automatic_tax: Deserialize::default(),
-                billing_address_collection: Deserialize::default(),
-                consent_collection: Deserialize::default(),
-                currency: Deserialize::default(),
-                custom_fields: Deserialize::default(),
-                custom_text: Deserialize::default(),
-                customer_creation: Deserialize::default(),
-                id: Deserialize::default(),
-                inactive_message: Deserialize::default(),
-                invoice_creation: Deserialize::default(),
-                line_items: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name_collection: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                optional_items: Deserialize::default(),
-                payment_intent_data: Deserialize::default(),
-                payment_method_collection: Deserialize::default(),
-                payment_method_types: Deserialize::default(),
-                phone_number_collection: Deserialize::default(),
-                restrictions: Deserialize::default(),
-                shipping_address_collection: Deserialize::default(),
-                shipping_options: Deserialize::default(),
-                submit_type: Deserialize::default(),
-                subscription_data: Deserialize::default(),
-                tax_id_collection: Deserialize::default(),
-                transfer_data: Deserialize::default(),
-                url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(active),
                 Some(after_completion),
@@ -289,45 +292,45 @@ const _: () = {
                 Some(transfer_data),
                 Some(url),
             ) = (
-                self.active,
-                self.after_completion.take(),
-                self.allow_promotion_codes,
-                self.application.take(),
-                self.application_fee_amount,
-                self.application_fee_percent,
-                self.automatic_tax.take(),
-                self.billing_address_collection.take(),
-                self.consent_collection.take(),
-                self.currency.take(),
-                self.custom_fields.take(),
-                self.custom_text.take(),
-                self.customer_creation.take(),
-                self.id.take(),
-                self.inactive_message.take(),
-                self.invoice_creation.take(),
-                self.line_items.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.name_collection,
-                self.on_behalf_of.take(),
-                self.optional_items.take(),
-                self.payment_intent_data.take(),
-                self.payment_method_collection.take(),
-                self.payment_method_types.take(),
-                self.phone_number_collection,
-                self.restrictions,
-                self.shipping_address_collection.take(),
-                self.shipping_options.take(),
-                self.submit_type.take(),
-                self.subscription_data.take(),
-                self.tax_id_collection.take(),
-                self.transfer_data.take(),
-                self.url.take(),
+                self.builder.active,
+                self.builder.after_completion.take(),
+                self.builder.allow_promotion_codes,
+                self.builder.application.take(),
+                self.builder.application_fee_amount,
+                self.builder.application_fee_percent,
+                self.builder.automatic_tax.take(),
+                self.builder.billing_address_collection.take(),
+                self.builder.consent_collection.take(),
+                self.builder.currency.take(),
+                self.builder.custom_fields.take(),
+                self.builder.custom_text.take(),
+                self.builder.customer_creation.take(),
+                self.builder.id.take(),
+                self.builder.inactive_message.take(),
+                self.builder.invoice_creation.take(),
+                self.builder.line_items.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.name_collection,
+                self.builder.on_behalf_of.take(),
+                self.builder.optional_items.take(),
+                self.builder.payment_intent_data.take(),
+                self.builder.payment_method_collection.take(),
+                self.builder.payment_method_types.take(),
+                self.builder.phone_number_collection,
+                self.builder.restrictions,
+                self.builder.shipping_address_collection.take(),
+                self.builder.shipping_options.take(),
+                self.builder.submit_type.take(),
+                self.builder.subscription_data.take(),
+                self.builder.tax_id_collection.take(),
+                self.builder.transfer_data.take(),
+                self.builder.url.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentLink {
                 active,
                 after_completion,
                 allow_promotion_codes,
@@ -362,85 +365,8 @@ const _: () = {
                 tax_id_collection,
                 transfer_data,
                 url,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentLink {
-        type Builder = PaymentLinkBuilder;
-    }
-
-    impl FromValueOpt for PaymentLink {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentLinkBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "after_completion" => b.after_completion = FromValueOpt::from_value(v),
-                    "allow_promotion_codes" => {
-                        b.allow_promotion_codes = FromValueOpt::from_value(v)
-                    }
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee_amount" => {
-                        b.application_fee_amount = FromValueOpt::from_value(v)
-                    }
-                    "application_fee_percent" => {
-                        b.application_fee_percent = FromValueOpt::from_value(v)
-                    }
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "billing_address_collection" => {
-                        b.billing_address_collection = FromValueOpt::from_value(v)
-                    }
-                    "consent_collection" => b.consent_collection = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
-                    "custom_text" => b.custom_text = FromValueOpt::from_value(v),
-                    "customer_creation" => b.customer_creation = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "inactive_message" => b.inactive_message = FromValueOpt::from_value(v),
-                    "invoice_creation" => b.invoice_creation = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name_collection" => b.name_collection = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "optional_items" => b.optional_items = FromValueOpt::from_value(v),
-                    "payment_intent_data" => b.payment_intent_data = FromValueOpt::from_value(v),
-                    "payment_method_collection" => {
-                        b.payment_method_collection = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
-                    "phone_number_collection" => {
-                        b.phone_number_collection = FromValueOpt::from_value(v)
-                    }
-                    "restrictions" => b.restrictions = FromValueOpt::from_value(v),
-                    "shipping_address_collection" => {
-                        b.shipping_address_collection = FromValueOpt::from_value(v)
-                    }
-                    "shipping_options" => b.shipping_options = FromValueOpt::from_value(v),
-                    "submit_type" => b.submit_type = FromValueOpt::from_value(v),
-                    "subscription_data" => b.subscription_data = FromValueOpt::from_value(v),
-                    "tax_id_collection" => b.tax_id_collection = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -553,21 +479,19 @@ impl serde::Serialize for PaymentLinkCustomerCreation {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentLinkCustomerCreation {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentLinkCustomerCreation {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentLinkCustomerCreation> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentLinkCustomerCreation> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentLinkCustomerCreation::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinkCustomerCreation);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentLinkCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -641,21 +565,19 @@ impl serde::Serialize for PaymentLinkPaymentMethodCollection {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentLinkPaymentMethodCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentLinkPaymentMethodCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentLinkPaymentMethodCollection> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentLinkPaymentMethodCollection> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentLinkPaymentMethodCollection::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinkPaymentMethodCollection);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -738,21 +660,19 @@ impl serde::Serialize for PaymentLinkBillingAddressCollection {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentLinkBillingAddressCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentLinkBillingAddressCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentLinkBillingAddressCollection> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentLinkBillingAddressCollection> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentLinkBillingAddressCollection::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinkBillingAddressCollection);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentLinkBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -938,21 +858,19 @@ impl serde::Serialize for PaymentLinkPaymentMethodTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentLinkPaymentMethodTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentLinkPaymentMethodTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentLinkPaymentMethodTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentLinkPaymentMethodTypes> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentLinkPaymentMethodTypes::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinkPaymentMethodTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1029,21 +947,19 @@ impl serde::Serialize for PaymentLinkSubmitType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentLinkSubmitType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentLinkSubmitType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentLinkSubmitType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentLinkSubmitType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentLinkSubmitType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinkSubmitType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentLinkSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

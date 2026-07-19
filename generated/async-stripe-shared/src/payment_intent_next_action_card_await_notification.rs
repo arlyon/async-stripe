@@ -25,16 +25,14 @@ pub struct PaymentIntentNextActionCardAwaitNotificationBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,71 +51,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionCardAwaitNotificationBuilder::deser_default(),
+                builder: PaymentIntentNextActionCardAwaitNotificationBuilder {
+                    charge_attempt_at: Deserialize::default(),
+                    customer_approval_required: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentNextActionCardAwaitNotificationBuilder {
-        type Out = PaymentIntentNextActionCardAwaitNotification;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "charge_attempt_at" => Deserialize::begin(&mut self.charge_attempt_at),
-                "customer_approval_required" => {
-                    Deserialize::begin(&mut self.customer_approval_required)
-                }
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                charge_attempt_at: Deserialize::default(),
-                customer_approval_required: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(charge_attempt_at), Some(customer_approval_required)) =
-                (self.charge_attempt_at, self.customer_approval_required)
-            else {
-                return None;
-            };
-            Some(Self::Out { charge_attempt_at, customer_approval_required })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "charge_attempt_at" => Deserialize::begin(&mut self.builder.charge_attempt_at),
+                "customer_approval_required" => {
+                    Deserialize::begin(&mut self.builder.customer_approval_required)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionCardAwaitNotification {
-        type Builder = PaymentIntentNextActionCardAwaitNotificationBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionCardAwaitNotification {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(charge_attempt_at), Some(customer_approval_required)) =
+                (self.builder.charge_attempt_at, self.builder.customer_approval_required)
+            else {
+                return Ok(());
             };
-            let mut b = PaymentIntentNextActionCardAwaitNotificationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "charge_attempt_at" => b.charge_attempt_at = FromValueOpt::from_value(v),
-                    "customer_approval_required" => {
-                        b.customer_approval_required = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentIntentNextActionCardAwaitNotification {
+                charge_attempt_at,
+                customer_approval_required,
+            });
+            Ok(())
         }
     }
 };

@@ -57,16 +57,14 @@ pub struct AccountBusinessProfileBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -85,53 +83,50 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AccountBusinessProfileBuilder::deser_default(),
+                builder: AccountBusinessProfileBuilder {
+                    annual_revenue: Deserialize::default(),
+                    estimated_worker_count: Deserialize::default(),
+                    mcc: Deserialize::default(),
+                    minority_owned_business_designation: Deserialize::default(),
+                    monthly_estimated_revenue: Deserialize::default(),
+                    name: Deserialize::default(),
+                    product_description: Deserialize::default(),
+                    support_address: Deserialize::default(),
+                    support_email: Deserialize::default(),
+                    support_phone: Deserialize::default(),
+                    support_url: Deserialize::default(),
+                    url: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for AccountBusinessProfileBuilder {
-        type Out = AccountBusinessProfile;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "annual_revenue" => Deserialize::begin(&mut self.annual_revenue),
-                "estimated_worker_count" => Deserialize::begin(&mut self.estimated_worker_count),
-                "mcc" => Deserialize::begin(&mut self.mcc),
+                "annual_revenue" => Deserialize::begin(&mut self.builder.annual_revenue),
+                "estimated_worker_count" => {
+                    Deserialize::begin(&mut self.builder.estimated_worker_count)
+                }
+                "mcc" => Deserialize::begin(&mut self.builder.mcc),
                 "minority_owned_business_designation" => {
-                    Deserialize::begin(&mut self.minority_owned_business_designation)
+                    Deserialize::begin(&mut self.builder.minority_owned_business_designation)
                 }
                 "monthly_estimated_revenue" => {
-                    Deserialize::begin(&mut self.monthly_estimated_revenue)
+                    Deserialize::begin(&mut self.builder.monthly_estimated_revenue)
                 }
-                "name" => Deserialize::begin(&mut self.name),
-                "product_description" => Deserialize::begin(&mut self.product_description),
-                "support_address" => Deserialize::begin(&mut self.support_address),
-                "support_email" => Deserialize::begin(&mut self.support_email),
-                "support_phone" => Deserialize::begin(&mut self.support_phone),
-                "support_url" => Deserialize::begin(&mut self.support_url),
-                "url" => Deserialize::begin(&mut self.url),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "product_description" => Deserialize::begin(&mut self.builder.product_description),
+                "support_address" => Deserialize::begin(&mut self.builder.support_address),
+                "support_email" => Deserialize::begin(&mut self.builder.support_email),
+                "support_phone" => Deserialize::begin(&mut self.builder.support_phone),
+                "support_url" => Deserialize::begin(&mut self.builder.support_url),
+                "url" => Deserialize::begin(&mut self.builder.url),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                annual_revenue: Deserialize::default(),
-                estimated_worker_count: Deserialize::default(),
-                mcc: Deserialize::default(),
-                minority_owned_business_designation: Deserialize::default(),
-                monthly_estimated_revenue: Deserialize::default(),
-                name: Deserialize::default(),
-                product_description: Deserialize::default(),
-                support_address: Deserialize::default(),
-                support_email: Deserialize::default(),
-                support_phone: Deserialize::default(),
-                support_url: Deserialize::default(),
-                url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(annual_revenue),
                 Some(estimated_worker_count),
@@ -146,23 +141,23 @@ const _: () = {
                 Some(support_url),
                 Some(url),
             ) = (
-                self.annual_revenue.take(),
-                self.estimated_worker_count,
-                self.mcc.take(),
-                self.minority_owned_business_designation.take(),
-                self.monthly_estimated_revenue.take(),
-                self.name.take(),
-                self.product_description.take(),
-                self.support_address.take(),
-                self.support_email.take(),
-                self.support_phone.take(),
-                self.support_url.take(),
-                self.url.take(),
+                self.builder.annual_revenue.take(),
+                self.builder.estimated_worker_count,
+                self.builder.mcc.take(),
+                self.builder.minority_owned_business_designation.take(),
+                self.builder.monthly_estimated_revenue.take(),
+                self.builder.name.take(),
+                self.builder.product_description.take(),
+                self.builder.support_address.take(),
+                self.builder.support_email.take(),
+                self.builder.support_phone.take(),
+                self.builder.support_url.take(),
+                self.builder.url.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(AccountBusinessProfile {
                 annual_revenue,
                 estimated_worker_count,
                 mcc,
@@ -175,55 +170,8 @@ const _: () = {
                 support_phone,
                 support_url,
                 url,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for AccountBusinessProfile {
-        type Builder = AccountBusinessProfileBuilder;
-    }
-
-    impl FromValueOpt for AccountBusinessProfile {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountBusinessProfileBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "annual_revenue" => b.annual_revenue = FromValueOpt::from_value(v),
-                    "estimated_worker_count" => {
-                        b.estimated_worker_count = FromValueOpt::from_value(v)
-                    }
-                    "mcc" => b.mcc = FromValueOpt::from_value(v),
-                    "minority_owned_business_designation" => {
-                        b.minority_owned_business_designation = FromValueOpt::from_value(v)
-                    }
-                    "monthly_estimated_revenue" => {
-                        b.monthly_estimated_revenue = FromValueOpt::from_value(v)
-                    }
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "product_description" => b.product_description = FromValueOpt::from_value(v),
-                    "support_address" => b.support_address = FromValueOpt::from_value(v),
-                    "support_email" => b.support_email = FromValueOpt::from_value(v),
-                    "support_phone" => b.support_phone = FromValueOpt::from_value(v),
-                    "support_url" => b.support_url = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -302,16 +250,16 @@ impl serde::Serialize for AccountBusinessProfileMinorityOwnedBusinessDesignation
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for AccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for AccountBusinessProfileMinorityOwnedBusinessDesignation {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<AccountBusinessProfileMinorityOwnedBusinessDesignation>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             AccountBusinessProfileMinorityOwnedBusinessDesignation::from_str(s)
@@ -320,8 +268,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(AccountBusinessProfileMinorityOwnedBusinessDesignation);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountBusinessProfileMinorityOwnedBusinessDesignation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

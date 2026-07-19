@@ -32,16 +32,14 @@ pub struct LegalEntityCompanyVerificationDocumentBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,76 +58,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: LegalEntityCompanyVerificationDocumentBuilder::deser_default(),
+                builder: LegalEntityCompanyVerificationDocumentBuilder {
+                    back: Deserialize::default(),
+                    details: Deserialize::default(),
+                    details_code: Deserialize::default(),
+                    front: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for LegalEntityCompanyVerificationDocumentBuilder {
-        type Out = LegalEntityCompanyVerificationDocument;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "back" => Deserialize::begin(&mut self.back),
-                "details" => Deserialize::begin(&mut self.details),
-                "details_code" => Deserialize::begin(&mut self.details_code),
-                "front" => Deserialize::begin(&mut self.front),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                back: Deserialize::default(),
-                details: Deserialize::default(),
-                details_code: Deserialize::default(),
-                front: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(back), Some(details), Some(details_code), Some(front)) = (
-                self.back.take(),
-                self.details.take(),
-                self.details_code.take(),
-                self.front.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { back, details, details_code, front })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "back" => Deserialize::begin(&mut self.builder.back),
+                "details" => Deserialize::begin(&mut self.builder.details),
+                "details_code" => Deserialize::begin(&mut self.builder.details_code),
+                "front" => Deserialize::begin(&mut self.builder.front),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for LegalEntityCompanyVerificationDocument {
-        type Builder = LegalEntityCompanyVerificationDocumentBuilder;
-    }
-
-    impl FromValueOpt for LegalEntityCompanyVerificationDocument {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(back), Some(details), Some(details_code), Some(front)) = (
+                self.builder.back.take(),
+                self.builder.details.take(),
+                self.builder.details_code.take(),
+                self.builder.front.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = LegalEntityCompanyVerificationDocumentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "back" => b.back = FromValueOpt::from_value(v),
-                    "details" => b.details = FromValueOpt::from_value(v),
-                    "details_code" => b.details_code = FromValueOpt::from_value(v),
-                    "front" => b.front = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(LegalEntityCompanyVerificationDocument { back, details, details_code, front });
+            Ok(())
         }
     }
 };

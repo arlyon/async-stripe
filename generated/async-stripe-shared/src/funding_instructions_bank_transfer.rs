@@ -28,16 +28,14 @@ pub struct FundingInstructionsBankTransferBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,70 +54,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: FundingInstructionsBankTransferBuilder::deser_default(),
+                builder: FundingInstructionsBankTransferBuilder {
+                    country: Deserialize::default(),
+                    financial_addresses: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for FundingInstructionsBankTransferBuilder {
-        type Out = FundingInstructionsBankTransfer;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "country" => Deserialize::begin(&mut self.country),
-                "financial_addresses" => Deserialize::begin(&mut self.financial_addresses),
-                "type" => Deserialize::begin(&mut self.type_),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                country: Deserialize::default(),
-                financial_addresses: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(country), Some(financial_addresses), Some(type_)) =
-                (self.country.take(), self.financial_addresses.take(), self.type_.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { country, financial_addresses, type_ })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "financial_addresses" => Deserialize::begin(&mut self.builder.financial_addresses),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for FundingInstructionsBankTransfer {
-        type Builder = FundingInstructionsBankTransferBuilder;
-    }
-
-    impl FromValueOpt for FundingInstructionsBankTransfer {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(country), Some(financial_addresses), Some(type_)) = (
+                self.builder.country.take(),
+                self.builder.financial_addresses.take(),
+                self.builder.type_.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = FundingInstructionsBankTransferBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "financial_addresses" => b.financial_addresses = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(FundingInstructionsBankTransfer { country, financial_addresses, type_ });
+            Ok(())
         }
     }
 };
@@ -188,21 +152,19 @@ impl serde::Serialize for FundingInstructionsBankTransferType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FundingInstructionsBankTransferType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FundingInstructionsBankTransferType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<FundingInstructionsBankTransferType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<FundingInstructionsBankTransferType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(FundingInstructionsBankTransferType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(FundingInstructionsBankTransferType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FundingInstructionsBankTransferType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

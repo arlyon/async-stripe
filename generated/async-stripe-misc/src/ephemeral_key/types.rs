@@ -32,16 +32,14 @@ pub struct EphemeralKeyBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,76 +58,41 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: EphemeralKeyBuilder::deser_default(),
+                builder: EphemeralKeyBuilder {
+                    created: Deserialize::default(),
+                    expires: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    secret: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for EphemeralKeyBuilder {
-        type Out = EphemeralKey;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "expires" => Deserialize::begin(&mut self.expires),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "secret" => Deserialize::begin(&mut self.secret),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                expires: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                secret: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(created), Some(expires), Some(id), Some(livemode), Some(secret)) =
-                (self.created, self.expires, self.id.take(), self.livemode, self.secret.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { created, expires, id, livemode, secret })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "expires" => Deserialize::begin(&mut self.builder.expires),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "secret" => Deserialize::begin(&mut self.builder.secret),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for EphemeralKey {
-        type Builder = EphemeralKeyBuilder;
-    }
-
-    impl FromValueOpt for EphemeralKey {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(created), Some(expires), Some(id), Some(livemode), Some(secret)) = (
+                self.builder.created,
+                self.builder.expires,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.secret.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = EphemeralKeyBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "expires" => b.expires = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "secret" => b.secret = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(EphemeralKey { created, expires, id, livemode, secret });
+            Ok(())
         }
     }
 };

@@ -24,16 +24,14 @@ pub struct BillingBillResourceInvoicingPricingPricingPriceDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,64 +50,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    BillingBillResourceInvoicingPricingPricingPriceDetailsBuilder::deser_default(),
+                builder: BillingBillResourceInvoicingPricingPricingPriceDetailsBuilder {
+                    price: Deserialize::default(),
+                    product: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BillingBillResourceInvoicingPricingPricingPriceDetailsBuilder {
-        type Out = BillingBillResourceInvoicingPricingPricingPriceDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "price" => Deserialize::begin(&mut self.price),
-                "product" => Deserialize::begin(&mut self.product),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { price: Deserialize::default(), product: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(price), Some(product)) = (self.price.take(), self.product.take()) else {
-                return None;
-            };
-            Some(Self::Out { price, product })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "price" => Deserialize::begin(&mut self.builder.price),
+                "product" => Deserialize::begin(&mut self.builder.product),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingBillResourceInvoicingPricingPricingPriceDetails {
-        type Builder = BillingBillResourceInvoicingPricingPricingPriceDetailsBuilder;
-    }
-
-    impl FromValueOpt for BillingBillResourceInvoicingPricingPricingPriceDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(price), Some(product)) =
+                (self.builder.price.take(), self.builder.product.take())
+            else {
+                return Ok(());
             };
-            let mut b =
-                BillingBillResourceInvoicingPricingPricingPriceDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "price" => b.price = FromValueOpt::from_value(v),
-                    "product" => b.product = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(BillingBillResourceInvoicingPricingPricingPriceDetails { price, product });
+            Ok(())
         }
     }
 };

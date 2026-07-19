@@ -30,16 +30,14 @@ pub struct SourceRedirectFlowBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -58,76 +56,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceRedirectFlowBuilder::deser_default(),
+                builder: SourceRedirectFlowBuilder {
+                    failure_reason: Deserialize::default(),
+                    return_url: Deserialize::default(),
+                    status: Deserialize::default(),
+                    url: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SourceRedirectFlowBuilder {
-        type Out = SourceRedirectFlow;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "failure_reason" => Deserialize::begin(&mut self.failure_reason),
-                "return_url" => Deserialize::begin(&mut self.return_url),
-                "status" => Deserialize::begin(&mut self.status),
-                "url" => Deserialize::begin(&mut self.url),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                failure_reason: Deserialize::default(),
-                return_url: Deserialize::default(),
-                status: Deserialize::default(),
-                url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(failure_reason), Some(return_url), Some(status), Some(url)) = (
-                self.failure_reason.take(),
-                self.return_url.take(),
-                self.status.take(),
-                self.url.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { failure_reason, return_url, status, url })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "failure_reason" => Deserialize::begin(&mut self.builder.failure_reason),
+                "return_url" => Deserialize::begin(&mut self.builder.return_url),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "url" => Deserialize::begin(&mut self.builder.url),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceRedirectFlow {
-        type Builder = SourceRedirectFlowBuilder;
-    }
-
-    impl FromValueOpt for SourceRedirectFlow {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(failure_reason), Some(return_url), Some(status), Some(url)) = (
+                self.builder.failure_reason.take(),
+                self.builder.return_url.take(),
+                self.builder.status.take(),
+                self.builder.url.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = SourceRedirectFlowBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "failure_reason" => b.failure_reason = FromValueOpt::from_value(v),
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SourceRedirectFlow { failure_reason, return_url, status, url });
+            Ok(())
         }
     }
 };

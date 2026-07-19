@@ -28,16 +28,14 @@ pub struct ForwardedRequestDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,70 +54,35 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ForwardedRequestDetailsBuilder::deser_default(),
+                builder: ForwardedRequestDetailsBuilder {
+                    body: Deserialize::default(),
+                    headers: Deserialize::default(),
+                    http_method: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ForwardedRequestDetailsBuilder {
-        type Out = ForwardedRequestDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "body" => Deserialize::begin(&mut self.body),
-                "headers" => Deserialize::begin(&mut self.headers),
-                "http_method" => Deserialize::begin(&mut self.http_method),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                body: Deserialize::default(),
-                headers: Deserialize::default(),
-                http_method: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(body), Some(headers), Some(http_method)) =
-                (self.body.take(), self.headers.take(), self.http_method.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { body, headers, http_method })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "body" => Deserialize::begin(&mut self.builder.body),
+                "headers" => Deserialize::begin(&mut self.builder.headers),
+                "http_method" => Deserialize::begin(&mut self.builder.http_method),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ForwardedRequestDetails {
-        type Builder = ForwardedRequestDetailsBuilder;
-    }
-
-    impl FromValueOpt for ForwardedRequestDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(body), Some(headers), Some(http_method)) = (
+                self.builder.body.take(),
+                self.builder.headers.take(),
+                self.builder.http_method.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = ForwardedRequestDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "body" => b.body = FromValueOpt::from_value(v),
-                    "headers" => b.headers = FromValueOpt::from_value(v),
-                    "http_method" => b.http_method = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(ForwardedRequestDetails { body, headers, http_method });
+            Ok(())
         }
     }
 };
@@ -185,21 +148,19 @@ impl serde::Serialize for ForwardedRequestDetailsHttpMethod {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ForwardedRequestDetailsHttpMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ForwardedRequestDetailsHttpMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ForwardedRequestDetailsHttpMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ForwardedRequestDetailsHttpMethod> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ForwardedRequestDetailsHttpMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ForwardedRequestDetailsHttpMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ForwardedRequestDetailsHttpMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

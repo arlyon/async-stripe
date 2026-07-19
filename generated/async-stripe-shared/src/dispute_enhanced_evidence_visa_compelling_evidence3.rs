@@ -27,16 +27,14 @@ pub struct DisputeEnhancedEvidenceVisaCompellingEvidence3Builder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,71 +53,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: DisputeEnhancedEvidenceVisaCompellingEvidence3Builder::deser_default(),
+                builder: DisputeEnhancedEvidenceVisaCompellingEvidence3Builder {
+                    disputed_transaction: Deserialize::default(),
+                    prior_undisputed_transactions: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for DisputeEnhancedEvidenceVisaCompellingEvidence3Builder {
-        type Out = DisputeEnhancedEvidenceVisaCompellingEvidence3;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "disputed_transaction" => Deserialize::begin(&mut self.disputed_transaction),
-                "prior_undisputed_transactions" => {
-                    Deserialize::begin(&mut self.prior_undisputed_transactions)
-                }
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                disputed_transaction: Deserialize::default(),
-                prior_undisputed_transactions: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(disputed_transaction), Some(prior_undisputed_transactions)) =
-                (self.disputed_transaction.take(), self.prior_undisputed_transactions.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { disputed_transaction, prior_undisputed_transactions })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "disputed_transaction" => {
+                    Deserialize::begin(&mut self.builder.disputed_transaction)
+                }
+                "prior_undisputed_transactions" => {
+                    Deserialize::begin(&mut self.builder.prior_undisputed_transactions)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for DisputeEnhancedEvidenceVisaCompellingEvidence3 {
-        type Builder = DisputeEnhancedEvidenceVisaCompellingEvidence3Builder;
-    }
-
-    impl FromValueOpt for DisputeEnhancedEvidenceVisaCompellingEvidence3 {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(disputed_transaction), Some(prior_undisputed_transactions)) = (
+                self.builder.disputed_transaction.take(),
+                self.builder.prior_undisputed_transactions.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = DisputeEnhancedEvidenceVisaCompellingEvidence3Builder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "disputed_transaction" => b.disputed_transaction = FromValueOpt::from_value(v),
-                    "prior_undisputed_transactions" => {
-                        b.prior_undisputed_transactions = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(DisputeEnhancedEvidenceVisaCompellingEvidence3 {
+                disputed_transaction,
+                prior_undisputed_transactions,
+            });
+            Ok(())
         }
     }
 };

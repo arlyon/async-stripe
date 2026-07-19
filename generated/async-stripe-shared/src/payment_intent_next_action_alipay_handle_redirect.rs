@@ -29,16 +29,14 @@ pub struct PaymentIntentNextActionAlipayHandleRedirectBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,76 +55,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionAlipayHandleRedirectBuilder::deser_default(),
+                builder: PaymentIntentNextActionAlipayHandleRedirectBuilder {
+                    native_data: Deserialize::default(),
+                    native_url: Deserialize::default(),
+                    return_url: Deserialize::default(),
+                    url: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentNextActionAlipayHandleRedirectBuilder {
-        type Out = PaymentIntentNextActionAlipayHandleRedirect;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "native_data" => Deserialize::begin(&mut self.native_data),
-                "native_url" => Deserialize::begin(&mut self.native_url),
-                "return_url" => Deserialize::begin(&mut self.return_url),
-                "url" => Deserialize::begin(&mut self.url),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                native_data: Deserialize::default(),
-                native_url: Deserialize::default(),
-                return_url: Deserialize::default(),
-                url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(native_data), Some(native_url), Some(return_url), Some(url)) = (
-                self.native_data.take(),
-                self.native_url.take(),
-                self.return_url.take(),
-                self.url.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { native_data, native_url, return_url, url })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "native_data" => Deserialize::begin(&mut self.builder.native_data),
+                "native_url" => Deserialize::begin(&mut self.builder.native_url),
+                "return_url" => Deserialize::begin(&mut self.builder.return_url),
+                "url" => Deserialize::begin(&mut self.builder.url),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionAlipayHandleRedirect {
-        type Builder = PaymentIntentNextActionAlipayHandleRedirectBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionAlipayHandleRedirect {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(native_data), Some(native_url), Some(return_url), Some(url)) = (
+                self.builder.native_data.take(),
+                self.builder.native_url.take(),
+                self.builder.return_url.take(),
+                self.builder.url.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentIntentNextActionAlipayHandleRedirectBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "native_data" => b.native_data = FromValueOpt::from_value(v),
-                    "native_url" => b.native_url = FromValueOpt::from_value(v),
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentIntentNextActionAlipayHandleRedirect {
+                native_data,
+                native_url,
+                return_url,
+                url,
+            });
+            Ok(())
         }
     }
 };

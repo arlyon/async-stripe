@@ -28,16 +28,14 @@ pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,63 +53,37 @@ const _: () = {
     impl Visitor for Place<TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
-            out: &mut self.out,
-            builder: TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetailsBuilder::deser_default(),
-        }))
-        }
-    }
-
-    impl MapBuilder for TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetailsBuilder {
-        type Out = TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "ip_address" => Deserialize::begin(&mut self.ip_address),
-                "present" => Deserialize::begin(&mut self.present),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { ip_address: Deserialize::default(), present: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(ip_address), Some(present)) = (self.ip_address.take(), self.present) else {
-                return None;
-            };
-            Some(Self::Out { ip_address, present })
+                out: &mut self.out,
+                builder:
+                    TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetailsBuilder {
+                        ip_address: Deserialize::default(),
+                        present: Deserialize::default(),
+                    },
+            }))
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "ip_address" => Deserialize::begin(&mut self.builder.ip_address),
+                "present" => Deserialize::begin(&mut self.builder.present),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails {
-        type Builder = TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetailsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(ip_address), Some(present)) =
+                (self.builder.ip_address.take(), self.builder.present)
+            else {
+                return Ok(());
             };
-            let mut b = TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "present" => b.present = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails {
+                    ip_address,
+                    present,
+                });
+            Ok(())
         }
     }
 };

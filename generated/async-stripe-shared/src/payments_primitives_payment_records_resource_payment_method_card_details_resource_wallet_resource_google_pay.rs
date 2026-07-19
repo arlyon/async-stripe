@@ -17,16 +17,14 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResou
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -45,58 +43,24 @@ const _: () = {
     fn map(&mut self) -> Result<Box<dyn Map + '_>> {
         Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePayBuilder::deser_default(),
+            builder: PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePayBuilder {  },
         }))
-    }
-}
-
-    impl MapBuilder for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePayBuilder {
-    type Out = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePay;
-    fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-        Ok(match k {
-            _ => <dyn Visitor>::ignore(),
-        })
-    }
-
-    fn deser_default() -> Self {
-        Self {  }
-    }
-
-    fn take_out(&mut self) -> Option<Self::Out> {
-        let () = () else {
-            return None;
-        };
-        Some(Self::Out {  })
     }
 }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            let () = () else {
+                return Ok(());
+            };
+            *self.out = Some(PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePay {  });
             Ok(())
         }
     }
-
-    impl ObjectDeser for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePay {
-    type Builder = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePayBuilder;
-}
-
-    impl FromValueOpt for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePay {
-    fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        let mut b = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePayBuilder::deser_default();
-        for (k, v) in obj {
-            match k.as_str() {
-                _ => {}
-            }
-        }
-        b.take_out()
-    }
-}
 };

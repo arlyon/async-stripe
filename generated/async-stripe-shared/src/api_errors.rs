@@ -66,16 +66,14 @@ pub struct ApiErrorsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -92,56 +90,56 @@ const _: () = {
 
     impl Visitor for Place<ApiErrors> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: ApiErrorsBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: ApiErrorsBuilder {
+                    advice_code: Deserialize::default(),
+                    charge: Deserialize::default(),
+                    code: Deserialize::default(),
+                    decline_code: Deserialize::default(),
+                    doc_url: Deserialize::default(),
+                    message: Deserialize::default(),
+                    network_advice_code: Deserialize::default(),
+                    network_decline_code: Deserialize::default(),
+                    param: Deserialize::default(),
+                    payment_intent: Deserialize::default(),
+                    payment_method: Deserialize::default(),
+                    payment_method_type: Deserialize::default(),
+                    request_log_url: Deserialize::default(),
+                    setup_intent: Deserialize::default(),
+                    source: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for ApiErrorsBuilder {
-        type Out = ApiErrors;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "advice_code" => Deserialize::begin(&mut self.advice_code),
-                "charge" => Deserialize::begin(&mut self.charge),
-                "code" => Deserialize::begin(&mut self.code),
-                "decline_code" => Deserialize::begin(&mut self.decline_code),
-                "doc_url" => Deserialize::begin(&mut self.doc_url),
-                "message" => Deserialize::begin(&mut self.message),
-                "network_advice_code" => Deserialize::begin(&mut self.network_advice_code),
-                "network_decline_code" => Deserialize::begin(&mut self.network_decline_code),
-                "param" => Deserialize::begin(&mut self.param),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
-                "payment_method_type" => Deserialize::begin(&mut self.payment_method_type),
-                "request_log_url" => Deserialize::begin(&mut self.request_log_url),
-                "setup_intent" => Deserialize::begin(&mut self.setup_intent),
-                "source" => Deserialize::begin(&mut self.source),
-                "type" => Deserialize::begin(&mut self.type_),
+                "advice_code" => Deserialize::begin(&mut self.builder.advice_code),
+                "charge" => Deserialize::begin(&mut self.builder.charge),
+                "code" => Deserialize::begin(&mut self.builder.code),
+                "decline_code" => Deserialize::begin(&mut self.builder.decline_code),
+                "doc_url" => Deserialize::begin(&mut self.builder.doc_url),
+                "message" => Deserialize::begin(&mut self.builder.message),
+                "network_advice_code" => Deserialize::begin(&mut self.builder.network_advice_code),
+                "network_decline_code" => {
+                    Deserialize::begin(&mut self.builder.network_decline_code)
+                }
+                "param" => Deserialize::begin(&mut self.builder.param),
+                "payment_intent" => Deserialize::begin(&mut self.builder.payment_intent),
+                "payment_method" => Deserialize::begin(&mut self.builder.payment_method),
+                "payment_method_type" => Deserialize::begin(&mut self.builder.payment_method_type),
+                "request_log_url" => Deserialize::begin(&mut self.builder.request_log_url),
+                "setup_intent" => Deserialize::begin(&mut self.builder.setup_intent),
+                "source" => Deserialize::begin(&mut self.builder.source),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                advice_code: Deserialize::default(),
-                charge: Deserialize::default(),
-                code: Deserialize::default(),
-                decline_code: Deserialize::default(),
-                doc_url: Deserialize::default(),
-                message: Deserialize::default(),
-                network_advice_code: Deserialize::default(),
-                network_decline_code: Deserialize::default(),
-                param: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                payment_method: Deserialize::default(),
-                payment_method_type: Deserialize::default(),
-                request_log_url: Deserialize::default(),
-                setup_intent: Deserialize::default(),
-                source: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(advice_code),
                 Some(charge),
@@ -160,27 +158,27 @@ const _: () = {
                 Some(source),
                 Some(type_),
             ) = (
-                self.advice_code.take(),
-                self.charge.take(),
-                self.code.take(),
-                self.decline_code.take(),
-                self.doc_url.take(),
-                self.message.take(),
-                self.network_advice_code.take(),
-                self.network_decline_code.take(),
-                self.param.take(),
-                self.payment_intent.take(),
-                self.payment_method.take(),
-                self.payment_method_type.take(),
-                self.request_log_url.take(),
-                self.setup_intent.take(),
-                self.source.take(),
-                self.type_.take(),
+                self.builder.advice_code.take(),
+                self.builder.charge.take(),
+                self.builder.code.take(),
+                self.builder.decline_code.take(),
+                self.builder.doc_url.take(),
+                self.builder.message.take(),
+                self.builder.network_advice_code.take(),
+                self.builder.network_decline_code.take(),
+                self.builder.param.take(),
+                self.builder.payment_intent.take(),
+                self.builder.payment_method.take(),
+                self.builder.payment_method_type.take(),
+                self.builder.request_log_url.take(),
+                self.builder.setup_intent.take(),
+                self.builder.source.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ApiErrors {
                 advice_code,
                 charge,
                 code,
@@ -197,53 +195,8 @@ const _: () = {
                 setup_intent,
                 source,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ApiErrors {
-        type Builder = ApiErrorsBuilder;
-    }
-
-    impl FromValueOpt for ApiErrors {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ApiErrorsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "advice_code" => b.advice_code = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "code" => b.code = FromValueOpt::from_value(v),
-                    "decline_code" => b.decline_code = FromValueOpt::from_value(v),
-                    "doc_url" => b.doc_url = FromValueOpt::from_value(v),
-                    "message" => b.message = FromValueOpt::from_value(v),
-                    "network_advice_code" => b.network_advice_code = FromValueOpt::from_value(v),
-                    "network_decline_code" => b.network_decline_code = FromValueOpt::from_value(v),
-                    "param" => b.param = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_type" => b.payment_method_type = FromValueOpt::from_value(v),
-                    "request_log_url" => b.request_log_url = FromValueOpt::from_value(v),
-                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -930,21 +883,19 @@ impl serde::Serialize for ApiErrorsCode {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ApiErrorsCode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ApiErrorsCode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ApiErrorsCode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ApiErrorsCode> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ApiErrorsCode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ApiErrorsCode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ApiErrorsCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1021,21 +972,19 @@ impl serde::Serialize for ApiErrorsType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ApiErrorsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ApiErrorsType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ApiErrorsType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ApiErrorsType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ApiErrorsType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ApiErrorsType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ApiErrorsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

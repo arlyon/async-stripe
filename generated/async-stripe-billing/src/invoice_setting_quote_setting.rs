@@ -23,16 +23,14 @@ pub struct InvoiceSettingQuoteSettingBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,63 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoiceSettingQuoteSettingBuilder::deser_default(),
+                builder: InvoiceSettingQuoteSettingBuilder {
+                    days_until_due: Deserialize::default(),
+                    issuer: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoiceSettingQuoteSettingBuilder {
-        type Out = InvoiceSettingQuoteSetting;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "days_until_due" => Deserialize::begin(&mut self.days_until_due),
-                "issuer" => Deserialize::begin(&mut self.issuer),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { days_until_due: Deserialize::default(), issuer: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(days_until_due), Some(issuer)) = (self.days_until_due, self.issuer.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { days_until_due, issuer })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "days_until_due" => Deserialize::begin(&mut self.builder.days_until_due),
+                "issuer" => Deserialize::begin(&mut self.builder.issuer),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoiceSettingQuoteSetting {
-        type Builder = InvoiceSettingQuoteSettingBuilder;
-    }
-
-    impl FromValueOpt for InvoiceSettingQuoteSetting {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(days_until_due), Some(issuer)) =
+                (self.builder.days_until_due, self.builder.issuer.take())
+            else {
+                return Ok(());
             };
-            let mut b = InvoiceSettingQuoteSettingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "days_until_due" => b.days_until_due = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InvoiceSettingQuoteSetting { days_until_due, issuer });
+            Ok(())
         }
     }
 };

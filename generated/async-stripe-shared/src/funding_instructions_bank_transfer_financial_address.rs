@@ -39,16 +39,14 @@ pub struct FundingInstructionsBankTransferFinancialAddressBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,41 +65,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: FundingInstructionsBankTransferFinancialAddressBuilder::deser_default(),
+                builder: FundingInstructionsBankTransferFinancialAddressBuilder {
+                    aba: Deserialize::default(),
+                    iban: Deserialize::default(),
+                    sort_code: Deserialize::default(),
+                    spei: Deserialize::default(),
+                    supported_networks: Deserialize::default(),
+                    swift: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    zengin: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for FundingInstructionsBankTransferFinancialAddressBuilder {
-        type Out = FundingInstructionsBankTransferFinancialAddress;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "aba" => Deserialize::begin(&mut self.aba),
-                "iban" => Deserialize::begin(&mut self.iban),
-                "sort_code" => Deserialize::begin(&mut self.sort_code),
-                "spei" => Deserialize::begin(&mut self.spei),
-                "supported_networks" => Deserialize::begin(&mut self.supported_networks),
-                "swift" => Deserialize::begin(&mut self.swift),
-                "type" => Deserialize::begin(&mut self.type_),
-                "zengin" => Deserialize::begin(&mut self.zengin),
+                "aba" => Deserialize::begin(&mut self.builder.aba),
+                "iban" => Deserialize::begin(&mut self.builder.iban),
+                "sort_code" => Deserialize::begin(&mut self.builder.sort_code),
+                "spei" => Deserialize::begin(&mut self.builder.spei),
+                "supported_networks" => Deserialize::begin(&mut self.builder.supported_networks),
+                "swift" => Deserialize::begin(&mut self.builder.swift),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "zengin" => Deserialize::begin(&mut self.builder.zengin),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                aba: Deserialize::default(),
-                iban: Deserialize::default(),
-                sort_code: Deserialize::default(),
-                spei: Deserialize::default(),
-                supported_networks: Deserialize::default(),
-                swift: Deserialize::default(),
-                type_: Deserialize::default(),
-                zengin: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(aba),
                 Some(iban),
@@ -112,57 +105,29 @@ const _: () = {
                 Some(type_),
                 Some(zengin),
             ) = (
-                self.aba.take(),
-                self.iban.take(),
-                self.sort_code.take(),
-                self.spei.take(),
-                self.supported_networks.take(),
-                self.swift.take(),
-                self.type_.take(),
-                self.zengin.take(),
+                self.builder.aba.take(),
+                self.builder.iban.take(),
+                self.builder.sort_code.take(),
+                self.builder.spei.take(),
+                self.builder.supported_networks.take(),
+                self.builder.swift.take(),
+                self.builder.type_.take(),
+                self.builder.zengin.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { aba, iban, sort_code, spei, supported_networks, swift, type_, zengin })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(FundingInstructionsBankTransferFinancialAddress {
+                aba,
+                iban,
+                sort_code,
+                spei,
+                supported_networks,
+                swift,
+                type_,
+                zengin,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for FundingInstructionsBankTransferFinancialAddress {
-        type Builder = FundingInstructionsBankTransferFinancialAddressBuilder;
-    }
-
-    impl FromValueOpt for FundingInstructionsBankTransferFinancialAddress {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FundingInstructionsBankTransferFinancialAddressBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "aba" => b.aba = FromValueOpt::from_value(v),
-                    "iban" => b.iban = FromValueOpt::from_value(v),
-                    "sort_code" => b.sort_code = FromValueOpt::from_value(v),
-                    "spei" => b.spei = FromValueOpt::from_value(v),
-                    "supported_networks" => b.supported_networks = FromValueOpt::from_value(v),
-                    "swift" => b.swift = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "zengin" => b.zengin = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -250,16 +215,16 @@ impl serde::Serialize for FundingInstructionsBankTransferFinancialAddressSupport
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             FundingInstructionsBankTransferFinancialAddressSupportedNetworks::from_str(s)
@@ -268,10 +233,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    FundingInstructionsBankTransferFinancialAddressSupportedNetworks
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for FundingInstructionsBankTransferFinancialAddressSupportedNetworks
@@ -360,14 +321,14 @@ impl serde::Serialize for FundingInstructionsBankTransferFinancialAddressType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for FundingInstructionsBankTransferFinancialAddressType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for FundingInstructionsBankTransferFinancialAddressType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<FundingInstructionsBankTransferFinancialAddressType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<FundingInstructionsBankTransferFinancialAddressType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             FundingInstructionsBankTransferFinancialAddressType::from_str(s).expect("infallible"),
@@ -375,8 +336,6 @@ impl miniserde::de::Visitor for crate::Place<FundingInstructionsBankTransferFina
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(FundingInstructionsBankTransferFinancialAddressType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FundingInstructionsBankTransferFinancialAddressType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

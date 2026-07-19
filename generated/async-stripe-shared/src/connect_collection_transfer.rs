@@ -33,16 +33,14 @@ pub struct ConnectCollectionTransferBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -61,80 +59,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ConnectCollectionTransferBuilder::deser_default(),
+                builder: ConnectCollectionTransferBuilder {
+                    amount: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    destination: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ConnectCollectionTransferBuilder {
-        type Out = ConnectCollectionTransfer;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "destination" => Deserialize::begin(&mut self.destination),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                currency: Deserialize::default(),
-                destination: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(currency), Some(destination), Some(id), Some(livemode)) = (
-                self.amount,
-                self.currency.take(),
-                self.destination.take(),
-                self.id.take(),
-                self.livemode,
-            ) else {
-                return None;
-            };
-            Some(Self::Out { amount, currency, destination, id, livemode })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "destination" => Deserialize::begin(&mut self.builder.destination),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ConnectCollectionTransfer {
-        type Builder = ConnectCollectionTransferBuilder;
-    }
-
-    impl FromValueOpt for ConnectCollectionTransfer {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount), Some(currency), Some(destination), Some(id), Some(livemode)) = (
+                self.builder.amount,
+                self.builder.currency.take(),
+                self.builder.destination.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+            ) else {
+                return Ok(());
             };
-            let mut b = ConnectCollectionTransferBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "destination" => b.destination = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(ConnectCollectionTransfer { amount, currency, destination, id, livemode });
+            Ok(())
         }
     }
 };

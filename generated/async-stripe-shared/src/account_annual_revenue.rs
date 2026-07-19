@@ -29,16 +29,14 @@ pub struct AccountAnnualRevenueBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,70 +55,35 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AccountAnnualRevenueBuilder::deser_default(),
+                builder: AccountAnnualRevenueBuilder {
+                    amount: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    fiscal_year_end: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for AccountAnnualRevenueBuilder {
-        type Out = AccountAnnualRevenue;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "fiscal_year_end" => Deserialize::begin(&mut self.fiscal_year_end),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                currency: Deserialize::default(),
-                fiscal_year_end: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(currency), Some(fiscal_year_end)) =
-                (self.amount, self.currency.take(), self.fiscal_year_end.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { amount, currency, fiscal_year_end })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "fiscal_year_end" => Deserialize::begin(&mut self.builder.fiscal_year_end),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for AccountAnnualRevenue {
-        type Builder = AccountAnnualRevenueBuilder;
-    }
-
-    impl FromValueOpt for AccountAnnualRevenue {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount), Some(currency), Some(fiscal_year_end)) = (
+                self.builder.amount,
+                self.builder.currency.take(),
+                self.builder.fiscal_year_end.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = AccountAnnualRevenueBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "fiscal_year_end" => b.fiscal_year_end = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(AccountAnnualRevenue { amount, currency, fiscal_year_end });
+            Ok(())
         }
     }
 };

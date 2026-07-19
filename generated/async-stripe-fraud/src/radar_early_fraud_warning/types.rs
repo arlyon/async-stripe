@@ -44,16 +44,14 @@ pub struct RadarEarlyFraudWarningBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -72,39 +70,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: RadarEarlyFraudWarningBuilder::deser_default(),
+                builder: RadarEarlyFraudWarningBuilder {
+                    actionable: Deserialize::default(),
+                    charge: Deserialize::default(),
+                    created: Deserialize::default(),
+                    fraud_type: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    payment_intent: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for RadarEarlyFraudWarningBuilder {
-        type Out = RadarEarlyFraudWarning;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "actionable" => Deserialize::begin(&mut self.actionable),
-                "charge" => Deserialize::begin(&mut self.charge),
-                "created" => Deserialize::begin(&mut self.created),
-                "fraud_type" => Deserialize::begin(&mut self.fraud_type),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
+                "actionable" => Deserialize::begin(&mut self.builder.actionable),
+                "charge" => Deserialize::begin(&mut self.builder.charge),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "fraud_type" => Deserialize::begin(&mut self.builder.fraud_type),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "payment_intent" => Deserialize::begin(&mut self.builder.payment_intent),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                actionable: Deserialize::default(),
-                charge: Deserialize::default(),
-                created: Deserialize::default(),
-                fraud_type: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(actionable),
                 Some(charge),
@@ -114,18 +107,18 @@ const _: () = {
                 Some(livemode),
                 Some(payment_intent),
             ) = (
-                self.actionable,
-                self.charge.take(),
-                self.created,
-                self.fraud_type.take(),
-                self.id.take(),
-                self.livemode,
-                self.payment_intent.take(),
+                self.builder.actionable,
+                self.builder.charge.take(),
+                self.builder.created,
+                self.builder.fraud_type.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.payment_intent.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(RadarEarlyFraudWarning {
                 actionable,
                 charge,
                 created,
@@ -133,44 +126,8 @@ const _: () = {
                 id,
                 livemode,
                 payment_intent,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for RadarEarlyFraudWarning {
-        type Builder = RadarEarlyFraudWarningBuilder;
-    }
-
-    impl FromValueOpt for RadarEarlyFraudWarning {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = RadarEarlyFraudWarningBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "actionable" => b.actionable = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "fraud_type" => b.fraud_type = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

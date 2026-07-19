@@ -68,16 +68,14 @@ pub struct BillingCreditGrantBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -96,57 +94,54 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BillingCreditGrantBuilder::deser_default(),
+                builder: BillingCreditGrantBuilder {
+                    amount: Deserialize::default(),
+                    applicability_config: Deserialize::default(),
+                    category: Deserialize::default(),
+                    created: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    effective_at: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    name: Deserialize::default(),
+                    priority: Deserialize::default(),
+                    test_clock: Deserialize::default(),
+                    updated: Deserialize::default(),
+                    voided_at: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for BillingCreditGrantBuilder {
-        type Out = BillingCreditGrant;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "applicability_config" => Deserialize::begin(&mut self.applicability_config),
-                "category" => Deserialize::begin(&mut self.category),
-                "created" => Deserialize::begin(&mut self.created),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "effective_at" => Deserialize::begin(&mut self.effective_at),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "name" => Deserialize::begin(&mut self.name),
-                "priority" => Deserialize::begin(&mut self.priority),
-                "test_clock" => Deserialize::begin(&mut self.test_clock),
-                "updated" => Deserialize::begin(&mut self.updated),
-                "voided_at" => Deserialize::begin(&mut self.voided_at),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "applicability_config" => {
+                    Deserialize::begin(&mut self.builder.applicability_config)
+                }
+                "category" => Deserialize::begin(&mut self.builder.category),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "effective_at" => Deserialize::begin(&mut self.builder.effective_at),
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "priority" => Deserialize::begin(&mut self.builder.priority),
+                "test_clock" => Deserialize::begin(&mut self.builder.test_clock),
+                "updated" => Deserialize::begin(&mut self.builder.updated),
+                "voided_at" => Deserialize::begin(&mut self.builder.voided_at),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                applicability_config: Deserialize::default(),
-                category: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                effective_at: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
-                priority: Deserialize::default(),
-                test_clock: Deserialize::default(),
-                updated: Deserialize::default(),
-                voided_at: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(applicability_config),
@@ -165,27 +160,27 @@ const _: () = {
                 Some(updated),
                 Some(voided_at),
             ) = (
-                self.amount.take(),
-                self.applicability_config.take(),
-                self.category.take(),
-                self.created,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.effective_at,
-                self.expires_at,
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.name.take(),
-                self.priority,
-                self.test_clock.take(),
-                self.updated,
-                self.voided_at,
+                self.builder.amount.take(),
+                self.builder.applicability_config.take(),
+                self.builder.category.take(),
+                self.builder.created,
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.effective_at,
+                self.builder.expires_at,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.name.take(),
+                self.builder.priority,
+                self.builder.test_clock.take(),
+                self.builder.updated,
+                self.builder.voided_at,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(BillingCreditGrant {
                 amount,
                 applicability_config,
                 category,
@@ -202,53 +197,8 @@ const _: () = {
                 test_clock,
                 updated,
                 voided_at,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingCreditGrant {
-        type Builder = BillingCreditGrantBuilder;
-    }
-
-    impl FromValueOpt for BillingCreditGrant {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingCreditGrantBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "applicability_config" => b.applicability_config = FromValueOpt::from_value(v),
-                    "category" => b.category = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "effective_at" => b.effective_at = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "priority" => b.priority = FromValueOpt::from_value(v),
-                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-                    "updated" => b.updated = FromValueOpt::from_value(v),
-                    "voided_at" => b.voided_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -348,21 +298,19 @@ impl serde::Serialize for BillingCreditGrantCategory {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BillingCreditGrantCategory {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BillingCreditGrantCategory {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BillingCreditGrantCategory> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BillingCreditGrantCategory> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BillingCreditGrantCategory::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BillingCreditGrantCategory);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingCreditGrantCategory {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

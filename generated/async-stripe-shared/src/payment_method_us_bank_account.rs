@@ -45,16 +45,14 @@ pub struct PaymentMethodUsBankAccountBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -73,45 +71,40 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodUsBankAccountBuilder::deser_default(),
+                builder: PaymentMethodUsBankAccountBuilder {
+                    account_holder_type: Deserialize::default(),
+                    account_type: Deserialize::default(),
+                    bank_name: Deserialize::default(),
+                    financial_connections_account: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    networks: Deserialize::default(),
+                    routing_number: Deserialize::default(),
+                    status_details: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodUsBankAccountBuilder {
-        type Out = PaymentMethodUsBankAccount;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder_type" => Deserialize::begin(&mut self.account_holder_type),
-                "account_type" => Deserialize::begin(&mut self.account_type),
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
+                "account_holder_type" => Deserialize::begin(&mut self.builder.account_holder_type),
+                "account_type" => Deserialize::begin(&mut self.builder.account_type),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
                 "financial_connections_account" => {
-                    Deserialize::begin(&mut self.financial_connections_account)
+                    Deserialize::begin(&mut self.builder.financial_connections_account)
                 }
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "networks" => Deserialize::begin(&mut self.networks),
-                "routing_number" => Deserialize::begin(&mut self.routing_number),
-                "status_details" => Deserialize::begin(&mut self.status_details),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "networks" => Deserialize::begin(&mut self.builder.networks),
+                "routing_number" => Deserialize::begin(&mut self.builder.routing_number),
+                "status_details" => Deserialize::begin(&mut self.builder.status_details),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account_holder_type: Deserialize::default(),
-                account_type: Deserialize::default(),
-                bank_name: Deserialize::default(),
-                financial_connections_account: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                last4: Deserialize::default(),
-                networks: Deserialize::default(),
-                routing_number: Deserialize::default(),
-                status_details: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account_holder_type),
                 Some(account_type),
@@ -123,20 +116,20 @@ const _: () = {
                 Some(routing_number),
                 Some(status_details),
             ) = (
-                self.account_holder_type.take(),
-                self.account_type.take(),
-                self.bank_name.take(),
-                self.financial_connections_account.take(),
-                self.fingerprint.take(),
-                self.last4.take(),
-                self.networks.take(),
-                self.routing_number.take(),
-                self.status_details.take(),
+                self.builder.account_holder_type.take(),
+                self.builder.account_type.take(),
+                self.builder.bank_name.take(),
+                self.builder.financial_connections_account.take(),
+                self.builder.fingerprint.take(),
+                self.builder.last4.take(),
+                self.builder.networks.take(),
+                self.builder.routing_number.take(),
+                self.builder.status_details.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodUsBankAccount {
                 account_holder_type,
                 account_type,
                 bank_name,
@@ -146,48 +139,8 @@ const _: () = {
                 networks,
                 routing_number,
                 status_details,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodUsBankAccount {
-        type Builder = PaymentMethodUsBankAccountBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodUsBankAccount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodUsBankAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
-                    "account_type" => b.account_type = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "financial_connections_account" => {
-                        b.financial_connections_account = FromValueOpt::from_value(v)
-                    }
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "networks" => b.networks = FromValueOpt::from_value(v),
-                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-                    "status_details" => b.status_details = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -257,22 +210,20 @@ impl serde::Serialize for PaymentMethodUsBankAccountAccountHolderType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodUsBankAccountAccountHolderType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodUsBankAccountAccountHolderType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodUsBankAccountAccountHolderType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodUsBankAccountAccountHolderType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(PaymentMethodUsBankAccountAccountHolderType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodUsBankAccountAccountHolderType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodUsBankAccountAccountHolderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -346,21 +297,19 @@ impl serde::Serialize for PaymentMethodUsBankAccountAccountType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodUsBankAccountAccountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodUsBankAccountAccountType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodUsBankAccountAccountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodUsBankAccountAccountType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentMethodUsBankAccountAccountType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodUsBankAccountAccountType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodUsBankAccountAccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

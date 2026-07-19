@@ -25,16 +25,14 @@ pub struct InsightsResourcesPaymentEvaluationPaymentMethodDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,66 +51,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    InsightsResourcesPaymentEvaluationPaymentMethodDetailsBuilder::deser_default(),
+                builder: InsightsResourcesPaymentEvaluationPaymentMethodDetailsBuilder {
+                    billing_details: Deserialize::default(),
+                    payment_method: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InsightsResourcesPaymentEvaluationPaymentMethodDetailsBuilder {
-        type Out = InsightsResourcesPaymentEvaluationPaymentMethodDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "billing_details" => Deserialize::begin(&mut self.billing_details),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { billing_details: Deserialize::default(), payment_method: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(billing_details), Some(payment_method)) =
-                (self.billing_details.take(), self.payment_method.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { billing_details, payment_method })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "billing_details" => Deserialize::begin(&mut self.builder.billing_details),
+                "payment_method" => Deserialize::begin(&mut self.builder.payment_method),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InsightsResourcesPaymentEvaluationPaymentMethodDetails {
-        type Builder = InsightsResourcesPaymentEvaluationPaymentMethodDetailsBuilder;
-    }
-
-    impl FromValueOpt for InsightsResourcesPaymentEvaluationPaymentMethodDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(billing_details), Some(payment_method)) =
+                (self.builder.billing_details.take(), self.builder.payment_method.take())
+            else {
+                return Ok(());
             };
-            let mut b =
-                InsightsResourcesPaymentEvaluationPaymentMethodDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_details" => b.billing_details = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InsightsResourcesPaymentEvaluationPaymentMethodDetails {
+                billing_details,
+                payment_method,
+            });
+            Ok(())
         }
     }
 };

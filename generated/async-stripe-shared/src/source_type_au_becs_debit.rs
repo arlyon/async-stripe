@@ -23,16 +23,14 @@ pub struct SourceTypeAuBecsDebitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,70 +49,35 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceTypeAuBecsDebitBuilder::deser_default(),
+                builder: SourceTypeAuBecsDebitBuilder {
+                    bsb_number: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    last4: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SourceTypeAuBecsDebitBuilder {
-        type Out = SourceTypeAuBecsDebit;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "bsb_number" => Deserialize::begin(&mut self.bsb_number),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "last4" => Deserialize::begin(&mut self.last4),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                bsb_number: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                last4: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bsb_number), Some(fingerprint), Some(last4)) =
-                (self.bsb_number.take(), self.fingerprint.take(), self.last4.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { bsb_number, fingerprint, last4 })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "bsb_number" => Deserialize::begin(&mut self.builder.bsb_number),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceTypeAuBecsDebit {
-        type Builder = SourceTypeAuBecsDebitBuilder;
-    }
-
-    impl FromValueOpt for SourceTypeAuBecsDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(bsb_number), Some(fingerprint), Some(last4)) = (
+                self.builder.bsb_number.take(),
+                self.builder.fingerprint.take(),
+                self.builder.last4.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = SourceTypeAuBecsDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bsb_number" => b.bsb_number = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SourceTypeAuBecsDebit { bsb_number, fingerprint, last4 });
+            Ok(())
         }
     }
 };

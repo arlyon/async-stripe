@@ -31,16 +31,14 @@ pub struct AccountBrandingSettingsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -59,76 +57,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AccountBrandingSettingsBuilder::deser_default(),
+                builder: AccountBrandingSettingsBuilder {
+                    icon: Deserialize::default(),
+                    logo: Deserialize::default(),
+                    primary_color: Deserialize::default(),
+                    secondary_color: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for AccountBrandingSettingsBuilder {
-        type Out = AccountBrandingSettings;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "icon" => Deserialize::begin(&mut self.icon),
-                "logo" => Deserialize::begin(&mut self.logo),
-                "primary_color" => Deserialize::begin(&mut self.primary_color),
-                "secondary_color" => Deserialize::begin(&mut self.secondary_color),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                icon: Deserialize::default(),
-                logo: Deserialize::default(),
-                primary_color: Deserialize::default(),
-                secondary_color: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(icon), Some(logo), Some(primary_color), Some(secondary_color)) = (
-                self.icon.take(),
-                self.logo.take(),
-                self.primary_color.take(),
-                self.secondary_color.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { icon, logo, primary_color, secondary_color })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "icon" => Deserialize::begin(&mut self.builder.icon),
+                "logo" => Deserialize::begin(&mut self.builder.logo),
+                "primary_color" => Deserialize::begin(&mut self.builder.primary_color),
+                "secondary_color" => Deserialize::begin(&mut self.builder.secondary_color),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for AccountBrandingSettings {
-        type Builder = AccountBrandingSettingsBuilder;
-    }
-
-    impl FromValueOpt for AccountBrandingSettings {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(icon), Some(logo), Some(primary_color), Some(secondary_color)) = (
+                self.builder.icon.take(),
+                self.builder.logo.take(),
+                self.builder.primary_color.take(),
+                self.builder.secondary_color.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = AccountBrandingSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "icon" => b.icon = FromValueOpt::from_value(v),
-                    "logo" => b.logo = FromValueOpt::from_value(v),
-                    "primary_color" => b.primary_color = FromValueOpt::from_value(v),
-                    "secondary_color" => b.secondary_color = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(AccountBrandingSettings { icon, logo, primary_color, secondary_color });
+            Ok(())
         }
     }
 };

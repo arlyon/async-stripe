@@ -26,16 +26,14 @@ pub struct PersonAdditionalTosAcceptanceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PersonAdditionalTosAcceptanceBuilder::deser_default(),
+                builder: PersonAdditionalTosAcceptanceBuilder {
+                    date: Deserialize::default(),
+                    ip: Deserialize::default(),
+                    user_agent: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PersonAdditionalTosAcceptanceBuilder {
-        type Out = PersonAdditionalTosAcceptance;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "date" => Deserialize::begin(&mut self.date),
-                "ip" => Deserialize::begin(&mut self.ip),
-                "user_agent" => Deserialize::begin(&mut self.user_agent),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                date: Deserialize::default(),
-                ip: Deserialize::default(),
-                user_agent: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(date), Some(ip), Some(user_agent)) =
-                (self.date, self.ip.take(), self.user_agent.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { date, ip, user_agent })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "date" => Deserialize::begin(&mut self.builder.date),
+                "ip" => Deserialize::begin(&mut self.builder.ip),
+                "user_agent" => Deserialize::begin(&mut self.builder.user_agent),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PersonAdditionalTosAcceptance {
-        type Builder = PersonAdditionalTosAcceptanceBuilder;
-    }
-
-    impl FromValueOpt for PersonAdditionalTosAcceptance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(date), Some(ip), Some(user_agent)) =
+                (self.builder.date, self.builder.ip.take(), self.builder.user_agent.take())
+            else {
+                return Ok(());
             };
-            let mut b = PersonAdditionalTosAcceptanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "date" => b.date = FromValueOpt::from_value(v),
-                    "ip" => b.ip = FromValueOpt::from_value(v),
-                    "user_agent" => b.user_agent = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PersonAdditionalTosAcceptance { date, ip, user_agent });
+            Ok(())
         }
     }
 };

@@ -23,16 +23,14 @@ pub struct IssuingTransactionTreasuryBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,64 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingTransactionTreasuryBuilder::deser_default(),
+                builder: IssuingTransactionTreasuryBuilder {
+                    received_credit: Deserialize::default(),
+                    received_debit: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingTransactionTreasuryBuilder {
-        type Out = IssuingTransactionTreasury;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "received_credit" => Deserialize::begin(&mut self.received_credit),
-                "received_debit" => Deserialize::begin(&mut self.received_debit),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { received_credit: Deserialize::default(), received_debit: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(received_credit), Some(received_debit)) =
-                (self.received_credit.take(), self.received_debit.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { received_credit, received_debit })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "received_credit" => Deserialize::begin(&mut self.builder.received_credit),
+                "received_debit" => Deserialize::begin(&mut self.builder.received_debit),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingTransactionTreasury {
-        type Builder = IssuingTransactionTreasuryBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionTreasury {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(received_credit), Some(received_debit)) =
+                (self.builder.received_credit.take(), self.builder.received_debit.take())
+            else {
+                return Ok(());
             };
-            let mut b = IssuingTransactionTreasuryBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "received_credit" => b.received_credit = FromValueOpt::from_value(v),
-                    "received_debit" => b.received_debit = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(IssuingTransactionTreasury { received_credit, received_debit });
+            Ok(())
         }
     }
 };

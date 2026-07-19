@@ -45,16 +45,14 @@ pub struct OutboundTransfersPaymentMethodDetailsUsBankAccountBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -73,41 +71,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: OutboundTransfersPaymentMethodDetailsUsBankAccountBuilder::deser_default(),
+                builder: OutboundTransfersPaymentMethodDetailsUsBankAccountBuilder {
+                    account_holder_type: Deserialize::default(),
+                    account_type: Deserialize::default(),
+                    bank_name: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    mandate: Deserialize::default(),
+                    network: Deserialize::default(),
+                    routing_number: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for OutboundTransfersPaymentMethodDetailsUsBankAccountBuilder {
-        type Out = OutboundTransfersPaymentMethodDetailsUsBankAccount;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder_type" => Deserialize::begin(&mut self.account_holder_type),
-                "account_type" => Deserialize::begin(&mut self.account_type),
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "mandate" => Deserialize::begin(&mut self.mandate),
-                "network" => Deserialize::begin(&mut self.network),
-                "routing_number" => Deserialize::begin(&mut self.routing_number),
+                "account_holder_type" => Deserialize::begin(&mut self.builder.account_holder_type),
+                "account_type" => Deserialize::begin(&mut self.builder.account_type),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "mandate" => Deserialize::begin(&mut self.builder.mandate),
+                "network" => Deserialize::begin(&mut self.builder.network),
+                "routing_number" => Deserialize::begin(&mut self.builder.routing_number),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account_holder_type: Deserialize::default(),
-                account_type: Deserialize::default(),
-                bank_name: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                last4: Deserialize::default(),
-                mandate: Deserialize::default(),
-                network: Deserialize::default(),
-                routing_number: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account_holder_type),
                 Some(account_type),
@@ -118,19 +111,19 @@ const _: () = {
                 Some(network),
                 Some(routing_number),
             ) = (
-                self.account_holder_type.take(),
-                self.account_type.take(),
-                self.bank_name.take(),
-                self.fingerprint.take(),
-                self.last4.take(),
-                self.mandate.take(),
-                self.network.take(),
-                self.routing_number.take(),
+                self.builder.account_holder_type.take(),
+                self.builder.account_type.take(),
+                self.builder.bank_name.take(),
+                self.builder.fingerprint.take(),
+                self.builder.last4.take(),
+                self.builder.mandate.take(),
+                self.builder.network.take(),
+                self.builder.routing_number.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(OutboundTransfersPaymentMethodDetailsUsBankAccount {
                 account_holder_type,
                 account_type,
                 bank_name,
@@ -139,45 +132,8 @@ const _: () = {
                 mandate,
                 network,
                 routing_number,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for OutboundTransfersPaymentMethodDetailsUsBankAccount {
-        type Builder = OutboundTransfersPaymentMethodDetailsUsBankAccountBuilder;
-    }
-
-    impl FromValueOpt for OutboundTransfersPaymentMethodDetailsUsBankAccount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = OutboundTransfersPaymentMethodDetailsUsBankAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
-                    "account_type" => b.account_type = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "mandate" => b.mandate = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -249,18 +205,18 @@ impl serde::Serialize for OutboundTransfersPaymentMethodDetailsUsBankAccountAcco
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
+impl stripe_miniserde::Deserialize
     for OutboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<OutboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             OutboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType::from_str(s)
@@ -269,10 +225,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    OutboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for OutboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType
@@ -349,16 +301,16 @@ impl serde::Serialize for OutboundTransfersPaymentMethodDetailsUsBankAccountAcco
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for OutboundTransfersPaymentMethodDetailsUsBankAccountAccountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for OutboundTransfersPaymentMethodDetailsUsBankAccountAccountType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<OutboundTransfersPaymentMethodDetailsUsBankAccountAccountType>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             OutboundTransfersPaymentMethodDetailsUsBankAccountAccountType::from_str(s)
@@ -367,10 +319,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    OutboundTransfersPaymentMethodDetailsUsBankAccountAccountType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for OutboundTransfersPaymentMethodDetailsUsBankAccountAccountType
@@ -448,16 +396,16 @@ impl serde::Serialize for OutboundTransfersPaymentMethodDetailsUsBankAccountNetw
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for OutboundTransfersPaymentMethodDetailsUsBankAccountNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for OutboundTransfersPaymentMethodDetailsUsBankAccountNetwork {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<OutboundTransfersPaymentMethodDetailsUsBankAccountNetwork>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             OutboundTransfersPaymentMethodDetailsUsBankAccountNetwork::from_str(s)
@@ -466,10 +414,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    OutboundTransfersPaymentMethodDetailsUsBankAccountNetwork
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for OutboundTransfersPaymentMethodDetailsUsBankAccountNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

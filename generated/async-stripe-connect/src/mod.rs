@@ -10,7 +10,7 @@
 
 extern crate self as stripe_connect;
 
-miniserde::make_place!(Place);
+stripe_miniserde::make_place!(Place);
 pub mod account;
 pub use account_link::types::*;
 pub use stripe_shared::account::*;

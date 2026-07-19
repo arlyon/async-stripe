@@ -277,16 +277,14 @@ pub struct CheckoutSessionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -305,169 +303,178 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CheckoutSessionBuilder::deser_default(),
+                builder: CheckoutSessionBuilder {
+                    adaptive_pricing: Deserialize::default(),
+                    after_expiration: Deserialize::default(),
+                    allow_promotion_codes: Deserialize::default(),
+                    amount_subtotal: Deserialize::default(),
+                    amount_total: Deserialize::default(),
+                    automatic_tax: Deserialize::default(),
+                    billing_address_collection: Deserialize::default(),
+                    branding_settings: Deserialize::default(),
+                    cancel_url: Deserialize::default(),
+                    client_reference_id: Deserialize::default(),
+                    client_secret: Deserialize::default(),
+                    collected_information: Deserialize::default(),
+                    consent: Deserialize::default(),
+                    consent_collection: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    currency_conversion: Deserialize::default(),
+                    custom_fields: Deserialize::default(),
+                    custom_text: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    customer_creation: Deserialize::default(),
+                    customer_details: Deserialize::default(),
+                    customer_email: Deserialize::default(),
+                    discounts: Deserialize::default(),
+                    excluded_payment_method_types: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    id: Deserialize::default(),
+                    integration_identifier: Deserialize::default(),
+                    invoice: Deserialize::default(),
+                    invoice_creation: Deserialize::default(),
+                    line_items: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    locale: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    mode: Deserialize::default(),
+                    name_collection: Deserialize::default(),
+                    optional_items: Deserialize::default(),
+                    origin_context: Deserialize::default(),
+                    payment_intent: Deserialize::default(),
+                    payment_link: Deserialize::default(),
+                    payment_method_collection: Deserialize::default(),
+                    payment_method_configuration_details: Deserialize::default(),
+                    payment_method_options: Deserialize::default(),
+                    payment_method_types: Deserialize::default(),
+                    payment_status: Deserialize::default(),
+                    permissions: Deserialize::default(),
+                    phone_number_collection: Deserialize::default(),
+                    presentment_details: Deserialize::default(),
+                    recovered_from: Deserialize::default(),
+                    redirect_on_completion: Deserialize::default(),
+                    return_url: Deserialize::default(),
+                    saved_payment_method_options: Deserialize::default(),
+                    setup_intent: Deserialize::default(),
+                    shipping_address_collection: Deserialize::default(),
+                    shipping_cost: Deserialize::default(),
+                    shipping_options: Deserialize::default(),
+                    status: Deserialize::default(),
+                    submit_type: Deserialize::default(),
+                    subscription: Deserialize::default(),
+                    success_url: Deserialize::default(),
+                    tax_id_collection: Deserialize::default(),
+                    total_details: Deserialize::default(),
+                    ui_mode: Deserialize::default(),
+                    url: Deserialize::default(),
+                    wallet_options: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CheckoutSessionBuilder {
-        type Out = CheckoutSession;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "adaptive_pricing" => Deserialize::begin(&mut self.adaptive_pricing),
-                "after_expiration" => Deserialize::begin(&mut self.after_expiration),
-                "allow_promotion_codes" => Deserialize::begin(&mut self.allow_promotion_codes),
-                "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
-                "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
+                "adaptive_pricing" => Deserialize::begin(&mut self.builder.adaptive_pricing),
+                "after_expiration" => Deserialize::begin(&mut self.builder.after_expiration),
+                "allow_promotion_codes" => {
+                    Deserialize::begin(&mut self.builder.allow_promotion_codes)
+                }
+                "amount_subtotal" => Deserialize::begin(&mut self.builder.amount_subtotal),
+                "amount_total" => Deserialize::begin(&mut self.builder.amount_total),
+                "automatic_tax" => Deserialize::begin(&mut self.builder.automatic_tax),
                 "billing_address_collection" => {
-                    Deserialize::begin(&mut self.billing_address_collection)
+                    Deserialize::begin(&mut self.builder.billing_address_collection)
                 }
-                "branding_settings" => Deserialize::begin(&mut self.branding_settings),
-                "cancel_url" => Deserialize::begin(&mut self.cancel_url),
-                "client_reference_id" => Deserialize::begin(&mut self.client_reference_id),
-                "client_secret" => Deserialize::begin(&mut self.client_secret),
-                "collected_information" => Deserialize::begin(&mut self.collected_information),
-                "consent" => Deserialize::begin(&mut self.consent),
-                "consent_collection" => Deserialize::begin(&mut self.consent_collection),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "currency_conversion" => Deserialize::begin(&mut self.currency_conversion),
-                "custom_fields" => Deserialize::begin(&mut self.custom_fields),
-                "custom_text" => Deserialize::begin(&mut self.custom_text),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "customer_creation" => Deserialize::begin(&mut self.customer_creation),
-                "customer_details" => Deserialize::begin(&mut self.customer_details),
-                "customer_email" => Deserialize::begin(&mut self.customer_email),
-                "discounts" => Deserialize::begin(&mut self.discounts),
+                "branding_settings" => Deserialize::begin(&mut self.builder.branding_settings),
+                "cancel_url" => Deserialize::begin(&mut self.builder.cancel_url),
+                "client_reference_id" => Deserialize::begin(&mut self.builder.client_reference_id),
+                "client_secret" => Deserialize::begin(&mut self.builder.client_secret),
+                "collected_information" => {
+                    Deserialize::begin(&mut self.builder.collected_information)
+                }
+                "consent" => Deserialize::begin(&mut self.builder.consent),
+                "consent_collection" => Deserialize::begin(&mut self.builder.consent_collection),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "currency_conversion" => Deserialize::begin(&mut self.builder.currency_conversion),
+                "custom_fields" => Deserialize::begin(&mut self.builder.custom_fields),
+                "custom_text" => Deserialize::begin(&mut self.builder.custom_text),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "customer_creation" => Deserialize::begin(&mut self.builder.customer_creation),
+                "customer_details" => Deserialize::begin(&mut self.builder.customer_details),
+                "customer_email" => Deserialize::begin(&mut self.builder.customer_email),
+                "discounts" => Deserialize::begin(&mut self.builder.discounts),
                 "excluded_payment_method_types" => {
-                    Deserialize::begin(&mut self.excluded_payment_method_types)
+                    Deserialize::begin(&mut self.builder.excluded_payment_method_types)
                 }
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "id" => Deserialize::begin(&mut self.id),
-                "integration_identifier" => Deserialize::begin(&mut self.integration_identifier),
-                "invoice" => Deserialize::begin(&mut self.invoice),
-                "invoice_creation" => Deserialize::begin(&mut self.invoice_creation),
-                "line_items" => Deserialize::begin(&mut self.line_items),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "locale" => Deserialize::begin(&mut self.locale),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "mode" => Deserialize::begin(&mut self.mode),
-                "name_collection" => Deserialize::begin(&mut self.name_collection),
-                "optional_items" => Deserialize::begin(&mut self.optional_items),
-                "origin_context" => Deserialize::begin(&mut self.origin_context),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_link" => Deserialize::begin(&mut self.payment_link),
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "integration_identifier" => {
+                    Deserialize::begin(&mut self.builder.integration_identifier)
+                }
+                "invoice" => Deserialize::begin(&mut self.builder.invoice),
+                "invoice_creation" => Deserialize::begin(&mut self.builder.invoice_creation),
+                "line_items" => Deserialize::begin(&mut self.builder.line_items),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "locale" => Deserialize::begin(&mut self.builder.locale),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "mode" => Deserialize::begin(&mut self.builder.mode),
+                "name_collection" => Deserialize::begin(&mut self.builder.name_collection),
+                "optional_items" => Deserialize::begin(&mut self.builder.optional_items),
+                "origin_context" => Deserialize::begin(&mut self.builder.origin_context),
+                "payment_intent" => Deserialize::begin(&mut self.builder.payment_intent),
+                "payment_link" => Deserialize::begin(&mut self.builder.payment_link),
                 "payment_method_collection" => {
-                    Deserialize::begin(&mut self.payment_method_collection)
+                    Deserialize::begin(&mut self.builder.payment_method_collection)
                 }
                 "payment_method_configuration_details" => {
-                    Deserialize::begin(&mut self.payment_method_configuration_details)
+                    Deserialize::begin(&mut self.builder.payment_method_configuration_details)
                 }
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
-                "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
-                "payment_status" => Deserialize::begin(&mut self.payment_status),
-                "permissions" => Deserialize::begin(&mut self.permissions),
-                "phone_number_collection" => Deserialize::begin(&mut self.phone_number_collection),
-                "presentment_details" => Deserialize::begin(&mut self.presentment_details),
-                "recovered_from" => Deserialize::begin(&mut self.recovered_from),
-                "redirect_on_completion" => Deserialize::begin(&mut self.redirect_on_completion),
-                "return_url" => Deserialize::begin(&mut self.return_url),
+                "payment_method_options" => {
+                    Deserialize::begin(&mut self.builder.payment_method_options)
+                }
+                "payment_method_types" => {
+                    Deserialize::begin(&mut self.builder.payment_method_types)
+                }
+                "payment_status" => Deserialize::begin(&mut self.builder.payment_status),
+                "permissions" => Deserialize::begin(&mut self.builder.permissions),
+                "phone_number_collection" => {
+                    Deserialize::begin(&mut self.builder.phone_number_collection)
+                }
+                "presentment_details" => Deserialize::begin(&mut self.builder.presentment_details),
+                "recovered_from" => Deserialize::begin(&mut self.builder.recovered_from),
+                "redirect_on_completion" => {
+                    Deserialize::begin(&mut self.builder.redirect_on_completion)
+                }
+                "return_url" => Deserialize::begin(&mut self.builder.return_url),
                 "saved_payment_method_options" => {
-                    Deserialize::begin(&mut self.saved_payment_method_options)
+                    Deserialize::begin(&mut self.builder.saved_payment_method_options)
                 }
-                "setup_intent" => Deserialize::begin(&mut self.setup_intent),
+                "setup_intent" => Deserialize::begin(&mut self.builder.setup_intent),
                 "shipping_address_collection" => {
-                    Deserialize::begin(&mut self.shipping_address_collection)
+                    Deserialize::begin(&mut self.builder.shipping_address_collection)
                 }
-                "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
-                "shipping_options" => Deserialize::begin(&mut self.shipping_options),
-                "status" => Deserialize::begin(&mut self.status),
-                "submit_type" => Deserialize::begin(&mut self.submit_type),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                "success_url" => Deserialize::begin(&mut self.success_url),
-                "tax_id_collection" => Deserialize::begin(&mut self.tax_id_collection),
-                "total_details" => Deserialize::begin(&mut self.total_details),
-                "ui_mode" => Deserialize::begin(&mut self.ui_mode),
-                "url" => Deserialize::begin(&mut self.url),
-                "wallet_options" => Deserialize::begin(&mut self.wallet_options),
+                "shipping_cost" => Deserialize::begin(&mut self.builder.shipping_cost),
+                "shipping_options" => Deserialize::begin(&mut self.builder.shipping_options),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "submit_type" => Deserialize::begin(&mut self.builder.submit_type),
+                "subscription" => Deserialize::begin(&mut self.builder.subscription),
+                "success_url" => Deserialize::begin(&mut self.builder.success_url),
+                "tax_id_collection" => Deserialize::begin(&mut self.builder.tax_id_collection),
+                "total_details" => Deserialize::begin(&mut self.builder.total_details),
+                "ui_mode" => Deserialize::begin(&mut self.builder.ui_mode),
+                "url" => Deserialize::begin(&mut self.builder.url),
+                "wallet_options" => Deserialize::begin(&mut self.builder.wallet_options),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                adaptive_pricing: Deserialize::default(),
-                after_expiration: Deserialize::default(),
-                allow_promotion_codes: Deserialize::default(),
-                amount_subtotal: Deserialize::default(),
-                amount_total: Deserialize::default(),
-                automatic_tax: Deserialize::default(),
-                billing_address_collection: Deserialize::default(),
-                branding_settings: Deserialize::default(),
-                cancel_url: Deserialize::default(),
-                client_reference_id: Deserialize::default(),
-                client_secret: Deserialize::default(),
-                collected_information: Deserialize::default(),
-                consent: Deserialize::default(),
-                consent_collection: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                currency_conversion: Deserialize::default(),
-                custom_fields: Deserialize::default(),
-                custom_text: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                customer_creation: Deserialize::default(),
-                customer_details: Deserialize::default(),
-                customer_email: Deserialize::default(),
-                discounts: Deserialize::default(),
-                excluded_payment_method_types: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                id: Deserialize::default(),
-                integration_identifier: Deserialize::default(),
-                invoice: Deserialize::default(),
-                invoice_creation: Deserialize::default(),
-                line_items: Deserialize::default(),
-                livemode: Deserialize::default(),
-                locale: Deserialize::default(),
-                metadata: Deserialize::default(),
-                mode: Deserialize::default(),
-                name_collection: Deserialize::default(),
-                optional_items: Deserialize::default(),
-                origin_context: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                payment_link: Deserialize::default(),
-                payment_method_collection: Deserialize::default(),
-                payment_method_configuration_details: Deserialize::default(),
-                payment_method_options: Deserialize::default(),
-                payment_method_types: Deserialize::default(),
-                payment_status: Deserialize::default(),
-                permissions: Deserialize::default(),
-                phone_number_collection: Deserialize::default(),
-                presentment_details: Deserialize::default(),
-                recovered_from: Deserialize::default(),
-                redirect_on_completion: Deserialize::default(),
-                return_url: Deserialize::default(),
-                saved_payment_method_options: Deserialize::default(),
-                setup_intent: Deserialize::default(),
-                shipping_address_collection: Deserialize::default(),
-                shipping_cost: Deserialize::default(),
-                shipping_options: Deserialize::default(),
-                status: Deserialize::default(),
-                submit_type: Deserialize::default(),
-                subscription: Deserialize::default(),
-                success_url: Deserialize::default(),
-                tax_id_collection: Deserialize::default(),
-                total_details: Deserialize::default(),
-                ui_mode: Deserialize::default(),
-                url: Deserialize::default(),
-                wallet_options: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(adaptive_pricing),
                 Some(after_expiration),
@@ -536,77 +543,77 @@ const _: () = {
                 Some(url),
                 Some(wallet_options),
             ) = (
-                self.adaptive_pricing,
-                self.after_expiration.take(),
-                self.allow_promotion_codes,
-                self.amount_subtotal,
-                self.amount_total,
-                self.automatic_tax.take(),
-                self.billing_address_collection.take(),
-                self.branding_settings.take(),
-                self.cancel_url.take(),
-                self.client_reference_id.take(),
-                self.client_secret.take(),
-                self.collected_information.take(),
-                self.consent.take(),
-                self.consent_collection.take(),
-                self.created,
-                self.currency.take(),
-                self.currency_conversion.take(),
-                self.custom_fields.take(),
-                self.custom_text.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.customer_creation.take(),
-                self.customer_details.take(),
-                self.customer_email.take(),
-                self.discounts.take(),
-                self.excluded_payment_method_types.take(),
-                self.expires_at,
-                self.id.take(),
-                self.integration_identifier.take(),
-                self.invoice.take(),
-                self.invoice_creation.take(),
-                self.line_items.take(),
-                self.livemode,
-                self.locale.take(),
-                self.metadata.take(),
-                self.mode.take(),
-                self.name_collection,
-                self.optional_items.take(),
-                self.origin_context.take(),
-                self.payment_intent.take(),
-                self.payment_link.take(),
-                self.payment_method_collection.take(),
-                self.payment_method_configuration_details.take(),
-                self.payment_method_options.take(),
-                self.payment_method_types.take(),
-                self.payment_status.take(),
-                self.permissions.take(),
-                self.phone_number_collection,
-                self.presentment_details.take(),
-                self.recovered_from.take(),
-                self.redirect_on_completion.take(),
-                self.return_url.take(),
-                self.saved_payment_method_options.take(),
-                self.setup_intent.take(),
-                self.shipping_address_collection.take(),
-                self.shipping_cost.take(),
-                self.shipping_options.take(),
-                self.status.take(),
-                self.submit_type.take(),
-                self.subscription.take(),
-                self.success_url.take(),
-                self.tax_id_collection.take(),
-                self.total_details.take(),
-                self.ui_mode.take(),
-                self.url.take(),
-                self.wallet_options.take(),
+                self.builder.adaptive_pricing,
+                self.builder.after_expiration.take(),
+                self.builder.allow_promotion_codes,
+                self.builder.amount_subtotal,
+                self.builder.amount_total,
+                self.builder.automatic_tax.take(),
+                self.builder.billing_address_collection.take(),
+                self.builder.branding_settings.take(),
+                self.builder.cancel_url.take(),
+                self.builder.client_reference_id.take(),
+                self.builder.client_secret.take(),
+                self.builder.collected_information.take(),
+                self.builder.consent.take(),
+                self.builder.consent_collection.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.currency_conversion.take(),
+                self.builder.custom_fields.take(),
+                self.builder.custom_text.take(),
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.customer_creation.take(),
+                self.builder.customer_details.take(),
+                self.builder.customer_email.take(),
+                self.builder.discounts.take(),
+                self.builder.excluded_payment_method_types.take(),
+                self.builder.expires_at,
+                self.builder.id.take(),
+                self.builder.integration_identifier.take(),
+                self.builder.invoice.take(),
+                self.builder.invoice_creation.take(),
+                self.builder.line_items.take(),
+                self.builder.livemode,
+                self.builder.locale.take(),
+                self.builder.metadata.take(),
+                self.builder.mode.take(),
+                self.builder.name_collection,
+                self.builder.optional_items.take(),
+                self.builder.origin_context.take(),
+                self.builder.payment_intent.take(),
+                self.builder.payment_link.take(),
+                self.builder.payment_method_collection.take(),
+                self.builder.payment_method_configuration_details.take(),
+                self.builder.payment_method_options.take(),
+                self.builder.payment_method_types.take(),
+                self.builder.payment_status.take(),
+                self.builder.permissions.take(),
+                self.builder.phone_number_collection,
+                self.builder.presentment_details.take(),
+                self.builder.recovered_from.take(),
+                self.builder.redirect_on_completion.take(),
+                self.builder.return_url.take(),
+                self.builder.saved_payment_method_options.take(),
+                self.builder.setup_intent.take(),
+                self.builder.shipping_address_collection.take(),
+                self.builder.shipping_cost.take(),
+                self.builder.shipping_options.take(),
+                self.builder.status.take(),
+                self.builder.submit_type.take(),
+                self.builder.subscription.take(),
+                self.builder.success_url.take(),
+                self.builder.tax_id_collection.take(),
+                self.builder.total_details.take(),
+                self.builder.ui_mode.take(),
+                self.builder.url.take(),
+                self.builder.wallet_options.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(CheckoutSession {
                 adaptive_pricing,
                 after_expiration,
                 allow_promotion_codes,
@@ -673,127 +680,8 @@ const _: () = {
                 ui_mode,
                 url,
                 wallet_options,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CheckoutSession {
-        type Builder = CheckoutSessionBuilder;
-    }
-
-    impl FromValueOpt for CheckoutSession {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutSessionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "adaptive_pricing" => b.adaptive_pricing = FromValueOpt::from_value(v),
-                    "after_expiration" => b.after_expiration = FromValueOpt::from_value(v),
-                    "allow_promotion_codes" => {
-                        b.allow_promotion_codes = FromValueOpt::from_value(v)
-                    }
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "billing_address_collection" => {
-                        b.billing_address_collection = FromValueOpt::from_value(v)
-                    }
-                    "branding_settings" => b.branding_settings = FromValueOpt::from_value(v),
-                    "cancel_url" => b.cancel_url = FromValueOpt::from_value(v),
-                    "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "collected_information" => {
-                        b.collected_information = FromValueOpt::from_value(v)
-                    }
-                    "consent" => b.consent = FromValueOpt::from_value(v),
-                    "consent_collection" => b.consent_collection = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "currency_conversion" => b.currency_conversion = FromValueOpt::from_value(v),
-                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
-                    "custom_text" => b.custom_text = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "customer_creation" => b.customer_creation = FromValueOpt::from_value(v),
-                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
-                    "customer_email" => b.customer_email = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "excluded_payment_method_types" => {
-                        b.excluded_payment_method_types = FromValueOpt::from_value(v)
-                    }
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "integration_identifier" => {
-                        b.integration_identifier = FromValueOpt::from_value(v)
-                    }
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "invoice_creation" => b.invoice_creation = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "locale" => b.locale = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "mode" => b.mode = FromValueOpt::from_value(v),
-                    "name_collection" => b.name_collection = FromValueOpt::from_value(v),
-                    "optional_items" => b.optional_items = FromValueOpt::from_value(v),
-                    "origin_context" => b.origin_context = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_link" => b.payment_link = FromValueOpt::from_value(v),
-                    "payment_method_collection" => {
-                        b.payment_method_collection = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_configuration_details" => {
-                        b.payment_method_configuration_details = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
-                    "payment_status" => b.payment_status = FromValueOpt::from_value(v),
-                    "permissions" => b.permissions = FromValueOpt::from_value(v),
-                    "phone_number_collection" => {
-                        b.phone_number_collection = FromValueOpt::from_value(v)
-                    }
-                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
-                    "recovered_from" => b.recovered_from = FromValueOpt::from_value(v),
-                    "redirect_on_completion" => {
-                        b.redirect_on_completion = FromValueOpt::from_value(v)
-                    }
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    "saved_payment_method_options" => {
-                        b.saved_payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
-                    "shipping_address_collection" => {
-                        b.shipping_address_collection = FromValueOpt::from_value(v)
-                    }
-                    "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
-                    "shipping_options" => b.shipping_options = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "submit_type" => b.submit_type = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "success_url" => b.success_url = FromValueOpt::from_value(v),
-                    "tax_id_collection" => b.tax_id_collection = FromValueOpt::from_value(v),
-                    "total_details" => b.total_details = FromValueOpt::from_value(v),
-                    "ui_mode" => b.ui_mode = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    "wallet_options" => b.wallet_options = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -941,21 +829,19 @@ impl serde::Serialize for CheckoutSessionCustomerCreation {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionCustomerCreation {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionCustomerCreation {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionCustomerCreation> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionCustomerCreation> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionCustomerCreation::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionCustomerCreation);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1029,21 +915,19 @@ impl serde::Serialize for CheckoutSessionPaymentMethodCollection {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionPaymentMethodCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionPaymentMethodCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentMethodCollection> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentMethodCollection> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionPaymentMethodCollection::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionPaymentMethodCollection);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1121,21 +1005,19 @@ impl serde::Serialize for CheckoutSessionPaymentStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionPaymentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionPaymentStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionPaymentStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionPaymentStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionPaymentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1218,21 +1100,19 @@ impl serde::Serialize for CheckoutSessionBillingAddressCollection {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionBillingAddressCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionBillingAddressCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionBillingAddressCollection> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionBillingAddressCollection> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionBillingAddressCollection::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionBillingAddressCollection);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1417,21 +1297,19 @@ impl serde::Serialize for CheckoutSessionLocale {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionLocale {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionLocale {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionLocale> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionLocale> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionLocale::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionLocale);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1502,21 +1380,19 @@ impl serde::Serialize for CheckoutSessionMode {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionMode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionMode> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionMode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionMode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1588,21 +1464,19 @@ impl serde::Serialize for CheckoutSessionOriginContext {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionOriginContext {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionOriginContext {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionOriginContext> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionOriginContext> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionOriginContext::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionOriginContext);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionOriginContext {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1677,21 +1551,19 @@ impl serde::Serialize for CheckoutSessionRedirectOnCompletion {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionRedirectOnCompletion {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionRedirectOnCompletion {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionRedirectOnCompletion> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionRedirectOnCompletion> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionRedirectOnCompletion::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionRedirectOnCompletion);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionRedirectOnCompletion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1762,21 +1634,19 @@ impl serde::Serialize for CheckoutSessionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1853,21 +1723,19 @@ impl serde::Serialize for CheckoutSessionSubmitType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionSubmitType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionSubmitType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionSubmitType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionSubmitType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionSubmitType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionSubmitType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1941,21 +1809,19 @@ impl serde::Serialize for CheckoutSessionUiMode {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutSessionUiMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutSessionUiMode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionUiMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CheckoutSessionUiMode> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CheckoutSessionUiMode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionUiMode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionUiMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -23,12 +23,50 @@ fn test_req() -> CustomizableStripeRequest<TestData> {
     RequestBuilder::new(StripeMethod::Get, "/test").customize()
 }
 
-#[derive(miniserde::Deserialize, Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct TestData {
     // Allowing dead code since used for deserialization
     #[allow(dead_code)]
     id: String,
 }
+
+const _: () = {
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
+
+    make_place!(Place);
+
+    impl Deserialize for TestData {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<TestData> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, id: None }))
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TestData>,
+        id: Option<String>,
+    }
+
+    impl Map for Builder<'_> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "id" => Deserialize::begin(&mut self.id),
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+        fn finish(&mut self) -> Result<()> {
+            let Some(id) = self.id.take() else { return Ok(()) };
+            *self.out = Some(TestData { id });
+            Ok(())
+        }
+    }
+};
 
 const TEST_DATA_ID: &str = "test-id";
 
@@ -115,7 +153,7 @@ async fn user_error() {
 async fn nice_serde_error() {
     use serde::Deserialize;
 
-    #[derive(Debug, Deserialize, miniserde::Deserialize)]
+    #[derive(Debug, Deserialize)]
     struct DataType {
         // Allowing dead code since used for deserialization
         #[allow(dead_code)]
@@ -123,6 +161,48 @@ async fn nice_serde_error() {
         #[allow(dead_code)]
         name: String,
     }
+
+    const _: () = {
+        use stripe_miniserde::de::{Map, Visitor};
+        use stripe_miniserde::{Deserialize as MDeserialize, Result, make_place};
+
+        make_place!(Place);
+
+        impl MDeserialize for DataType {
+            fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+                Place::new(out)
+            }
+        }
+
+        impl Visitor for Place<DataType> {
+            fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+                Ok(Box::new(Builder { out: &mut self.out, id: None, name: None }))
+            }
+        }
+
+        struct Builder<'a> {
+            out: &'a mut Option<DataType>,
+            id: Option<String>,
+            name: Option<String>,
+        }
+
+        impl Map for Builder<'_> {
+            fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+                Ok(match k {
+                    "id" => MDeserialize::begin(&mut self.id),
+                    "name" => MDeserialize::begin(&mut self.name),
+                    _ => <dyn Visitor>::ignore(),
+                })
+            }
+            fn finish(&mut self) -> Result<()> {
+                let (Some(id), Some(name)) = (self.id.take(), self.name.take()) else {
+                    return Ok(());
+                };
+                *self.out = Some(DataType { id, name });
+                Ok(())
+            }
+        }
+    };
 
     // Start a lightweight mock server.
     let server = MockServer::start_async().await;

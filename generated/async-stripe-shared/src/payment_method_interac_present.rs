@@ -71,16 +71,14 @@ pub struct PaymentMethodInteracPresentBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -99,53 +97,48 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodInteracPresentBuilder::deser_default(),
+                builder: PaymentMethodInteracPresentBuilder {
+                    brand: Deserialize::default(),
+                    cardholder_name: Deserialize::default(),
+                    country: Deserialize::default(),
+                    description: Deserialize::default(),
+                    exp_month: Deserialize::default(),
+                    exp_year: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    funding: Deserialize::default(),
+                    iin: Deserialize::default(),
+                    issuer: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    networks: Deserialize::default(),
+                    preferred_locales: Deserialize::default(),
+                    read_method: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodInteracPresentBuilder {
-        type Out = PaymentMethodInteracPresent;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "brand" => Deserialize::begin(&mut self.brand),
-                "cardholder_name" => Deserialize::begin(&mut self.cardholder_name),
-                "country" => Deserialize::begin(&mut self.country),
-                "description" => Deserialize::begin(&mut self.description),
-                "exp_month" => Deserialize::begin(&mut self.exp_month),
-                "exp_year" => Deserialize::begin(&mut self.exp_year),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "funding" => Deserialize::begin(&mut self.funding),
-                "iin" => Deserialize::begin(&mut self.iin),
-                "issuer" => Deserialize::begin(&mut self.issuer),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "networks" => Deserialize::begin(&mut self.networks),
-                "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
-                "read_method" => Deserialize::begin(&mut self.read_method),
+                "brand" => Deserialize::begin(&mut self.builder.brand),
+                "cardholder_name" => Deserialize::begin(&mut self.builder.cardholder_name),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "exp_month" => Deserialize::begin(&mut self.builder.exp_month),
+                "exp_year" => Deserialize::begin(&mut self.builder.exp_year),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "funding" => Deserialize::begin(&mut self.builder.funding),
+                "iin" => Deserialize::begin(&mut self.builder.iin),
+                "issuer" => Deserialize::begin(&mut self.builder.issuer),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "networks" => Deserialize::begin(&mut self.builder.networks),
+                "preferred_locales" => Deserialize::begin(&mut self.builder.preferred_locales),
+                "read_method" => Deserialize::begin(&mut self.builder.read_method),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                brand: Deserialize::default(),
-                cardholder_name: Deserialize::default(),
-                country: Deserialize::default(),
-                description: Deserialize::default(),
-                exp_month: Deserialize::default(),
-                exp_year: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                funding: Deserialize::default(),
-                iin: Deserialize::default(),
-                issuer: Deserialize::default(),
-                last4: Deserialize::default(),
-                networks: Deserialize::default(),
-                preferred_locales: Deserialize::default(),
-                read_method: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(brand),
                 Some(cardholder_name),
@@ -162,25 +155,25 @@ const _: () = {
                 Some(preferred_locales),
                 Some(read_method),
             ) = (
-                self.brand.take(),
-                self.cardholder_name.take(),
-                self.country.take(),
-                self.description.take(),
-                self.exp_month,
-                self.exp_year,
-                self.fingerprint.take(),
-                self.funding.take(),
-                self.iin.take(),
-                self.issuer.take(),
-                self.last4.take(),
-                self.networks.take(),
-                self.preferred_locales.take(),
-                self.read_method.take(),
+                self.builder.brand.take(),
+                self.builder.cardholder_name.take(),
+                self.builder.country.take(),
+                self.builder.description.take(),
+                self.builder.exp_month,
+                self.builder.exp_year,
+                self.builder.fingerprint.take(),
+                self.builder.funding.take(),
+                self.builder.iin.take(),
+                self.builder.issuer.take(),
+                self.builder.last4.take(),
+                self.builder.networks.take(),
+                self.builder.preferred_locales.take(),
+                self.builder.read_method.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodInteracPresent {
                 brand,
                 cardholder_name,
                 country,
@@ -195,51 +188,8 @@ const _: () = {
                 networks,
                 preferred_locales,
                 read_method,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodInteracPresent {
-        type Builder = PaymentMethodInteracPresentBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodInteracPresent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodInteracPresentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "cardholder_name" => b.cardholder_name = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "networks" => b.networks = FromValueOpt::from_value(v),
-                    "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
-                    "read_method" => b.read_method = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -317,21 +267,19 @@ impl serde::Serialize for PaymentMethodInteracPresentReadMethod {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodInteracPresentReadMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodInteracPresentReadMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodInteracPresentReadMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodInteracPresentReadMethod> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentMethodInteracPresentReadMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodInteracPresentReadMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodInteracPresentReadMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

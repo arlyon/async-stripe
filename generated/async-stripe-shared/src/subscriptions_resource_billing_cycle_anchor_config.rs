@@ -32,16 +32,14 @@ pub struct SubscriptionsResourceBillingCycleAnchorConfigBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,76 +58,47 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SubscriptionsResourceBillingCycleAnchorConfigBuilder::deser_default(),
+                builder: SubscriptionsResourceBillingCycleAnchorConfigBuilder {
+                    day_of_month: Deserialize::default(),
+                    hour: Deserialize::default(),
+                    minute: Deserialize::default(),
+                    month: Deserialize::default(),
+                    second: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SubscriptionsResourceBillingCycleAnchorConfigBuilder {
-        type Out = SubscriptionsResourceBillingCycleAnchorConfig;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "day_of_month" => Deserialize::begin(&mut self.day_of_month),
-                "hour" => Deserialize::begin(&mut self.hour),
-                "minute" => Deserialize::begin(&mut self.minute),
-                "month" => Deserialize::begin(&mut self.month),
-                "second" => Deserialize::begin(&mut self.second),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                day_of_month: Deserialize::default(),
-                hour: Deserialize::default(),
-                minute: Deserialize::default(),
-                month: Deserialize::default(),
-                second: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(day_of_month), Some(hour), Some(minute), Some(month), Some(second)) =
-                (self.day_of_month, self.hour, self.minute, self.month, self.second)
-            else {
-                return None;
-            };
-            Some(Self::Out { day_of_month, hour, minute, month, second })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "day_of_month" => Deserialize::begin(&mut self.builder.day_of_month),
+                "hour" => Deserialize::begin(&mut self.builder.hour),
+                "minute" => Deserialize::begin(&mut self.builder.minute),
+                "month" => Deserialize::begin(&mut self.builder.month),
+                "second" => Deserialize::begin(&mut self.builder.second),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SubscriptionsResourceBillingCycleAnchorConfig {
-        type Builder = SubscriptionsResourceBillingCycleAnchorConfigBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionsResourceBillingCycleAnchorConfig {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(day_of_month), Some(hour), Some(minute), Some(month), Some(second)) = (
+                self.builder.day_of_month,
+                self.builder.hour,
+                self.builder.minute,
+                self.builder.month,
+                self.builder.second,
+            ) else {
+                return Ok(());
             };
-            let mut b = SubscriptionsResourceBillingCycleAnchorConfigBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "day_of_month" => b.day_of_month = FromValueOpt::from_value(v),
-                    "hour" => b.hour = FromValueOpt::from_value(v),
-                    "minute" => b.minute = FromValueOpt::from_value(v),
-                    "month" => b.month = FromValueOpt::from_value(v),
-                    "second" => b.second = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SubscriptionsResourceBillingCycleAnchorConfig {
+                day_of_month,
+                hour,
+                minute,
+                month,
+                second,
+            });
+            Ok(())
         }
     }
 };

@@ -11,91 +11,37 @@ pub enum ExternalAccount {
     Card(stripe_shared::Card),
 }
 
-#[derive(Default)]
-pub struct ExternalAccountBuilder {
-    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
-}
-
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::MapBuilder;
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_miniserde::de::Visitor;
+    use stripe_miniserde::{Deserialize, Error, Result, make_place};
+    use stripe_miniserde::json::peek_object_tag;
 
     use super::*;
 
     make_place!(Place);
 
-    struct Builder<'a> {
-        out: &'a mut Option<ExternalAccount>,
-        builder: ExternalAccountBuilder,
-    }
-
     impl Deserialize for ExternalAccount {
+        const WANTS_RAW: bool = true;
+
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     impl Visitor for Place<ExternalAccount> {
-        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+        fn wants_raw(&self) -> bool {
+            true
         }
 
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+        fn raw(&mut self, bytes: &str) -> Result<()> {
+            let tag = peek_object_tag(bytes).ok_or(Error)?;
+            self.out = Some(match tag.as_str() {
+                "bank_account" => ExternalAccount::BankAccount(stripe_miniserde::json::from_str(bytes)?),
+                "card" => ExternalAccount::Card(stripe_miniserde::json::from_str(bytes)?),
+
+                _ => return Err(Error),
+            });
             Ok(())
-        }
-    }
-
-    impl MapBuilder for ExternalAccountBuilder {
-        type Out = ExternalAccount;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.inner.key_inner(k)
-        }
-
-        fn deser_default() -> Self {
-            Self::default()
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (k, o) = self.inner.finish_inner()?;
-            ExternalAccount::construct(&k, o)
-        }
-    }
-
-    impl stripe_types::ObjectDeser for ExternalAccount {
-        type Builder = ExternalAccountBuilder;
-    }
-    impl ExternalAccount {
-        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
-            Some(match key {
-                "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
-                "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
-
-                _ => {
-                    tracing::warn!(
-                        "Unknown object type '{}' for enum '{}'",
-                        key,
-                        "ExternalAccount"
-                    );
-                    return None;
-                }
-            })
-        }
-    }
-
-    impl FromValueOpt for ExternalAccount {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
         }
     }
 };

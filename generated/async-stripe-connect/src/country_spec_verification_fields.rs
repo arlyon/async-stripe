@@ -21,16 +21,14 @@ pub struct CountrySpecVerificationFieldsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -49,63 +47,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CountrySpecVerificationFieldsBuilder::deser_default(),
+                builder: CountrySpecVerificationFieldsBuilder {
+                    company: Deserialize::default(),
+                    individual: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for CountrySpecVerificationFieldsBuilder {
-        type Out = CountrySpecVerificationFields;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "company" => Deserialize::begin(&mut self.company),
-                "individual" => Deserialize::begin(&mut self.individual),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { company: Deserialize::default(), individual: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(company), Some(individual)) = (self.company.take(), self.individual.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { company, individual })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "company" => Deserialize::begin(&mut self.builder.company),
+                "individual" => Deserialize::begin(&mut self.builder.individual),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for CountrySpecVerificationFields {
-        type Builder = CountrySpecVerificationFieldsBuilder;
-    }
-
-    impl FromValueOpt for CountrySpecVerificationFields {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(company), Some(individual)) =
+                (self.builder.company.take(), self.builder.individual.take())
+            else {
+                return Ok(());
             };
-            let mut b = CountrySpecVerificationFieldsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "company" => b.company = FromValueOpt::from_value(v),
-                    "individual" => b.individual = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(CountrySpecVerificationFields { company, individual });
+            Ok(())
         }
     }
 };

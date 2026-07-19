@@ -29,16 +29,14 @@ pub struct PaymentIntentNextActionBoletoBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,76 +55,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionBoletoBuilder::deser_default(),
+                builder: PaymentIntentNextActionBoletoBuilder {
+                    expires_at: Deserialize::default(),
+                    hosted_voucher_url: Deserialize::default(),
+                    number: Deserialize::default(),
+                    pdf: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentNextActionBoletoBuilder {
-        type Out = PaymentIntentNextActionBoleto;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "hosted_voucher_url" => Deserialize::begin(&mut self.hosted_voucher_url),
-                "number" => Deserialize::begin(&mut self.number),
-                "pdf" => Deserialize::begin(&mut self.pdf),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                expires_at: Deserialize::default(),
-                hosted_voucher_url: Deserialize::default(),
-                number: Deserialize::default(),
-                pdf: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_at), Some(hosted_voucher_url), Some(number), Some(pdf)) = (
-                self.expires_at,
-                self.hosted_voucher_url.take(),
-                self.number.take(),
-                self.pdf.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { expires_at, hosted_voucher_url, number, pdf })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "hosted_voucher_url" => Deserialize::begin(&mut self.builder.hosted_voucher_url),
+                "number" => Deserialize::begin(&mut self.builder.number),
+                "pdf" => Deserialize::begin(&mut self.builder.pdf),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionBoleto {
-        type Builder = PaymentIntentNextActionBoletoBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionBoleto {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(expires_at), Some(hosted_voucher_url), Some(number), Some(pdf)) = (
+                self.builder.expires_at,
+                self.builder.hosted_voucher_url.take(),
+                self.builder.number.take(),
+                self.builder.pdf.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentIntentNextActionBoletoBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "hosted_voucher_url" => b.hosted_voucher_url = FromValueOpt::from_value(v),
-                    "number" => b.number = FromValueOpt::from_value(v),
-                    "pdf" => b.pdf = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PaymentIntentNextActionBoleto { expires_at, hosted_voucher_url, number, pdf });
+            Ok(())
         }
     }
 };

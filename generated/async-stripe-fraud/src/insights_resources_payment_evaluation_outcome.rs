@@ -32,16 +32,14 @@ pub struct InsightsResourcesPaymentEvaluationOutcomeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,35 +58,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InsightsResourcesPaymentEvaluationOutcomeBuilder::deser_default(),
+                builder: InsightsResourcesPaymentEvaluationOutcomeBuilder {
+                    merchant_blocked: Deserialize::default(),
+                    payment_intent_id: Deserialize::default(),
+                    rejected: Deserialize::default(),
+                    succeeded: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for InsightsResourcesPaymentEvaluationOutcomeBuilder {
-        type Out = InsightsResourcesPaymentEvaluationOutcome;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "merchant_blocked" => Deserialize::begin(&mut self.merchant_blocked),
-                "payment_intent_id" => Deserialize::begin(&mut self.payment_intent_id),
-                "rejected" => Deserialize::begin(&mut self.rejected),
-                "succeeded" => Deserialize::begin(&mut self.succeeded),
-                "type" => Deserialize::begin(&mut self.type_),
+                "merchant_blocked" => Deserialize::begin(&mut self.builder.merchant_blocked),
+                "payment_intent_id" => Deserialize::begin(&mut self.builder.payment_intent_id),
+                "rejected" => Deserialize::begin(&mut self.builder.rejected),
+                "succeeded" => Deserialize::begin(&mut self.builder.succeeded),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                merchant_blocked: Deserialize::default(),
-                payment_intent_id: Deserialize::default(),
-                rejected: Deserialize::default(),
-                succeeded: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(merchant_blocked),
                 Some(payment_intent_id),
@@ -96,51 +89,23 @@ const _: () = {
                 Some(succeeded),
                 Some(type_),
             ) = (
-                self.merchant_blocked.take(),
-                self.payment_intent_id.take(),
-                self.rejected.take(),
-                self.succeeded.take(),
-                self.type_.take(),
+                self.builder.merchant_blocked.take(),
+                self.builder.payment_intent_id.take(),
+                self.builder.rejected.take(),
+                self.builder.succeeded.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { merchant_blocked, payment_intent_id, rejected, succeeded, type_ })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(InsightsResourcesPaymentEvaluationOutcome {
+                merchant_blocked,
+                payment_intent_id,
+                rejected,
+                succeeded,
+                type_,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for InsightsResourcesPaymentEvaluationOutcome {
-        type Builder = InsightsResourcesPaymentEvaluationOutcomeBuilder;
-    }
-
-    impl FromValueOpt for InsightsResourcesPaymentEvaluationOutcome {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InsightsResourcesPaymentEvaluationOutcomeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "merchant_blocked" => b.merchant_blocked = FromValueOpt::from_value(v),
-                    "payment_intent_id" => b.payment_intent_id = FromValueOpt::from_value(v),
-                    "rejected" => b.rejected = FromValueOpt::from_value(v),
-                    "succeeded" => b.succeeded = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -216,22 +181,20 @@ impl serde::Serialize for InsightsResourcesPaymentEvaluationOutcomeType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for InsightsResourcesPaymentEvaluationOutcomeType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for InsightsResourcesPaymentEvaluationOutcomeType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<InsightsResourcesPaymentEvaluationOutcomeType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<InsightsResourcesPaymentEvaluationOutcomeType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(InsightsResourcesPaymentEvaluationOutcomeType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(InsightsResourcesPaymentEvaluationOutcomeType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InsightsResourcesPaymentEvaluationOutcomeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

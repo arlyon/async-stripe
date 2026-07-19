@@ -22,16 +22,14 @@ pub struct PaymentMethodDetailsRevolutPayBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -50,64 +48,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsRevolutPayBuilder::deser_default(),
+                builder: PaymentMethodDetailsRevolutPayBuilder {
+                    funding: Deserialize::default(),
+                    transaction_id: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDetailsRevolutPayBuilder {
-        type Out = PaymentMethodDetailsRevolutPay;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "funding" => Deserialize::begin(&mut self.funding),
-                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { funding: Deserialize::default(), transaction_id: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(funding), Some(transaction_id)) =
-                (self.funding.take(), self.transaction_id.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { funding, transaction_id })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "funding" => Deserialize::begin(&mut self.builder.funding),
+                "transaction_id" => Deserialize::begin(&mut self.builder.transaction_id),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsRevolutPay {
-        type Builder = PaymentMethodDetailsRevolutPayBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsRevolutPay {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(funding), Some(transaction_id)) =
+                (self.builder.funding.take(), self.builder.transaction_id.take())
+            else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDetailsRevolutPayBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodDetailsRevolutPay { funding, transaction_id });
+            Ok(())
         }
     }
 };

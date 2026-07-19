@@ -25,16 +25,14 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverd
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,70 +53,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraftBuilder::deser_default(),
+            builder: CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraftBuilder { balance_transaction: Deserialize::default(),
+linked_transaction: Deserialize::default(),
+ },
         }))
-        }
-    }
-
-    impl MapBuilder
-        for CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraftBuilder
-    {
-        type Out = CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
-                "linked_transaction" => Deserialize::begin(&mut self.linked_transaction),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                balance_transaction: Deserialize::default(),
-                linked_transaction: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(balance_transaction), Some(linked_transaction)) =
-                (self.balance_transaction.take(), self.linked_transaction.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { balance_transaction, linked_transaction })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "balance_transaction" => Deserialize::begin(&mut self.builder.balance_transaction),
+                "linked_transaction" => Deserialize::begin(&mut self.builder.linked_transaction),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft {
-        type Builder =
-            CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraftBuilder;
-    }
-
-    impl FromValueOpt for CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(balance_transaction), Some(linked_transaction)) =
+                (self.builder.balance_transaction.take(), self.builder.linked_transaction.take())
+            else {
+                return Ok(());
             };
-            let mut b = CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraftBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "linked_transaction" => b.linked_transaction = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft {
+                    balance_transaction,
+                    linked_transaction,
+                });
+            Ok(())
         }
     }
 };

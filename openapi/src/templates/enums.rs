@@ -247,28 +247,26 @@ impl ObjectWriter<'_> {
         let miniserde_assign_line = if self.provide_unknown_variant {
             format!("Some({enum_name}::from_str(s).expect(\"infallible\"))")
         } else {
-            format!("Some({enum_name}::from_str(s).map_err(|_| miniserde::Error)?)")
+            format!("Some({enum_name}::from_str(s).map_err(|_| stripe_miniserde::Error)?)")
         };
 
         if self.usage.should_impl_deserialize() {
             let _ = writedoc!(
                 out,
                 r#"
-            impl miniserde::Deserialize for {enum_name} {{
-                fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {{
+            impl stripe_miniserde::Deserialize for {enum_name} {{
+                fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {{
                     crate::Place::new(out)
                 }}
             }}
 
-            impl miniserde::de::Visitor for crate::Place<{enum_name}> {{
-                fn string(&mut self, s: &str) -> miniserde::Result<()> {{
+            impl stripe_miniserde::de::Visitor for crate::Place<{enum_name}> {{
+                fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {{
                     use std::str::FromStr;
                     self.out = {miniserde_assign_line};
                     Ok(())
                 }}
             }}
-
-            stripe_types::impl_from_val_with_from_str!({enum_name});
            "#
             );
         }

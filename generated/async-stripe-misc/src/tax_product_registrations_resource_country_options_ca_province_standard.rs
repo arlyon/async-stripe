@@ -21,16 +21,14 @@ pub struct TaxProductRegistrationsResourceCountryOptionsCaProvinceStandardBuilde
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -48,61 +46,29 @@ const _: () = {
     impl Visitor for Place<TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
-            out: &mut self.out,
-            builder: TaxProductRegistrationsResourceCountryOptionsCaProvinceStandardBuilder::deser_default(),
-        }))
-        }
-    }
-
-    impl MapBuilder for TaxProductRegistrationsResourceCountryOptionsCaProvinceStandardBuilder {
-        type Out = TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "province" => Deserialize::begin(&mut self.province),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { province: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(province),) = (self.province.take(),) else {
-                return None;
-            };
-            Some(Self::Out { province })
+                out: &mut self.out,
+                builder: TaxProductRegistrationsResourceCountryOptionsCaProvinceStandardBuilder {
+                    province: Deserialize::default(),
+                },
+            }))
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "province" => Deserialize::begin(&mut self.builder.province),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard {
-        type Builder = TaxProductRegistrationsResourceCountryOptionsCaProvinceStandardBuilder;
-    }
-
-    impl FromValueOpt for TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(province),) = (self.builder.province.take(),) else {
+                return Ok(());
             };
-            let mut b = TaxProductRegistrationsResourceCountryOptionsCaProvinceStandardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "province" => b.province = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard { province });
+            Ok(())
         }
     }
 };

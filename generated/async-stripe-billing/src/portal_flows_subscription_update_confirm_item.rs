@@ -27,16 +27,14 @@ pub struct PortalFlowsSubscriptionUpdateConfirmItemBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,70 +53,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PortalFlowsSubscriptionUpdateConfirmItemBuilder::deser_default(),
+                builder: PortalFlowsSubscriptionUpdateConfirmItemBuilder {
+                    id: Deserialize::default(),
+                    price: Deserialize::default(),
+                    quantity: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PortalFlowsSubscriptionUpdateConfirmItemBuilder {
-        type Out = PortalFlowsSubscriptionUpdateConfirmItem;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "id" => Deserialize::begin(&mut self.id),
-                "price" => Deserialize::begin(&mut self.price),
-                "quantity" => Deserialize::begin(&mut self.quantity),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                id: Deserialize::default(),
-                price: Deserialize::default(),
-                quantity: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(id), Some(price), Some(quantity)) =
-                (self.id.take(), self.price.take(), self.quantity)
-            else {
-                return None;
-            };
-            Some(Self::Out { id, price, quantity })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "price" => Deserialize::begin(&mut self.builder.price),
+                "quantity" => Deserialize::begin(&mut self.builder.quantity),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PortalFlowsSubscriptionUpdateConfirmItem {
-        type Builder = PortalFlowsSubscriptionUpdateConfirmItemBuilder;
-    }
-
-    impl FromValueOpt for PortalFlowsSubscriptionUpdateConfirmItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(id), Some(price), Some(quantity)) =
+                (self.builder.id.take(), self.builder.price.take(), self.builder.quantity)
+            else {
+                return Ok(());
             };
-            let mut b = PortalFlowsSubscriptionUpdateConfirmItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "price" => b.price = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PortalFlowsSubscriptionUpdateConfirmItem { id, price, quantity });
+            Ok(())
         }
     }
 };

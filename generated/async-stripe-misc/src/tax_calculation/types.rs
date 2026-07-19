@@ -64,16 +64,14 @@ pub struct TaxCalculationBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -92,53 +90,52 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TaxCalculationBuilder::deser_default(),
+                builder: TaxCalculationBuilder {
+                    amount_total: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_details: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    id: Deserialize::default(),
+                    line_items: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    ship_from_details: Deserialize::default(),
+                    shipping_cost: Deserialize::default(),
+                    tax_amount_exclusive: Deserialize::default(),
+                    tax_amount_inclusive: Deserialize::default(),
+                    tax_breakdown: Deserialize::default(),
+                    tax_date: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TaxCalculationBuilder {
-        type Out = TaxCalculation;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_details" => Deserialize::begin(&mut self.customer_details),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "id" => Deserialize::begin(&mut self.id),
-                "line_items" => Deserialize::begin(&mut self.line_items),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "ship_from_details" => Deserialize::begin(&mut self.ship_from_details),
-                "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
-                "tax_amount_exclusive" => Deserialize::begin(&mut self.tax_amount_exclusive),
-                "tax_amount_inclusive" => Deserialize::begin(&mut self.tax_amount_inclusive),
-                "tax_breakdown" => Deserialize::begin(&mut self.tax_breakdown),
-                "tax_date" => Deserialize::begin(&mut self.tax_date),
+                "amount_total" => Deserialize::begin(&mut self.builder.amount_total),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_details" => Deserialize::begin(&mut self.builder.customer_details),
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "line_items" => Deserialize::begin(&mut self.builder.line_items),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "ship_from_details" => Deserialize::begin(&mut self.builder.ship_from_details),
+                "shipping_cost" => Deserialize::begin(&mut self.builder.shipping_cost),
+                "tax_amount_exclusive" => {
+                    Deserialize::begin(&mut self.builder.tax_amount_exclusive)
+                }
+                "tax_amount_inclusive" => {
+                    Deserialize::begin(&mut self.builder.tax_amount_inclusive)
+                }
+                "tax_breakdown" => Deserialize::begin(&mut self.builder.tax_breakdown),
+                "tax_date" => Deserialize::begin(&mut self.builder.tax_date),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount_total: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_details: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                id: Deserialize::default(),
-                line_items: Deserialize::default(),
-                livemode: Deserialize::default(),
-                ship_from_details: Deserialize::default(),
-                shipping_cost: Deserialize::default(),
-                tax_amount_exclusive: Deserialize::default(),
-                tax_amount_inclusive: Deserialize::default(),
-                tax_breakdown: Deserialize::default(),
-                tax_date: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount_total),
                 Some(currency),
@@ -155,25 +152,25 @@ const _: () = {
                 Some(tax_breakdown),
                 Some(tax_date),
             ) = (
-                self.amount_total,
-                self.currency.take(),
-                self.customer.take(),
-                self.customer_details.take(),
-                self.expires_at,
-                self.id.take(),
-                self.line_items.take(),
-                self.livemode,
-                self.ship_from_details.take(),
-                self.shipping_cost.take(),
-                self.tax_amount_exclusive,
-                self.tax_amount_inclusive,
-                self.tax_breakdown.take(),
-                self.tax_date,
+                self.builder.amount_total,
+                self.builder.currency.take(),
+                self.builder.customer.take(),
+                self.builder.customer_details.take(),
+                self.builder.expires_at,
+                self.builder.id.take(),
+                self.builder.line_items.take(),
+                self.builder.livemode,
+                self.builder.ship_from_details.take(),
+                self.builder.shipping_cost.take(),
+                self.builder.tax_amount_exclusive,
+                self.builder.tax_amount_inclusive,
+                self.builder.tax_breakdown.take(),
+                self.builder.tax_date,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TaxCalculation {
                 amount_total,
                 currency,
                 customer,
@@ -188,51 +185,8 @@ const _: () = {
                 tax_amount_inclusive,
                 tax_breakdown,
                 tax_date,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TaxCalculation {
-        type Builder = TaxCalculationBuilder;
-    }
-
-    impl FromValueOpt for TaxCalculation {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxCalculationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "ship_from_details" => b.ship_from_details = FromValueOpt::from_value(v),
-                    "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
-                    "tax_amount_exclusive" => b.tax_amount_exclusive = FromValueOpt::from_value(v),
-                    "tax_amount_inclusive" => b.tax_amount_inclusive = FromValueOpt::from_value(v),
-                    "tax_breakdown" => b.tax_breakdown = FromValueOpt::from_value(v),
-                    "tax_date" => b.tax_date = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -21,16 +21,14 @@ pub struct SetupIntentPaymentMethodOptionsBacsDebitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -49,60 +47,27 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SetupIntentPaymentMethodOptionsBacsDebitBuilder::deser_default(),
+                builder: SetupIntentPaymentMethodOptionsBacsDebitBuilder {
+                    mandate_options: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SetupIntentPaymentMethodOptionsBacsDebitBuilder {
-        type Out = SetupIntentPaymentMethodOptionsBacsDebit;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { mandate_options: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options),) = (self.mandate_options.take(),) else {
-                return None;
-            };
-            Some(Self::Out { mandate_options })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "mandate_options" => Deserialize::begin(&mut self.builder.mandate_options),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SetupIntentPaymentMethodOptionsBacsDebit {
-        type Builder = SetupIntentPaymentMethodOptionsBacsDebitBuilder;
-    }
-
-    impl FromValueOpt for SetupIntentPaymentMethodOptionsBacsDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(mandate_options),) = (self.builder.mandate_options.take(),) else {
+                return Ok(());
             };
-            let mut b = SetupIntentPaymentMethodOptionsBacsDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SetupIntentPaymentMethodOptionsBacsDebit { mandate_options });
+            Ok(())
         }
     }
 };

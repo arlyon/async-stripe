@@ -20,16 +20,14 @@ pub struct SubscriptionsResourceTrialSettingsTrialSettingsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -48,60 +46,27 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SubscriptionsResourceTrialSettingsTrialSettingsBuilder::deser_default(),
+                builder: SubscriptionsResourceTrialSettingsTrialSettingsBuilder {
+                    end_behavior: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SubscriptionsResourceTrialSettingsTrialSettingsBuilder {
-        type Out = SubscriptionsResourceTrialSettingsTrialSettings;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "end_behavior" => Deserialize::begin(&mut self.end_behavior),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { end_behavior: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(end_behavior),) = (self.end_behavior.take(),) else {
-                return None;
-            };
-            Some(Self::Out { end_behavior })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "end_behavior" => Deserialize::begin(&mut self.builder.end_behavior),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SubscriptionsResourceTrialSettingsTrialSettings {
-        type Builder = SubscriptionsResourceTrialSettingsTrialSettingsBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionsResourceTrialSettingsTrialSettings {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(end_behavior),) = (self.builder.end_behavior.take(),) else {
+                return Ok(());
             };
-            let mut b = SubscriptionsResourceTrialSettingsTrialSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "end_behavior" => b.end_behavior = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SubscriptionsResourceTrialSettingsTrialSettings { end_behavior });
+            Ok(())
         }
     }
 };

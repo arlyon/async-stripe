@@ -829,7 +829,7 @@ pub struct BaseConfigParam {
     /// An empty list, because this embedded component has no features.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub features: Option<miniserde::json::Value>,
+    pub features: Option<stripe_miniserde::json::Value>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for BaseConfigParam {

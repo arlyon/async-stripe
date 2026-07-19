@@ -72,16 +72,14 @@ pub struct TreasuryFinancialAccountBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -100,59 +98,58 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TreasuryFinancialAccountBuilder::deser_default(),
+                builder: TreasuryFinancialAccountBuilder {
+                    active_features: Deserialize::default(),
+                    balance: Deserialize::default(),
+                    country: Deserialize::default(),
+                    created: Deserialize::default(),
+                    features: Deserialize::default(),
+                    financial_addresses: Deserialize::default(),
+                    id: Deserialize::default(),
+                    is_default: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    nickname: Deserialize::default(),
+                    pending_features: Deserialize::default(),
+                    platform_restrictions: Deserialize::default(),
+                    restricted_features: Deserialize::default(),
+                    status: Deserialize::default(),
+                    status_details: Deserialize::default(),
+                    supported_currencies: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TreasuryFinancialAccountBuilder {
-        type Out = TreasuryFinancialAccount;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active_features" => Deserialize::begin(&mut self.active_features),
-                "balance" => Deserialize::begin(&mut self.balance),
-                "country" => Deserialize::begin(&mut self.country),
-                "created" => Deserialize::begin(&mut self.created),
-                "features" => Deserialize::begin(&mut self.features),
-                "financial_addresses" => Deserialize::begin(&mut self.financial_addresses),
-                "id" => Deserialize::begin(&mut self.id),
-                "is_default" => Deserialize::begin(&mut self.is_default),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "nickname" => Deserialize::begin(&mut self.nickname),
-                "pending_features" => Deserialize::begin(&mut self.pending_features),
-                "platform_restrictions" => Deserialize::begin(&mut self.platform_restrictions),
-                "restricted_features" => Deserialize::begin(&mut self.restricted_features),
-                "status" => Deserialize::begin(&mut self.status),
-                "status_details" => Deserialize::begin(&mut self.status_details),
-                "supported_currencies" => Deserialize::begin(&mut self.supported_currencies),
+                "active_features" => Deserialize::begin(&mut self.builder.active_features),
+                "balance" => Deserialize::begin(&mut self.builder.balance),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "features" => Deserialize::begin(&mut self.builder.features),
+                "financial_addresses" => Deserialize::begin(&mut self.builder.financial_addresses),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "is_default" => Deserialize::begin(&mut self.builder.is_default),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "nickname" => Deserialize::begin(&mut self.builder.nickname),
+                "pending_features" => Deserialize::begin(&mut self.builder.pending_features),
+                "platform_restrictions" => {
+                    Deserialize::begin(&mut self.builder.platform_restrictions)
+                }
+                "restricted_features" => Deserialize::begin(&mut self.builder.restricted_features),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "status_details" => Deserialize::begin(&mut self.builder.status_details),
+                "supported_currencies" => {
+                    Deserialize::begin(&mut self.builder.supported_currencies)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                active_features: Deserialize::default(),
-                balance: Deserialize::default(),
-                country: Deserialize::default(),
-                created: Deserialize::default(),
-                features: Deserialize::default(),
-                financial_addresses: Deserialize::default(),
-                id: Deserialize::default(),
-                is_default: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                nickname: Deserialize::default(),
-                pending_features: Deserialize::default(),
-                platform_restrictions: Deserialize::default(),
-                restricted_features: Deserialize::default(),
-                status: Deserialize::default(),
-                status_details: Deserialize::default(),
-                supported_currencies: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(active_features),
                 Some(balance),
@@ -172,28 +169,28 @@ const _: () = {
                 Some(status_details),
                 Some(supported_currencies),
             ) = (
-                self.active_features.take(),
-                self.balance.take(),
-                self.country.take(),
-                self.created,
-                self.features.take(),
-                self.financial_addresses.take(),
-                self.id.take(),
-                self.is_default,
-                self.livemode,
-                self.metadata.take(),
-                self.nickname.take(),
-                self.pending_features.take(),
-                self.platform_restrictions.take(),
-                self.restricted_features.take(),
-                self.status.take(),
-                self.status_details.take(),
-                self.supported_currencies.take(),
+                self.builder.active_features.take(),
+                self.builder.balance.take(),
+                self.builder.country.take(),
+                self.builder.created,
+                self.builder.features.take(),
+                self.builder.financial_addresses.take(),
+                self.builder.id.take(),
+                self.builder.is_default,
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.nickname.take(),
+                self.builder.pending_features.take(),
+                self.builder.platform_restrictions.take(),
+                self.builder.restricted_features.take(),
+                self.builder.status.take(),
+                self.builder.status_details.take(),
+                self.builder.supported_currencies.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TreasuryFinancialAccount {
                 active_features,
                 balance,
                 country,
@@ -211,56 +208,8 @@ const _: () = {
                 status,
                 status_details,
                 supported_currencies,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryFinancialAccount {
-        type Builder = TreasuryFinancialAccountBuilder;
-    }
-
-    impl FromValueOpt for TreasuryFinancialAccount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryFinancialAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active_features" => b.active_features = FromValueOpt::from_value(v),
-                    "balance" => b.balance = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "features" => b.features = FromValueOpt::from_value(v),
-                    "financial_addresses" => b.financial_addresses = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "is_default" => b.is_default = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "nickname" => b.nickname = FromValueOpt::from_value(v),
-                    "pending_features" => b.pending_features = FromValueOpt::from_value(v),
-                    "platform_restrictions" => {
-                        b.platform_restrictions = FromValueOpt::from_value(v)
-                    }
-                    "restricted_features" => b.restricted_features = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_details" => b.status_details = FromValueOpt::from_value(v),
-                    "supported_currencies" => b.supported_currencies = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -393,21 +342,19 @@ impl serde::Serialize for TreasuryFinancialAccountArray {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TreasuryFinancialAccountArray {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TreasuryFinancialAccountArray {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TreasuryFinancialAccountArray> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TreasuryFinancialAccountArray> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TreasuryFinancialAccountArray::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TreasuryFinancialAccountArray);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountArray {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -479,21 +426,19 @@ impl serde::Serialize for TreasuryFinancialAccountStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TreasuryFinancialAccountStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TreasuryFinancialAccountStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TreasuryFinancialAccountStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TreasuryFinancialAccountStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TreasuryFinancialAccountStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TreasuryFinancialAccountStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

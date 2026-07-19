@@ -19,7 +19,7 @@ pub struct SetupIntentNextAction {
         any(feature = "deserialize", feature = "serialize"),
         serde(with = "stripe_types::with_serde_json_opt")
     )]
-    pub use_stripe_sdk: Option<miniserde::json::Value>,
+    pub use_stripe_sdk: Option<stripe_miniserde::json::Value>,
     pub verify_with_microdeposits:
         Option<stripe_shared::SetupIntentNextActionVerifyWithMicrodeposits>,
 }
@@ -37,7 +37,7 @@ pub struct SetupIntentNextActionBuilder {
     type_: Option<String>,
     upi_handle_redirect_or_display_qr_code:
         Option<Option<stripe_shared::PaymentIntentNextActionUpiHandleRedirectOrDisplayQrCode>>,
-    use_stripe_sdk: Option<Option<miniserde::json::Value>>,
+    use_stripe_sdk: Option<Option<stripe_miniserde::json::Value>>,
     verify_with_microdeposits:
         Option<Option<stripe_shared::SetupIntentNextActionVerifyWithMicrodeposits>>,
 }
@@ -45,16 +45,14 @@ pub struct SetupIntentNextActionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -73,43 +71,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SetupIntentNextActionBuilder::deser_default(),
+                builder: SetupIntentNextActionBuilder {
+                    cashapp_handle_redirect_or_display_qr_code: Deserialize::default(),
+                    redirect_to_url: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    upi_handle_redirect_or_display_qr_code: Deserialize::default(),
+                    use_stripe_sdk: Deserialize::default(),
+                    verify_with_microdeposits: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SetupIntentNextActionBuilder {
-        type Out = SetupIntentNextAction;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "cashapp_handle_redirect_or_display_qr_code" => {
-                    Deserialize::begin(&mut self.cashapp_handle_redirect_or_display_qr_code)
+                    Deserialize::begin(&mut self.builder.cashapp_handle_redirect_or_display_qr_code)
                 }
-                "redirect_to_url" => Deserialize::begin(&mut self.redirect_to_url),
-                "type" => Deserialize::begin(&mut self.type_),
+                "redirect_to_url" => Deserialize::begin(&mut self.builder.redirect_to_url),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 "upi_handle_redirect_or_display_qr_code" => {
-                    Deserialize::begin(&mut self.upi_handle_redirect_or_display_qr_code)
+                    Deserialize::begin(&mut self.builder.upi_handle_redirect_or_display_qr_code)
                 }
-                "use_stripe_sdk" => Deserialize::begin(&mut self.use_stripe_sdk),
+                "use_stripe_sdk" => Deserialize::begin(&mut self.builder.use_stripe_sdk),
                 "verify_with_microdeposits" => {
-                    Deserialize::begin(&mut self.verify_with_microdeposits)
+                    Deserialize::begin(&mut self.builder.verify_with_microdeposits)
                 }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                cashapp_handle_redirect_or_display_qr_code: Deserialize::default(),
-                redirect_to_url: Deserialize::default(),
-                type_: Deserialize::default(),
-                upi_handle_redirect_or_display_qr_code: Deserialize::default(),
-                use_stripe_sdk: Deserialize::default(),
-                verify_with_microdeposits: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(cashapp_handle_redirect_or_display_qr_code),
                 Some(redirect_to_url),
@@ -118,66 +111,25 @@ const _: () = {
                 Some(use_stripe_sdk),
                 Some(verify_with_microdeposits),
             ) = (
-                self.cashapp_handle_redirect_or_display_qr_code.take(),
-                self.redirect_to_url.take(),
-                self.type_.take(),
-                self.upi_handle_redirect_or_display_qr_code.take(),
-                self.use_stripe_sdk.take(),
-                self.verify_with_microdeposits.take(),
+                self.builder.cashapp_handle_redirect_or_display_qr_code.take(),
+                self.builder.redirect_to_url.take(),
+                self.builder.type_.take(),
+                self.builder.upi_handle_redirect_or_display_qr_code.take(),
+                self.builder.use_stripe_sdk.take(),
+                self.builder.verify_with_microdeposits.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SetupIntentNextAction {
                 cashapp_handle_redirect_or_display_qr_code,
                 redirect_to_url,
                 type_,
                 upi_handle_redirect_or_display_qr_code,
                 use_stripe_sdk,
                 verify_with_microdeposits,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SetupIntentNextAction {
-        type Builder = SetupIntentNextActionBuilder;
-    }
-
-    impl FromValueOpt for SetupIntentNextAction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupIntentNextActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "cashapp_handle_redirect_or_display_qr_code" => {
-                        b.cashapp_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "redirect_to_url" => b.redirect_to_url = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "upi_handle_redirect_or_display_qr_code" => {
-                        b.upi_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "use_stripe_sdk" => b.use_stripe_sdk = FromValueOpt::from_value(v),
-                    "verify_with_microdeposits" => {
-                        b.verify_with_microdeposits = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

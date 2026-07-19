@@ -27,16 +27,14 @@ pub struct TerminalConfigurationConfigurationResourceCurrencySpecificConfigBuild
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,71 +52,40 @@ const _: () = {
     impl Visitor for Place<TerminalConfigurationConfigurationResourceCurrencySpecificConfig> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
-            out: &mut self.out,
-            builder: TerminalConfigurationConfigurationResourceCurrencySpecificConfigBuilder::deser_default(),
-        }))
-        }
-    }
-
-    impl MapBuilder for TerminalConfigurationConfigurationResourceCurrencySpecificConfigBuilder {
-        type Out = TerminalConfigurationConfigurationResourceCurrencySpecificConfig;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "fixed_amounts" => Deserialize::begin(&mut self.fixed_amounts),
-                "percentages" => Deserialize::begin(&mut self.percentages),
-                "smart_tip_threshold" => Deserialize::begin(&mut self.smart_tip_threshold),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                fixed_amounts: Deserialize::default(),
-                percentages: Deserialize::default(),
-                smart_tip_threshold: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fixed_amounts), Some(percentages), Some(smart_tip_threshold)) =
-                (self.fixed_amounts.take(), self.percentages.take(), self.smart_tip_threshold)
-            else {
-                return None;
-            };
-            Some(Self::Out { fixed_amounts, percentages, smart_tip_threshold })
+                out: &mut self.out,
+                builder: TerminalConfigurationConfigurationResourceCurrencySpecificConfigBuilder {
+                    fixed_amounts: Deserialize::default(),
+                    percentages: Deserialize::default(),
+                    smart_tip_threshold: Deserialize::default(),
+                },
+            }))
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "fixed_amounts" => Deserialize::begin(&mut self.builder.fixed_amounts),
+                "percentages" => Deserialize::begin(&mut self.builder.percentages),
+                "smart_tip_threshold" => Deserialize::begin(&mut self.builder.smart_tip_threshold),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalConfigurationConfigurationResourceCurrencySpecificConfig {
-        type Builder = TerminalConfigurationConfigurationResourceCurrencySpecificConfigBuilder;
-    }
-
-    impl FromValueOpt for TerminalConfigurationConfigurationResourceCurrencySpecificConfig {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(fixed_amounts), Some(percentages), Some(smart_tip_threshold)) = (
+                self.builder.fixed_amounts.take(),
+                self.builder.percentages.take(),
+                self.builder.smart_tip_threshold,
+            ) else {
+                return Ok(());
             };
-            let mut b = TerminalConfigurationConfigurationResourceCurrencySpecificConfigBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "fixed_amounts" => b.fixed_amounts = FromValueOpt::from_value(v),
-                    "percentages" => b.percentages = FromValueOpt::from_value(v),
-                    "smart_tip_threshold" => b.smart_tip_threshold = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TerminalConfigurationConfigurationResourceCurrencySpecificConfig {
+                fixed_amounts,
+                percentages,
+                smart_tip_threshold,
+            });
+            Ok(())
         }
     }
 };

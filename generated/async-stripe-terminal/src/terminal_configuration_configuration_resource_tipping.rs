@@ -122,16 +122,14 @@ pub struct TerminalConfigurationConfigurationResourceTippingBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -150,67 +148,62 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalConfigurationConfigurationResourceTippingBuilder::deser_default(),
+                builder: TerminalConfigurationConfigurationResourceTippingBuilder {
+                    aed: Deserialize::default(),
+                    aud: Deserialize::default(),
+                    cad: Deserialize::default(),
+                    chf: Deserialize::default(),
+                    czk: Deserialize::default(),
+                    dkk: Deserialize::default(),
+                    eur: Deserialize::default(),
+                    gbp: Deserialize::default(),
+                    gip: Deserialize::default(),
+                    hkd: Deserialize::default(),
+                    huf: Deserialize::default(),
+                    jpy: Deserialize::default(),
+                    mxn: Deserialize::default(),
+                    myr: Deserialize::default(),
+                    nok: Deserialize::default(),
+                    nzd: Deserialize::default(),
+                    pln: Deserialize::default(),
+                    ron: Deserialize::default(),
+                    sek: Deserialize::default(),
+                    sgd: Deserialize::default(),
+                    usd: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TerminalConfigurationConfigurationResourceTippingBuilder {
-        type Out = TerminalConfigurationConfigurationResourceTipping;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "aed" => Deserialize::begin(&mut self.aed),
-                "aud" => Deserialize::begin(&mut self.aud),
-                "cad" => Deserialize::begin(&mut self.cad),
-                "chf" => Deserialize::begin(&mut self.chf),
-                "czk" => Deserialize::begin(&mut self.czk),
-                "dkk" => Deserialize::begin(&mut self.dkk),
-                "eur" => Deserialize::begin(&mut self.eur),
-                "gbp" => Deserialize::begin(&mut self.gbp),
-                "gip" => Deserialize::begin(&mut self.gip),
-                "hkd" => Deserialize::begin(&mut self.hkd),
-                "huf" => Deserialize::begin(&mut self.huf),
-                "jpy" => Deserialize::begin(&mut self.jpy),
-                "mxn" => Deserialize::begin(&mut self.mxn),
-                "myr" => Deserialize::begin(&mut self.myr),
-                "nok" => Deserialize::begin(&mut self.nok),
-                "nzd" => Deserialize::begin(&mut self.nzd),
-                "pln" => Deserialize::begin(&mut self.pln),
-                "ron" => Deserialize::begin(&mut self.ron),
-                "sek" => Deserialize::begin(&mut self.sek),
-                "sgd" => Deserialize::begin(&mut self.sgd),
-                "usd" => Deserialize::begin(&mut self.usd),
+                "aed" => Deserialize::begin(&mut self.builder.aed),
+                "aud" => Deserialize::begin(&mut self.builder.aud),
+                "cad" => Deserialize::begin(&mut self.builder.cad),
+                "chf" => Deserialize::begin(&mut self.builder.chf),
+                "czk" => Deserialize::begin(&mut self.builder.czk),
+                "dkk" => Deserialize::begin(&mut self.builder.dkk),
+                "eur" => Deserialize::begin(&mut self.builder.eur),
+                "gbp" => Deserialize::begin(&mut self.builder.gbp),
+                "gip" => Deserialize::begin(&mut self.builder.gip),
+                "hkd" => Deserialize::begin(&mut self.builder.hkd),
+                "huf" => Deserialize::begin(&mut self.builder.huf),
+                "jpy" => Deserialize::begin(&mut self.builder.jpy),
+                "mxn" => Deserialize::begin(&mut self.builder.mxn),
+                "myr" => Deserialize::begin(&mut self.builder.myr),
+                "nok" => Deserialize::begin(&mut self.builder.nok),
+                "nzd" => Deserialize::begin(&mut self.builder.nzd),
+                "pln" => Deserialize::begin(&mut self.builder.pln),
+                "ron" => Deserialize::begin(&mut self.builder.ron),
+                "sek" => Deserialize::begin(&mut self.builder.sek),
+                "sgd" => Deserialize::begin(&mut self.builder.sgd),
+                "usd" => Deserialize::begin(&mut self.builder.usd),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                aed: Deserialize::default(),
-                aud: Deserialize::default(),
-                cad: Deserialize::default(),
-                chf: Deserialize::default(),
-                czk: Deserialize::default(),
-                dkk: Deserialize::default(),
-                eur: Deserialize::default(),
-                gbp: Deserialize::default(),
-                gip: Deserialize::default(),
-                hkd: Deserialize::default(),
-                huf: Deserialize::default(),
-                jpy: Deserialize::default(),
-                mxn: Deserialize::default(),
-                myr: Deserialize::default(),
-                nok: Deserialize::default(),
-                nzd: Deserialize::default(),
-                pln: Deserialize::default(),
-                ron: Deserialize::default(),
-                sek: Deserialize::default(),
-                sgd: Deserialize::default(),
-                usd: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(aed),
                 Some(aud),
@@ -234,32 +227,32 @@ const _: () = {
                 Some(sgd),
                 Some(usd),
             ) = (
-                self.aed.take(),
-                self.aud.take(),
-                self.cad.take(),
-                self.chf.take(),
-                self.czk.take(),
-                self.dkk.take(),
-                self.eur.take(),
-                self.gbp.take(),
-                self.gip.take(),
-                self.hkd.take(),
-                self.huf.take(),
-                self.jpy.take(),
-                self.mxn.take(),
-                self.myr.take(),
-                self.nok.take(),
-                self.nzd.take(),
-                self.pln.take(),
-                self.ron.take(),
-                self.sek.take(),
-                self.sgd.take(),
-                self.usd.take(),
+                self.builder.aed.take(),
+                self.builder.aud.take(),
+                self.builder.cad.take(),
+                self.builder.chf.take(),
+                self.builder.czk.take(),
+                self.builder.dkk.take(),
+                self.builder.eur.take(),
+                self.builder.gbp.take(),
+                self.builder.gip.take(),
+                self.builder.hkd.take(),
+                self.builder.huf.take(),
+                self.builder.jpy.take(),
+                self.builder.mxn.take(),
+                self.builder.myr.take(),
+                self.builder.nok.take(),
+                self.builder.nzd.take(),
+                self.builder.pln.take(),
+                self.builder.ron.take(),
+                self.builder.sek.take(),
+                self.builder.sgd.take(),
+                self.builder.usd.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TerminalConfigurationConfigurationResourceTipping {
                 aed,
                 aud,
                 cad,
@@ -281,58 +274,8 @@ const _: () = {
                 sek,
                 sgd,
                 usd,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalConfigurationConfigurationResourceTipping {
-        type Builder = TerminalConfigurationConfigurationResourceTippingBuilder;
-    }
-
-    impl FromValueOpt for TerminalConfigurationConfigurationResourceTipping {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalConfigurationConfigurationResourceTippingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "aed" => b.aed = FromValueOpt::from_value(v),
-                    "aud" => b.aud = FromValueOpt::from_value(v),
-                    "cad" => b.cad = FromValueOpt::from_value(v),
-                    "chf" => b.chf = FromValueOpt::from_value(v),
-                    "czk" => b.czk = FromValueOpt::from_value(v),
-                    "dkk" => b.dkk = FromValueOpt::from_value(v),
-                    "eur" => b.eur = FromValueOpt::from_value(v),
-                    "gbp" => b.gbp = FromValueOpt::from_value(v),
-                    "gip" => b.gip = FromValueOpt::from_value(v),
-                    "hkd" => b.hkd = FromValueOpt::from_value(v),
-                    "huf" => b.huf = FromValueOpt::from_value(v),
-                    "jpy" => b.jpy = FromValueOpt::from_value(v),
-                    "mxn" => b.mxn = FromValueOpt::from_value(v),
-                    "myr" => b.myr = FromValueOpt::from_value(v),
-                    "nok" => b.nok = FromValueOpt::from_value(v),
-                    "nzd" => b.nzd = FromValueOpt::from_value(v),
-                    "pln" => b.pln = FromValueOpt::from_value(v),
-                    "ron" => b.ron = FromValueOpt::from_value(v),
-                    "sek" => b.sek = FromValueOpt::from_value(v),
-                    "sgd" => b.sgd = FromValueOpt::from_value(v),
-                    "usd" => b.usd = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

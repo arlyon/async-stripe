@@ -31,16 +31,14 @@ pub struct IssuingTransactionFleetDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -59,89 +57,51 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingTransactionFleetDataBuilder::deser_default(),
+                builder: IssuingTransactionFleetDataBuilder {
+                    cardholder_prompt_data: Deserialize::default(),
+                    purchase_type: Deserialize::default(),
+                    reported_breakdown: Deserialize::default(),
+                    service_type: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingTransactionFleetDataBuilder {
-        type Out = IssuingTransactionFleetData;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "cardholder_prompt_data" => Deserialize::begin(&mut self.cardholder_prompt_data),
-                "purchase_type" => Deserialize::begin(&mut self.purchase_type),
-                "reported_breakdown" => Deserialize::begin(&mut self.reported_breakdown),
-                "service_type" => Deserialize::begin(&mut self.service_type),
+                "cardholder_prompt_data" => {
+                    Deserialize::begin(&mut self.builder.cardholder_prompt_data)
+                }
+                "purchase_type" => Deserialize::begin(&mut self.builder.purchase_type),
+                "reported_breakdown" => Deserialize::begin(&mut self.builder.reported_breakdown),
+                "service_type" => Deserialize::begin(&mut self.builder.service_type),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                cardholder_prompt_data: Deserialize::default(),
-                purchase_type: Deserialize::default(),
-                reported_breakdown: Deserialize::default(),
-                service_type: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(cardholder_prompt_data),
                 Some(purchase_type),
                 Some(reported_breakdown),
                 Some(service_type),
             ) = (
-                self.cardholder_prompt_data.take(),
-                self.purchase_type.take(),
-                self.reported_breakdown.take(),
-                self.service_type.take(),
+                self.builder.cardholder_prompt_data.take(),
+                self.builder.purchase_type.take(),
+                self.builder.reported_breakdown.take(),
+                self.builder.service_type.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingTransactionFleetData {
                 cardholder_prompt_data,
                 purchase_type,
                 reported_breakdown,
                 service_type,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingTransactionFleetData {
-        type Builder = IssuingTransactionFleetDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionFleetData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionFleetDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "cardholder_prompt_data" => {
-                        b.cardholder_prompt_data = FromValueOpt::from_value(v)
-                    }
-                    "purchase_type" => b.purchase_type = FromValueOpt::from_value(v),
-                    "reported_breakdown" => b.reported_breakdown = FromValueOpt::from_value(v),
-                    "service_type" => b.service_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -21,16 +21,14 @@ pub struct GelatoVerificationReportOptionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -49,62 +47,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: GelatoVerificationReportOptionsBuilder::deser_default(),
+                builder: GelatoVerificationReportOptionsBuilder {
+                    document: Deserialize::default(),
+                    id_number: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for GelatoVerificationReportOptionsBuilder {
-        type Out = GelatoVerificationReportOptions;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "document" => Deserialize::begin(&mut self.document),
-                "id_number" => Deserialize::begin(&mut self.id_number),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { document: Deserialize::default(), id_number: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(document), Some(id_number)) = (self.document.take(), self.id_number) else {
-                return None;
-            };
-            Some(Self::Out { document, id_number })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "document" => Deserialize::begin(&mut self.builder.document),
+                "id_number" => Deserialize::begin(&mut self.builder.id_number),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for GelatoVerificationReportOptions {
-        type Builder = GelatoVerificationReportOptionsBuilder;
-    }
-
-    impl FromValueOpt for GelatoVerificationReportOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(document), Some(id_number)) =
+                (self.builder.document.take(), self.builder.id_number)
+            else {
+                return Ok(());
             };
-            let mut b = GelatoVerificationReportOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "document" => b.document = FromValueOpt::from_value(v),
-                    "id_number" => b.id_number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(GelatoVerificationReportOptions { document, id_number });
+            Ok(())
         }
     }
 };

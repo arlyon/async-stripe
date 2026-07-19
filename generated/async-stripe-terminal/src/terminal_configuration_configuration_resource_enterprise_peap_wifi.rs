@@ -30,16 +30,14 @@ pub struct TerminalConfigurationConfigurationResourceEnterprisePeapWifiBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,79 +55,44 @@ const _: () = {
     impl Visitor for Place<TerminalConfigurationConfigurationResourceEnterprisePeapWifi> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
-            out: &mut self.out,
-            builder: TerminalConfigurationConfigurationResourceEnterprisePeapWifiBuilder::deser_default(),
-        }))
-        }
-    }
-
-    impl MapBuilder for TerminalConfigurationConfigurationResourceEnterprisePeapWifiBuilder {
-        type Out = TerminalConfigurationConfigurationResourceEnterprisePeapWifi;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "ca_certificate_file" => Deserialize::begin(&mut self.ca_certificate_file),
-                "password" => Deserialize::begin(&mut self.password),
-                "ssid" => Deserialize::begin(&mut self.ssid),
-                "username" => Deserialize::begin(&mut self.username),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                ca_certificate_file: Deserialize::default(),
-                password: Deserialize::default(),
-                ssid: Deserialize::default(),
-                username: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(ca_certificate_file), Some(password), Some(ssid), Some(username)) = (
-                self.ca_certificate_file.take(),
-                self.password.take(),
-                self.ssid.take(),
-                self.username.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { ca_certificate_file, password, ssid, username })
+                out: &mut self.out,
+                builder: TerminalConfigurationConfigurationResourceEnterprisePeapWifiBuilder {
+                    ca_certificate_file: Deserialize::default(),
+                    password: Deserialize::default(),
+                    ssid: Deserialize::default(),
+                    username: Deserialize::default(),
+                },
+            }))
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "ca_certificate_file" => Deserialize::begin(&mut self.builder.ca_certificate_file),
+                "password" => Deserialize::begin(&mut self.builder.password),
+                "ssid" => Deserialize::begin(&mut self.builder.ssid),
+                "username" => Deserialize::begin(&mut self.builder.username),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalConfigurationConfigurationResourceEnterprisePeapWifi {
-        type Builder = TerminalConfigurationConfigurationResourceEnterprisePeapWifiBuilder;
-    }
-
-    impl FromValueOpt for TerminalConfigurationConfigurationResourceEnterprisePeapWifi {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(ca_certificate_file), Some(password), Some(ssid), Some(username)) = (
+                self.builder.ca_certificate_file.take(),
+                self.builder.password.take(),
+                self.builder.ssid.take(),
+                self.builder.username.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b =
-                TerminalConfigurationConfigurationResourceEnterprisePeapWifiBuilder::deser_default(
-                );
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ca_certificate_file" => b.ca_certificate_file = FromValueOpt::from_value(v),
-                    "password" => b.password = FromValueOpt::from_value(v),
-                    "ssid" => b.ssid = FromValueOpt::from_value(v),
-                    "username" => b.username = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TerminalConfigurationConfigurationResourceEnterprisePeapWifi {
+                ca_certificate_file,
+                password,
+                ssid,
+                username,
+            });
+            Ok(())
         }
     }
 };

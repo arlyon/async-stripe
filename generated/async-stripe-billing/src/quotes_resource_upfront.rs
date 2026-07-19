@@ -29,16 +29,14 @@ pub struct QuotesResourceUpfrontBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,76 +55,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: QuotesResourceUpfrontBuilder::deser_default(),
+                builder: QuotesResourceUpfrontBuilder {
+                    amount_subtotal: Deserialize::default(),
+                    amount_total: Deserialize::default(),
+                    line_items: Deserialize::default(),
+                    total_details: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for QuotesResourceUpfrontBuilder {
-        type Out = QuotesResourceUpfront;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
-                "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "line_items" => Deserialize::begin(&mut self.line_items),
-                "total_details" => Deserialize::begin(&mut self.total_details),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount_subtotal: Deserialize::default(),
-                amount_total: Deserialize::default(),
-                line_items: Deserialize::default(),
-                total_details: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_subtotal), Some(amount_total), Some(line_items), Some(total_details)) = (
-                self.amount_subtotal,
-                self.amount_total,
-                self.line_items.take(),
-                self.total_details.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { amount_subtotal, amount_total, line_items, total_details })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount_subtotal" => Deserialize::begin(&mut self.builder.amount_subtotal),
+                "amount_total" => Deserialize::begin(&mut self.builder.amount_total),
+                "line_items" => Deserialize::begin(&mut self.builder.line_items),
+                "total_details" => Deserialize::begin(&mut self.builder.total_details),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for QuotesResourceUpfront {
-        type Builder = QuotesResourceUpfrontBuilder;
-    }
-
-    impl FromValueOpt for QuotesResourceUpfront {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount_subtotal), Some(amount_total), Some(line_items), Some(total_details)) = (
+                self.builder.amount_subtotal,
+                self.builder.amount_total,
+                self.builder.line_items.take(),
+                self.builder.total_details.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = QuotesResourceUpfrontBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "total_details" => b.total_details = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(QuotesResourceUpfront {
+                amount_subtotal,
+                amount_total,
+                line_items,
+                total_details,
+            });
+            Ok(())
         }
     }
 };

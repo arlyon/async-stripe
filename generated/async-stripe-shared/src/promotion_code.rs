@@ -65,16 +65,14 @@ pub struct PromotionCodeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -93,51 +91,46 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PromotionCodeBuilder::deser_default(),
+                builder: PromotionCodeBuilder {
+                    active: Deserialize::default(),
+                    code: Deserialize::default(),
+                    created: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    max_redemptions: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    promotion: Deserialize::default(),
+                    restrictions: Deserialize::default(),
+                    times_redeemed: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PromotionCodeBuilder {
-        type Out = PromotionCode;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
-                "code" => Deserialize::begin(&mut self.code),
-                "created" => Deserialize::begin(&mut self.created),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "max_redemptions" => Deserialize::begin(&mut self.max_redemptions),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "promotion" => Deserialize::begin(&mut self.promotion),
-                "restrictions" => Deserialize::begin(&mut self.restrictions),
-                "times_redeemed" => Deserialize::begin(&mut self.times_redeemed),
+                "active" => Deserialize::begin(&mut self.builder.active),
+                "code" => Deserialize::begin(&mut self.builder.code),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "max_redemptions" => Deserialize::begin(&mut self.builder.max_redemptions),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "promotion" => Deserialize::begin(&mut self.builder.promotion),
+                "restrictions" => Deserialize::begin(&mut self.builder.restrictions),
+                "times_redeemed" => Deserialize::begin(&mut self.builder.times_redeemed),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                active: Deserialize::default(),
-                code: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                max_redemptions: Deserialize::default(),
-                metadata: Deserialize::default(),
-                promotion: Deserialize::default(),
-                restrictions: Deserialize::default(),
-                times_redeemed: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(active),
                 Some(code),
@@ -153,24 +146,24 @@ const _: () = {
                 Some(restrictions),
                 Some(times_redeemed),
             ) = (
-                self.active,
-                self.code.take(),
-                self.created,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.expires_at,
-                self.id.take(),
-                self.livemode,
-                self.max_redemptions,
-                self.metadata.take(),
-                self.promotion.take(),
-                self.restrictions.take(),
-                self.times_redeemed,
+                self.builder.active,
+                self.builder.code.take(),
+                self.builder.created,
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.expires_at,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.max_redemptions,
+                self.builder.metadata.take(),
+                self.builder.promotion.take(),
+                self.builder.restrictions.take(),
+                self.builder.times_redeemed,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PromotionCode {
                 active,
                 code,
                 created,
@@ -184,50 +177,8 @@ const _: () = {
                 promotion,
                 restrictions,
                 times_redeemed,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PromotionCode {
-        type Builder = PromotionCodeBuilder;
-    }
-
-    impl FromValueOpt for PromotionCode {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PromotionCodeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "code" => b.code = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "max_redemptions" => b.max_redemptions = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "promotion" => b.promotion = FromValueOpt::from_value(v),
-                    "restrictions" => b.restrictions = FromValueOpt::from_value(v),
-                    "times_redeemed" => b.times_redeemed = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

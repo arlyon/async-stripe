@@ -36,16 +36,14 @@ pub struct PaymentFlowsAmountDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -64,37 +62,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentFlowsAmountDetailsBuilder::deser_default(),
+                builder: PaymentFlowsAmountDetailsBuilder {
+                    discount_amount: Deserialize::default(),
+                    error: Deserialize::default(),
+                    line_items: Deserialize::default(),
+                    shipping: Deserialize::default(),
+                    tax: Deserialize::default(),
+                    tip: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentFlowsAmountDetailsBuilder {
-        type Out = PaymentFlowsAmountDetails;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "discount_amount" => Deserialize::begin(&mut self.discount_amount),
-                "error" => Deserialize::begin(&mut self.error),
-                "line_items" => Deserialize::begin(&mut self.line_items),
-                "shipping" => Deserialize::begin(&mut self.shipping),
-                "tax" => Deserialize::begin(&mut self.tax),
-                "tip" => Deserialize::begin(&mut self.tip),
+                "discount_amount" => Deserialize::begin(&mut self.builder.discount_amount),
+                "error" => Deserialize::begin(&mut self.builder.error),
+                "line_items" => Deserialize::begin(&mut self.builder.line_items),
+                "shipping" => Deserialize::begin(&mut self.builder.shipping),
+                "tax" => Deserialize::begin(&mut self.builder.tax),
+                "tip" => Deserialize::begin(&mut self.builder.tip),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                discount_amount: Deserialize::default(),
-                error: Deserialize::default(),
-                line_items: Deserialize::default(),
-                shipping: Deserialize::default(),
-                tax: Deserialize::default(),
-                tip: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(discount_amount),
                 Some(error),
@@ -103,53 +96,25 @@ const _: () = {
                 Some(tax),
                 Some(tip),
             ) = (
-                self.discount_amount,
-                self.error.take(),
-                self.line_items.take(),
-                self.shipping.take(),
-                self.tax,
-                self.tip,
+                self.builder.discount_amount,
+                self.builder.error.take(),
+                self.builder.line_items.take(),
+                self.builder.shipping.take(),
+                self.builder.tax,
+                self.builder.tip,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { discount_amount, error, line_items, shipping, tax, tip })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(PaymentFlowsAmountDetails {
+                discount_amount,
+                error,
+                line_items,
+                shipping,
+                tax,
+                tip,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentFlowsAmountDetails {
-        type Builder = PaymentFlowsAmountDetailsBuilder;
-    }
-
-    impl FromValueOpt for PaymentFlowsAmountDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentFlowsAmountDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
-                    "error" => b.error = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    "tax" => b.tax = FromValueOpt::from_value(v),
-                    "tip" => b.tip = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

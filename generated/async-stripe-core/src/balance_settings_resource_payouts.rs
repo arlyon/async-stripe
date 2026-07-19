@@ -33,16 +33,14 @@ pub struct BalanceSettingsResourcePayoutsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -61,86 +59,53 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BalanceSettingsResourcePayoutsBuilder::deser_default(),
+                builder: BalanceSettingsResourcePayoutsBuilder {
+                    minimum_balance_by_currency: Deserialize::default(),
+                    schedule: Deserialize::default(),
+                    statement_descriptor: Deserialize::default(),
+                    status: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for BalanceSettingsResourcePayoutsBuilder {
-        type Out = BalanceSettingsResourcePayouts;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "minimum_balance_by_currency" => {
-                    Deserialize::begin(&mut self.minimum_balance_by_currency)
+                    Deserialize::begin(&mut self.builder.minimum_balance_by_currency)
                 }
-                "schedule" => Deserialize::begin(&mut self.schedule),
-                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-                "status" => Deserialize::begin(&mut self.status),
+                "schedule" => Deserialize::begin(&mut self.builder.schedule),
+                "statement_descriptor" => {
+                    Deserialize::begin(&mut self.builder.statement_descriptor)
+                }
+                "status" => Deserialize::begin(&mut self.builder.status),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                minimum_balance_by_currency: Deserialize::default(),
-                schedule: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-                status: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(minimum_balance_by_currency),
                 Some(schedule),
                 Some(statement_descriptor),
                 Some(status),
             ) = (
-                self.minimum_balance_by_currency.take(),
-                self.schedule.take(),
-                self.statement_descriptor.take(),
-                self.status.take(),
+                self.builder.minimum_balance_by_currency.take(),
+                self.builder.schedule.take(),
+                self.builder.statement_descriptor.take(),
+                self.builder.status.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { minimum_balance_by_currency, schedule, statement_descriptor, status })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(BalanceSettingsResourcePayouts {
+                minimum_balance_by_currency,
+                schedule,
+                statement_descriptor,
+                status,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for BalanceSettingsResourcePayouts {
-        type Builder = BalanceSettingsResourcePayoutsBuilder;
-    }
-
-    impl FromValueOpt for BalanceSettingsResourcePayouts {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BalanceSettingsResourcePayoutsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "minimum_balance_by_currency" => {
-                        b.minimum_balance_by_currency = FromValueOpt::from_value(v)
-                    }
-                    "schedule" => b.schedule = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -209,21 +174,19 @@ impl serde::Serialize for BalanceSettingsResourcePayoutsStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BalanceSettingsResourcePayoutsStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BalanceSettingsResourcePayoutsStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BalanceSettingsResourcePayoutsStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BalanceSettingsResourcePayoutsStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BalanceSettingsResourcePayoutsStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BalanceSettingsResourcePayoutsStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BalanceSettingsResourcePayoutsStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

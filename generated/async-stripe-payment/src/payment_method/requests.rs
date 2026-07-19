@@ -449,53 +449,53 @@ struct CreatePaymentMethodBuilder {
     acss_debit: Option<CreatePaymentMethodAcssDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    affirm: Option<miniserde::json::Value>,
+    affirm: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    afterpay_clearpay: Option<miniserde::json::Value>,
+    afterpay_clearpay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    alipay: Option<miniserde::json::Value>,
+    alipay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_redisplay: Option<stripe_shared::PaymentMethodAllowRedisplay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    alma: Option<miniserde::json::Value>,
+    alma: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    amazon_pay: Option<miniserde::json::Value>,
+    amazon_pay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     au_becs_debit: Option<CreatePaymentMethodAuBecsDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
     bacs_debit: Option<CreatePaymentMethodBacsDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    bancontact: Option<miniserde::json::Value>,
+    bancontact: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    billie: Option<miniserde::json::Value>,
+    billie: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_details: Option<BillingDetailsInnerParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    blik: Option<miniserde::json::Value>,
+    blik: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     boleto: Option<CreatePaymentMethodBoleto>,
     #[serde(skip_serializing_if = "Option::is_none")]
     card: Option<CreatePaymentMethodCard>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    cashapp: Option<miniserde::json::Value>,
+    cashapp: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    crypto: Option<miniserde::json::Value>,
+    crypto: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     custom: Option<CreatePaymentMethodCustom>,
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    customer_balance: Option<miniserde::json::Value>,
+    customer_balance: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     eps: Option<CreatePaymentMethodEps>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -504,92 +504,92 @@ struct CreatePaymentMethodBuilder {
     fpx: Option<CreatePaymentMethodFpx>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    giropay: Option<miniserde::json::Value>,
+    giropay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    grabpay: Option<miniserde::json::Value>,
+    grabpay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ideal: Option<CreatePaymentMethodIdeal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    interac_present: Option<miniserde::json::Value>,
+    interac_present: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    kakao_pay: Option<miniserde::json::Value>,
+    kakao_pay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     klarna: Option<CreatePaymentMethodKlarna>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    konbini: Option<miniserde::json::Value>,
+    konbini: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    kr_card: Option<miniserde::json::Value>,
+    kr_card: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    link: Option<miniserde::json::Value>,
+    link: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    mb_way: Option<miniserde::json::Value>,
+    mb_way: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    mobilepay: Option<miniserde::json::Value>,
+    mobilepay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    multibanco: Option<miniserde::json::Value>,
+    multibanco: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     naver_pay: Option<CreatePaymentMethodNaverPay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     nz_bank_account: Option<CreatePaymentMethodNzBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    oxxo: Option<miniserde::json::Value>,
+    oxxo: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     p24: Option<CreatePaymentMethodP24>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pay_by_bank: Option<miniserde::json::Value>,
+    pay_by_bank: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    payco: Option<miniserde::json::Value>,
+    payco: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    paynow: Option<miniserde::json::Value>,
+    paynow: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    paypal: Option<miniserde::json::Value>,
+    paypal: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payto: Option<CreatePaymentMethodPayto>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pix: Option<miniserde::json::Value>,
+    pix: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    promptpay: Option<miniserde::json::Value>,
+    promptpay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     radar_options: Option<CreatePaymentMethodRadarOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    revolut_pay: Option<miniserde::json::Value>,
+    revolut_pay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    samsung_pay: Option<miniserde::json::Value>,
+    samsung_pay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    satispay: Option<miniserde::json::Value>,
+    satispay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sepa_debit: Option<CreatePaymentMethodSepaDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sofort: Option<CreatePaymentMethodSofort>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    swish: Option<miniserde::json::Value>,
+    swish: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    twint: Option<miniserde::json::Value>,
+    twint: Option<stripe_miniserde::json::Value>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<CreatePaymentMethodType>,
@@ -599,10 +599,10 @@ struct CreatePaymentMethodBuilder {
     us_bank_account: Option<CreatePaymentMethodUsBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    wechat_pay: Option<miniserde::json::Value>,
+    wechat_pay: Option<stripe_miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    zip: Option<miniserde::json::Value>,
+    zip: Option<stripe_miniserde::json::Value>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentMethodBuilder {
@@ -2640,20 +2640,20 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is an `affirm` PaymentMethod, this hash contains details about the Affirm payment method.
-    pub fn affirm(mut self, affirm: impl Into<miniserde::json::Value>) -> Self {
+    pub fn affirm(mut self, affirm: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.affirm = Some(affirm.into());
         self
     }
     /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
     pub fn afterpay_clearpay(
         mut self,
-        afterpay_clearpay: impl Into<miniserde::json::Value>,
+        afterpay_clearpay: impl Into<stripe_miniserde::json::Value>,
     ) -> Self {
         self.inner.afterpay_clearpay = Some(afterpay_clearpay.into());
         self
     }
     /// If this is an `Alipay` PaymentMethod, this hash contains details about the Alipay payment method.
-    pub fn alipay(mut self, alipay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn alipay(mut self, alipay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.alipay = Some(alipay.into());
         self
     }
@@ -2668,12 +2668,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a Alma PaymentMethod, this hash contains details about the Alma payment method.
-    pub fn alma(mut self, alma: impl Into<miniserde::json::Value>) -> Self {
+    pub fn alma(mut self, alma: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.alma = Some(alma.into());
         self
     }
     /// If this is a AmazonPay PaymentMethod, this hash contains details about the AmazonPay payment method.
-    pub fn amazon_pay(mut self, amazon_pay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn amazon_pay(mut self, amazon_pay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.amazon_pay = Some(amazon_pay.into());
         self
     }
@@ -2691,12 +2691,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `bancontact` PaymentMethod, this hash contains details about the Bancontact payment method.
-    pub fn bancontact(mut self, bancontact: impl Into<miniserde::json::Value>) -> Self {
+    pub fn bancontact(mut self, bancontact: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.bancontact = Some(bancontact.into());
         self
     }
     /// If this is a `billie` PaymentMethod, this hash contains details about the Billie payment method.
-    pub fn billie(mut self, billie: impl Into<miniserde::json::Value>) -> Self {
+    pub fn billie(mut self, billie: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.billie = Some(billie.into());
         self
     }
@@ -2709,7 +2709,7 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
-    pub fn blik(mut self, blik: impl Into<miniserde::json::Value>) -> Self {
+    pub fn blik(mut self, blik: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.blik = Some(blik.into());
         self
     }
@@ -2727,12 +2727,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
-    pub fn cashapp(mut self, cashapp: impl Into<miniserde::json::Value>) -> Self {
+    pub fn cashapp(mut self, cashapp: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.cashapp = Some(cashapp.into());
         self
     }
     /// If this is a Crypto PaymentMethod, this hash contains details about the Crypto payment method.
-    pub fn crypto(mut self, crypto: impl Into<miniserde::json::Value>) -> Self {
+    pub fn crypto(mut self, crypto: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.crypto = Some(crypto.into());
         self
     }
@@ -2747,7 +2747,7 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
-    pub fn customer_balance(mut self, customer_balance: impl Into<miniserde::json::Value>) -> Self {
+    pub fn customer_balance(mut self, customer_balance: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.customer_balance = Some(customer_balance.into());
         self
     }
@@ -2767,12 +2767,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
-    pub fn giropay(mut self, giropay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn giropay(mut self, giropay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.giropay = Some(giropay.into());
         self
     }
     /// If this is a `grabpay` PaymentMethod, this hash contains details about the GrabPay payment method.
-    pub fn grabpay(mut self, grabpay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn grabpay(mut self, grabpay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.grabpay = Some(grabpay.into());
         self
     }
@@ -2782,12 +2782,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
-    pub fn interac_present(mut self, interac_present: impl Into<miniserde::json::Value>) -> Self {
+    pub fn interac_present(mut self, interac_present: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.interac_present = Some(interac_present.into());
         self
     }
     /// If this is a `kakao_pay` PaymentMethod, this hash contains details about the Kakao Pay payment method.
-    pub fn kakao_pay(mut self, kakao_pay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn kakao_pay(mut self, kakao_pay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.kakao_pay = Some(kakao_pay.into());
         self
     }
@@ -2797,22 +2797,22 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `konbini` PaymentMethod, this hash contains details about the Konbini payment method.
-    pub fn konbini(mut self, konbini: impl Into<miniserde::json::Value>) -> Self {
+    pub fn konbini(mut self, konbini: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.konbini = Some(konbini.into());
         self
     }
     /// If this is a `kr_card` PaymentMethod, this hash contains details about the Korean Card payment method.
-    pub fn kr_card(mut self, kr_card: impl Into<miniserde::json::Value>) -> Self {
+    pub fn kr_card(mut self, kr_card: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.kr_card = Some(kr_card.into());
         self
     }
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
-    pub fn link(mut self, link: impl Into<miniserde::json::Value>) -> Self {
+    pub fn link(mut self, link: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.link = Some(link.into());
         self
     }
     /// If this is a MB WAY PaymentMethod, this hash contains details about the MB WAY payment method.
-    pub fn mb_way(mut self, mb_way: impl Into<miniserde::json::Value>) -> Self {
+    pub fn mb_way(mut self, mb_way: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.mb_way = Some(mb_way.into());
         self
     }
@@ -2828,12 +2828,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `mobilepay` PaymentMethod, this hash contains details about the MobilePay payment method.
-    pub fn mobilepay(mut self, mobilepay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn mobilepay(mut self, mobilepay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.mobilepay = Some(mobilepay.into());
         self
     }
     /// If this is a `multibanco` PaymentMethod, this hash contains details about the Multibanco payment method.
-    pub fn multibanco(mut self, multibanco: impl Into<miniserde::json::Value>) -> Self {
+    pub fn multibanco(mut self, multibanco: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.multibanco = Some(multibanco.into());
         self
     }
@@ -2851,7 +2851,7 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
-    pub fn oxxo(mut self, oxxo: impl Into<miniserde::json::Value>) -> Self {
+    pub fn oxxo(mut self, oxxo: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.oxxo = Some(oxxo.into());
         self
     }
@@ -2861,12 +2861,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `pay_by_bank` PaymentMethod, this hash contains details about the PayByBank payment method.
-    pub fn pay_by_bank(mut self, pay_by_bank: impl Into<miniserde::json::Value>) -> Self {
+    pub fn pay_by_bank(mut self, pay_by_bank: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.pay_by_bank = Some(pay_by_bank.into());
         self
     }
     /// If this is a `payco` PaymentMethod, this hash contains details about the PAYCO payment method.
-    pub fn payco(mut self, payco: impl Into<miniserde::json::Value>) -> Self {
+    pub fn payco(mut self, payco: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.payco = Some(payco.into());
         self
     }
@@ -2876,12 +2876,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
-    pub fn paynow(mut self, paynow: impl Into<miniserde::json::Value>) -> Self {
+    pub fn paynow(mut self, paynow: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.paynow = Some(paynow.into());
         self
     }
     /// If this is a `paypal` PaymentMethod, this hash contains details about the PayPal payment method.
-    pub fn paypal(mut self, paypal: impl Into<miniserde::json::Value>) -> Self {
+    pub fn paypal(mut self, paypal: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.paypal = Some(paypal.into());
         self
     }
@@ -2891,12 +2891,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
-    pub fn pix(mut self, pix: impl Into<miniserde::json::Value>) -> Self {
+    pub fn pix(mut self, pix: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.pix = Some(pix.into());
         self
     }
     /// If this is a `promptpay` PaymentMethod, this hash contains details about the PromptPay payment method.
-    pub fn promptpay(mut self, promptpay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn promptpay(mut self, promptpay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.promptpay = Some(promptpay.into());
         self
     }
@@ -2910,17 +2910,17 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
-    pub fn revolut_pay(mut self, revolut_pay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn revolut_pay(mut self, revolut_pay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.revolut_pay = Some(revolut_pay.into());
         self
     }
     /// If this is a `samsung_pay` PaymentMethod, this hash contains details about the SamsungPay payment method.
-    pub fn samsung_pay(mut self, samsung_pay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn samsung_pay(mut self, samsung_pay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.samsung_pay = Some(samsung_pay.into());
         self
     }
     /// If this is a `satispay` PaymentMethod, this hash contains details about the Satispay payment method.
-    pub fn satispay(mut self, satispay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn satispay(mut self, satispay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.satispay = Some(satispay.into());
         self
     }
@@ -2935,12 +2935,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
-    pub fn swish(mut self, swish: impl Into<miniserde::json::Value>) -> Self {
+    pub fn swish(mut self, swish: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.swish = Some(swish.into());
         self
     }
     /// If this is a TWINT PaymentMethod, this hash contains details about the TWINT payment method.
-    pub fn twint(mut self, twint: impl Into<miniserde::json::Value>) -> Self {
+    pub fn twint(mut self, twint: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.twint = Some(twint.into());
         self
     }
@@ -2965,12 +2965,12 @@ impl CreatePaymentMethod {
         self
     }
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
-    pub fn wechat_pay(mut self, wechat_pay: impl Into<miniserde::json::Value>) -> Self {
+    pub fn wechat_pay(mut self, wechat_pay: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.wechat_pay = Some(wechat_pay.into());
         self
     }
     /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
-    pub fn zip(mut self, zip: impl Into<miniserde::json::Value>) -> Self {
+    pub fn zip(mut self, zip: impl Into<stripe_miniserde::json::Value>) -> Self {
         self.inner.zip = Some(zip.into());
         self
     }

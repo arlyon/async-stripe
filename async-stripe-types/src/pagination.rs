@@ -133,11 +133,9 @@ impl<T: Clone> Clone for SearchList<T> {
 
 #[doc(hidden)]
 mod impl_deserialize {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Error, make_place};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Error, make_place};
 
-    use crate::miniserde_helpers::FromValueOpt;
     use crate::{List, SearchList};
     make_place!(Place);
 
@@ -148,7 +146,7 @@ mod impl_deserialize {
     }
 
     impl<T: Deserialize> Visitor for Place<List<T>> {
-        fn map(&mut self) -> miniserde::Result<Box<dyn Map + '_>> {
+        fn map(&mut self) -> stripe_miniserde::Result<Box<dyn Map + '_>> {
             Ok(Box::new(ListBuilder {
                 out: &mut self.out,
                 data: Deserialize::default(),
@@ -166,7 +164,7 @@ mod impl_deserialize {
     }
 
     impl<T: Deserialize> Map for ListBuilder<'_, T> {
-        fn key(&mut self, k: &str) -> miniserde::Result<&mut dyn Visitor> {
+        fn key(&mut self, k: &str) -> stripe_miniserde::Result<&mut dyn Visitor> {
             match k {
                 "url" => Ok(Deserialize::begin(&mut self.url)),
                 "data" => Ok(Deserialize::begin(&mut self.data)),
@@ -175,32 +173,12 @@ mod impl_deserialize {
             }
         }
 
-        fn finish(&mut self) -> miniserde::Result<()> {
+        fn finish(&mut self) -> stripe_miniserde::Result<()> {
             let url = self.url.take().ok_or(Error)?;
             let data = self.data.take().ok_or(Error)?;
             let has_more = self.has_more.ok_or(Error)?;
             *self.out = Some(List { data, has_more, url });
             Ok(())
-        }
-    }
-
-    impl<T: FromValueOpt> FromValueOpt for List<T> {
-        fn from_value(v: Value) -> Option<Self> {
-            let mut data: Option<Vec<T>> = None;
-            let mut has_more: Option<bool> = None;
-            let mut url: Option<String> = None;
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            for (k, v) in obj {
-                match k.as_str() {
-                    "has_more" => has_more = Some(bool::from_value(v)?),
-                    "data" => data = Some(FromValueOpt::from_value(v)?),
-                    "url" => url = Some(FromValueOpt::from_value(v)?),
-                    _ => {}
-                }
-            }
-            Some(Self { data: data?, has_more: has_more?, url: url? })
         }
     }
 
@@ -220,7 +198,7 @@ mod impl_deserialize {
     }
 
     impl<T: Deserialize> Visitor for Place<SearchList<T>> {
-        fn map(&mut self) -> miniserde::Result<Box<dyn Map + '_>> {
+        fn map(&mut self) -> stripe_miniserde::Result<Box<dyn Map + '_>> {
             Ok(Box::new(SearchListBuilder {
                 out: &mut self.out,
                 data: Deserialize::default(),
@@ -233,7 +211,7 @@ mod impl_deserialize {
     }
 
     impl<T: Deserialize> Map for SearchListBuilder<'_, T> {
-        fn key(&mut self, k: &str) -> miniserde::Result<&mut dyn Visitor> {
+        fn key(&mut self, k: &str) -> stripe_miniserde::Result<&mut dyn Visitor> {
             match k {
                 "url" => Ok(Deserialize::begin(&mut self.url)),
                 "data" => Ok(Deserialize::begin(&mut self.data)),
@@ -244,7 +222,7 @@ mod impl_deserialize {
             }
         }
 
-        fn finish(&mut self) -> miniserde::Result<()> {
+        fn finish(&mut self) -> stripe_miniserde::Result<()> {
             let url = self.url.take().ok_or(Error)?;
             let data = self.data.take().ok_or(Error)?;
             let has_more = self.has_more.take().ok_or(Error)?;

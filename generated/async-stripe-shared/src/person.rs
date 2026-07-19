@@ -122,16 +122,14 @@ pub struct PersonBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -148,90 +146,88 @@ const _: () = {
 
     impl Visitor for Place<Person> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: PersonBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PersonBuilder {
+                    account: Deserialize::default(),
+                    additional_tos_acceptances: Deserialize::default(),
+                    address: Deserialize::default(),
+                    address_kana: Deserialize::default(),
+                    address_kanji: Deserialize::default(),
+                    created: Deserialize::default(),
+                    dob: Deserialize::default(),
+                    email: Deserialize::default(),
+                    first_name: Deserialize::default(),
+                    first_name_kana: Deserialize::default(),
+                    first_name_kanji: Deserialize::default(),
+                    full_name_aliases: Deserialize::default(),
+                    future_requirements: Deserialize::default(),
+                    gender: Deserialize::default(),
+                    id: Deserialize::default(),
+                    id_number_provided: Deserialize::default(),
+                    id_number_secondary_provided: Deserialize::default(),
+                    last_name: Deserialize::default(),
+                    last_name_kana: Deserialize::default(),
+                    last_name_kanji: Deserialize::default(),
+                    maiden_name: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    nationality: Deserialize::default(),
+                    phone: Deserialize::default(),
+                    political_exposure: Deserialize::default(),
+                    registered_address: Deserialize::default(),
+                    relationship: Deserialize::default(),
+                    requirements: Deserialize::default(),
+                    ssn_last_4_provided: Deserialize::default(),
+                    us_cfpb_data: Deserialize::default(),
+                    verification: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for PersonBuilder {
-        type Out = Person;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account" => Deserialize::begin(&mut self.account),
+                "account" => Deserialize::begin(&mut self.builder.account),
                 "additional_tos_acceptances" => {
-                    Deserialize::begin(&mut self.additional_tos_acceptances)
+                    Deserialize::begin(&mut self.builder.additional_tos_acceptances)
                 }
-                "address" => Deserialize::begin(&mut self.address),
-                "address_kana" => Deserialize::begin(&mut self.address_kana),
-                "address_kanji" => Deserialize::begin(&mut self.address_kanji),
-                "created" => Deserialize::begin(&mut self.created),
-                "dob" => Deserialize::begin(&mut self.dob),
-                "email" => Deserialize::begin(&mut self.email),
-                "first_name" => Deserialize::begin(&mut self.first_name),
-                "first_name_kana" => Deserialize::begin(&mut self.first_name_kana),
-                "first_name_kanji" => Deserialize::begin(&mut self.first_name_kanji),
-                "full_name_aliases" => Deserialize::begin(&mut self.full_name_aliases),
-                "future_requirements" => Deserialize::begin(&mut self.future_requirements),
-                "gender" => Deserialize::begin(&mut self.gender),
-                "id" => Deserialize::begin(&mut self.id),
-                "id_number_provided" => Deserialize::begin(&mut self.id_number_provided),
+                "address" => Deserialize::begin(&mut self.builder.address),
+                "address_kana" => Deserialize::begin(&mut self.builder.address_kana),
+                "address_kanji" => Deserialize::begin(&mut self.builder.address_kanji),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "dob" => Deserialize::begin(&mut self.builder.dob),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "first_name" => Deserialize::begin(&mut self.builder.first_name),
+                "first_name_kana" => Deserialize::begin(&mut self.builder.first_name_kana),
+                "first_name_kanji" => Deserialize::begin(&mut self.builder.first_name_kanji),
+                "full_name_aliases" => Deserialize::begin(&mut self.builder.full_name_aliases),
+                "future_requirements" => Deserialize::begin(&mut self.builder.future_requirements),
+                "gender" => Deserialize::begin(&mut self.builder.gender),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "id_number_provided" => Deserialize::begin(&mut self.builder.id_number_provided),
                 "id_number_secondary_provided" => {
-                    Deserialize::begin(&mut self.id_number_secondary_provided)
+                    Deserialize::begin(&mut self.builder.id_number_secondary_provided)
                 }
-                "last_name" => Deserialize::begin(&mut self.last_name),
-                "last_name_kana" => Deserialize::begin(&mut self.last_name_kana),
-                "last_name_kanji" => Deserialize::begin(&mut self.last_name_kanji),
-                "maiden_name" => Deserialize::begin(&mut self.maiden_name),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "nationality" => Deserialize::begin(&mut self.nationality),
-                "phone" => Deserialize::begin(&mut self.phone),
-                "political_exposure" => Deserialize::begin(&mut self.political_exposure),
-                "registered_address" => Deserialize::begin(&mut self.registered_address),
-                "relationship" => Deserialize::begin(&mut self.relationship),
-                "requirements" => Deserialize::begin(&mut self.requirements),
-                "ssn_last_4_provided" => Deserialize::begin(&mut self.ssn_last_4_provided),
-                "us_cfpb_data" => Deserialize::begin(&mut self.us_cfpb_data),
-                "verification" => Deserialize::begin(&mut self.verification),
+                "last_name" => Deserialize::begin(&mut self.builder.last_name),
+                "last_name_kana" => Deserialize::begin(&mut self.builder.last_name_kana),
+                "last_name_kanji" => Deserialize::begin(&mut self.builder.last_name_kanji),
+                "maiden_name" => Deserialize::begin(&mut self.builder.maiden_name),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "nationality" => Deserialize::begin(&mut self.builder.nationality),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                "political_exposure" => Deserialize::begin(&mut self.builder.political_exposure),
+                "registered_address" => Deserialize::begin(&mut self.builder.registered_address),
+                "relationship" => Deserialize::begin(&mut self.builder.relationship),
+                "requirements" => Deserialize::begin(&mut self.builder.requirements),
+                "ssn_last_4_provided" => Deserialize::begin(&mut self.builder.ssn_last_4_provided),
+                "us_cfpb_data" => Deserialize::begin(&mut self.builder.us_cfpb_data),
+                "verification" => Deserialize::begin(&mut self.builder.verification),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account: Deserialize::default(),
-                additional_tos_acceptances: Deserialize::default(),
-                address: Deserialize::default(),
-                address_kana: Deserialize::default(),
-                address_kanji: Deserialize::default(),
-                created: Deserialize::default(),
-                dob: Deserialize::default(),
-                email: Deserialize::default(),
-                first_name: Deserialize::default(),
-                first_name_kana: Deserialize::default(),
-                first_name_kanji: Deserialize::default(),
-                full_name_aliases: Deserialize::default(),
-                future_requirements: Deserialize::default(),
-                gender: Deserialize::default(),
-                id: Deserialize::default(),
-                id_number_provided: Deserialize::default(),
-                id_number_secondary_provided: Deserialize::default(),
-                last_name: Deserialize::default(),
-                last_name_kana: Deserialize::default(),
-                last_name_kanji: Deserialize::default(),
-                maiden_name: Deserialize::default(),
-                metadata: Deserialize::default(),
-                nationality: Deserialize::default(),
-                phone: Deserialize::default(),
-                political_exposure: Deserialize::default(),
-                registered_address: Deserialize::default(),
-                relationship: Deserialize::default(),
-                requirements: Deserialize::default(),
-                ssn_last_4_provided: Deserialize::default(),
-                us_cfpb_data: Deserialize::default(),
-                verification: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account),
                 Some(additional_tos_acceptances),
@@ -265,42 +261,42 @@ const _: () = {
                 Some(us_cfpb_data),
                 Some(verification),
             ) = (
-                self.account.take(),
-                self.additional_tos_acceptances.take(),
-                self.address.take(),
-                self.address_kana.take(),
-                self.address_kanji.take(),
-                self.created,
-                self.dob,
-                self.email.take(),
-                self.first_name.take(),
-                self.first_name_kana.take(),
-                self.first_name_kanji.take(),
-                self.full_name_aliases.take(),
-                self.future_requirements.take(),
-                self.gender.take(),
-                self.id.take(),
-                self.id_number_provided,
-                self.id_number_secondary_provided,
-                self.last_name.take(),
-                self.last_name_kana.take(),
-                self.last_name_kanji.take(),
-                self.maiden_name.take(),
-                self.metadata.take(),
-                self.nationality.take(),
-                self.phone.take(),
-                self.political_exposure.take(),
-                self.registered_address.take(),
-                self.relationship.take(),
-                self.requirements.take(),
-                self.ssn_last_4_provided,
-                self.us_cfpb_data.take(),
-                self.verification.take(),
+                self.builder.account.take(),
+                self.builder.additional_tos_acceptances.take(),
+                self.builder.address.take(),
+                self.builder.address_kana.take(),
+                self.builder.address_kanji.take(),
+                self.builder.created,
+                self.builder.dob,
+                self.builder.email.take(),
+                self.builder.first_name.take(),
+                self.builder.first_name_kana.take(),
+                self.builder.first_name_kanji.take(),
+                self.builder.full_name_aliases.take(),
+                self.builder.future_requirements.take(),
+                self.builder.gender.take(),
+                self.builder.id.take(),
+                self.builder.id_number_provided,
+                self.builder.id_number_secondary_provided,
+                self.builder.last_name.take(),
+                self.builder.last_name_kana.take(),
+                self.builder.last_name_kanji.take(),
+                self.builder.maiden_name.take(),
+                self.builder.metadata.take(),
+                self.builder.nationality.take(),
+                self.builder.phone.take(),
+                self.builder.political_exposure.take(),
+                self.builder.registered_address.take(),
+                self.builder.relationship.take(),
+                self.builder.requirements.take(),
+                self.builder.ssn_last_4_provided,
+                self.builder.us_cfpb_data.take(),
+                self.builder.verification.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Person {
                 account,
                 additional_tos_acceptances,
                 address,
@@ -332,72 +328,8 @@ const _: () = {
                 ssn_last_4_provided,
                 us_cfpb_data,
                 verification,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Person {
-        type Builder = PersonBuilder;
-    }
-
-    impl FromValueOpt for Person {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PersonBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account" => b.account = FromValueOpt::from_value(v),
-                    "additional_tos_acceptances" => {
-                        b.additional_tos_acceptances = FromValueOpt::from_value(v)
-                    }
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_kana" => b.address_kana = FromValueOpt::from_value(v),
-                    "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "dob" => b.dob = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "first_name" => b.first_name = FromValueOpt::from_value(v),
-                    "first_name_kana" => b.first_name_kana = FromValueOpt::from_value(v),
-                    "first_name_kanji" => b.first_name_kanji = FromValueOpt::from_value(v),
-                    "full_name_aliases" => b.full_name_aliases = FromValueOpt::from_value(v),
-                    "future_requirements" => b.future_requirements = FromValueOpt::from_value(v),
-                    "gender" => b.gender = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "id_number_provided" => b.id_number_provided = FromValueOpt::from_value(v),
-                    "id_number_secondary_provided" => {
-                        b.id_number_secondary_provided = FromValueOpt::from_value(v)
-                    }
-                    "last_name" => b.last_name = FromValueOpt::from_value(v),
-                    "last_name_kana" => b.last_name_kana = FromValueOpt::from_value(v),
-                    "last_name_kanji" => b.last_name_kanji = FromValueOpt::from_value(v),
-                    "maiden_name" => b.maiden_name = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "nationality" => b.nationality = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "political_exposure" => b.political_exposure = FromValueOpt::from_value(v),
-                    "registered_address" => b.registered_address = FromValueOpt::from_value(v),
-                    "relationship" => b.relationship = FromValueOpt::from_value(v),
-                    "requirements" => b.requirements = FromValueOpt::from_value(v),
-                    "ssn_last_4_provided" => b.ssn_last_4_provided = FromValueOpt::from_value(v),
-                    "us_cfpb_data" => b.us_cfpb_data = FromValueOpt::from_value(v),
-                    "verification" => b.verification = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -512,21 +444,19 @@ impl serde::Serialize for PersonPoliticalExposure {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PersonPoliticalExposure {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PersonPoliticalExposure {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PersonPoliticalExposure> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PersonPoliticalExposure> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PersonPoliticalExposure::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PersonPoliticalExposure);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PersonPoliticalExposure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

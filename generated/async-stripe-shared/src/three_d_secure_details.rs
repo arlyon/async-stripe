@@ -39,16 +39,14 @@ pub struct ThreeDSecureDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,39 +65,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ThreeDSecureDetailsBuilder::deser_default(),
+                builder: ThreeDSecureDetailsBuilder {
+                    authentication_flow: Deserialize::default(),
+                    electronic_commerce_indicator: Deserialize::default(),
+                    result: Deserialize::default(),
+                    result_reason: Deserialize::default(),
+                    transaction_id: Deserialize::default(),
+                    version: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ThreeDSecureDetailsBuilder {
-        type Out = ThreeDSecureDetails;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "authentication_flow" => Deserialize::begin(&mut self.authentication_flow),
+                "authentication_flow" => Deserialize::begin(&mut self.builder.authentication_flow),
                 "electronic_commerce_indicator" => {
-                    Deserialize::begin(&mut self.electronic_commerce_indicator)
+                    Deserialize::begin(&mut self.builder.electronic_commerce_indicator)
                 }
-                "result" => Deserialize::begin(&mut self.result),
-                "result_reason" => Deserialize::begin(&mut self.result_reason),
-                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-                "version" => Deserialize::begin(&mut self.version),
+                "result" => Deserialize::begin(&mut self.builder.result),
+                "result_reason" => Deserialize::begin(&mut self.builder.result_reason),
+                "transaction_id" => Deserialize::begin(&mut self.builder.transaction_id),
+                "version" => Deserialize::begin(&mut self.builder.version),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                authentication_flow: Deserialize::default(),
-                electronic_commerce_indicator: Deserialize::default(),
-                result: Deserialize::default(),
-                result_reason: Deserialize::default(),
-                transaction_id: Deserialize::default(),
-                version: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(authentication_flow),
                 Some(electronic_commerce_indicator),
@@ -108,62 +101,25 @@ const _: () = {
                 Some(transaction_id),
                 Some(version),
             ) = (
-                self.authentication_flow.take(),
-                self.electronic_commerce_indicator.take(),
-                self.result.take(),
-                self.result_reason.take(),
-                self.transaction_id.take(),
-                self.version.take(),
+                self.builder.authentication_flow.take(),
+                self.builder.electronic_commerce_indicator.take(),
+                self.builder.result.take(),
+                self.builder.result_reason.take(),
+                self.builder.transaction_id.take(),
+                self.builder.version.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ThreeDSecureDetails {
                 authentication_flow,
                 electronic_commerce_indicator,
                 result,
                 result_reason,
                 transaction_id,
                 version,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ThreeDSecureDetails {
-        type Builder = ThreeDSecureDetailsBuilder;
-    }
-
-    impl FromValueOpt for ThreeDSecureDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ThreeDSecureDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "authentication_flow" => b.authentication_flow = FromValueOpt::from_value(v),
-                    "electronic_commerce_indicator" => {
-                        b.electronic_commerce_indicator = FromValueOpt::from_value(v)
-                    }
-                    "result" => b.result = FromValueOpt::from_value(v),
-                    "result_reason" => b.result_reason = FromValueOpt::from_value(v),
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    "version" => b.version = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -233,21 +189,19 @@ impl serde::Serialize for ThreeDSecureDetailsAuthenticationFlow {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsAuthenticationFlow {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsAuthenticationFlow {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsAuthenticationFlow> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsAuthenticationFlow> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ThreeDSecureDetailsAuthenticationFlow::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsAuthenticationFlow);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsAuthenticationFlow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -332,22 +286,20 @@ impl serde::Serialize for ThreeDSecureDetailsElectronicCommerceIndicator {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsElectronicCommerceIndicator {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsElectronicCommerceIndicator {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsElectronicCommerceIndicator> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsElectronicCommerceIndicator> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(ThreeDSecureDetailsElectronicCommerceIndicator::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsElectronicCommerceIndicator);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsElectronicCommerceIndicator {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -429,21 +381,19 @@ impl serde::Serialize for ThreeDSecureDetailsResult {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsResult {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsResult {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsResult> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsResult> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ThreeDSecureDetailsResult::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsResult);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsResult {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -533,21 +483,19 @@ impl serde::Serialize for ThreeDSecureDetailsResultReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsResultReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsResultReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsResultReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsResultReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ThreeDSecureDetailsResultReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsResultReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsResultReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -626,21 +574,19 @@ impl serde::Serialize for ThreeDSecureDetailsVersion {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsVersion {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsVersion {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsVersion> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsVersion> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ThreeDSecureDetailsVersion::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsVersion);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsVersion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

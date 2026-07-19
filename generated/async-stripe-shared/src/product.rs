@@ -89,16 +89,14 @@ pub struct ProductBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -115,60 +113,60 @@ const _: () = {
 
     impl Visitor for Place<Product> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: ProductBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: ProductBuilder {
+                    active: Deserialize::default(),
+                    created: Deserialize::default(),
+                    default_price: Deserialize::default(),
+                    description: Deserialize::default(),
+                    id: Deserialize::default(),
+                    images: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    marketing_features: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    name: Deserialize::default(),
+                    package_dimensions: Deserialize::default(),
+                    shippable: Deserialize::default(),
+                    statement_descriptor: Deserialize::default(),
+                    tax_code: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    unit_label: Deserialize::default(),
+                    updated: Deserialize::default(),
+                    url: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for ProductBuilder {
-        type Out = Product;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
-                "created" => Deserialize::begin(&mut self.created),
-                "default_price" => Deserialize::begin(&mut self.default_price),
-                "description" => Deserialize::begin(&mut self.description),
-                "id" => Deserialize::begin(&mut self.id),
-                "images" => Deserialize::begin(&mut self.images),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "marketing_features" => Deserialize::begin(&mut self.marketing_features),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "name" => Deserialize::begin(&mut self.name),
-                "package_dimensions" => Deserialize::begin(&mut self.package_dimensions),
-                "shippable" => Deserialize::begin(&mut self.shippable),
-                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-                "tax_code" => Deserialize::begin(&mut self.tax_code),
-                "type" => Deserialize::begin(&mut self.type_),
-                "unit_label" => Deserialize::begin(&mut self.unit_label),
-                "updated" => Deserialize::begin(&mut self.updated),
-                "url" => Deserialize::begin(&mut self.url),
+                "active" => Deserialize::begin(&mut self.builder.active),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "default_price" => Deserialize::begin(&mut self.builder.default_price),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "images" => Deserialize::begin(&mut self.builder.images),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "marketing_features" => Deserialize::begin(&mut self.builder.marketing_features),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "package_dimensions" => Deserialize::begin(&mut self.builder.package_dimensions),
+                "shippable" => Deserialize::begin(&mut self.builder.shippable),
+                "statement_descriptor" => {
+                    Deserialize::begin(&mut self.builder.statement_descriptor)
+                }
+                "tax_code" => Deserialize::begin(&mut self.builder.tax_code),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "unit_label" => Deserialize::begin(&mut self.builder.unit_label),
+                "updated" => Deserialize::begin(&mut self.builder.updated),
+                "url" => Deserialize::begin(&mut self.builder.url),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                active: Deserialize::default(),
-                created: Deserialize::default(),
-                default_price: Deserialize::default(),
-                description: Deserialize::default(),
-                id: Deserialize::default(),
-                images: Deserialize::default(),
-                livemode: Deserialize::default(),
-                marketing_features: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
-                package_dimensions: Deserialize::default(),
-                shippable: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-                tax_code: Deserialize::default(),
-                type_: Deserialize::default(),
-                unit_label: Deserialize::default(),
-                updated: Deserialize::default(),
-                url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(active),
                 Some(created),
@@ -189,29 +187,29 @@ const _: () = {
                 Some(updated),
                 Some(url),
             ) = (
-                self.active,
-                self.created,
-                self.default_price.take(),
-                self.description.take(),
-                self.id.take(),
-                self.images.take(),
-                self.livemode,
-                self.marketing_features.take(),
-                self.metadata.take(),
-                self.name.take(),
-                self.package_dimensions,
-                self.shippable,
-                self.statement_descriptor.take(),
-                self.tax_code.take(),
-                self.type_.take(),
-                self.unit_label.take(),
-                self.updated,
-                self.url.take(),
+                self.builder.active,
+                self.builder.created,
+                self.builder.default_price.take(),
+                self.builder.description.take(),
+                self.builder.id.take(),
+                self.builder.images.take(),
+                self.builder.livemode,
+                self.builder.marketing_features.take(),
+                self.builder.metadata.take(),
+                self.builder.name.take(),
+                self.builder.package_dimensions,
+                self.builder.shippable,
+                self.builder.statement_descriptor.take(),
+                self.builder.tax_code.take(),
+                self.builder.type_.take(),
+                self.builder.unit_label.take(),
+                self.builder.updated,
+                self.builder.url.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Product {
                 active,
                 created,
                 default_price,
@@ -230,55 +228,8 @@ const _: () = {
                 unit_label,
                 updated,
                 url,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Product {
-        type Builder = ProductBuilder;
-    }
-
-    impl FromValueOpt for Product {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ProductBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "default_price" => b.default_price = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "images" => b.images = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "marketing_features" => b.marketing_features = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "package_dimensions" => b.package_dimensions = FromValueOpt::from_value(v),
-                    "shippable" => b.shippable = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "unit_label" => b.unit_label = FromValueOpt::from_value(v),
-                    "updated" => b.updated = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -380,21 +331,19 @@ impl serde::Serialize for ProductType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ProductType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ProductType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ProductType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ProductType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ProductType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ProductType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ProductType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

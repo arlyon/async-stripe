@@ -29,16 +29,14 @@ pub struct PaymentMethodDetailsP24Builder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,70 +55,35 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsP24Builder::deser_default(),
+                builder: PaymentMethodDetailsP24Builder {
+                    bank: Deserialize::default(),
+                    reference: Deserialize::default(),
+                    verified_name: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDetailsP24Builder {
-        type Out = PaymentMethodDetailsP24;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "bank" => Deserialize::begin(&mut self.bank),
-                "reference" => Deserialize::begin(&mut self.reference),
-                "verified_name" => Deserialize::begin(&mut self.verified_name),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                bank: Deserialize::default(),
-                reference: Deserialize::default(),
-                verified_name: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank), Some(reference), Some(verified_name)) =
-                (self.bank.take(), self.reference.take(), self.verified_name.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { bank, reference, verified_name })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "bank" => Deserialize::begin(&mut self.builder.bank),
+                "reference" => Deserialize::begin(&mut self.builder.reference),
+                "verified_name" => Deserialize::begin(&mut self.builder.verified_name),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsP24 {
-        type Builder = PaymentMethodDetailsP24Builder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsP24 {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(bank), Some(reference), Some(verified_name)) = (
+                self.builder.bank.take(),
+                self.builder.reference.take(),
+                self.builder.verified_name.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDetailsP24Builder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank" => b.bank = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodDetailsP24 { bank, reference, verified_name });
+            Ok(())
         }
     }
 };
@@ -262,21 +225,19 @@ impl serde::Serialize for PaymentMethodDetailsP24Bank {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodDetailsP24Bank {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodDetailsP24Bank {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsP24Bank> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodDetailsP24Bank> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentMethodDetailsP24Bank::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsP24Bank);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsP24Bank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

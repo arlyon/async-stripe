@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use miniserde::Deserialize;
+use stripe_miniserde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
 use stripe_types::{AsCursorOpt, List, Object, SearchList};

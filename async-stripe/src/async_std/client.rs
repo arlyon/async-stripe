@@ -1,6 +1,6 @@
 use async_std::task::sleep;
 use http_types::{Body, Request, StatusCode};
-use miniserde::json::from_str;
+use stripe_miniserde::json::from_str;
 use stripe_client_core::{
     CustomizedStripeRequest, Outcome, RequestBuilder, RequestStrategy, StripeMethod,
 };

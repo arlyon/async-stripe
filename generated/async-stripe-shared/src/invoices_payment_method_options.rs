@@ -41,16 +41,14 @@ pub struct InvoicesPaymentMethodOptionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -69,41 +67,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoicesPaymentMethodOptionsBuilder::deser_default(),
+                builder: InvoicesPaymentMethodOptionsBuilder {
+                    acss_debit: Deserialize::default(),
+                    bancontact: Deserialize::default(),
+                    card: Deserialize::default(),
+                    customer_balance: Deserialize::default(),
+                    konbini: Deserialize::default(),
+                    payto: Deserialize::default(),
+                    sepa_debit: Deserialize::default(),
+                    us_bank_account: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for InvoicesPaymentMethodOptionsBuilder {
-        type Out = InvoicesPaymentMethodOptions;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "acss_debit" => Deserialize::begin(&mut self.acss_debit),
-                "bancontact" => Deserialize::begin(&mut self.bancontact),
-                "card" => Deserialize::begin(&mut self.card),
-                "customer_balance" => Deserialize::begin(&mut self.customer_balance),
-                "konbini" => Deserialize::begin(&mut self.konbini),
-                "payto" => Deserialize::begin(&mut self.payto),
-                "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
-                "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
+                "acss_debit" => Deserialize::begin(&mut self.builder.acss_debit),
+                "bancontact" => Deserialize::begin(&mut self.builder.bancontact),
+                "card" => Deserialize::begin(&mut self.builder.card),
+                "customer_balance" => Deserialize::begin(&mut self.builder.customer_balance),
+                "konbini" => Deserialize::begin(&mut self.builder.konbini),
+                "payto" => Deserialize::begin(&mut self.builder.payto),
+                "sepa_debit" => Deserialize::begin(&mut self.builder.sepa_debit),
+                "us_bank_account" => Deserialize::begin(&mut self.builder.us_bank_account),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                acss_debit: Deserialize::default(),
-                bancontact: Deserialize::default(),
-                card: Deserialize::default(),
-                customer_balance: Deserialize::default(),
-                konbini: Deserialize::default(),
-                payto: Deserialize::default(),
-                sepa_debit: Deserialize::default(),
-                us_bank_account: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(acss_debit),
                 Some(bancontact),
@@ -114,19 +107,19 @@ const _: () = {
                 Some(sepa_debit),
                 Some(us_bank_account),
             ) = (
-                self.acss_debit.take(),
-                self.bancontact.take(),
-                self.card.take(),
-                self.customer_balance.take(),
-                self.konbini,
-                self.payto.take(),
-                self.sepa_debit,
-                self.us_bank_account.take(),
+                self.builder.acss_debit.take(),
+                self.builder.bancontact.take(),
+                self.builder.card.take(),
+                self.builder.customer_balance.take(),
+                self.builder.konbini,
+                self.builder.payto.take(),
+                self.builder.sepa_debit,
+                self.builder.us_bank_account.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(InvoicesPaymentMethodOptions {
                 acss_debit,
                 bancontact,
                 card,
@@ -135,45 +128,8 @@ const _: () = {
                 payto,
                 sepa_debit,
                 us_bank_account,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoicesPaymentMethodOptions {
-        type Builder = InvoicesPaymentMethodOptionsBuilder;
-    }
-
-    impl FromValueOpt for InvoicesPaymentMethodOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoicesPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
-                    "bancontact" => b.bancontact = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "customer_balance" => b.customer_balance = FromValueOpt::from_value(v),
-                    "konbini" => b.konbini = FromValueOpt::from_value(v),
-                    "payto" => b.payto = FromValueOpt::from_value(v),
-                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
-                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

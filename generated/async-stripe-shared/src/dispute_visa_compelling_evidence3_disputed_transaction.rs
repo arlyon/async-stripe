@@ -46,16 +46,14 @@ pub struct DisputeVisaCompellingEvidence3DisputedTransactionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -74,43 +72,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: DisputeVisaCompellingEvidence3DisputedTransactionBuilder::deser_default(),
+                builder: DisputeVisaCompellingEvidence3DisputedTransactionBuilder {
+                    customer_account_id: Deserialize::default(),
+                    customer_device_fingerprint: Deserialize::default(),
+                    customer_device_id: Deserialize::default(),
+                    customer_email_address: Deserialize::default(),
+                    customer_purchase_ip: Deserialize::default(),
+                    merchandise_or_services: Deserialize::default(),
+                    product_description: Deserialize::default(),
+                    shipping_address: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for DisputeVisaCompellingEvidence3DisputedTransactionBuilder {
-        type Out = DisputeVisaCompellingEvidence3DisputedTransaction;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "customer_account_id" => Deserialize::begin(&mut self.customer_account_id),
+                "customer_account_id" => Deserialize::begin(&mut self.builder.customer_account_id),
                 "customer_device_fingerprint" => {
-                    Deserialize::begin(&mut self.customer_device_fingerprint)
+                    Deserialize::begin(&mut self.builder.customer_device_fingerprint)
                 }
-                "customer_device_id" => Deserialize::begin(&mut self.customer_device_id),
-                "customer_email_address" => Deserialize::begin(&mut self.customer_email_address),
-                "customer_purchase_ip" => Deserialize::begin(&mut self.customer_purchase_ip),
-                "merchandise_or_services" => Deserialize::begin(&mut self.merchandise_or_services),
-                "product_description" => Deserialize::begin(&mut self.product_description),
-                "shipping_address" => Deserialize::begin(&mut self.shipping_address),
+                "customer_device_id" => Deserialize::begin(&mut self.builder.customer_device_id),
+                "customer_email_address" => {
+                    Deserialize::begin(&mut self.builder.customer_email_address)
+                }
+                "customer_purchase_ip" => {
+                    Deserialize::begin(&mut self.builder.customer_purchase_ip)
+                }
+                "merchandise_or_services" => {
+                    Deserialize::begin(&mut self.builder.merchandise_or_services)
+                }
+                "product_description" => Deserialize::begin(&mut self.builder.product_description),
+                "shipping_address" => Deserialize::begin(&mut self.builder.shipping_address),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                customer_account_id: Deserialize::default(),
-                customer_device_fingerprint: Deserialize::default(),
-                customer_device_id: Deserialize::default(),
-                customer_email_address: Deserialize::default(),
-                customer_purchase_ip: Deserialize::default(),
-                merchandise_or_services: Deserialize::default(),
-                product_description: Deserialize::default(),
-                shipping_address: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(customer_account_id),
                 Some(customer_device_fingerprint),
@@ -121,19 +120,19 @@ const _: () = {
                 Some(product_description),
                 Some(shipping_address),
             ) = (
-                self.customer_account_id.take(),
-                self.customer_device_fingerprint.take(),
-                self.customer_device_id.take(),
-                self.customer_email_address.take(),
-                self.customer_purchase_ip.take(),
-                self.merchandise_or_services.take(),
-                self.product_description.take(),
-                self.shipping_address.take(),
+                self.builder.customer_account_id.take(),
+                self.builder.customer_device_fingerprint.take(),
+                self.builder.customer_device_id.take(),
+                self.builder.customer_email_address.take(),
+                self.builder.customer_purchase_ip.take(),
+                self.builder.merchandise_or_services.take(),
+                self.builder.product_description.take(),
+                self.builder.shipping_address.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(DisputeVisaCompellingEvidence3DisputedTransaction {
                 customer_account_id,
                 customer_device_fingerprint,
                 customer_device_id,
@@ -142,51 +141,8 @@ const _: () = {
                 merchandise_or_services,
                 product_description,
                 shipping_address,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for DisputeVisaCompellingEvidence3DisputedTransaction {
-        type Builder = DisputeVisaCompellingEvidence3DisputedTransactionBuilder;
-    }
-
-    impl FromValueOpt for DisputeVisaCompellingEvidence3DisputedTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeVisaCompellingEvidence3DisputedTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "customer_account_id" => b.customer_account_id = FromValueOpt::from_value(v),
-                    "customer_device_fingerprint" => {
-                        b.customer_device_fingerprint = FromValueOpt::from_value(v)
-                    }
-                    "customer_device_id" => b.customer_device_id = FromValueOpt::from_value(v),
-                    "customer_email_address" => {
-                        b.customer_email_address = FromValueOpt::from_value(v)
-                    }
-                    "customer_purchase_ip" => b.customer_purchase_ip = FromValueOpt::from_value(v),
-                    "merchandise_or_services" => {
-                        b.merchandise_or_services = FromValueOpt::from_value(v)
-                    }
-                    "product_description" => b.product_description = FromValueOpt::from_value(v),
-                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -258,18 +214,18 @@ impl serde::Serialize for DisputeVisaCompellingEvidence3DisputedTransactionMerch
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
+impl stripe_miniserde::Deserialize
     for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::from_str(s)
@@ -278,10 +234,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices

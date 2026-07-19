@@ -47,16 +47,14 @@ pub struct IssuingDisputeCanceledEvidenceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -75,49 +73,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingDisputeCanceledEvidenceBuilder::deser_default(),
+                builder: IssuingDisputeCanceledEvidenceBuilder {
+                    additional_documentation: Deserialize::default(),
+                    canceled_at: Deserialize::default(),
+                    cancellation_policy_provided: Deserialize::default(),
+                    cancellation_reason: Deserialize::default(),
+                    expected_at: Deserialize::default(),
+                    explanation: Deserialize::default(),
+                    product_description: Deserialize::default(),
+                    product_type: Deserialize::default(),
+                    return_status: Deserialize::default(),
+                    returned_at: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingDisputeCanceledEvidenceBuilder {
-        type Out = IssuingDisputeCanceledEvidence;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "additional_documentation" => {
-                    Deserialize::begin(&mut self.additional_documentation)
+                    Deserialize::begin(&mut self.builder.additional_documentation)
                 }
-                "canceled_at" => Deserialize::begin(&mut self.canceled_at),
+                "canceled_at" => Deserialize::begin(&mut self.builder.canceled_at),
                 "cancellation_policy_provided" => {
-                    Deserialize::begin(&mut self.cancellation_policy_provided)
+                    Deserialize::begin(&mut self.builder.cancellation_policy_provided)
                 }
-                "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
-                "expected_at" => Deserialize::begin(&mut self.expected_at),
-                "explanation" => Deserialize::begin(&mut self.explanation),
-                "product_description" => Deserialize::begin(&mut self.product_description),
-                "product_type" => Deserialize::begin(&mut self.product_type),
-                "return_status" => Deserialize::begin(&mut self.return_status),
-                "returned_at" => Deserialize::begin(&mut self.returned_at),
+                "cancellation_reason" => Deserialize::begin(&mut self.builder.cancellation_reason),
+                "expected_at" => Deserialize::begin(&mut self.builder.expected_at),
+                "explanation" => Deserialize::begin(&mut self.builder.explanation),
+                "product_description" => Deserialize::begin(&mut self.builder.product_description),
+                "product_type" => Deserialize::begin(&mut self.builder.product_type),
+                "return_status" => Deserialize::begin(&mut self.builder.return_status),
+                "returned_at" => Deserialize::begin(&mut self.builder.returned_at),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                additional_documentation: Deserialize::default(),
-                canceled_at: Deserialize::default(),
-                cancellation_policy_provided: Deserialize::default(),
-                cancellation_reason: Deserialize::default(),
-                expected_at: Deserialize::default(),
-                explanation: Deserialize::default(),
-                product_description: Deserialize::default(),
-                product_type: Deserialize::default(),
-                return_status: Deserialize::default(),
-                returned_at: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(additional_documentation),
                 Some(canceled_at),
@@ -130,21 +123,21 @@ const _: () = {
                 Some(return_status),
                 Some(returned_at),
             ) = (
-                self.additional_documentation.take(),
-                self.canceled_at,
-                self.cancellation_policy_provided,
-                self.cancellation_reason.take(),
-                self.expected_at,
-                self.explanation.take(),
-                self.product_description.take(),
-                self.product_type.take(),
-                self.return_status.take(),
-                self.returned_at,
+                self.builder.additional_documentation.take(),
+                self.builder.canceled_at,
+                self.builder.cancellation_policy_provided,
+                self.builder.cancellation_reason.take(),
+                self.builder.expected_at,
+                self.builder.explanation.take(),
+                self.builder.product_description.take(),
+                self.builder.product_type.take(),
+                self.builder.return_status.take(),
+                self.builder.returned_at,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingDisputeCanceledEvidence {
                 additional_documentation,
                 canceled_at,
                 cancellation_policy_provided,
@@ -155,51 +148,8 @@ const _: () = {
                 product_type,
                 return_status,
                 returned_at,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingDisputeCanceledEvidence {
-        type Builder = IssuingDisputeCanceledEvidenceBuilder;
-    }
-
-    impl FromValueOpt for IssuingDisputeCanceledEvidence {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeCanceledEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "additional_documentation" => {
-                        b.additional_documentation = FromValueOpt::from_value(v)
-                    }
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "cancellation_policy_provided" => {
-                        b.cancellation_policy_provided = FromValueOpt::from_value(v)
-                    }
-                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
-                    "expected_at" => b.expected_at = FromValueOpt::from_value(v),
-                    "explanation" => b.explanation = FromValueOpt::from_value(v),
-                    "product_description" => b.product_description = FromValueOpt::from_value(v),
-                    "product_type" => b.product_type = FromValueOpt::from_value(v),
-                    "return_status" => b.return_status = FromValueOpt::from_value(v),
-                    "returned_at" => b.returned_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -269,22 +219,20 @@ impl serde::Serialize for IssuingDisputeCanceledEvidenceProductType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingDisputeCanceledEvidenceProductType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingDisputeCanceledEvidenceProductType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingDisputeCanceledEvidenceProductType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingDisputeCanceledEvidenceProductType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(IssuingDisputeCanceledEvidenceProductType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingDisputeCanceledEvidenceProductType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingDisputeCanceledEvidenceProductType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -359,22 +307,20 @@ impl serde::Serialize for IssuingDisputeCanceledEvidenceReturnStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingDisputeCanceledEvidenceReturnStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingDisputeCanceledEvidenceReturnStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingDisputeCanceledEvidenceReturnStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingDisputeCanceledEvidenceReturnStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(IssuingDisputeCanceledEvidenceReturnStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingDisputeCanceledEvidenceReturnStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingDisputeCanceledEvidenceReturnStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -32,16 +32,14 @@ pub struct SourceTransactionChfCreditTransferDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,35 +58,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceTransactionChfCreditTransferDataBuilder::deser_default(),
+                builder: SourceTransactionChfCreditTransferDataBuilder {
+                    reference: Deserialize::default(),
+                    sender_address_country: Deserialize::default(),
+                    sender_address_line1: Deserialize::default(),
+                    sender_iban: Deserialize::default(),
+                    sender_name: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SourceTransactionChfCreditTransferDataBuilder {
-        type Out = SourceTransactionChfCreditTransferData;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "reference" => Deserialize::begin(&mut self.reference),
-                "sender_address_country" => Deserialize::begin(&mut self.sender_address_country),
-                "sender_address_line1" => Deserialize::begin(&mut self.sender_address_line1),
-                "sender_iban" => Deserialize::begin(&mut self.sender_iban),
-                "sender_name" => Deserialize::begin(&mut self.sender_name),
+                "reference" => Deserialize::begin(&mut self.builder.reference),
+                "sender_address_country" => {
+                    Deserialize::begin(&mut self.builder.sender_address_country)
+                }
+                "sender_address_line1" => {
+                    Deserialize::begin(&mut self.builder.sender_address_line1)
+                }
+                "sender_iban" => Deserialize::begin(&mut self.builder.sender_iban),
+                "sender_name" => Deserialize::begin(&mut self.builder.sender_name),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                reference: Deserialize::default(),
-                sender_address_country: Deserialize::default(),
-                sender_address_line1: Deserialize::default(),
-                sender_iban: Deserialize::default(),
-                sender_name: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(reference),
                 Some(sender_address_country),
@@ -96,59 +93,23 @@ const _: () = {
                 Some(sender_iban),
                 Some(sender_name),
             ) = (
-                self.reference.take(),
-                self.sender_address_country.take(),
-                self.sender_address_line1.take(),
-                self.sender_iban.take(),
-                self.sender_name.take(),
+                self.builder.reference.take(),
+                self.builder.sender_address_country.take(),
+                self.builder.sender_address_line1.take(),
+                self.builder.sender_iban.take(),
+                self.builder.sender_name.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SourceTransactionChfCreditTransferData {
                 reference,
                 sender_address_country,
                 sender_address_line1,
                 sender_iban,
                 sender_name,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceTransactionChfCreditTransferData {
-        type Builder = SourceTransactionChfCreditTransferDataBuilder;
-    }
-
-    impl FromValueOpt for SourceTransactionChfCreditTransferData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTransactionChfCreditTransferDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "sender_address_country" => {
-                        b.sender_address_country = FromValueOpt::from_value(v)
-                    }
-                    "sender_address_line1" => b.sender_address_line1 = FromValueOpt::from_value(v),
-                    "sender_iban" => b.sender_iban = FromValueOpt::from_value(v),
-                    "sender_name" => b.sender_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

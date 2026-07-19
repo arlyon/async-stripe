@@ -23,16 +23,14 @@ pub struct InvoicesResourceFromInvoiceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,62 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoicesResourceFromInvoiceBuilder::deser_default(),
+                builder: InvoicesResourceFromInvoiceBuilder {
+                    action: Deserialize::default(),
+                    invoice: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoicesResourceFromInvoiceBuilder {
-        type Out = InvoicesResourceFromInvoice;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "action" => Deserialize::begin(&mut self.action),
-                "invoice" => Deserialize::begin(&mut self.invoice),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { action: Deserialize::default(), invoice: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(action), Some(invoice)) = (self.action.take(), self.invoice.take()) else {
-                return None;
-            };
-            Some(Self::Out { action, invoice })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "action" => Deserialize::begin(&mut self.builder.action),
+                "invoice" => Deserialize::begin(&mut self.builder.invoice),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoicesResourceFromInvoice {
-        type Builder = InvoicesResourceFromInvoiceBuilder;
-    }
-
-    impl FromValueOpt for InvoicesResourceFromInvoice {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(action), Some(invoice)) =
+                (self.builder.action.take(), self.builder.invoice.take())
+            else {
+                return Ok(());
             };
-            let mut b = InvoicesResourceFromInvoiceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "action" => b.action = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InvoicesResourceFromInvoice { action, invoice });
+            Ok(())
         }
     }
 };

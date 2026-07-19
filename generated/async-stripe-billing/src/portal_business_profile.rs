@@ -26,16 +26,14 @@ pub struct PortalBusinessProfileBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,72 +52,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PortalBusinessProfileBuilder::deser_default(),
+                builder: PortalBusinessProfileBuilder {
+                    headline: Deserialize::default(),
+                    privacy_policy_url: Deserialize::default(),
+                    terms_of_service_url: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PortalBusinessProfileBuilder {
-        type Out = PortalBusinessProfile;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "headline" => Deserialize::begin(&mut self.headline),
-                "privacy_policy_url" => Deserialize::begin(&mut self.privacy_policy_url),
-                "terms_of_service_url" => Deserialize::begin(&mut self.terms_of_service_url),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                headline: Deserialize::default(),
-                privacy_policy_url: Deserialize::default(),
-                terms_of_service_url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(headline), Some(privacy_policy_url), Some(terms_of_service_url)) = (
-                self.headline.take(),
-                self.privacy_policy_url.take(),
-                self.terms_of_service_url.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { headline, privacy_policy_url, terms_of_service_url })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "headline" => Deserialize::begin(&mut self.builder.headline),
+                "privacy_policy_url" => Deserialize::begin(&mut self.builder.privacy_policy_url),
+                "terms_of_service_url" => {
+                    Deserialize::begin(&mut self.builder.terms_of_service_url)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PortalBusinessProfile {
-        type Builder = PortalBusinessProfileBuilder;
-    }
-
-    impl FromValueOpt for PortalBusinessProfile {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(headline), Some(privacy_policy_url), Some(terms_of_service_url)) = (
+                self.builder.headline.take(),
+                self.builder.privacy_policy_url.take(),
+                self.builder.terms_of_service_url.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PortalBusinessProfileBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "headline" => b.headline = FromValueOpt::from_value(v),
-                    "privacy_policy_url" => b.privacy_policy_url = FromValueOpt::from_value(v),
-                    "terms_of_service_url" => b.terms_of_service_url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PortalBusinessProfile { headline, privacy_policy_url, terms_of_service_url });
+            Ok(())
         }
     }
 };

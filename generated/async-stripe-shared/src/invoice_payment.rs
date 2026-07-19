@@ -60,16 +60,14 @@ pub struct InvoicePaymentBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -88,47 +86,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoicePaymentBuilder::deser_default(),
+                builder: InvoicePaymentBuilder {
+                    amount_paid: Deserialize::default(),
+                    amount_requested: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    id: Deserialize::default(),
+                    invoice: Deserialize::default(),
+                    is_default: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    payment: Deserialize::default(),
+                    status: Deserialize::default(),
+                    status_transitions: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for InvoicePaymentBuilder {
-        type Out = InvoicePayment;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_paid" => Deserialize::begin(&mut self.amount_paid),
-                "amount_requested" => Deserialize::begin(&mut self.amount_requested),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "id" => Deserialize::begin(&mut self.id),
-                "invoice" => Deserialize::begin(&mut self.invoice),
-                "is_default" => Deserialize::begin(&mut self.is_default),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "payment" => Deserialize::begin(&mut self.payment),
-                "status" => Deserialize::begin(&mut self.status),
-                "status_transitions" => Deserialize::begin(&mut self.status_transitions),
+                "amount_paid" => Deserialize::begin(&mut self.builder.amount_paid),
+                "amount_requested" => Deserialize::begin(&mut self.builder.amount_requested),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "invoice" => Deserialize::begin(&mut self.builder.invoice),
+                "is_default" => Deserialize::begin(&mut self.builder.is_default),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "payment" => Deserialize::begin(&mut self.builder.payment),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "status_transitions" => Deserialize::begin(&mut self.builder.status_transitions),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount_paid: Deserialize::default(),
-                amount_requested: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                id: Deserialize::default(),
-                invoice: Deserialize::default(),
-                is_default: Deserialize::default(),
-                livemode: Deserialize::default(),
-                payment: Deserialize::default(),
-                status: Deserialize::default(),
-                status_transitions: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount_paid),
                 Some(amount_requested),
@@ -142,22 +135,22 @@ const _: () = {
                 Some(status),
                 Some(status_transitions),
             ) = (
-                self.amount_paid,
-                self.amount_requested,
-                self.created,
-                self.currency.take(),
-                self.id.take(),
-                self.invoice.take(),
-                self.is_default,
-                self.livemode,
-                self.payment.take(),
-                self.status.take(),
-                self.status_transitions,
+                self.builder.amount_paid,
+                self.builder.amount_requested,
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.id.take(),
+                self.builder.invoice.take(),
+                self.builder.is_default,
+                self.builder.livemode,
+                self.builder.payment.take(),
+                self.builder.status.take(),
+                self.builder.status_transitions,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(InvoicePayment {
                 amount_paid,
                 amount_requested,
                 created,
@@ -169,48 +162,8 @@ const _: () = {
                 payment,
                 status,
                 status_transitions,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoicePayment {
-        type Builder = InvoicePaymentBuilder;
-    }
-
-    impl FromValueOpt for InvoicePayment {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoicePaymentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_paid" => b.amount_paid = FromValueOpt::from_value(v),
-                    "amount_requested" => b.amount_requested = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "is_default" => b.is_default = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "payment" => b.payment = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

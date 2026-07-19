@@ -120,7 +120,7 @@ impl CodeGen {
             {doc_comment}
             extern crate self as {lib_name};
 
-            miniserde::make_place!(Place);
+            stripe_miniserde::make_place!(Place);
             "#
             };
 

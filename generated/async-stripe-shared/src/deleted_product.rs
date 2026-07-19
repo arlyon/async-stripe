@@ -22,16 +22,14 @@ pub struct DeletedProductBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -50,62 +48,29 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: DeletedProductBuilder::deser_default(),
+                builder: DeletedProductBuilder {
+                    deleted: Deserialize::default(),
+                    id: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for DeletedProductBuilder {
-        type Out = DeletedProduct;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "deleted" => Deserialize::begin(&mut self.deleted),
-                "id" => Deserialize::begin(&mut self.id),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { deleted: Deserialize::default(), id: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(deleted), Some(id)) = (self.deleted, self.id.take()) else {
-                return None;
-            };
-            Some(Self::Out { deleted, id })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "deleted" => Deserialize::begin(&mut self.builder.deleted),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for DeletedProduct {
-        type Builder = DeletedProductBuilder;
-    }
-
-    impl FromValueOpt for DeletedProduct {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(deleted), Some(id)) = (self.builder.deleted, self.builder.id.take()) else {
+                return Ok(());
             };
-            let mut b = DeletedProductBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "deleted" => b.deleted = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(DeletedProduct { deleted, id });
+            Ok(())
         }
     }
 };

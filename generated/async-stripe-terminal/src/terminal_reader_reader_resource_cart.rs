@@ -33,16 +33,14 @@ pub struct TerminalReaderReaderResourceCartBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -61,73 +59,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderReaderResourceCartBuilder::deser_default(),
+                builder: TerminalReaderReaderResourceCartBuilder {
+                    currency: Deserialize::default(),
+                    line_items: Deserialize::default(),
+                    tax: Deserialize::default(),
+                    total: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TerminalReaderReaderResourceCartBuilder {
-        type Out = TerminalReaderReaderResourceCart;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "currency" => Deserialize::begin(&mut self.currency),
-                "line_items" => Deserialize::begin(&mut self.line_items),
-                "tax" => Deserialize::begin(&mut self.tax),
-                "total" => Deserialize::begin(&mut self.total),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                currency: Deserialize::default(),
-                line_items: Deserialize::default(),
-                tax: Deserialize::default(),
-                total: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(currency), Some(line_items), Some(tax), Some(total)) =
-                (self.currency.take(), self.line_items.take(), self.tax, self.total)
-            else {
-                return None;
-            };
-            Some(Self::Out { currency, line_items, tax, total })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "line_items" => Deserialize::begin(&mut self.builder.line_items),
+                "tax" => Deserialize::begin(&mut self.builder.tax),
+                "total" => Deserialize::begin(&mut self.builder.total),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceCart {
-        type Builder = TerminalReaderReaderResourceCartBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceCart {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(currency), Some(line_items), Some(tax), Some(total)) = (
+                self.builder.currency.take(),
+                self.builder.line_items.take(),
+                self.builder.tax,
+                self.builder.total,
+            ) else {
+                return Ok(());
             };
-            let mut b = TerminalReaderReaderResourceCartBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "tax" => b.tax = FromValueOpt::from_value(v),
-                    "total" => b.total = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TerminalReaderReaderResourceCart { currency, line_items, tax, total });
+            Ok(())
         }
     }
 };

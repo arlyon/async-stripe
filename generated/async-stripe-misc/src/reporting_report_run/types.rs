@@ -57,16 +57,14 @@ pub struct ReportingReportRunBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -85,43 +83,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ReportingReportRunBuilder::deser_default(),
+                builder: ReportingReportRunBuilder {
+                    created: Deserialize::default(),
+                    error: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    parameters: Deserialize::default(),
+                    report_type: Deserialize::default(),
+                    result: Deserialize::default(),
+                    status: Deserialize::default(),
+                    succeeded_at: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ReportingReportRunBuilder {
-        type Out = ReportingReportRun;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "error" => Deserialize::begin(&mut self.error),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "parameters" => Deserialize::begin(&mut self.parameters),
-                "report_type" => Deserialize::begin(&mut self.report_type),
-                "result" => Deserialize::begin(&mut self.result),
-                "status" => Deserialize::begin(&mut self.status),
-                "succeeded_at" => Deserialize::begin(&mut self.succeeded_at),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "error" => Deserialize::begin(&mut self.builder.error),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "parameters" => Deserialize::begin(&mut self.builder.parameters),
+                "report_type" => Deserialize::begin(&mut self.builder.report_type),
+                "result" => Deserialize::begin(&mut self.builder.result),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "succeeded_at" => Deserialize::begin(&mut self.builder.succeeded_at),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                error: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                parameters: Deserialize::default(),
-                report_type: Deserialize::default(),
-                result: Deserialize::default(),
-                status: Deserialize::default(),
-                succeeded_at: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(created),
                 Some(error),
@@ -133,20 +126,20 @@ const _: () = {
                 Some(status),
                 Some(succeeded_at),
             ) = (
-                self.created,
-                self.error.take(),
-                self.id.take(),
-                self.livemode,
-                self.parameters.take(),
-                self.report_type.take(),
-                self.result.take(),
-                self.status.take(),
-                self.succeeded_at,
+                self.builder.created,
+                self.builder.error.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.parameters.take(),
+                self.builder.report_type.take(),
+                self.builder.result.take(),
+                self.builder.status.take(),
+                self.builder.succeeded_at,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ReportingReportRun {
                 created,
                 error,
                 id,
@@ -156,46 +149,8 @@ const _: () = {
                 result,
                 status,
                 succeeded_at,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ReportingReportRun {
-        type Builder = ReportingReportRunBuilder;
-    }
-
-    impl FromValueOpt for ReportingReportRun {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReportingReportRunBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "error" => b.error = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "parameters" => b.parameters = FromValueOpt::from_value(v),
-                    "report_type" => b.report_type = FromValueOpt::from_value(v),
-                    "result" => b.result = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "succeeded_at" => b.succeeded_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

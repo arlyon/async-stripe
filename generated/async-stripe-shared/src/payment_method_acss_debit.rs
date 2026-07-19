@@ -33,16 +33,14 @@ pub struct PaymentMethodAcssDebitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -61,35 +59,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodAcssDebitBuilder::deser_default(),
+                builder: PaymentMethodAcssDebitBuilder {
+                    bank_name: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    institution_number: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    transit_number: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodAcssDebitBuilder {
-        type Out = PaymentMethodAcssDebit;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "institution_number" => Deserialize::begin(&mut self.institution_number),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "transit_number" => Deserialize::begin(&mut self.transit_number),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "institution_number" => Deserialize::begin(&mut self.builder.institution_number),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "transit_number" => Deserialize::begin(&mut self.builder.transit_number),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bank_name: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                institution_number: Deserialize::default(),
-                last4: Deserialize::default(),
-                transit_number: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bank_name),
                 Some(fingerprint),
@@ -97,51 +90,23 @@ const _: () = {
                 Some(last4),
                 Some(transit_number),
             ) = (
-                self.bank_name.take(),
-                self.fingerprint.take(),
-                self.institution_number.take(),
-                self.last4.take(),
-                self.transit_number.take(),
+                self.builder.bank_name.take(),
+                self.builder.fingerprint.take(),
+                self.builder.institution_number.take(),
+                self.builder.last4.take(),
+                self.builder.transit_number.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { bank_name, fingerprint, institution_number, last4, transit_number })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(PaymentMethodAcssDebit {
+                bank_name,
+                fingerprint,
+                institution_number,
+                last4,
+                transit_number,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodAcssDebit {
-        type Builder = PaymentMethodAcssDebitBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodAcssDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodAcssDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "institution_number" => b.institution_number = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "transit_number" => b.transit_number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

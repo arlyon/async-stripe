@@ -30,16 +30,14 @@ pub struct CustomerSessionResourceComponentsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -58,35 +56,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CustomerSessionResourceComponentsBuilder::deser_default(),
+                builder: CustomerSessionResourceComponentsBuilder {
+                    buy_button: Deserialize::default(),
+                    customer_sheet: Deserialize::default(),
+                    mobile_payment_element: Deserialize::default(),
+                    payment_element: Deserialize::default(),
+                    pricing_table: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CustomerSessionResourceComponentsBuilder {
-        type Out = CustomerSessionResourceComponents;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "buy_button" => Deserialize::begin(&mut self.buy_button),
-                "customer_sheet" => Deserialize::begin(&mut self.customer_sheet),
-                "mobile_payment_element" => Deserialize::begin(&mut self.mobile_payment_element),
-                "payment_element" => Deserialize::begin(&mut self.payment_element),
-                "pricing_table" => Deserialize::begin(&mut self.pricing_table),
+                "buy_button" => Deserialize::begin(&mut self.builder.buy_button),
+                "customer_sheet" => Deserialize::begin(&mut self.builder.customer_sheet),
+                "mobile_payment_element" => {
+                    Deserialize::begin(&mut self.builder.mobile_payment_element)
+                }
+                "payment_element" => Deserialize::begin(&mut self.builder.payment_element),
+                "pricing_table" => Deserialize::begin(&mut self.builder.pricing_table),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                buy_button: Deserialize::default(),
-                customer_sheet: Deserialize::default(),
-                mobile_payment_element: Deserialize::default(),
-                payment_element: Deserialize::default(),
-                pricing_table: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(buy_button),
                 Some(customer_sheet),
@@ -94,59 +89,23 @@ const _: () = {
                 Some(payment_element),
                 Some(pricing_table),
             ) = (
-                self.buy_button,
-                self.customer_sheet.take(),
-                self.mobile_payment_element.take(),
-                self.payment_element.take(),
-                self.pricing_table,
+                self.builder.buy_button,
+                self.builder.customer_sheet.take(),
+                self.builder.mobile_payment_element.take(),
+                self.builder.payment_element.take(),
+                self.builder.pricing_table,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(CustomerSessionResourceComponents {
                 buy_button,
                 customer_sheet,
                 mobile_payment_element,
                 payment_element,
                 pricing_table,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CustomerSessionResourceComponents {
-        type Builder = CustomerSessionResourceComponentsBuilder;
-    }
-
-    impl FromValueOpt for CustomerSessionResourceComponents {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerSessionResourceComponentsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "buy_button" => b.buy_button = FromValueOpt::from_value(v),
-                    "customer_sheet" => b.customer_sheet = FromValueOpt::from_value(v),
-                    "mobile_payment_element" => {
-                        b.mobile_payment_element = FromValueOpt::from_value(v)
-                    }
-                    "payment_element" => b.payment_element = FromValueOpt::from_value(v),
-                    "pricing_table" => b.pricing_table = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

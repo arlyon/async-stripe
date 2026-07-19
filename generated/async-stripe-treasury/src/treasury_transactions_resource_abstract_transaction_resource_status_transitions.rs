@@ -24,16 +24,14 @@ pub struct TreasuryTransactionsResourceAbstractTransactionResourceStatusTransiti
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,65 +52,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitionsBuilder::deser_default(),
+            builder: TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitionsBuilder { posted_at: Deserialize::default(),
+void_at: Deserialize::default(),
+ },
         }))
-        }
-    }
-
-    impl MapBuilder
-        for TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitionsBuilder
-    {
-        type Out = TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "posted_at" => Deserialize::begin(&mut self.posted_at),
-                "void_at" => Deserialize::begin(&mut self.void_at),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { posted_at: Deserialize::default(), void_at: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(posted_at), Some(void_at)) = (self.posted_at, self.void_at) else {
-                return None;
-            };
-            Some(Self::Out { posted_at, void_at })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "posted_at" => Deserialize::begin(&mut self.builder.posted_at),
+                "void_at" => Deserialize::begin(&mut self.builder.void_at),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions {
-        type Builder =
-            TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitionsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(posted_at), Some(void_at)) = (self.builder.posted_at, self.builder.void_at)
+            else {
+                return Ok(());
             };
-            let mut b = TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "posted_at" => b.posted_at = FromValueOpt::from_value(v),
-                    "void_at" => b.void_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions {
+                    posted_at,
+                    void_at,
+                });
+            Ok(())
         }
     }
 };

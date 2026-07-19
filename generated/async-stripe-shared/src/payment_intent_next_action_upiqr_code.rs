@@ -26,16 +26,14 @@ pub struct PaymentIntentNextActionUpiqrCodeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionUpiqrCodeBuilder::deser_default(),
+                builder: PaymentIntentNextActionUpiqrCodeBuilder {
+                    expires_at: Deserialize::default(),
+                    image_url_png: Deserialize::default(),
+                    image_url_svg: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentNextActionUpiqrCodeBuilder {
-        type Out = PaymentIntentNextActionUpiqrCode;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "image_url_png" => Deserialize::begin(&mut self.image_url_png),
-                "image_url_svg" => Deserialize::begin(&mut self.image_url_svg),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                expires_at: Deserialize::default(),
-                image_url_png: Deserialize::default(),
-                image_url_svg: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_at), Some(image_url_png), Some(image_url_svg)) =
-                (self.expires_at, self.image_url_png.take(), self.image_url_svg.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { expires_at, image_url_png, image_url_svg })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "image_url_png" => Deserialize::begin(&mut self.builder.image_url_png),
+                "image_url_svg" => Deserialize::begin(&mut self.builder.image_url_svg),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionUpiqrCode {
-        type Builder = PaymentIntentNextActionUpiqrCodeBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionUpiqrCode {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(expires_at), Some(image_url_png), Some(image_url_svg)) = (
+                self.builder.expires_at,
+                self.builder.image_url_png.take(),
+                self.builder.image_url_svg.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentIntentNextActionUpiqrCodeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "image_url_png" => b.image_url_png = FromValueOpt::from_value(v),
-                    "image_url_svg" => b.image_url_svg = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PaymentIntentNextActionUpiqrCode { expires_at, image_url_png, image_url_svg });
+            Ok(())
         }
     }
 };

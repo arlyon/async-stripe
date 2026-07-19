@@ -58,16 +58,14 @@ pub struct BillingPortalConfigurationBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -86,51 +84,46 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BillingPortalConfigurationBuilder::deser_default(),
+                builder: BillingPortalConfigurationBuilder {
+                    active: Deserialize::default(),
+                    application: Deserialize::default(),
+                    business_profile: Deserialize::default(),
+                    created: Deserialize::default(),
+                    default_return_url: Deserialize::default(),
+                    features: Deserialize::default(),
+                    id: Deserialize::default(),
+                    is_default: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    login_page: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    name: Deserialize::default(),
+                    updated: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for BillingPortalConfigurationBuilder {
-        type Out = BillingPortalConfiguration;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
-                "application" => Deserialize::begin(&mut self.application),
-                "business_profile" => Deserialize::begin(&mut self.business_profile),
-                "created" => Deserialize::begin(&mut self.created),
-                "default_return_url" => Deserialize::begin(&mut self.default_return_url),
-                "features" => Deserialize::begin(&mut self.features),
-                "id" => Deserialize::begin(&mut self.id),
-                "is_default" => Deserialize::begin(&mut self.is_default),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "login_page" => Deserialize::begin(&mut self.login_page),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "name" => Deserialize::begin(&mut self.name),
-                "updated" => Deserialize::begin(&mut self.updated),
+                "active" => Deserialize::begin(&mut self.builder.active),
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "business_profile" => Deserialize::begin(&mut self.builder.business_profile),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "default_return_url" => Deserialize::begin(&mut self.builder.default_return_url),
+                "features" => Deserialize::begin(&mut self.builder.features),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "is_default" => Deserialize::begin(&mut self.builder.is_default),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "login_page" => Deserialize::begin(&mut self.builder.login_page),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "updated" => Deserialize::begin(&mut self.builder.updated),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                active: Deserialize::default(),
-                application: Deserialize::default(),
-                business_profile: Deserialize::default(),
-                created: Deserialize::default(),
-                default_return_url: Deserialize::default(),
-                features: Deserialize::default(),
-                id: Deserialize::default(),
-                is_default: Deserialize::default(),
-                livemode: Deserialize::default(),
-                login_page: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
-                updated: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(active),
                 Some(application),
@@ -146,24 +139,24 @@ const _: () = {
                 Some(name),
                 Some(updated),
             ) = (
-                self.active,
-                self.application.take(),
-                self.business_profile.take(),
-                self.created,
-                self.default_return_url.take(),
-                self.features.take(),
-                self.id.take(),
-                self.is_default,
-                self.livemode,
-                self.login_page.take(),
-                self.metadata.take(),
-                self.name.take(),
-                self.updated,
+                self.builder.active,
+                self.builder.application.take(),
+                self.builder.business_profile.take(),
+                self.builder.created,
+                self.builder.default_return_url.take(),
+                self.builder.features.take(),
+                self.builder.id.take(),
+                self.builder.is_default,
+                self.builder.livemode,
+                self.builder.login_page.take(),
+                self.builder.metadata.take(),
+                self.builder.name.take(),
+                self.builder.updated,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(BillingPortalConfiguration {
                 active,
                 application,
                 business_profile,
@@ -177,50 +170,8 @@ const _: () = {
                 metadata,
                 name,
                 updated,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingPortalConfiguration {
-        type Builder = BillingPortalConfigurationBuilder;
-    }
-
-    impl FromValueOpt for BillingPortalConfiguration {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingPortalConfigurationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "business_profile" => b.business_profile = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "default_return_url" => b.default_return_url = FromValueOpt::from_value(v),
-                    "features" => b.features = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "is_default" => b.is_default = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "login_page" => b.login_page = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "updated" => b.updated = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

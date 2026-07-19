@@ -41,16 +41,14 @@ pub struct PaymentMethodCardWalletBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -69,43 +67,40 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodCardWalletBuilder::deser_default(),
+                builder: PaymentMethodCardWalletBuilder {
+                    amex_express_checkout: Deserialize::default(),
+                    apple_pay: Deserialize::default(),
+                    dynamic_last4: Deserialize::default(),
+                    google_pay: Deserialize::default(),
+                    link: Deserialize::default(),
+                    masterpass: Deserialize::default(),
+                    samsung_pay: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    visa_checkout: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodCardWalletBuilder {
-        type Out = PaymentMethodCardWallet;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amex_express_checkout" => Deserialize::begin(&mut self.amex_express_checkout),
-                "apple_pay" => Deserialize::begin(&mut self.apple_pay),
-                "dynamic_last4" => Deserialize::begin(&mut self.dynamic_last4),
-                "google_pay" => Deserialize::begin(&mut self.google_pay),
-                "link" => Deserialize::begin(&mut self.link),
-                "masterpass" => Deserialize::begin(&mut self.masterpass),
-                "samsung_pay" => Deserialize::begin(&mut self.samsung_pay),
-                "type" => Deserialize::begin(&mut self.type_),
-                "visa_checkout" => Deserialize::begin(&mut self.visa_checkout),
+                "amex_express_checkout" => {
+                    Deserialize::begin(&mut self.builder.amex_express_checkout)
+                }
+                "apple_pay" => Deserialize::begin(&mut self.builder.apple_pay),
+                "dynamic_last4" => Deserialize::begin(&mut self.builder.dynamic_last4),
+                "google_pay" => Deserialize::begin(&mut self.builder.google_pay),
+                "link" => Deserialize::begin(&mut self.builder.link),
+                "masterpass" => Deserialize::begin(&mut self.builder.masterpass),
+                "samsung_pay" => Deserialize::begin(&mut self.builder.samsung_pay),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "visa_checkout" => Deserialize::begin(&mut self.builder.visa_checkout),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amex_express_checkout: Deserialize::default(),
-                apple_pay: Deserialize::default(),
-                dynamic_last4: Deserialize::default(),
-                google_pay: Deserialize::default(),
-                link: Deserialize::default(),
-                masterpass: Deserialize::default(),
-                samsung_pay: Deserialize::default(),
-                type_: Deserialize::default(),
-                visa_checkout: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amex_express_checkout),
                 Some(apple_pay),
@@ -117,20 +112,20 @@ const _: () = {
                 Some(type_),
                 Some(visa_checkout),
             ) = (
-                self.amex_express_checkout,
-                self.apple_pay,
-                self.dynamic_last4.take(),
-                self.google_pay,
-                self.link,
-                self.masterpass.take(),
-                self.samsung_pay,
-                self.type_.take(),
-                self.visa_checkout.take(),
+                self.builder.amex_express_checkout,
+                self.builder.apple_pay,
+                self.builder.dynamic_last4.take(),
+                self.builder.google_pay,
+                self.builder.link,
+                self.builder.masterpass.take(),
+                self.builder.samsung_pay,
+                self.builder.type_.take(),
+                self.builder.visa_checkout.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodCardWallet {
                 amex_express_checkout,
                 apple_pay,
                 dynamic_last4,
@@ -140,48 +135,8 @@ const _: () = {
                 samsung_pay,
                 type_,
                 visa_checkout,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodCardWallet {
-        type Builder = PaymentMethodCardWalletBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodCardWallet {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodCardWalletBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amex_express_checkout" => {
-                        b.amex_express_checkout = FromValueOpt::from_value(v)
-                    }
-                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
-                    "dynamic_last4" => b.dynamic_last4 = FromValueOpt::from_value(v),
-                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
-                    "link" => b.link = FromValueOpt::from_value(v),
-                    "masterpass" => b.masterpass = FromValueOpt::from_value(v),
-                    "samsung_pay" => b.samsung_pay = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "visa_checkout" => b.visa_checkout = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -267,21 +222,19 @@ impl serde::Serialize for PaymentMethodCardWalletType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodCardWalletType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodCardWalletType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodCardWalletType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodCardWalletType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentMethodCardWalletType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodCardWalletType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodCardWalletType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

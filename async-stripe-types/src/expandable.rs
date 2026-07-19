@@ -72,96 +72,47 @@ impl<T: Object> Expandable<T> {
 
 #[doc(hidden)]
 mod miniserde {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, make_place};
+    use stripe_miniserde::de::Visitor;
+    use stripe_miniserde::{Deserialize, make_place};
 
-    use crate::miniserde_helpers::FromValueOpt;
     use crate::{Expandable, FromCursor, Object};
     make_place!(Place);
 
-    /// Internal implementation details
-    pub trait MapBuilder {
-        type Out;
-
-        /// Initial state for the builder. Note that this does _not_ match the `Default` trait, it
-        /// matches `miniserde::Deserialize::default` -> specifically we need `Option<Option<>>` to
-        /// default to `Some(None)`
-        fn deser_default() -> Self;
-
-        fn key(&mut self, k: &str) -> miniserde::Result<&mut dyn Visitor>;
-
-        fn take_out(&mut self) -> Option<Self::Out>
-        where
-            Self::Out: Sized;
-    }
-
-    /// Internal implementation details
-    pub trait ObjectDeser
-    where
-        Self: Sized,
-    {
-        type Builder: MapBuilder<Out = Self>;
-    }
-
     impl<T> Deserialize for Expandable<T>
     where
-        T: Object + Deserialize + ObjectDeser,
+        T: Object + Deserialize,
     {
+        const WANTS_RAW: bool = true;
+
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
-    struct ExpandableBuilder<'a, T: ObjectDeser + Object> {
-        out: &'a mut Option<Expandable<T>>,
-        builder: T::Builder,
-    }
-
-    impl<T> Map for ExpandableBuilder<'_, T>
-    where
-        T: ObjectDeser + Object,
-    {
-        fn key(&mut self, k: &str) -> miniserde::Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> miniserde::Result<()> {
-            let finalized = self.builder.take_out().ok_or(miniserde::Error)?;
-            *self.out = Some(Expandable::Object(Box::new(finalized)));
-            Ok(())
-        }
-    }
-
     impl<T> Visitor for Place<Expandable<T>>
     where
-        T: Object + ObjectDeser,
+        T: Object + Deserialize,
     {
-        fn string(&mut self, s: &str) -> miniserde::Result<()> {
-            let val = T::Id::from_cursor(s).ok_or(miniserde::Error)?;
-            self.out = Some(Expandable::Id(val));
-            Ok(())
+        fn wants_raw(&self) -> bool {
+            true
         }
 
-        fn map(&mut self) -> miniserde::Result<Box<dyn Map + '_>> {
-            Ok(Box::new(ExpandableBuilder {
-                out: &mut self.out,
-                builder: T::Builder::deser_default(),
-            }))
-        }
-    }
-
-    impl<T: FromValueOpt + Object> FromValueOpt for Expandable<T> {
-        fn from_value(v: Value) -> Option<Self> {
-            match v {
-                Value::String(id) => Some(Self::Id(T::Id::from_cursor(&id)?)),
-                Value::Object(obj) => {
-                    Some(Self::Object(Box::new(T::from_value(Value::Object(obj))?)))
+        fn raw(&mut self, bytes: &str) -> stripe_miniserde::Result<()> {
+            let trimmed = bytes.trim_ascii_start();
+            let first = trimmed.as_bytes().first().copied().ok_or(stripe_miniserde::Error)?;
+            match first {
+                b'"' => {
+                    let s: String = stripe_miniserde::json::from_str(trimmed)?;
+                    let id = T::Id::from_cursor(&s).ok_or(stripe_miniserde::Error)?;
+                    self.out = Some(Expandable::Id(id));
                 }
-                _ => None,
+                b'{' => {
+                    let parsed: T = stripe_miniserde::json::from_str(trimmed)?;
+                    self.out = Some(Expandable::Object(Box::new(parsed)));
+                }
+                _ => return Err(stripe_miniserde::Error),
             }
+            Ok(())
         }
     }
 }
-
-pub use miniserde::{MapBuilder, ObjectDeser};

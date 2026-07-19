@@ -134,76 +134,36 @@ pub enum DeleteCustomerCardReturned {
     DeletedPaymentSource(stripe_shared::DeletedPaymentSource),
 }
 
-#[derive(Default)]
-pub struct DeleteCustomerCardReturnedBuilder {
-    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
-}
-
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::MapBuilder;
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_miniserde::de::Visitor;
+    use stripe_miniserde::{Deserialize, Result, make_place};
+    use stripe_miniserde::json::peek_deleted_flag;
 
     use super::*;
 
     make_place!(Place);
 
-    struct Builder<'a> {
-        out: &'a mut Option<DeleteCustomerCardReturned>,
-        builder: DeleteCustomerCardReturnedBuilder,
-    }
-
     impl Deserialize for DeleteCustomerCardReturned {
+        const WANTS_RAW: bool = true;
+
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     impl Visitor for Place<DeleteCustomerCardReturned> {
-        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+        fn wants_raw(&self) -> bool {
+            true
         }
 
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+        fn raw(&mut self, bytes: &str) -> Result<()> {
+            self.out = Some(if peek_deleted_flag(bytes) {
+                DeleteCustomerCardReturned::DeletedPaymentSource(stripe_miniserde::json::from_str(bytes)?)
+            } else {
+                DeleteCustomerCardReturned::PaymentSource(stripe_miniserde::json::from_str(bytes)?)
+            });
             Ok(())
         }
-    }
-
-    impl MapBuilder for DeleteCustomerCardReturnedBuilder {
-        type Out = DeleteCustomerCardReturned;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.inner.key_inner(k)
-        }
-
-        fn deser_default() -> Self {
-            Self::default()
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (deleted, o) = self.inner.finish_inner()?;
-            Some(if deleted {
-                DeleteCustomerCardReturned::DeletedPaymentSource(FromValueOpt::from_value(
-                    Value::Object(o),
-                )?)
-            } else {
-                DeleteCustomerCardReturned::PaymentSource(FromValueOpt::from_value(Value::Object(
-                    o,
-                ))?)
-            })
-        }
-    }
-
-    impl stripe_types::ObjectDeser for DeleteCustomerCardReturned {
-        type Builder = DeleteCustomerCardReturnedBuilder;
     }
 };
 
@@ -979,92 +939,40 @@ pub enum UpdateCustomerCardReturned {
     Source(stripe_shared::Source),
 }
 
-#[derive(Default)]
-pub struct UpdateCustomerCardReturnedBuilder {
-    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
-}
-
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::MapBuilder;
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_miniserde::de::Visitor;
+    use stripe_miniserde::{Deserialize, Error, Result, make_place};
+    use stripe_miniserde::json::peek_object_tag;
 
     use super::*;
 
     make_place!(Place);
 
-    struct Builder<'a> {
-        out: &'a mut Option<UpdateCustomerCardReturned>,
-        builder: UpdateCustomerCardReturnedBuilder,
-    }
-
     impl Deserialize for UpdateCustomerCardReturned {
+        const WANTS_RAW: bool = true;
+
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     impl Visitor for Place<UpdateCustomerCardReturned> {
-        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+        fn wants_raw(&self) -> bool {
+            true
         }
 
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl MapBuilder for UpdateCustomerCardReturnedBuilder {
-        type Out = UpdateCustomerCardReturned;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.inner.key_inner(k)
-        }
-
-        fn deser_default() -> Self {
-            Self::default()
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (k, o) = self.inner.finish_inner()?;
-            UpdateCustomerCardReturned::construct(&k, o)
-        }
-    }
-
-    impl stripe_types::ObjectDeser for UpdateCustomerCardReturned {
-        type Builder = UpdateCustomerCardReturnedBuilder;
-    }
-    impl UpdateCustomerCardReturned {
-        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
-            Some(match key {
-                "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
-                "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
-                "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
-
-                _ => {
-                    tracing::warn!(
-                        "Unknown object type '{}' for enum '{}'",
-                        key,
-                        "UpdateCustomerCardReturned"
-                    );
-                    return None;
+        fn raw(&mut self, bytes: &str) -> Result<()> {
+            let tag = peek_object_tag(bytes).ok_or(Error)?;
+            self.out = Some(match tag.as_str() {
+                "card" => UpdateCustomerCardReturned::Card(stripe_miniserde::json::from_str(bytes)?),
+                "bank_account" => {
+                    UpdateCustomerCardReturned::BankAccount(stripe_miniserde::json::from_str(bytes)?)
                 }
-            })
-        }
-    }
+                "source" => UpdateCustomerCardReturned::Source(stripe_miniserde::json::from_str(bytes)?),
 
-    impl FromValueOpt for UpdateCustomerCardReturned {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
+                _ => return Err(Error),
+            });
+            Ok(())
         }
     }
 };

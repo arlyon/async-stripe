@@ -5,7 +5,7 @@ edition = "2024"
 publish = false
 
 [dependencies]
-miniserde = { workspace = true }
+async-stripe-miniserde = { workspace = true }
 async-stripe-shared = { path = "../../../../generated/async-stripe-shared" }
 
 async-stripe-core = { path = "../../../../generated/async-stripe-core", features = [

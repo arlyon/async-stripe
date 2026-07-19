@@ -57,16 +57,14 @@ pub struct ConnectEmbeddedAccountSessionCreateComponentsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -85,67 +83,62 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ConnectEmbeddedAccountSessionCreateComponentsBuilder::deser_default(),
+                builder: ConnectEmbeddedAccountSessionCreateComponentsBuilder {
+                    account_management: Deserialize::default(),
+                    account_onboarding: Deserialize::default(),
+                    balances: Deserialize::default(),
+                    disputes_list: Deserialize::default(),
+                    documents: Deserialize::default(),
+                    financial_account: Deserialize::default(),
+                    financial_account_transactions: Deserialize::default(),
+                    instant_payouts_promotion: Deserialize::default(),
+                    issuing_card: Deserialize::default(),
+                    issuing_cards_list: Deserialize::default(),
+                    notification_banner: Deserialize::default(),
+                    payment_details: Deserialize::default(),
+                    payment_disputes: Deserialize::default(),
+                    payments: Deserialize::default(),
+                    payout_details: Deserialize::default(),
+                    payouts: Deserialize::default(),
+                    payouts_list: Deserialize::default(),
+                    tax_registrations: Deserialize::default(),
+                    tax_settings: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ConnectEmbeddedAccountSessionCreateComponentsBuilder {
-        type Out = ConnectEmbeddedAccountSessionCreateComponents;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_management" => Deserialize::begin(&mut self.account_management),
-                "account_onboarding" => Deserialize::begin(&mut self.account_onboarding),
-                "balances" => Deserialize::begin(&mut self.balances),
-                "disputes_list" => Deserialize::begin(&mut self.disputes_list),
-                "documents" => Deserialize::begin(&mut self.documents),
-                "financial_account" => Deserialize::begin(&mut self.financial_account),
+                "account_management" => Deserialize::begin(&mut self.builder.account_management),
+                "account_onboarding" => Deserialize::begin(&mut self.builder.account_onboarding),
+                "balances" => Deserialize::begin(&mut self.builder.balances),
+                "disputes_list" => Deserialize::begin(&mut self.builder.disputes_list),
+                "documents" => Deserialize::begin(&mut self.builder.documents),
+                "financial_account" => Deserialize::begin(&mut self.builder.financial_account),
                 "financial_account_transactions" => {
-                    Deserialize::begin(&mut self.financial_account_transactions)
+                    Deserialize::begin(&mut self.builder.financial_account_transactions)
                 }
                 "instant_payouts_promotion" => {
-                    Deserialize::begin(&mut self.instant_payouts_promotion)
+                    Deserialize::begin(&mut self.builder.instant_payouts_promotion)
                 }
-                "issuing_card" => Deserialize::begin(&mut self.issuing_card),
-                "issuing_cards_list" => Deserialize::begin(&mut self.issuing_cards_list),
-                "notification_banner" => Deserialize::begin(&mut self.notification_banner),
-                "payment_details" => Deserialize::begin(&mut self.payment_details),
-                "payment_disputes" => Deserialize::begin(&mut self.payment_disputes),
-                "payments" => Deserialize::begin(&mut self.payments),
-                "payout_details" => Deserialize::begin(&mut self.payout_details),
-                "payouts" => Deserialize::begin(&mut self.payouts),
-                "payouts_list" => Deserialize::begin(&mut self.payouts_list),
-                "tax_registrations" => Deserialize::begin(&mut self.tax_registrations),
-                "tax_settings" => Deserialize::begin(&mut self.tax_settings),
+                "issuing_card" => Deserialize::begin(&mut self.builder.issuing_card),
+                "issuing_cards_list" => Deserialize::begin(&mut self.builder.issuing_cards_list),
+                "notification_banner" => Deserialize::begin(&mut self.builder.notification_banner),
+                "payment_details" => Deserialize::begin(&mut self.builder.payment_details),
+                "payment_disputes" => Deserialize::begin(&mut self.builder.payment_disputes),
+                "payments" => Deserialize::begin(&mut self.builder.payments),
+                "payout_details" => Deserialize::begin(&mut self.builder.payout_details),
+                "payouts" => Deserialize::begin(&mut self.builder.payouts),
+                "payouts_list" => Deserialize::begin(&mut self.builder.payouts_list),
+                "tax_registrations" => Deserialize::begin(&mut self.builder.tax_registrations),
+                "tax_settings" => Deserialize::begin(&mut self.builder.tax_settings),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account_management: Deserialize::default(),
-                account_onboarding: Deserialize::default(),
-                balances: Deserialize::default(),
-                disputes_list: Deserialize::default(),
-                documents: Deserialize::default(),
-                financial_account: Deserialize::default(),
-                financial_account_transactions: Deserialize::default(),
-                instant_payouts_promotion: Deserialize::default(),
-                issuing_card: Deserialize::default(),
-                issuing_cards_list: Deserialize::default(),
-                notification_banner: Deserialize::default(),
-                payment_details: Deserialize::default(),
-                payment_disputes: Deserialize::default(),
-                payments: Deserialize::default(),
-                payout_details: Deserialize::default(),
-                payouts: Deserialize::default(),
-                payouts_list: Deserialize::default(),
-                tax_registrations: Deserialize::default(),
-                tax_settings: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account_management),
                 Some(account_onboarding),
@@ -167,30 +160,30 @@ const _: () = {
                 Some(tax_registrations),
                 Some(tax_settings),
             ) = (
-                self.account_management,
-                self.account_onboarding,
-                self.balances,
-                self.disputes_list,
-                self.documents,
-                self.financial_account,
-                self.financial_account_transactions,
-                self.instant_payouts_promotion,
-                self.issuing_card,
-                self.issuing_cards_list,
-                self.notification_banner,
-                self.payment_details,
-                self.payment_disputes,
-                self.payments,
-                self.payout_details,
-                self.payouts,
-                self.payouts_list,
-                self.tax_registrations,
-                self.tax_settings,
+                self.builder.account_management,
+                self.builder.account_onboarding,
+                self.builder.balances,
+                self.builder.disputes_list,
+                self.builder.documents,
+                self.builder.financial_account,
+                self.builder.financial_account_transactions,
+                self.builder.instant_payouts_promotion,
+                self.builder.issuing_card,
+                self.builder.issuing_cards_list,
+                self.builder.notification_banner,
+                self.builder.payment_details,
+                self.builder.payment_disputes,
+                self.builder.payments,
+                self.builder.payout_details,
+                self.builder.payouts,
+                self.builder.payouts_list,
+                self.builder.tax_registrations,
+                self.builder.tax_settings,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ConnectEmbeddedAccountSessionCreateComponents {
                 account_management,
                 account_onboarding,
                 balances,
@@ -210,60 +203,8 @@ const _: () = {
                 payouts_list,
                 tax_registrations,
                 tax_settings,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ConnectEmbeddedAccountSessionCreateComponents {
-        type Builder = ConnectEmbeddedAccountSessionCreateComponentsBuilder;
-    }
-
-    impl FromValueOpt for ConnectEmbeddedAccountSessionCreateComponents {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ConnectEmbeddedAccountSessionCreateComponentsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_management" => b.account_management = FromValueOpt::from_value(v),
-                    "account_onboarding" => b.account_onboarding = FromValueOpt::from_value(v),
-                    "balances" => b.balances = FromValueOpt::from_value(v),
-                    "disputes_list" => b.disputes_list = FromValueOpt::from_value(v),
-                    "documents" => b.documents = FromValueOpt::from_value(v),
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "financial_account_transactions" => {
-                        b.financial_account_transactions = FromValueOpt::from_value(v)
-                    }
-                    "instant_payouts_promotion" => {
-                        b.instant_payouts_promotion = FromValueOpt::from_value(v)
-                    }
-                    "issuing_card" => b.issuing_card = FromValueOpt::from_value(v),
-                    "issuing_cards_list" => b.issuing_cards_list = FromValueOpt::from_value(v),
-                    "notification_banner" => b.notification_banner = FromValueOpt::from_value(v),
-                    "payment_details" => b.payment_details = FromValueOpt::from_value(v),
-                    "payment_disputes" => b.payment_disputes = FromValueOpt::from_value(v),
-                    "payments" => b.payments = FromValueOpt::from_value(v),
-                    "payout_details" => b.payout_details = FromValueOpt::from_value(v),
-                    "payouts" => b.payouts = FromValueOpt::from_value(v),
-                    "payouts_list" => b.payouts_list = FromValueOpt::from_value(v),
-                    "tax_registrations" => b.tax_registrations = FromValueOpt::from_value(v),
-                    "tax_settings" => b.tax_settings = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

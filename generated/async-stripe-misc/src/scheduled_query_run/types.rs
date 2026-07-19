@@ -52,16 +52,14 @@ pub struct ScheduledQueryRunBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -80,45 +78,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ScheduledQueryRunBuilder::deser_default(),
+                builder: ScheduledQueryRunBuilder {
+                    created: Deserialize::default(),
+                    data_load_time: Deserialize::default(),
+                    error: Deserialize::default(),
+                    file: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    result_available_until: Deserialize::default(),
+                    sql: Deserialize::default(),
+                    status: Deserialize::default(),
+                    title: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ScheduledQueryRunBuilder {
-        type Out = ScheduledQueryRun;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "data_load_time" => Deserialize::begin(&mut self.data_load_time),
-                "error" => Deserialize::begin(&mut self.error),
-                "file" => Deserialize::begin(&mut self.file),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "result_available_until" => Deserialize::begin(&mut self.result_available_until),
-                "sql" => Deserialize::begin(&mut self.sql),
-                "status" => Deserialize::begin(&mut self.status),
-                "title" => Deserialize::begin(&mut self.title),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "data_load_time" => Deserialize::begin(&mut self.builder.data_load_time),
+                "error" => Deserialize::begin(&mut self.builder.error),
+                "file" => Deserialize::begin(&mut self.builder.file),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "result_available_until" => {
+                    Deserialize::begin(&mut self.builder.result_available_until)
+                }
+                "sql" => Deserialize::begin(&mut self.builder.sql),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "title" => Deserialize::begin(&mut self.builder.title),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                data_load_time: Deserialize::default(),
-                error: Deserialize::default(),
-                file: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                result_available_until: Deserialize::default(),
-                sql: Deserialize::default(),
-                status: Deserialize::default(),
-                title: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(created),
                 Some(data_load_time),
@@ -131,21 +126,21 @@ const _: () = {
                 Some(status),
                 Some(title),
             ) = (
-                self.created,
-                self.data_load_time,
-                self.error.take(),
-                self.file.take(),
-                self.id.take(),
-                self.livemode,
-                self.result_available_until,
-                self.sql.take(),
-                self.status.take(),
-                self.title.take(),
+                self.builder.created,
+                self.builder.data_load_time,
+                self.builder.error.take(),
+                self.builder.file.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.result_available_until,
+                self.builder.sql.take(),
+                self.builder.status.take(),
+                self.builder.title.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ScheduledQueryRun {
                 created,
                 data_load_time,
                 error,
@@ -156,49 +151,8 @@ const _: () = {
                 sql,
                 status,
                 title,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ScheduledQueryRun {
-        type Builder = ScheduledQueryRunBuilder;
-    }
-
-    impl FromValueOpt for ScheduledQueryRun {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ScheduledQueryRunBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "data_load_time" => b.data_load_time = FromValueOpt::from_value(v),
-                    "error" => b.error = FromValueOpt::from_value(v),
-                    "file" => b.file = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "result_available_until" => {
-                        b.result_available_until = FromValueOpt::from_value(v)
-                    }
-                    "sql" => b.sql = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "title" => b.title = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

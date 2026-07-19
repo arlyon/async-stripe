@@ -27,16 +27,14 @@ pub struct BalanceSettingsResourcePaymentsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,72 +53,41 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BalanceSettingsResourcePaymentsBuilder::deser_default(),
+                builder: BalanceSettingsResourcePaymentsBuilder {
+                    debit_negative_balances: Deserialize::default(),
+                    payouts: Deserialize::default(),
+                    settlement_timing: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BalanceSettingsResourcePaymentsBuilder {
-        type Out = BalanceSettingsResourcePayments;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "debit_negative_balances" => Deserialize::begin(&mut self.debit_negative_balances),
-                "payouts" => Deserialize::begin(&mut self.payouts),
-                "settlement_timing" => Deserialize::begin(&mut self.settlement_timing),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                debit_negative_balances: Deserialize::default(),
-                payouts: Deserialize::default(),
-                settlement_timing: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(debit_negative_balances), Some(payouts), Some(settlement_timing)) =
-                (self.debit_negative_balances, self.payouts.take(), self.settlement_timing)
-            else {
-                return None;
-            };
-            Some(Self::Out { debit_negative_balances, payouts, settlement_timing })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "debit_negative_balances" => {
+                    Deserialize::begin(&mut self.builder.debit_negative_balances)
+                }
+                "payouts" => Deserialize::begin(&mut self.builder.payouts),
+                "settlement_timing" => Deserialize::begin(&mut self.builder.settlement_timing),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BalanceSettingsResourcePayments {
-        type Builder = BalanceSettingsResourcePaymentsBuilder;
-    }
-
-    impl FromValueOpt for BalanceSettingsResourcePayments {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(debit_negative_balances), Some(payouts), Some(settlement_timing)) = (
+                self.builder.debit_negative_balances,
+                self.builder.payouts.take(),
+                self.builder.settlement_timing,
+            ) else {
+                return Ok(());
             };
-            let mut b = BalanceSettingsResourcePaymentsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "debit_negative_balances" => {
-                        b.debit_negative_balances = FromValueOpt::from_value(v)
-                    }
-                    "payouts" => b.payouts = FromValueOpt::from_value(v),
-                    "settlement_timing" => b.settlement_timing = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(BalanceSettingsResourcePayments {
+                debit_negative_balances,
+                payouts,
+                settlement_timing,
+            });
+            Ok(())
         }
     }
 };

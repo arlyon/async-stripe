@@ -62,16 +62,14 @@ pub struct TokenBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -88,40 +86,38 @@ const _: () = {
 
     impl Visitor for Place<Token> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: TokenBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: TokenBuilder {
+                    bank_account: Deserialize::default(),
+                    card: Deserialize::default(),
+                    client_ip: Deserialize::default(),
+                    created: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    used: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for TokenBuilder {
-        type Out = Token;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_account" => Deserialize::begin(&mut self.bank_account),
-                "card" => Deserialize::begin(&mut self.card),
-                "client_ip" => Deserialize::begin(&mut self.client_ip),
-                "created" => Deserialize::begin(&mut self.created),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "type" => Deserialize::begin(&mut self.type_),
-                "used" => Deserialize::begin(&mut self.used),
+                "bank_account" => Deserialize::begin(&mut self.builder.bank_account),
+                "card" => Deserialize::begin(&mut self.builder.card),
+                "client_ip" => Deserialize::begin(&mut self.builder.client_ip),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "used" => Deserialize::begin(&mut self.builder.used),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bank_account: Deserialize::default(),
-                card: Deserialize::default(),
-                client_ip: Deserialize::default(),
-                created: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                type_: Deserialize::default(),
-                used: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bank_account),
                 Some(card),
@@ -132,57 +128,21 @@ const _: () = {
                 Some(type_),
                 Some(used),
             ) = (
-                self.bank_account.take(),
-                self.card.take(),
-                self.client_ip.take(),
-                self.created,
-                self.id.take(),
-                self.livemode,
-                self.type_.take(),
-                self.used,
+                self.builder.bank_account.take(),
+                self.builder.card.take(),
+                self.builder.client_ip.take(),
+                self.builder.created,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.type_.take(),
+                self.builder.used,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { bank_account, card, client_ip, created, id, livemode, type_, used })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out =
+                Some(Token { bank_account, card, client_ip, created, id, livemode, type_, used });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Token {
-        type Builder = TokenBuilder;
-    }
-
-    impl FromValueOpt for Token {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TokenBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_account" => b.bank_account = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "client_ip" => b.client_ip = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "used" => b.used = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

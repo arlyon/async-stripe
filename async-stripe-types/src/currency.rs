@@ -303,16 +303,16 @@ impl std::fmt::Display for Currency {
     }
 }
 
-miniserde::make_place!(Place);
+stripe_miniserde::make_place!(Place);
 
-impl miniserde::Deserialize for Currency {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for Currency {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for Place<Currency> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for Place<Currency> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         self.out = Some(Currency::from_str(s).unwrap());
         Ok(())
     }
@@ -503,8 +503,8 @@ mod tests {
 
     #[test]
     fn deserialize_currency() {
-        assert_eq!(miniserde::json::from_str::<Currency>("\"aed\"").unwrap(), Currency::AED);
-        assert_eq!(miniserde::json::from_str::<Currency>("\"usd\"").unwrap(), Currency::USD);
-        assert_eq!(miniserde::json::from_str::<Currency>("\"zmw\"").unwrap(), Currency::ZMW);
+        assert_eq!(stripe_miniserde::json::from_str::<Currency>("\"aed\"").unwrap(), Currency::AED);
+        assert_eq!(stripe_miniserde::json::from_str::<Currency>("\"usd\"").unwrap(), Currency::USD);
+        assert_eq!(stripe_miniserde::json::from_str::<Currency>("\"zmw\"").unwrap(), Currency::ZMW);
     }
 }

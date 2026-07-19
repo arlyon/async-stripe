@@ -22,16 +22,14 @@ pub struct PaymentMethodDetailsPaymentRecordKonbiniBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -50,60 +48,27 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsPaymentRecordKonbiniBuilder::deser_default(),
+                builder: PaymentMethodDetailsPaymentRecordKonbiniBuilder {
+                    store: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDetailsPaymentRecordKonbiniBuilder {
-        type Out = PaymentMethodDetailsPaymentRecordKonbini;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "store" => Deserialize::begin(&mut self.store),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { store: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(store),) = (self.store.take(),) else {
-                return None;
-            };
-            Some(Self::Out { store })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "store" => Deserialize::begin(&mut self.builder.store),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsPaymentRecordKonbini {
-        type Builder = PaymentMethodDetailsPaymentRecordKonbiniBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsPaymentRecordKonbini {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(store),) = (self.builder.store.take(),) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDetailsPaymentRecordKonbiniBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "store" => b.store = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodDetailsPaymentRecordKonbini { store });
+            Ok(())
         }
     }
 };

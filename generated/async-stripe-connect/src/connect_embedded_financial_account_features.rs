@@ -34,16 +34,14 @@ pub struct ConnectEmbeddedFinancialAccountFeaturesBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -62,95 +60,53 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ConnectEmbeddedFinancialAccountFeaturesBuilder::deser_default(),
+                builder: ConnectEmbeddedFinancialAccountFeaturesBuilder {
+                    disable_stripe_user_authentication: Deserialize::default(),
+                    external_account_collection: Deserialize::default(),
+                    send_money: Deserialize::default(),
+                    transfer_balance: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ConnectEmbeddedFinancialAccountFeaturesBuilder {
-        type Out = ConnectEmbeddedFinancialAccountFeatures;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "disable_stripe_user_authentication" => {
-                    Deserialize::begin(&mut self.disable_stripe_user_authentication)
+                    Deserialize::begin(&mut self.builder.disable_stripe_user_authentication)
                 }
                 "external_account_collection" => {
-                    Deserialize::begin(&mut self.external_account_collection)
+                    Deserialize::begin(&mut self.builder.external_account_collection)
                 }
-                "send_money" => Deserialize::begin(&mut self.send_money),
-                "transfer_balance" => Deserialize::begin(&mut self.transfer_balance),
+                "send_money" => Deserialize::begin(&mut self.builder.send_money),
+                "transfer_balance" => Deserialize::begin(&mut self.builder.transfer_balance),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                disable_stripe_user_authentication: Deserialize::default(),
-                external_account_collection: Deserialize::default(),
-                send_money: Deserialize::default(),
-                transfer_balance: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(disable_stripe_user_authentication),
                 Some(external_account_collection),
                 Some(send_money),
                 Some(transfer_balance),
             ) = (
-                self.disable_stripe_user_authentication,
-                self.external_account_collection,
-                self.send_money,
-                self.transfer_balance,
+                self.builder.disable_stripe_user_authentication,
+                self.builder.external_account_collection,
+                self.builder.send_money,
+                self.builder.transfer_balance,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ConnectEmbeddedFinancialAccountFeatures {
                 disable_stripe_user_authentication,
                 external_account_collection,
                 send_money,
                 transfer_balance,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ConnectEmbeddedFinancialAccountFeatures {
-        type Builder = ConnectEmbeddedFinancialAccountFeaturesBuilder;
-    }
-
-    impl FromValueOpt for ConnectEmbeddedFinancialAccountFeatures {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ConnectEmbeddedFinancialAccountFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "disable_stripe_user_authentication" => {
-                        b.disable_stripe_user_authentication = FromValueOpt::from_value(v)
-                    }
-                    "external_account_collection" => {
-                        b.external_account_collection = FromValueOpt::from_value(v)
-                    }
-                    "send_money" => b.send_money = FromValueOpt::from_value(v),
-                    "transfer_balance" => b.transfer_balance = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

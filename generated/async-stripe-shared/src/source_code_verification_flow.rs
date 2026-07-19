@@ -23,16 +23,14 @@ pub struct SourceCodeVerificationFlowBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,64 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceCodeVerificationFlowBuilder::deser_default(),
+                builder: SourceCodeVerificationFlowBuilder {
+                    attempts_remaining: Deserialize::default(),
+                    status: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SourceCodeVerificationFlowBuilder {
-        type Out = SourceCodeVerificationFlow;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "attempts_remaining" => Deserialize::begin(&mut self.attempts_remaining),
-                "status" => Deserialize::begin(&mut self.status),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { attempts_remaining: Deserialize::default(), status: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(attempts_remaining), Some(status)) =
-                (self.attempts_remaining, self.status.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { attempts_remaining, status })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "attempts_remaining" => Deserialize::begin(&mut self.builder.attempts_remaining),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceCodeVerificationFlow {
-        type Builder = SourceCodeVerificationFlowBuilder;
-    }
-
-    impl FromValueOpt for SourceCodeVerificationFlow {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(attempts_remaining), Some(status)) =
+                (self.builder.attempts_remaining, self.builder.status.take())
+            else {
+                return Ok(());
             };
-            let mut b = SourceCodeVerificationFlowBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "attempts_remaining" => b.attempts_remaining = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SourceCodeVerificationFlow { attempts_remaining, status });
+            Ok(())
         }
     }
 };

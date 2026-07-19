@@ -27,16 +27,14 @@ pub struct GelatoVerificationSessionOptionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,80 +53,47 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: GelatoVerificationSessionOptionsBuilder::deser_default(),
+                builder: GelatoVerificationSessionOptionsBuilder {
+                    document: Deserialize::default(),
+                    email: Deserialize::default(),
+                    id_number: Deserialize::default(),
+                    matching: Deserialize::default(),
+                    phone: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for GelatoVerificationSessionOptionsBuilder {
-        type Out = GelatoVerificationSessionOptions;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "document" => Deserialize::begin(&mut self.document),
-                "email" => Deserialize::begin(&mut self.email),
-                "id_number" => Deserialize::begin(&mut self.id_number),
-                "matching" => Deserialize::begin(&mut self.matching),
-                "phone" => Deserialize::begin(&mut self.phone),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                document: Deserialize::default(),
-                email: Deserialize::default(),
-                id_number: Deserialize::default(),
-                matching: Deserialize::default(),
-                phone: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(document), Some(email), Some(id_number), Some(matching), Some(phone)) = (
-                self.document.take(),
-                self.email,
-                self.id_number,
-                self.matching.take(),
-                self.phone,
-            ) else {
-                return None;
-            };
-            Some(Self::Out { document, email, id_number, matching, phone })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "document" => Deserialize::begin(&mut self.builder.document),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "id_number" => Deserialize::begin(&mut self.builder.id_number),
+                "matching" => Deserialize::begin(&mut self.builder.matching),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for GelatoVerificationSessionOptions {
-        type Builder = GelatoVerificationSessionOptionsBuilder;
-    }
-
-    impl FromValueOpt for GelatoVerificationSessionOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(document), Some(email), Some(id_number), Some(matching), Some(phone)) = (
+                self.builder.document.take(),
+                self.builder.email,
+                self.builder.id_number,
+                self.builder.matching.take(),
+                self.builder.phone,
+            ) else {
+                return Ok(());
             };
-            let mut b = GelatoVerificationSessionOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "document" => b.document = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "id_number" => b.id_number = FromValueOpt::from_value(v),
-                    "matching" => b.matching = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(GelatoVerificationSessionOptions {
+                document,
+                email,
+                id_number,
+                matching,
+                phone,
+            });
+            Ok(())
         }
     }
 };

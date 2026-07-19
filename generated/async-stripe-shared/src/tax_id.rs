@@ -55,16 +55,14 @@ pub struct TaxIdBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -81,44 +79,42 @@ const _: () = {
 
     impl Visitor for Place<TaxId> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: TaxIdBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: TaxIdBuilder {
+                    country: Deserialize::default(),
+                    created: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    owner: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    value: Deserialize::default(),
+                    verification: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for TaxIdBuilder {
-        type Out = TaxId;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "country" => Deserialize::begin(&mut self.country),
-                "created" => Deserialize::begin(&mut self.created),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "owner" => Deserialize::begin(&mut self.owner),
-                "type" => Deserialize::begin(&mut self.type_),
-                "value" => Deserialize::begin(&mut self.value),
-                "verification" => Deserialize::begin(&mut self.verification),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "owner" => Deserialize::begin(&mut self.builder.owner),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "value" => Deserialize::begin(&mut self.builder.value),
+                "verification" => Deserialize::begin(&mut self.builder.verification),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                country: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                owner: Deserialize::default(),
-                type_: Deserialize::default(),
-                value: Deserialize::default(),
-                verification: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(country),
                 Some(created),
@@ -131,21 +127,21 @@ const _: () = {
                 Some(value),
                 Some(verification),
             ) = (
-                self.country.take(),
-                self.created,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.id.take(),
-                self.livemode,
-                self.owner.take(),
-                self.type_.take(),
-                self.value.take(),
-                self.verification.take(),
+                self.builder.country.take(),
+                self.builder.created,
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.owner.take(),
+                self.builder.type_.take(),
+                self.builder.value.take(),
+                self.builder.verification.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TaxId {
                 country,
                 created,
                 customer,
@@ -156,47 +152,8 @@ const _: () = {
                 type_,
                 value,
                 verification,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TaxId {
-        type Builder = TaxIdBuilder;
-    }
-
-    impl FromValueOpt for TaxId {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxIdBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "owner" => b.owner = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "value" => b.value = FromValueOpt::from_value(v),
-                    "verification" => b.verification = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -616,21 +573,19 @@ impl serde::Serialize for TaxIdType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TaxIdType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TaxIdType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TaxIdType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TaxIdType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TaxIdType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TaxIdType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxIdType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

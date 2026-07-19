@@ -28,16 +28,14 @@ pub struct PortalFlowsFlowAfterCompletionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,70 +54,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PortalFlowsFlowAfterCompletionBuilder::deser_default(),
+                builder: PortalFlowsFlowAfterCompletionBuilder {
+                    hosted_confirmation: Deserialize::default(),
+                    redirect: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PortalFlowsFlowAfterCompletionBuilder {
-        type Out = PortalFlowsFlowAfterCompletion;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "hosted_confirmation" => Deserialize::begin(&mut self.hosted_confirmation),
-                "redirect" => Deserialize::begin(&mut self.redirect),
-                "type" => Deserialize::begin(&mut self.type_),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                hosted_confirmation: Deserialize::default(),
-                redirect: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(hosted_confirmation), Some(redirect), Some(type_)) =
-                (self.hosted_confirmation.take(), self.redirect.take(), self.type_.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { hosted_confirmation, redirect, type_ })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "hosted_confirmation" => Deserialize::begin(&mut self.builder.hosted_confirmation),
+                "redirect" => Deserialize::begin(&mut self.builder.redirect),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PortalFlowsFlowAfterCompletion {
-        type Builder = PortalFlowsFlowAfterCompletionBuilder;
-    }
-
-    impl FromValueOpt for PortalFlowsFlowAfterCompletion {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(hosted_confirmation), Some(redirect), Some(type_)) = (
+                self.builder.hosted_confirmation.take(),
+                self.builder.redirect.take(),
+                self.builder.type_.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PortalFlowsFlowAfterCompletionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "hosted_confirmation" => b.hosted_confirmation = FromValueOpt::from_value(v),
-                    "redirect" => b.redirect = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PortalFlowsFlowAfterCompletion { hosted_confirmation, redirect, type_ });
+            Ok(())
         }
     }
 };
@@ -191,21 +155,19 @@ impl serde::Serialize for PortalFlowsFlowAfterCompletionType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PortalFlowsFlowAfterCompletionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PortalFlowsFlowAfterCompletionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PortalFlowsFlowAfterCompletionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PortalFlowsFlowAfterCompletionType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PortalFlowsFlowAfterCompletionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PortalFlowsFlowAfterCompletionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalFlowsFlowAfterCompletionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

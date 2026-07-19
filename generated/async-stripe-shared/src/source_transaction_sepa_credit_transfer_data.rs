@@ -26,16 +26,14 @@ pub struct SourceTransactionSepaCreditTransferDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceTransactionSepaCreditTransferDataBuilder::deser_default(),
+                builder: SourceTransactionSepaCreditTransferDataBuilder {
+                    reference: Deserialize::default(),
+                    sender_iban: Deserialize::default(),
+                    sender_name: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SourceTransactionSepaCreditTransferDataBuilder {
-        type Out = SourceTransactionSepaCreditTransferData;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "reference" => Deserialize::begin(&mut self.reference),
-                "sender_iban" => Deserialize::begin(&mut self.sender_iban),
-                "sender_name" => Deserialize::begin(&mut self.sender_name),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                reference: Deserialize::default(),
-                sender_iban: Deserialize::default(),
-                sender_name: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(reference), Some(sender_iban), Some(sender_name)) =
-                (self.reference.take(), self.sender_iban.take(), self.sender_name.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { reference, sender_iban, sender_name })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "reference" => Deserialize::begin(&mut self.builder.reference),
+                "sender_iban" => Deserialize::begin(&mut self.builder.sender_iban),
+                "sender_name" => Deserialize::begin(&mut self.builder.sender_name),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceTransactionSepaCreditTransferData {
-        type Builder = SourceTransactionSepaCreditTransferDataBuilder;
-    }
-
-    impl FromValueOpt for SourceTransactionSepaCreditTransferData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(reference), Some(sender_iban), Some(sender_name)) = (
+                self.builder.reference.take(),
+                self.builder.sender_iban.take(),
+                self.builder.sender_name.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = SourceTransactionSepaCreditTransferDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "sender_iban" => b.sender_iban = FromValueOpt::from_value(v),
-                    "sender_name" => b.sender_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SourceTransactionSepaCreditTransferData {
+                reference,
+                sender_iban,
+                sender_name,
+            });
+            Ok(())
         }
     }
 };

@@ -23,16 +23,14 @@ pub struct UsBankAccountNetworksBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,63 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: UsBankAccountNetworksBuilder::deser_default(),
+                builder: UsBankAccountNetworksBuilder {
+                    preferred: Deserialize::default(),
+                    supported: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for UsBankAccountNetworksBuilder {
-        type Out = UsBankAccountNetworks;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "preferred" => Deserialize::begin(&mut self.preferred),
-                "supported" => Deserialize::begin(&mut self.supported),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { preferred: Deserialize::default(), supported: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(preferred), Some(supported)) = (self.preferred.take(), self.supported.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { preferred, supported })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "preferred" => Deserialize::begin(&mut self.builder.preferred),
+                "supported" => Deserialize::begin(&mut self.builder.supported),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for UsBankAccountNetworks {
-        type Builder = UsBankAccountNetworksBuilder;
-    }
-
-    impl FromValueOpt for UsBankAccountNetworks {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(preferred), Some(supported)) =
+                (self.builder.preferred.take(), self.builder.supported.take())
+            else {
+                return Ok(());
             };
-            let mut b = UsBankAccountNetworksBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "preferred" => b.preferred = FromValueOpt::from_value(v),
-                    "supported" => b.supported = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(UsBankAccountNetworks { preferred, supported });
+            Ok(())
         }
     }
 };
@@ -176,21 +142,19 @@ impl serde::Serialize for UsBankAccountNetworksSupported {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for UsBankAccountNetworksSupported {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for UsBankAccountNetworksSupported {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<UsBankAccountNetworksSupported> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<UsBankAccountNetworksSupported> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(UsBankAccountNetworksSupported::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(UsBankAccountNetworksSupported);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for UsBankAccountNetworksSupported {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -23,16 +23,14 @@ pub struct PortalFlowsFlowSubscriptionCancelBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,64 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PortalFlowsFlowSubscriptionCancelBuilder::deser_default(),
+                builder: PortalFlowsFlowSubscriptionCancelBuilder {
+                    retention: Deserialize::default(),
+                    subscription: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PortalFlowsFlowSubscriptionCancelBuilder {
-        type Out = PortalFlowsFlowSubscriptionCancel;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "retention" => Deserialize::begin(&mut self.retention),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { retention: Deserialize::default(), subscription: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(retention), Some(subscription)) =
-                (self.retention.take(), self.subscription.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { retention, subscription })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "retention" => Deserialize::begin(&mut self.builder.retention),
+                "subscription" => Deserialize::begin(&mut self.builder.subscription),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PortalFlowsFlowSubscriptionCancel {
-        type Builder = PortalFlowsFlowSubscriptionCancelBuilder;
-    }
-
-    impl FromValueOpt for PortalFlowsFlowSubscriptionCancel {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(retention), Some(subscription)) =
+                (self.builder.retention.take(), self.builder.subscription.take())
+            else {
+                return Ok(());
             };
-            let mut b = PortalFlowsFlowSubscriptionCancelBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "retention" => b.retention = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PortalFlowsFlowSubscriptionCancel { retention, subscription });
+            Ok(())
         }
     }
 };

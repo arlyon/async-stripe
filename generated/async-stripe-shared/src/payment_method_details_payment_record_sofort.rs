@@ -47,16 +47,14 @@ pub struct PaymentMethodDetailsPaymentRecordSofortBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -75,45 +73,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsPaymentRecordSofortBuilder::deser_default(),
+                builder: PaymentMethodDetailsPaymentRecordSofortBuilder {
+                    bank_code: Deserialize::default(),
+                    bank_name: Deserialize::default(),
+                    bic: Deserialize::default(),
+                    country: Deserialize::default(),
+                    generated_sepa_debit: Deserialize::default(),
+                    generated_sepa_debit_mandate: Deserialize::default(),
+                    iban_last4: Deserialize::default(),
+                    preferred_language: Deserialize::default(),
+                    verified_name: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodDetailsPaymentRecordSofortBuilder {
-        type Out = PaymentMethodDetailsPaymentRecordSofort;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_code" => Deserialize::begin(&mut self.bank_code),
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "bic" => Deserialize::begin(&mut self.bic),
-                "country" => Deserialize::begin(&mut self.country),
-                "generated_sepa_debit" => Deserialize::begin(&mut self.generated_sepa_debit),
-                "generated_sepa_debit_mandate" => {
-                    Deserialize::begin(&mut self.generated_sepa_debit_mandate)
+                "bank_code" => Deserialize::begin(&mut self.builder.bank_code),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "bic" => Deserialize::begin(&mut self.builder.bic),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "generated_sepa_debit" => {
+                    Deserialize::begin(&mut self.builder.generated_sepa_debit)
                 }
-                "iban_last4" => Deserialize::begin(&mut self.iban_last4),
-                "preferred_language" => Deserialize::begin(&mut self.preferred_language),
-                "verified_name" => Deserialize::begin(&mut self.verified_name),
+                "generated_sepa_debit_mandate" => {
+                    Deserialize::begin(&mut self.builder.generated_sepa_debit_mandate)
+                }
+                "iban_last4" => Deserialize::begin(&mut self.builder.iban_last4),
+                "preferred_language" => Deserialize::begin(&mut self.builder.preferred_language),
+                "verified_name" => Deserialize::begin(&mut self.builder.verified_name),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bank_code: Deserialize::default(),
-                bank_name: Deserialize::default(),
-                bic: Deserialize::default(),
-                country: Deserialize::default(),
-                generated_sepa_debit: Deserialize::default(),
-                generated_sepa_debit_mandate: Deserialize::default(),
-                iban_last4: Deserialize::default(),
-                preferred_language: Deserialize::default(),
-                verified_name: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bank_code),
                 Some(bank_name),
@@ -125,20 +120,20 @@ const _: () = {
                 Some(preferred_language),
                 Some(verified_name),
             ) = (
-                self.bank_code.take(),
-                self.bank_name.take(),
-                self.bic.take(),
-                self.country.take(),
-                self.generated_sepa_debit.take(),
-                self.generated_sepa_debit_mandate.take(),
-                self.iban_last4.take(),
-                self.preferred_language.take(),
-                self.verified_name.take(),
+                self.builder.bank_code.take(),
+                self.builder.bank_name.take(),
+                self.builder.bic.take(),
+                self.builder.country.take(),
+                self.builder.generated_sepa_debit.take(),
+                self.builder.generated_sepa_debit_mandate.take(),
+                self.builder.iban_last4.take(),
+                self.builder.preferred_language.take(),
+                self.builder.verified_name.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodDetailsPaymentRecordSofort {
                 bank_code,
                 bank_name,
                 bic,
@@ -148,48 +143,8 @@ const _: () = {
                 iban_last4,
                 preferred_language,
                 verified_name,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsPaymentRecordSofort {
-        type Builder = PaymentMethodDetailsPaymentRecordSofortBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsPaymentRecordSofort {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsPaymentRecordSofortBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "bic" => b.bic = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "generated_sepa_debit" => b.generated_sepa_debit = FromValueOpt::from_value(v),
-                    "generated_sepa_debit_mandate" => {
-                        b.generated_sepa_debit_mandate = FromValueOpt::from_value(v)
-                    }
-                    "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
-                    "preferred_language" => b.preferred_language = FromValueOpt::from_value(v),
-                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -275,16 +230,16 @@ impl serde::Serialize for PaymentMethodDetailsPaymentRecordSofortPreferredLangua
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodDetailsPaymentRecordSofortPreferredLanguage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodDetailsPaymentRecordSofortPreferredLanguage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<PaymentMethodDetailsPaymentRecordSofortPreferredLanguage>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentMethodDetailsPaymentRecordSofortPreferredLanguage::from_str(s)
@@ -293,10 +248,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentMethodDetailsPaymentRecordSofortPreferredLanguage
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsPaymentRecordSofortPreferredLanguage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

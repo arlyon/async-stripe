@@ -27,16 +27,14 @@ pub struct ForwardedResponseDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,70 +53,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ForwardedResponseDetailsBuilder::deser_default(),
+                builder: ForwardedResponseDetailsBuilder {
+                    body: Deserialize::default(),
+                    headers: Deserialize::default(),
+                    status: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ForwardedResponseDetailsBuilder {
-        type Out = ForwardedResponseDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "body" => Deserialize::begin(&mut self.body),
-                "headers" => Deserialize::begin(&mut self.headers),
-                "status" => Deserialize::begin(&mut self.status),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                body: Deserialize::default(),
-                headers: Deserialize::default(),
-                status: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(body), Some(headers), Some(status)) =
-                (self.body.take(), self.headers.take(), self.status)
-            else {
-                return None;
-            };
-            Some(Self::Out { body, headers, status })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "body" => Deserialize::begin(&mut self.builder.body),
+                "headers" => Deserialize::begin(&mut self.builder.headers),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ForwardedResponseDetails {
-        type Builder = ForwardedResponseDetailsBuilder;
-    }
-
-    impl FromValueOpt for ForwardedResponseDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(body), Some(headers), Some(status)) =
+                (self.builder.body.take(), self.builder.headers.take(), self.builder.status)
+            else {
+                return Ok(());
             };
-            let mut b = ForwardedResponseDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "body" => b.body = FromValueOpt::from_value(v),
-                    "headers" => b.headers = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(ForwardedResponseDetails { body, headers, status });
+            Ok(())
         }
     }
 };

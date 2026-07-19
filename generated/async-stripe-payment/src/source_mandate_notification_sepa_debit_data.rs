@@ -26,16 +26,14 @@ pub struct SourceMandateNotificationSepaDebitDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceMandateNotificationSepaDebitDataBuilder::deser_default(),
+                builder: SourceMandateNotificationSepaDebitDataBuilder {
+                    creditor_identifier: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    mandate_reference: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SourceMandateNotificationSepaDebitDataBuilder {
-        type Out = SourceMandateNotificationSepaDebitData;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "creditor_identifier" => Deserialize::begin(&mut self.creditor_identifier),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "mandate_reference" => Deserialize::begin(&mut self.mandate_reference),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                creditor_identifier: Deserialize::default(),
-                last4: Deserialize::default(),
-                mandate_reference: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(creditor_identifier), Some(last4), Some(mandate_reference)) =
-                (self.creditor_identifier.take(), self.last4.take(), self.mandate_reference.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { creditor_identifier, last4, mandate_reference })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "creditor_identifier" => Deserialize::begin(&mut self.builder.creditor_identifier),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "mandate_reference" => Deserialize::begin(&mut self.builder.mandate_reference),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceMandateNotificationSepaDebitData {
-        type Builder = SourceMandateNotificationSepaDebitDataBuilder;
-    }
-
-    impl FromValueOpt for SourceMandateNotificationSepaDebitData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(creditor_identifier), Some(last4), Some(mandate_reference)) = (
+                self.builder.creditor_identifier.take(),
+                self.builder.last4.take(),
+                self.builder.mandate_reference.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = SourceMandateNotificationSepaDebitDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "creditor_identifier" => b.creditor_identifier = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "mandate_reference" => b.mandate_reference = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SourceMandateNotificationSepaDebitData {
+                creditor_identifier,
+                last4,
+                mandate_reference,
+            });
+            Ok(())
         }
     }
 };

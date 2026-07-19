@@ -26,16 +26,14 @@ pub struct IssuingAuthorizationTreasuryBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,72 +52,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingAuthorizationTreasuryBuilder::deser_default(),
+                builder: IssuingAuthorizationTreasuryBuilder {
+                    received_credits: Deserialize::default(),
+                    received_debits: Deserialize::default(),
+                    transaction: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingAuthorizationTreasuryBuilder {
-        type Out = IssuingAuthorizationTreasury;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "received_credits" => Deserialize::begin(&mut self.received_credits),
-                "received_debits" => Deserialize::begin(&mut self.received_debits),
-                "transaction" => Deserialize::begin(&mut self.transaction),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                received_credits: Deserialize::default(),
-                received_debits: Deserialize::default(),
-                transaction: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(received_credits), Some(received_debits), Some(transaction)) = (
-                self.received_credits.take(),
-                self.received_debits.take(),
-                self.transaction.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { received_credits, received_debits, transaction })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "received_credits" => Deserialize::begin(&mut self.builder.received_credits),
+                "received_debits" => Deserialize::begin(&mut self.builder.received_debits),
+                "transaction" => Deserialize::begin(&mut self.builder.transaction),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingAuthorizationTreasury {
-        type Builder = IssuingAuthorizationTreasuryBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationTreasury {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(received_credits), Some(received_debits), Some(transaction)) = (
+                self.builder.received_credits.take(),
+                self.builder.received_debits.take(),
+                self.builder.transaction.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = IssuingAuthorizationTreasuryBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "received_credits" => b.received_credits = FromValueOpt::from_value(v),
-                    "received_debits" => b.received_debits = FromValueOpt::from_value(v),
-                    "transaction" => b.transaction = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(IssuingAuthorizationTreasury {
+                received_credits,
+                received_debits,
+                transaction,
+            });
+            Ok(())
         }
     }
 };

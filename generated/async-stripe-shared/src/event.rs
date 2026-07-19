@@ -69,16 +69,14 @@ pub struct EventBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -95,44 +93,42 @@ const _: () = {
 
     impl Visitor for Place<Event> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: EventBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: EventBuilder {
+                    account: Deserialize::default(),
+                    api_version: Deserialize::default(),
+                    context: Deserialize::default(),
+                    created: Deserialize::default(),
+                    data: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    pending_webhooks: Deserialize::default(),
+                    request: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for EventBuilder {
-        type Out = Event;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account" => Deserialize::begin(&mut self.account),
-                "api_version" => Deserialize::begin(&mut self.api_version),
-                "context" => Deserialize::begin(&mut self.context),
-                "created" => Deserialize::begin(&mut self.created),
-                "data" => Deserialize::begin(&mut self.data),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "pending_webhooks" => Deserialize::begin(&mut self.pending_webhooks),
-                "request" => Deserialize::begin(&mut self.request),
-                "type" => Deserialize::begin(&mut self.type_),
+                "account" => Deserialize::begin(&mut self.builder.account),
+                "api_version" => Deserialize::begin(&mut self.builder.api_version),
+                "context" => Deserialize::begin(&mut self.builder.context),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "data" => Deserialize::begin(&mut self.builder.data),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "pending_webhooks" => Deserialize::begin(&mut self.builder.pending_webhooks),
+                "request" => Deserialize::begin(&mut self.builder.request),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account: Deserialize::default(),
-                api_version: Deserialize::default(),
-                context: Deserialize::default(),
-                created: Deserialize::default(),
-                data: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                pending_webhooks: Deserialize::default(),
-                request: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account),
                 Some(api_version),
@@ -145,21 +141,21 @@ const _: () = {
                 Some(request),
                 Some(type_),
             ) = (
-                self.account.take(),
-                self.api_version.take(),
-                self.context.take(),
-                self.created,
-                self.data.take(),
-                self.id.take(),
-                self.livemode,
-                self.pending_webhooks,
-                self.request.take(),
-                self.type_.take(),
+                self.builder.account.take(),
+                self.builder.api_version.take(),
+                self.builder.context.take(),
+                self.builder.created,
+                self.builder.data.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.pending_webhooks,
+                self.builder.request.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Event {
                 account,
                 api_version,
                 context,
@@ -170,47 +166,8 @@ const _: () = {
                 pending_webhooks,
                 request,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Event {
-        type Builder = EventBuilder;
-    }
-
-    impl FromValueOpt for Event {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = EventBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account" => b.account = FromValueOpt::from_value(v),
-                    "api_version" => b.api_version = FromValueOpt::from_value(v),
-                    "context" => b.context = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "data" => b.data = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "pending_webhooks" => b.pending_webhooks = FromValueOpt::from_value(v),
-                    "request" => b.request = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -1125,21 +1082,19 @@ impl serde::Serialize for EventType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for EventType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for EventType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<EventType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<EventType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(EventType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(EventType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for EventType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

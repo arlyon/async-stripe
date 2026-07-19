@@ -47,16 +47,14 @@ pub struct ApplicationFeeRefundBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -75,39 +73,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ApplicationFeeRefundBuilder::deser_default(),
+                builder: ApplicationFeeRefundBuilder {
+                    amount: Deserialize::default(),
+                    balance_transaction: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    fee: Deserialize::default(),
+                    id: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ApplicationFeeRefundBuilder {
-        type Out = ApplicationFeeRefund;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "fee" => Deserialize::begin(&mut self.fee),
-                "id" => Deserialize::begin(&mut self.id),
-                "metadata" => Deserialize::begin(&mut self.metadata),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "balance_transaction" => Deserialize::begin(&mut self.builder.balance_transaction),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "fee" => Deserialize::begin(&mut self.builder.fee),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                balance_transaction: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                fee: Deserialize::default(),
-                id: Deserialize::default(),
-                metadata: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(balance_transaction),
@@ -117,55 +110,27 @@ const _: () = {
                 Some(id),
                 Some(metadata),
             ) = (
-                self.amount,
-                self.balance_transaction.take(),
-                self.created,
-                self.currency.take(),
-                self.fee.take(),
-                self.id.take(),
-                self.metadata.take(),
+                self.builder.amount,
+                self.builder.balance_transaction.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.fee.take(),
+                self.builder.id.take(),
+                self.builder.metadata.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { amount, balance_transaction, created, currency, fee, id, metadata })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(ApplicationFeeRefund {
+                amount,
+                balance_transaction,
+                created,
+                currency,
+                fee,
+                id,
+                metadata,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ApplicationFeeRefund {
-        type Builder = ApplicationFeeRefundBuilder;
-    }
-
-    impl FromValueOpt for ApplicationFeeRefund {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ApplicationFeeRefundBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "fee" => b.fee = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

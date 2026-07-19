@@ -21,16 +21,14 @@ pub struct SubscriptionScheduleAddInvoiceItemPeriodBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -49,62 +47,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SubscriptionScheduleAddInvoiceItemPeriodBuilder::deser_default(),
+                builder: SubscriptionScheduleAddInvoiceItemPeriodBuilder {
+                    end: Deserialize::default(),
+                    start: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SubscriptionScheduleAddInvoiceItemPeriodBuilder {
-        type Out = SubscriptionScheduleAddInvoiceItemPeriod;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "end" => Deserialize::begin(&mut self.end),
-                "start" => Deserialize::begin(&mut self.start),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { end: Deserialize::default(), start: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(end), Some(start)) = (self.end.take(), self.start.take()) else {
-                return None;
-            };
-            Some(Self::Out { end, start })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "end" => Deserialize::begin(&mut self.builder.end),
+                "start" => Deserialize::begin(&mut self.builder.start),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SubscriptionScheduleAddInvoiceItemPeriod {
-        type Builder = SubscriptionScheduleAddInvoiceItemPeriodBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionScheduleAddInvoiceItemPeriod {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(end), Some(start)) = (self.builder.end.take(), self.builder.start.take())
+            else {
+                return Ok(());
             };
-            let mut b = SubscriptionScheduleAddInvoiceItemPeriodBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "end" => b.end = FromValueOpt::from_value(v),
-                    "start" => b.start = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SubscriptionScheduleAddInvoiceItemPeriod { end, start });
+            Ok(())
         }
     }
 };

@@ -35,16 +35,14 @@ pub struct IssuingDisputeMerchandiseNotAsDescribedEvidenceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -63,39 +61,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingDisputeMerchandiseNotAsDescribedEvidenceBuilder::deser_default(),
+                builder: IssuingDisputeMerchandiseNotAsDescribedEvidenceBuilder {
+                    additional_documentation: Deserialize::default(),
+                    explanation: Deserialize::default(),
+                    received_at: Deserialize::default(),
+                    return_description: Deserialize::default(),
+                    return_status: Deserialize::default(),
+                    returned_at: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingDisputeMerchandiseNotAsDescribedEvidenceBuilder {
-        type Out = IssuingDisputeMerchandiseNotAsDescribedEvidence;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "additional_documentation" => {
-                    Deserialize::begin(&mut self.additional_documentation)
+                    Deserialize::begin(&mut self.builder.additional_documentation)
                 }
-                "explanation" => Deserialize::begin(&mut self.explanation),
-                "received_at" => Deserialize::begin(&mut self.received_at),
-                "return_description" => Deserialize::begin(&mut self.return_description),
-                "return_status" => Deserialize::begin(&mut self.return_status),
-                "returned_at" => Deserialize::begin(&mut self.returned_at),
+                "explanation" => Deserialize::begin(&mut self.builder.explanation),
+                "received_at" => Deserialize::begin(&mut self.builder.received_at),
+                "return_description" => Deserialize::begin(&mut self.builder.return_description),
+                "return_status" => Deserialize::begin(&mut self.builder.return_status),
+                "returned_at" => Deserialize::begin(&mut self.builder.returned_at),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                additional_documentation: Deserialize::default(),
-                explanation: Deserialize::default(),
-                received_at: Deserialize::default(),
-                return_description: Deserialize::default(),
-                return_status: Deserialize::default(),
-                returned_at: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(additional_documentation),
                 Some(explanation),
@@ -104,62 +97,25 @@ const _: () = {
                 Some(return_status),
                 Some(returned_at),
             ) = (
-                self.additional_documentation.take(),
-                self.explanation.take(),
-                self.received_at,
-                self.return_description.take(),
-                self.return_status.take(),
-                self.returned_at,
+                self.builder.additional_documentation.take(),
+                self.builder.explanation.take(),
+                self.builder.received_at,
+                self.builder.return_description.take(),
+                self.builder.return_status.take(),
+                self.builder.returned_at,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingDisputeMerchandiseNotAsDescribedEvidence {
                 additional_documentation,
                 explanation,
                 received_at,
                 return_description,
                 return_status,
                 returned_at,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingDisputeMerchandiseNotAsDescribedEvidence {
-        type Builder = IssuingDisputeMerchandiseNotAsDescribedEvidenceBuilder;
-    }
-
-    impl FromValueOpt for IssuingDisputeMerchandiseNotAsDescribedEvidence {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeMerchandiseNotAsDescribedEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "additional_documentation" => {
-                        b.additional_documentation = FromValueOpt::from_value(v)
-                    }
-                    "explanation" => b.explanation = FromValueOpt::from_value(v),
-                    "received_at" => b.received_at = FromValueOpt::from_value(v),
-                    "return_description" => b.return_description = FromValueOpt::from_value(v),
-                    "return_status" => b.return_status = FromValueOpt::from_value(v),
-                    "returned_at" => b.returned_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -229,16 +185,16 @@ impl serde::Serialize for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnS
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::from_str(s)
@@ -247,10 +203,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -36,16 +36,14 @@ pub struct MandateBacsDebitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -64,37 +62,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: MandateBacsDebitBuilder::deser_default(),
+                builder: MandateBacsDebitBuilder {
+                    display_name: Deserialize::default(),
+                    network_status: Deserialize::default(),
+                    reference: Deserialize::default(),
+                    revocation_reason: Deserialize::default(),
+                    service_user_number: Deserialize::default(),
+                    url: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for MandateBacsDebitBuilder {
-        type Out = MandateBacsDebit;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "display_name" => Deserialize::begin(&mut self.display_name),
-                "network_status" => Deserialize::begin(&mut self.network_status),
-                "reference" => Deserialize::begin(&mut self.reference),
-                "revocation_reason" => Deserialize::begin(&mut self.revocation_reason),
-                "service_user_number" => Deserialize::begin(&mut self.service_user_number),
-                "url" => Deserialize::begin(&mut self.url),
+                "display_name" => Deserialize::begin(&mut self.builder.display_name),
+                "network_status" => Deserialize::begin(&mut self.builder.network_status),
+                "reference" => Deserialize::begin(&mut self.builder.reference),
+                "revocation_reason" => Deserialize::begin(&mut self.builder.revocation_reason),
+                "service_user_number" => Deserialize::begin(&mut self.builder.service_user_number),
+                "url" => Deserialize::begin(&mut self.builder.url),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                display_name: Deserialize::default(),
-                network_status: Deserialize::default(),
-                reference: Deserialize::default(),
-                revocation_reason: Deserialize::default(),
-                service_user_number: Deserialize::default(),
-                url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(display_name),
                 Some(network_status),
@@ -103,60 +96,25 @@ const _: () = {
                 Some(service_user_number),
                 Some(url),
             ) = (
-                self.display_name.take(),
-                self.network_status.take(),
-                self.reference.take(),
-                self.revocation_reason.take(),
-                self.service_user_number.take(),
-                self.url.take(),
+                self.builder.display_name.take(),
+                self.builder.network_status.take(),
+                self.builder.reference.take(),
+                self.builder.revocation_reason.take(),
+                self.builder.service_user_number.take(),
+                self.builder.url.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(MandateBacsDebit {
                 display_name,
                 network_status,
                 reference,
                 revocation_reason,
                 service_user_number,
                 url,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for MandateBacsDebit {
-        type Builder = MandateBacsDebitBuilder;
-    }
-
-    impl FromValueOpt for MandateBacsDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandateBacsDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "network_status" => b.network_status = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "revocation_reason" => b.revocation_reason = FromValueOpt::from_value(v),
-                    "service_user_number" => b.service_user_number = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -232,21 +190,19 @@ impl serde::Serialize for MandateBacsDebitNetworkStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for MandateBacsDebitNetworkStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for MandateBacsDebitNetworkStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<MandateBacsDebitNetworkStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<MandateBacsDebitNetworkStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(MandateBacsDebitNetworkStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(MandateBacsDebitNetworkStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateBacsDebitNetworkStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -329,21 +285,19 @@ impl serde::Serialize for MandateBacsDebitRevocationReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for MandateBacsDebitRevocationReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for MandateBacsDebitRevocationReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<MandateBacsDebitRevocationReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<MandateBacsDebitRevocationReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(MandateBacsDebitRevocationReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(MandateBacsDebitRevocationReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateBacsDebitRevocationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

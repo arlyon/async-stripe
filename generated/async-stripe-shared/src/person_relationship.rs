@@ -45,16 +45,14 @@ pub struct PersonRelationshipBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -73,41 +71,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PersonRelationshipBuilder::deser_default(),
+                builder: PersonRelationshipBuilder {
+                    authorizer: Deserialize::default(),
+                    director: Deserialize::default(),
+                    executive: Deserialize::default(),
+                    legal_guardian: Deserialize::default(),
+                    owner: Deserialize::default(),
+                    percent_ownership: Deserialize::default(),
+                    representative: Deserialize::default(),
+                    title: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PersonRelationshipBuilder {
-        type Out = PersonRelationship;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "authorizer" => Deserialize::begin(&mut self.authorizer),
-                "director" => Deserialize::begin(&mut self.director),
-                "executive" => Deserialize::begin(&mut self.executive),
-                "legal_guardian" => Deserialize::begin(&mut self.legal_guardian),
-                "owner" => Deserialize::begin(&mut self.owner),
-                "percent_ownership" => Deserialize::begin(&mut self.percent_ownership),
-                "representative" => Deserialize::begin(&mut self.representative),
-                "title" => Deserialize::begin(&mut self.title),
+                "authorizer" => Deserialize::begin(&mut self.builder.authorizer),
+                "director" => Deserialize::begin(&mut self.builder.director),
+                "executive" => Deserialize::begin(&mut self.builder.executive),
+                "legal_guardian" => Deserialize::begin(&mut self.builder.legal_guardian),
+                "owner" => Deserialize::begin(&mut self.builder.owner),
+                "percent_ownership" => Deserialize::begin(&mut self.builder.percent_ownership),
+                "representative" => Deserialize::begin(&mut self.builder.representative),
+                "title" => Deserialize::begin(&mut self.builder.title),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                authorizer: Deserialize::default(),
-                director: Deserialize::default(),
-                executive: Deserialize::default(),
-                legal_guardian: Deserialize::default(),
-                owner: Deserialize::default(),
-                percent_ownership: Deserialize::default(),
-                representative: Deserialize::default(),
-                title: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(authorizer),
                 Some(director),
@@ -118,19 +111,19 @@ const _: () = {
                 Some(representative),
                 Some(title),
             ) = (
-                self.authorizer,
-                self.director,
-                self.executive,
-                self.legal_guardian,
-                self.owner,
-                self.percent_ownership,
-                self.representative,
-                self.title.take(),
+                self.builder.authorizer,
+                self.builder.director,
+                self.builder.executive,
+                self.builder.legal_guardian,
+                self.builder.owner,
+                self.builder.percent_ownership,
+                self.builder.representative,
+                self.builder.title.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PersonRelationship {
                 authorizer,
                 director,
                 executive,
@@ -139,45 +132,8 @@ const _: () = {
                 percent_ownership,
                 representative,
                 title,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PersonRelationship {
-        type Builder = PersonRelationshipBuilder;
-    }
-
-    impl FromValueOpt for PersonRelationship {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PersonRelationshipBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "authorizer" => b.authorizer = FromValueOpt::from_value(v),
-                    "director" => b.director = FromValueOpt::from_value(v),
-                    "executive" => b.executive = FromValueOpt::from_value(v),
-                    "legal_guardian" => b.legal_guardian = FromValueOpt::from_value(v),
-                    "owner" => b.owner = FromValueOpt::from_value(v),
-                    "percent_ownership" => b.percent_ownership = FromValueOpt::from_value(v),
-                    "representative" => b.representative = FromValueOpt::from_value(v),
-                    "title" => b.title = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

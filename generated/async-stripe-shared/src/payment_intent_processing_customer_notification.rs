@@ -24,16 +24,14 @@ pub struct PaymentIntentProcessingCustomerNotificationBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,67 +50,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentProcessingCustomerNotificationBuilder::deser_default(),
+                builder: PaymentIntentProcessingCustomerNotificationBuilder {
+                    approval_requested: Deserialize::default(),
+                    completes_at: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentProcessingCustomerNotificationBuilder {
-        type Out = PaymentIntentProcessingCustomerNotification;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "approval_requested" => Deserialize::begin(&mut self.approval_requested),
-                "completes_at" => Deserialize::begin(&mut self.completes_at),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                approval_requested: Deserialize::default(),
-                completes_at: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(approval_requested), Some(completes_at)) =
-                (self.approval_requested, self.completes_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { approval_requested, completes_at })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "approval_requested" => Deserialize::begin(&mut self.builder.approval_requested),
+                "completes_at" => Deserialize::begin(&mut self.builder.completes_at),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentProcessingCustomerNotification {
-        type Builder = PaymentIntentProcessingCustomerNotificationBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentProcessingCustomerNotification {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(approval_requested), Some(completes_at)) =
+                (self.builder.approval_requested, self.builder.completes_at)
+            else {
+                return Ok(());
             };
-            let mut b = PaymentIntentProcessingCustomerNotificationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "approval_requested" => b.approval_requested = FromValueOpt::from_value(v),
-                    "completes_at" => b.completes_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentIntentProcessingCustomerNotification {
+                approval_requested,
+                completes_at,
+            });
+            Ok(())
         }
     }
 };

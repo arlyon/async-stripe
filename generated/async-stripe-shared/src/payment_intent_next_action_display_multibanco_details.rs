@@ -29,16 +29,14 @@ pub struct PaymentIntentNextActionDisplayMultibancoDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,76 +55,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionDisplayMultibancoDetailsBuilder::deser_default(),
+                builder: PaymentIntentNextActionDisplayMultibancoDetailsBuilder {
+                    entity: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    hosted_voucher_url: Deserialize::default(),
+                    reference: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentNextActionDisplayMultibancoDetailsBuilder {
-        type Out = PaymentIntentNextActionDisplayMultibancoDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "entity" => Deserialize::begin(&mut self.entity),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "hosted_voucher_url" => Deserialize::begin(&mut self.hosted_voucher_url),
-                "reference" => Deserialize::begin(&mut self.reference),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                entity: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                hosted_voucher_url: Deserialize::default(),
-                reference: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(entity), Some(expires_at), Some(hosted_voucher_url), Some(reference)) = (
-                self.entity.take(),
-                self.expires_at,
-                self.hosted_voucher_url.take(),
-                self.reference.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { entity, expires_at, hosted_voucher_url, reference })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "entity" => Deserialize::begin(&mut self.builder.entity),
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "hosted_voucher_url" => Deserialize::begin(&mut self.builder.hosted_voucher_url),
+                "reference" => Deserialize::begin(&mut self.builder.reference),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionDisplayMultibancoDetails {
-        type Builder = PaymentIntentNextActionDisplayMultibancoDetailsBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionDisplayMultibancoDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(entity), Some(expires_at), Some(hosted_voucher_url), Some(reference)) = (
+                self.builder.entity.take(),
+                self.builder.expires_at,
+                self.builder.hosted_voucher_url.take(),
+                self.builder.reference.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentIntentNextActionDisplayMultibancoDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "entity" => b.entity = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "hosted_voucher_url" => b.hosted_voucher_url = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentIntentNextActionDisplayMultibancoDetails {
+                entity,
+                expires_at,
+                hosted_voucher_url,
+                reference,
+            });
+            Ok(())
         }
     }
 };

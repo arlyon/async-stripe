@@ -35,16 +35,14 @@ pub struct IssuingTransactionPurchaseDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -63,37 +61,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingTransactionPurchaseDetailsBuilder::deser_default(),
+                builder: IssuingTransactionPurchaseDetailsBuilder {
+                    fleet: Deserialize::default(),
+                    flight: Deserialize::default(),
+                    fuel: Deserialize::default(),
+                    lodging: Deserialize::default(),
+                    receipt: Deserialize::default(),
+                    reference: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingTransactionPurchaseDetailsBuilder {
-        type Out = IssuingTransactionPurchaseDetails;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "fleet" => Deserialize::begin(&mut self.fleet),
-                "flight" => Deserialize::begin(&mut self.flight),
-                "fuel" => Deserialize::begin(&mut self.fuel),
-                "lodging" => Deserialize::begin(&mut self.lodging),
-                "receipt" => Deserialize::begin(&mut self.receipt),
-                "reference" => Deserialize::begin(&mut self.reference),
+                "fleet" => Deserialize::begin(&mut self.builder.fleet),
+                "flight" => Deserialize::begin(&mut self.builder.flight),
+                "fuel" => Deserialize::begin(&mut self.builder.fuel),
+                "lodging" => Deserialize::begin(&mut self.builder.lodging),
+                "receipt" => Deserialize::begin(&mut self.builder.receipt),
+                "reference" => Deserialize::begin(&mut self.builder.reference),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                fleet: Deserialize::default(),
-                flight: Deserialize::default(),
-                fuel: Deserialize::default(),
-                lodging: Deserialize::default(),
-                receipt: Deserialize::default(),
-                reference: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(fleet),
                 Some(flight),
@@ -102,53 +95,25 @@ const _: () = {
                 Some(receipt),
                 Some(reference),
             ) = (
-                self.fleet.take(),
-                self.flight.take(),
-                self.fuel.take(),
-                self.lodging,
-                self.receipt.take(),
-                self.reference.take(),
+                self.builder.fleet.take(),
+                self.builder.flight.take(),
+                self.builder.fuel.take(),
+                self.builder.lodging,
+                self.builder.receipt.take(),
+                self.builder.reference.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { fleet, flight, fuel, lodging, receipt, reference })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(IssuingTransactionPurchaseDetails {
+                fleet,
+                flight,
+                fuel,
+                lodging,
+                receipt,
+                reference,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingTransactionPurchaseDetails {
-        type Builder = IssuingTransactionPurchaseDetailsBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionPurchaseDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionPurchaseDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "fleet" => b.fleet = FromValueOpt::from_value(v),
-                    "flight" => b.flight = FromValueOpt::from_value(v),
-                    "fuel" => b.fuel = FromValueOpt::from_value(v),
-                    "lodging" => b.lodging = FromValueOpt::from_value(v),
-                    "receipt" => b.receipt = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

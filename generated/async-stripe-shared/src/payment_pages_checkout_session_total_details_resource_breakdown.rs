@@ -24,16 +24,14 @@ pub struct PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,64 +50,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownBuilder::deser_default(),
+                builder: PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownBuilder {
+                    discounts: Deserialize::default(),
+                    taxes: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownBuilder {
-        type Out = PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "discounts" => Deserialize::begin(&mut self.discounts),
-                "taxes" => Deserialize::begin(&mut self.taxes),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { discounts: Deserialize::default(), taxes: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(discounts), Some(taxes)) = (self.discounts.take(), self.taxes.take()) else {
-                return None;
-            };
-            Some(Self::Out { discounts, taxes })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "discounts" => Deserialize::begin(&mut self.builder.discounts),
+                "taxes" => Deserialize::begin(&mut self.builder.taxes),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown {
-        type Builder = PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(discounts), Some(taxes)) =
+                (self.builder.discounts.take(), self.builder.taxes.take())
+            else {
+                return Ok(());
             };
-            let mut b =
-                PaymentPagesCheckoutSessionTotalDetailsResourceBreakdownBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "taxes" => b.taxes = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown { discounts, taxes });
+            Ok(())
         }
     }
 };

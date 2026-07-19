@@ -32,16 +32,14 @@ pub struct PlanTierBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -58,34 +56,32 @@ const _: () = {
 
     impl Visitor for Place<PlanTier> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: PlanTierBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PlanTierBuilder {
+                    flat_amount: Deserialize::default(),
+                    flat_amount_decimal: Deserialize::default(),
+                    unit_amount: Deserialize::default(),
+                    unit_amount_decimal: Deserialize::default(),
+                    up_to: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for PlanTierBuilder {
-        type Out = PlanTier;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "flat_amount" => Deserialize::begin(&mut self.flat_amount),
-                "flat_amount_decimal" => Deserialize::begin(&mut self.flat_amount_decimal),
-                "unit_amount" => Deserialize::begin(&mut self.unit_amount),
-                "unit_amount_decimal" => Deserialize::begin(&mut self.unit_amount_decimal),
-                "up_to" => Deserialize::begin(&mut self.up_to),
+                "flat_amount" => Deserialize::begin(&mut self.builder.flat_amount),
+                "flat_amount_decimal" => Deserialize::begin(&mut self.builder.flat_amount_decimal),
+                "unit_amount" => Deserialize::begin(&mut self.builder.unit_amount),
+                "unit_amount_decimal" => Deserialize::begin(&mut self.builder.unit_amount_decimal),
+                "up_to" => Deserialize::begin(&mut self.builder.up_to),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                flat_amount: Deserialize::default(),
-                flat_amount_decimal: Deserialize::default(),
-                unit_amount: Deserialize::default(),
-                unit_amount_decimal: Deserialize::default(),
-                up_to: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(flat_amount),
                 Some(flat_amount_decimal),
@@ -93,57 +89,23 @@ const _: () = {
                 Some(unit_amount_decimal),
                 Some(up_to),
             ) = (
-                self.flat_amount,
-                self.flat_amount_decimal.take(),
-                self.unit_amount,
-                self.unit_amount_decimal.take(),
-                self.up_to,
+                self.builder.flat_amount,
+                self.builder.flat_amount_decimal.take(),
+                self.builder.unit_amount,
+                self.builder.unit_amount_decimal.take(),
+                self.builder.up_to,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PlanTier {
                 flat_amount,
                 flat_amount_decimal,
                 unit_amount,
                 unit_amount_decimal,
                 up_to,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PlanTier {
-        type Builder = PlanTierBuilder;
-    }
-
-    impl FromValueOpt for PlanTier {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PlanTierBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "flat_amount" => b.flat_amount = FromValueOpt::from_value(v),
-                    "flat_amount_decimal" => b.flat_amount_decimal = FromValueOpt::from_value(v),
-                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
-                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
-                    "up_to" => b.up_to = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

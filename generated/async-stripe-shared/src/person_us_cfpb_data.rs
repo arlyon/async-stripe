@@ -26,16 +26,14 @@ pub struct PersonUsCfpbDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,74 +52,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PersonUsCfpbDataBuilder::deser_default(),
+                builder: PersonUsCfpbDataBuilder {
+                    ethnicity_details: Deserialize::default(),
+                    race_details: Deserialize::default(),
+                    self_identified_gender: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PersonUsCfpbDataBuilder {
-        type Out = PersonUsCfpbData;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "ethnicity_details" => Deserialize::begin(&mut self.ethnicity_details),
-                "race_details" => Deserialize::begin(&mut self.race_details),
-                "self_identified_gender" => Deserialize::begin(&mut self.self_identified_gender),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                ethnicity_details: Deserialize::default(),
-                race_details: Deserialize::default(),
-                self_identified_gender: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(ethnicity_details), Some(race_details), Some(self_identified_gender)) = (
-                self.ethnicity_details.take(),
-                self.race_details.take(),
-                self.self_identified_gender.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { ethnicity_details, race_details, self_identified_gender })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "ethnicity_details" => Deserialize::begin(&mut self.builder.ethnicity_details),
+                "race_details" => Deserialize::begin(&mut self.builder.race_details),
+                "self_identified_gender" => {
+                    Deserialize::begin(&mut self.builder.self_identified_gender)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PersonUsCfpbData {
-        type Builder = PersonUsCfpbDataBuilder;
-    }
-
-    impl FromValueOpt for PersonUsCfpbData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(ethnicity_details), Some(race_details), Some(self_identified_gender)) = (
+                self.builder.ethnicity_details.take(),
+                self.builder.race_details.take(),
+                self.builder.self_identified_gender.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PersonUsCfpbDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ethnicity_details" => b.ethnicity_details = FromValueOpt::from_value(v),
-                    "race_details" => b.race_details = FromValueOpt::from_value(v),
-                    "self_identified_gender" => {
-                        b.self_identified_gender = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PersonUsCfpbData { ethnicity_details, race_details, self_identified_gender });
+            Ok(())
         }
     }
 };

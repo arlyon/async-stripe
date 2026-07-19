@@ -33,16 +33,14 @@ pub struct IssuingTransactionFleetCardholderPromptDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -61,35 +59,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingTransactionFleetCardholderPromptDataBuilder::deser_default(),
+                builder: IssuingTransactionFleetCardholderPromptDataBuilder {
+                    driver_id: Deserialize::default(),
+                    odometer: Deserialize::default(),
+                    unspecified_id: Deserialize::default(),
+                    user_id: Deserialize::default(),
+                    vehicle_number: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingTransactionFleetCardholderPromptDataBuilder {
-        type Out = IssuingTransactionFleetCardholderPromptData;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "driver_id" => Deserialize::begin(&mut self.driver_id),
-                "odometer" => Deserialize::begin(&mut self.odometer),
-                "unspecified_id" => Deserialize::begin(&mut self.unspecified_id),
-                "user_id" => Deserialize::begin(&mut self.user_id),
-                "vehicle_number" => Deserialize::begin(&mut self.vehicle_number),
+                "driver_id" => Deserialize::begin(&mut self.builder.driver_id),
+                "odometer" => Deserialize::begin(&mut self.builder.odometer),
+                "unspecified_id" => Deserialize::begin(&mut self.builder.unspecified_id),
+                "user_id" => Deserialize::begin(&mut self.builder.user_id),
+                "vehicle_number" => Deserialize::begin(&mut self.builder.vehicle_number),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                driver_id: Deserialize::default(),
-                odometer: Deserialize::default(),
-                unspecified_id: Deserialize::default(),
-                user_id: Deserialize::default(),
-                vehicle_number: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(driver_id),
                 Some(odometer),
@@ -97,51 +90,23 @@ const _: () = {
                 Some(user_id),
                 Some(vehicle_number),
             ) = (
-                self.driver_id.take(),
-                self.odometer,
-                self.unspecified_id.take(),
-                self.user_id.take(),
-                self.vehicle_number.take(),
+                self.builder.driver_id.take(),
+                self.builder.odometer,
+                self.builder.unspecified_id.take(),
+                self.builder.user_id.take(),
+                self.builder.vehicle_number.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { driver_id, odometer, unspecified_id, user_id, vehicle_number })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(IssuingTransactionFleetCardholderPromptData {
+                driver_id,
+                odometer,
+                unspecified_id,
+                user_id,
+                vehicle_number,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingTransactionFleetCardholderPromptData {
-        type Builder = IssuingTransactionFleetCardholderPromptDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionFleetCardholderPromptData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionFleetCardholderPromptDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "driver_id" => b.driver_id = FromValueOpt::from_value(v),
-                    "odometer" => b.odometer = FromValueOpt::from_value(v),
-                    "unspecified_id" => b.unspecified_id = FromValueOpt::from_value(v),
-                    "user_id" => b.user_id = FromValueOpt::from_value(v),
-                    "vehicle_number" => b.vehicle_number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

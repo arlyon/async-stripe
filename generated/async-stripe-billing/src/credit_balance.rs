@@ -21,16 +21,14 @@ pub struct CreditBalanceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -49,67 +47,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CreditBalanceBuilder::deser_default(),
+                builder: CreditBalanceBuilder {
+                    available_balance: Deserialize::default(),
+                    ledger_balance: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for CreditBalanceBuilder {
-        type Out = CreditBalance;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "available_balance" => Deserialize::begin(&mut self.available_balance),
-                "ledger_balance" => Deserialize::begin(&mut self.ledger_balance),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                available_balance: Deserialize::default(),
-                ledger_balance: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(available_balance), Some(ledger_balance)) =
-                (self.available_balance.take(), self.ledger_balance.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { available_balance, ledger_balance })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "available_balance" => Deserialize::begin(&mut self.builder.available_balance),
+                "ledger_balance" => Deserialize::begin(&mut self.builder.ledger_balance),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for CreditBalance {
-        type Builder = CreditBalanceBuilder;
-    }
-
-    impl FromValueOpt for CreditBalance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(available_balance), Some(ledger_balance)) =
+                (self.builder.available_balance.take(), self.builder.ledger_balance.take())
+            else {
+                return Ok(());
             };
-            let mut b = CreditBalanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "available_balance" => b.available_balance = FromValueOpt::from_value(v),
-                    "ledger_balance" => b.ledger_balance = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(CreditBalance { available_balance, ledger_balance });
+            Ok(())
         }
     }
 };

@@ -124,15 +124,15 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is an `affirm` PaymentMethod, this hash contains details about the Affirm payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub affirm: Option<miniserde::json::Value>,
+    pub affirm: Option<stripe_miniserde::json::Value>,
     /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub afterpay_clearpay: Option<miniserde::json::Value>,
+    pub afterpay_clearpay: Option<stripe_miniserde::json::Value>,
     /// If this is an `Alipay` PaymentMethod, this hash contains details about the Alipay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub alipay: Option<miniserde::json::Value>,
+    pub alipay: Option<stripe_miniserde::json::Value>,
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
     /// The field defaults to `unspecified`.
@@ -141,11 +141,11 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is a Alma PaymentMethod, this hash contains details about the Alma payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub alma: Option<miniserde::json::Value>,
+    pub alma: Option<stripe_miniserde::json::Value>,
     /// If this is a AmazonPay PaymentMethod, this hash contains details about the AmazonPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub amazon_pay: Option<miniserde::json::Value>,
+    pub amazon_pay: Option<stripe_miniserde::json::Value>,
     /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<CreateConfirmationTokenPaymentMethodDataAuBecsDebit>,
@@ -155,33 +155,33 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is a `bancontact` PaymentMethod, this hash contains details about the Bancontact payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub bancontact: Option<miniserde::json::Value>,
+    pub bancontact: Option<stripe_miniserde::json::Value>,
     /// If this is a `billie` PaymentMethod, this hash contains details about the Billie payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub billie: Option<miniserde::json::Value>,
+    pub billie: Option<stripe_miniserde::json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<CreateConfirmationTokenPaymentMethodDataBillingDetails>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub blik: Option<miniserde::json::Value>,
+    pub blik: Option<stripe_miniserde::json::Value>,
     /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreateConfirmationTokenPaymentMethodDataBoleto>,
     /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub cashapp: Option<miniserde::json::Value>,
+    pub cashapp: Option<stripe_miniserde::json::Value>,
     /// If this is a Crypto PaymentMethod, this hash contains details about the Crypto payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub crypto: Option<miniserde::json::Value>,
+    pub crypto: Option<stripe_miniserde::json::Value>,
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub customer_balance: Option<miniserde::json::Value>,
+    pub customer_balance: Option<stripe_miniserde::json::Value>,
     /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CreateConfirmationTokenPaymentMethodDataEps>,
@@ -191,41 +191,41 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub giropay: Option<miniserde::json::Value>,
+    pub giropay: Option<stripe_miniserde::json::Value>,
     /// If this is a `grabpay` PaymentMethod, this hash contains details about the GrabPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub grabpay: Option<miniserde::json::Value>,
+    pub grabpay: Option<stripe_miniserde::json::Value>,
     /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<CreateConfirmationTokenPaymentMethodDataIdeal>,
     /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub interac_present: Option<miniserde::json::Value>,
+    pub interac_present: Option<stripe_miniserde::json::Value>,
     /// If this is a `kakao_pay` PaymentMethod, this hash contains details about the Kakao Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub kakao_pay: Option<miniserde::json::Value>,
+    pub kakao_pay: Option<stripe_miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<CreateConfirmationTokenPaymentMethodDataKlarna>,
     /// If this is a `konbini` PaymentMethod, this hash contains details about the Konbini payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub konbini: Option<miniserde::json::Value>,
+    pub konbini: Option<stripe_miniserde::json::Value>,
     /// If this is a `kr_card` PaymentMethod, this hash contains details about the Korean Card payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub kr_card: Option<miniserde::json::Value>,
+    pub kr_card: Option<stripe_miniserde::json::Value>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub link: Option<miniserde::json::Value>,
+    pub link: Option<stripe_miniserde::json::Value>,
     /// If this is a MB WAY PaymentMethod, this hash contains details about the MB WAY payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub mb_way: Option<miniserde::json::Value>,
+    pub mb_way: Option<stripe_miniserde::json::Value>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -235,11 +235,11 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is a `mobilepay` PaymentMethod, this hash contains details about the MobilePay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub mobilepay: Option<miniserde::json::Value>,
+    pub mobilepay: Option<stripe_miniserde::json::Value>,
     /// If this is a `multibanco` PaymentMethod, this hash contains details about the Multibanco payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub multibanco: Option<miniserde::json::Value>,
+    pub multibanco: Option<stripe_miniserde::json::Value>,
     /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub naver_pay: Option<CreateConfirmationTokenPaymentMethodDataNaverPay>,
@@ -249,37 +249,37 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub oxxo: Option<miniserde::json::Value>,
+    pub oxxo: Option<stripe_miniserde::json::Value>,
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<CreateConfirmationTokenPaymentMethodDataP24>,
     /// If this is a `pay_by_bank` PaymentMethod, this hash contains details about the PayByBank payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub pay_by_bank: Option<miniserde::json::Value>,
+    pub pay_by_bank: Option<stripe_miniserde::json::Value>,
     /// If this is a `payco` PaymentMethod, this hash contains details about the PAYCO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub payco: Option<miniserde::json::Value>,
+    pub payco: Option<stripe_miniserde::json::Value>,
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub paynow: Option<miniserde::json::Value>,
+    pub paynow: Option<stripe_miniserde::json::Value>,
     /// If this is a `paypal` PaymentMethod, this hash contains details about the PayPal payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub paypal: Option<miniserde::json::Value>,
+    pub paypal: Option<stripe_miniserde::json::Value>,
     /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payto: Option<CreateConfirmationTokenPaymentMethodDataPayto>,
     /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub pix: Option<miniserde::json::Value>,
+    pub pix: Option<stripe_miniserde::json::Value>,
     /// If this is a `promptpay` PaymentMethod, this hash contains details about the PromptPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub promptpay: Option<miniserde::json::Value>,
+    pub promptpay: Option<stripe_miniserde::json::Value>,
     /// Options to configure Radar.
     /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -287,15 +287,15 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub revolut_pay: Option<miniserde::json::Value>,
+    pub revolut_pay: Option<stripe_miniserde::json::Value>,
     /// If this is a `samsung_pay` PaymentMethod, this hash contains details about the SamsungPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub samsung_pay: Option<miniserde::json::Value>,
+    pub samsung_pay: Option<stripe_miniserde::json::Value>,
     /// If this is a `satispay` PaymentMethod, this hash contains details about the Satispay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub satispay: Option<miniserde::json::Value>,
+    pub satispay: Option<stripe_miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateConfirmationTokenPaymentMethodDataSepaDebit>,
@@ -305,11 +305,11 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub swish: Option<miniserde::json::Value>,
+    pub swish: Option<stripe_miniserde::json::Value>,
     /// If this is a TWINT PaymentMethod, this hash contains details about the TWINT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub twint: Option<miniserde::json::Value>,
+    pub twint: Option<stripe_miniserde::json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
@@ -324,11 +324,11 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub wechat_pay: Option<miniserde::json::Value>,
+    pub wechat_pay: Option<stripe_miniserde::json::Value>,
     /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub zip: Option<miniserde::json::Value>,
+    pub zip: Option<stripe_miniserde::json::Value>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateConfirmationTokenPaymentMethodData {

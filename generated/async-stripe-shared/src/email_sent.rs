@@ -23,16 +23,14 @@ pub struct EmailSentBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -49,63 +47,33 @@ const _: () = {
 
     impl Visitor for Place<EmailSent> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: EmailSentBuilder::deser_default() }))
-        }
-    }
-
-    impl MapBuilder for EmailSentBuilder {
-        type Out = EmailSent;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "email_sent_at" => Deserialize::begin(&mut self.email_sent_at),
-                "email_sent_to" => Deserialize::begin(&mut self.email_sent_to),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { email_sent_at: Deserialize::default(), email_sent_to: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(email_sent_at), Some(email_sent_to)) =
-                (self.email_sent_at, self.email_sent_to.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { email_sent_at, email_sent_to })
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: EmailSentBuilder {
+                    email_sent_at: Deserialize::default(),
+                    email_sent_to: Deserialize::default(),
+                },
+            }))
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "email_sent_at" => Deserialize::begin(&mut self.builder.email_sent_at),
+                "email_sent_to" => Deserialize::begin(&mut self.builder.email_sent_to),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for EmailSent {
-        type Builder = EmailSentBuilder;
-    }
-
-    impl FromValueOpt for EmailSent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(email_sent_at), Some(email_sent_to)) =
+                (self.builder.email_sent_at, self.builder.email_sent_to.take())
+            else {
+                return Ok(());
             };
-            let mut b = EmailSentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "email_sent_at" => b.email_sent_at = FromValueOpt::from_value(v),
-                    "email_sent_to" => b.email_sent_to = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(EmailSent { email_sent_at, email_sent_to });
+            Ok(())
         }
     }
 };

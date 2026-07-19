@@ -10,7 +10,7 @@
 
 extern crate self as stripe_checkout;
 
-miniserde::make_place!(Place);
+stripe_miniserde::make_place!(Place);
 pub mod checkout_session;
 pub use stripe_shared::checkout_acss_debit_mandate_options::*;
 pub use stripe_shared::checkout_acss_debit_payment_method_options::*;

@@ -40,16 +40,14 @@ pub struct BillingMeterEventBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -68,37 +66,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BillingMeterEventBuilder::deser_default(),
+                builder: BillingMeterEventBuilder {
+                    created: Deserialize::default(),
+                    event_name: Deserialize::default(),
+                    identifier: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    payload: Deserialize::default(),
+                    timestamp: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for BillingMeterEventBuilder {
-        type Out = BillingMeterEvent;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "event_name" => Deserialize::begin(&mut self.event_name),
-                "identifier" => Deserialize::begin(&mut self.identifier),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "payload" => Deserialize::begin(&mut self.payload),
-                "timestamp" => Deserialize::begin(&mut self.timestamp),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "event_name" => Deserialize::begin(&mut self.builder.event_name),
+                "identifier" => Deserialize::begin(&mut self.builder.identifier),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "payload" => Deserialize::begin(&mut self.builder.payload),
+                "timestamp" => Deserialize::begin(&mut self.builder.timestamp),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                event_name: Deserialize::default(),
-                identifier: Deserialize::default(),
-                livemode: Deserialize::default(),
-                payload: Deserialize::default(),
-                timestamp: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(created),
                 Some(event_name),
@@ -107,53 +100,25 @@ const _: () = {
                 Some(payload),
                 Some(timestamp),
             ) = (
-                self.created,
-                self.event_name.take(),
-                self.identifier.take(),
-                self.livemode,
-                self.payload.take(),
-                self.timestamp,
+                self.builder.created,
+                self.builder.event_name.take(),
+                self.builder.identifier.take(),
+                self.builder.livemode,
+                self.builder.payload.take(),
+                self.builder.timestamp,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { created, event_name, identifier, livemode, payload, timestamp })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(BillingMeterEvent {
+                created,
+                event_name,
+                identifier,
+                livemode,
+                payload,
+                timestamp,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingMeterEvent {
-        type Builder = BillingMeterEventBuilder;
-    }
-
-    impl FromValueOpt for BillingMeterEvent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingMeterEventBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "event_name" => b.event_name = FromValueOpt::from_value(v),
-                    "identifier" => b.identifier = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "payload" => b.payload = FromValueOpt::from_value(v),
-                    "timestamp" => b.timestamp = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

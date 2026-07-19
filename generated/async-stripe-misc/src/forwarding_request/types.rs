@@ -66,16 +66,14 @@ pub struct ForwardingRequestBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -94,45 +92,40 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ForwardingRequestBuilder::deser_default(),
+                builder: ForwardingRequestBuilder {
+                    created: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    payment_method: Deserialize::default(),
+                    replacements: Deserialize::default(),
+                    request_context: Deserialize::default(),
+                    request_details: Deserialize::default(),
+                    response_details: Deserialize::default(),
+                    url: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ForwardingRequestBuilder {
-        type Out = ForwardingRequest;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
-                "replacements" => Deserialize::begin(&mut self.replacements),
-                "request_context" => Deserialize::begin(&mut self.request_context),
-                "request_details" => Deserialize::begin(&mut self.request_details),
-                "response_details" => Deserialize::begin(&mut self.response_details),
-                "url" => Deserialize::begin(&mut self.url),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "payment_method" => Deserialize::begin(&mut self.builder.payment_method),
+                "replacements" => Deserialize::begin(&mut self.builder.replacements),
+                "request_context" => Deserialize::begin(&mut self.builder.request_context),
+                "request_details" => Deserialize::begin(&mut self.builder.request_details),
+                "response_details" => Deserialize::begin(&mut self.builder.response_details),
+                "url" => Deserialize::begin(&mut self.builder.url),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                payment_method: Deserialize::default(),
-                replacements: Deserialize::default(),
-                request_context: Deserialize::default(),
-                request_details: Deserialize::default(),
-                response_details: Deserialize::default(),
-                url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(created),
                 Some(id),
@@ -145,21 +138,21 @@ const _: () = {
                 Some(response_details),
                 Some(url),
             ) = (
-                self.created,
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.payment_method.take(),
-                self.replacements.take(),
-                self.request_context.take(),
-                self.request_details.take(),
-                self.response_details.take(),
-                self.url.take(),
+                self.builder.created,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.payment_method.take(),
+                self.builder.replacements.take(),
+                self.builder.request_context.take(),
+                self.builder.request_details.take(),
+                self.builder.response_details.take(),
+                self.builder.url.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ForwardingRequest {
                 created,
                 id,
                 livemode,
@@ -170,47 +163,8 @@ const _: () = {
                 request_details,
                 response_details,
                 url,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ForwardingRequest {
-        type Builder = ForwardingRequestBuilder;
-    }
-
-    impl FromValueOpt for ForwardingRequest {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ForwardingRequestBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "replacements" => b.replacements = FromValueOpt::from_value(v),
-                    "request_context" => b.request_context = FromValueOpt::from_value(v),
-                    "request_details" => b.request_details = FromValueOpt::from_value(v),
-                    "response_details" => b.response_details = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -317,21 +271,19 @@ impl serde::Serialize for ForwardingRequestReplacements {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ForwardingRequestReplacements {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ForwardingRequestReplacements {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ForwardingRequestReplacements> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ForwardingRequestReplacements> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ForwardingRequestReplacements::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ForwardingRequestReplacements);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ForwardingRequestReplacements {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

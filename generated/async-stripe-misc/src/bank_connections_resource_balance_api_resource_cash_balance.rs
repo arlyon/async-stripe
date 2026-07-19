@@ -28,16 +28,14 @@ pub struct BankConnectionsResourceBalanceApiResourceCashBalanceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,62 +54,27 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BankConnectionsResourceBalanceApiResourceCashBalanceBuilder::deser_default(
-                ),
+                builder: BankConnectionsResourceBalanceApiResourceCashBalanceBuilder {
+                    available: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BankConnectionsResourceBalanceApiResourceCashBalanceBuilder {
-        type Out = BankConnectionsResourceBalanceApiResourceCashBalance;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "available" => Deserialize::begin(&mut self.available),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { available: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(available),) = (self.available.take(),) else {
-                return None;
-            };
-            Some(Self::Out { available })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "available" => Deserialize::begin(&mut self.builder.available),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BankConnectionsResourceBalanceApiResourceCashBalance {
-        type Builder = BankConnectionsResourceBalanceApiResourceCashBalanceBuilder;
-    }
-
-    impl FromValueOpt for BankConnectionsResourceBalanceApiResourceCashBalance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(available),) = (self.builder.available.take(),) else {
+                return Ok(());
             };
-            let mut b =
-                BankConnectionsResourceBalanceApiResourceCashBalanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "available" => b.available = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(BankConnectionsResourceBalanceApiResourceCashBalance { available });
+            Ok(())
         }
     }
 };

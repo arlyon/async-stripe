@@ -28,16 +28,14 @@ pub struct PaymentIntentNextActionVerifyWithMicrodepositsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,74 +54,41 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionVerifyWithMicrodepositsBuilder::deser_default(),
+                builder: PaymentIntentNextActionVerifyWithMicrodepositsBuilder {
+                    arrival_date: Deserialize::default(),
+                    hosted_verification_url: Deserialize::default(),
+                    microdeposit_type: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentNextActionVerifyWithMicrodepositsBuilder {
-        type Out = PaymentIntentNextActionVerifyWithMicrodeposits;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "arrival_date" => Deserialize::begin(&mut self.arrival_date),
-                "hosted_verification_url" => Deserialize::begin(&mut self.hosted_verification_url),
-                "microdeposit_type" => Deserialize::begin(&mut self.microdeposit_type),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                arrival_date: Deserialize::default(),
-                hosted_verification_url: Deserialize::default(),
-                microdeposit_type: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(arrival_date), Some(hosted_verification_url), Some(microdeposit_type)) = (
-                self.arrival_date,
-                self.hosted_verification_url.take(),
-                self.microdeposit_type.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { arrival_date, hosted_verification_url, microdeposit_type })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "arrival_date" => Deserialize::begin(&mut self.builder.arrival_date),
+                "hosted_verification_url" => {
+                    Deserialize::begin(&mut self.builder.hosted_verification_url)
+                }
+                "microdeposit_type" => Deserialize::begin(&mut self.builder.microdeposit_type),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionVerifyWithMicrodeposits {
-        type Builder = PaymentIntentNextActionVerifyWithMicrodepositsBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionVerifyWithMicrodeposits {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(arrival_date), Some(hosted_verification_url), Some(microdeposit_type)) = (
+                self.builder.arrival_date,
+                self.builder.hosted_verification_url.take(),
+                self.builder.microdeposit_type.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentIntentNextActionVerifyWithMicrodepositsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "arrival_date" => b.arrival_date = FromValueOpt::from_value(v),
-                    "hosted_verification_url" => {
-                        b.hosted_verification_url = FromValueOpt::from_value(v)
-                    }
-                    "microdeposit_type" => b.microdeposit_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentIntentNextActionVerifyWithMicrodeposits {
+                arrival_date,
+                hosted_verification_url,
+                microdeposit_type,
+            });
+            Ok(())
         }
     }
 };
@@ -194,16 +159,16 @@ impl serde::Serialize for PaymentIntentNextActionVerifyWithMicrodepositsMicrodep
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType::from_str(s)
@@ -212,10 +177,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType

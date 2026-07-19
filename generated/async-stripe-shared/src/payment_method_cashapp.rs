@@ -23,16 +23,14 @@ pub struct PaymentMethodCashappBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,63 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodCashappBuilder::deser_default(),
+                builder: PaymentMethodCashappBuilder {
+                    buyer_id: Deserialize::default(),
+                    cashtag: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodCashappBuilder {
-        type Out = PaymentMethodCashapp;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "buyer_id" => Deserialize::begin(&mut self.buyer_id),
-                "cashtag" => Deserialize::begin(&mut self.cashtag),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { buyer_id: Deserialize::default(), cashtag: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buyer_id), Some(cashtag)) = (self.buyer_id.take(), self.cashtag.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { buyer_id, cashtag })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "buyer_id" => Deserialize::begin(&mut self.builder.buyer_id),
+                "cashtag" => Deserialize::begin(&mut self.builder.cashtag),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodCashapp {
-        type Builder = PaymentMethodCashappBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodCashapp {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(buyer_id), Some(cashtag)) =
+                (self.builder.buyer_id.take(), self.builder.cashtag.take())
+            else {
+                return Ok(());
             };
-            let mut b = PaymentMethodCashappBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
-                    "cashtag" => b.cashtag = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodCashapp { buyer_id, cashtag });
+            Ok(())
         }
     }
 };

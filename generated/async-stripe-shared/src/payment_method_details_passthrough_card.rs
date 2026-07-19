@@ -37,16 +37,14 @@ pub struct PaymentMethodDetailsPassthroughCardBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -65,37 +63,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsPassthroughCardBuilder::deser_default(),
+                builder: PaymentMethodDetailsPassthroughCardBuilder {
+                    brand: Deserialize::default(),
+                    country: Deserialize::default(),
+                    exp_month: Deserialize::default(),
+                    exp_year: Deserialize::default(),
+                    funding: Deserialize::default(),
+                    last4: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodDetailsPassthroughCardBuilder {
-        type Out = PaymentMethodDetailsPassthroughCard;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "brand" => Deserialize::begin(&mut self.brand),
-                "country" => Deserialize::begin(&mut self.country),
-                "exp_month" => Deserialize::begin(&mut self.exp_month),
-                "exp_year" => Deserialize::begin(&mut self.exp_year),
-                "funding" => Deserialize::begin(&mut self.funding),
-                "last4" => Deserialize::begin(&mut self.last4),
+                "brand" => Deserialize::begin(&mut self.builder.brand),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "exp_month" => Deserialize::begin(&mut self.builder.exp_month),
+                "exp_year" => Deserialize::begin(&mut self.builder.exp_year),
+                "funding" => Deserialize::begin(&mut self.builder.funding),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                brand: Deserialize::default(),
-                country: Deserialize::default(),
-                exp_month: Deserialize::default(),
-                exp_year: Deserialize::default(),
-                funding: Deserialize::default(),
-                last4: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(brand),
                 Some(country),
@@ -104,53 +97,25 @@ const _: () = {
                 Some(funding),
                 Some(last4),
             ) = (
-                self.brand.take(),
-                self.country.take(),
-                self.exp_month,
-                self.exp_year,
-                self.funding.take(),
-                self.last4.take(),
+                self.builder.brand.take(),
+                self.builder.country.take(),
+                self.builder.exp_month,
+                self.builder.exp_year,
+                self.builder.funding.take(),
+                self.builder.last4.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { brand, country, exp_month, exp_year, funding, last4 })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(PaymentMethodDetailsPassthroughCard {
+                brand,
+                country,
+                exp_month,
+                exp_year,
+                funding,
+                last4,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsPassthroughCard {
-        type Builder = PaymentMethodDetailsPassthroughCardBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsPassthroughCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsPassthroughCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

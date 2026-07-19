@@ -61,16 +61,14 @@ pub struct IssuingDisputeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -89,49 +87,46 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingDisputeBuilder::deser_default(),
+                builder: IssuingDisputeBuilder {
+                    amount: Deserialize::default(),
+                    balance_transactions: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    evidence: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    loss_reason: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    status: Deserialize::default(),
+                    transaction: Deserialize::default(),
+                    treasury: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingDisputeBuilder {
-        type Out = IssuingDispute;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "balance_transactions" => Deserialize::begin(&mut self.balance_transactions),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "evidence" => Deserialize::begin(&mut self.evidence),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "loss_reason" => Deserialize::begin(&mut self.loss_reason),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "status" => Deserialize::begin(&mut self.status),
-                "transaction" => Deserialize::begin(&mut self.transaction),
-                "treasury" => Deserialize::begin(&mut self.treasury),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "balance_transactions" => {
+                    Deserialize::begin(&mut self.builder.balance_transactions)
+                }
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "evidence" => Deserialize::begin(&mut self.builder.evidence),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "loss_reason" => Deserialize::begin(&mut self.builder.loss_reason),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "transaction" => Deserialize::begin(&mut self.builder.transaction),
+                "treasury" => Deserialize::begin(&mut self.builder.treasury),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                balance_transactions: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                evidence: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                loss_reason: Deserialize::default(),
-                metadata: Deserialize::default(),
-                status: Deserialize::default(),
-                transaction: Deserialize::default(),
-                treasury: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(balance_transactions),
@@ -146,23 +141,23 @@ const _: () = {
                 Some(transaction),
                 Some(treasury),
             ) = (
-                self.amount,
-                self.balance_transactions.take(),
-                self.created,
-                self.currency.take(),
-                self.evidence.take(),
-                self.id.take(),
-                self.livemode,
-                self.loss_reason.take(),
-                self.metadata.take(),
-                self.status.take(),
-                self.transaction.take(),
-                self.treasury.take(),
+                self.builder.amount,
+                self.builder.balance_transactions.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.evidence.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.loss_reason.take(),
+                self.builder.metadata.take(),
+                self.builder.status.take(),
+                self.builder.transaction.take(),
+                self.builder.treasury.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingDispute {
                 amount,
                 balance_transactions,
                 created,
@@ -175,49 +170,8 @@ const _: () = {
                 status,
                 transaction,
                 treasury,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingDispute {
-        type Builder = IssuingDisputeBuilder;
-    }
-
-    impl FromValueOpt for IssuingDispute {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_transactions" => b.balance_transactions = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "evidence" => b.evidence = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "loss_reason" => b.loss_reason = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "transaction" => b.transaction = FromValueOpt::from_value(v),
-                    "treasury" => b.treasury = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -374,21 +328,19 @@ impl serde::Serialize for IssuingDisputeLossReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingDisputeLossReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingDisputeLossReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingDisputeLossReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingDisputeLossReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingDisputeLossReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingDisputeLossReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingDisputeLossReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -476,21 +428,19 @@ impl serde::Serialize for IssuingDisputeStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingDisputeStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingDisputeStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingDisputeStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingDisputeStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingDisputeStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingDisputeStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingDisputeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -31,16 +31,14 @@ pub struct BankConnectionsResourceTransactionRefreshBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -59,80 +57,45 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BankConnectionsResourceTransactionRefreshBuilder::deser_default(),
+                builder: BankConnectionsResourceTransactionRefreshBuilder {
+                    id: Deserialize::default(),
+                    last_attempted_at: Deserialize::default(),
+                    next_refresh_available_at: Deserialize::default(),
+                    status: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BankConnectionsResourceTransactionRefreshBuilder {
-        type Out = BankConnectionsResourceTransactionRefresh;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "id" => Deserialize::begin(&mut self.id),
-                "last_attempted_at" => Deserialize::begin(&mut self.last_attempted_at),
-                "next_refresh_available_at" => {
-                    Deserialize::begin(&mut self.next_refresh_available_at)
-                }
-                "status" => Deserialize::begin(&mut self.status),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                id: Deserialize::default(),
-                last_attempted_at: Deserialize::default(),
-                next_refresh_available_at: Deserialize::default(),
-                status: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(id), Some(last_attempted_at), Some(next_refresh_available_at), Some(status)) = (
-                self.id.take(),
-                self.last_attempted_at,
-                self.next_refresh_available_at,
-                self.status.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { id, last_attempted_at, next_refresh_available_at, status })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "last_attempted_at" => Deserialize::begin(&mut self.builder.last_attempted_at),
+                "next_refresh_available_at" => {
+                    Deserialize::begin(&mut self.builder.next_refresh_available_at)
+                }
+                "status" => Deserialize::begin(&mut self.builder.status),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BankConnectionsResourceTransactionRefresh {
-        type Builder = BankConnectionsResourceTransactionRefreshBuilder;
-    }
-
-    impl FromValueOpt for BankConnectionsResourceTransactionRefresh {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(id), Some(last_attempted_at), Some(next_refresh_available_at), Some(status)) = (
+                self.builder.id.take(),
+                self.builder.last_attempted_at,
+                self.builder.next_refresh_available_at,
+                self.builder.status.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = BankConnectionsResourceTransactionRefreshBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last_attempted_at" => b.last_attempted_at = FromValueOpt::from_value(v),
-                    "next_refresh_available_at" => {
-                        b.next_refresh_available_at = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(BankConnectionsResourceTransactionRefresh {
+                id,
+                last_attempted_at,
+                next_refresh_available_at,
+                status,
+            });
+            Ok(())
         }
     }
 };
@@ -205,22 +168,20 @@ impl serde::Serialize for BankConnectionsResourceTransactionRefreshStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BankConnectionsResourceTransactionRefreshStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BankConnectionsResourceTransactionRefreshStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BankConnectionsResourceTransactionRefreshStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BankConnectionsResourceTransactionRefreshStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(BankConnectionsResourceTransactionRefreshStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BankConnectionsResourceTransactionRefreshStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceTransactionRefreshStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

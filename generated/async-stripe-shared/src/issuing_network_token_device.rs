@@ -37,16 +37,14 @@ pub struct IssuingNetworkTokenDeviceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -65,37 +63,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingNetworkTokenDeviceBuilder::deser_default(),
+                builder: IssuingNetworkTokenDeviceBuilder {
+                    device_fingerprint: Deserialize::default(),
+                    ip_address: Deserialize::default(),
+                    location: Deserialize::default(),
+                    name: Deserialize::default(),
+                    phone_number: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingNetworkTokenDeviceBuilder {
-        type Out = IssuingNetworkTokenDevice;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "device_fingerprint" => Deserialize::begin(&mut self.device_fingerprint),
-                "ip_address" => Deserialize::begin(&mut self.ip_address),
-                "location" => Deserialize::begin(&mut self.location),
-                "name" => Deserialize::begin(&mut self.name),
-                "phone_number" => Deserialize::begin(&mut self.phone_number),
-                "type" => Deserialize::begin(&mut self.type_),
+                "device_fingerprint" => Deserialize::begin(&mut self.builder.device_fingerprint),
+                "ip_address" => Deserialize::begin(&mut self.builder.ip_address),
+                "location" => Deserialize::begin(&mut self.builder.location),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "phone_number" => Deserialize::begin(&mut self.builder.phone_number),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                device_fingerprint: Deserialize::default(),
-                ip_address: Deserialize::default(),
-                location: Deserialize::default(),
-                name: Deserialize::default(),
-                phone_number: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(device_fingerprint),
                 Some(ip_address),
@@ -104,53 +97,25 @@ const _: () = {
                 Some(phone_number),
                 Some(type_),
             ) = (
-                self.device_fingerprint.take(),
-                self.ip_address.take(),
-                self.location.take(),
-                self.name.take(),
-                self.phone_number.take(),
-                self.type_.take(),
+                self.builder.device_fingerprint.take(),
+                self.builder.ip_address.take(),
+                self.builder.location.take(),
+                self.builder.name.take(),
+                self.builder.phone_number.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { device_fingerprint, ip_address, location, name, phone_number, type_ })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(IssuingNetworkTokenDevice {
+                device_fingerprint,
+                ip_address,
+                location,
+                name,
+                phone_number,
+                type_,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingNetworkTokenDevice {
-        type Builder = IssuingNetworkTokenDeviceBuilder;
-    }
-
-    impl FromValueOpt for IssuingNetworkTokenDevice {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingNetworkTokenDeviceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "device_fingerprint" => b.device_fingerprint = FromValueOpt::from_value(v),
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "location" => b.location = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone_number" => b.phone_number = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -222,21 +187,19 @@ impl serde::Serialize for IssuingNetworkTokenDeviceType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingNetworkTokenDeviceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingNetworkTokenDeviceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenDeviceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingNetworkTokenDeviceType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingNetworkTokenDeviceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingNetworkTokenDeviceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenDeviceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

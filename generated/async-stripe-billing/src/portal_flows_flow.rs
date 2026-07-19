@@ -34,16 +34,14 @@ pub struct PortalFlowsFlowBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -62,37 +60,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PortalFlowsFlowBuilder::deser_default(),
+                builder: PortalFlowsFlowBuilder {
+                    after_completion: Deserialize::default(),
+                    subscription_cancel: Deserialize::default(),
+                    subscription_update: Deserialize::default(),
+                    subscription_update_confirm: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PortalFlowsFlowBuilder {
-        type Out = PortalFlowsFlow;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "after_completion" => Deserialize::begin(&mut self.after_completion),
-                "subscription_cancel" => Deserialize::begin(&mut self.subscription_cancel),
-                "subscription_update" => Deserialize::begin(&mut self.subscription_update),
+                "after_completion" => Deserialize::begin(&mut self.builder.after_completion),
+                "subscription_cancel" => Deserialize::begin(&mut self.builder.subscription_cancel),
+                "subscription_update" => Deserialize::begin(&mut self.builder.subscription_update),
                 "subscription_update_confirm" => {
-                    Deserialize::begin(&mut self.subscription_update_confirm)
+                    Deserialize::begin(&mut self.builder.subscription_update_confirm)
                 }
-                "type" => Deserialize::begin(&mut self.type_),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                after_completion: Deserialize::default(),
-                subscription_cancel: Deserialize::default(),
-                subscription_update: Deserialize::default(),
-                subscription_update_confirm: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(after_completion),
                 Some(subscription_cancel),
@@ -100,59 +93,23 @@ const _: () = {
                 Some(subscription_update_confirm),
                 Some(type_),
             ) = (
-                self.after_completion.take(),
-                self.subscription_cancel.take(),
-                self.subscription_update.take(),
-                self.subscription_update_confirm.take(),
-                self.type_.take(),
+                self.builder.after_completion.take(),
+                self.builder.subscription_cancel.take(),
+                self.builder.subscription_update.take(),
+                self.builder.subscription_update_confirm.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PortalFlowsFlow {
                 after_completion,
                 subscription_cancel,
                 subscription_update,
                 subscription_update_confirm,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PortalFlowsFlow {
-        type Builder = PortalFlowsFlowBuilder;
-    }
-
-    impl FromValueOpt for PortalFlowsFlow {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PortalFlowsFlowBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "after_completion" => b.after_completion = FromValueOpt::from_value(v),
-                    "subscription_cancel" => b.subscription_cancel = FromValueOpt::from_value(v),
-                    "subscription_update" => b.subscription_update = FromValueOpt::from_value(v),
-                    "subscription_update_confirm" => {
-                        b.subscription_update_confirm = FromValueOpt::from_value(v)
-                    }
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -223,21 +180,19 @@ impl serde::Serialize for PortalFlowsFlowType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PortalFlowsFlowType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PortalFlowsFlowType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PortalFlowsFlowType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PortalFlowsFlowType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PortalFlowsFlowType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PortalFlowsFlowType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalFlowsFlowType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

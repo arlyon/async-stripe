@@ -10,7 +10,7 @@
 
 extern crate self as stripe_billing;
 
-miniserde::make_place!(Place);
+stripe_miniserde::make_place!(Place);
 pub use billing_alert::types::*;
 pub use stripe_shared::automatic_tax::*;
 pub mod billing_alert;

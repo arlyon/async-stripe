@@ -26,16 +26,14 @@ installments: Option<Option<stripe_payment::ConfirmationTokensResourcePaymentMet
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,67 +52,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    ConfirmationTokensResourcePaymentMethodOptionsResourceCardBuilder::deser_default(
-                    ),
+                builder: ConfirmationTokensResourcePaymentMethodOptionsResourceCardBuilder {
+                    cvc_token: Deserialize::default(),
+                    installments: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ConfirmationTokensResourcePaymentMethodOptionsResourceCardBuilder {
-        type Out = ConfirmationTokensResourcePaymentMethodOptionsResourceCard;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "cvc_token" => Deserialize::begin(&mut self.cvc_token),
-                "installments" => Deserialize::begin(&mut self.installments),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { cvc_token: Deserialize::default(), installments: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(cvc_token), Some(installments)) =
-                (self.cvc_token.take(), self.installments.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { cvc_token, installments })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "cvc_token" => Deserialize::begin(&mut self.builder.cvc_token),
+                "installments" => Deserialize::begin(&mut self.builder.installments),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ConfirmationTokensResourcePaymentMethodOptionsResourceCard {
-        type Builder = ConfirmationTokensResourcePaymentMethodOptionsResourceCardBuilder;
-    }
-
-    impl FromValueOpt for ConfirmationTokensResourcePaymentMethodOptionsResourceCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(cvc_token), Some(installments)) =
+                (self.builder.cvc_token.take(), self.builder.installments.take())
+            else {
+                return Ok(());
             };
-            let mut b =
-                ConfirmationTokensResourcePaymentMethodOptionsResourceCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "cvc_token" => b.cvc_token = FromValueOpt::from_value(v),
-                    "installments" => b.installments = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(ConfirmationTokensResourcePaymentMethodOptionsResourceCard {
+                cvc_token,
+                installments,
+            });
+            Ok(())
         }
     }
 };

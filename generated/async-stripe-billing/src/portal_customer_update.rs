@@ -23,16 +23,14 @@ pub struct PortalCustomerUpdateBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,64 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PortalCustomerUpdateBuilder::deser_default(),
+                builder: PortalCustomerUpdateBuilder {
+                    allowed_updates: Deserialize::default(),
+                    enabled: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PortalCustomerUpdateBuilder {
-        type Out = PortalCustomerUpdate;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "allowed_updates" => Deserialize::begin(&mut self.allowed_updates),
-                "enabled" => Deserialize::begin(&mut self.enabled),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { allowed_updates: Deserialize::default(), enabled: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(allowed_updates), Some(enabled)) =
-                (self.allowed_updates.take(), self.enabled)
-            else {
-                return None;
-            };
-            Some(Self::Out { allowed_updates, enabled })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "allowed_updates" => Deserialize::begin(&mut self.builder.allowed_updates),
+                "enabled" => Deserialize::begin(&mut self.builder.enabled),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PortalCustomerUpdate {
-        type Builder = PortalCustomerUpdateBuilder;
-    }
-
-    impl FromValueOpt for PortalCustomerUpdate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(allowed_updates), Some(enabled)) =
+                (self.builder.allowed_updates.take(), self.builder.enabled)
+            else {
+                return Ok(());
             };
-            let mut b = PortalCustomerUpdateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allowed_updates" => b.allowed_updates = FromValueOpt::from_value(v),
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PortalCustomerUpdate { allowed_updates, enabled });
+            Ok(())
         }
     }
 };
@@ -189,21 +154,19 @@ impl serde::Serialize for PortalCustomerUpdateAllowedUpdates {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PortalCustomerUpdateAllowedUpdates {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PortalCustomerUpdateAllowedUpdates {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PortalCustomerUpdateAllowedUpdates> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PortalCustomerUpdateAllowedUpdates> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PortalCustomerUpdateAllowedUpdates::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PortalCustomerUpdateAllowedUpdates);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalCustomerUpdateAllowedUpdates {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

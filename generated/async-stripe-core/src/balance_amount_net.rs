@@ -29,16 +29,14 @@ pub struct BalanceAmountNetBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,73 +55,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BalanceAmountNetBuilder::deser_default(),
+                builder: BalanceAmountNetBuilder {
+                    amount: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    net_available: Deserialize::default(),
+                    source_types: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BalanceAmountNetBuilder {
-        type Out = BalanceAmountNet;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "net_available" => Deserialize::begin(&mut self.net_available),
-                "source_types" => Deserialize::begin(&mut self.source_types),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                currency: Deserialize::default(),
-                net_available: Deserialize::default(),
-                source_types: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(currency), Some(net_available), Some(source_types)) =
-                (self.amount, self.currency.take(), self.net_available.take(), self.source_types)
-            else {
-                return None;
-            };
-            Some(Self::Out { amount, currency, net_available, source_types })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "net_available" => Deserialize::begin(&mut self.builder.net_available),
+                "source_types" => Deserialize::begin(&mut self.builder.source_types),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BalanceAmountNet {
-        type Builder = BalanceAmountNetBuilder;
-    }
-
-    impl FromValueOpt for BalanceAmountNet {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount), Some(currency), Some(net_available), Some(source_types)) = (
+                self.builder.amount,
+                self.builder.currency.take(),
+                self.builder.net_available.take(),
+                self.builder.source_types,
+            ) else {
+                return Ok(());
             };
-            let mut b = BalanceAmountNetBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "net_available" => b.net_available = FromValueOpt::from_value(v),
-                    "source_types" => b.source_types = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(BalanceAmountNet { amount, currency, net_available, source_types });
+            Ok(())
         }
     }
 };

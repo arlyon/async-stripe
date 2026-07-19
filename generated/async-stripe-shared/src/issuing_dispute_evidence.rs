@@ -41,16 +41,14 @@ pub struct IssuingDisputeEvidenceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -69,47 +67,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingDisputeEvidenceBuilder::deser_default(),
+                builder: IssuingDisputeEvidenceBuilder {
+                    canceled: Deserialize::default(),
+                    duplicate: Deserialize::default(),
+                    fraudulent: Deserialize::default(),
+                    merchandise_not_as_described: Deserialize::default(),
+                    no_valid_authorization: Deserialize::default(),
+                    not_received: Deserialize::default(),
+                    other: Deserialize::default(),
+                    reason: Deserialize::default(),
+                    service_not_as_described: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingDisputeEvidenceBuilder {
-        type Out = IssuingDisputeEvidence;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "canceled" => Deserialize::begin(&mut self.canceled),
-                "duplicate" => Deserialize::begin(&mut self.duplicate),
-                "fraudulent" => Deserialize::begin(&mut self.fraudulent),
+                "canceled" => Deserialize::begin(&mut self.builder.canceled),
+                "duplicate" => Deserialize::begin(&mut self.builder.duplicate),
+                "fraudulent" => Deserialize::begin(&mut self.builder.fraudulent),
                 "merchandise_not_as_described" => {
-                    Deserialize::begin(&mut self.merchandise_not_as_described)
+                    Deserialize::begin(&mut self.builder.merchandise_not_as_described)
                 }
-                "no_valid_authorization" => Deserialize::begin(&mut self.no_valid_authorization),
-                "not_received" => Deserialize::begin(&mut self.not_received),
-                "other" => Deserialize::begin(&mut self.other),
-                "reason" => Deserialize::begin(&mut self.reason),
+                "no_valid_authorization" => {
+                    Deserialize::begin(&mut self.builder.no_valid_authorization)
+                }
+                "not_received" => Deserialize::begin(&mut self.builder.not_received),
+                "other" => Deserialize::begin(&mut self.builder.other),
+                "reason" => Deserialize::begin(&mut self.builder.reason),
                 "service_not_as_described" => {
-                    Deserialize::begin(&mut self.service_not_as_described)
+                    Deserialize::begin(&mut self.builder.service_not_as_described)
                 }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                canceled: Deserialize::default(),
-                duplicate: Deserialize::default(),
-                fraudulent: Deserialize::default(),
-                merchandise_not_as_described: Deserialize::default(),
-                no_valid_authorization: Deserialize::default(),
-                not_received: Deserialize::default(),
-                other: Deserialize::default(),
-                reason: Deserialize::default(),
-                service_not_as_described: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(canceled),
                 Some(duplicate),
@@ -121,20 +116,20 @@ const _: () = {
                 Some(reason),
                 Some(service_not_as_described),
             ) = (
-                self.canceled.take(),
-                self.duplicate.take(),
-                self.fraudulent.take(),
-                self.merchandise_not_as_described.take(),
-                self.no_valid_authorization.take(),
-                self.not_received.take(),
-                self.other.take(),
-                self.reason.take(),
-                self.service_not_as_described.take(),
+                self.builder.canceled.take(),
+                self.builder.duplicate.take(),
+                self.builder.fraudulent.take(),
+                self.builder.merchandise_not_as_described.take(),
+                self.builder.no_valid_authorization.take(),
+                self.builder.not_received.take(),
+                self.builder.other.take(),
+                self.builder.reason.take(),
+                self.builder.service_not_as_described.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingDisputeEvidence {
                 canceled,
                 duplicate,
                 fraudulent,
@@ -144,52 +139,8 @@ const _: () = {
                 other,
                 reason,
                 service_not_as_described,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingDisputeEvidence {
-        type Builder = IssuingDisputeEvidenceBuilder;
-    }
-
-    impl FromValueOpt for IssuingDisputeEvidence {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "canceled" => b.canceled = FromValueOpt::from_value(v),
-                    "duplicate" => b.duplicate = FromValueOpt::from_value(v),
-                    "fraudulent" => b.fraudulent = FromValueOpt::from_value(v),
-                    "merchandise_not_as_described" => {
-                        b.merchandise_not_as_described = FromValueOpt::from_value(v)
-                    }
-                    "no_valid_authorization" => {
-                        b.no_valid_authorization = FromValueOpt::from_value(v)
-                    }
-                    "not_received" => b.not_received = FromValueOpt::from_value(v),
-                    "other" => b.other = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "service_not_as_described" => {
-                        b.service_not_as_described = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -276,21 +227,19 @@ impl serde::Serialize for IssuingDisputeEvidenceReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingDisputeEvidenceReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingDisputeEvidenceReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingDisputeEvidenceReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingDisputeEvidenceReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingDisputeEvidenceReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingDisputeEvidenceReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingDisputeEvidenceReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

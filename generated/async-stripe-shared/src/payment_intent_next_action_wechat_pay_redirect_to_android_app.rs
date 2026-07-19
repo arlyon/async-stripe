@@ -39,16 +39,14 @@ pub struct PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,40 +65,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder::deser_default(
-                ),
+                builder: PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder {
+                    app_id: Deserialize::default(),
+                    nonce_str: Deserialize::default(),
+                    package: Deserialize::default(),
+                    partner_id: Deserialize::default(),
+                    prepay_id: Deserialize::default(),
+                    sign: Deserialize::default(),
+                    timestamp: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder {
-        type Out = PaymentIntentNextActionWechatPayRedirectToAndroidApp;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "app_id" => Deserialize::begin(&mut self.app_id),
-                "nonce_str" => Deserialize::begin(&mut self.nonce_str),
-                "package" => Deserialize::begin(&mut self.package),
-                "partner_id" => Deserialize::begin(&mut self.partner_id),
-                "prepay_id" => Deserialize::begin(&mut self.prepay_id),
-                "sign" => Deserialize::begin(&mut self.sign),
-                "timestamp" => Deserialize::begin(&mut self.timestamp),
+                "app_id" => Deserialize::begin(&mut self.builder.app_id),
+                "nonce_str" => Deserialize::begin(&mut self.builder.nonce_str),
+                "package" => Deserialize::begin(&mut self.builder.package),
+                "partner_id" => Deserialize::begin(&mut self.builder.partner_id),
+                "prepay_id" => Deserialize::begin(&mut self.builder.prepay_id),
+                "sign" => Deserialize::begin(&mut self.builder.sign),
+                "timestamp" => Deserialize::begin(&mut self.builder.timestamp),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                app_id: Deserialize::default(),
-                nonce_str: Deserialize::default(),
-                package: Deserialize::default(),
-                partner_id: Deserialize::default(),
-                prepay_id: Deserialize::default(),
-                sign: Deserialize::default(),
-                timestamp: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(app_id),
                 Some(nonce_str),
@@ -110,56 +102,27 @@ const _: () = {
                 Some(sign),
                 Some(timestamp),
             ) = (
-                self.app_id.take(),
-                self.nonce_str.take(),
-                self.package.take(),
-                self.partner_id.take(),
-                self.prepay_id.take(),
-                self.sign.take(),
-                self.timestamp.take(),
+                self.builder.app_id.take(),
+                self.builder.nonce_str.take(),
+                self.builder.package.take(),
+                self.builder.partner_id.take(),
+                self.builder.prepay_id.take(),
+                self.builder.sign.take(),
+                self.builder.timestamp.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { app_id, nonce_str, package, partner_id, prepay_id, sign, timestamp })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(PaymentIntentNextActionWechatPayRedirectToAndroidApp {
+                app_id,
+                nonce_str,
+                package,
+                partner_id,
+                prepay_id,
+                sign,
+                timestamp,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionWechatPayRedirectToAndroidApp {
-        type Builder = PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionWechatPayRedirectToAndroidApp {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "app_id" => b.app_id = FromValueOpt::from_value(v),
-                    "nonce_str" => b.nonce_str = FromValueOpt::from_value(v),
-                    "package" => b.package = FromValueOpt::from_value(v),
-                    "partner_id" => b.partner_id = FromValueOpt::from_value(v),
-                    "prepay_id" => b.prepay_id = FromValueOpt::from_value(v),
-                    "sign" => b.sign = FromValueOpt::from_value(v),
-                    "timestamp" => b.timestamp = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

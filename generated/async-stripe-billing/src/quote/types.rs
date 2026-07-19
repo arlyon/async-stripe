@@ -138,16 +138,14 @@ pub struct QuoteBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -164,94 +162,98 @@ const _: () = {
 
     impl Visitor for Place<Quote> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: QuoteBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: QuoteBuilder {
+                    amount_subtotal: Deserialize::default(),
+                    amount_total: Deserialize::default(),
+                    application: Deserialize::default(),
+                    application_fee_amount: Deserialize::default(),
+                    application_fee_percent: Deserialize::default(),
+                    automatic_tax: Deserialize::default(),
+                    collection_method: Deserialize::default(),
+                    computed: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    default_tax_rates: Deserialize::default(),
+                    description: Deserialize::default(),
+                    discounts: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    footer: Deserialize::default(),
+                    from_quote: Deserialize::default(),
+                    header: Deserialize::default(),
+                    id: Deserialize::default(),
+                    invoice: Deserialize::default(),
+                    invoice_settings: Deserialize::default(),
+                    line_items: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    number: Deserialize::default(),
+                    on_behalf_of: Deserialize::default(),
+                    status: Deserialize::default(),
+                    status_transitions: Deserialize::default(),
+                    subscription: Deserialize::default(),
+                    subscription_data: Deserialize::default(),
+                    subscription_schedule: Deserialize::default(),
+                    test_clock: Deserialize::default(),
+                    total_details: Deserialize::default(),
+                    transfer_data: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for QuoteBuilder {
-        type Out = Quote;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
-                "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "application" => Deserialize::begin(&mut self.application),
-                "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
-                "application_fee_percent" => Deserialize::begin(&mut self.application_fee_percent),
-                "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
-                "collection_method" => Deserialize::begin(&mut self.collection_method),
-                "computed" => Deserialize::begin(&mut self.computed),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "default_tax_rates" => Deserialize::begin(&mut self.default_tax_rates),
-                "description" => Deserialize::begin(&mut self.description),
-                "discounts" => Deserialize::begin(&mut self.discounts),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "footer" => Deserialize::begin(&mut self.footer),
-                "from_quote" => Deserialize::begin(&mut self.from_quote),
-                "header" => Deserialize::begin(&mut self.header),
-                "id" => Deserialize::begin(&mut self.id),
-                "invoice" => Deserialize::begin(&mut self.invoice),
-                "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
-                "line_items" => Deserialize::begin(&mut self.line_items),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "number" => Deserialize::begin(&mut self.number),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "status" => Deserialize::begin(&mut self.status),
-                "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                "subscription_data" => Deserialize::begin(&mut self.subscription_data),
-                "subscription_schedule" => Deserialize::begin(&mut self.subscription_schedule),
-                "test_clock" => Deserialize::begin(&mut self.test_clock),
-                "total_details" => Deserialize::begin(&mut self.total_details),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
+                "amount_subtotal" => Deserialize::begin(&mut self.builder.amount_subtotal),
+                "amount_total" => Deserialize::begin(&mut self.builder.amount_total),
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "application_fee_amount" => {
+                    Deserialize::begin(&mut self.builder.application_fee_amount)
+                }
+                "application_fee_percent" => {
+                    Deserialize::begin(&mut self.builder.application_fee_percent)
+                }
+                "automatic_tax" => Deserialize::begin(&mut self.builder.automatic_tax),
+                "collection_method" => Deserialize::begin(&mut self.builder.collection_method),
+                "computed" => Deserialize::begin(&mut self.builder.computed),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "default_tax_rates" => Deserialize::begin(&mut self.builder.default_tax_rates),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "discounts" => Deserialize::begin(&mut self.builder.discounts),
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "footer" => Deserialize::begin(&mut self.builder.footer),
+                "from_quote" => Deserialize::begin(&mut self.builder.from_quote),
+                "header" => Deserialize::begin(&mut self.builder.header),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "invoice" => Deserialize::begin(&mut self.builder.invoice),
+                "invoice_settings" => Deserialize::begin(&mut self.builder.invoice_settings),
+                "line_items" => Deserialize::begin(&mut self.builder.line_items),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "number" => Deserialize::begin(&mut self.builder.number),
+                "on_behalf_of" => Deserialize::begin(&mut self.builder.on_behalf_of),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "status_transitions" => Deserialize::begin(&mut self.builder.status_transitions),
+                "subscription" => Deserialize::begin(&mut self.builder.subscription),
+                "subscription_data" => Deserialize::begin(&mut self.builder.subscription_data),
+                "subscription_schedule" => {
+                    Deserialize::begin(&mut self.builder.subscription_schedule)
+                }
+                "test_clock" => Deserialize::begin(&mut self.builder.test_clock),
+                "total_details" => Deserialize::begin(&mut self.builder.total_details),
+                "transfer_data" => Deserialize::begin(&mut self.builder.transfer_data),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount_subtotal: Deserialize::default(),
-                amount_total: Deserialize::default(),
-                application: Deserialize::default(),
-                application_fee_amount: Deserialize::default(),
-                application_fee_percent: Deserialize::default(),
-                automatic_tax: Deserialize::default(),
-                collection_method: Deserialize::default(),
-                computed: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                default_tax_rates: Deserialize::default(),
-                description: Deserialize::default(),
-                discounts: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                footer: Deserialize::default(),
-                from_quote: Deserialize::default(),
-                header: Deserialize::default(),
-                id: Deserialize::default(),
-                invoice: Deserialize::default(),
-                invoice_settings: Deserialize::default(),
-                line_items: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                number: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                status: Deserialize::default(),
-                status_transitions: Deserialize::default(),
-                subscription: Deserialize::default(),
-                subscription_data: Deserialize::default(),
-                subscription_schedule: Deserialize::default(),
-                test_clock: Deserialize::default(),
-                total_details: Deserialize::default(),
-                transfer_data: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount_subtotal),
                 Some(amount_total),
@@ -289,46 +291,46 @@ const _: () = {
                 Some(total_details),
                 Some(transfer_data),
             ) = (
-                self.amount_subtotal,
-                self.amount_total,
-                self.application.take(),
-                self.application_fee_amount,
-                self.application_fee_percent,
-                self.automatic_tax.take(),
-                self.collection_method.take(),
-                self.computed.take(),
-                self.created,
-                self.currency.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.default_tax_rates.take(),
-                self.description.take(),
-                self.discounts.take(),
-                self.expires_at,
-                self.footer.take(),
-                self.from_quote.take(),
-                self.header.take(),
-                self.id.take(),
-                self.invoice.take(),
-                self.invoice_settings.take(),
-                self.line_items.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.number.take(),
-                self.on_behalf_of.take(),
-                self.status.take(),
-                self.status_transitions,
-                self.subscription.take(),
-                self.subscription_data.take(),
-                self.subscription_schedule.take(),
-                self.test_clock.take(),
-                self.total_details.take(),
-                self.transfer_data.take(),
+                self.builder.amount_subtotal,
+                self.builder.amount_total,
+                self.builder.application.take(),
+                self.builder.application_fee_amount,
+                self.builder.application_fee_percent,
+                self.builder.automatic_tax.take(),
+                self.builder.collection_method.take(),
+                self.builder.computed.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.default_tax_rates.take(),
+                self.builder.description.take(),
+                self.builder.discounts.take(),
+                self.builder.expires_at,
+                self.builder.footer.take(),
+                self.builder.from_quote.take(),
+                self.builder.header.take(),
+                self.builder.id.take(),
+                self.builder.invoice.take(),
+                self.builder.invoice_settings.take(),
+                self.builder.line_items.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.number.take(),
+                self.builder.on_behalf_of.take(),
+                self.builder.status.take(),
+                self.builder.status_transitions,
+                self.builder.subscription.take(),
+                self.builder.subscription_data.take(),
+                self.builder.subscription_schedule.take(),
+                self.builder.test_clock.take(),
+                self.builder.total_details.take(),
+                self.builder.transfer_data.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Quote {
                 amount_subtotal,
                 amount_total,
                 application,
@@ -364,78 +366,8 @@ const _: () = {
                 test_clock,
                 total_details,
                 transfer_data,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Quote {
-        type Builder = QuoteBuilder;
-    }
-
-    impl FromValueOpt for Quote {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = QuoteBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee_amount" => {
-                        b.application_fee_amount = FromValueOpt::from_value(v)
-                    }
-                    "application_fee_percent" => {
-                        b.application_fee_percent = FromValueOpt::from_value(v)
-                    }
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "collection_method" => b.collection_method = FromValueOpt::from_value(v),
-                    "computed" => b.computed = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "default_tax_rates" => b.default_tax_rates = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "footer" => b.footer = FromValueOpt::from_value(v),
-                    "from_quote" => b.from_quote = FromValueOpt::from_value(v),
-                    "header" => b.header = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "number" => b.number = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "subscription_data" => b.subscription_data = FromValueOpt::from_value(v),
-                    "subscription_schedule" => {
-                        b.subscription_schedule = FromValueOpt::from_value(v)
-                    }
-                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-                    "total_details" => b.total_details = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -554,21 +486,19 @@ impl serde::Serialize for QuoteCollectionMethod {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for QuoteCollectionMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for QuoteCollectionMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<QuoteCollectionMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<QuoteCollectionMethod> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(QuoteCollectionMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(QuoteCollectionMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for QuoteCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -642,21 +572,19 @@ impl serde::Serialize for QuoteStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for QuoteStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for QuoteStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<QuoteStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<QuoteStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(QuoteStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(QuoteStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for QuoteStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

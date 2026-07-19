@@ -29,16 +29,14 @@ pub struct TerminalReaderReaderResourceProcessConfigBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,86 +55,51 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderReaderResourceProcessConfigBuilder::deser_default(),
+                builder: TerminalReaderReaderResourceProcessConfigBuilder {
+                    enable_customer_cancellation: Deserialize::default(),
+                    return_url: Deserialize::default(),
+                    skip_tipping: Deserialize::default(),
+                    tipping: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TerminalReaderReaderResourceProcessConfigBuilder {
-        type Out = TerminalReaderReaderResourceProcessConfig;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "enable_customer_cancellation" => {
-                    Deserialize::begin(&mut self.enable_customer_cancellation)
+                    Deserialize::begin(&mut self.builder.enable_customer_cancellation)
                 }
-                "return_url" => Deserialize::begin(&mut self.return_url),
-                "skip_tipping" => Deserialize::begin(&mut self.skip_tipping),
-                "tipping" => Deserialize::begin(&mut self.tipping),
+                "return_url" => Deserialize::begin(&mut self.builder.return_url),
+                "skip_tipping" => Deserialize::begin(&mut self.builder.skip_tipping),
+                "tipping" => Deserialize::begin(&mut self.builder.tipping),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                enable_customer_cancellation: Deserialize::default(),
-                return_url: Deserialize::default(),
-                skip_tipping: Deserialize::default(),
-                tipping: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(enable_customer_cancellation),
                 Some(return_url),
                 Some(skip_tipping),
                 Some(tipping),
             ) = (
-                self.enable_customer_cancellation,
-                self.return_url.take(),
-                self.skip_tipping,
-                self.tipping,
+                self.builder.enable_customer_cancellation,
+                self.builder.return_url.take(),
+                self.builder.skip_tipping,
+                self.builder.tipping,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { enable_customer_cancellation, return_url, skip_tipping, tipping })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(TerminalReaderReaderResourceProcessConfig {
+                enable_customer_cancellation,
+                return_url,
+                skip_tipping,
+                tipping,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceProcessConfig {
-        type Builder = TerminalReaderReaderResourceProcessConfigBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceProcessConfig {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalReaderReaderResourceProcessConfigBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "enable_customer_cancellation" => {
-                        b.enable_customer_cancellation = FromValueOpt::from_value(v)
-                    }
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    "skip_tipping" => b.skip_tipping = FromValueOpt::from_value(v),
-                    "tipping" => b.tipping = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

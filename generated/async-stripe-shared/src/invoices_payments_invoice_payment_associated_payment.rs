@@ -32,16 +32,14 @@ pub struct InvoicesPaymentsInvoicePaymentAssociatedPaymentBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,76 +58,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoicesPaymentsInvoicePaymentAssociatedPaymentBuilder::deser_default(),
+                builder: InvoicesPaymentsInvoicePaymentAssociatedPaymentBuilder {
+                    charge: Deserialize::default(),
+                    payment_intent: Deserialize::default(),
+                    payment_record: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoicesPaymentsInvoicePaymentAssociatedPaymentBuilder {
-        type Out = InvoicesPaymentsInvoicePaymentAssociatedPayment;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "charge" => Deserialize::begin(&mut self.charge),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_record" => Deserialize::begin(&mut self.payment_record),
-                "type" => Deserialize::begin(&mut self.type_),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                charge: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                payment_record: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(charge), Some(payment_intent), Some(payment_record), Some(type_)) = (
-                self.charge.take(),
-                self.payment_intent.take(),
-                self.payment_record.take(),
-                self.type_.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { charge, payment_intent, payment_record, type_ })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "charge" => Deserialize::begin(&mut self.builder.charge),
+                "payment_intent" => Deserialize::begin(&mut self.builder.payment_intent),
+                "payment_record" => Deserialize::begin(&mut self.builder.payment_record),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoicesPaymentsInvoicePaymentAssociatedPayment {
-        type Builder = InvoicesPaymentsInvoicePaymentAssociatedPaymentBuilder;
-    }
-
-    impl FromValueOpt for InvoicesPaymentsInvoicePaymentAssociatedPayment {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(charge), Some(payment_intent), Some(payment_record), Some(type_)) = (
+                self.builder.charge.take(),
+                self.builder.payment_intent.take(),
+                self.builder.payment_record.take(),
+                self.builder.type_.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = InvoicesPaymentsInvoicePaymentAssociatedPaymentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_record" => b.payment_record = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InvoicesPaymentsInvoicePaymentAssociatedPayment {
+                charge,
+                payment_intent,
+                payment_record,
+                type_,
+            });
+            Ok(())
         }
     }
 };
@@ -202,14 +167,14 @@ impl serde::Serialize for InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<InvoicesPaymentsInvoicePaymentAssociatedPaymentType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<InvoicesPaymentsInvoicePaymentAssociatedPaymentType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             InvoicesPaymentsInvoicePaymentAssociatedPaymentType::from_str(s).expect("infallible"),
@@ -217,8 +182,6 @@ impl miniserde::de::Visitor for crate::Place<InvoicesPaymentsInvoicePaymentAssoc
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(InvoicesPaymentsInvoicePaymentAssociatedPaymentType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

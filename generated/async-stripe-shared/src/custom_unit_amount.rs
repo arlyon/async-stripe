@@ -27,16 +27,14 @@ pub struct CustomUnitAmountBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,70 +53,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CustomUnitAmountBuilder::deser_default(),
+                builder: CustomUnitAmountBuilder {
+                    maximum: Deserialize::default(),
+                    minimum: Deserialize::default(),
+                    preset: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for CustomUnitAmountBuilder {
-        type Out = CustomUnitAmount;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "maximum" => Deserialize::begin(&mut self.maximum),
-                "minimum" => Deserialize::begin(&mut self.minimum),
-                "preset" => Deserialize::begin(&mut self.preset),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                maximum: Deserialize::default(),
-                minimum: Deserialize::default(),
-                preset: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(maximum), Some(minimum), Some(preset)) =
-                (self.maximum, self.minimum, self.preset)
-            else {
-                return None;
-            };
-            Some(Self::Out { maximum, minimum, preset })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "maximum" => Deserialize::begin(&mut self.builder.maximum),
+                "minimum" => Deserialize::begin(&mut self.builder.minimum),
+                "preset" => Deserialize::begin(&mut self.builder.preset),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for CustomUnitAmount {
-        type Builder = CustomUnitAmountBuilder;
-    }
-
-    impl FromValueOpt for CustomUnitAmount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(maximum), Some(minimum), Some(preset)) =
+                (self.builder.maximum, self.builder.minimum, self.builder.preset)
+            else {
+                return Ok(());
             };
-            let mut b = CustomUnitAmountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "maximum" => b.maximum = FromValueOpt::from_value(v),
-                    "minimum" => b.minimum = FromValueOpt::from_value(v),
-                    "preset" => b.preset = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(CustomUnitAmount { maximum, minimum, preset });
+            Ok(())
         }
     }
 };

@@ -35,16 +35,14 @@ pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -63,89 +61,51 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder::deser_default(),
+                builder: PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder {
+                    custom_mandate_url: Deserialize::default(),
+                    interval_description: Deserialize::default(),
+                    payment_schedule: Deserialize::default(),
+                    transaction_type: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder {
-        type Out = PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "custom_mandate_url" => Deserialize::begin(&mut self.custom_mandate_url),
-                "interval_description" => Deserialize::begin(&mut self.interval_description),
-                "payment_schedule" => Deserialize::begin(&mut self.payment_schedule),
-                "transaction_type" => Deserialize::begin(&mut self.transaction_type),
+                "custom_mandate_url" => Deserialize::begin(&mut self.builder.custom_mandate_url),
+                "interval_description" => {
+                    Deserialize::begin(&mut self.builder.interval_description)
+                }
+                "payment_schedule" => Deserialize::begin(&mut self.builder.payment_schedule),
+                "transaction_type" => Deserialize::begin(&mut self.builder.transaction_type),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                custom_mandate_url: Deserialize::default(),
-                interval_description: Deserialize::default(),
-                payment_schedule: Deserialize::default(),
-                transaction_type: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(custom_mandate_url),
                 Some(interval_description),
                 Some(payment_schedule),
                 Some(transaction_type),
             ) = (
-                self.custom_mandate_url.take(),
-                self.interval_description.take(),
-                self.payment_schedule.take(),
-                self.transaction_type.take(),
+                self.builder.custom_mandate_url.take(),
+                self.builder.interval_description.take(),
+                self.builder.payment_schedule.take(),
+                self.builder.transaction_type.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
                 custom_mandate_url,
                 interval_description,
                 payment_schedule,
                 transaction_type,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
-        type Builder = PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "custom_mandate_url" => b.custom_mandate_url = FromValueOpt::from_value(v),
-                    "interval_description" => b.interval_description = FromValueOpt::from_value(v),
-                    "payment_schedule" => b.payment_schedule = FromValueOpt::from_value(v),
-                    "transaction_type" => b.transaction_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -220,18 +180,18 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDeb
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
+impl stripe_miniserde::Deserialize
     for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::from_str(s)
@@ -240,10 +200,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
@@ -322,18 +278,18 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDeb
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
+impl stripe_miniserde::Deserialize
     for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::from_str(s)
@@ -342,10 +298,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType

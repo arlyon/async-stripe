@@ -32,16 +32,14 @@ pub struct ClimateRemovalsLocationBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,80 +58,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ClimateRemovalsLocationBuilder::deser_default(),
+                builder: ClimateRemovalsLocationBuilder {
+                    city: Deserialize::default(),
+                    country: Deserialize::default(),
+                    latitude: Deserialize::default(),
+                    longitude: Deserialize::default(),
+                    region: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ClimateRemovalsLocationBuilder {
-        type Out = ClimateRemovalsLocation;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "city" => Deserialize::begin(&mut self.city),
-                "country" => Deserialize::begin(&mut self.country),
-                "latitude" => Deserialize::begin(&mut self.latitude),
-                "longitude" => Deserialize::begin(&mut self.longitude),
-                "region" => Deserialize::begin(&mut self.region),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                city: Deserialize::default(),
-                country: Deserialize::default(),
-                latitude: Deserialize::default(),
-                longitude: Deserialize::default(),
-                region: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(city), Some(country), Some(latitude), Some(longitude), Some(region)) = (
-                self.city.take(),
-                self.country.take(),
-                self.latitude,
-                self.longitude,
-                self.region.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { city, country, latitude, longitude, region })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "city" => Deserialize::begin(&mut self.builder.city),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "latitude" => Deserialize::begin(&mut self.builder.latitude),
+                "longitude" => Deserialize::begin(&mut self.builder.longitude),
+                "region" => Deserialize::begin(&mut self.builder.region),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ClimateRemovalsLocation {
-        type Builder = ClimateRemovalsLocationBuilder;
-    }
-
-    impl FromValueOpt for ClimateRemovalsLocation {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(city), Some(country), Some(latitude), Some(longitude), Some(region)) = (
+                self.builder.city.take(),
+                self.builder.country.take(),
+                self.builder.latitude,
+                self.builder.longitude,
+                self.builder.region.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = ClimateRemovalsLocationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "city" => b.city = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "latitude" => b.latitude = FromValueOpt::from_value(v),
-                    "longitude" => b.longitude = FromValueOpt::from_value(v),
-                    "region" => b.region = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(ClimateRemovalsLocation { city, country, latitude, longitude, region });
+            Ok(())
         }
     }
 };

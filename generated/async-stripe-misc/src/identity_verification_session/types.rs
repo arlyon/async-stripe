@@ -101,16 +101,14 @@ pub struct IdentityVerificationSessionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -129,67 +127,62 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IdentityVerificationSessionBuilder::deser_default(),
+                builder: IdentityVerificationSessionBuilder {
+                    client_reference_id: Deserialize::default(),
+                    client_secret: Deserialize::default(),
+                    created: Deserialize::default(),
+                    id: Deserialize::default(),
+                    last_error: Deserialize::default(),
+                    last_verification_report: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    options: Deserialize::default(),
+                    provided_details: Deserialize::default(),
+                    redaction: Deserialize::default(),
+                    related_customer: Deserialize::default(),
+                    related_customer_account: Deserialize::default(),
+                    related_person: Deserialize::default(),
+                    status: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    url: Deserialize::default(),
+                    verification_flow: Deserialize::default(),
+                    verified_outputs: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IdentityVerificationSessionBuilder {
-        type Out = IdentityVerificationSession;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "client_reference_id" => Deserialize::begin(&mut self.client_reference_id),
-                "client_secret" => Deserialize::begin(&mut self.client_secret),
-                "created" => Deserialize::begin(&mut self.created),
-                "id" => Deserialize::begin(&mut self.id),
-                "last_error" => Deserialize::begin(&mut self.last_error),
+                "client_reference_id" => Deserialize::begin(&mut self.builder.client_reference_id),
+                "client_secret" => Deserialize::begin(&mut self.builder.client_secret),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "last_error" => Deserialize::begin(&mut self.builder.last_error),
                 "last_verification_report" => {
-                    Deserialize::begin(&mut self.last_verification_report)
+                    Deserialize::begin(&mut self.builder.last_verification_report)
                 }
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "options" => Deserialize::begin(&mut self.options),
-                "provided_details" => Deserialize::begin(&mut self.provided_details),
-                "redaction" => Deserialize::begin(&mut self.redaction),
-                "related_customer" => Deserialize::begin(&mut self.related_customer),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "options" => Deserialize::begin(&mut self.builder.options),
+                "provided_details" => Deserialize::begin(&mut self.builder.provided_details),
+                "redaction" => Deserialize::begin(&mut self.builder.redaction),
+                "related_customer" => Deserialize::begin(&mut self.builder.related_customer),
                 "related_customer_account" => {
-                    Deserialize::begin(&mut self.related_customer_account)
+                    Deserialize::begin(&mut self.builder.related_customer_account)
                 }
-                "related_person" => Deserialize::begin(&mut self.related_person),
-                "status" => Deserialize::begin(&mut self.status),
-                "type" => Deserialize::begin(&mut self.type_),
-                "url" => Deserialize::begin(&mut self.url),
-                "verification_flow" => Deserialize::begin(&mut self.verification_flow),
-                "verified_outputs" => Deserialize::begin(&mut self.verified_outputs),
+                "related_person" => Deserialize::begin(&mut self.builder.related_person),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "url" => Deserialize::begin(&mut self.builder.url),
+                "verification_flow" => Deserialize::begin(&mut self.builder.verification_flow),
+                "verified_outputs" => Deserialize::begin(&mut self.builder.verified_outputs),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                client_reference_id: Deserialize::default(),
-                client_secret: Deserialize::default(),
-                created: Deserialize::default(),
-                id: Deserialize::default(),
-                last_error: Deserialize::default(),
-                last_verification_report: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                options: Deserialize::default(),
-                provided_details: Deserialize::default(),
-                redaction: Deserialize::default(),
-                related_customer: Deserialize::default(),
-                related_customer_account: Deserialize::default(),
-                related_person: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
-                url: Deserialize::default(),
-                verification_flow: Deserialize::default(),
-                verified_outputs: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(client_reference_id),
                 Some(client_secret),
@@ -211,30 +204,30 @@ const _: () = {
                 Some(verification_flow),
                 Some(verified_outputs),
             ) = (
-                self.client_reference_id.take(),
-                self.client_secret.take(),
-                self.created,
-                self.id.take(),
-                self.last_error.take(),
-                self.last_verification_report.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.options.take(),
-                self.provided_details.take(),
-                self.redaction.take(),
-                self.related_customer.take(),
-                self.related_customer_account.take(),
-                self.related_person.take(),
-                self.status.take(),
-                self.type_.take(),
-                self.url.take(),
-                self.verification_flow.take(),
-                self.verified_outputs.take(),
+                self.builder.client_reference_id.take(),
+                self.builder.client_secret.take(),
+                self.builder.created,
+                self.builder.id.take(),
+                self.builder.last_error.take(),
+                self.builder.last_verification_report.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.options.take(),
+                self.builder.provided_details.take(),
+                self.builder.redaction.take(),
+                self.builder.related_customer.take(),
+                self.builder.related_customer_account.take(),
+                self.builder.related_person.take(),
+                self.builder.status.take(),
+                self.builder.type_.take(),
+                self.builder.url.take(),
+                self.builder.verification_flow.take(),
+                self.builder.verified_outputs.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IdentityVerificationSession {
                 client_reference_id,
                 client_secret,
                 created,
@@ -254,60 +247,8 @@ const _: () = {
                 url,
                 verification_flow,
                 verified_outputs,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IdentityVerificationSession {
-        type Builder = IdentityVerificationSessionBuilder;
-    }
-
-    impl FromValueOpt for IdentityVerificationSession {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IdentityVerificationSessionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last_error" => b.last_error = FromValueOpt::from_value(v),
-                    "last_verification_report" => {
-                        b.last_verification_report = FromValueOpt::from_value(v)
-                    }
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "options" => b.options = FromValueOpt::from_value(v),
-                    "provided_details" => b.provided_details = FromValueOpt::from_value(v),
-                    "redaction" => b.redaction = FromValueOpt::from_value(v),
-                    "related_customer" => b.related_customer = FromValueOpt::from_value(v),
-                    "related_customer_account" => {
-                        b.related_customer_account = FromValueOpt::from_value(v)
-                    }
-                    "related_person" => b.related_person = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    "verification_flow" => b.verification_flow = FromValueOpt::from_value(v),
-                    "verified_outputs" => b.verified_outputs = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -408,21 +349,19 @@ impl serde::Serialize for IdentityVerificationSessionType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IdentityVerificationSessionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IdentityVerificationSessionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IdentityVerificationSessionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IdentityVerificationSessionType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IdentityVerificationSessionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IdentityVerificationSessionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IdentityVerificationSessionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -511,21 +450,19 @@ impl serde::Serialize for IdentityVerificationSessionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IdentityVerificationSessionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IdentityVerificationSessionStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IdentityVerificationSessionStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IdentityVerificationSessionStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IdentityVerificationSessionStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IdentityVerificationSessionStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IdentityVerificationSessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

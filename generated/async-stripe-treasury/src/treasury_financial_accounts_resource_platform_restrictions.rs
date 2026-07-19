@@ -27,16 +27,14 @@ pub struct TreasuryFinancialAccountsResourcePlatformRestrictionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,66 +53,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    TreasuryFinancialAccountsResourcePlatformRestrictionsBuilder::deser_default(),
+                builder: TreasuryFinancialAccountsResourcePlatformRestrictionsBuilder {
+                    inbound_flows: Deserialize::default(),
+                    outbound_flows: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TreasuryFinancialAccountsResourcePlatformRestrictionsBuilder {
-        type Out = TreasuryFinancialAccountsResourcePlatformRestrictions;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "inbound_flows" => Deserialize::begin(&mut self.inbound_flows),
-                "outbound_flows" => Deserialize::begin(&mut self.outbound_flows),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { inbound_flows: Deserialize::default(), outbound_flows: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(inbound_flows), Some(outbound_flows)) =
-                (self.inbound_flows.take(), self.outbound_flows.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { inbound_flows, outbound_flows })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "inbound_flows" => Deserialize::begin(&mut self.builder.inbound_flows),
+                "outbound_flows" => Deserialize::begin(&mut self.builder.outbound_flows),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryFinancialAccountsResourcePlatformRestrictions {
-        type Builder = TreasuryFinancialAccountsResourcePlatformRestrictionsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryFinancialAccountsResourcePlatformRestrictions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(inbound_flows), Some(outbound_flows)) =
+                (self.builder.inbound_flows.take(), self.builder.outbound_flows.take())
+            else {
+                return Ok(());
             };
-            let mut b =
-                TreasuryFinancialAccountsResourcePlatformRestrictionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "inbound_flows" => b.inbound_flows = FromValueOpt::from_value(v),
-                    "outbound_flows" => b.outbound_flows = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TreasuryFinancialAccountsResourcePlatformRestrictions {
+                inbound_flows,
+                outbound_flows,
+            });
+            Ok(())
         }
     }
 };
@@ -186,16 +152,16 @@ impl serde::Serialize for TreasuryFinancialAccountsResourcePlatformRestrictionsI
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::from_str(s)
@@ -204,10 +170,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows
@@ -286,16 +248,16 @@ impl serde::Serialize for TreasuryFinancialAccountsResourcePlatformRestrictionsO
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::from_str(s)
@@ -304,10 +266,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows

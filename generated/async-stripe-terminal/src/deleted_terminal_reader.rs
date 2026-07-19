@@ -28,16 +28,14 @@ pub struct DeletedTerminalReaderBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,73 +54,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: DeletedTerminalReaderBuilder::deser_default(),
+                builder: DeletedTerminalReaderBuilder {
+                    deleted: Deserialize::default(),
+                    device_type: Deserialize::default(),
+                    id: Deserialize::default(),
+                    serial_number: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for DeletedTerminalReaderBuilder {
-        type Out = DeletedTerminalReader;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "deleted" => Deserialize::begin(&mut self.deleted),
-                "device_type" => Deserialize::begin(&mut self.device_type),
-                "id" => Deserialize::begin(&mut self.id),
-                "serial_number" => Deserialize::begin(&mut self.serial_number),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                deleted: Deserialize::default(),
-                device_type: Deserialize::default(),
-                id: Deserialize::default(),
-                serial_number: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(deleted), Some(device_type), Some(id), Some(serial_number)) =
-                (self.deleted, self.device_type.take(), self.id.take(), self.serial_number.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { deleted, device_type, id, serial_number })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "deleted" => Deserialize::begin(&mut self.builder.deleted),
+                "device_type" => Deserialize::begin(&mut self.builder.device_type),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "serial_number" => Deserialize::begin(&mut self.builder.serial_number),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for DeletedTerminalReader {
-        type Builder = DeletedTerminalReaderBuilder;
-    }
-
-    impl FromValueOpt for DeletedTerminalReader {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(deleted), Some(device_type), Some(id), Some(serial_number)) = (
+                self.builder.deleted,
+                self.builder.device_type.take(),
+                self.builder.id.take(),
+                self.builder.serial_number.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = DeletedTerminalReaderBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "deleted" => b.deleted = FromValueOpt::from_value(v),
-                    "device_type" => b.device_type = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "serial_number" => b.serial_number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(DeletedTerminalReader { deleted, device_type, id, serial_number });
+            Ok(())
         }
     }
 };
@@ -232,21 +195,19 @@ impl serde::Serialize for DeletedTerminalReaderDeviceType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for DeletedTerminalReaderDeviceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for DeletedTerminalReaderDeviceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<DeletedTerminalReaderDeviceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<DeletedTerminalReaderDeviceType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(DeletedTerminalReaderDeviceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(DeletedTerminalReaderDeviceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for DeletedTerminalReaderDeviceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

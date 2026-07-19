@@ -26,16 +26,14 @@ pub struct LegalEntityRegistrationDateBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,68 +52,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: LegalEntityRegistrationDateBuilder::deser_default(),
+                builder: LegalEntityRegistrationDateBuilder {
+                    day: Deserialize::default(),
+                    month: Deserialize::default(),
+                    year: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for LegalEntityRegistrationDateBuilder {
-        type Out = LegalEntityRegistrationDate;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "day" => Deserialize::begin(&mut self.day),
-                "month" => Deserialize::begin(&mut self.month),
-                "year" => Deserialize::begin(&mut self.year),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                day: Deserialize::default(),
-                month: Deserialize::default(),
-                year: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(day), Some(month), Some(year)) = (self.day, self.month, self.year) else {
-                return None;
-            };
-            Some(Self::Out { day, month, year })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "day" => Deserialize::begin(&mut self.builder.day),
+                "month" => Deserialize::begin(&mut self.builder.month),
+                "year" => Deserialize::begin(&mut self.builder.year),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for LegalEntityRegistrationDate {
-        type Builder = LegalEntityRegistrationDateBuilder;
-    }
-
-    impl FromValueOpt for LegalEntityRegistrationDate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(day), Some(month), Some(year)) =
+                (self.builder.day, self.builder.month, self.builder.year)
+            else {
+                return Ok(());
             };
-            let mut b = LegalEntityRegistrationDateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "day" => b.day = FromValueOpt::from_value(v),
-                    "month" => b.month = FromValueOpt::from_value(v),
-                    "year" => b.year = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(LegalEntityRegistrationDate { day, month, year });
+            Ok(())
         }
     }
 };

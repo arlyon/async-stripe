@@ -57,16 +57,14 @@ unit_of_measure: Option<Option<String>>,
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -85,43 +83,40 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentAmountDetailsLineItemBuilder::deser_default(),
+                builder: PaymentIntentAmountDetailsLineItemBuilder {
+                    discount_amount: Deserialize::default(),
+                    id: Deserialize::default(),
+                    payment_method_options: Deserialize::default(),
+                    product_code: Deserialize::default(),
+                    product_name: Deserialize::default(),
+                    quantity: Deserialize::default(),
+                    tax: Deserialize::default(),
+                    unit_cost: Deserialize::default(),
+                    unit_of_measure: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentIntentAmountDetailsLineItemBuilder {
-        type Out = PaymentIntentAmountDetailsLineItem;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "discount_amount" => Deserialize::begin(&mut self.discount_amount),
-                "id" => Deserialize::begin(&mut self.id),
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
-                "product_code" => Deserialize::begin(&mut self.product_code),
-                "product_name" => Deserialize::begin(&mut self.product_name),
-                "quantity" => Deserialize::begin(&mut self.quantity),
-                "tax" => Deserialize::begin(&mut self.tax),
-                "unit_cost" => Deserialize::begin(&mut self.unit_cost),
-                "unit_of_measure" => Deserialize::begin(&mut self.unit_of_measure),
+                "discount_amount" => Deserialize::begin(&mut self.builder.discount_amount),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "payment_method_options" => {
+                    Deserialize::begin(&mut self.builder.payment_method_options)
+                }
+                "product_code" => Deserialize::begin(&mut self.builder.product_code),
+                "product_name" => Deserialize::begin(&mut self.builder.product_name),
+                "quantity" => Deserialize::begin(&mut self.builder.quantity),
+                "tax" => Deserialize::begin(&mut self.builder.tax),
+                "unit_cost" => Deserialize::begin(&mut self.builder.unit_cost),
+                "unit_of_measure" => Deserialize::begin(&mut self.builder.unit_of_measure),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                discount_amount: Deserialize::default(),
-                id: Deserialize::default(),
-                payment_method_options: Deserialize::default(),
-                product_code: Deserialize::default(),
-                product_name: Deserialize::default(),
-                quantity: Deserialize::default(),
-                tax: Deserialize::default(),
-                unit_cost: Deserialize::default(),
-                unit_of_measure: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(discount_amount),
                 Some(id),
@@ -133,20 +128,20 @@ const _: () = {
                 Some(unit_cost),
                 Some(unit_of_measure),
             ) = (
-                self.discount_amount,
-                self.id.take(),
-                self.payment_method_options.take(),
-                self.product_code.take(),
-                self.product_name.take(),
-                self.quantity,
-                self.tax,
-                self.unit_cost,
-                self.unit_of_measure.take(),
+                self.builder.discount_amount,
+                self.builder.id.take(),
+                self.builder.payment_method_options.take(),
+                self.builder.product_code.take(),
+                self.builder.product_name.take(),
+                self.builder.quantity,
+                self.builder.tax,
+                self.builder.unit_cost,
+                self.builder.unit_of_measure.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentIntentAmountDetailsLineItem {
                 discount_amount,
                 id,
                 payment_method_options,
@@ -156,48 +151,8 @@ const _: () = {
                 tax,
                 unit_cost,
                 unit_of_measure,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentAmountDetailsLineItem {
-        type Builder = PaymentIntentAmountDetailsLineItemBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentAmountDetailsLineItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentAmountDetailsLineItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "product_code" => b.product_code = FromValueOpt::from_value(v),
-                    "product_name" => b.product_name = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "tax" => b.tax = FromValueOpt::from_value(v),
-                    "unit_cost" => b.unit_cost = FromValueOpt::from_value(v),
-                    "unit_of_measure" => b.unit_of_measure = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

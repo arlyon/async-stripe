@@ -26,16 +26,14 @@ pub struct TerminalReaderReaderResourceCollectConfigBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,74 +52,41 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderReaderResourceCollectConfigBuilder::deser_default(),
+                builder: TerminalReaderReaderResourceCollectConfigBuilder {
+                    enable_customer_cancellation: Deserialize::default(),
+                    skip_tipping: Deserialize::default(),
+                    tipping: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TerminalReaderReaderResourceCollectConfigBuilder {
-        type Out = TerminalReaderReaderResourceCollectConfig;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "enable_customer_cancellation" => {
-                    Deserialize::begin(&mut self.enable_customer_cancellation)
-                }
-                "skip_tipping" => Deserialize::begin(&mut self.skip_tipping),
-                "tipping" => Deserialize::begin(&mut self.tipping),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                enable_customer_cancellation: Deserialize::default(),
-                skip_tipping: Deserialize::default(),
-                tipping: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enable_customer_cancellation), Some(skip_tipping), Some(tipping)) =
-                (self.enable_customer_cancellation, self.skip_tipping, self.tipping)
-            else {
-                return None;
-            };
-            Some(Self::Out { enable_customer_cancellation, skip_tipping, tipping })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "enable_customer_cancellation" => {
+                    Deserialize::begin(&mut self.builder.enable_customer_cancellation)
+                }
+                "skip_tipping" => Deserialize::begin(&mut self.builder.skip_tipping),
+                "tipping" => Deserialize::begin(&mut self.builder.tipping),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceCollectConfig {
-        type Builder = TerminalReaderReaderResourceCollectConfigBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceCollectConfig {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(enable_customer_cancellation), Some(skip_tipping), Some(tipping)) = (
+                self.builder.enable_customer_cancellation,
+                self.builder.skip_tipping,
+                self.builder.tipping,
+            ) else {
+                return Ok(());
             };
-            let mut b = TerminalReaderReaderResourceCollectConfigBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "enable_customer_cancellation" => {
-                        b.enable_customer_cancellation = FromValueOpt::from_value(v)
-                    }
-                    "skip_tipping" => b.skip_tipping = FromValueOpt::from_value(v),
-                    "tipping" => b.tipping = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TerminalReaderReaderResourceCollectConfig {
+                enable_customer_cancellation,
+                skip_tipping,
+                tipping,
+            });
+            Ok(())
         }
     }
 };

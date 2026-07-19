@@ -27,16 +27,14 @@ pub struct PaymentPagesCheckoutSessionCollectedInformationBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,72 +53,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentPagesCheckoutSessionCollectedInformationBuilder::deser_default(),
+                builder: PaymentPagesCheckoutSessionCollectedInformationBuilder {
+                    business_name: Deserialize::default(),
+                    individual_name: Deserialize::default(),
+                    shipping_details: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentPagesCheckoutSessionCollectedInformationBuilder {
-        type Out = PaymentPagesCheckoutSessionCollectedInformation;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "business_name" => Deserialize::begin(&mut self.business_name),
-                "individual_name" => Deserialize::begin(&mut self.individual_name),
-                "shipping_details" => Deserialize::begin(&mut self.shipping_details),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                business_name: Deserialize::default(),
-                individual_name: Deserialize::default(),
-                shipping_details: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(business_name), Some(individual_name), Some(shipping_details)) = (
-                self.business_name.take(),
-                self.individual_name.take(),
-                self.shipping_details.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { business_name, individual_name, shipping_details })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "business_name" => Deserialize::begin(&mut self.builder.business_name),
+                "individual_name" => Deserialize::begin(&mut self.builder.individual_name),
+                "shipping_details" => Deserialize::begin(&mut self.builder.shipping_details),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentPagesCheckoutSessionCollectedInformation {
-        type Builder = PaymentPagesCheckoutSessionCollectedInformationBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionCollectedInformation {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(business_name), Some(individual_name), Some(shipping_details)) = (
+                self.builder.business_name.take(),
+                self.builder.individual_name.take(),
+                self.builder.shipping_details.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentPagesCheckoutSessionCollectedInformationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "business_name" => b.business_name = FromValueOpt::from_value(v),
-                    "individual_name" => b.individual_name = FromValueOpt::from_value(v),
-                    "shipping_details" => b.shipping_details = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentPagesCheckoutSessionCollectedInformation {
+                business_name,
+                individual_name,
+                shipping_details,
+            });
+            Ok(())
         }
     }
 };

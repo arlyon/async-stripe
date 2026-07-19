@@ -88,16 +88,14 @@ transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransactio
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -116,69 +114,68 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TreasuryOutboundTransferBuilder::deser_default(),
+                builder: TreasuryOutboundTransferBuilder {
+                    amount: Deserialize::default(),
+                    cancelable: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    description: Deserialize::default(),
+                    destination_payment_method: Deserialize::default(),
+                    destination_payment_method_details: Deserialize::default(),
+                    expected_arrival_date: Deserialize::default(),
+                    financial_account: Deserialize::default(),
+                    hosted_regulatory_receipt_url: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    returned_details: Deserialize::default(),
+                    statement_descriptor: Deserialize::default(),
+                    status: Deserialize::default(),
+                    status_transitions: Deserialize::default(),
+                    tracking_details: Deserialize::default(),
+                    transaction: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TreasuryOutboundTransferBuilder {
-        type Out = TreasuryOutboundTransfer;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "cancelable" => Deserialize::begin(&mut self.cancelable),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "description" => Deserialize::begin(&mut self.description),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "cancelable" => Deserialize::begin(&mut self.builder.cancelable),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "description" => Deserialize::begin(&mut self.builder.description),
                 "destination_payment_method" => {
-                    Deserialize::begin(&mut self.destination_payment_method)
+                    Deserialize::begin(&mut self.builder.destination_payment_method)
                 }
                 "destination_payment_method_details" => {
-                    Deserialize::begin(&mut self.destination_payment_method_details)
+                    Deserialize::begin(&mut self.builder.destination_payment_method_details)
                 }
-                "expected_arrival_date" => Deserialize::begin(&mut self.expected_arrival_date),
-                "financial_account" => Deserialize::begin(&mut self.financial_account),
+                "expected_arrival_date" => {
+                    Deserialize::begin(&mut self.builder.expected_arrival_date)
+                }
+                "financial_account" => Deserialize::begin(&mut self.builder.financial_account),
                 "hosted_regulatory_receipt_url" => {
-                    Deserialize::begin(&mut self.hosted_regulatory_receipt_url)
+                    Deserialize::begin(&mut self.builder.hosted_regulatory_receipt_url)
                 }
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "returned_details" => Deserialize::begin(&mut self.returned_details),
-                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-                "status" => Deserialize::begin(&mut self.status),
-                "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-                "tracking_details" => Deserialize::begin(&mut self.tracking_details),
-                "transaction" => Deserialize::begin(&mut self.transaction),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "returned_details" => Deserialize::begin(&mut self.builder.returned_details),
+                "statement_descriptor" => {
+                    Deserialize::begin(&mut self.builder.statement_descriptor)
+                }
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "status_transitions" => Deserialize::begin(&mut self.builder.status_transitions),
+                "tracking_details" => Deserialize::begin(&mut self.builder.tracking_details),
+                "transaction" => Deserialize::begin(&mut self.builder.transaction),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                cancelable: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                destination_payment_method: Deserialize::default(),
-                destination_payment_method_details: Deserialize::default(),
-                expected_arrival_date: Deserialize::default(),
-                financial_account: Deserialize::default(),
-                hosted_regulatory_receipt_url: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                returned_details: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-                status: Deserialize::default(),
-                status_transitions: Deserialize::default(),
-                tracking_details: Deserialize::default(),
-                transaction: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(cancelable),
@@ -200,30 +197,30 @@ const _: () = {
                 Some(tracking_details),
                 Some(transaction),
             ) = (
-                self.amount,
-                self.cancelable,
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.destination_payment_method.take(),
-                self.destination_payment_method_details.take(),
-                self.expected_arrival_date,
-                self.financial_account.take(),
-                self.hosted_regulatory_receipt_url.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.returned_details.take(),
-                self.statement_descriptor.take(),
-                self.status.take(),
-                self.status_transitions,
-                self.tracking_details.take(),
-                self.transaction.take(),
+                self.builder.amount,
+                self.builder.cancelable,
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.description.take(),
+                self.builder.destination_payment_method.take(),
+                self.builder.destination_payment_method_details.take(),
+                self.builder.expected_arrival_date,
+                self.builder.financial_account.take(),
+                self.builder.hosted_regulatory_receipt_url.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.returned_details.take(),
+                self.builder.statement_descriptor.take(),
+                self.builder.status.take(),
+                self.builder.status_transitions,
+                self.builder.tracking_details.take(),
+                self.builder.transaction.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TreasuryOutboundTransfer {
                 amount,
                 cancelable,
                 created,
@@ -243,64 +240,8 @@ const _: () = {
                 status_transitions,
                 tracking_details,
                 transaction,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryOutboundTransfer {
-        type Builder = TreasuryOutboundTransferBuilder;
-    }
-
-    impl FromValueOpt for TreasuryOutboundTransfer {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryOutboundTransferBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "cancelable" => b.cancelable = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "destination_payment_method" => {
-                        b.destination_payment_method = FromValueOpt::from_value(v)
-                    }
-                    "destination_payment_method_details" => {
-                        b.destination_payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "expected_arrival_date" => {
-                        b.expected_arrival_date = FromValueOpt::from_value(v)
-                    }
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "hosted_regulatory_receipt_url" => {
-                        b.hosted_regulatory_receipt_url = FromValueOpt::from_value(v)
-                    }
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "returned_details" => b.returned_details = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    "tracking_details" => b.tracking_details = FromValueOpt::from_value(v),
-                    "transaction" => b.transaction = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -419,21 +360,19 @@ impl serde::Serialize for TreasuryOutboundTransferStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TreasuryOutboundTransferStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TreasuryOutboundTransferStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TreasuryOutboundTransferStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TreasuryOutboundTransferStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TreasuryOutboundTransferStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TreasuryOutboundTransferStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryOutboundTransferStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

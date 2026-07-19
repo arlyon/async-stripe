@@ -37,16 +37,14 @@ type_: Option<String>,
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -72,83 +70,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletBuilder::deser_default(),
+            builder: PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletBuilder { apple_pay: Deserialize::default(),
+dynamic_last4: Deserialize::default(),
+google_pay: Deserialize::default(),
+type_: Deserialize::default(),
+ },
         }))
-        }
-    }
-
-    impl MapBuilder
-        for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletBuilder
-    {
-        type Out = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWallet;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "apple_pay" => Deserialize::begin(&mut self.apple_pay),
-                "dynamic_last4" => Deserialize::begin(&mut self.dynamic_last4),
-                "google_pay" => Deserialize::begin(&mut self.google_pay),
-                "type" => Deserialize::begin(&mut self.type_),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                apple_pay: Deserialize::default(),
-                dynamic_last4: Deserialize::default(),
-                google_pay: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(apple_pay), Some(dynamic_last4), Some(google_pay), Some(type_)) = (
-                self.apple_pay.take(),
-                self.dynamic_last4.take(),
-                self.google_pay,
-                self.type_.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { apple_pay, dynamic_last4, google_pay, type_ })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "apple_pay" => Deserialize::begin(&mut self.builder.apple_pay),
+                "dynamic_last4" => Deserialize::begin(&mut self.builder.dynamic_last4),
+                "google_pay" => Deserialize::begin(&mut self.builder.google_pay),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser
-        for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWallet
-    {
-        type Builder =
-            PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletBuilder;
-    }
-
-    impl FromValueOpt
-        for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWallet
-    {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(apple_pay), Some(dynamic_last4), Some(google_pay), Some(type_)) = (
+                self.builder.apple_pay.take(),
+                self.builder.dynamic_last4.take(),
+                self.builder.google_pay,
+                self.builder.type_.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
-                    "dynamic_last4" => b.dynamic_last4 = FromValueOpt::from_value(v),
-                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(
+                PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWallet {
+                    apple_pay,
+                    dynamic_last4,
+                    google_pay,
+                    type_,
+                },
+            );
+            Ok(())
         }
     }
 };

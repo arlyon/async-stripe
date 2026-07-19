@@ -61,16 +61,14 @@ pub struct TransferReversalBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -89,45 +87,40 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TransferReversalBuilder::deser_default(),
+                builder: TransferReversalBuilder {
+                    amount: Deserialize::default(),
+                    balance_transaction: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    destination_payment_refund: Deserialize::default(),
+                    id: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    source_refund: Deserialize::default(),
+                    transfer: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TransferReversalBuilder {
-        type Out = TransferReversal;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "balance_transaction" => Deserialize::begin(&mut self.builder.balance_transaction),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
                 "destination_payment_refund" => {
-                    Deserialize::begin(&mut self.destination_payment_refund)
+                    Deserialize::begin(&mut self.builder.destination_payment_refund)
                 }
-                "id" => Deserialize::begin(&mut self.id),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "source_refund" => Deserialize::begin(&mut self.source_refund),
-                "transfer" => Deserialize::begin(&mut self.transfer),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "source_refund" => Deserialize::begin(&mut self.builder.source_refund),
+                "transfer" => Deserialize::begin(&mut self.builder.transfer),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                balance_transaction: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                destination_payment_refund: Deserialize::default(),
-                id: Deserialize::default(),
-                metadata: Deserialize::default(),
-                source_refund: Deserialize::default(),
-                transfer: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(balance_transaction),
@@ -139,20 +132,20 @@ const _: () = {
                 Some(source_refund),
                 Some(transfer),
             ) = (
-                self.amount,
-                self.balance_transaction.take(),
-                self.created,
-                self.currency.take(),
-                self.destination_payment_refund.take(),
-                self.id.take(),
-                self.metadata.take(),
-                self.source_refund.take(),
-                self.transfer.take(),
+                self.builder.amount,
+                self.builder.balance_transaction.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.destination_payment_refund.take(),
+                self.builder.id.take(),
+                self.builder.metadata.take(),
+                self.builder.source_refund.take(),
+                self.builder.transfer.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TransferReversal {
                 amount,
                 balance_transaction,
                 created,
@@ -162,48 +155,8 @@ const _: () = {
                 metadata,
                 source_refund,
                 transfer,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TransferReversal {
-        type Builder = TransferReversalBuilder;
-    }
-
-    impl FromValueOpt for TransferReversal {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TransferReversalBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "destination_payment_refund" => {
-                        b.destination_payment_refund = FromValueOpt::from_value(v)
-                    }
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "source_refund" => b.source_refund = FromValueOpt::from_value(v),
-                    "transfer" => b.transfer = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

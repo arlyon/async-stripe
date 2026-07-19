@@ -108,16 +108,14 @@ pub struct PriceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -134,64 +132,62 @@ const _: () = {
 
     impl Visitor for Place<Price> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: PriceBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PriceBuilder {
+                    active: Deserialize::default(),
+                    billing_scheme: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    currency_options: Deserialize::default(),
+                    custom_unit_amount: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    lookup_key: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    nickname: Deserialize::default(),
+                    product: Deserialize::default(),
+                    recurring: Deserialize::default(),
+                    tax_behavior: Deserialize::default(),
+                    tiers: Deserialize::default(),
+                    tiers_mode: Deserialize::default(),
+                    transform_quantity: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    unit_amount: Deserialize::default(),
+                    unit_amount_decimal: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for PriceBuilder {
-        type Out = Price;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
-                "billing_scheme" => Deserialize::begin(&mut self.billing_scheme),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "currency_options" => Deserialize::begin(&mut self.currency_options),
-                "custom_unit_amount" => Deserialize::begin(&mut self.custom_unit_amount),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "lookup_key" => Deserialize::begin(&mut self.lookup_key),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "nickname" => Deserialize::begin(&mut self.nickname),
-                "product" => Deserialize::begin(&mut self.product),
-                "recurring" => Deserialize::begin(&mut self.recurring),
-                "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
-                "tiers" => Deserialize::begin(&mut self.tiers),
-                "tiers_mode" => Deserialize::begin(&mut self.tiers_mode),
-                "transform_quantity" => Deserialize::begin(&mut self.transform_quantity),
-                "type" => Deserialize::begin(&mut self.type_),
-                "unit_amount" => Deserialize::begin(&mut self.unit_amount),
-                "unit_amount_decimal" => Deserialize::begin(&mut self.unit_amount_decimal),
+                "active" => Deserialize::begin(&mut self.builder.active),
+                "billing_scheme" => Deserialize::begin(&mut self.builder.billing_scheme),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "currency_options" => Deserialize::begin(&mut self.builder.currency_options),
+                "custom_unit_amount" => Deserialize::begin(&mut self.builder.custom_unit_amount),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "lookup_key" => Deserialize::begin(&mut self.builder.lookup_key),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "nickname" => Deserialize::begin(&mut self.builder.nickname),
+                "product" => Deserialize::begin(&mut self.builder.product),
+                "recurring" => Deserialize::begin(&mut self.builder.recurring),
+                "tax_behavior" => Deserialize::begin(&mut self.builder.tax_behavior),
+                "tiers" => Deserialize::begin(&mut self.builder.tiers),
+                "tiers_mode" => Deserialize::begin(&mut self.builder.tiers_mode),
+                "transform_quantity" => Deserialize::begin(&mut self.builder.transform_quantity),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "unit_amount" => Deserialize::begin(&mut self.builder.unit_amount),
+                "unit_amount_decimal" => Deserialize::begin(&mut self.builder.unit_amount_decimal),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                active: Deserialize::default(),
-                billing_scheme: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                currency_options: Deserialize::default(),
-                custom_unit_amount: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                lookup_key: Deserialize::default(),
-                metadata: Deserialize::default(),
-                nickname: Deserialize::default(),
-                product: Deserialize::default(),
-                recurring: Deserialize::default(),
-                tax_behavior: Deserialize::default(),
-                tiers: Deserialize::default(),
-                tiers_mode: Deserialize::default(),
-                transform_quantity: Deserialize::default(),
-                type_: Deserialize::default(),
-                unit_amount: Deserialize::default(),
-                unit_amount_decimal: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(active),
                 Some(billing_scheme),
@@ -214,31 +210,31 @@ const _: () = {
                 Some(unit_amount),
                 Some(unit_amount_decimal),
             ) = (
-                self.active,
-                self.billing_scheme.take(),
-                self.created,
-                self.currency.take(),
-                self.currency_options.take(),
-                self.custom_unit_amount,
-                self.id.take(),
-                self.livemode,
-                self.lookup_key.take(),
-                self.metadata.take(),
-                self.nickname.take(),
-                self.product.take(),
-                self.recurring.take(),
-                self.tax_behavior.take(),
-                self.tiers.take(),
-                self.tiers_mode.take(),
-                self.transform_quantity.take(),
-                self.type_.take(),
-                self.unit_amount,
-                self.unit_amount_decimal.take(),
+                self.builder.active,
+                self.builder.billing_scheme.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.currency_options.take(),
+                self.builder.custom_unit_amount,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.lookup_key.take(),
+                self.builder.metadata.take(),
+                self.builder.nickname.take(),
+                self.builder.product.take(),
+                self.builder.recurring.take(),
+                self.builder.tax_behavior.take(),
+                self.builder.tiers.take(),
+                self.builder.tiers_mode.take(),
+                self.builder.transform_quantity.take(),
+                self.builder.type_.take(),
+                self.builder.unit_amount,
+                self.builder.unit_amount_decimal.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Price {
                 active,
                 billing_scheme,
                 created,
@@ -259,57 +255,8 @@ const _: () = {
                 type_,
                 unit_amount,
                 unit_amount_decimal,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Price {
-        type Builder = PriceBuilder;
-    }
-
-    impl FromValueOpt for Price {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PriceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "billing_scheme" => b.billing_scheme = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "currency_options" => b.currency_options = FromValueOpt::from_value(v),
-                    "custom_unit_amount" => b.custom_unit_amount = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "nickname" => b.nickname = FromValueOpt::from_value(v),
-                    "product" => b.product = FromValueOpt::from_value(v),
-                    "recurring" => b.recurring = FromValueOpt::from_value(v),
-                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
-                    "tiers" => b.tiers = FromValueOpt::from_value(v),
-                    "tiers_mode" => b.tiers_mode = FromValueOpt::from_value(v),
-                    "transform_quantity" => b.transform_quantity = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
-                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -413,21 +360,19 @@ impl serde::Serialize for PriceBillingScheme {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PriceBillingScheme {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PriceBillingScheme {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PriceBillingScheme> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PriceBillingScheme> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PriceBillingScheme::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PriceBillingScheme);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PriceBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -498,21 +443,19 @@ impl serde::Serialize for PriceTaxBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PriceTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PriceTaxBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PriceTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PriceTaxBehavior> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PriceTaxBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PriceTaxBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PriceTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -580,21 +523,19 @@ impl serde::Serialize for PriceTiersMode {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PriceTiersMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PriceTiersMode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PriceTiersMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PriceTiersMode> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PriceTiersMode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PriceTiersMode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PriceTiersMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -662,21 +603,19 @@ impl serde::Serialize for PriceType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PriceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PriceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PriceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PriceType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PriceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PriceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PriceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

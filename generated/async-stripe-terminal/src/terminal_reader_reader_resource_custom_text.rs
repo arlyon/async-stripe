@@ -30,16 +30,14 @@ pub struct TerminalReaderReaderResourceCustomTextBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -58,76 +56,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderReaderResourceCustomTextBuilder::deser_default(),
+                builder: TerminalReaderReaderResourceCustomTextBuilder {
+                    description: Deserialize::default(),
+                    skip_button: Deserialize::default(),
+                    submit_button: Deserialize::default(),
+                    title: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TerminalReaderReaderResourceCustomTextBuilder {
-        type Out = TerminalReaderReaderResourceCustomText;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "description" => Deserialize::begin(&mut self.description),
-                "skip_button" => Deserialize::begin(&mut self.skip_button),
-                "submit_button" => Deserialize::begin(&mut self.submit_button),
-                "title" => Deserialize::begin(&mut self.title),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                description: Deserialize::default(),
-                skip_button: Deserialize::default(),
-                submit_button: Deserialize::default(),
-                title: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(description), Some(skip_button), Some(submit_button), Some(title)) = (
-                self.description.take(),
-                self.skip_button.take(),
-                self.submit_button.take(),
-                self.title.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { description, skip_button, submit_button, title })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "skip_button" => Deserialize::begin(&mut self.builder.skip_button),
+                "submit_button" => Deserialize::begin(&mut self.builder.submit_button),
+                "title" => Deserialize::begin(&mut self.builder.title),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceCustomText {
-        type Builder = TerminalReaderReaderResourceCustomTextBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceCustomText {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(description), Some(skip_button), Some(submit_button), Some(title)) = (
+                self.builder.description.take(),
+                self.builder.skip_button.take(),
+                self.builder.submit_button.take(),
+                self.builder.title.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = TerminalReaderReaderResourceCustomTextBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "skip_button" => b.skip_button = FromValueOpt::from_value(v),
-                    "submit_button" => b.submit_button = FromValueOpt::from_value(v),
-                    "title" => b.title = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TerminalReaderReaderResourceCustomText {
+                description,
+                skip_button,
+                submit_button,
+                title,
+            });
+            Ok(())
         }
     }
 };

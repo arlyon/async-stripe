@@ -29,16 +29,14 @@ paypal: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsPaypalAmou
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,78 +55,37 @@ const _: () = {
     fn map(&mut self) -> Result<Box<dyn Map + '_>> {
         Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptionsBuilder::deser_default(),
-        }))
-    }
-}
-
-    impl MapBuilder for PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptionsBuilder {
-    type Out = PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptions;
-    fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-        Ok(match k {
-            "card" => Deserialize::begin(&mut self.card),
-            "card_present" => Deserialize::begin(&mut self.card_present),
-            "klarna" => Deserialize::begin(&mut self.klarna),
-            "paypal" => Deserialize::begin(&mut self.paypal),
-            _ => <dyn Visitor>::ignore(),
-        })
-    }
-
-    fn deser_default() -> Self {
-        Self { card: Deserialize::default(),
+            builder: PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptionsBuilder { card: Deserialize::default(),
 card_present: Deserialize::default(),
 klarna: Deserialize::default(),
 paypal: Deserialize::default(),
- }
-    }
-
-    fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(card),
-Some(card_present),
-Some(klarna),
-Some(paypal),
-) = (self.card.take(),
-self.card_present.take(),
-self.klarna.take(),
-self.paypal.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { card,card_present,klarna,paypal })
+ },
+        }))
     }
 }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "card" => Deserialize::begin(&mut self.builder.card),
+                "card_present" => Deserialize::begin(&mut self.builder.card_present),
+                "klarna" => Deserialize::begin(&mut self.builder.klarna),
+                "paypal" => Deserialize::begin(&mut self.builder.paypal),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            let (Some(card), Some(card_present), Some(klarna), Some(paypal)) = (
+                self.builder.card.take(),
+                self.builder.card_present.take(),
+                self.builder.klarna.take(),
+                self.builder.paypal.take(),
+            ) else {
+                return Ok(());
+            };
+            *self.out = Some(PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptions { card,card_present,klarna,paypal });
             Ok(())
         }
     }
-
-    impl ObjectDeser for PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptions {
-    type Builder = PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptionsBuilder;
-}
-
-    impl FromValueOpt for PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptions {
-    fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        let mut b = PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptionsBuilder::deser_default();
-        for (k, v) in obj {
-            match k.as_str() {
-            "card" => b.card = FromValueOpt::from_value(v),
-            "card_present" => b.card_present = FromValueOpt::from_value(v),
-            "klarna" => b.klarna = FromValueOpt::from_value(v),
-            "paypal" => b.paypal = FromValueOpt::from_value(v),
-                _ => {}
-            }
-        }
-        b.take_out()
-    }
-}
 };

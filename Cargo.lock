@@ -486,6 +486,7 @@ version = "1.0.0-rc.5"
 dependencies = [
  "async-std",
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "bytes 1.11.1",
  "http-body-util",
@@ -495,7 +496,6 @@ dependencies = [
  "hyper-rustls",
  "hyper-tls",
  "hyper-util",
- "miniserde",
  "serde",
  "serde_json",
  "surf",
@@ -509,9 +509,9 @@ name = "async-stripe-billing"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -523,9 +523,9 @@ name = "async-stripe-checkout"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -536,11 +536,11 @@ dependencies = [
 name = "async-stripe-client-core"
 version = "1.0.0-rc.5"
 dependencies = [
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
  "bytes 1.11.1",
  "futures-util",
- "miniserde",
  "serde",
  "serde_json",
  "serde_qs 1.1.1",
@@ -554,9 +554,9 @@ name = "async-stripe-connect"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -568,9 +568,9 @@ name = "async-stripe-core"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -582,9 +582,9 @@ name = "async-stripe-fraud"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -596,9 +596,9 @@ name = "async-stripe-issuing"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -606,13 +606,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-stripe-miniserde"
+version = "0.1.45"
+dependencies = [
+ "indoc",
+ "itoa",
+ "zmij",
+]
+
+[[package]]
 name = "async-stripe-misc"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -648,9 +657,9 @@ name = "async-stripe-payment"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -662,9 +671,9 @@ name = "async-stripe-product"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -676,9 +685,9 @@ name = "async-stripe-reserve"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -689,8 +698,8 @@ dependencies = [
 name = "async-stripe-shared"
 version = "1.0.0-rc.5"
 dependencies = [
+ "async-stripe-miniserde",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -702,9 +711,9 @@ name = "async-stripe-terminal"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -723,6 +732,7 @@ dependencies = [
  "async-stripe-core",
  "async-stripe-fraud",
  "async-stripe-issuing",
+ "async-stripe-miniserde",
  "async-stripe-misc",
  "async-stripe-payment",
  "async-stripe-product",
@@ -734,7 +744,6 @@ dependencies = [
  "chrono",
  "futures-util",
  "httpmock",
- "miniserde",
  "serde",
  "serde_json",
  "serde_qs 1.1.1",
@@ -747,9 +756,9 @@ name = "async-stripe-treasury"
 version = "1.0.0-rc.5"
 dependencies = [
  "async-stripe-client-core",
+ "async-stripe-miniserde",
  "async-stripe-shared",
  "async-stripe-types",
- "miniserde",
  "serde",
  "serde_json",
  "smol_str",
@@ -760,7 +769,7 @@ dependencies = [
 name = "async-stripe-types"
 version = "1.0.0-rc.5"
 dependencies = [
- "miniserde",
+ "async-stripe-miniserde",
  "serde",
  "serde_json",
  "serde_qs 1.1.1",
@@ -775,6 +784,7 @@ dependencies = [
  "async-stripe-checkout",
  "async-stripe-core",
  "async-stripe-fraud",
+ "async-stripe-miniserde",
  "async-stripe-misc",
  "async-stripe-payment",
  "async-stripe-reserve",
@@ -785,7 +795,6 @@ dependencies = [
  "chrono",
  "hex",
  "hmac 0.12.1",
- "miniserde",
  "serde",
  "serde_json",
  "serde_path_to_error",
@@ -958,29 +967,29 @@ dependencies = [
  "async-stripe-core",
  "async-stripe-fraud",
  "async-stripe-issuing",
+ "async-stripe-miniserde",
  "async-stripe-misc",
  "async-stripe-payment",
  "async-stripe-product",
  "async-stripe-shared",
  "async-stripe-terminal",
  "async-stripe-treasury",
- "miniserde",
 ]
 
 [[package]]
 name = "bench-minimal"
 version = "0.0.0"
 dependencies = [
+ "async-stripe-miniserde",
  "async-stripe-shared",
- "miniserde",
 ]
 
 [[package]]
 name = "bench-poly"
 version = "0.0.0"
 dependencies = [
+ "async-stripe-miniserde",
  "async-stripe-shared",
- "miniserde",
 ]
 
 [[package]]
@@ -2358,6 +2367,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "indoc"
+version = "2.0.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "79cf5c93f93228cf8efb3ba362535fb11199ac548a09ce117c9b1adc3030d706"
+dependencies = [
+ "rustversion",
+]
+
+[[package]]
 name = "infer"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2611,28 +2629,6 @@ checksum = "f7c44f8e672c00fe5308fa235f821cb4198414e1c77935c1ab6948d3fd78550e"
 dependencies = [
  "mime",
  "unicase",
-]
-
-[[package]]
-name = "mini-internal"
-version = "0.1.45"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2a8df435db5df1dd82a74f77e3c3addf6ab7665079c31e222a64f34f7475d87e"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.117",
-]
-
-[[package]]
-name = "miniserde"
-version = "0.1.45"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c48e83ec09ab8a51d4e6be46608bf2a1293a79e2f7ea60246a2ce50eaef44ba"
-dependencies = [
- "itoa",
- "mini-internal",
- "zmij",
 ]
 
 [[package]]

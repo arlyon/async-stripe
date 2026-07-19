@@ -48,16 +48,14 @@ pub struct CustomerSessionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -76,39 +74,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CustomerSessionBuilder::deser_default(),
+                builder: CustomerSessionBuilder {
+                    client_secret: Deserialize::default(),
+                    components: Deserialize::default(),
+                    created: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CustomerSessionBuilder {
-        type Out = CustomerSession;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "client_secret" => Deserialize::begin(&mut self.client_secret),
-                "components" => Deserialize::begin(&mut self.components),
-                "created" => Deserialize::begin(&mut self.created),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "livemode" => Deserialize::begin(&mut self.livemode),
+                "client_secret" => Deserialize::begin(&mut self.builder.client_secret),
+                "components" => Deserialize::begin(&mut self.builder.components),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                client_secret: Deserialize::default(),
-                components: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                livemode: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(client_secret),
                 Some(components),
@@ -118,18 +111,18 @@ const _: () = {
                 Some(expires_at),
                 Some(livemode),
             ) = (
-                self.client_secret.take(),
-                self.components.take(),
-                self.created,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.expires_at,
-                self.livemode,
+                self.builder.client_secret.take(),
+                self.builder.components.take(),
+                self.builder.created,
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.expires_at,
+                self.builder.livemode,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(CustomerSession {
                 client_secret,
                 components,
                 created,
@@ -137,44 +130,8 @@ const _: () = {
                 customer_account,
                 expires_at,
                 livemode,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CustomerSession {
-        type Builder = CustomerSessionBuilder;
-    }
-
-    impl FromValueOpt for CustomerSession {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerSessionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "components" => b.components = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

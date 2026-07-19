@@ -8,7 +8,7 @@ use hyper::http::{HeaderName, HeaderValue};
 use hyper::{Request, StatusCode};
 use hyper_util::client::legacy::Client as HyperClient;
 use hyper_util::rt::TokioExecutor;
-use miniserde::json::from_str;
+use stripe_miniserde::json::from_str;
 use stripe_client_core::{CustomizedStripeRequest, RequestBuilder, StripeMethod};
 use stripe_client_core::{Outcome, RequestStrategy};
 use stripe_shared::AccountId;

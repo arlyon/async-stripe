@@ -55,16 +55,14 @@ pub struct IssuingPersonalizationDesignBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -83,49 +81,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingPersonalizationDesignBuilder::deser_default(),
+                builder: IssuingPersonalizationDesignBuilder {
+                    card_logo: Deserialize::default(),
+                    carrier_text: Deserialize::default(),
+                    created: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    lookup_key: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    name: Deserialize::default(),
+                    physical_bundle: Deserialize::default(),
+                    preferences: Deserialize::default(),
+                    rejection_reasons: Deserialize::default(),
+                    status: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingPersonalizationDesignBuilder {
-        type Out = IssuingPersonalizationDesign;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card_logo" => Deserialize::begin(&mut self.card_logo),
-                "carrier_text" => Deserialize::begin(&mut self.carrier_text),
-                "created" => Deserialize::begin(&mut self.created),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "lookup_key" => Deserialize::begin(&mut self.lookup_key),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "name" => Deserialize::begin(&mut self.name),
-                "physical_bundle" => Deserialize::begin(&mut self.physical_bundle),
-                "preferences" => Deserialize::begin(&mut self.preferences),
-                "rejection_reasons" => Deserialize::begin(&mut self.rejection_reasons),
-                "status" => Deserialize::begin(&mut self.status),
+                "card_logo" => Deserialize::begin(&mut self.builder.card_logo),
+                "carrier_text" => Deserialize::begin(&mut self.builder.carrier_text),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "lookup_key" => Deserialize::begin(&mut self.builder.lookup_key),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "physical_bundle" => Deserialize::begin(&mut self.builder.physical_bundle),
+                "preferences" => Deserialize::begin(&mut self.builder.preferences),
+                "rejection_reasons" => Deserialize::begin(&mut self.builder.rejection_reasons),
+                "status" => Deserialize::begin(&mut self.builder.status),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                card_logo: Deserialize::default(),
-                carrier_text: Deserialize::default(),
-                created: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                lookup_key: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
-                physical_bundle: Deserialize::default(),
-                preferences: Deserialize::default(),
-                rejection_reasons: Deserialize::default(),
-                status: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(card_logo),
                 Some(carrier_text),
@@ -140,23 +133,23 @@ const _: () = {
                 Some(rejection_reasons),
                 Some(status),
             ) = (
-                self.card_logo.take(),
-                self.carrier_text.take(),
-                self.created,
-                self.id.take(),
-                self.livemode,
-                self.lookup_key.take(),
-                self.metadata.take(),
-                self.name.take(),
-                self.physical_bundle.take(),
-                self.preferences,
-                self.rejection_reasons.take(),
-                self.status.take(),
+                self.builder.card_logo.take(),
+                self.builder.carrier_text.take(),
+                self.builder.created,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.lookup_key.take(),
+                self.builder.metadata.take(),
+                self.builder.name.take(),
+                self.builder.physical_bundle.take(),
+                self.builder.preferences,
+                self.builder.rejection_reasons.take(),
+                self.builder.status.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingPersonalizationDesign {
                 card_logo,
                 carrier_text,
                 created,
@@ -169,49 +162,8 @@ const _: () = {
                 preferences,
                 rejection_reasons,
                 status,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingPersonalizationDesign {
-        type Builder = IssuingPersonalizationDesignBuilder;
-    }
-
-    impl FromValueOpt for IssuingPersonalizationDesign {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingPersonalizationDesignBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_logo" => b.card_logo = FromValueOpt::from_value(v),
-                    "carrier_text" => b.carrier_text = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "physical_bundle" => b.physical_bundle = FromValueOpt::from_value(v),
-                    "preferences" => b.preferences = FromValueOpt::from_value(v),
-                    "rejection_reasons" => b.rejection_reasons = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -317,21 +269,19 @@ impl serde::Serialize for IssuingPersonalizationDesignStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingPersonalizationDesignStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingPersonalizationDesignStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingPersonalizationDesignStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingPersonalizationDesignStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingPersonalizationDesignStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingPersonalizationDesignStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingPersonalizationDesignStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

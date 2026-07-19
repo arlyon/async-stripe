@@ -35,16 +35,14 @@ pub struct ClimateSupplierBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -63,37 +61,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ClimateSupplierBuilder::deser_default(),
+                builder: ClimateSupplierBuilder {
+                    id: Deserialize::default(),
+                    info_url: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    locations: Deserialize::default(),
+                    name: Deserialize::default(),
+                    removal_pathway: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ClimateSupplierBuilder {
-        type Out = ClimateSupplier;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "id" => Deserialize::begin(&mut self.id),
-                "info_url" => Deserialize::begin(&mut self.info_url),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "locations" => Deserialize::begin(&mut self.locations),
-                "name" => Deserialize::begin(&mut self.name),
-                "removal_pathway" => Deserialize::begin(&mut self.removal_pathway),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "info_url" => Deserialize::begin(&mut self.builder.info_url),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "locations" => Deserialize::begin(&mut self.builder.locations),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "removal_pathway" => Deserialize::begin(&mut self.builder.removal_pathway),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                id: Deserialize::default(),
-                info_url: Deserialize::default(),
-                livemode: Deserialize::default(),
-                locations: Deserialize::default(),
-                name: Deserialize::default(),
-                removal_pathway: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(id),
                 Some(info_url),
@@ -102,53 +95,19 @@ const _: () = {
                 Some(name),
                 Some(removal_pathway),
             ) = (
-                self.id.take(),
-                self.info_url.take(),
-                self.livemode,
-                self.locations.take(),
-                self.name.take(),
-                self.removal_pathway.take(),
+                self.builder.id.take(),
+                self.builder.info_url.take(),
+                self.builder.livemode,
+                self.builder.locations.take(),
+                self.builder.name.take(),
+                self.builder.removal_pathway.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { id, info_url, livemode, locations, name, removal_pathway })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out =
+                Some(ClimateSupplier { id, info_url, livemode, locations, name, removal_pathway });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ClimateSupplier {
-        type Builder = ClimateSupplierBuilder;
-    }
-
-    impl FromValueOpt for ClimateSupplier {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ClimateSupplierBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "info_url" => b.info_url = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "locations" => b.locations = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "removal_pathway" => b.removal_pathway = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -239,21 +198,19 @@ impl serde::Serialize for ClimateSupplierRemovalPathway {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ClimateSupplierRemovalPathway {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ClimateSupplierRemovalPathway {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ClimateSupplierRemovalPathway> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ClimateSupplierRemovalPathway> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ClimateSupplierRemovalPathway::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ClimateSupplierRemovalPathway);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ClimateSupplierRemovalPathway {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

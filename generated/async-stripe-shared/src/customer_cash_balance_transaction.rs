@@ -72,16 +72,14 @@ unapplied_from_payment: Option<Option<stripe_shared::CustomerBalanceResourceCash
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -100,55 +98,58 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CustomerCashBalanceTransactionBuilder::deser_default(),
+                builder: CustomerCashBalanceTransactionBuilder {
+                    adjusted_for_overdraft: Deserialize::default(),
+                    applied_to_payment: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    ending_balance: Deserialize::default(),
+                    funded: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    net_amount: Deserialize::default(),
+                    refunded_from_payment: Deserialize::default(),
+                    transferred_to_balance: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    unapplied_from_payment: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CustomerCashBalanceTransactionBuilder {
-        type Out = CustomerCashBalanceTransaction;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "adjusted_for_overdraft" => Deserialize::begin(&mut self.adjusted_for_overdraft),
-                "applied_to_payment" => Deserialize::begin(&mut self.applied_to_payment),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "ending_balance" => Deserialize::begin(&mut self.ending_balance),
-                "funded" => Deserialize::begin(&mut self.funded),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "net_amount" => Deserialize::begin(&mut self.net_amount),
-                "refunded_from_payment" => Deserialize::begin(&mut self.refunded_from_payment),
-                "transferred_to_balance" => Deserialize::begin(&mut self.transferred_to_balance),
-                "type" => Deserialize::begin(&mut self.type_),
-                "unapplied_from_payment" => Deserialize::begin(&mut self.unapplied_from_payment),
+                "adjusted_for_overdraft" => {
+                    Deserialize::begin(&mut self.builder.adjusted_for_overdraft)
+                }
+                "applied_to_payment" => Deserialize::begin(&mut self.builder.applied_to_payment),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "ending_balance" => Deserialize::begin(&mut self.builder.ending_balance),
+                "funded" => Deserialize::begin(&mut self.builder.funded),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "net_amount" => Deserialize::begin(&mut self.builder.net_amount),
+                "refunded_from_payment" => {
+                    Deserialize::begin(&mut self.builder.refunded_from_payment)
+                }
+                "transferred_to_balance" => {
+                    Deserialize::begin(&mut self.builder.transferred_to_balance)
+                }
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "unapplied_from_payment" => {
+                    Deserialize::begin(&mut self.builder.unapplied_from_payment)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                adjusted_for_overdraft: Deserialize::default(),
-                applied_to_payment: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                ending_balance: Deserialize::default(),
-                funded: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                net_amount: Deserialize::default(),
-                refunded_from_payment: Deserialize::default(),
-                transferred_to_balance: Deserialize::default(),
-                type_: Deserialize::default(),
-                unapplied_from_payment: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(adjusted_for_overdraft),
                 Some(applied_to_payment),
@@ -166,26 +167,26 @@ const _: () = {
                 Some(type_),
                 Some(unapplied_from_payment),
             ) = (
-                self.adjusted_for_overdraft.take(),
-                self.applied_to_payment.take(),
-                self.created,
-                self.currency.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.ending_balance,
-                self.funded.take(),
-                self.id.take(),
-                self.livemode,
-                self.net_amount,
-                self.refunded_from_payment.take(),
-                self.transferred_to_balance.take(),
-                self.type_.take(),
-                self.unapplied_from_payment.take(),
+                self.builder.adjusted_for_overdraft.take(),
+                self.builder.applied_to_payment.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.ending_balance,
+                self.builder.funded.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.net_amount,
+                self.builder.refunded_from_payment.take(),
+                self.builder.transferred_to_balance.take(),
+                self.builder.type_.take(),
+                self.builder.unapplied_from_payment.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(CustomerCashBalanceTransaction {
                 adjusted_for_overdraft,
                 applied_to_payment,
                 created,
@@ -201,60 +202,8 @@ const _: () = {
                 transferred_to_balance,
                 type_,
                 unapplied_from_payment,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CustomerCashBalanceTransaction {
-        type Builder = CustomerCashBalanceTransactionBuilder;
-    }
-
-    impl FromValueOpt for CustomerCashBalanceTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerCashBalanceTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "adjusted_for_overdraft" => {
-                        b.adjusted_for_overdraft = FromValueOpt::from_value(v)
-                    }
-                    "applied_to_payment" => b.applied_to_payment = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "ending_balance" => b.ending_balance = FromValueOpt::from_value(v),
-                    "funded" => b.funded = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "net_amount" => b.net_amount = FromValueOpt::from_value(v),
-                    "refunded_from_payment" => {
-                        b.refunded_from_payment = FromValueOpt::from_value(v)
-                    }
-                    "transferred_to_balance" => {
-                        b.transferred_to_balance = FromValueOpt::from_value(v)
-                    }
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "unapplied_from_payment" => {
-                        b.unapplied_from_payment = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -371,21 +320,19 @@ impl serde::Serialize for CustomerCashBalanceTransactionType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CustomerCashBalanceTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CustomerCashBalanceTransactionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CustomerCashBalanceTransactionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CustomerCashBalanceTransactionType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CustomerCashBalanceTransactionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CustomerCashBalanceTransactionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

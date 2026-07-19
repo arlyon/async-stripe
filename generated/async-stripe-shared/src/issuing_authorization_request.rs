@@ -64,16 +64,14 @@ pub struct IssuingAuthorizationRequestBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -92,49 +90,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingAuthorizationRequestBuilder::deser_default(),
+                builder: IssuingAuthorizationRequestBuilder {
+                    amount: Deserialize::default(),
+                    amount_details: Deserialize::default(),
+                    approved: Deserialize::default(),
+                    authorization_code: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    merchant_amount: Deserialize::default(),
+                    merchant_currency: Deserialize::default(),
+                    network_risk_score: Deserialize::default(),
+                    reason: Deserialize::default(),
+                    reason_message: Deserialize::default(),
+                    requested_at: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingAuthorizationRequestBuilder {
-        type Out = IssuingAuthorizationRequest;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_details" => Deserialize::begin(&mut self.amount_details),
-                "approved" => Deserialize::begin(&mut self.approved),
-                "authorization_code" => Deserialize::begin(&mut self.authorization_code),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "merchant_amount" => Deserialize::begin(&mut self.merchant_amount),
-                "merchant_currency" => Deserialize::begin(&mut self.merchant_currency),
-                "network_risk_score" => Deserialize::begin(&mut self.network_risk_score),
-                "reason" => Deserialize::begin(&mut self.reason),
-                "reason_message" => Deserialize::begin(&mut self.reason_message),
-                "requested_at" => Deserialize::begin(&mut self.requested_at),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_details" => Deserialize::begin(&mut self.builder.amount_details),
+                "approved" => Deserialize::begin(&mut self.builder.approved),
+                "authorization_code" => Deserialize::begin(&mut self.builder.authorization_code),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "merchant_amount" => Deserialize::begin(&mut self.builder.merchant_amount),
+                "merchant_currency" => Deserialize::begin(&mut self.builder.merchant_currency),
+                "network_risk_score" => Deserialize::begin(&mut self.builder.network_risk_score),
+                "reason" => Deserialize::begin(&mut self.builder.reason),
+                "reason_message" => Deserialize::begin(&mut self.builder.reason_message),
+                "requested_at" => Deserialize::begin(&mut self.builder.requested_at),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                amount_details: Deserialize::default(),
-                approved: Deserialize::default(),
-                authorization_code: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                merchant_amount: Deserialize::default(),
-                merchant_currency: Deserialize::default(),
-                network_risk_score: Deserialize::default(),
-                reason: Deserialize::default(),
-                reason_message: Deserialize::default(),
-                requested_at: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(amount_details),
@@ -149,23 +142,23 @@ const _: () = {
                 Some(reason_message),
                 Some(requested_at),
             ) = (
-                self.amount,
-                self.amount_details,
-                self.approved,
-                self.authorization_code.take(),
-                self.created,
-                self.currency.take(),
-                self.merchant_amount,
-                self.merchant_currency.take(),
-                self.network_risk_score,
-                self.reason.take(),
-                self.reason_message.take(),
-                self.requested_at,
+                self.builder.amount,
+                self.builder.amount_details,
+                self.builder.approved,
+                self.builder.authorization_code.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.merchant_amount,
+                self.builder.merchant_currency.take(),
+                self.builder.network_risk_score,
+                self.builder.reason.take(),
+                self.builder.reason_message.take(),
+                self.builder.requested_at,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingAuthorizationRequest {
                 amount,
                 amount_details,
                 approved,
@@ -178,49 +171,8 @@ const _: () = {
                 reason,
                 reason_message,
                 requested_at,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingAuthorizationRequest {
-        type Builder = IssuingAuthorizationRequestBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationRequest {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationRequestBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_details" => b.amount_details = FromValueOpt::from_value(v),
-                    "approved" => b.approved = FromValueOpt::from_value(v),
-                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "merchant_amount" => b.merchant_amount = FromValueOpt::from_value(v),
-                    "merchant_currency" => b.merchant_currency = FromValueOpt::from_value(v),
-                    "network_risk_score" => b.network_risk_score = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "reason_message" => b.reason_message = FromValueOpt::from_value(v),
-                    "requested_at" => b.requested_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -343,21 +295,19 @@ impl serde::Serialize for IssuingAuthorizationRequestReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingAuthorizationRequestReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingAuthorizationRequestReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationRequestReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingAuthorizationRequestReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingAuthorizationRequestReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationRequestReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationRequestReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

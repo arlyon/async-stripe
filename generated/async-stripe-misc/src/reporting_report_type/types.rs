@@ -53,16 +53,14 @@ pub struct ReportingReportTypeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -81,41 +79,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ReportingReportTypeBuilder::deser_default(),
+                builder: ReportingReportTypeBuilder {
+                    data_available_end: Deserialize::default(),
+                    data_available_start: Deserialize::default(),
+                    default_columns: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    name: Deserialize::default(),
+                    updated: Deserialize::default(),
+                    version: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ReportingReportTypeBuilder {
-        type Out = ReportingReportType;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "data_available_end" => Deserialize::begin(&mut self.data_available_end),
-                "data_available_start" => Deserialize::begin(&mut self.data_available_start),
-                "default_columns" => Deserialize::begin(&mut self.default_columns),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "name" => Deserialize::begin(&mut self.name),
-                "updated" => Deserialize::begin(&mut self.updated),
-                "version" => Deserialize::begin(&mut self.version),
+                "data_available_end" => Deserialize::begin(&mut self.builder.data_available_end),
+                "data_available_start" => {
+                    Deserialize::begin(&mut self.builder.data_available_start)
+                }
+                "default_columns" => Deserialize::begin(&mut self.builder.default_columns),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "updated" => Deserialize::begin(&mut self.builder.updated),
+                "version" => Deserialize::begin(&mut self.builder.version),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                data_available_end: Deserialize::default(),
-                data_available_start: Deserialize::default(),
-                default_columns: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                name: Deserialize::default(),
-                updated: Deserialize::default(),
-                version: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(data_available_end),
                 Some(data_available_start),
@@ -126,19 +121,19 @@ const _: () = {
                 Some(updated),
                 Some(version),
             ) = (
-                self.data_available_end,
-                self.data_available_start,
-                self.default_columns.take(),
-                self.id.take(),
-                self.livemode,
-                self.name.take(),
-                self.updated,
-                self.version,
+                self.builder.data_available_end,
+                self.builder.data_available_start,
+                self.builder.default_columns.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.name.take(),
+                self.builder.updated,
+                self.builder.version,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ReportingReportType {
                 data_available_end,
                 data_available_start,
                 default_columns,
@@ -147,45 +142,8 @@ const _: () = {
                 name,
                 updated,
                 version,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ReportingReportType {
-        type Builder = ReportingReportTypeBuilder;
-    }
-
-    impl FromValueOpt for ReportingReportType {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReportingReportTypeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "data_available_end" => b.data_available_end = FromValueOpt::from_value(v),
-                    "data_available_start" => b.data_available_start = FromValueOpt::from_value(v),
-                    "default_columns" => b.default_columns = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "updated" => b.updated = FromValueOpt::from_value(v),
-                    "version" => b.version = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

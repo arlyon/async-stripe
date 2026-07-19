@@ -31,16 +31,14 @@ pub struct PaymentsPrimitivesPaymentRecordsResourceCustomerDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -59,75 +57,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder:
-                    PaymentsPrimitivesPaymentRecordsResourceCustomerDetailsBuilder::deser_default(),
+                builder: PaymentsPrimitivesPaymentRecordsResourceCustomerDetailsBuilder {
+                    customer: Deserialize::default(),
+                    email: Deserialize::default(),
+                    name: Deserialize::default(),
+                    phone: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentsPrimitivesPaymentRecordsResourceCustomerDetailsBuilder {
-        type Out = PaymentsPrimitivesPaymentRecordsResourceCustomerDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "customer" => Deserialize::begin(&mut self.customer),
-                "email" => Deserialize::begin(&mut self.email),
-                "name" => Deserialize::begin(&mut self.name),
-                "phone" => Deserialize::begin(&mut self.phone),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                customer: Deserialize::default(),
-                email: Deserialize::default(),
-                name: Deserialize::default(),
-                phone: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer), Some(email), Some(name), Some(phone)) =
-                (self.customer.take(), self.email.take(), self.name.take(), self.phone.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { customer, email, name, phone })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentsPrimitivesPaymentRecordsResourceCustomerDetails {
-        type Builder = PaymentsPrimitivesPaymentRecordsResourceCustomerDetailsBuilder;
-    }
-
-    impl FromValueOpt for PaymentsPrimitivesPaymentRecordsResourceCustomerDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(customer), Some(email), Some(name), Some(phone)) = (
+                self.builder.customer.take(),
+                self.builder.email.take(),
+                self.builder.name.take(),
+                self.builder.phone.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b =
-                PaymentsPrimitivesPaymentRecordsResourceCustomerDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentsPrimitivesPaymentRecordsResourceCustomerDetails {
+                customer,
+                email,
+                name,
+                phone,
+            });
+            Ok(())
         }
     }
 };

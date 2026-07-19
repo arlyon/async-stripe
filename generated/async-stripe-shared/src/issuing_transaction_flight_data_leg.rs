@@ -35,16 +35,14 @@ pub struct IssuingTransactionFlightDataLegBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -63,37 +61,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingTransactionFlightDataLegBuilder::deser_default(),
+                builder: IssuingTransactionFlightDataLegBuilder {
+                    arrival_airport_code: Deserialize::default(),
+                    carrier: Deserialize::default(),
+                    departure_airport_code: Deserialize::default(),
+                    flight_number: Deserialize::default(),
+                    service_class: Deserialize::default(),
+                    stopover_allowed: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingTransactionFlightDataLegBuilder {
-        type Out = IssuingTransactionFlightDataLeg;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "arrival_airport_code" => Deserialize::begin(&mut self.arrival_airport_code),
-                "carrier" => Deserialize::begin(&mut self.carrier),
-                "departure_airport_code" => Deserialize::begin(&mut self.departure_airport_code),
-                "flight_number" => Deserialize::begin(&mut self.flight_number),
-                "service_class" => Deserialize::begin(&mut self.service_class),
-                "stopover_allowed" => Deserialize::begin(&mut self.stopover_allowed),
+                "arrival_airport_code" => {
+                    Deserialize::begin(&mut self.builder.arrival_airport_code)
+                }
+                "carrier" => Deserialize::begin(&mut self.builder.carrier),
+                "departure_airport_code" => {
+                    Deserialize::begin(&mut self.builder.departure_airport_code)
+                }
+                "flight_number" => Deserialize::begin(&mut self.builder.flight_number),
+                "service_class" => Deserialize::begin(&mut self.builder.service_class),
+                "stopover_allowed" => Deserialize::begin(&mut self.builder.stopover_allowed),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                arrival_airport_code: Deserialize::default(),
-                carrier: Deserialize::default(),
-                departure_airport_code: Deserialize::default(),
-                flight_number: Deserialize::default(),
-                service_class: Deserialize::default(),
-                stopover_allowed: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(arrival_airport_code),
                 Some(carrier),
@@ -102,62 +99,25 @@ const _: () = {
                 Some(service_class),
                 Some(stopover_allowed),
             ) = (
-                self.arrival_airport_code.take(),
-                self.carrier.take(),
-                self.departure_airport_code.take(),
-                self.flight_number.take(),
-                self.service_class.take(),
-                self.stopover_allowed,
+                self.builder.arrival_airport_code.take(),
+                self.builder.carrier.take(),
+                self.builder.departure_airport_code.take(),
+                self.builder.flight_number.take(),
+                self.builder.service_class.take(),
+                self.builder.stopover_allowed,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IssuingTransactionFlightDataLeg {
                 arrival_airport_code,
                 carrier,
                 departure_airport_code,
                 flight_number,
                 service_class,
                 stopover_allowed,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingTransactionFlightDataLeg {
-        type Builder = IssuingTransactionFlightDataLegBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionFlightDataLeg {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionFlightDataLegBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "arrival_airport_code" => b.arrival_airport_code = FromValueOpt::from_value(v),
-                    "carrier" => b.carrier = FromValueOpt::from_value(v),
-                    "departure_airport_code" => {
-                        b.departure_airport_code = FromValueOpt::from_value(v)
-                    }
-                    "flight_number" => b.flight_number = FromValueOpt::from_value(v),
-                    "service_class" => b.service_class = FromValueOpt::from_value(v),
-                    "stopover_allowed" => b.stopover_allowed = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

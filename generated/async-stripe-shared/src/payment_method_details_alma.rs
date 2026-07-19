@@ -22,16 +22,14 @@ pub struct PaymentMethodDetailsAlmaBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -50,64 +48,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsAlmaBuilder::deser_default(),
+                builder: PaymentMethodDetailsAlmaBuilder {
+                    installments: Deserialize::default(),
+                    transaction_id: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDetailsAlmaBuilder {
-        type Out = PaymentMethodDetailsAlma;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "installments" => Deserialize::begin(&mut self.installments),
-                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { installments: Deserialize::default(), transaction_id: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(installments), Some(transaction_id)) =
-                (self.installments, self.transaction_id.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { installments, transaction_id })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "installments" => Deserialize::begin(&mut self.builder.installments),
+                "transaction_id" => Deserialize::begin(&mut self.builder.transaction_id),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsAlma {
-        type Builder = PaymentMethodDetailsAlmaBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsAlma {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(installments), Some(transaction_id)) =
+                (self.builder.installments, self.builder.transaction_id.take())
+            else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDetailsAlmaBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "installments" => b.installments = FromValueOpt::from_value(v),
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodDetailsAlma { installments, transaction_id });
+            Ok(())
         }
     }
 };

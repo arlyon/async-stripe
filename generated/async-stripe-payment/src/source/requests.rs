@@ -84,74 +84,36 @@ pub enum DetachSourceReturned {
     DeletedPaymentSource(stripe_shared::DeletedPaymentSource),
 }
 
-#[derive(Default)]
-pub struct DetachSourceReturnedBuilder {
-    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
-}
-
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::MapBuilder;
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_miniserde::de::Visitor;
+    use stripe_miniserde::{Deserialize, Result, make_place};
+    use stripe_miniserde::json::peek_deleted_flag;
 
     use super::*;
 
     make_place!(Place);
 
-    struct Builder<'a> {
-        out: &'a mut Option<DetachSourceReturned>,
-        builder: DetachSourceReturnedBuilder,
-    }
-
     impl Deserialize for DetachSourceReturned {
+        const WANTS_RAW: bool = true;
+
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     impl Visitor for Place<DetachSourceReturned> {
-        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+        fn wants_raw(&self) -> bool {
+            true
         }
 
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+        fn raw(&mut self, bytes: &str) -> Result<()> {
+            self.out = Some(if peek_deleted_flag(bytes) {
+                DetachSourceReturned::DeletedPaymentSource(stripe_miniserde::json::from_str(bytes)?)
+            } else {
+                DetachSourceReturned::PaymentSource(stripe_miniserde::json::from_str(bytes)?)
+            });
             Ok(())
         }
-    }
-
-    impl MapBuilder for DetachSourceReturnedBuilder {
-        type Out = DetachSourceReturned;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.inner.key_inner(k)
-        }
-
-        fn deser_default() -> Self {
-            Self::default()
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (deleted, o) = self.inner.finish_inner()?;
-            Some(if deleted {
-                DetachSourceReturned::DeletedPaymentSource(FromValueOpt::from_value(
-                    Value::Object(o),
-                )?)
-            } else {
-                DetachSourceReturned::PaymentSource(FromValueOpt::from_value(Value::Object(o))?)
-            })
-        }
-    }
-
-    impl stripe_types::ObjectDeser for DetachSourceReturned {
-        type Builder = DetachSourceReturnedBuilder;
     }
 };
 

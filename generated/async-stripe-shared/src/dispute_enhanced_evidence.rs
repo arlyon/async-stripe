@@ -23,16 +23,14 @@ pub struct DisputeEnhancedEvidenceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,71 +49,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: DisputeEnhancedEvidenceBuilder::deser_default(),
+                builder: DisputeEnhancedEvidenceBuilder {
+                    visa_compelling_evidence_3: Deserialize::default(),
+                    visa_compliance: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for DisputeEnhancedEvidenceBuilder {
-        type Out = DisputeEnhancedEvidence;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "visa_compelling_evidence_3" => {
-                    Deserialize::begin(&mut self.visa_compelling_evidence_3)
-                }
-                "visa_compliance" => Deserialize::begin(&mut self.visa_compliance),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                visa_compelling_evidence_3: Deserialize::default(),
-                visa_compliance: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(visa_compelling_evidence_3), Some(visa_compliance)) =
-                (self.visa_compelling_evidence_3.take(), self.visa_compliance)
-            else {
-                return None;
-            };
-            Some(Self::Out { visa_compelling_evidence_3, visa_compliance })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "visa_compelling_evidence_3" => {
+                    Deserialize::begin(&mut self.builder.visa_compelling_evidence_3)
+                }
+                "visa_compliance" => Deserialize::begin(&mut self.builder.visa_compliance),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for DisputeEnhancedEvidence {
-        type Builder = DisputeEnhancedEvidenceBuilder;
-    }
-
-    impl FromValueOpt for DisputeEnhancedEvidence {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(visa_compelling_evidence_3), Some(visa_compliance)) =
+                (self.builder.visa_compelling_evidence_3.take(), self.builder.visa_compliance)
+            else {
+                return Ok(());
             };
-            let mut b = DisputeEnhancedEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "visa_compelling_evidence_3" => {
-                        b.visa_compelling_evidence_3 = FromValueOpt::from_value(v)
-                    }
-                    "visa_compliance" => b.visa_compliance = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(DisputeEnhancedEvidence { visa_compelling_evidence_3, visa_compliance });
+            Ok(())
         }
     }
 };

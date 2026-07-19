@@ -1,4 +1,4 @@
-use miniserde::json::from_str;
+use stripe_miniserde::json::from_str;
 use stripe_product::{CurrencyOptionTaxBehavior, Price};
 use stripe_types::Currency;
 

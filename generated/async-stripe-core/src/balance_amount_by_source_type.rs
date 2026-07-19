@@ -26,16 +26,14 @@ pub struct BalanceAmountBySourceTypeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BalanceAmountBySourceTypeBuilder::deser_default(),
+                builder: BalanceAmountBySourceTypeBuilder {
+                    bank_account: Deserialize::default(),
+                    card: Deserialize::default(),
+                    fpx: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BalanceAmountBySourceTypeBuilder {
-        type Out = BalanceAmountBySourceType;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "bank_account" => Deserialize::begin(&mut self.bank_account),
-                "card" => Deserialize::begin(&mut self.card),
-                "fpx" => Deserialize::begin(&mut self.fpx),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                bank_account: Deserialize::default(),
-                card: Deserialize::default(),
-                fpx: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank_account), Some(card), Some(fpx)) =
-                (self.bank_account, self.card, self.fpx)
-            else {
-                return None;
-            };
-            Some(Self::Out { bank_account, card, fpx })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "bank_account" => Deserialize::begin(&mut self.builder.bank_account),
+                "card" => Deserialize::begin(&mut self.builder.card),
+                "fpx" => Deserialize::begin(&mut self.builder.fpx),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BalanceAmountBySourceType {
-        type Builder = BalanceAmountBySourceTypeBuilder;
-    }
-
-    impl FromValueOpt for BalanceAmountBySourceType {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(bank_account), Some(card), Some(fpx)) =
+                (self.builder.bank_account, self.builder.card, self.builder.fpx)
+            else {
+                return Ok(());
             };
-            let mut b = BalanceAmountBySourceTypeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_account" => b.bank_account = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "fpx" => b.fpx = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(BalanceAmountBySourceType { bank_account, card, fpx });
+            Ok(())
         }
     }
 };

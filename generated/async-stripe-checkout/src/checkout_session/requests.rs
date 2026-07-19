@@ -3931,7 +3931,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the Pay By Bank payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub pay_by_bank: Option<miniserde::json::Value>,
+    pub pay_by_bank: Option<stripe_miniserde::json::Value>,
     /// contains details about the PAYCO payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payco: Option<CreateCheckoutSessionPaymentMethodOptionsPayco>,

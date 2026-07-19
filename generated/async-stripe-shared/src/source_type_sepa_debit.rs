@@ -31,16 +31,14 @@ pub struct SourceTypeSepaDebitBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -59,39 +57,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceTypeSepaDebitBuilder::deser_default(),
+                builder: SourceTypeSepaDebitBuilder {
+                    bank_code: Deserialize::default(),
+                    branch_code: Deserialize::default(),
+                    country: Deserialize::default(),
+                    fingerprint: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    mandate_reference: Deserialize::default(),
+                    mandate_url: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SourceTypeSepaDebitBuilder {
-        type Out = SourceTypeSepaDebit;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_code" => Deserialize::begin(&mut self.bank_code),
-                "branch_code" => Deserialize::begin(&mut self.branch_code),
-                "country" => Deserialize::begin(&mut self.country),
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "mandate_reference" => Deserialize::begin(&mut self.mandate_reference),
-                "mandate_url" => Deserialize::begin(&mut self.mandate_url),
+                "bank_code" => Deserialize::begin(&mut self.builder.bank_code),
+                "branch_code" => Deserialize::begin(&mut self.builder.branch_code),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "mandate_reference" => Deserialize::begin(&mut self.builder.mandate_reference),
+                "mandate_url" => Deserialize::begin(&mut self.builder.mandate_url),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bank_code: Deserialize::default(),
-                branch_code: Deserialize::default(),
-                country: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                last4: Deserialize::default(),
-                mandate_reference: Deserialize::default(),
-                mandate_url: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bank_code),
                 Some(branch_code),
@@ -101,18 +94,18 @@ const _: () = {
                 Some(mandate_reference),
                 Some(mandate_url),
             ) = (
-                self.bank_code.take(),
-                self.branch_code.take(),
-                self.country.take(),
-                self.fingerprint.take(),
-                self.last4.take(),
-                self.mandate_reference.take(),
-                self.mandate_url.take(),
+                self.builder.bank_code.take(),
+                self.builder.branch_code.take(),
+                self.builder.country.take(),
+                self.builder.fingerprint.take(),
+                self.builder.last4.take(),
+                self.builder.mandate_reference.take(),
+                self.builder.mandate_url.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SourceTypeSepaDebit {
                 bank_code,
                 branch_code,
                 country,
@@ -120,44 +113,8 @@ const _: () = {
                 last4,
                 mandate_reference,
                 mandate_url,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceTypeSepaDebit {
-        type Builder = SourceTypeSepaDebitBuilder;
-    }
-
-    impl FromValueOpt for SourceTypeSepaDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeSepaDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
-                    "branch_code" => b.branch_code = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "mandate_reference" => b.mandate_reference = FromValueOpt::from_value(v),
-                    "mandate_url" => b.mandate_url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -24,16 +24,14 @@ pub struct CardGeneratedFromPaymentMethodDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,63 +50,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CardGeneratedFromPaymentMethodDetailsBuilder::deser_default(),
+                builder: CardGeneratedFromPaymentMethodDetailsBuilder {
+                    card_present: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for CardGeneratedFromPaymentMethodDetailsBuilder {
-        type Out = CardGeneratedFromPaymentMethodDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "card_present" => Deserialize::begin(&mut self.card_present),
-                "type" => Deserialize::begin(&mut self.type_),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { card_present: Deserialize::default(), type_: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card_present), Some(type_)) = (self.card_present.take(), self.type_.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { card_present, type_ })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "card_present" => Deserialize::begin(&mut self.builder.card_present),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for CardGeneratedFromPaymentMethodDetails {
-        type Builder = CardGeneratedFromPaymentMethodDetailsBuilder;
-    }
-
-    impl FromValueOpt for CardGeneratedFromPaymentMethodDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(card_present), Some(type_)) =
+                (self.builder.card_present.take(), self.builder.type_.take())
+            else {
+                return Ok(());
             };
-            let mut b = CardGeneratedFromPaymentMethodDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_present" => b.card_present = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(CardGeneratedFromPaymentMethodDetails { card_present, type_ });
+            Ok(())
         }
     }
 };

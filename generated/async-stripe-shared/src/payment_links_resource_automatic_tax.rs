@@ -25,16 +25,14 @@ pub struct PaymentLinksResourceAutomaticTaxBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,62 +51,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentLinksResourceAutomaticTaxBuilder::deser_default(),
+                builder: PaymentLinksResourceAutomaticTaxBuilder {
+                    enabled: Deserialize::default(),
+                    liability: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentLinksResourceAutomaticTaxBuilder {
-        type Out = PaymentLinksResourceAutomaticTax;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "enabled" => Deserialize::begin(&mut self.enabled),
-                "liability" => Deserialize::begin(&mut self.liability),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { enabled: Deserialize::default(), liability: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(liability)) = (self.enabled, self.liability.take()) else {
-                return None;
-            };
-            Some(Self::Out { enabled, liability })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "enabled" => Deserialize::begin(&mut self.builder.enabled),
+                "liability" => Deserialize::begin(&mut self.builder.liability),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentLinksResourceAutomaticTax {
-        type Builder = PaymentLinksResourceAutomaticTaxBuilder;
-    }
-
-    impl FromValueOpt for PaymentLinksResourceAutomaticTax {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(enabled), Some(liability)) =
+                (self.builder.enabled, self.builder.liability.take())
+            else {
+                return Ok(());
             };
-            let mut b = PaymentLinksResourceAutomaticTaxBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    "liability" => b.liability = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentLinksResourceAutomaticTax { enabled, liability });
+            Ok(())
         }
     }
 };

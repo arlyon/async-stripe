@@ -26,16 +26,14 @@ pub struct PaymentMethodDetailsPaymentRecordPaynowBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsPaymentRecordPaynowBuilder::deser_default(),
+                builder: PaymentMethodDetailsPaymentRecordPaynowBuilder {
+                    location: Deserialize::default(),
+                    reader: Deserialize::default(),
+                    reference: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDetailsPaymentRecordPaynowBuilder {
-        type Out = PaymentMethodDetailsPaymentRecordPaynow;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "location" => Deserialize::begin(&mut self.location),
-                "reader" => Deserialize::begin(&mut self.reader),
-                "reference" => Deserialize::begin(&mut self.reference),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                location: Deserialize::default(),
-                reader: Deserialize::default(),
-                reference: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(location), Some(reader), Some(reference)) =
-                (self.location.take(), self.reader.take(), self.reference.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { location, reader, reference })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "location" => Deserialize::begin(&mut self.builder.location),
+                "reader" => Deserialize::begin(&mut self.builder.reader),
+                "reference" => Deserialize::begin(&mut self.builder.reference),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsPaymentRecordPaynow {
-        type Builder = PaymentMethodDetailsPaymentRecordPaynowBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsPaymentRecordPaynow {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(location), Some(reader), Some(reference)) = (
+                self.builder.location.take(),
+                self.builder.reader.take(),
+                self.builder.reference.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDetailsPaymentRecordPaynowBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "location" => b.location = FromValueOpt::from_value(v),
-                    "reader" => b.reader = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PaymentMethodDetailsPaymentRecordPaynow { location, reader, reference });
+            Ok(())
         }
     }
 };

@@ -38,16 +38,14 @@ pub struct SubscriptionsResourcePendingUpdateBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -66,35 +64,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SubscriptionsResourcePendingUpdateBuilder::deser_default(),
+                builder: SubscriptionsResourcePendingUpdateBuilder {
+                    billing_cycle_anchor: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    subscription_items: Deserialize::default(),
+                    trial_end: Deserialize::default(),
+                    trial_from_plan: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SubscriptionsResourcePendingUpdateBuilder {
-        type Out = SubscriptionsResourcePendingUpdate;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "subscription_items" => Deserialize::begin(&mut self.subscription_items),
-                "trial_end" => Deserialize::begin(&mut self.trial_end),
-                "trial_from_plan" => Deserialize::begin(&mut self.trial_from_plan),
+                "billing_cycle_anchor" => {
+                    Deserialize::begin(&mut self.builder.billing_cycle_anchor)
+                }
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "subscription_items" => Deserialize::begin(&mut self.builder.subscription_items),
+                "trial_end" => Deserialize::begin(&mut self.builder.trial_end),
+                "trial_from_plan" => Deserialize::begin(&mut self.builder.trial_from_plan),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                billing_cycle_anchor: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                subscription_items: Deserialize::default(),
-                trial_end: Deserialize::default(),
-                trial_from_plan: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(billing_cycle_anchor),
                 Some(expires_at),
@@ -102,57 +97,23 @@ const _: () = {
                 Some(trial_end),
                 Some(trial_from_plan),
             ) = (
-                self.billing_cycle_anchor,
-                self.expires_at,
-                self.subscription_items.take(),
-                self.trial_end,
-                self.trial_from_plan,
+                self.builder.billing_cycle_anchor,
+                self.builder.expires_at,
+                self.builder.subscription_items.take(),
+                self.builder.trial_end,
+                self.builder.trial_from_plan,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SubscriptionsResourcePendingUpdate {
                 billing_cycle_anchor,
                 expires_at,
                 subscription_items,
                 trial_end,
                 trial_from_plan,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SubscriptionsResourcePendingUpdate {
-        type Builder = SubscriptionsResourcePendingUpdateBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionsResourcePendingUpdate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionsResourcePendingUpdateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "subscription_items" => b.subscription_items = FromValueOpt::from_value(v),
-                    "trial_end" => b.trial_end = FromValueOpt::from_value(v),
-                    "trial_from_plan" => b.trial_from_plan = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

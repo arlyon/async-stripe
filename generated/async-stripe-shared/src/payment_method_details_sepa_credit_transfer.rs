@@ -26,16 +26,14 @@ pub struct PaymentMethodDetailsSepaCreditTransferBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsSepaCreditTransferBuilder::deser_default(),
+                builder: PaymentMethodDetailsSepaCreditTransferBuilder {
+                    bank_name: Deserialize::default(),
+                    bic: Deserialize::default(),
+                    iban: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDetailsSepaCreditTransferBuilder {
-        type Out = PaymentMethodDetailsSepaCreditTransfer;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "bic" => Deserialize::begin(&mut self.bic),
-                "iban" => Deserialize::begin(&mut self.iban),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                bank_name: Deserialize::default(),
-                bic: Deserialize::default(),
-                iban: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank_name), Some(bic), Some(iban)) =
-                (self.bank_name.take(), self.bic.take(), self.iban.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { bank_name, bic, iban })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "bic" => Deserialize::begin(&mut self.builder.bic),
+                "iban" => Deserialize::begin(&mut self.builder.iban),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsSepaCreditTransfer {
-        type Builder = PaymentMethodDetailsSepaCreditTransferBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsSepaCreditTransfer {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(bank_name), Some(bic), Some(iban)) =
+                (self.builder.bank_name.take(), self.builder.bic.take(), self.builder.iban.take())
+            else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDetailsSepaCreditTransferBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "bic" => b.bic = FromValueOpt::from_value(v),
-                    "iban" => b.iban = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodDetailsSepaCreditTransfer { bank_name, bic, iban });
+            Ok(())
         }
     }
 };

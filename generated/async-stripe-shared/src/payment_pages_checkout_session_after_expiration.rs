@@ -20,16 +20,14 @@ pub struct PaymentPagesCheckoutSessionAfterExpirationBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -48,60 +46,27 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentPagesCheckoutSessionAfterExpirationBuilder::deser_default(),
+                builder: PaymentPagesCheckoutSessionAfterExpirationBuilder {
+                    recovery: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentPagesCheckoutSessionAfterExpirationBuilder {
-        type Out = PaymentPagesCheckoutSessionAfterExpiration;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "recovery" => Deserialize::begin(&mut self.recovery),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { recovery: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(recovery),) = (self.recovery.take(),) else {
-                return None;
-            };
-            Some(Self::Out { recovery })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "recovery" => Deserialize::begin(&mut self.builder.recovery),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentPagesCheckoutSessionAfterExpiration {
-        type Builder = PaymentPagesCheckoutSessionAfterExpirationBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionAfterExpiration {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(recovery),) = (self.builder.recovery.take(),) else {
+                return Ok(());
             };
-            let mut b = PaymentPagesCheckoutSessionAfterExpirationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "recovery" => b.recovery = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentPagesCheckoutSessionAfterExpiration { recovery });
+            Ok(())
         }
     }
 };

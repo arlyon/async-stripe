@@ -61,16 +61,14 @@ pub struct DiscountBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -87,48 +85,46 @@ const _: () = {
 
     impl Visitor for Place<Discount> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: DiscountBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: DiscountBuilder {
+                    checkout_session: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    end: Deserialize::default(),
+                    id: Deserialize::default(),
+                    invoice: Deserialize::default(),
+                    invoice_item: Deserialize::default(),
+                    promotion_code: Deserialize::default(),
+                    source: Deserialize::default(),
+                    start: Deserialize::default(),
+                    subscription: Deserialize::default(),
+                    subscription_item: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for DiscountBuilder {
-        type Out = Discount;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "checkout_session" => Deserialize::begin(&mut self.checkout_session),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "end" => Deserialize::begin(&mut self.end),
-                "id" => Deserialize::begin(&mut self.id),
-                "invoice" => Deserialize::begin(&mut self.invoice),
-                "invoice_item" => Deserialize::begin(&mut self.invoice_item),
-                "promotion_code" => Deserialize::begin(&mut self.promotion_code),
-                "source" => Deserialize::begin(&mut self.source),
-                "start" => Deserialize::begin(&mut self.start),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                "subscription_item" => Deserialize::begin(&mut self.subscription_item),
+                "checkout_session" => Deserialize::begin(&mut self.builder.checkout_session),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "end" => Deserialize::begin(&mut self.builder.end),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "invoice" => Deserialize::begin(&mut self.builder.invoice),
+                "invoice_item" => Deserialize::begin(&mut self.builder.invoice_item),
+                "promotion_code" => Deserialize::begin(&mut self.builder.promotion_code),
+                "source" => Deserialize::begin(&mut self.builder.source),
+                "start" => Deserialize::begin(&mut self.builder.start),
+                "subscription" => Deserialize::begin(&mut self.builder.subscription),
+                "subscription_item" => Deserialize::begin(&mut self.builder.subscription_item),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                checkout_session: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                end: Deserialize::default(),
-                id: Deserialize::default(),
-                invoice: Deserialize::default(),
-                invoice_item: Deserialize::default(),
-                promotion_code: Deserialize::default(),
-                source: Deserialize::default(),
-                start: Deserialize::default(),
-                subscription: Deserialize::default(),
-                subscription_item: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(checkout_session),
                 Some(customer),
@@ -143,23 +139,23 @@ const _: () = {
                 Some(subscription),
                 Some(subscription_item),
             ) = (
-                self.checkout_session.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.end,
-                self.id.take(),
-                self.invoice.take(),
-                self.invoice_item.take(),
-                self.promotion_code.take(),
-                self.source.take(),
-                self.start,
-                self.subscription.take(),
-                self.subscription_item.take(),
+                self.builder.checkout_session.take(),
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.end,
+                self.builder.id.take(),
+                self.builder.invoice.take(),
+                self.builder.invoice_item.take(),
+                self.builder.promotion_code.take(),
+                self.builder.source.take(),
+                self.builder.start,
+                self.builder.subscription.take(),
+                self.builder.subscription_item.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Discount {
                 checkout_session,
                 customer,
                 customer_account,
@@ -172,49 +168,8 @@ const _: () = {
                 start,
                 subscription,
                 subscription_item,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Discount {
-        type Builder = DiscountBuilder;
-    }
-
-    impl FromValueOpt for Discount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DiscountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "checkout_session" => b.checkout_session = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "end" => b.end = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "invoice_item" => b.invoice_item = FromValueOpt::from_value(v),
-                    "promotion_code" => b.promotion_code = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "start" => b.start = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

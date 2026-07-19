@@ -53,16 +53,14 @@ pub struct AppsSecretBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -81,41 +79,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AppsSecretBuilder::deser_default(),
+                builder: AppsSecretBuilder {
+                    created: Deserialize::default(),
+                    deleted: Deserialize::default(),
+                    expires_at: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    name: Deserialize::default(),
+                    payload: Deserialize::default(),
+                    scope: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for AppsSecretBuilder {
-        type Out = AppsSecret;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "created" => Deserialize::begin(&mut self.created),
-                "deleted" => Deserialize::begin(&mut self.deleted),
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "name" => Deserialize::begin(&mut self.name),
-                "payload" => Deserialize::begin(&mut self.payload),
-                "scope" => Deserialize::begin(&mut self.scope),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "deleted" => Deserialize::begin(&mut self.builder.deleted),
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "payload" => Deserialize::begin(&mut self.builder.payload),
+                "scope" => Deserialize::begin(&mut self.builder.scope),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                created: Deserialize::default(),
-                deleted: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                name: Deserialize::default(),
-                payload: Deserialize::default(),
-                scope: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(created),
                 Some(deleted),
@@ -126,57 +119,29 @@ const _: () = {
                 Some(payload),
                 Some(scope),
             ) = (
-                self.created,
-                self.deleted,
-                self.expires_at,
-                self.id.take(),
-                self.livemode,
-                self.name.take(),
-                self.payload.take(),
-                self.scope.take(),
+                self.builder.created,
+                self.builder.deleted,
+                self.builder.expires_at,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.name.take(),
+                self.builder.payload.take(),
+                self.builder.scope.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { created, deleted, expires_at, id, livemode, name, payload, scope })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(AppsSecret {
+                created,
+                deleted,
+                expires_at,
+                id,
+                livemode,
+                name,
+                payload,
+                scope,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for AppsSecret {
-        type Builder = AppsSecretBuilder;
-    }
-
-    impl FromValueOpt for AppsSecret {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AppsSecretBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "deleted" => b.deleted = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "payload" => b.payload = FromValueOpt::from_value(v),
-                    "scope" => b.scope = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -10,7 +10,7 @@
 
 extern crate self as stripe_fraud;
 
-miniserde::make_place!(Place);
+stripe_miniserde::make_place!(Place);
 #[doc(hidden)]
 pub mod deleted_radar_value_list;
 #[doc(inline)]

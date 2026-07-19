@@ -29,16 +29,14 @@ pub struct InvoicesResourceInvoiceRenderingBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,76 +55,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoicesResourceInvoiceRenderingBuilder::deser_default(),
+                builder: InvoicesResourceInvoiceRenderingBuilder {
+                    amount_tax_display: Deserialize::default(),
+                    pdf: Deserialize::default(),
+                    template: Deserialize::default(),
+                    template_version: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoicesResourceInvoiceRenderingBuilder {
-        type Out = InvoicesResourceInvoiceRendering;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount_tax_display" => Deserialize::begin(&mut self.amount_tax_display),
-                "pdf" => Deserialize::begin(&mut self.pdf),
-                "template" => Deserialize::begin(&mut self.template),
-                "template_version" => Deserialize::begin(&mut self.template_version),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount_tax_display: Deserialize::default(),
-                pdf: Deserialize::default(),
-                template: Deserialize::default(),
-                template_version: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_tax_display), Some(pdf), Some(template), Some(template_version)) = (
-                self.amount_tax_display.take(),
-                self.pdf.take(),
-                self.template.take(),
-                self.template_version,
-            ) else {
-                return None;
-            };
-            Some(Self::Out { amount_tax_display, pdf, template, template_version })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount_tax_display" => Deserialize::begin(&mut self.builder.amount_tax_display),
+                "pdf" => Deserialize::begin(&mut self.builder.pdf),
+                "template" => Deserialize::begin(&mut self.builder.template),
+                "template_version" => Deserialize::begin(&mut self.builder.template_version),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoicesResourceInvoiceRendering {
-        type Builder = InvoicesResourceInvoiceRenderingBuilder;
-    }
-
-    impl FromValueOpt for InvoicesResourceInvoiceRendering {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount_tax_display), Some(pdf), Some(template), Some(template_version)) = (
+                self.builder.amount_tax_display.take(),
+                self.builder.pdf.take(),
+                self.builder.template.take(),
+                self.builder.template_version,
+            ) else {
+                return Ok(());
             };
-            let mut b = InvoicesResourceInvoiceRenderingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_tax_display" => b.amount_tax_display = FromValueOpt::from_value(v),
-                    "pdf" => b.pdf = FromValueOpt::from_value(v),
-                    "template" => b.template = FromValueOpt::from_value(v),
-                    "template_version" => b.template_version = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InvoicesResourceInvoiceRendering {
+                amount_tax_display,
+                pdf,
+                template,
+                template_version,
+            });
+            Ok(())
         }
     }
 };

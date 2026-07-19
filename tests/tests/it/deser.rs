@@ -1,4 +1,4 @@
-use miniserde::json::from_str;
+use stripe_miniserde::json::from_str;
 use serde_json::{Value, json};
 use stripe_connect::Account;
 use stripe_core::customer::RetrieveCustomerReturned;
@@ -267,10 +267,46 @@ fn deserialize_id() {
 
     use stripe_core::FileId;
 
-    #[derive(miniserde::Deserialize)]
     struct Id {
         id: FileId,
     }
+
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
+
+    make_place!(Place);
+
+    impl Deserialize for Id {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<Id> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, id: None }))
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<Id>,
+        id: Option<FileId>,
+    }
+
+    impl Map for Builder<'_> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "id" => Deserialize::begin(&mut self.id),
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+        fn finish(&mut self) -> Result<()> {
+            let Some(id) = self.id.take() else { return Ok(()) };
+            *self.out = Some(Id { id });
+            Ok(())
+        }
+    }
+
     let data = json!({"id": "file_123"});
     let id: Id = from_str(&data.to_string()).unwrap();
     assert_eq!(id.id, FileId::from_str("file_123").unwrap());
@@ -323,6 +359,34 @@ fn deserialize_polymorphic() {
     let result =
         from_str(&payment_source.to_string()).expect("could not deserialize payment source");
     assert_payment_source_matches(&result);
+}
+
+#[test]
+fn deserialize_option_polymorphic() {
+    // Charge.source: Option<PaymentSource> — exercises the Option<T> wrapper
+    // around a polymorphic type (which routes through Visitor::wants_raw/raw,
+    // not Visitor::map).
+    let charge = json!({
+        "amount": 100,
+        "billing_details": {},
+        "amount_captured": 100,
+        "amount_refunded": 0,
+        "captured": true,
+        "currency": "usd",
+        "created": 1703349829,
+        "disputed": false,
+        "object": "charge",
+        "id": "ch_123",
+        "livemode": false,
+        "metadata": {},
+        "paid": true,
+        "status": "succeeded",
+        "refunded": false,
+        "source": mock_payment_source(),
+    });
+    let result: Charge = from_str(&charge.to_string()).expect("deserialize charge with source");
+    let src = result.source.as_ref().expect("source set");
+    assert_payment_source_matches(src);
 }
 
 #[test]

@@ -23,16 +23,14 @@ pub struct BalanceDetailUngatedBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,63 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BalanceDetailUngatedBuilder::deser_default(),
+                builder: BalanceDetailUngatedBuilder {
+                    available: Deserialize::default(),
+                    pending: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BalanceDetailUngatedBuilder {
-        type Out = BalanceDetailUngated;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "available" => Deserialize::begin(&mut self.available),
-                "pending" => Deserialize::begin(&mut self.pending),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { available: Deserialize::default(), pending: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(available), Some(pending)) = (self.available.take(), self.pending.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { available, pending })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "available" => Deserialize::begin(&mut self.builder.available),
+                "pending" => Deserialize::begin(&mut self.builder.pending),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BalanceDetailUngated {
-        type Builder = BalanceDetailUngatedBuilder;
-    }
-
-    impl FromValueOpt for BalanceDetailUngated {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(available), Some(pending)) =
+                (self.builder.available.take(), self.builder.pending.take())
+            else {
+                return Ok(());
             };
-            let mut b = BalanceDetailUngatedBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "available" => b.available = FromValueOpt::from_value(v),
-                    "pending" => b.pending = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(BalanceDetailUngated { available, pending });
+            Ok(())
         }
     }
 };

@@ -96,16 +96,14 @@ pub struct RefundBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -122,70 +120,68 @@ const _: () = {
 
     impl Visitor for Place<Refund> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: RefundBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: RefundBuilder {
+                    amount: Deserialize::default(),
+                    balance_transaction: Deserialize::default(),
+                    charge: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    description: Deserialize::default(),
+                    destination_details: Deserialize::default(),
+                    failure_balance_transaction: Deserialize::default(),
+                    failure_reason: Deserialize::default(),
+                    id: Deserialize::default(),
+                    instructions_email: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    next_action: Deserialize::default(),
+                    payment_intent: Deserialize::default(),
+                    pending_reason: Deserialize::default(),
+                    presentment_details: Deserialize::default(),
+                    reason: Deserialize::default(),
+                    receipt_number: Deserialize::default(),
+                    source_transfer_reversal: Deserialize::default(),
+                    status: Deserialize::default(),
+                    transfer_reversal: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for RefundBuilder {
-        type Out = Refund;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
-                "charge" => Deserialize::begin(&mut self.charge),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "description" => Deserialize::begin(&mut self.description),
-                "destination_details" => Deserialize::begin(&mut self.destination_details),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "balance_transaction" => Deserialize::begin(&mut self.builder.balance_transaction),
+                "charge" => Deserialize::begin(&mut self.builder.charge),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "destination_details" => Deserialize::begin(&mut self.builder.destination_details),
                 "failure_balance_transaction" => {
-                    Deserialize::begin(&mut self.failure_balance_transaction)
+                    Deserialize::begin(&mut self.builder.failure_balance_transaction)
                 }
-                "failure_reason" => Deserialize::begin(&mut self.failure_reason),
-                "id" => Deserialize::begin(&mut self.id),
-                "instructions_email" => Deserialize::begin(&mut self.instructions_email),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "next_action" => Deserialize::begin(&mut self.next_action),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "pending_reason" => Deserialize::begin(&mut self.pending_reason),
-                "presentment_details" => Deserialize::begin(&mut self.presentment_details),
-                "reason" => Deserialize::begin(&mut self.reason),
-                "receipt_number" => Deserialize::begin(&mut self.receipt_number),
+                "failure_reason" => Deserialize::begin(&mut self.builder.failure_reason),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "instructions_email" => Deserialize::begin(&mut self.builder.instructions_email),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "next_action" => Deserialize::begin(&mut self.builder.next_action),
+                "payment_intent" => Deserialize::begin(&mut self.builder.payment_intent),
+                "pending_reason" => Deserialize::begin(&mut self.builder.pending_reason),
+                "presentment_details" => Deserialize::begin(&mut self.builder.presentment_details),
+                "reason" => Deserialize::begin(&mut self.builder.reason),
+                "receipt_number" => Deserialize::begin(&mut self.builder.receipt_number),
                 "source_transfer_reversal" => {
-                    Deserialize::begin(&mut self.source_transfer_reversal)
+                    Deserialize::begin(&mut self.builder.source_transfer_reversal)
                 }
-                "status" => Deserialize::begin(&mut self.status),
-                "transfer_reversal" => Deserialize::begin(&mut self.transfer_reversal),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "transfer_reversal" => Deserialize::begin(&mut self.builder.transfer_reversal),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                balance_transaction: Deserialize::default(),
-                charge: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                destination_details: Deserialize::default(),
-                failure_balance_transaction: Deserialize::default(),
-                failure_reason: Deserialize::default(),
-                id: Deserialize::default(),
-                instructions_email: Deserialize::default(),
-                metadata: Deserialize::default(),
-                next_action: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                pending_reason: Deserialize::default(),
-                presentment_details: Deserialize::default(),
-                reason: Deserialize::default(),
-                receipt_number: Deserialize::default(),
-                source_transfer_reversal: Deserialize::default(),
-                status: Deserialize::default(),
-                transfer_reversal: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(balance_transaction),
@@ -209,32 +205,32 @@ const _: () = {
                 Some(status),
                 Some(transfer_reversal),
             ) = (
-                self.amount,
-                self.balance_transaction.take(),
-                self.charge.take(),
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.destination_details.take(),
-                self.failure_balance_transaction.take(),
-                self.failure_reason.take(),
-                self.id.take(),
-                self.instructions_email.take(),
-                self.metadata.take(),
-                self.next_action.take(),
-                self.payment_intent.take(),
-                self.pending_reason.take(),
-                self.presentment_details.take(),
-                self.reason.take(),
-                self.receipt_number.take(),
-                self.source_transfer_reversal.take(),
-                self.status.take(),
-                self.transfer_reversal.take(),
+                self.builder.amount,
+                self.builder.balance_transaction.take(),
+                self.builder.charge.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.description.take(),
+                self.builder.destination_details.take(),
+                self.builder.failure_balance_transaction.take(),
+                self.builder.failure_reason.take(),
+                self.builder.id.take(),
+                self.builder.instructions_email.take(),
+                self.builder.metadata.take(),
+                self.builder.next_action.take(),
+                self.builder.payment_intent.take(),
+                self.builder.pending_reason.take(),
+                self.builder.presentment_details.take(),
+                self.builder.reason.take(),
+                self.builder.receipt_number.take(),
+                self.builder.source_transfer_reversal.take(),
+                self.builder.status.take(),
+                self.builder.transfer_reversal.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Refund {
                 amount,
                 balance_transaction,
                 charge,
@@ -256,62 +252,8 @@ const _: () = {
                 source_transfer_reversal,
                 status,
                 transfer_reversal,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Refund {
-        type Builder = RefundBuilder;
-    }
-
-    impl FromValueOpt for Refund {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = RefundBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "destination_details" => b.destination_details = FromValueOpt::from_value(v),
-                    "failure_balance_transaction" => {
-                        b.failure_balance_transaction = FromValueOpt::from_value(v)
-                    }
-                    "failure_reason" => b.failure_reason = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "instructions_email" => b.instructions_email = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "next_action" => b.next_action = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "pending_reason" => b.pending_reason = FromValueOpt::from_value(v),
-                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "receipt_number" => b.receipt_number = FromValueOpt::from_value(v),
-                    "source_transfer_reversal" => {
-                        b.source_transfer_reversal = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "transfer_reversal" => b.transfer_reversal = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -411,21 +353,19 @@ impl serde::Serialize for RefundPendingReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for RefundPendingReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for RefundPendingReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<RefundPendingReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<RefundPendingReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(RefundPendingReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(RefundPendingReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RefundPendingReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -501,21 +441,19 @@ impl serde::Serialize for RefundReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for RefundReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for RefundReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<RefundReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<RefundReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(RefundReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(RefundReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RefundReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

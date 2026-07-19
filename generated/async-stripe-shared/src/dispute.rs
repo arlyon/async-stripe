@@ -79,16 +79,14 @@ pub struct DisputeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -105,60 +103,64 @@ const _: () = {
 
     impl Visitor for Place<Dispute> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: DisputeBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: DisputeBuilder {
+                    amount: Deserialize::default(),
+                    balance_transactions: Deserialize::default(),
+                    charge: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    enhanced_eligibility_types: Deserialize::default(),
+                    evidence: Deserialize::default(),
+                    evidence_details: Deserialize::default(),
+                    id: Deserialize::default(),
+                    is_charge_refundable: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    network_reason_code: Deserialize::default(),
+                    payment_intent: Deserialize::default(),
+                    payment_method_details: Deserialize::default(),
+                    reason: Deserialize::default(),
+                    status: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for DisputeBuilder {
-        type Out = Dispute;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "balance_transactions" => Deserialize::begin(&mut self.balance_transactions),
-                "charge" => Deserialize::begin(&mut self.charge),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "enhanced_eligibility_types" => {
-                    Deserialize::begin(&mut self.enhanced_eligibility_types)
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "balance_transactions" => {
+                    Deserialize::begin(&mut self.builder.balance_transactions)
                 }
-                "evidence" => Deserialize::begin(&mut self.evidence),
-                "evidence_details" => Deserialize::begin(&mut self.evidence_details),
-                "id" => Deserialize::begin(&mut self.id),
-                "is_charge_refundable" => Deserialize::begin(&mut self.is_charge_refundable),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "network_reason_code" => Deserialize::begin(&mut self.network_reason_code),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
-                "reason" => Deserialize::begin(&mut self.reason),
-                "status" => Deserialize::begin(&mut self.status),
+                "charge" => Deserialize::begin(&mut self.builder.charge),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "enhanced_eligibility_types" => {
+                    Deserialize::begin(&mut self.builder.enhanced_eligibility_types)
+                }
+                "evidence" => Deserialize::begin(&mut self.builder.evidence),
+                "evidence_details" => Deserialize::begin(&mut self.builder.evidence_details),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "is_charge_refundable" => {
+                    Deserialize::begin(&mut self.builder.is_charge_refundable)
+                }
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "network_reason_code" => Deserialize::begin(&mut self.builder.network_reason_code),
+                "payment_intent" => Deserialize::begin(&mut self.builder.payment_intent),
+                "payment_method_details" => {
+                    Deserialize::begin(&mut self.builder.payment_method_details)
+                }
+                "reason" => Deserialize::begin(&mut self.builder.reason),
+                "status" => Deserialize::begin(&mut self.builder.status),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                balance_transactions: Deserialize::default(),
-                charge: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                enhanced_eligibility_types: Deserialize::default(),
-                evidence: Deserialize::default(),
-                evidence_details: Deserialize::default(),
-                id: Deserialize::default(),
-                is_charge_refundable: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                network_reason_code: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                payment_method_details: Deserialize::default(),
-                reason: Deserialize::default(),
-                status: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(balance_transactions),
@@ -178,28 +180,28 @@ const _: () = {
                 Some(reason),
                 Some(status),
             ) = (
-                self.amount,
-                self.balance_transactions.take(),
-                self.charge.take(),
-                self.created,
-                self.currency.take(),
-                self.enhanced_eligibility_types.take(),
-                self.evidence.take(),
-                self.evidence_details.take(),
-                self.id.take(),
-                self.is_charge_refundable,
-                self.livemode,
-                self.metadata.take(),
-                self.network_reason_code.take(),
-                self.payment_intent.take(),
-                self.payment_method_details.take(),
-                self.reason.take(),
-                self.status.take(),
+                self.builder.amount,
+                self.builder.balance_transactions.take(),
+                self.builder.charge.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.enhanced_eligibility_types.take(),
+                self.builder.evidence.take(),
+                self.builder.evidence_details.take(),
+                self.builder.id.take(),
+                self.builder.is_charge_refundable,
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.network_reason_code.take(),
+                self.builder.payment_intent.take(),
+                self.builder.payment_method_details.take(),
+                self.builder.reason.take(),
+                self.builder.status.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Dispute {
                 amount,
                 balance_transactions,
                 charge,
@@ -217,58 +219,8 @@ const _: () = {
                 payment_method_details,
                 reason,
                 status,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Dispute {
-        type Builder = DisputeBuilder;
-    }
-
-    impl FromValueOpt for Dispute {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_transactions" => b.balance_transactions = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "enhanced_eligibility_types" => {
-                        b.enhanced_eligibility_types = FromValueOpt::from_value(v)
-                    }
-                    "evidence" => b.evidence = FromValueOpt::from_value(v),
-                    "evidence_details" => b.evidence_details = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "is_charge_refundable" => b.is_charge_refundable = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "network_reason_code" => b.network_reason_code = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -364,21 +316,19 @@ impl serde::Serialize for DisputeEnhancedEligibilityTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for DisputeEnhancedEligibilityTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for DisputeEnhancedEligibilityTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<DisputeEnhancedEligibilityTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<DisputeEnhancedEligibilityTypes> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(DisputeEnhancedEligibilityTypes::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(DisputeEnhancedEligibilityTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for DisputeEnhancedEligibilityTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -467,21 +417,19 @@ impl serde::Serialize for DisputeStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for DisputeStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for DisputeStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<DisputeStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<DisputeStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(DisputeStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(DisputeStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for DisputeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

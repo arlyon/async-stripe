@@ -23,16 +23,14 @@ pub struct IssuingCardApplePayBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,64 +49,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingCardApplePayBuilder::deser_default(),
+                builder: IssuingCardApplePayBuilder {
+                    eligible: Deserialize::default(),
+                    ineligible_reason: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingCardApplePayBuilder {
-        type Out = IssuingCardApplePay;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "eligible" => Deserialize::begin(&mut self.eligible),
-                "ineligible_reason" => Deserialize::begin(&mut self.ineligible_reason),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { eligible: Deserialize::default(), ineligible_reason: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(eligible), Some(ineligible_reason)) =
-                (self.eligible, self.ineligible_reason.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { eligible, ineligible_reason })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "eligible" => Deserialize::begin(&mut self.builder.eligible),
+                "ineligible_reason" => Deserialize::begin(&mut self.builder.ineligible_reason),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingCardApplePay {
-        type Builder = IssuingCardApplePayBuilder;
-    }
-
-    impl FromValueOpt for IssuingCardApplePay {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(eligible), Some(ineligible_reason)) =
+                (self.builder.eligible, self.builder.ineligible_reason.take())
+            else {
+                return Ok(());
             };
-            let mut b = IssuingCardApplePayBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "eligible" => b.eligible = FromValueOpt::from_value(v),
-                    "ineligible_reason" => b.ineligible_reason = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(IssuingCardApplePay { eligible, ineligible_reason });
+            Ok(())
         }
     }
 };
@@ -180,21 +145,19 @@ impl serde::Serialize for IssuingCardApplePayIneligibleReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingCardApplePayIneligibleReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingCardApplePayIneligibleReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingCardApplePayIneligibleReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingCardApplePayIneligibleReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingCardApplePayIneligibleReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingCardApplePayIneligibleReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardApplePayIneligibleReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

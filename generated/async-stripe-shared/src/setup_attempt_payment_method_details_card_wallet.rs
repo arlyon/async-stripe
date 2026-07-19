@@ -27,16 +27,14 @@ pub struct SetupAttemptPaymentMethodDetailsCardWalletBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,70 +53,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SetupAttemptPaymentMethodDetailsCardWalletBuilder::deser_default(),
+                builder: SetupAttemptPaymentMethodDetailsCardWalletBuilder {
+                    apple_pay: Deserialize::default(),
+                    google_pay: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SetupAttemptPaymentMethodDetailsCardWalletBuilder {
-        type Out = SetupAttemptPaymentMethodDetailsCardWallet;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "apple_pay" => Deserialize::begin(&mut self.apple_pay),
-                "google_pay" => Deserialize::begin(&mut self.google_pay),
-                "type" => Deserialize::begin(&mut self.type_),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                apple_pay: Deserialize::default(),
-                google_pay: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(apple_pay), Some(google_pay), Some(type_)) =
-                (self.apple_pay, self.google_pay, self.type_.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { apple_pay, google_pay, type_ })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "apple_pay" => Deserialize::begin(&mut self.builder.apple_pay),
+                "google_pay" => Deserialize::begin(&mut self.builder.google_pay),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SetupAttemptPaymentMethodDetailsCardWallet {
-        type Builder = SetupAttemptPaymentMethodDetailsCardWalletBuilder;
-    }
-
-    impl FromValueOpt for SetupAttemptPaymentMethodDetailsCardWallet {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(apple_pay), Some(google_pay), Some(type_)) =
+                (self.builder.apple_pay, self.builder.google_pay, self.builder.type_.take())
+            else {
+                return Ok(());
             };
-            let mut b = SetupAttemptPaymentMethodDetailsCardWalletBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
-                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(SetupAttemptPaymentMethodDetailsCardWallet { apple_pay, google_pay, type_ });
+            Ok(())
         }
     }
 };
@@ -193,22 +155,20 @@ impl serde::Serialize for SetupAttemptPaymentMethodDetailsCardWalletType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SetupAttemptPaymentMethodDetailsCardWalletType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SetupAttemptPaymentMethodDetailsCardWalletType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SetupAttemptPaymentMethodDetailsCardWalletType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SetupAttemptPaymentMethodDetailsCardWalletType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(SetupAttemptPaymentMethodDetailsCardWalletType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SetupAttemptPaymentMethodDetailsCardWalletType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupAttemptPaymentMethodDetailsCardWalletType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -110,16 +110,14 @@ pub struct DisputeEvidenceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -138,93 +136,100 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: DisputeEvidenceBuilder::deser_default(),
+                builder: DisputeEvidenceBuilder {
+                    access_activity_log: Deserialize::default(),
+                    billing_address: Deserialize::default(),
+                    cancellation_policy: Deserialize::default(),
+                    cancellation_policy_disclosure: Deserialize::default(),
+                    cancellation_rebuttal: Deserialize::default(),
+                    customer_communication: Deserialize::default(),
+                    customer_email_address: Deserialize::default(),
+                    customer_name: Deserialize::default(),
+                    customer_purchase_ip: Deserialize::default(),
+                    customer_signature: Deserialize::default(),
+                    duplicate_charge_documentation: Deserialize::default(),
+                    duplicate_charge_explanation: Deserialize::default(),
+                    duplicate_charge_id: Deserialize::default(),
+                    enhanced_evidence: Deserialize::default(),
+                    product_description: Deserialize::default(),
+                    receipt: Deserialize::default(),
+                    refund_policy: Deserialize::default(),
+                    refund_policy_disclosure: Deserialize::default(),
+                    refund_refusal_explanation: Deserialize::default(),
+                    service_date: Deserialize::default(),
+                    service_documentation: Deserialize::default(),
+                    shipping_address: Deserialize::default(),
+                    shipping_carrier: Deserialize::default(),
+                    shipping_date: Deserialize::default(),
+                    shipping_documentation: Deserialize::default(),
+                    shipping_tracking_number: Deserialize::default(),
+                    uncategorized_file: Deserialize::default(),
+                    uncategorized_text: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for DisputeEvidenceBuilder {
-        type Out = DisputeEvidence;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "access_activity_log" => Deserialize::begin(&mut self.access_activity_log),
-                "billing_address" => Deserialize::begin(&mut self.billing_address),
-                "cancellation_policy" => Deserialize::begin(&mut self.cancellation_policy),
+                "access_activity_log" => Deserialize::begin(&mut self.builder.access_activity_log),
+                "billing_address" => Deserialize::begin(&mut self.builder.billing_address),
+                "cancellation_policy" => Deserialize::begin(&mut self.builder.cancellation_policy),
                 "cancellation_policy_disclosure" => {
-                    Deserialize::begin(&mut self.cancellation_policy_disclosure)
+                    Deserialize::begin(&mut self.builder.cancellation_policy_disclosure)
                 }
-                "cancellation_rebuttal" => Deserialize::begin(&mut self.cancellation_rebuttal),
-                "customer_communication" => Deserialize::begin(&mut self.customer_communication),
-                "customer_email_address" => Deserialize::begin(&mut self.customer_email_address),
-                "customer_name" => Deserialize::begin(&mut self.customer_name),
-                "customer_purchase_ip" => Deserialize::begin(&mut self.customer_purchase_ip),
-                "customer_signature" => Deserialize::begin(&mut self.customer_signature),
+                "cancellation_rebuttal" => {
+                    Deserialize::begin(&mut self.builder.cancellation_rebuttal)
+                }
+                "customer_communication" => {
+                    Deserialize::begin(&mut self.builder.customer_communication)
+                }
+                "customer_email_address" => {
+                    Deserialize::begin(&mut self.builder.customer_email_address)
+                }
+                "customer_name" => Deserialize::begin(&mut self.builder.customer_name),
+                "customer_purchase_ip" => {
+                    Deserialize::begin(&mut self.builder.customer_purchase_ip)
+                }
+                "customer_signature" => Deserialize::begin(&mut self.builder.customer_signature),
                 "duplicate_charge_documentation" => {
-                    Deserialize::begin(&mut self.duplicate_charge_documentation)
+                    Deserialize::begin(&mut self.builder.duplicate_charge_documentation)
                 }
                 "duplicate_charge_explanation" => {
-                    Deserialize::begin(&mut self.duplicate_charge_explanation)
+                    Deserialize::begin(&mut self.builder.duplicate_charge_explanation)
                 }
-                "duplicate_charge_id" => Deserialize::begin(&mut self.duplicate_charge_id),
-                "enhanced_evidence" => Deserialize::begin(&mut self.enhanced_evidence),
-                "product_description" => Deserialize::begin(&mut self.product_description),
-                "receipt" => Deserialize::begin(&mut self.receipt),
-                "refund_policy" => Deserialize::begin(&mut self.refund_policy),
+                "duplicate_charge_id" => Deserialize::begin(&mut self.builder.duplicate_charge_id),
+                "enhanced_evidence" => Deserialize::begin(&mut self.builder.enhanced_evidence),
+                "product_description" => Deserialize::begin(&mut self.builder.product_description),
+                "receipt" => Deserialize::begin(&mut self.builder.receipt),
+                "refund_policy" => Deserialize::begin(&mut self.builder.refund_policy),
                 "refund_policy_disclosure" => {
-                    Deserialize::begin(&mut self.refund_policy_disclosure)
+                    Deserialize::begin(&mut self.builder.refund_policy_disclosure)
                 }
                 "refund_refusal_explanation" => {
-                    Deserialize::begin(&mut self.refund_refusal_explanation)
+                    Deserialize::begin(&mut self.builder.refund_refusal_explanation)
                 }
-                "service_date" => Deserialize::begin(&mut self.service_date),
-                "service_documentation" => Deserialize::begin(&mut self.service_documentation),
-                "shipping_address" => Deserialize::begin(&mut self.shipping_address),
-                "shipping_carrier" => Deserialize::begin(&mut self.shipping_carrier),
-                "shipping_date" => Deserialize::begin(&mut self.shipping_date),
-                "shipping_documentation" => Deserialize::begin(&mut self.shipping_documentation),
+                "service_date" => Deserialize::begin(&mut self.builder.service_date),
+                "service_documentation" => {
+                    Deserialize::begin(&mut self.builder.service_documentation)
+                }
+                "shipping_address" => Deserialize::begin(&mut self.builder.shipping_address),
+                "shipping_carrier" => Deserialize::begin(&mut self.builder.shipping_carrier),
+                "shipping_date" => Deserialize::begin(&mut self.builder.shipping_date),
+                "shipping_documentation" => {
+                    Deserialize::begin(&mut self.builder.shipping_documentation)
+                }
                 "shipping_tracking_number" => {
-                    Deserialize::begin(&mut self.shipping_tracking_number)
+                    Deserialize::begin(&mut self.builder.shipping_tracking_number)
                 }
-                "uncategorized_file" => Deserialize::begin(&mut self.uncategorized_file),
-                "uncategorized_text" => Deserialize::begin(&mut self.uncategorized_text),
+                "uncategorized_file" => Deserialize::begin(&mut self.builder.uncategorized_file),
+                "uncategorized_text" => Deserialize::begin(&mut self.builder.uncategorized_text),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                access_activity_log: Deserialize::default(),
-                billing_address: Deserialize::default(),
-                cancellation_policy: Deserialize::default(),
-                cancellation_policy_disclosure: Deserialize::default(),
-                cancellation_rebuttal: Deserialize::default(),
-                customer_communication: Deserialize::default(),
-                customer_email_address: Deserialize::default(),
-                customer_name: Deserialize::default(),
-                customer_purchase_ip: Deserialize::default(),
-                customer_signature: Deserialize::default(),
-                duplicate_charge_documentation: Deserialize::default(),
-                duplicate_charge_explanation: Deserialize::default(),
-                duplicate_charge_id: Deserialize::default(),
-                enhanced_evidence: Deserialize::default(),
-                product_description: Deserialize::default(),
-                receipt: Deserialize::default(),
-                refund_policy: Deserialize::default(),
-                refund_policy_disclosure: Deserialize::default(),
-                refund_refusal_explanation: Deserialize::default(),
-                service_date: Deserialize::default(),
-                service_documentation: Deserialize::default(),
-                shipping_address: Deserialize::default(),
-                shipping_carrier: Deserialize::default(),
-                shipping_date: Deserialize::default(),
-                shipping_documentation: Deserialize::default(),
-                shipping_tracking_number: Deserialize::default(),
-                uncategorized_file: Deserialize::default(),
-                uncategorized_text: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(access_activity_log),
                 Some(billing_address),
@@ -255,39 +260,39 @@ const _: () = {
                 Some(uncategorized_file),
                 Some(uncategorized_text),
             ) = (
-                self.access_activity_log.take(),
-                self.billing_address.take(),
-                self.cancellation_policy.take(),
-                self.cancellation_policy_disclosure.take(),
-                self.cancellation_rebuttal.take(),
-                self.customer_communication.take(),
-                self.customer_email_address.take(),
-                self.customer_name.take(),
-                self.customer_purchase_ip.take(),
-                self.customer_signature.take(),
-                self.duplicate_charge_documentation.take(),
-                self.duplicate_charge_explanation.take(),
-                self.duplicate_charge_id.take(),
-                self.enhanced_evidence.take(),
-                self.product_description.take(),
-                self.receipt.take(),
-                self.refund_policy.take(),
-                self.refund_policy_disclosure.take(),
-                self.refund_refusal_explanation.take(),
-                self.service_date.take(),
-                self.service_documentation.take(),
-                self.shipping_address.take(),
-                self.shipping_carrier.take(),
-                self.shipping_date.take(),
-                self.shipping_documentation.take(),
-                self.shipping_tracking_number.take(),
-                self.uncategorized_file.take(),
-                self.uncategorized_text.take(),
+                self.builder.access_activity_log.take(),
+                self.builder.billing_address.take(),
+                self.builder.cancellation_policy.take(),
+                self.builder.cancellation_policy_disclosure.take(),
+                self.builder.cancellation_rebuttal.take(),
+                self.builder.customer_communication.take(),
+                self.builder.customer_email_address.take(),
+                self.builder.customer_name.take(),
+                self.builder.customer_purchase_ip.take(),
+                self.builder.customer_signature.take(),
+                self.builder.duplicate_charge_documentation.take(),
+                self.builder.duplicate_charge_explanation.take(),
+                self.builder.duplicate_charge_id.take(),
+                self.builder.enhanced_evidence.take(),
+                self.builder.product_description.take(),
+                self.builder.receipt.take(),
+                self.builder.refund_policy.take(),
+                self.builder.refund_policy_disclosure.take(),
+                self.builder.refund_refusal_explanation.take(),
+                self.builder.service_date.take(),
+                self.builder.service_documentation.take(),
+                self.builder.shipping_address.take(),
+                self.builder.shipping_carrier.take(),
+                self.builder.shipping_date.take(),
+                self.builder.shipping_documentation.take(),
+                self.builder.shipping_tracking_number.take(),
+                self.builder.uncategorized_file.take(),
+                self.builder.uncategorized_text.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(DisputeEvidence {
                 access_activity_log,
                 billing_address,
                 cancellation_policy,
@@ -316,87 +321,8 @@ const _: () = {
                 shipping_tracking_number,
                 uncategorized_file,
                 uncategorized_text,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for DisputeEvidence {
-        type Builder = DisputeEvidenceBuilder;
-    }
-
-    impl FromValueOpt for DisputeEvidence {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "access_activity_log" => b.access_activity_log = FromValueOpt::from_value(v),
-                    "billing_address" => b.billing_address = FromValueOpt::from_value(v),
-                    "cancellation_policy" => b.cancellation_policy = FromValueOpt::from_value(v),
-                    "cancellation_policy_disclosure" => {
-                        b.cancellation_policy_disclosure = FromValueOpt::from_value(v)
-                    }
-                    "cancellation_rebuttal" => {
-                        b.cancellation_rebuttal = FromValueOpt::from_value(v)
-                    }
-                    "customer_communication" => {
-                        b.customer_communication = FromValueOpt::from_value(v)
-                    }
-                    "customer_email_address" => {
-                        b.customer_email_address = FromValueOpt::from_value(v)
-                    }
-                    "customer_name" => b.customer_name = FromValueOpt::from_value(v),
-                    "customer_purchase_ip" => b.customer_purchase_ip = FromValueOpt::from_value(v),
-                    "customer_signature" => b.customer_signature = FromValueOpt::from_value(v),
-                    "duplicate_charge_documentation" => {
-                        b.duplicate_charge_documentation = FromValueOpt::from_value(v)
-                    }
-                    "duplicate_charge_explanation" => {
-                        b.duplicate_charge_explanation = FromValueOpt::from_value(v)
-                    }
-                    "duplicate_charge_id" => b.duplicate_charge_id = FromValueOpt::from_value(v),
-                    "enhanced_evidence" => b.enhanced_evidence = FromValueOpt::from_value(v),
-                    "product_description" => b.product_description = FromValueOpt::from_value(v),
-                    "receipt" => b.receipt = FromValueOpt::from_value(v),
-                    "refund_policy" => b.refund_policy = FromValueOpt::from_value(v),
-                    "refund_policy_disclosure" => {
-                        b.refund_policy_disclosure = FromValueOpt::from_value(v)
-                    }
-                    "refund_refusal_explanation" => {
-                        b.refund_refusal_explanation = FromValueOpt::from_value(v)
-                    }
-                    "service_date" => b.service_date = FromValueOpt::from_value(v),
-                    "service_documentation" => {
-                        b.service_documentation = FromValueOpt::from_value(v)
-                    }
-                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-                    "shipping_carrier" => b.shipping_carrier = FromValueOpt::from_value(v),
-                    "shipping_date" => b.shipping_date = FromValueOpt::from_value(v),
-                    "shipping_documentation" => {
-                        b.shipping_documentation = FromValueOpt::from_value(v)
-                    }
-                    "shipping_tracking_number" => {
-                        b.shipping_tracking_number = FromValueOpt::from_value(v)
-                    }
-                    "uncategorized_file" => b.uncategorized_file = FromValueOpt::from_value(v),
-                    "uncategorized_text" => b.uncategorized_text = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

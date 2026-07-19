@@ -29,16 +29,14 @@ pub struct InvoicesResourceStatusTransitionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,75 +55,45 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoicesResourceStatusTransitionsBuilder::deser_default(),
+                builder: InvoicesResourceStatusTransitionsBuilder {
+                    finalized_at: Deserialize::default(),
+                    marked_uncollectible_at: Deserialize::default(),
+                    paid_at: Deserialize::default(),
+                    voided_at: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoicesResourceStatusTransitionsBuilder {
-        type Out = InvoicesResourceStatusTransitions;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "finalized_at" => Deserialize::begin(&mut self.finalized_at),
-                "marked_uncollectible_at" => Deserialize::begin(&mut self.marked_uncollectible_at),
-                "paid_at" => Deserialize::begin(&mut self.paid_at),
-                "voided_at" => Deserialize::begin(&mut self.voided_at),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                finalized_at: Deserialize::default(),
-                marked_uncollectible_at: Deserialize::default(),
-                paid_at: Deserialize::default(),
-                voided_at: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(finalized_at), Some(marked_uncollectible_at), Some(paid_at), Some(voided_at)) =
-                (self.finalized_at, self.marked_uncollectible_at, self.paid_at, self.voided_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { finalized_at, marked_uncollectible_at, paid_at, voided_at })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "finalized_at" => Deserialize::begin(&mut self.builder.finalized_at),
+                "marked_uncollectible_at" => {
+                    Deserialize::begin(&mut self.builder.marked_uncollectible_at)
+                }
+                "paid_at" => Deserialize::begin(&mut self.builder.paid_at),
+                "voided_at" => Deserialize::begin(&mut self.builder.voided_at),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoicesResourceStatusTransitions {
-        type Builder = InvoicesResourceStatusTransitionsBuilder;
-    }
-
-    impl FromValueOpt for InvoicesResourceStatusTransitions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(finalized_at), Some(marked_uncollectible_at), Some(paid_at), Some(voided_at)) = (
+                self.builder.finalized_at,
+                self.builder.marked_uncollectible_at,
+                self.builder.paid_at,
+                self.builder.voided_at,
+            ) else {
+                return Ok(());
             };
-            let mut b = InvoicesResourceStatusTransitionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "finalized_at" => b.finalized_at = FromValueOpt::from_value(v),
-                    "marked_uncollectible_at" => {
-                        b.marked_uncollectible_at = FromValueOpt::from_value(v)
-                    }
-                    "paid_at" => b.paid_at = FromValueOpt::from_value(v),
-                    "voided_at" => b.voided_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InvoicesResourceStatusTransitions {
+                finalized_at,
+                marked_uncollectible_at,
+                paid_at,
+                voided_at,
+            });
+            Ok(())
         }
     }
 };

@@ -2,7 +2,7 @@ use std::fmt::Display;
 use std::marker::PhantomData;
 
 use bytes::Bytes;
-use miniserde::json::from_str;
+use stripe_miniserde::json::from_str;
 use serde::Serialize;
 use stripe_shared::AccountId;
 
@@ -124,7 +124,7 @@ impl<T> CustomizableStripeRequest<T> {
     }
 }
 
-impl<T: miniserde::Deserialize> CustomizableStripeRequest<T> {
+impl<T: stripe_miniserde::Deserialize> CustomizableStripeRequest<T> {
     /// Sends the request and returns the response.
     ///
     /// # Errors
@@ -146,7 +146,7 @@ impl<T: miniserde::Deserialize> CustomizableStripeRequest<T> {
     }
 }
 
-fn deserialize_bytes<T: miniserde::Deserialize, Err: StripeClientErr>(
+fn deserialize_bytes<T: stripe_miniserde::Deserialize, Err: StripeClientErr>(
     bytes: Bytes,
 ) -> Result<T, Err> {
     let str = std::str::from_utf8(bytes.as_ref())

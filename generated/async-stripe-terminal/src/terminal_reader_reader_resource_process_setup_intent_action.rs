@@ -28,16 +28,14 @@ pub struct TerminalReaderReaderResourceProcessSetupIntentActionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,72 +54,39 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderReaderResourceProcessSetupIntentActionBuilder::deser_default(
-                ),
+                builder: TerminalReaderReaderResourceProcessSetupIntentActionBuilder {
+                    generated_card: Deserialize::default(),
+                    process_config: Deserialize::default(),
+                    setup_intent: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TerminalReaderReaderResourceProcessSetupIntentActionBuilder {
-        type Out = TerminalReaderReaderResourceProcessSetupIntentAction;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "generated_card" => Deserialize::begin(&mut self.generated_card),
-                "process_config" => Deserialize::begin(&mut self.process_config),
-                "setup_intent" => Deserialize::begin(&mut self.setup_intent),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                generated_card: Deserialize::default(),
-                process_config: Deserialize::default(),
-                setup_intent: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(generated_card), Some(process_config), Some(setup_intent)) =
-                (self.generated_card.take(), self.process_config, self.setup_intent.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { generated_card, process_config, setup_intent })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "generated_card" => Deserialize::begin(&mut self.builder.generated_card),
+                "process_config" => Deserialize::begin(&mut self.builder.process_config),
+                "setup_intent" => Deserialize::begin(&mut self.builder.setup_intent),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceProcessSetupIntentAction {
-        type Builder = TerminalReaderReaderResourceProcessSetupIntentActionBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceProcessSetupIntentAction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(generated_card), Some(process_config), Some(setup_intent)) = (
+                self.builder.generated_card.take(),
+                self.builder.process_config,
+                self.builder.setup_intent.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b =
-                TerminalReaderReaderResourceProcessSetupIntentActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "generated_card" => b.generated_card = FromValueOpt::from_value(v),
-                    "process_config" => b.process_config = FromValueOpt::from_value(v),
-                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TerminalReaderReaderResourceProcessSetupIntentAction {
+                generated_card,
+                process_config,
+                setup_intent,
+            });
+            Ok(())
         }
     }
 };

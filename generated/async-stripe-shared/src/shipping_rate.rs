@@ -60,16 +60,14 @@ pub struct ShippingRateBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -88,47 +86,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ShippingRateBuilder::deser_default(),
+                builder: ShippingRateBuilder {
+                    active: Deserialize::default(),
+                    created: Deserialize::default(),
+                    delivery_estimate: Deserialize::default(),
+                    display_name: Deserialize::default(),
+                    fixed_amount: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    tax_behavior: Deserialize::default(),
+                    tax_code: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ShippingRateBuilder {
-        type Out = ShippingRate;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
-                "created" => Deserialize::begin(&mut self.created),
-                "delivery_estimate" => Deserialize::begin(&mut self.delivery_estimate),
-                "display_name" => Deserialize::begin(&mut self.display_name),
-                "fixed_amount" => Deserialize::begin(&mut self.fixed_amount),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
-                "tax_code" => Deserialize::begin(&mut self.tax_code),
-                "type" => Deserialize::begin(&mut self.type_),
+                "active" => Deserialize::begin(&mut self.builder.active),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "delivery_estimate" => Deserialize::begin(&mut self.builder.delivery_estimate),
+                "display_name" => Deserialize::begin(&mut self.builder.display_name),
+                "fixed_amount" => Deserialize::begin(&mut self.builder.fixed_amount),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "tax_behavior" => Deserialize::begin(&mut self.builder.tax_behavior),
+                "tax_code" => Deserialize::begin(&mut self.builder.tax_code),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                active: Deserialize::default(),
-                created: Deserialize::default(),
-                delivery_estimate: Deserialize::default(),
-                display_name: Deserialize::default(),
-                fixed_amount: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                tax_behavior: Deserialize::default(),
-                tax_code: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(active),
                 Some(created),
@@ -142,22 +135,22 @@ const _: () = {
                 Some(tax_code),
                 Some(type_),
             ) = (
-                self.active,
-                self.created,
-                self.delivery_estimate.take(),
-                self.display_name.take(),
-                self.fixed_amount.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.tax_behavior.take(),
-                self.tax_code.take(),
-                self.type_.take(),
+                self.builder.active,
+                self.builder.created,
+                self.builder.delivery_estimate.take(),
+                self.builder.display_name.take(),
+                self.builder.fixed_amount.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.tax_behavior.take(),
+                self.builder.tax_code.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ShippingRate {
                 active,
                 created,
                 delivery_estimate,
@@ -169,48 +162,8 @@ const _: () = {
                 tax_behavior,
                 tax_code,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ShippingRate {
-        type Builder = ShippingRateBuilder;
-    }
-
-    impl FromValueOpt for ShippingRate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ShippingRateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "delivery_estimate" => b.delivery_estimate = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "fixed_amount" => b.fixed_amount = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
-                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -308,21 +261,19 @@ impl serde::Serialize for ShippingRateTaxBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ShippingRateTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ShippingRateTaxBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ShippingRateTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ShippingRateTaxBehavior> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ShippingRateTaxBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ShippingRateTaxBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ShippingRateTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -387,21 +338,19 @@ impl serde::Serialize for ShippingRateType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ShippingRateType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ShippingRateType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ShippingRateType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ShippingRateType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ShippingRateType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ShippingRateType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ShippingRateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

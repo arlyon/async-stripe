@@ -43,16 +43,14 @@ pub struct FundingInstructionsBankTransferZenginRecordBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -71,43 +69,40 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: FundingInstructionsBankTransferZenginRecordBuilder::deser_default(),
+                builder: FundingInstructionsBankTransferZenginRecordBuilder {
+                    account_holder_address: Deserialize::default(),
+                    account_holder_name: Deserialize::default(),
+                    account_number: Deserialize::default(),
+                    account_type: Deserialize::default(),
+                    bank_address: Deserialize::default(),
+                    bank_code: Deserialize::default(),
+                    bank_name: Deserialize::default(),
+                    branch_code: Deserialize::default(),
+                    branch_name: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for FundingInstructionsBankTransferZenginRecordBuilder {
-        type Out = FundingInstructionsBankTransferZenginRecord;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder_address" => Deserialize::begin(&mut self.account_holder_address),
-                "account_holder_name" => Deserialize::begin(&mut self.account_holder_name),
-                "account_number" => Deserialize::begin(&mut self.account_number),
-                "account_type" => Deserialize::begin(&mut self.account_type),
-                "bank_address" => Deserialize::begin(&mut self.bank_address),
-                "bank_code" => Deserialize::begin(&mut self.bank_code),
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "branch_code" => Deserialize::begin(&mut self.branch_code),
-                "branch_name" => Deserialize::begin(&mut self.branch_name),
+                "account_holder_address" => {
+                    Deserialize::begin(&mut self.builder.account_holder_address)
+                }
+                "account_holder_name" => Deserialize::begin(&mut self.builder.account_holder_name),
+                "account_number" => Deserialize::begin(&mut self.builder.account_number),
+                "account_type" => Deserialize::begin(&mut self.builder.account_type),
+                "bank_address" => Deserialize::begin(&mut self.builder.bank_address),
+                "bank_code" => Deserialize::begin(&mut self.builder.bank_code),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "branch_code" => Deserialize::begin(&mut self.builder.branch_code),
+                "branch_name" => Deserialize::begin(&mut self.builder.branch_name),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account_holder_address: Deserialize::default(),
-                account_holder_name: Deserialize::default(),
-                account_number: Deserialize::default(),
-                account_type: Deserialize::default(),
-                bank_address: Deserialize::default(),
-                bank_code: Deserialize::default(),
-                bank_name: Deserialize::default(),
-                branch_code: Deserialize::default(),
-                branch_name: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account_holder_address),
                 Some(account_holder_name),
@@ -119,20 +114,20 @@ const _: () = {
                 Some(branch_code),
                 Some(branch_name),
             ) = (
-                self.account_holder_address.take(),
-                self.account_holder_name.take(),
-                self.account_number.take(),
-                self.account_type.take(),
-                self.bank_address.take(),
-                self.bank_code.take(),
-                self.bank_name.take(),
-                self.branch_code.take(),
-                self.branch_name.take(),
+                self.builder.account_holder_address.take(),
+                self.builder.account_holder_name.take(),
+                self.builder.account_number.take(),
+                self.builder.account_type.take(),
+                self.builder.bank_address.take(),
+                self.builder.bank_code.take(),
+                self.builder.bank_name.take(),
+                self.builder.branch_code.take(),
+                self.builder.branch_name.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(FundingInstructionsBankTransferZenginRecord {
                 account_holder_address,
                 account_holder_name,
                 account_number,
@@ -142,48 +137,8 @@ const _: () = {
                 bank_name,
                 branch_code,
                 branch_name,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for FundingInstructionsBankTransferZenginRecord {
-        type Builder = FundingInstructionsBankTransferZenginRecordBuilder;
-    }
-
-    impl FromValueOpt for FundingInstructionsBankTransferZenginRecord {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FundingInstructionsBankTransferZenginRecordBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder_address" => {
-                        b.account_holder_address = FromValueOpt::from_value(v)
-                    }
-                    "account_holder_name" => b.account_holder_name = FromValueOpt::from_value(v),
-                    "account_number" => b.account_number = FromValueOpt::from_value(v),
-                    "account_type" => b.account_type = FromValueOpt::from_value(v),
-                    "bank_address" => b.bank_address = FromValueOpt::from_value(v),
-                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "branch_code" => b.branch_code = FromValueOpt::from_value(v),
-                    "branch_name" => b.branch_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

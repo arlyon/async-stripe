@@ -29,16 +29,14 @@ pub struct BillingBillResourceInvoicingParentsInvoiceSubscriptionParentBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,77 +54,42 @@ const _: () = {
     impl Visitor for Place<BillingBillResourceInvoicingParentsInvoiceSubscriptionParent> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
-            out: &mut self.out,
-            builder: BillingBillResourceInvoicingParentsInvoiceSubscriptionParentBuilder::deser_default(),
-        }))
-        }
-    }
-
-    impl MapBuilder for BillingBillResourceInvoicingParentsInvoiceSubscriptionParentBuilder {
-        type Out = BillingBillResourceInvoicingParentsInvoiceSubscriptionParent;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                "subscription_proration_date" => {
-                    Deserialize::begin(&mut self.subscription_proration_date)
-                }
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                metadata: Deserialize::default(),
-                subscription: Deserialize::default(),
-                subscription_proration_date: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(metadata), Some(subscription), Some(subscription_proration_date)) =
-                (self.metadata.take(), self.subscription.take(), self.subscription_proration_date)
-            else {
-                return None;
-            };
-            Some(Self::Out { metadata, subscription, subscription_proration_date })
+                out: &mut self.out,
+                builder: BillingBillResourceInvoicingParentsInvoiceSubscriptionParentBuilder {
+                    metadata: Deserialize::default(),
+                    subscription: Deserialize::default(),
+                    subscription_proration_date: Deserialize::default(),
+                },
+            }))
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "subscription" => Deserialize::begin(&mut self.builder.subscription),
+                "subscription_proration_date" => {
+                    Deserialize::begin(&mut self.builder.subscription_proration_date)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingBillResourceInvoicingParentsInvoiceSubscriptionParent {
-        type Builder = BillingBillResourceInvoicingParentsInvoiceSubscriptionParentBuilder;
-    }
-
-    impl FromValueOpt for BillingBillResourceInvoicingParentsInvoiceSubscriptionParent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(metadata), Some(subscription), Some(subscription_proration_date)) = (
+                self.builder.metadata.take(),
+                self.builder.subscription.take(),
+                self.builder.subscription_proration_date,
+            ) else {
+                return Ok(());
             };
-            let mut b =
-                BillingBillResourceInvoicingParentsInvoiceSubscriptionParentBuilder::deser_default(
-                );
-            for (k, v) in obj {
-                match k.as_str() {
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "subscription_proration_date" => {
-                        b.subscription_proration_date = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(BillingBillResourceInvoicingParentsInvoiceSubscriptionParent {
+                metadata,
+                subscription,
+                subscription_proration_date,
+            });
+            Ok(())
         }
     }
 };

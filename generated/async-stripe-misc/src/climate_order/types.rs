@@ -84,16 +84,14 @@ pub struct ClimateOrderBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -112,67 +110,66 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ClimateOrderBuilder::deser_default(),
+                builder: ClimateOrderBuilder {
+                    amount_fees: Deserialize::default(),
+                    amount_subtotal: Deserialize::default(),
+                    amount_total: Deserialize::default(),
+                    beneficiary: Deserialize::default(),
+                    canceled_at: Deserialize::default(),
+                    cancellation_reason: Deserialize::default(),
+                    certificate: Deserialize::default(),
+                    confirmed_at: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    delayed_at: Deserialize::default(),
+                    delivered_at: Deserialize::default(),
+                    delivery_details: Deserialize::default(),
+                    expected_delivery_year: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    metric_tons: Deserialize::default(),
+                    product: Deserialize::default(),
+                    product_substituted_at: Deserialize::default(),
+                    status: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ClimateOrderBuilder {
-        type Out = ClimateOrder;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_fees" => Deserialize::begin(&mut self.amount_fees),
-                "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
-                "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "beneficiary" => Deserialize::begin(&mut self.beneficiary),
-                "canceled_at" => Deserialize::begin(&mut self.canceled_at),
-                "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
-                "certificate" => Deserialize::begin(&mut self.certificate),
-                "confirmed_at" => Deserialize::begin(&mut self.confirmed_at),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "delayed_at" => Deserialize::begin(&mut self.delayed_at),
-                "delivered_at" => Deserialize::begin(&mut self.delivered_at),
-                "delivery_details" => Deserialize::begin(&mut self.delivery_details),
-                "expected_delivery_year" => Deserialize::begin(&mut self.expected_delivery_year),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "metric_tons" => Deserialize::begin(&mut self.metric_tons),
-                "product" => Deserialize::begin(&mut self.product),
-                "product_substituted_at" => Deserialize::begin(&mut self.product_substituted_at),
-                "status" => Deserialize::begin(&mut self.status),
+                "amount_fees" => Deserialize::begin(&mut self.builder.amount_fees),
+                "amount_subtotal" => Deserialize::begin(&mut self.builder.amount_subtotal),
+                "amount_total" => Deserialize::begin(&mut self.builder.amount_total),
+                "beneficiary" => Deserialize::begin(&mut self.builder.beneficiary),
+                "canceled_at" => Deserialize::begin(&mut self.builder.canceled_at),
+                "cancellation_reason" => Deserialize::begin(&mut self.builder.cancellation_reason),
+                "certificate" => Deserialize::begin(&mut self.builder.certificate),
+                "confirmed_at" => Deserialize::begin(&mut self.builder.confirmed_at),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "delayed_at" => Deserialize::begin(&mut self.builder.delayed_at),
+                "delivered_at" => Deserialize::begin(&mut self.builder.delivered_at),
+                "delivery_details" => Deserialize::begin(&mut self.builder.delivery_details),
+                "expected_delivery_year" => {
+                    Deserialize::begin(&mut self.builder.expected_delivery_year)
+                }
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "metric_tons" => Deserialize::begin(&mut self.builder.metric_tons),
+                "product" => Deserialize::begin(&mut self.builder.product),
+                "product_substituted_at" => {
+                    Deserialize::begin(&mut self.builder.product_substituted_at)
+                }
+                "status" => Deserialize::begin(&mut self.builder.status),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount_fees: Deserialize::default(),
-                amount_subtotal: Deserialize::default(),
-                amount_total: Deserialize::default(),
-                beneficiary: Deserialize::default(),
-                canceled_at: Deserialize::default(),
-                cancellation_reason: Deserialize::default(),
-                certificate: Deserialize::default(),
-                confirmed_at: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                delayed_at: Deserialize::default(),
-                delivered_at: Deserialize::default(),
-                delivery_details: Deserialize::default(),
-                expected_delivery_year: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                metric_tons: Deserialize::default(),
-                product: Deserialize::default(),
-                product_substituted_at: Deserialize::default(),
-                status: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount_fees),
                 Some(amount_subtotal),
@@ -196,32 +193,32 @@ const _: () = {
                 Some(product_substituted_at),
                 Some(status),
             ) = (
-                self.amount_fees,
-                self.amount_subtotal,
-                self.amount_total,
-                self.beneficiary.take(),
-                self.canceled_at,
-                self.cancellation_reason.take(),
-                self.certificate.take(),
-                self.confirmed_at,
-                self.created,
-                self.currency.take(),
-                self.delayed_at,
-                self.delivered_at,
-                self.delivery_details.take(),
-                self.expected_delivery_year,
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.metric_tons.take(),
-                self.product.take(),
-                self.product_substituted_at,
-                self.status.take(),
+                self.builder.amount_fees,
+                self.builder.amount_subtotal,
+                self.builder.amount_total,
+                self.builder.beneficiary.take(),
+                self.builder.canceled_at,
+                self.builder.cancellation_reason.take(),
+                self.builder.certificate.take(),
+                self.builder.confirmed_at,
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.delayed_at,
+                self.builder.delivered_at,
+                self.builder.delivery_details.take(),
+                self.builder.expected_delivery_year,
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.metric_tons.take(),
+                self.builder.product.take(),
+                self.builder.product_substituted_at,
+                self.builder.status.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ClimateOrder {
                 amount_fees,
                 amount_subtotal,
                 amount_total,
@@ -243,62 +240,8 @@ const _: () = {
                 product,
                 product_substituted_at,
                 status,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ClimateOrder {
-        type Builder = ClimateOrderBuilder;
-    }
-
-    impl FromValueOpt for ClimateOrder {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ClimateOrderBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_fees" => b.amount_fees = FromValueOpt::from_value(v),
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "beneficiary" => b.beneficiary = FromValueOpt::from_value(v),
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
-                    "certificate" => b.certificate = FromValueOpt::from_value(v),
-                    "confirmed_at" => b.confirmed_at = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "delayed_at" => b.delayed_at = FromValueOpt::from_value(v),
-                    "delivered_at" => b.delivered_at = FromValueOpt::from_value(v),
-                    "delivery_details" => b.delivery_details = FromValueOpt::from_value(v),
-                    "expected_delivery_year" => {
-                        b.expected_delivery_year = FromValueOpt::from_value(v)
-                    }
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "metric_tons" => b.metric_tons = FromValueOpt::from_value(v),
-                    "product" => b.product = FromValueOpt::from_value(v),
-                    "product_substituted_at" => {
-                        b.product_substituted_at = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -401,21 +344,19 @@ impl serde::Serialize for ClimateOrderCancellationReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ClimateOrderCancellationReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ClimateOrderCancellationReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ClimateOrderCancellationReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ClimateOrderCancellationReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ClimateOrderCancellationReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ClimateOrderCancellationReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ClimateOrderCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -494,21 +435,19 @@ impl serde::Serialize for ClimateOrderStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ClimateOrderStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ClimateOrderStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ClimateOrderStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ClimateOrderStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ClimateOrderStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ClimateOrderStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ClimateOrderStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

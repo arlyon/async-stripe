@@ -30,16 +30,14 @@ pub struct EntitlementsActiveEntitlementBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -58,73 +56,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: EntitlementsActiveEntitlementBuilder::deser_default(),
+                builder: EntitlementsActiveEntitlementBuilder {
+                    feature: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    lookup_key: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for EntitlementsActiveEntitlementBuilder {
-        type Out = EntitlementsActiveEntitlement;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "feature" => Deserialize::begin(&mut self.feature),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "lookup_key" => Deserialize::begin(&mut self.lookup_key),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                feature: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                lookup_key: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(feature), Some(id), Some(livemode), Some(lookup_key)) =
-                (self.feature.take(), self.id.take(), self.livemode, self.lookup_key.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { feature, id, livemode, lookup_key })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "feature" => Deserialize::begin(&mut self.builder.feature),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "lookup_key" => Deserialize::begin(&mut self.builder.lookup_key),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for EntitlementsActiveEntitlement {
-        type Builder = EntitlementsActiveEntitlementBuilder;
-    }
-
-    impl FromValueOpt for EntitlementsActiveEntitlement {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(feature), Some(id), Some(livemode), Some(lookup_key)) = (
+                self.builder.feature.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.lookup_key.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = EntitlementsActiveEntitlementBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "feature" => b.feature = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(EntitlementsActiveEntitlement { feature, id, livemode, lookup_key });
+            Ok(())
         }
     }
 };

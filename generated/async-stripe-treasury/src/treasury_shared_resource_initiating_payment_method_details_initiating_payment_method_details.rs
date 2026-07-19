@@ -45,16 +45,14 @@ us_bank_account: Option<Option<stripe_treasury::TreasurySharedResourceInitiating
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -79,92 +77,51 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBuilder::deser_default(),
-        }))
-        }
-    }
-
-    impl MapBuilder for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBuilder {
-    type Out = TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails;
-    fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-        Ok(match k {
-            "balance" => Deserialize::begin(&mut self.balance),
-            "billing_details" => Deserialize::begin(&mut self.billing_details),
-            "financial_account" => Deserialize::begin(&mut self.financial_account),
-            "issuing_card" => Deserialize::begin(&mut self.issuing_card),
-            "type" => Deserialize::begin(&mut self.type_),
-            "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
-            _ => <dyn Visitor>::ignore(),
-        })
-    }
-
-    fn deser_default() -> Self {
-        Self { balance: Deserialize::default(),
+            builder: TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBuilder { balance: Deserialize::default(),
 billing_details: Deserialize::default(),
 financial_account: Deserialize::default(),
 issuing_card: Deserialize::default(),
 type_: Deserialize::default(),
 us_bank_account: Deserialize::default(),
- }
+ },
+        }))
+        }
     }
-
-    fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(balance),
-Some(billing_details),
-Some(financial_account),
-Some(issuing_card),
-Some(type_),
-Some(us_bank_account),
-) = (self.balance.take(),
-self.billing_details.take(),
-self.financial_account.take(),
-self.issuing_card.take(),
-self.type_.take(),
-self.us_bank_account.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { balance,billing_details,financial_account,issuing_card,type_,us_bank_account })
-    }
-}
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "balance" => Deserialize::begin(&mut self.builder.balance),
+                "billing_details" => Deserialize::begin(&mut self.builder.billing_details),
+                "financial_account" => Deserialize::begin(&mut self.builder.financial_account),
+                "issuing_card" => Deserialize::begin(&mut self.builder.issuing_card),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "us_bank_account" => Deserialize::begin(&mut self.builder.us_bank_account),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser
-        for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails
-    {
-        type Builder = TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBuilder;
-    }
-
-    impl FromValueOpt
-        for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails
-    {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (
+                Some(balance),
+                Some(billing_details),
+                Some(financial_account),
+                Some(issuing_card),
+                Some(type_),
+                Some(us_bank_account),
+            ) = (
+                self.builder.balance.take(),
+                self.builder.billing_details.take(),
+                self.builder.financial_account.take(),
+                self.builder.issuing_card.take(),
+                self.builder.type_.take(),
+                self.builder.us_bank_account.take(),
+            )
+            else {
+                return Ok(());
             };
-            let mut b = TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "balance" => b.balance = FromValueOpt::from_value(v),
-                    "billing_details" => b.billing_details = FromValueOpt::from_value(v),
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "issuing_card" => b.issuing_card = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails { balance,billing_details,financial_account,issuing_card,type_,us_bank_account });
+            Ok(())
         }
     }
 };
@@ -240,29 +197,25 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
+impl stripe_miniserde::Deserialize
     for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<
         TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance,
     >
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance
@@ -361,29 +314,25 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
+impl stripe_miniserde::Deserialize
     for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<
         TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType,
     >
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType

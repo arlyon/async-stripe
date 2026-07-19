@@ -39,16 +39,14 @@ pub struct PaymentMethodDetailsPaypalBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,37 +65,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsPaypalBuilder::deser_default(),
+                builder: PaymentMethodDetailsPaypalBuilder {
+                    country: Deserialize::default(),
+                    payer_email: Deserialize::default(),
+                    payer_id: Deserialize::default(),
+                    payer_name: Deserialize::default(),
+                    seller_protection: Deserialize::default(),
+                    transaction_id: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodDetailsPaypalBuilder {
-        type Out = PaymentMethodDetailsPaypal;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "country" => Deserialize::begin(&mut self.country),
-                "payer_email" => Deserialize::begin(&mut self.payer_email),
-                "payer_id" => Deserialize::begin(&mut self.payer_id),
-                "payer_name" => Deserialize::begin(&mut self.payer_name),
-                "seller_protection" => Deserialize::begin(&mut self.seller_protection),
-                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "payer_email" => Deserialize::begin(&mut self.builder.payer_email),
+                "payer_id" => Deserialize::begin(&mut self.builder.payer_id),
+                "payer_name" => Deserialize::begin(&mut self.builder.payer_name),
+                "seller_protection" => Deserialize::begin(&mut self.builder.seller_protection),
+                "transaction_id" => Deserialize::begin(&mut self.builder.transaction_id),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                country: Deserialize::default(),
-                payer_email: Deserialize::default(),
-                payer_id: Deserialize::default(),
-                payer_name: Deserialize::default(),
-                seller_protection: Deserialize::default(),
-                transaction_id: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(country),
                 Some(payer_email),
@@ -106,60 +99,25 @@ const _: () = {
                 Some(seller_protection),
                 Some(transaction_id),
             ) = (
-                self.country.take(),
-                self.payer_email.take(),
-                self.payer_id.take(),
-                self.payer_name.take(),
-                self.seller_protection.take(),
-                self.transaction_id.take(),
+                self.builder.country.take(),
+                self.builder.payer_email.take(),
+                self.builder.payer_id.take(),
+                self.builder.payer_name.take(),
+                self.builder.seller_protection.take(),
+                self.builder.transaction_id.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodDetailsPaypal {
                 country,
                 payer_email,
                 payer_id,
                 payer_name,
                 seller_protection,
                 transaction_id,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsPaypal {
-        type Builder = PaymentMethodDetailsPaypalBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsPaypal {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsPaypalBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "payer_email" => b.payer_email = FromValueOpt::from_value(v),
-                    "payer_id" => b.payer_id = FromValueOpt::from_value(v),
-                    "payer_name" => b.payer_name = FromValueOpt::from_value(v),
-                    "seller_protection" => b.seller_protection = FromValueOpt::from_value(v),
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

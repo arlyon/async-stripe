@@ -47,16 +47,14 @@ pub struct ThreeDSecureDetailsChargeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -75,45 +73,40 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ThreeDSecureDetailsChargeBuilder::deser_default(),
+                builder: ThreeDSecureDetailsChargeBuilder {
+                    authentication_flow: Deserialize::default(),
+                    electronic_commerce_indicator: Deserialize::default(),
+                    exemption_indicator: Deserialize::default(),
+                    exemption_indicator_applied: Deserialize::default(),
+                    result: Deserialize::default(),
+                    result_reason: Deserialize::default(),
+                    transaction_id: Deserialize::default(),
+                    version: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ThreeDSecureDetailsChargeBuilder {
-        type Out = ThreeDSecureDetailsCharge;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "authentication_flow" => Deserialize::begin(&mut self.authentication_flow),
+                "authentication_flow" => Deserialize::begin(&mut self.builder.authentication_flow),
                 "electronic_commerce_indicator" => {
-                    Deserialize::begin(&mut self.electronic_commerce_indicator)
+                    Deserialize::begin(&mut self.builder.electronic_commerce_indicator)
                 }
-                "exemption_indicator" => Deserialize::begin(&mut self.exemption_indicator),
+                "exemption_indicator" => Deserialize::begin(&mut self.builder.exemption_indicator),
                 "exemption_indicator_applied" => {
-                    Deserialize::begin(&mut self.exemption_indicator_applied)
+                    Deserialize::begin(&mut self.builder.exemption_indicator_applied)
                 }
-                "result" => Deserialize::begin(&mut self.result),
-                "result_reason" => Deserialize::begin(&mut self.result_reason),
-                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-                "version" => Deserialize::begin(&mut self.version),
+                "result" => Deserialize::begin(&mut self.builder.result),
+                "result_reason" => Deserialize::begin(&mut self.builder.result_reason),
+                "transaction_id" => Deserialize::begin(&mut self.builder.transaction_id),
+                "version" => Deserialize::begin(&mut self.builder.version),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                authentication_flow: Deserialize::default(),
-                electronic_commerce_indicator: Deserialize::default(),
-                exemption_indicator: Deserialize::default(),
-                exemption_indicator_applied: Deserialize::default(),
-                result: Deserialize::default(),
-                result_reason: Deserialize::default(),
-                transaction_id: Deserialize::default(),
-                version: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(authentication_flow),
                 Some(electronic_commerce_indicator),
@@ -124,19 +117,19 @@ const _: () = {
                 Some(transaction_id),
                 Some(version),
             ) = (
-                self.authentication_flow.take(),
-                self.electronic_commerce_indicator.take(),
-                self.exemption_indicator.take(),
-                self.exemption_indicator_applied,
-                self.result.take(),
-                self.result_reason.take(),
-                self.transaction_id.take(),
-                self.version.take(),
+                self.builder.authentication_flow.take(),
+                self.builder.electronic_commerce_indicator.take(),
+                self.builder.exemption_indicator.take(),
+                self.builder.exemption_indicator_applied,
+                self.builder.result.take(),
+                self.builder.result_reason.take(),
+                self.builder.transaction_id.take(),
+                self.builder.version.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ThreeDSecureDetailsCharge {
                 authentication_flow,
                 electronic_commerce_indicator,
                 exemption_indicator,
@@ -145,49 +138,8 @@ const _: () = {
                 result_reason,
                 transaction_id,
                 version,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ThreeDSecureDetailsCharge {
-        type Builder = ThreeDSecureDetailsChargeBuilder;
-    }
-
-    impl FromValueOpt for ThreeDSecureDetailsCharge {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ThreeDSecureDetailsChargeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "authentication_flow" => b.authentication_flow = FromValueOpt::from_value(v),
-                    "electronic_commerce_indicator" => {
-                        b.electronic_commerce_indicator = FromValueOpt::from_value(v)
-                    }
-                    "exemption_indicator" => b.exemption_indicator = FromValueOpt::from_value(v),
-                    "exemption_indicator_applied" => {
-                        b.exemption_indicator_applied = FromValueOpt::from_value(v)
-                    }
-                    "result" => b.result = FromValueOpt::from_value(v),
-                    "result_reason" => b.result_reason = FromValueOpt::from_value(v),
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    "version" => b.version = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -258,22 +210,20 @@ impl serde::Serialize for ThreeDSecureDetailsChargeAuthenticationFlow {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsChargeAuthenticationFlow {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsChargeAuthenticationFlow {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeAuthenticationFlow> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeAuthenticationFlow> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(ThreeDSecureDetailsChargeAuthenticationFlow::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeAuthenticationFlow);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeAuthenticationFlow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -358,14 +308,14 @@ impl serde::Serialize for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeElectronicCommerceIndicator> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeElectronicCommerceIndicator> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             ThreeDSecureDetailsChargeElectronicCommerceIndicator::from_str(s).expect("infallible"),
@@ -373,8 +323,6 @@ impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeElectronic
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeElectronicCommerceIndicator);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -449,22 +397,20 @@ impl serde::Serialize for ThreeDSecureDetailsChargeExemptionIndicator {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsChargeExemptionIndicator {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsChargeExemptionIndicator {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeExemptionIndicator> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeExemptionIndicator> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(ThreeDSecureDetailsChargeExemptionIndicator::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeExemptionIndicator);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeExemptionIndicator {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -550,21 +496,19 @@ impl serde::Serialize for ThreeDSecureDetailsChargeResult {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsChargeResult {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsChargeResult {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeResult> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeResult> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ThreeDSecureDetailsChargeResult::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeResult);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeResult {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -654,21 +598,19 @@ impl serde::Serialize for ThreeDSecureDetailsChargeResultReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsChargeResultReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsChargeResultReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeResultReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeResultReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ThreeDSecureDetailsChargeResultReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeResultReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeResultReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -751,21 +693,19 @@ impl serde::Serialize for ThreeDSecureDetailsChargeVersion {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ThreeDSecureDetailsChargeVersion {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ThreeDSecureDetailsChargeVersion {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeVersion> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeVersion> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ThreeDSecureDetailsChargeVersion::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeVersion);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeVersion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -91,16 +91,14 @@ pub struct LegalEntityCompanyBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -119,75 +117,72 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: LegalEntityCompanyBuilder::deser_default(),
+                builder: LegalEntityCompanyBuilder {
+                    address: Deserialize::default(),
+                    address_kana: Deserialize::default(),
+                    address_kanji: Deserialize::default(),
+                    directors_provided: Deserialize::default(),
+                    directorship_declaration: Deserialize::default(),
+                    executives_provided: Deserialize::default(),
+                    export_license_id: Deserialize::default(),
+                    export_purpose_code: Deserialize::default(),
+                    name: Deserialize::default(),
+                    name_kana: Deserialize::default(),
+                    name_kanji: Deserialize::default(),
+                    owners_provided: Deserialize::default(),
+                    ownership_declaration: Deserialize::default(),
+                    ownership_exemption_reason: Deserialize::default(),
+                    phone: Deserialize::default(),
+                    registration_date: Deserialize::default(),
+                    representative_declaration: Deserialize::default(),
+                    structure: Deserialize::default(),
+                    tax_id_provided: Deserialize::default(),
+                    tax_id_registrar: Deserialize::default(),
+                    vat_id_provided: Deserialize::default(),
+                    verification: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for LegalEntityCompanyBuilder {
-        type Out = LegalEntityCompany;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
-                "address_kana" => Deserialize::begin(&mut self.address_kana),
-                "address_kanji" => Deserialize::begin(&mut self.address_kanji),
-                "directors_provided" => Deserialize::begin(&mut self.directors_provided),
+                "address" => Deserialize::begin(&mut self.builder.address),
+                "address_kana" => Deserialize::begin(&mut self.builder.address_kana),
+                "address_kanji" => Deserialize::begin(&mut self.builder.address_kanji),
+                "directors_provided" => Deserialize::begin(&mut self.builder.directors_provided),
                 "directorship_declaration" => {
-                    Deserialize::begin(&mut self.directorship_declaration)
+                    Deserialize::begin(&mut self.builder.directorship_declaration)
                 }
-                "executives_provided" => Deserialize::begin(&mut self.executives_provided),
-                "export_license_id" => Deserialize::begin(&mut self.export_license_id),
-                "export_purpose_code" => Deserialize::begin(&mut self.export_purpose_code),
-                "name" => Deserialize::begin(&mut self.name),
-                "name_kana" => Deserialize::begin(&mut self.name_kana),
-                "name_kanji" => Deserialize::begin(&mut self.name_kanji),
-                "owners_provided" => Deserialize::begin(&mut self.owners_provided),
-                "ownership_declaration" => Deserialize::begin(&mut self.ownership_declaration),
+                "executives_provided" => Deserialize::begin(&mut self.builder.executives_provided),
+                "export_license_id" => Deserialize::begin(&mut self.builder.export_license_id),
+                "export_purpose_code" => Deserialize::begin(&mut self.builder.export_purpose_code),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "name_kana" => Deserialize::begin(&mut self.builder.name_kana),
+                "name_kanji" => Deserialize::begin(&mut self.builder.name_kanji),
+                "owners_provided" => Deserialize::begin(&mut self.builder.owners_provided),
+                "ownership_declaration" => {
+                    Deserialize::begin(&mut self.builder.ownership_declaration)
+                }
                 "ownership_exemption_reason" => {
-                    Deserialize::begin(&mut self.ownership_exemption_reason)
+                    Deserialize::begin(&mut self.builder.ownership_exemption_reason)
                 }
-                "phone" => Deserialize::begin(&mut self.phone),
-                "registration_date" => Deserialize::begin(&mut self.registration_date),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                "registration_date" => Deserialize::begin(&mut self.builder.registration_date),
                 "representative_declaration" => {
-                    Deserialize::begin(&mut self.representative_declaration)
+                    Deserialize::begin(&mut self.builder.representative_declaration)
                 }
-                "structure" => Deserialize::begin(&mut self.structure),
-                "tax_id_provided" => Deserialize::begin(&mut self.tax_id_provided),
-                "tax_id_registrar" => Deserialize::begin(&mut self.tax_id_registrar),
-                "vat_id_provided" => Deserialize::begin(&mut self.vat_id_provided),
-                "verification" => Deserialize::begin(&mut self.verification),
+                "structure" => Deserialize::begin(&mut self.builder.structure),
+                "tax_id_provided" => Deserialize::begin(&mut self.builder.tax_id_provided),
+                "tax_id_registrar" => Deserialize::begin(&mut self.builder.tax_id_registrar),
+                "vat_id_provided" => Deserialize::begin(&mut self.builder.vat_id_provided),
+                "verification" => Deserialize::begin(&mut self.builder.verification),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                address: Deserialize::default(),
-                address_kana: Deserialize::default(),
-                address_kanji: Deserialize::default(),
-                directors_provided: Deserialize::default(),
-                directorship_declaration: Deserialize::default(),
-                executives_provided: Deserialize::default(),
-                export_license_id: Deserialize::default(),
-                export_purpose_code: Deserialize::default(),
-                name: Deserialize::default(),
-                name_kana: Deserialize::default(),
-                name_kanji: Deserialize::default(),
-                owners_provided: Deserialize::default(),
-                ownership_declaration: Deserialize::default(),
-                ownership_exemption_reason: Deserialize::default(),
-                phone: Deserialize::default(),
-                registration_date: Deserialize::default(),
-                representative_declaration: Deserialize::default(),
-                structure: Deserialize::default(),
-                tax_id_provided: Deserialize::default(),
-                tax_id_registrar: Deserialize::default(),
-                vat_id_provided: Deserialize::default(),
-                verification: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(address),
                 Some(address_kana),
@@ -212,33 +207,33 @@ const _: () = {
                 Some(vat_id_provided),
                 Some(verification),
             ) = (
-                self.address.take(),
-                self.address_kana.take(),
-                self.address_kanji.take(),
-                self.directors_provided,
-                self.directorship_declaration.take(),
-                self.executives_provided,
-                self.export_license_id.take(),
-                self.export_purpose_code.take(),
-                self.name.take(),
-                self.name_kana.take(),
-                self.name_kanji.take(),
-                self.owners_provided,
-                self.ownership_declaration.take(),
-                self.ownership_exemption_reason.take(),
-                self.phone.take(),
-                self.registration_date,
-                self.representative_declaration.take(),
-                self.structure.take(),
-                self.tax_id_provided,
-                self.tax_id_registrar.take(),
-                self.vat_id_provided,
-                self.verification.take(),
+                self.builder.address.take(),
+                self.builder.address_kana.take(),
+                self.builder.address_kanji.take(),
+                self.builder.directors_provided,
+                self.builder.directorship_declaration.take(),
+                self.builder.executives_provided,
+                self.builder.export_license_id.take(),
+                self.builder.export_purpose_code.take(),
+                self.builder.name.take(),
+                self.builder.name_kana.take(),
+                self.builder.name_kanji.take(),
+                self.builder.owners_provided,
+                self.builder.ownership_declaration.take(),
+                self.builder.ownership_exemption_reason.take(),
+                self.builder.phone.take(),
+                self.builder.registration_date,
+                self.builder.representative_declaration.take(),
+                self.builder.structure.take(),
+                self.builder.tax_id_provided,
+                self.builder.tax_id_registrar.take(),
+                self.builder.vat_id_provided,
+                self.builder.verification.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(LegalEntityCompany {
                 address,
                 address_kana,
                 address_kanji,
@@ -261,67 +256,8 @@ const _: () = {
                 tax_id_registrar,
                 vat_id_provided,
                 verification,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for LegalEntityCompany {
-        type Builder = LegalEntityCompanyBuilder;
-    }
-
-    impl FromValueOpt for LegalEntityCompany {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = LegalEntityCompanyBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_kana" => b.address_kana = FromValueOpt::from_value(v),
-                    "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
-                    "directors_provided" => b.directors_provided = FromValueOpt::from_value(v),
-                    "directorship_declaration" => {
-                        b.directorship_declaration = FromValueOpt::from_value(v)
-                    }
-                    "executives_provided" => b.executives_provided = FromValueOpt::from_value(v),
-                    "export_license_id" => b.export_license_id = FromValueOpt::from_value(v),
-                    "export_purpose_code" => b.export_purpose_code = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "name_kana" => b.name_kana = FromValueOpt::from_value(v),
-                    "name_kanji" => b.name_kanji = FromValueOpt::from_value(v),
-                    "owners_provided" => b.owners_provided = FromValueOpt::from_value(v),
-                    "ownership_declaration" => {
-                        b.ownership_declaration = FromValueOpt::from_value(v)
-                    }
-                    "ownership_exemption_reason" => {
-                        b.ownership_exemption_reason = FromValueOpt::from_value(v)
-                    }
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "registration_date" => b.registration_date = FromValueOpt::from_value(v),
-                    "representative_declaration" => {
-                        b.representative_declaration = FromValueOpt::from_value(v)
-                    }
-                    "structure" => b.structure = FromValueOpt::from_value(v),
-                    "tax_id_provided" => b.tax_id_provided = FromValueOpt::from_value(v),
-                    "tax_id_registrar" => b.tax_id_registrar = FromValueOpt::from_value(v),
-                    "vat_id_provided" => b.vat_id_provided = FromValueOpt::from_value(v),
-                    "verification" => b.verification = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -396,22 +332,20 @@ impl serde::Serialize for LegalEntityCompanyOwnershipExemptionReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for LegalEntityCompanyOwnershipExemptionReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for LegalEntityCompanyOwnershipExemptionReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<LegalEntityCompanyOwnershipExemptionReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<LegalEntityCompanyOwnershipExemptionReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(LegalEntityCompanyOwnershipExemptionReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(LegalEntityCompanyOwnershipExemptionReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for LegalEntityCompanyOwnershipExemptionReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -550,21 +484,19 @@ impl serde::Serialize for LegalEntityCompanyStructure {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for LegalEntityCompanyStructure {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for LegalEntityCompanyStructure {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<LegalEntityCompanyStructure> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<LegalEntityCompanyStructure> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(LegalEntityCompanyStructure::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(LegalEntityCompanyStructure);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for LegalEntityCompanyStructure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -149,16 +149,14 @@ pub struct SetupIntentBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -177,83 +175,82 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SetupIntentBuilder::deser_default(),
+                builder: SetupIntentBuilder {
+                    application: Deserialize::default(),
+                    attach_to_self: Deserialize::default(),
+                    automatic_payment_methods: Deserialize::default(),
+                    cancellation_reason: Deserialize::default(),
+                    client_secret: Deserialize::default(),
+                    created: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    description: Deserialize::default(),
+                    excluded_payment_method_types: Deserialize::default(),
+                    flow_directions: Deserialize::default(),
+                    id: Deserialize::default(),
+                    last_setup_error: Deserialize::default(),
+                    latest_attempt: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    mandate: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    next_action: Deserialize::default(),
+                    on_behalf_of: Deserialize::default(),
+                    payment_method: Deserialize::default(),
+                    payment_method_configuration_details: Deserialize::default(),
+                    payment_method_options: Deserialize::default(),
+                    payment_method_types: Deserialize::default(),
+                    single_use_mandate: Deserialize::default(),
+                    status: Deserialize::default(),
+                    usage: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SetupIntentBuilder {
-        type Out = SetupIntent;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "application" => Deserialize::begin(&mut self.application),
-                "attach_to_self" => Deserialize::begin(&mut self.attach_to_self),
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "attach_to_self" => Deserialize::begin(&mut self.builder.attach_to_self),
                 "automatic_payment_methods" => {
-                    Deserialize::begin(&mut self.automatic_payment_methods)
+                    Deserialize::begin(&mut self.builder.automatic_payment_methods)
                 }
-                "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
-                "client_secret" => Deserialize::begin(&mut self.client_secret),
-                "created" => Deserialize::begin(&mut self.created),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "description" => Deserialize::begin(&mut self.description),
+                "cancellation_reason" => Deserialize::begin(&mut self.builder.cancellation_reason),
+                "client_secret" => Deserialize::begin(&mut self.builder.client_secret),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "description" => Deserialize::begin(&mut self.builder.description),
                 "excluded_payment_method_types" => {
-                    Deserialize::begin(&mut self.excluded_payment_method_types)
+                    Deserialize::begin(&mut self.builder.excluded_payment_method_types)
                 }
-                "flow_directions" => Deserialize::begin(&mut self.flow_directions),
-                "id" => Deserialize::begin(&mut self.id),
-                "last_setup_error" => Deserialize::begin(&mut self.last_setup_error),
-                "latest_attempt" => Deserialize::begin(&mut self.latest_attempt),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "mandate" => Deserialize::begin(&mut self.mandate),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "next_action" => Deserialize::begin(&mut self.next_action),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
+                "flow_directions" => Deserialize::begin(&mut self.builder.flow_directions),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "last_setup_error" => Deserialize::begin(&mut self.builder.last_setup_error),
+                "latest_attempt" => Deserialize::begin(&mut self.builder.latest_attempt),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "mandate" => Deserialize::begin(&mut self.builder.mandate),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "next_action" => Deserialize::begin(&mut self.builder.next_action),
+                "on_behalf_of" => Deserialize::begin(&mut self.builder.on_behalf_of),
+                "payment_method" => Deserialize::begin(&mut self.builder.payment_method),
                 "payment_method_configuration_details" => {
-                    Deserialize::begin(&mut self.payment_method_configuration_details)
+                    Deserialize::begin(&mut self.builder.payment_method_configuration_details)
                 }
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
-                "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
-                "single_use_mandate" => Deserialize::begin(&mut self.single_use_mandate),
-                "status" => Deserialize::begin(&mut self.status),
-                "usage" => Deserialize::begin(&mut self.usage),
+                "payment_method_options" => {
+                    Deserialize::begin(&mut self.builder.payment_method_options)
+                }
+                "payment_method_types" => {
+                    Deserialize::begin(&mut self.builder.payment_method_types)
+                }
+                "single_use_mandate" => Deserialize::begin(&mut self.builder.single_use_mandate),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "usage" => Deserialize::begin(&mut self.builder.usage),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                application: Deserialize::default(),
-                attach_to_self: Deserialize::default(),
-                automatic_payment_methods: Deserialize::default(),
-                cancellation_reason: Deserialize::default(),
-                client_secret: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                description: Deserialize::default(),
-                excluded_payment_method_types: Deserialize::default(),
-                flow_directions: Deserialize::default(),
-                id: Deserialize::default(),
-                last_setup_error: Deserialize::default(),
-                latest_attempt: Deserialize::default(),
-                livemode: Deserialize::default(),
-                mandate: Deserialize::default(),
-                metadata: Deserialize::default(),
-                next_action: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                payment_method: Deserialize::default(),
-                payment_method_configuration_details: Deserialize::default(),
-                payment_method_options: Deserialize::default(),
-                payment_method_types: Deserialize::default(),
-                single_use_mandate: Deserialize::default(),
-                status: Deserialize::default(),
-                usage: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(application),
                 Some(attach_to_self),
@@ -282,37 +279,37 @@ const _: () = {
                 Some(status),
                 Some(usage),
             ) = (
-                self.application.take(),
-                self.attach_to_self,
-                self.automatic_payment_methods.take(),
-                self.cancellation_reason.take(),
-                self.client_secret.take(),
-                self.created,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.description.take(),
-                self.excluded_payment_method_types.take(),
-                self.flow_directions.take(),
-                self.id.take(),
-                self.last_setup_error.take(),
-                self.latest_attempt.take(),
-                self.livemode,
-                self.mandate.take(),
-                self.metadata.take(),
-                self.next_action.take(),
-                self.on_behalf_of.take(),
-                self.payment_method.take(),
-                self.payment_method_configuration_details.take(),
-                self.payment_method_options.take(),
-                self.payment_method_types.take(),
-                self.single_use_mandate.take(),
-                self.status.take(),
-                self.usage.take(),
+                self.builder.application.take(),
+                self.builder.attach_to_self,
+                self.builder.automatic_payment_methods.take(),
+                self.builder.cancellation_reason.take(),
+                self.builder.client_secret.take(),
+                self.builder.created,
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.description.take(),
+                self.builder.excluded_payment_method_types.take(),
+                self.builder.flow_directions.take(),
+                self.builder.id.take(),
+                self.builder.last_setup_error.take(),
+                self.builder.latest_attempt.take(),
+                self.builder.livemode,
+                self.builder.mandate.take(),
+                self.builder.metadata.take(),
+                self.builder.next_action.take(),
+                self.builder.on_behalf_of.take(),
+                self.builder.payment_method.take(),
+                self.builder.payment_method_configuration_details.take(),
+                self.builder.payment_method_options.take(),
+                self.builder.payment_method_types.take(),
+                self.builder.single_use_mandate.take(),
+                self.builder.status.take(),
+                self.builder.usage.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SetupIntent {
                 application,
                 attach_to_self,
                 automatic_payment_methods,
@@ -339,71 +336,8 @@ const _: () = {
                 single_use_mandate,
                 status,
                 usage,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SetupIntent {
-        type Builder = SetupIntentBuilder;
-    }
-
-    impl FromValueOpt for SetupIntent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupIntentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "attach_to_self" => b.attach_to_self = FromValueOpt::from_value(v),
-                    "automatic_payment_methods" => {
-                        b.automatic_payment_methods = FromValueOpt::from_value(v)
-                    }
-                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "excluded_payment_method_types" => {
-                        b.excluded_payment_method_types = FromValueOpt::from_value(v)
-                    }
-                    "flow_directions" => b.flow_directions = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last_setup_error" => b.last_setup_error = FromValueOpt::from_value(v),
-                    "latest_attempt" => b.latest_attempt = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "mandate" => b.mandate = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "next_action" => b.next_action = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_configuration_details" => {
-                        b.payment_method_configuration_details = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
-                    "single_use_mandate" => b.single_use_mandate = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "usage" => b.usage = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -519,21 +453,19 @@ impl serde::Serialize for SetupIntentStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SetupIntentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SetupIntentStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SetupIntentStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SetupIntentStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(SetupIntentStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SetupIntentStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -619,21 +551,19 @@ impl serde::Serialize for SetupIntentCancellationReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SetupIntentCancellationReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SetupIntentCancellationReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SetupIntentCancellationReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SetupIntentCancellationReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(SetupIntentCancellationReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SetupIntentCancellationReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -849,21 +779,19 @@ impl serde::Serialize for SetupIntentExcludedPaymentMethodTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SetupIntentExcludedPaymentMethodTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SetupIntentExcludedPaymentMethodTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SetupIntentExcludedPaymentMethodTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SetupIntentExcludedPaymentMethodTypes> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(SetupIntentExcludedPaymentMethodTypes::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SetupIntentExcludedPaymentMethodTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentExcludedPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -931,21 +859,19 @@ impl serde::Serialize for SetupIntentFlowDirections {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SetupIntentFlowDirections {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SetupIntentFlowDirections {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<SetupIntentFlowDirections> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<SetupIntentFlowDirections> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(SetupIntentFlowDirections::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(SetupIntentFlowDirections);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentFlowDirections {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

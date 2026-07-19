@@ -36,16 +36,14 @@ pub struct PaymentsPrimitivesPaymentRecordsResourceAddressBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -64,37 +62,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentsPrimitivesPaymentRecordsResourceAddressBuilder::deser_default(),
+                builder: PaymentsPrimitivesPaymentRecordsResourceAddressBuilder {
+                    city: Deserialize::default(),
+                    country: Deserialize::default(),
+                    line1: Deserialize::default(),
+                    line2: Deserialize::default(),
+                    postal_code: Deserialize::default(),
+                    state: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentsPrimitivesPaymentRecordsResourceAddressBuilder {
-        type Out = PaymentsPrimitivesPaymentRecordsResourceAddress;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "city" => Deserialize::begin(&mut self.city),
-                "country" => Deserialize::begin(&mut self.country),
-                "line1" => Deserialize::begin(&mut self.line1),
-                "line2" => Deserialize::begin(&mut self.line2),
-                "postal_code" => Deserialize::begin(&mut self.postal_code),
-                "state" => Deserialize::begin(&mut self.state),
+                "city" => Deserialize::begin(&mut self.builder.city),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "line1" => Deserialize::begin(&mut self.builder.line1),
+                "line2" => Deserialize::begin(&mut self.builder.line2),
+                "postal_code" => Deserialize::begin(&mut self.builder.postal_code),
+                "state" => Deserialize::begin(&mut self.builder.state),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                city: Deserialize::default(),
-                country: Deserialize::default(),
-                line1: Deserialize::default(),
-                line2: Deserialize::default(),
-                postal_code: Deserialize::default(),
-                state: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(city),
                 Some(country),
@@ -103,53 +96,25 @@ const _: () = {
                 Some(postal_code),
                 Some(state),
             ) = (
-                self.city.take(),
-                self.country.take(),
-                self.line1.take(),
-                self.line2.take(),
-                self.postal_code.take(),
-                self.state.take(),
+                self.builder.city.take(),
+                self.builder.country.take(),
+                self.builder.line1.take(),
+                self.builder.line2.take(),
+                self.builder.postal_code.take(),
+                self.builder.state.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { city, country, line1, line2, postal_code, state })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(PaymentsPrimitivesPaymentRecordsResourceAddress {
+                city,
+                country,
+                line1,
+                line2,
+                postal_code,
+                state,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentsPrimitivesPaymentRecordsResourceAddress {
-        type Builder = PaymentsPrimitivesPaymentRecordsResourceAddressBuilder;
-    }
-
-    impl FromValueOpt for PaymentsPrimitivesPaymentRecordsResourceAddress {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentsPrimitivesPaymentRecordsResourceAddressBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "city" => b.city = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "line1" => b.line1 = FromValueOpt::from_value(v),
-                    "line2" => b.line2 = FromValueOpt::from_value(v),
-                    "postal_code" => b.postal_code = FromValueOpt::from_value(v),
-                    "state" => b.state = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -32,16 +32,14 @@ pub struct QuotesResourceRecurringBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,35 +58,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: QuotesResourceRecurringBuilder::deser_default(),
+                builder: QuotesResourceRecurringBuilder {
+                    amount_subtotal: Deserialize::default(),
+                    amount_total: Deserialize::default(),
+                    interval: Deserialize::default(),
+                    interval_count: Deserialize::default(),
+                    total_details: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for QuotesResourceRecurringBuilder {
-        type Out = QuotesResourceRecurring;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
-                "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "interval" => Deserialize::begin(&mut self.interval),
-                "interval_count" => Deserialize::begin(&mut self.interval_count),
-                "total_details" => Deserialize::begin(&mut self.total_details),
+                "amount_subtotal" => Deserialize::begin(&mut self.builder.amount_subtotal),
+                "amount_total" => Deserialize::begin(&mut self.builder.amount_total),
+                "interval" => Deserialize::begin(&mut self.builder.interval),
+                "interval_count" => Deserialize::begin(&mut self.builder.interval_count),
+                "total_details" => Deserialize::begin(&mut self.builder.total_details),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount_subtotal: Deserialize::default(),
-                amount_total: Deserialize::default(),
-                interval: Deserialize::default(),
-                interval_count: Deserialize::default(),
-                total_details: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount_subtotal),
                 Some(amount_total),
@@ -96,57 +89,23 @@ const _: () = {
                 Some(interval_count),
                 Some(total_details),
             ) = (
-                self.amount_subtotal,
-                self.amount_total,
-                self.interval.take(),
-                self.interval_count,
-                self.total_details.take(),
+                self.builder.amount_subtotal,
+                self.builder.amount_total,
+                self.builder.interval.take(),
+                self.builder.interval_count,
+                self.builder.total_details.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(QuotesResourceRecurring {
                 amount_subtotal,
                 amount_total,
                 interval,
                 interval_count,
                 total_details,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for QuotesResourceRecurring {
-        type Builder = QuotesResourceRecurringBuilder;
-    }
-
-    impl FromValueOpt for QuotesResourceRecurring {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = QuotesResourceRecurringBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "interval" => b.interval = FromValueOpt::from_value(v),
-                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
-                    "total_details" => b.total_details = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -221,21 +180,19 @@ impl serde::Serialize for QuotesResourceRecurringInterval {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for QuotesResourceRecurringInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for QuotesResourceRecurringInterval {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<QuotesResourceRecurringInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<QuotesResourceRecurringInterval> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(QuotesResourceRecurringInterval::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(QuotesResourceRecurringInterval);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for QuotesResourceRecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

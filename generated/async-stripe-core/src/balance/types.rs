@@ -47,16 +47,14 @@ pub struct BalanceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -73,40 +71,38 @@ const _: () = {
 
     impl Visitor for Place<Balance> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: BalanceBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: BalanceBuilder {
+                    available: Deserialize::default(),
+                    connect_reserved: Deserialize::default(),
+                    instant_available: Deserialize::default(),
+                    issuing: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    pending: Deserialize::default(),
+                    refund_and_dispute_prefunding: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for BalanceBuilder {
-        type Out = Balance;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "available" => Deserialize::begin(&mut self.available),
-                "connect_reserved" => Deserialize::begin(&mut self.connect_reserved),
-                "instant_available" => Deserialize::begin(&mut self.instant_available),
-                "issuing" => Deserialize::begin(&mut self.issuing),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "pending" => Deserialize::begin(&mut self.pending),
+                "available" => Deserialize::begin(&mut self.builder.available),
+                "connect_reserved" => Deserialize::begin(&mut self.builder.connect_reserved),
+                "instant_available" => Deserialize::begin(&mut self.builder.instant_available),
+                "issuing" => Deserialize::begin(&mut self.builder.issuing),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "pending" => Deserialize::begin(&mut self.builder.pending),
                 "refund_and_dispute_prefunding" => {
-                    Deserialize::begin(&mut self.refund_and_dispute_prefunding)
+                    Deserialize::begin(&mut self.builder.refund_and_dispute_prefunding)
                 }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                available: Deserialize::default(),
-                connect_reserved: Deserialize::default(),
-                instant_available: Deserialize::default(),
-                issuing: Deserialize::default(),
-                livemode: Deserialize::default(),
-                pending: Deserialize::default(),
-                refund_and_dispute_prefunding: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(available),
                 Some(connect_reserved),
@@ -116,18 +112,18 @@ const _: () = {
                 Some(pending),
                 Some(refund_and_dispute_prefunding),
             ) = (
-                self.available.take(),
-                self.connect_reserved.take(),
-                self.instant_available.take(),
-                self.issuing.take(),
-                self.livemode,
-                self.pending.take(),
-                self.refund_and_dispute_prefunding.take(),
+                self.builder.available.take(),
+                self.builder.connect_reserved.take(),
+                self.builder.instant_available.take(),
+                self.builder.issuing.take(),
+                self.builder.livemode,
+                self.builder.pending.take(),
+                self.builder.refund_and_dispute_prefunding.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Balance {
                 available,
                 connect_reserved,
                 instant_available,
@@ -135,46 +131,8 @@ const _: () = {
                 livemode,
                 pending,
                 refund_and_dispute_prefunding,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Balance {
-        type Builder = BalanceBuilder;
-    }
-
-    impl FromValueOpt for Balance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BalanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "available" => b.available = FromValueOpt::from_value(v),
-                    "connect_reserved" => b.connect_reserved = FromValueOpt::from_value(v),
-                    "instant_available" => b.instant_available = FromValueOpt::from_value(v),
-                    "issuing" => b.issuing = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "pending" => b.pending = FromValueOpt::from_value(v),
-                    "refund_and_dispute_prefunding" => {
-                        b.refund_and_dispute_prefunding = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

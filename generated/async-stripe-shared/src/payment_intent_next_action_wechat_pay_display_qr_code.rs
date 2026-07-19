@@ -32,16 +32,14 @@ pub struct PaymentIntentNextActionWechatPayDisplayQrCodeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,35 +58,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionWechatPayDisplayQrCodeBuilder::deser_default(),
+                builder: PaymentIntentNextActionWechatPayDisplayQrCodeBuilder {
+                    data: Deserialize::default(),
+                    hosted_instructions_url: Deserialize::default(),
+                    image_data_url: Deserialize::default(),
+                    image_url_png: Deserialize::default(),
+                    image_url_svg: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentIntentNextActionWechatPayDisplayQrCodeBuilder {
-        type Out = PaymentIntentNextActionWechatPayDisplayQrCode;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "data" => Deserialize::begin(&mut self.data),
-                "hosted_instructions_url" => Deserialize::begin(&mut self.hosted_instructions_url),
-                "image_data_url" => Deserialize::begin(&mut self.image_data_url),
-                "image_url_png" => Deserialize::begin(&mut self.image_url_png),
-                "image_url_svg" => Deserialize::begin(&mut self.image_url_svg),
+                "data" => Deserialize::begin(&mut self.builder.data),
+                "hosted_instructions_url" => {
+                    Deserialize::begin(&mut self.builder.hosted_instructions_url)
+                }
+                "image_data_url" => Deserialize::begin(&mut self.builder.image_data_url),
+                "image_url_png" => Deserialize::begin(&mut self.builder.image_url_png),
+                "image_url_svg" => Deserialize::begin(&mut self.builder.image_url_svg),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                data: Deserialize::default(),
-                hosted_instructions_url: Deserialize::default(),
-                image_data_url: Deserialize::default(),
-                image_url_png: Deserialize::default(),
-                image_url_svg: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(data),
                 Some(hosted_instructions_url),
@@ -96,59 +91,23 @@ const _: () = {
                 Some(image_url_png),
                 Some(image_url_svg),
             ) = (
-                self.data.take(),
-                self.hosted_instructions_url.take(),
-                self.image_data_url.take(),
-                self.image_url_png.take(),
-                self.image_url_svg.take(),
+                self.builder.data.take(),
+                self.builder.hosted_instructions_url.take(),
+                self.builder.image_data_url.take(),
+                self.builder.image_url_png.take(),
+                self.builder.image_url_svg.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentIntentNextActionWechatPayDisplayQrCode {
                 data,
                 hosted_instructions_url,
                 image_data_url,
                 image_url_png,
                 image_url_svg,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionWechatPayDisplayQrCode {
-        type Builder = PaymentIntentNextActionWechatPayDisplayQrCodeBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionWechatPayDisplayQrCode {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentNextActionWechatPayDisplayQrCodeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "data" => b.data = FromValueOpt::from_value(v),
-                    "hosted_instructions_url" => {
-                        b.hosted_instructions_url = FromValueOpt::from_value(v)
-                    }
-                    "image_data_url" => b.image_data_url = FromValueOpt::from_value(v),
-                    "image_url_png" => b.image_url_png = FromValueOpt::from_value(v),
-                    "image_url_svg" => b.image_url_svg = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

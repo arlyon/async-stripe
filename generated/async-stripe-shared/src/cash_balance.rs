@@ -38,16 +38,14 @@ pub struct CashBalanceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -66,35 +64,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CashBalanceBuilder::deser_default(),
+                builder: CashBalanceBuilder {
+                    available: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    settings: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CashBalanceBuilder {
-        type Out = CashBalance;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "available" => Deserialize::begin(&mut self.available),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "settings" => Deserialize::begin(&mut self.settings),
+                "available" => Deserialize::begin(&mut self.builder.available),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "settings" => Deserialize::begin(&mut self.builder.settings),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                available: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                livemode: Deserialize::default(),
-                settings: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(available),
                 Some(customer),
@@ -102,51 +95,18 @@ const _: () = {
                 Some(livemode),
                 Some(settings),
             ) = (
-                self.available.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.livemode,
-                self.settings.take(),
+                self.builder.available.take(),
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.livemode,
+                self.builder.settings.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { available, customer, customer_account, livemode, settings })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out =
+                Some(CashBalance { available, customer, customer_account, livemode, settings });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CashBalance {
-        type Builder = CashBalanceBuilder;
-    }
-
-    impl FromValueOpt for CashBalance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CashBalanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "available" => b.available = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "settings" => b.settings = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

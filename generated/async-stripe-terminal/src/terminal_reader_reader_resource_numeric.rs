@@ -21,16 +21,14 @@ pub struct TerminalReaderReaderResourceNumericBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -49,60 +47,27 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderReaderResourceNumericBuilder::deser_default(),
+                builder: TerminalReaderReaderResourceNumericBuilder {
+                    value: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TerminalReaderReaderResourceNumericBuilder {
-        type Out = TerminalReaderReaderResourceNumeric;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "value" => Deserialize::begin(&mut self.value),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { value: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(value),) = (self.value.take(),) else {
-                return None;
-            };
-            Some(Self::Out { value })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "value" => Deserialize::begin(&mut self.builder.value),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceNumeric {
-        type Builder = TerminalReaderReaderResourceNumericBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceNumeric {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(value),) = (self.builder.value.take(),) else {
+                return Ok(());
             };
-            let mut b = TerminalReaderReaderResourceNumericBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "value" => b.value = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TerminalReaderReaderResourceNumeric { value });
+            Ok(())
         }
     }
 };

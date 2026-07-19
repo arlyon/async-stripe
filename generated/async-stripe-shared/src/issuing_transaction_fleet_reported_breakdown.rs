@@ -26,16 +26,14 @@ pub struct IssuingTransactionFleetReportedBreakdownBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingTransactionFleetReportedBreakdownBuilder::deser_default(),
+                builder: IssuingTransactionFleetReportedBreakdownBuilder {
+                    fuel: Deserialize::default(),
+                    non_fuel: Deserialize::default(),
+                    tax: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingTransactionFleetReportedBreakdownBuilder {
-        type Out = IssuingTransactionFleetReportedBreakdown;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "fuel" => Deserialize::begin(&mut self.fuel),
-                "non_fuel" => Deserialize::begin(&mut self.non_fuel),
-                "tax" => Deserialize::begin(&mut self.tax),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                fuel: Deserialize::default(),
-                non_fuel: Deserialize::default(),
-                tax: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fuel), Some(non_fuel), Some(tax)) =
-                (self.fuel.take(), self.non_fuel.take(), self.tax.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { fuel, non_fuel, tax })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "fuel" => Deserialize::begin(&mut self.builder.fuel),
+                "non_fuel" => Deserialize::begin(&mut self.builder.non_fuel),
+                "tax" => Deserialize::begin(&mut self.builder.tax),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingTransactionFleetReportedBreakdown {
-        type Builder = IssuingTransactionFleetReportedBreakdownBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionFleetReportedBreakdown {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(fuel), Some(non_fuel), Some(tax)) =
+                (self.builder.fuel.take(), self.builder.non_fuel.take(), self.builder.tax.take())
+            else {
+                return Ok(());
             };
-            let mut b = IssuingTransactionFleetReportedBreakdownBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "fuel" => b.fuel = FromValueOpt::from_value(v),
-                    "non_fuel" => b.non_fuel = FromValueOpt::from_value(v),
-                    "tax" => b.tax = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(IssuingTransactionFleetReportedBreakdown { fuel, non_fuel, tax });
+            Ok(())
         }
     }
 };

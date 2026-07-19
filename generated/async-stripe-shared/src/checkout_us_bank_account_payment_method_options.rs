@@ -38,16 +38,14 @@ pub struct CheckoutUsBankAccountPaymentMethodOptionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -66,89 +64,51 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CheckoutUsBankAccountPaymentMethodOptionsBuilder::deser_default(),
+                builder: CheckoutUsBankAccountPaymentMethodOptionsBuilder {
+                    financial_connections: Deserialize::default(),
+                    setup_future_usage: Deserialize::default(),
+                    target_date: Deserialize::default(),
+                    verification_method: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CheckoutUsBankAccountPaymentMethodOptionsBuilder {
-        type Out = CheckoutUsBankAccountPaymentMethodOptions;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "financial_connections" => Deserialize::begin(&mut self.financial_connections),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-                "target_date" => Deserialize::begin(&mut self.target_date),
-                "verification_method" => Deserialize::begin(&mut self.verification_method),
+                "financial_connections" => {
+                    Deserialize::begin(&mut self.builder.financial_connections)
+                }
+                "setup_future_usage" => Deserialize::begin(&mut self.builder.setup_future_usage),
+                "target_date" => Deserialize::begin(&mut self.builder.target_date),
+                "verification_method" => Deserialize::begin(&mut self.builder.verification_method),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                financial_connections: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-                target_date: Deserialize::default(),
-                verification_method: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(financial_connections),
                 Some(setup_future_usage),
                 Some(target_date),
                 Some(verification_method),
             ) = (
-                self.financial_connections.take(),
-                self.setup_future_usage.take(),
-                self.target_date.take(),
-                self.verification_method.take(),
+                self.builder.financial_connections.take(),
+                self.builder.setup_future_usage.take(),
+                self.builder.target_date.take(),
+                self.builder.verification_method.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(CheckoutUsBankAccountPaymentMethodOptions {
                 financial_connections,
                 setup_future_usage,
                 target_date,
                 verification_method,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CheckoutUsBankAccountPaymentMethodOptions {
-        type Builder = CheckoutUsBankAccountPaymentMethodOptionsBuilder;
-    }
-
-    impl FromValueOpt for CheckoutUsBankAccountPaymentMethodOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutUsBankAccountPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "financial_connections" => {
-                        b.financial_connections = FromValueOpt::from_value(v)
-                    }
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    "target_date" => b.target_date = FromValueOpt::from_value(v),
-                    "verification_method" => b.verification_method = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -228,16 +188,16 @@ impl serde::Serialize for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUs
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage::from_str(s)
@@ -246,10 +206,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -324,16 +280,16 @@ impl serde::Serialize for CheckoutUsBankAccountPaymentMethodOptionsVerificationM
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod::from_str(s)
@@ -342,10 +298,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

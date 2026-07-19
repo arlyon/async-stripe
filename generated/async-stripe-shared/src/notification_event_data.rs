@@ -9,7 +9,7 @@ pub struct NotificationEventData {
         any(feature = "deserialize", feature = "serialize"),
         serde(with = "stripe_types::with_serde_json")
     )]
-    pub object: miniserde::json::Value,
+    pub object: stripe_miniserde::json::Value,
     /// Object containing the names of the updated attributes and their values prior to the event (only included in events of type `*.updated`).
     /// If an array attribute has any updated elements, this object contains the entire array.
     /// In Stripe API versions 2017-04-06 or earlier, an updated array attribute in this object includes only the updated array elements.
@@ -17,7 +17,7 @@ pub struct NotificationEventData {
         any(feature = "deserialize", feature = "serialize"),
         serde(with = "stripe_types::with_serde_json_opt")
     )]
-    pub previous_attributes: Option<miniserde::json::Value>,
+    pub previous_attributes: Option<stripe_miniserde::json::Value>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for NotificationEventData {
@@ -27,23 +27,21 @@ impl std::fmt::Debug for NotificationEventData {
 }
 #[doc(hidden)]
 pub struct NotificationEventDataBuilder {
-    object: Option<miniserde::json::Value>,
-    previous_attributes: Option<Option<miniserde::json::Value>>,
+    object: Option<stripe_miniserde::json::Value>,
+    previous_attributes: Option<Option<stripe_miniserde::json::Value>>,
 }
 
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -62,64 +60,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: NotificationEventDataBuilder::deser_default(),
+                builder: NotificationEventDataBuilder {
+                    object: Deserialize::default(),
+                    previous_attributes: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for NotificationEventDataBuilder {
-        type Out = NotificationEventData;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "object" => Deserialize::begin(&mut self.object),
-                "previous_attributes" => Deserialize::begin(&mut self.previous_attributes),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { object: Deserialize::default(), previous_attributes: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(object), Some(previous_attributes)) =
-                (self.object.take(), self.previous_attributes.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { object, previous_attributes })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "object" => Deserialize::begin(&mut self.builder.object),
+                "previous_attributes" => Deserialize::begin(&mut self.builder.previous_attributes),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for NotificationEventData {
-        type Builder = NotificationEventDataBuilder;
-    }
-
-    impl FromValueOpt for NotificationEventData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(object), Some(previous_attributes)) =
+                (self.builder.object.take(), self.builder.previous_attributes.take())
+            else {
+                return Ok(());
             };
-            let mut b = NotificationEventDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "object" => b.object = FromValueOpt::from_value(v),
-                    "previous_attributes" => b.previous_attributes = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(NotificationEventData { object, previous_attributes });
+            Ok(())
         }
     }
 };

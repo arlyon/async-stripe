@@ -40,16 +40,14 @@ pub struct PaymentMethodDetailsIdealBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -68,41 +66,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsIdealBuilder::deser_default(),
+                builder: PaymentMethodDetailsIdealBuilder {
+                    bank: Deserialize::default(),
+                    bic: Deserialize::default(),
+                    generated_sepa_debit: Deserialize::default(),
+                    generated_sepa_debit_mandate: Deserialize::default(),
+                    iban_last4: Deserialize::default(),
+                    transaction_id: Deserialize::default(),
+                    verified_name: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodDetailsIdealBuilder {
-        type Out = PaymentMethodDetailsIdeal;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank" => Deserialize::begin(&mut self.bank),
-                "bic" => Deserialize::begin(&mut self.bic),
-                "generated_sepa_debit" => Deserialize::begin(&mut self.generated_sepa_debit),
-                "generated_sepa_debit_mandate" => {
-                    Deserialize::begin(&mut self.generated_sepa_debit_mandate)
+                "bank" => Deserialize::begin(&mut self.builder.bank),
+                "bic" => Deserialize::begin(&mut self.builder.bic),
+                "generated_sepa_debit" => {
+                    Deserialize::begin(&mut self.builder.generated_sepa_debit)
                 }
-                "iban_last4" => Deserialize::begin(&mut self.iban_last4),
-                "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-                "verified_name" => Deserialize::begin(&mut self.verified_name),
+                "generated_sepa_debit_mandate" => {
+                    Deserialize::begin(&mut self.builder.generated_sepa_debit_mandate)
+                }
+                "iban_last4" => Deserialize::begin(&mut self.builder.iban_last4),
+                "transaction_id" => Deserialize::begin(&mut self.builder.transaction_id),
+                "verified_name" => Deserialize::begin(&mut self.builder.verified_name),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bank: Deserialize::default(),
-                bic: Deserialize::default(),
-                generated_sepa_debit: Deserialize::default(),
-                generated_sepa_debit_mandate: Deserialize::default(),
-                iban_last4: Deserialize::default(),
-                transaction_id: Deserialize::default(),
-                verified_name: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bank),
                 Some(bic),
@@ -112,18 +107,18 @@ const _: () = {
                 Some(transaction_id),
                 Some(verified_name),
             ) = (
-                self.bank.take(),
-                self.bic.take(),
-                self.generated_sepa_debit.take(),
-                self.generated_sepa_debit_mandate.take(),
-                self.iban_last4.take(),
-                self.transaction_id.take(),
-                self.verified_name.take(),
+                self.builder.bank.take(),
+                self.builder.bic.take(),
+                self.builder.generated_sepa_debit.take(),
+                self.builder.generated_sepa_debit_mandate.take(),
+                self.builder.iban_last4.take(),
+                self.builder.transaction_id.take(),
+                self.builder.verified_name.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentMethodDetailsIdeal {
                 bank,
                 bic,
                 generated_sepa_debit,
@@ -131,46 +126,8 @@ const _: () = {
                 iban_last4,
                 transaction_id,
                 verified_name,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsIdeal {
-        type Builder = PaymentMethodDetailsIdealBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsIdeal {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsIdealBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank" => b.bank = FromValueOpt::from_value(v),
-                    "bic" => b.bic = FromValueOpt::from_value(v),
-                    "generated_sepa_debit" => b.generated_sepa_debit = FromValueOpt::from_value(v),
-                    "generated_sepa_debit_mandate" => {
-                        b.generated_sepa_debit_mandate = FromValueOpt::from_value(v)
-                    }
-                    "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -294,21 +251,19 @@ impl serde::Serialize for PaymentMethodDetailsIdealBank {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodDetailsIdealBank {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodDetailsIdealBank {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsIdealBank> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodDetailsIdealBank> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentMethodDetailsIdealBank::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsIdealBank);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsIdealBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -439,21 +394,19 @@ impl serde::Serialize for PaymentMethodDetailsIdealBic {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodDetailsIdealBic {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentMethodDetailsIdealBic {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsIdealBic> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentMethodDetailsIdealBic> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentMethodDetailsIdealBic::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsIdealBic);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsIdealBic {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

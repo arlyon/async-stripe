@@ -32,16 +32,14 @@ pub struct TaxProductResourceCustomerDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,35 +58,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TaxProductResourceCustomerDetailsBuilder::deser_default(),
+                builder: TaxProductResourceCustomerDetailsBuilder {
+                    address: Deserialize::default(),
+                    address_source: Deserialize::default(),
+                    ip_address: Deserialize::default(),
+                    tax_ids: Deserialize::default(),
+                    taxability_override: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TaxProductResourceCustomerDetailsBuilder {
-        type Out = TaxProductResourceCustomerDetails;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
-                "address_source" => Deserialize::begin(&mut self.address_source),
-                "ip_address" => Deserialize::begin(&mut self.ip_address),
-                "tax_ids" => Deserialize::begin(&mut self.tax_ids),
-                "taxability_override" => Deserialize::begin(&mut self.taxability_override),
+                "address" => Deserialize::begin(&mut self.builder.address),
+                "address_source" => Deserialize::begin(&mut self.builder.address_source),
+                "ip_address" => Deserialize::begin(&mut self.builder.ip_address),
+                "tax_ids" => Deserialize::begin(&mut self.builder.tax_ids),
+                "taxability_override" => Deserialize::begin(&mut self.builder.taxability_override),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                address: Deserialize::default(),
-                address_source: Deserialize::default(),
-                ip_address: Deserialize::default(),
-                tax_ids: Deserialize::default(),
-                taxability_override: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(address),
                 Some(address_source),
@@ -96,51 +89,23 @@ const _: () = {
                 Some(tax_ids),
                 Some(taxability_override),
             ) = (
-                self.address.take(),
-                self.address_source.take(),
-                self.ip_address.take(),
-                self.tax_ids.take(),
-                self.taxability_override.take(),
+                self.builder.address.take(),
+                self.builder.address_source.take(),
+                self.builder.ip_address.take(),
+                self.builder.tax_ids.take(),
+                self.builder.taxability_override.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { address, address_source, ip_address, tax_ids, taxability_override })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(TaxProductResourceCustomerDetails {
+                address,
+                address_source,
+                ip_address,
+                tax_ids,
+                taxability_override,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TaxProductResourceCustomerDetails {
-        type Builder = TaxProductResourceCustomerDetailsBuilder;
-    }
-
-    impl FromValueOpt for TaxProductResourceCustomerDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxProductResourceCustomerDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_source" => b.address_source = FromValueOpt::from_value(v),
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "tax_ids" => b.tax_ids = FromValueOpt::from_value(v),
-                    "taxability_override" => b.taxability_override = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -210,22 +175,20 @@ impl serde::Serialize for TaxProductResourceCustomerDetailsAddressSource {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TaxProductResourceCustomerDetailsAddressSource {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TaxProductResourceCustomerDetailsAddressSource {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsAddressSource> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsAddressSource> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(TaxProductResourceCustomerDetailsAddressSource::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceCustomerDetailsAddressSource);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceCustomerDetailsAddressSource {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -303,14 +266,14 @@ impl serde::Serialize for TaxProductResourceCustomerDetailsTaxabilityOverride {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TaxProductResourceCustomerDetailsTaxabilityOverride {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TaxProductResourceCustomerDetailsTaxabilityOverride {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsTaxabilityOverride> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsTaxabilityOverride> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             TaxProductResourceCustomerDetailsTaxabilityOverride::from_str(s).expect("infallible"),
@@ -318,8 +281,6 @@ impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsTa
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceCustomerDetailsTaxabilityOverride);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceCustomerDetailsTaxabilityOverride {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -54,16 +54,14 @@ pub struct ExchangeRateBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -82,62 +80,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ExchangeRateBuilder::deser_default(),
+                builder: ExchangeRateBuilder {
+                    id: Deserialize::default(),
+                    rates: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ExchangeRateBuilder {
-        type Out = ExchangeRate;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "id" => Deserialize::begin(&mut self.id),
-                "rates" => Deserialize::begin(&mut self.rates),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { id: Deserialize::default(), rates: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(id), Some(rates)) = (self.id.take(), self.rates.take()) else {
-                return None;
-            };
-            Some(Self::Out { id, rates })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "rates" => Deserialize::begin(&mut self.builder.rates),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ExchangeRate {
-        type Builder = ExchangeRateBuilder;
-    }
-
-    impl FromValueOpt for ExchangeRate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(id), Some(rates)) = (self.builder.id.take(), self.builder.rates.take())
+            else {
+                return Ok(());
             };
-            let mut b = ExchangeRateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "rates" => b.rates = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(ExchangeRate { id, rates });
+            Ok(())
         }
     }
 };

@@ -86,16 +86,14 @@ pub struct InvoiceLineItemBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -114,63 +112,60 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoiceLineItemBuilder::deser_default(),
+                builder: InvoiceLineItemBuilder {
+                    amount: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    description: Deserialize::default(),
+                    discount_amounts: Deserialize::default(),
+                    discountable: Deserialize::default(),
+                    discounts: Deserialize::default(),
+                    id: Deserialize::default(),
+                    invoice: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    parent: Deserialize::default(),
+                    period: Deserialize::default(),
+                    pretax_credit_amounts: Deserialize::default(),
+                    pricing: Deserialize::default(),
+                    quantity: Deserialize::default(),
+                    quantity_decimal: Deserialize::default(),
+                    subscription: Deserialize::default(),
+                    subtotal: Deserialize::default(),
+                    taxes: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for InvoiceLineItemBuilder {
-        type Out = InvoiceLineItem;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "description" => Deserialize::begin(&mut self.description),
-                "discount_amounts" => Deserialize::begin(&mut self.discount_amounts),
-                "discountable" => Deserialize::begin(&mut self.discountable),
-                "discounts" => Deserialize::begin(&mut self.discounts),
-                "id" => Deserialize::begin(&mut self.id),
-                "invoice" => Deserialize::begin(&mut self.invoice),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "parent" => Deserialize::begin(&mut self.parent),
-                "period" => Deserialize::begin(&mut self.period),
-                "pretax_credit_amounts" => Deserialize::begin(&mut self.pretax_credit_amounts),
-                "pricing" => Deserialize::begin(&mut self.pricing),
-                "quantity" => Deserialize::begin(&mut self.quantity),
-                "quantity_decimal" => Deserialize::begin(&mut self.quantity_decimal),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                "subtotal" => Deserialize::begin(&mut self.subtotal),
-                "taxes" => Deserialize::begin(&mut self.taxes),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "discount_amounts" => Deserialize::begin(&mut self.builder.discount_amounts),
+                "discountable" => Deserialize::begin(&mut self.builder.discountable),
+                "discounts" => Deserialize::begin(&mut self.builder.discounts),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "invoice" => Deserialize::begin(&mut self.builder.invoice),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "parent" => Deserialize::begin(&mut self.builder.parent),
+                "period" => Deserialize::begin(&mut self.builder.period),
+                "pretax_credit_amounts" => {
+                    Deserialize::begin(&mut self.builder.pretax_credit_amounts)
+                }
+                "pricing" => Deserialize::begin(&mut self.builder.pricing),
+                "quantity" => Deserialize::begin(&mut self.builder.quantity),
+                "quantity_decimal" => Deserialize::begin(&mut self.builder.quantity_decimal),
+                "subscription" => Deserialize::begin(&mut self.builder.subscription),
+                "subtotal" => Deserialize::begin(&mut self.builder.subtotal),
+                "taxes" => Deserialize::begin(&mut self.builder.taxes),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                discount_amounts: Deserialize::default(),
-                discountable: Deserialize::default(),
-                discounts: Deserialize::default(),
-                id: Deserialize::default(),
-                invoice: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                parent: Deserialize::default(),
-                period: Deserialize::default(),
-                pretax_credit_amounts: Deserialize::default(),
-                pricing: Deserialize::default(),
-                quantity: Deserialize::default(),
-                quantity_decimal: Deserialize::default(),
-                subscription: Deserialize::default(),
-                subtotal: Deserialize::default(),
-                taxes: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(currency),
@@ -192,30 +187,30 @@ const _: () = {
                 Some(subtotal),
                 Some(taxes),
             ) = (
-                self.amount,
-                self.currency.take(),
-                self.description.take(),
-                self.discount_amounts.take(),
-                self.discountable,
-                self.discounts.take(),
-                self.id.take(),
-                self.invoice.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.parent.take(),
-                self.period,
-                self.pretax_credit_amounts.take(),
-                self.pricing.take(),
-                self.quantity,
-                self.quantity_decimal.take(),
-                self.subscription.take(),
-                self.subtotal,
-                self.taxes.take(),
+                self.builder.amount,
+                self.builder.currency.take(),
+                self.builder.description.take(),
+                self.builder.discount_amounts.take(),
+                self.builder.discountable,
+                self.builder.discounts.take(),
+                self.builder.id.take(),
+                self.builder.invoice.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.parent.take(),
+                self.builder.period,
+                self.builder.pretax_credit_amounts.take(),
+                self.builder.pricing.take(),
+                self.builder.quantity,
+                self.builder.quantity_decimal.take(),
+                self.builder.subscription.take(),
+                self.builder.subtotal,
+                self.builder.taxes.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(InvoiceLineItem {
                 amount,
                 currency,
                 description,
@@ -235,58 +230,8 @@ const _: () = {
                 subscription,
                 subtotal,
                 taxes,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoiceLineItem {
-        type Builder = InvoiceLineItemBuilder;
-    }
-
-    impl FromValueOpt for InvoiceLineItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoiceLineItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discount_amounts" => b.discount_amounts = FromValueOpt::from_value(v),
-                    "discountable" => b.discountable = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "parent" => b.parent = FromValueOpt::from_value(v),
-                    "period" => b.period = FromValueOpt::from_value(v),
-                    "pretax_credit_amounts" => {
-                        b.pretax_credit_amounts = FromValueOpt::from_value(v)
-                    }
-                    "pricing" => b.pricing = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "quantity_decimal" => b.quantity_decimal = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "subtotal" => b.subtotal = FromValueOpt::from_value(v),
-                    "taxes" => b.taxes = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

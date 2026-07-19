@@ -27,16 +27,14 @@ pub struct ProductFeatureBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,70 +53,35 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ProductFeatureBuilder::deser_default(),
+                builder: ProductFeatureBuilder {
+                    entitlement_feature: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ProductFeatureBuilder {
-        type Out = ProductFeature;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "entitlement_feature" => Deserialize::begin(&mut self.entitlement_feature),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                entitlement_feature: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(entitlement_feature), Some(id), Some(livemode)) =
-                (self.entitlement_feature.take(), self.id.take(), self.livemode)
-            else {
-                return None;
-            };
-            Some(Self::Out { entitlement_feature, id, livemode })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "entitlement_feature" => Deserialize::begin(&mut self.builder.entitlement_feature),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ProductFeature {
-        type Builder = ProductFeatureBuilder;
-    }
-
-    impl FromValueOpt for ProductFeature {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(entitlement_feature), Some(id), Some(livemode)) = (
+                self.builder.entitlement_feature.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+            ) else {
+                return Ok(());
             };
-            let mut b = ProductFeatureBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "entitlement_feature" => b.entitlement_feature = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(ProductFeature { entitlement_feature, id, livemode });
+            Ok(())
         }
     }
 };

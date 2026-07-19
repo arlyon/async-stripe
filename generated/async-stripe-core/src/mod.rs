@@ -10,7 +10,7 @@
 
 extern crate self as stripe_core;
 
-miniserde::make_place!(Place);
+stripe_miniserde::make_place!(Place);
 pub use balance::types::*;
 pub mod balance;
 #[doc(hidden)]

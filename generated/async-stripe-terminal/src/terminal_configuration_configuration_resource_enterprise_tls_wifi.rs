@@ -33,16 +33,14 @@ pub struct TerminalConfigurationConfigurationResourceEnterpriseTlsWifiBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,38 +58,35 @@ const _: () = {
     impl Visitor for Place<TerminalConfigurationConfigurationResourceEnterpriseTlsWifi> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
-            out: &mut self.out,
-            builder: TerminalConfigurationConfigurationResourceEnterpriseTlsWifiBuilder::deser_default(),
-        }))
+                out: &mut self.out,
+                builder: TerminalConfigurationConfigurationResourceEnterpriseTlsWifiBuilder {
+                    ca_certificate_file: Deserialize::default(),
+                    client_certificate_file: Deserialize::default(),
+                    private_key_file: Deserialize::default(),
+                    private_key_file_password: Deserialize::default(),
+                    ssid: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for TerminalConfigurationConfigurationResourceEnterpriseTlsWifiBuilder {
-        type Out = TerminalConfigurationConfigurationResourceEnterpriseTlsWifi;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "ca_certificate_file" => Deserialize::begin(&mut self.ca_certificate_file),
-                "client_certificate_file" => Deserialize::begin(&mut self.client_certificate_file),
-                "private_key_file" => Deserialize::begin(&mut self.private_key_file),
-                "private_key_file_password" => {
-                    Deserialize::begin(&mut self.private_key_file_password)
+                "ca_certificate_file" => Deserialize::begin(&mut self.builder.ca_certificate_file),
+                "client_certificate_file" => {
+                    Deserialize::begin(&mut self.builder.client_certificate_file)
                 }
-                "ssid" => Deserialize::begin(&mut self.ssid),
+                "private_key_file" => Deserialize::begin(&mut self.builder.private_key_file),
+                "private_key_file_password" => {
+                    Deserialize::begin(&mut self.builder.private_key_file_password)
+                }
+                "ssid" => Deserialize::begin(&mut self.builder.ssid),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                ca_certificate_file: Deserialize::default(),
-                client_certificate_file: Deserialize::default(),
-                private_key_file: Deserialize::default(),
-                private_key_file_password: Deserialize::default(),
-                ssid: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(ca_certificate_file),
                 Some(client_certificate_file),
@@ -99,62 +94,23 @@ const _: () = {
                 Some(private_key_file_password),
                 Some(ssid),
             ) = (
-                self.ca_certificate_file.take(),
-                self.client_certificate_file.take(),
-                self.private_key_file.take(),
-                self.private_key_file_password.take(),
-                self.ssid.take(),
+                self.builder.ca_certificate_file.take(),
+                self.builder.client_certificate_file.take(),
+                self.builder.private_key_file.take(),
+                self.builder.private_key_file_password.take(),
+                self.builder.ssid.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TerminalConfigurationConfigurationResourceEnterpriseTlsWifi {
                 ca_certificate_file,
                 client_certificate_file,
                 private_key_file,
                 private_key_file_password,
                 ssid,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalConfigurationConfigurationResourceEnterpriseTlsWifi {
-        type Builder = TerminalConfigurationConfigurationResourceEnterpriseTlsWifiBuilder;
-    }
-
-    impl FromValueOpt for TerminalConfigurationConfigurationResourceEnterpriseTlsWifi {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                TerminalConfigurationConfigurationResourceEnterpriseTlsWifiBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ca_certificate_file" => b.ca_certificate_file = FromValueOpt::from_value(v),
-                    "client_certificate_file" => {
-                        b.client_certificate_file = FromValueOpt::from_value(v)
-                    }
-                    "private_key_file" => b.private_key_file = FromValueOpt::from_value(v),
-                    "private_key_file_password" => {
-                        b.private_key_file_password = FromValueOpt::from_value(v)
-                    }
-                    "ssid" => b.ssid = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

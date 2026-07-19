@@ -27,16 +27,14 @@ pub struct TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccountBuil
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,71 +52,40 @@ const _: () = {
     impl Visitor for Place<TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccount> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
-            out: &mut self.out,
-            builder: TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccountBuilder::deser_default(),
-        }))
-        }
-    }
-
-    impl MapBuilder for TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccountBuilder {
-        type Out = TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccount;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "last4" => Deserialize::begin(&mut self.last4),
-                "routing_number" => Deserialize::begin(&mut self.routing_number),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                bank_name: Deserialize::default(),
-                last4: Deserialize::default(),
-                routing_number: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank_name), Some(last4), Some(routing_number)) =
-                (self.bank_name.take(), self.last4.take(), self.routing_number.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { bank_name, last4, routing_number })
+                out: &mut self.out,
+                builder: TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccountBuilder {
+                    bank_name: Deserialize::default(),
+                    last4: Deserialize::default(),
+                    routing_number: Deserialize::default(),
+                },
+            }))
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                "routing_number" => Deserialize::begin(&mut self.builder.routing_number),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccount {
-        type Builder = TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccountBuilder;
-    }
-
-    impl FromValueOpt for TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(bank_name), Some(last4), Some(routing_number)) = (
+                self.builder.bank_name.take(),
+                self.builder.last4.take(),
+                self.builder.routing_number.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccount {
+                bank_name,
+                last4,
+                routing_number,
+            });
+            Ok(())
         }
     }
 };

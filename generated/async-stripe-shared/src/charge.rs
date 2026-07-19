@@ -189,16 +189,14 @@ pub struct ChargeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -215,124 +213,128 @@ const _: () = {
 
     impl Visitor for Place<Charge> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: ChargeBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: ChargeBuilder {
+                    amount: Deserialize::default(),
+                    amount_captured: Deserialize::default(),
+                    amount_refunded: Deserialize::default(),
+                    application: Deserialize::default(),
+                    application_fee: Deserialize::default(),
+                    application_fee_amount: Deserialize::default(),
+                    authorization_code: Deserialize::default(),
+                    balance_transaction: Deserialize::default(),
+                    billing_details: Deserialize::default(),
+                    calculated_statement_descriptor: Deserialize::default(),
+                    captured: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    description: Deserialize::default(),
+                    disputed: Deserialize::default(),
+                    failure_balance_transaction: Deserialize::default(),
+                    failure_code: Deserialize::default(),
+                    failure_message: Deserialize::default(),
+                    fraud_details: Deserialize::default(),
+                    id: Deserialize::default(),
+                    level3: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    on_behalf_of: Deserialize::default(),
+                    outcome: Deserialize::default(),
+                    paid: Deserialize::default(),
+                    payment_intent: Deserialize::default(),
+                    payment_method: Deserialize::default(),
+                    payment_method_details: Deserialize::default(),
+                    presentment_details: Deserialize::default(),
+                    radar_options: Deserialize::default(),
+                    receipt_email: Deserialize::default(),
+                    receipt_number: Deserialize::default(),
+                    receipt_url: Deserialize::default(),
+                    refunded: Deserialize::default(),
+                    refunds: Deserialize::default(),
+                    review: Deserialize::default(),
+                    shipping: Deserialize::default(),
+                    source: Deserialize::default(),
+                    source_transfer: Deserialize::default(),
+                    statement_descriptor: Deserialize::default(),
+                    statement_descriptor_suffix: Deserialize::default(),
+                    status: Deserialize::default(),
+                    transfer: Deserialize::default(),
+                    transfer_data: Deserialize::default(),
+                    transfer_group: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for ChargeBuilder {
-        type Out = Charge;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_captured" => Deserialize::begin(&mut self.amount_captured),
-                "amount_refunded" => Deserialize::begin(&mut self.amount_refunded),
-                "application" => Deserialize::begin(&mut self.application),
-                "application_fee" => Deserialize::begin(&mut self.application_fee),
-                "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
-                "authorization_code" => Deserialize::begin(&mut self.authorization_code),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
-                "billing_details" => Deserialize::begin(&mut self.billing_details),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_captured" => Deserialize::begin(&mut self.builder.amount_captured),
+                "amount_refunded" => Deserialize::begin(&mut self.builder.amount_refunded),
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "application_fee" => Deserialize::begin(&mut self.builder.application_fee),
+                "application_fee_amount" => {
+                    Deserialize::begin(&mut self.builder.application_fee_amount)
+                }
+                "authorization_code" => Deserialize::begin(&mut self.builder.authorization_code),
+                "balance_transaction" => Deserialize::begin(&mut self.builder.balance_transaction),
+                "billing_details" => Deserialize::begin(&mut self.builder.billing_details),
                 "calculated_statement_descriptor" => {
-                    Deserialize::begin(&mut self.calculated_statement_descriptor)
+                    Deserialize::begin(&mut self.builder.calculated_statement_descriptor)
                 }
-                "captured" => Deserialize::begin(&mut self.captured),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "description" => Deserialize::begin(&mut self.description),
-                "disputed" => Deserialize::begin(&mut self.disputed),
+                "captured" => Deserialize::begin(&mut self.builder.captured),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "disputed" => Deserialize::begin(&mut self.builder.disputed),
                 "failure_balance_transaction" => {
-                    Deserialize::begin(&mut self.failure_balance_transaction)
+                    Deserialize::begin(&mut self.builder.failure_balance_transaction)
                 }
-                "failure_code" => Deserialize::begin(&mut self.failure_code),
-                "failure_message" => Deserialize::begin(&mut self.failure_message),
-                "fraud_details" => Deserialize::begin(&mut self.fraud_details),
-                "id" => Deserialize::begin(&mut self.id),
-                "level3" => Deserialize::begin(&mut self.level3),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "outcome" => Deserialize::begin(&mut self.outcome),
-                "paid" => Deserialize::begin(&mut self.paid),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
-                "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
-                "presentment_details" => Deserialize::begin(&mut self.presentment_details),
-                "radar_options" => Deserialize::begin(&mut self.radar_options),
-                "receipt_email" => Deserialize::begin(&mut self.receipt_email),
-                "receipt_number" => Deserialize::begin(&mut self.receipt_number),
-                "receipt_url" => Deserialize::begin(&mut self.receipt_url),
-                "refunded" => Deserialize::begin(&mut self.refunded),
-                "refunds" => Deserialize::begin(&mut self.refunds),
-                "review" => Deserialize::begin(&mut self.review),
-                "shipping" => Deserialize::begin(&mut self.shipping),
-                "source" => Deserialize::begin(&mut self.source),
-                "source_transfer" => Deserialize::begin(&mut self.source_transfer),
-                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
+                "failure_code" => Deserialize::begin(&mut self.builder.failure_code),
+                "failure_message" => Deserialize::begin(&mut self.builder.failure_message),
+                "fraud_details" => Deserialize::begin(&mut self.builder.fraud_details),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "level3" => Deserialize::begin(&mut self.builder.level3),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "on_behalf_of" => Deserialize::begin(&mut self.builder.on_behalf_of),
+                "outcome" => Deserialize::begin(&mut self.builder.outcome),
+                "paid" => Deserialize::begin(&mut self.builder.paid),
+                "payment_intent" => Deserialize::begin(&mut self.builder.payment_intent),
+                "payment_method" => Deserialize::begin(&mut self.builder.payment_method),
+                "payment_method_details" => {
+                    Deserialize::begin(&mut self.builder.payment_method_details)
+                }
+                "presentment_details" => Deserialize::begin(&mut self.builder.presentment_details),
+                "radar_options" => Deserialize::begin(&mut self.builder.radar_options),
+                "receipt_email" => Deserialize::begin(&mut self.builder.receipt_email),
+                "receipt_number" => Deserialize::begin(&mut self.builder.receipt_number),
+                "receipt_url" => Deserialize::begin(&mut self.builder.receipt_url),
+                "refunded" => Deserialize::begin(&mut self.builder.refunded),
+                "refunds" => Deserialize::begin(&mut self.builder.refunds),
+                "review" => Deserialize::begin(&mut self.builder.review),
+                "shipping" => Deserialize::begin(&mut self.builder.shipping),
+                "source" => Deserialize::begin(&mut self.builder.source),
+                "source_transfer" => Deserialize::begin(&mut self.builder.source_transfer),
+                "statement_descriptor" => {
+                    Deserialize::begin(&mut self.builder.statement_descriptor)
+                }
                 "statement_descriptor_suffix" => {
-                    Deserialize::begin(&mut self.statement_descriptor_suffix)
+                    Deserialize::begin(&mut self.builder.statement_descriptor_suffix)
                 }
-                "status" => Deserialize::begin(&mut self.status),
-                "transfer" => Deserialize::begin(&mut self.transfer),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
-                "transfer_group" => Deserialize::begin(&mut self.transfer_group),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "transfer" => Deserialize::begin(&mut self.builder.transfer),
+                "transfer_data" => Deserialize::begin(&mut self.builder.transfer_data),
+                "transfer_group" => Deserialize::begin(&mut self.builder.transfer_group),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                amount_captured: Deserialize::default(),
-                amount_refunded: Deserialize::default(),
-                application: Deserialize::default(),
-                application_fee: Deserialize::default(),
-                application_fee_amount: Deserialize::default(),
-                authorization_code: Deserialize::default(),
-                balance_transaction: Deserialize::default(),
-                billing_details: Deserialize::default(),
-                calculated_statement_descriptor: Deserialize::default(),
-                captured: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                description: Deserialize::default(),
-                disputed: Deserialize::default(),
-                failure_balance_transaction: Deserialize::default(),
-                failure_code: Deserialize::default(),
-                failure_message: Deserialize::default(),
-                fraud_details: Deserialize::default(),
-                id: Deserialize::default(),
-                level3: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                outcome: Deserialize::default(),
-                paid: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                payment_method: Deserialize::default(),
-                payment_method_details: Deserialize::default(),
-                presentment_details: Deserialize::default(),
-                radar_options: Deserialize::default(),
-                receipt_email: Deserialize::default(),
-                receipt_number: Deserialize::default(),
-                receipt_url: Deserialize::default(),
-                refunded: Deserialize::default(),
-                refunds: Deserialize::default(),
-                review: Deserialize::default(),
-                shipping: Deserialize::default(),
-                source: Deserialize::default(),
-                source_transfer: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-                statement_descriptor_suffix: Deserialize::default(),
-                status: Deserialize::default(),
-                transfer: Deserialize::default(),
-                transfer_data: Deserialize::default(),
-                transfer_group: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(amount_captured),
@@ -382,58 +384,58 @@ const _: () = {
                 Some(transfer_data),
                 Some(transfer_group),
             ) = (
-                self.amount,
-                self.amount_captured,
-                self.amount_refunded,
-                self.application.take(),
-                self.application_fee.take(),
-                self.application_fee_amount,
-                self.authorization_code.take(),
-                self.balance_transaction.take(),
-                self.billing_details.take(),
-                self.calculated_statement_descriptor.take(),
-                self.captured,
-                self.created,
-                self.currency.take(),
-                self.customer.take(),
-                self.description.take(),
-                self.disputed,
-                self.failure_balance_transaction.take(),
-                self.failure_code.take(),
-                self.failure_message.take(),
-                self.fraud_details.take(),
-                self.id.take(),
-                self.level3.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.on_behalf_of.take(),
-                self.outcome.take(),
-                self.paid,
-                self.payment_intent.take(),
-                self.payment_method.take(),
-                self.payment_method_details.take(),
-                self.presentment_details.take(),
-                self.radar_options.take(),
-                self.receipt_email.take(),
-                self.receipt_number.take(),
-                self.receipt_url.take(),
-                self.refunded,
-                self.refunds.take(),
-                self.review.take(),
-                self.shipping.take(),
-                self.source.take(),
-                self.source_transfer.take(),
-                self.statement_descriptor.take(),
-                self.statement_descriptor_suffix.take(),
-                self.status.take(),
-                self.transfer.take(),
-                self.transfer_data.take(),
-                self.transfer_group.take(),
+                self.builder.amount,
+                self.builder.amount_captured,
+                self.builder.amount_refunded,
+                self.builder.application.take(),
+                self.builder.application_fee.take(),
+                self.builder.application_fee_amount,
+                self.builder.authorization_code.take(),
+                self.builder.balance_transaction.take(),
+                self.builder.billing_details.take(),
+                self.builder.calculated_statement_descriptor.take(),
+                self.builder.captured,
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.customer.take(),
+                self.builder.description.take(),
+                self.builder.disputed,
+                self.builder.failure_balance_transaction.take(),
+                self.builder.failure_code.take(),
+                self.builder.failure_message.take(),
+                self.builder.fraud_details.take(),
+                self.builder.id.take(),
+                self.builder.level3.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.on_behalf_of.take(),
+                self.builder.outcome.take(),
+                self.builder.paid,
+                self.builder.payment_intent.take(),
+                self.builder.payment_method.take(),
+                self.builder.payment_method_details.take(),
+                self.builder.presentment_details.take(),
+                self.builder.radar_options.take(),
+                self.builder.receipt_email.take(),
+                self.builder.receipt_number.take(),
+                self.builder.receipt_url.take(),
+                self.builder.refunded,
+                self.builder.refunds.take(),
+                self.builder.review.take(),
+                self.builder.shipping.take(),
+                self.builder.source.take(),
+                self.builder.source_transfer.take(),
+                self.builder.statement_descriptor.take(),
+                self.builder.statement_descriptor_suffix.take(),
+                self.builder.status.take(),
+                self.builder.transfer.take(),
+                self.builder.transfer_data.take(),
+                self.builder.transfer_group.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Charge {
                 amount,
                 amount_captured,
                 amount_refunded,
@@ -481,94 +483,8 @@ const _: () = {
                 transfer,
                 transfer_data,
                 transfer_group,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Charge {
-        type Builder = ChargeBuilder;
-    }
-
-    impl FromValueOpt for Charge {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ChargeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_captured" => b.amount_captured = FromValueOpt::from_value(v),
-                    "amount_refunded" => b.amount_refunded = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee" => b.application_fee = FromValueOpt::from_value(v),
-                    "application_fee_amount" => {
-                        b.application_fee_amount = FromValueOpt::from_value(v)
-                    }
-                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "billing_details" => b.billing_details = FromValueOpt::from_value(v),
-                    "calculated_statement_descriptor" => {
-                        b.calculated_statement_descriptor = FromValueOpt::from_value(v)
-                    }
-                    "captured" => b.captured = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "disputed" => b.disputed = FromValueOpt::from_value(v),
-                    "failure_balance_transaction" => {
-                        b.failure_balance_transaction = FromValueOpt::from_value(v)
-                    }
-                    "failure_code" => b.failure_code = FromValueOpt::from_value(v),
-                    "failure_message" => b.failure_message = FromValueOpt::from_value(v),
-                    "fraud_details" => b.fraud_details = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "level3" => b.level3 = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "outcome" => b.outcome = FromValueOpt::from_value(v),
-                    "paid" => b.paid = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
-                    "radar_options" => b.radar_options = FromValueOpt::from_value(v),
-                    "receipt_email" => b.receipt_email = FromValueOpt::from_value(v),
-                    "receipt_number" => b.receipt_number = FromValueOpt::from_value(v),
-                    "receipt_url" => b.receipt_url = FromValueOpt::from_value(v),
-                    "refunded" => b.refunded = FromValueOpt::from_value(v),
-                    "refunds" => b.refunds = FromValueOpt::from_value(v),
-                    "review" => b.review = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "source_transfer" => b.source_transfer = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "statement_descriptor_suffix" => {
-                        b.statement_descriptor_suffix = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "transfer" => b.transfer = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -696,21 +612,19 @@ impl serde::Serialize for ChargeStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for ChargeStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for ChargeStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<ChargeStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<ChargeStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(ChargeStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(ChargeStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ChargeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

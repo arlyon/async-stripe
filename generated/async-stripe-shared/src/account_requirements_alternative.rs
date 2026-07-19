@@ -23,16 +23,14 @@ pub struct AccountRequirementsAlternativeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,69 +49,37 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AccountRequirementsAlternativeBuilder::deser_default(),
+                builder: AccountRequirementsAlternativeBuilder {
+                    alternative_fields_due: Deserialize::default(),
+                    original_fields_due: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for AccountRequirementsAlternativeBuilder {
-        type Out = AccountRequirementsAlternative;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "alternative_fields_due" => Deserialize::begin(&mut self.alternative_fields_due),
-                "original_fields_due" => Deserialize::begin(&mut self.original_fields_due),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                alternative_fields_due: Deserialize::default(),
-                original_fields_due: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(alternative_fields_due), Some(original_fields_due)) =
-                (self.alternative_fields_due.take(), self.original_fields_due.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { alternative_fields_due, original_fields_due })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "alternative_fields_due" => {
+                    Deserialize::begin(&mut self.builder.alternative_fields_due)
+                }
+                "original_fields_due" => Deserialize::begin(&mut self.builder.original_fields_due),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for AccountRequirementsAlternative {
-        type Builder = AccountRequirementsAlternativeBuilder;
-    }
-
-    impl FromValueOpt for AccountRequirementsAlternative {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(alternative_fields_due), Some(original_fields_due)) = (
+                self.builder.alternative_fields_due.take(),
+                self.builder.original_fields_due.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = AccountRequirementsAlternativeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "alternative_fields_due" => {
-                        b.alternative_fields_due = FromValueOpt::from_value(v)
-                    }
-                    "original_fields_due" => b.original_fields_due = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(AccountRequirementsAlternative {
+                alternative_fields_due,
+                original_fields_due,
+            });
+            Ok(())
         }
     }
 };

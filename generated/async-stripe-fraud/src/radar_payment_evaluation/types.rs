@@ -54,16 +54,14 @@ pub struct RadarPaymentEvaluationBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -82,49 +80,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: RadarPaymentEvaluationBuilder::deser_default(),
+                builder: RadarPaymentEvaluationBuilder {
+                    client_device_metadata_details: Deserialize::default(),
+                    created_at: Deserialize::default(),
+                    customer_details: Deserialize::default(),
+                    events: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    outcome: Deserialize::default(),
+                    payment_details: Deserialize::default(),
+                    recommended_action: Deserialize::default(),
+                    signals: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for RadarPaymentEvaluationBuilder {
-        type Out = RadarPaymentEvaluation;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "client_device_metadata_details" => {
-                    Deserialize::begin(&mut self.client_device_metadata_details)
+                    Deserialize::begin(&mut self.builder.client_device_metadata_details)
                 }
-                "created_at" => Deserialize::begin(&mut self.created_at),
-                "customer_details" => Deserialize::begin(&mut self.customer_details),
-                "events" => Deserialize::begin(&mut self.events),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "outcome" => Deserialize::begin(&mut self.outcome),
-                "payment_details" => Deserialize::begin(&mut self.payment_details),
-                "recommended_action" => Deserialize::begin(&mut self.recommended_action),
-                "signals" => Deserialize::begin(&mut self.signals),
+                "created_at" => Deserialize::begin(&mut self.builder.created_at),
+                "customer_details" => Deserialize::begin(&mut self.builder.customer_details),
+                "events" => Deserialize::begin(&mut self.builder.events),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "outcome" => Deserialize::begin(&mut self.builder.outcome),
+                "payment_details" => Deserialize::begin(&mut self.builder.payment_details),
+                "recommended_action" => Deserialize::begin(&mut self.builder.recommended_action),
+                "signals" => Deserialize::begin(&mut self.builder.signals),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                client_device_metadata_details: Deserialize::default(),
-                created_at: Deserialize::default(),
-                customer_details: Deserialize::default(),
-                events: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                outcome: Deserialize::default(),
-                payment_details: Deserialize::default(),
-                recommended_action: Deserialize::default(),
-                signals: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(client_device_metadata_details),
                 Some(created_at),
@@ -138,22 +131,22 @@ const _: () = {
                 Some(recommended_action),
                 Some(signals),
             ) = (
-                self.client_device_metadata_details.take(),
-                self.created_at,
-                self.customer_details.take(),
-                self.events.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.outcome.take(),
-                self.payment_details.take(),
-                self.recommended_action.take(),
-                self.signals.take(),
+                self.builder.client_device_metadata_details.take(),
+                self.builder.created_at,
+                self.builder.customer_details.take(),
+                self.builder.events.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.outcome.take(),
+                self.builder.payment_details.take(),
+                self.builder.recommended_action.take(),
+                self.builder.signals.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(RadarPaymentEvaluation {
                 client_device_metadata_details,
                 created_at,
                 customer_details,
@@ -165,50 +158,8 @@ const _: () = {
                 payment_details,
                 recommended_action,
                 signals,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for RadarPaymentEvaluation {
-        type Builder = RadarPaymentEvaluationBuilder;
-    }
-
-    impl FromValueOpt for RadarPaymentEvaluation {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = RadarPaymentEvaluationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "client_device_metadata_details" => {
-                        b.client_device_metadata_details = FromValueOpt::from_value(v)
-                    }
-                    "created_at" => b.created_at = FromValueOpt::from_value(v),
-                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
-                    "events" => b.events = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "outcome" => b.outcome = FromValueOpt::from_value(v),
-                    "payment_details" => b.payment_details = FromValueOpt::from_value(v),
-                    "recommended_action" => b.recommended_action = FromValueOpt::from_value(v),
-                    "signals" => b.signals = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -299,21 +250,19 @@ impl serde::Serialize for RadarPaymentEvaluationRecommendedAction {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for RadarPaymentEvaluationRecommendedAction {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for RadarPaymentEvaluationRecommendedAction {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<RadarPaymentEvaluationRecommendedAction> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<RadarPaymentEvaluationRecommendedAction> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(RadarPaymentEvaluationRecommendedAction::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(RadarPaymentEvaluationRecommendedAction);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RadarPaymentEvaluationRecommendedAction {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

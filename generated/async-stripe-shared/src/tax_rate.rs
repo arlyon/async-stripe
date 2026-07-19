@@ -88,16 +88,14 @@ pub struct TaxRateBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -114,58 +112,58 @@ const _: () = {
 
     impl Visitor for Place<TaxRate> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: TaxRateBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: TaxRateBuilder {
+                    active: Deserialize::default(),
+                    country: Deserialize::default(),
+                    created: Deserialize::default(),
+                    description: Deserialize::default(),
+                    display_name: Deserialize::default(),
+                    effective_percentage: Deserialize::default(),
+                    flat_amount: Deserialize::default(),
+                    id: Deserialize::default(),
+                    inclusive: Deserialize::default(),
+                    jurisdiction: Deserialize::default(),
+                    jurisdiction_level: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    percentage: Deserialize::default(),
+                    rate_type: Deserialize::default(),
+                    state: Deserialize::default(),
+                    tax_type: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for TaxRateBuilder {
-        type Out = TaxRate;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
-                "country" => Deserialize::begin(&mut self.country),
-                "created" => Deserialize::begin(&mut self.created),
-                "description" => Deserialize::begin(&mut self.description),
-                "display_name" => Deserialize::begin(&mut self.display_name),
-                "effective_percentage" => Deserialize::begin(&mut self.effective_percentage),
-                "flat_amount" => Deserialize::begin(&mut self.flat_amount),
-                "id" => Deserialize::begin(&mut self.id),
-                "inclusive" => Deserialize::begin(&mut self.inclusive),
-                "jurisdiction" => Deserialize::begin(&mut self.jurisdiction),
-                "jurisdiction_level" => Deserialize::begin(&mut self.jurisdiction_level),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "percentage" => Deserialize::begin(&mut self.percentage),
-                "rate_type" => Deserialize::begin(&mut self.rate_type),
-                "state" => Deserialize::begin(&mut self.state),
-                "tax_type" => Deserialize::begin(&mut self.tax_type),
+                "active" => Deserialize::begin(&mut self.builder.active),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "display_name" => Deserialize::begin(&mut self.builder.display_name),
+                "effective_percentage" => {
+                    Deserialize::begin(&mut self.builder.effective_percentage)
+                }
+                "flat_amount" => Deserialize::begin(&mut self.builder.flat_amount),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "inclusive" => Deserialize::begin(&mut self.builder.inclusive),
+                "jurisdiction" => Deserialize::begin(&mut self.builder.jurisdiction),
+                "jurisdiction_level" => Deserialize::begin(&mut self.builder.jurisdiction_level),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "percentage" => Deserialize::begin(&mut self.builder.percentage),
+                "rate_type" => Deserialize::begin(&mut self.builder.rate_type),
+                "state" => Deserialize::begin(&mut self.builder.state),
+                "tax_type" => Deserialize::begin(&mut self.builder.tax_type),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                active: Deserialize::default(),
-                country: Deserialize::default(),
-                created: Deserialize::default(),
-                description: Deserialize::default(),
-                display_name: Deserialize::default(),
-                effective_percentage: Deserialize::default(),
-                flat_amount: Deserialize::default(),
-                id: Deserialize::default(),
-                inclusive: Deserialize::default(),
-                jurisdiction: Deserialize::default(),
-                jurisdiction_level: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                percentage: Deserialize::default(),
-                rate_type: Deserialize::default(),
-                state: Deserialize::default(),
-                tax_type: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(active),
                 Some(country),
@@ -185,28 +183,28 @@ const _: () = {
                 Some(state),
                 Some(tax_type),
             ) = (
-                self.active,
-                self.country.take(),
-                self.created,
-                self.description.take(),
-                self.display_name.take(),
-                self.effective_percentage,
-                self.flat_amount.take(),
-                self.id.take(),
-                self.inclusive,
-                self.jurisdiction.take(),
-                self.jurisdiction_level.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.percentage,
-                self.rate_type.take(),
-                self.state.take(),
-                self.tax_type.take(),
+                self.builder.active,
+                self.builder.country.take(),
+                self.builder.created,
+                self.builder.description.take(),
+                self.builder.display_name.take(),
+                self.builder.effective_percentage,
+                self.builder.flat_amount.take(),
+                self.builder.id.take(),
+                self.builder.inclusive,
+                self.builder.jurisdiction.take(),
+                self.builder.jurisdiction_level.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.percentage,
+                self.builder.rate_type.take(),
+                self.builder.state.take(),
+                self.builder.tax_type.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TaxRate {
                 active,
                 country,
                 created,
@@ -224,54 +222,8 @@ const _: () = {
                 rate_type,
                 state,
                 tax_type,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TaxRate {
-        type Builder = TaxRateBuilder;
-    }
-
-    impl FromValueOpt for TaxRate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxRateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "effective_percentage" => b.effective_percentage = FromValueOpt::from_value(v),
-                    "flat_amount" => b.flat_amount = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "inclusive" => b.inclusive = FromValueOpt::from_value(v),
-                    "jurisdiction" => b.jurisdiction = FromValueOpt::from_value(v),
-                    "jurisdiction_level" => b.jurisdiction_level = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "percentage" => b.percentage = FromValueOpt::from_value(v),
-                    "rate_type" => b.rate_type = FromValueOpt::from_value(v),
-                    "state" => b.state = FromValueOpt::from_value(v),
-                    "tax_type" => b.tax_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -376,21 +328,19 @@ impl serde::Serialize for TaxRateJurisdictionLevel {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TaxRateJurisdictionLevel {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TaxRateJurisdictionLevel {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TaxRateJurisdictionLevel> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TaxRateJurisdictionLevel> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TaxRateJurisdictionLevel::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TaxRateJurisdictionLevel);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxRateJurisdictionLevel {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -462,21 +412,19 @@ impl serde::Serialize for TaxRateRateType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TaxRateRateType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TaxRateRateType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TaxRateRateType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TaxRateRateType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TaxRateRateType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TaxRateRateType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxRateRateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -591,21 +539,19 @@ impl serde::Serialize for TaxRateTaxType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TaxRateTaxType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TaxRateTaxType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TaxRateTaxType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TaxRateTaxType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TaxRateTaxType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TaxRateTaxType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

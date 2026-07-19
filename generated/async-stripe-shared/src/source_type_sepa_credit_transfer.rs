@@ -39,16 +39,14 @@ pub struct SourceTypeSepaCreditTransferBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,61 +65,56 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceTypeSepaCreditTransferBuilder::deser_default(),
+                builder: SourceTypeSepaCreditTransferBuilder {
+                    bank_name: Deserialize::default(),
+                    bic: Deserialize::default(),
+                    iban: Deserialize::default(),
+                    refund_account_holder_address_city: Deserialize::default(),
+                    refund_account_holder_address_country: Deserialize::default(),
+                    refund_account_holder_address_line1: Deserialize::default(),
+                    refund_account_holder_address_line2: Deserialize::default(),
+                    refund_account_holder_address_postal_code: Deserialize::default(),
+                    refund_account_holder_address_state: Deserialize::default(),
+                    refund_account_holder_name: Deserialize::default(),
+                    refund_iban: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SourceTypeSepaCreditTransferBuilder {
-        type Out = SourceTypeSepaCreditTransfer;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_name" => Deserialize::begin(&mut self.bank_name),
-                "bic" => Deserialize::begin(&mut self.bic),
-                "iban" => Deserialize::begin(&mut self.iban),
+                "bank_name" => Deserialize::begin(&mut self.builder.bank_name),
+                "bic" => Deserialize::begin(&mut self.builder.bic),
+                "iban" => Deserialize::begin(&mut self.builder.iban),
                 "refund_account_holder_address_city" => {
-                    Deserialize::begin(&mut self.refund_account_holder_address_city)
+                    Deserialize::begin(&mut self.builder.refund_account_holder_address_city)
                 }
                 "refund_account_holder_address_country" => {
-                    Deserialize::begin(&mut self.refund_account_holder_address_country)
+                    Deserialize::begin(&mut self.builder.refund_account_holder_address_country)
                 }
                 "refund_account_holder_address_line1" => {
-                    Deserialize::begin(&mut self.refund_account_holder_address_line1)
+                    Deserialize::begin(&mut self.builder.refund_account_holder_address_line1)
                 }
                 "refund_account_holder_address_line2" => {
-                    Deserialize::begin(&mut self.refund_account_holder_address_line2)
+                    Deserialize::begin(&mut self.builder.refund_account_holder_address_line2)
                 }
                 "refund_account_holder_address_postal_code" => {
-                    Deserialize::begin(&mut self.refund_account_holder_address_postal_code)
+                    Deserialize::begin(&mut self.builder.refund_account_holder_address_postal_code)
                 }
                 "refund_account_holder_address_state" => {
-                    Deserialize::begin(&mut self.refund_account_holder_address_state)
+                    Deserialize::begin(&mut self.builder.refund_account_holder_address_state)
                 }
                 "refund_account_holder_name" => {
-                    Deserialize::begin(&mut self.refund_account_holder_name)
+                    Deserialize::begin(&mut self.builder.refund_account_holder_name)
                 }
-                "refund_iban" => Deserialize::begin(&mut self.refund_iban),
+                "refund_iban" => Deserialize::begin(&mut self.builder.refund_iban),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bank_name: Deserialize::default(),
-                bic: Deserialize::default(),
-                iban: Deserialize::default(),
-                refund_account_holder_address_city: Deserialize::default(),
-                refund_account_holder_address_country: Deserialize::default(),
-                refund_account_holder_address_line1: Deserialize::default(),
-                refund_account_holder_address_line2: Deserialize::default(),
-                refund_account_holder_address_postal_code: Deserialize::default(),
-                refund_account_holder_address_state: Deserialize::default(),
-                refund_account_holder_name: Deserialize::default(),
-                refund_iban: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bank_name),
                 Some(bic),
@@ -135,22 +128,22 @@ const _: () = {
                 Some(refund_account_holder_name),
                 Some(refund_iban),
             ) = (
-                self.bank_name.take(),
-                self.bic.take(),
-                self.iban.take(),
-                self.refund_account_holder_address_city.take(),
-                self.refund_account_holder_address_country.take(),
-                self.refund_account_holder_address_line1.take(),
-                self.refund_account_holder_address_line2.take(),
-                self.refund_account_holder_address_postal_code.take(),
-                self.refund_account_holder_address_state.take(),
-                self.refund_account_holder_name.take(),
-                self.refund_iban.take(),
+                self.builder.bank_name.take(),
+                self.builder.bic.take(),
+                self.builder.iban.take(),
+                self.builder.refund_account_holder_address_city.take(),
+                self.builder.refund_account_holder_address_country.take(),
+                self.builder.refund_account_holder_address_line1.take(),
+                self.builder.refund_account_holder_address_line2.take(),
+                self.builder.refund_account_holder_address_postal_code.take(),
+                self.builder.refund_account_holder_address_state.take(),
+                self.builder.refund_account_holder_name.take(),
+                self.builder.refund_iban.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SourceTypeSepaCreditTransfer {
                 bank_name,
                 bic,
                 iban,
@@ -162,62 +155,8 @@ const _: () = {
                 refund_account_holder_address_state,
                 refund_account_holder_name,
                 refund_iban,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceTypeSepaCreditTransfer {
-        type Builder = SourceTypeSepaCreditTransferBuilder;
-    }
-
-    impl FromValueOpt for SourceTypeSepaCreditTransfer {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeSepaCreditTransferBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "bic" => b.bic = FromValueOpt::from_value(v),
-                    "iban" => b.iban = FromValueOpt::from_value(v),
-                    "refund_account_holder_address_city" => {
-                        b.refund_account_holder_address_city = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_address_country" => {
-                        b.refund_account_holder_address_country = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_address_line1" => {
-                        b.refund_account_holder_address_line1 = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_address_line2" => {
-                        b.refund_account_holder_address_line2 = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_address_postal_code" => {
-                        b.refund_account_holder_address_postal_code = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_address_state" => {
-                        b.refund_account_holder_address_state = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_name" => {
-                        b.refund_account_holder_name = FromValueOpt::from_value(v)
-                    }
-                    "refund_iban" => b.refund_iban = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

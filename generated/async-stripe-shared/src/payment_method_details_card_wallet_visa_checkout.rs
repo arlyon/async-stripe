@@ -37,16 +37,14 @@ pub struct PaymentMethodDetailsCardWalletVisaCheckoutBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -65,76 +63,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsCardWalletVisaCheckoutBuilder::deser_default(),
+                builder: PaymentMethodDetailsCardWalletVisaCheckoutBuilder {
+                    billing_address: Deserialize::default(),
+                    email: Deserialize::default(),
+                    name: Deserialize::default(),
+                    shipping_address: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDetailsCardWalletVisaCheckoutBuilder {
-        type Out = PaymentMethodDetailsCardWalletVisaCheckout;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "billing_address" => Deserialize::begin(&mut self.billing_address),
-                "email" => Deserialize::begin(&mut self.email),
-                "name" => Deserialize::begin(&mut self.name),
-                "shipping_address" => Deserialize::begin(&mut self.shipping_address),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                billing_address: Deserialize::default(),
-                email: Deserialize::default(),
-                name: Deserialize::default(),
-                shipping_address: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(billing_address), Some(email), Some(name), Some(shipping_address)) = (
-                self.billing_address.take(),
-                self.email.take(),
-                self.name.take(),
-                self.shipping_address.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { billing_address, email, name, shipping_address })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "billing_address" => Deserialize::begin(&mut self.builder.billing_address),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "shipping_address" => Deserialize::begin(&mut self.builder.shipping_address),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsCardWalletVisaCheckout {
-        type Builder = PaymentMethodDetailsCardWalletVisaCheckoutBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsCardWalletVisaCheckout {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(billing_address), Some(email), Some(name), Some(shipping_address)) = (
+                self.builder.billing_address.take(),
+                self.builder.email.take(),
+                self.builder.name.take(),
+                self.builder.shipping_address.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDetailsCardWalletVisaCheckoutBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_address" => b.billing_address = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodDetailsCardWalletVisaCheckout {
+                billing_address,
+                email,
+                name,
+                shipping_address,
+            });
+            Ok(())
         }
     }
 };

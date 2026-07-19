@@ -46,16 +46,14 @@ pub struct CountrySpecBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -74,47 +72,42 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CountrySpecBuilder::deser_default(),
+                builder: CountrySpecBuilder {
+                    default_currency: Deserialize::default(),
+                    id: Deserialize::default(),
+                    supported_bank_account_currencies: Deserialize::default(),
+                    supported_payment_currencies: Deserialize::default(),
+                    supported_payment_methods: Deserialize::default(),
+                    supported_transfer_countries: Deserialize::default(),
+                    verification_fields: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CountrySpecBuilder {
-        type Out = CountrySpec;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "default_currency" => Deserialize::begin(&mut self.default_currency),
-                "id" => Deserialize::begin(&mut self.id),
+                "default_currency" => Deserialize::begin(&mut self.builder.default_currency),
+                "id" => Deserialize::begin(&mut self.builder.id),
                 "supported_bank_account_currencies" => {
-                    Deserialize::begin(&mut self.supported_bank_account_currencies)
+                    Deserialize::begin(&mut self.builder.supported_bank_account_currencies)
                 }
                 "supported_payment_currencies" => {
-                    Deserialize::begin(&mut self.supported_payment_currencies)
+                    Deserialize::begin(&mut self.builder.supported_payment_currencies)
                 }
                 "supported_payment_methods" => {
-                    Deserialize::begin(&mut self.supported_payment_methods)
+                    Deserialize::begin(&mut self.builder.supported_payment_methods)
                 }
                 "supported_transfer_countries" => {
-                    Deserialize::begin(&mut self.supported_transfer_countries)
+                    Deserialize::begin(&mut self.builder.supported_transfer_countries)
                 }
-                "verification_fields" => Deserialize::begin(&mut self.verification_fields),
+                "verification_fields" => Deserialize::begin(&mut self.builder.verification_fields),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                default_currency: Deserialize::default(),
-                id: Deserialize::default(),
-                supported_bank_account_currencies: Deserialize::default(),
-                supported_payment_currencies: Deserialize::default(),
-                supported_payment_methods: Deserialize::default(),
-                supported_transfer_countries: Deserialize::default(),
-                verification_fields: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(default_currency),
                 Some(id),
@@ -124,18 +117,18 @@ const _: () = {
                 Some(supported_transfer_countries),
                 Some(verification_fields),
             ) = (
-                self.default_currency.take(),
-                self.id.take(),
-                self.supported_bank_account_currencies.take(),
-                self.supported_payment_currencies.take(),
-                self.supported_payment_methods.take(),
-                self.supported_transfer_countries.take(),
-                self.verification_fields.take(),
+                self.builder.default_currency.take(),
+                self.builder.id.take(),
+                self.builder.supported_bank_account_currencies.take(),
+                self.builder.supported_payment_currencies.take(),
+                self.builder.supported_payment_methods.take(),
+                self.builder.supported_transfer_countries.take(),
+                self.builder.verification_fields.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(CountrySpec {
                 default_currency,
                 id,
                 supported_bank_account_currencies,
@@ -143,52 +136,8 @@ const _: () = {
                 supported_payment_methods,
                 supported_transfer_countries,
                 verification_fields,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CountrySpec {
-        type Builder = CountrySpecBuilder;
-    }
-
-    impl FromValueOpt for CountrySpec {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CountrySpecBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "default_currency" => b.default_currency = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "supported_bank_account_currencies" => {
-                        b.supported_bank_account_currencies = FromValueOpt::from_value(v)
-                    }
-                    "supported_payment_currencies" => {
-                        b.supported_payment_currencies = FromValueOpt::from_value(v)
-                    }
-                    "supported_payment_methods" => {
-                        b.supported_payment_methods = FromValueOpt::from_value(v)
-                    }
-                    "supported_transfer_countries" => {
-                        b.supported_transfer_countries = FromValueOpt::from_value(v)
-                    }
-                    "verification_fields" => b.verification_fields = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

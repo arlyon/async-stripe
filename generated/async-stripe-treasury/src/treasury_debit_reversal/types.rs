@@ -64,16 +64,14 @@ pub struct TreasuryDebitReversalBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -92,55 +90,50 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TreasuryDebitReversalBuilder::deser_default(),
+                builder: TreasuryDebitReversalBuilder {
+                    amount: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    financial_account: Deserialize::default(),
+                    hosted_regulatory_receipt_url: Deserialize::default(),
+                    id: Deserialize::default(),
+                    linked_flows: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    network: Deserialize::default(),
+                    received_debit: Deserialize::default(),
+                    status: Deserialize::default(),
+                    status_transitions: Deserialize::default(),
+                    transaction: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TreasuryDebitReversalBuilder {
-        type Out = TreasuryDebitReversal;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "financial_account" => Deserialize::begin(&mut self.financial_account),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "financial_account" => Deserialize::begin(&mut self.builder.financial_account),
                 "hosted_regulatory_receipt_url" => {
-                    Deserialize::begin(&mut self.hosted_regulatory_receipt_url)
+                    Deserialize::begin(&mut self.builder.hosted_regulatory_receipt_url)
                 }
-                "id" => Deserialize::begin(&mut self.id),
-                "linked_flows" => Deserialize::begin(&mut self.linked_flows),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "network" => Deserialize::begin(&mut self.network),
-                "received_debit" => Deserialize::begin(&mut self.received_debit),
-                "status" => Deserialize::begin(&mut self.status),
-                "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-                "transaction" => Deserialize::begin(&mut self.transaction),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "linked_flows" => Deserialize::begin(&mut self.builder.linked_flows),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "network" => Deserialize::begin(&mut self.builder.network),
+                "received_debit" => Deserialize::begin(&mut self.builder.received_debit),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "status_transitions" => Deserialize::begin(&mut self.builder.status_transitions),
+                "transaction" => Deserialize::begin(&mut self.builder.transaction),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                financial_account: Deserialize::default(),
-                hosted_regulatory_receipt_url: Deserialize::default(),
-                id: Deserialize::default(),
-                linked_flows: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                network: Deserialize::default(),
-                received_debit: Deserialize::default(),
-                status: Deserialize::default(),
-                status_transitions: Deserialize::default(),
-                transaction: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(created),
@@ -157,25 +150,25 @@ const _: () = {
                 Some(status_transitions),
                 Some(transaction),
             ) = (
-                self.amount,
-                self.created,
-                self.currency.take(),
-                self.financial_account.take(),
-                self.hosted_regulatory_receipt_url.take(),
-                self.id.take(),
-                self.linked_flows.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.network.take(),
-                self.received_debit.take(),
-                self.status.take(),
-                self.status_transitions,
-                self.transaction.take(),
+                self.builder.amount,
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.financial_account.take(),
+                self.builder.hosted_regulatory_receipt_url.take(),
+                self.builder.id.take(),
+                self.builder.linked_flows.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.network.take(),
+                self.builder.received_debit.take(),
+                self.builder.status.take(),
+                self.builder.status_transitions,
+                self.builder.transaction.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TreasuryDebitReversal {
                 amount,
                 created,
                 currency,
@@ -190,53 +183,8 @@ const _: () = {
                 status,
                 status_transitions,
                 transaction,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryDebitReversal {
-        type Builder = TreasuryDebitReversalBuilder;
-    }
-
-    impl FromValueOpt for TreasuryDebitReversal {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryDebitReversalBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "hosted_regulatory_receipt_url" => {
-                        b.hosted_regulatory_receipt_url = FromValueOpt::from_value(v)
-                    }
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "linked_flows" => b.linked_flows = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "received_debit" => b.received_debit = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    "transaction" => b.transaction = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -329,21 +277,19 @@ impl serde::Serialize for TreasuryDebitReversalNetwork {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TreasuryDebitReversalNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TreasuryDebitReversalNetwork {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TreasuryDebitReversalNetwork> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TreasuryDebitReversalNetwork> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TreasuryDebitReversalNetwork::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TreasuryDebitReversalNetwork);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryDebitReversalNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -420,21 +366,19 @@ impl serde::Serialize for TreasuryDebitReversalStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TreasuryDebitReversalStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TreasuryDebitReversalStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TreasuryDebitReversalStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TreasuryDebitReversalStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TreasuryDebitReversalStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TreasuryDebitReversalStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryDebitReversalStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

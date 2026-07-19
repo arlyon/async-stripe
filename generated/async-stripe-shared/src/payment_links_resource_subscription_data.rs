@@ -32,16 +32,14 @@ pub struct PaymentLinksResourceSubscriptionDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,35 +58,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentLinksResourceSubscriptionDataBuilder::deser_default(),
+                builder: PaymentLinksResourceSubscriptionDataBuilder {
+                    description: Deserialize::default(),
+                    invoice_settings: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    trial_period_days: Deserialize::default(),
+                    trial_settings: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentLinksResourceSubscriptionDataBuilder {
-        type Out = PaymentLinksResourceSubscriptionData;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "description" => Deserialize::begin(&mut self.description),
-                "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "trial_period_days" => Deserialize::begin(&mut self.trial_period_days),
-                "trial_settings" => Deserialize::begin(&mut self.trial_settings),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "invoice_settings" => Deserialize::begin(&mut self.builder.invoice_settings),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "trial_period_days" => Deserialize::begin(&mut self.builder.trial_period_days),
+                "trial_settings" => Deserialize::begin(&mut self.builder.trial_settings),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                description: Deserialize::default(),
-                invoice_settings: Deserialize::default(),
-                metadata: Deserialize::default(),
-                trial_period_days: Deserialize::default(),
-                trial_settings: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(description),
                 Some(invoice_settings),
@@ -96,57 +89,23 @@ const _: () = {
                 Some(trial_period_days),
                 Some(trial_settings),
             ) = (
-                self.description.take(),
-                self.invoice_settings.take(),
-                self.metadata.take(),
-                self.trial_period_days,
-                self.trial_settings.take(),
+                self.builder.description.take(),
+                self.builder.invoice_settings.take(),
+                self.builder.metadata.take(),
+                self.builder.trial_period_days,
+                self.builder.trial_settings.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentLinksResourceSubscriptionData {
                 description,
                 invoice_settings,
                 metadata,
                 trial_period_days,
                 trial_settings,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentLinksResourceSubscriptionData {
-        type Builder = PaymentLinksResourceSubscriptionDataBuilder;
-    }
-
-    impl FromValueOpt for PaymentLinksResourceSubscriptionData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentLinksResourceSubscriptionDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "trial_period_days" => b.trial_period_days = FromValueOpt::from_value(v),
-                    "trial_settings" => b.trial_settings = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

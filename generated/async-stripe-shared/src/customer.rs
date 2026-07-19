@@ -136,16 +136,14 @@ pub struct CustomerBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -162,84 +160,86 @@ const _: () = {
 
     impl Visitor for Place<Customer> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: CustomerBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: CustomerBuilder {
+                    address: Deserialize::default(),
+                    balance: Deserialize::default(),
+                    business_name: Deserialize::default(),
+                    cash_balance: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    default_source: Deserialize::default(),
+                    delinquent: Deserialize::default(),
+                    description: Deserialize::default(),
+                    discount: Deserialize::default(),
+                    email: Deserialize::default(),
+                    id: Deserialize::default(),
+                    individual_name: Deserialize::default(),
+                    invoice_credit_balance: Deserialize::default(),
+                    invoice_prefix: Deserialize::default(),
+                    invoice_settings: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    name: Deserialize::default(),
+                    next_invoice_sequence: Deserialize::default(),
+                    phone: Deserialize::default(),
+                    preferred_locales: Deserialize::default(),
+                    shipping: Deserialize::default(),
+                    sources: Deserialize::default(),
+                    subscriptions: Deserialize::default(),
+                    tax: Deserialize::default(),
+                    tax_exempt: Deserialize::default(),
+                    tax_ids: Deserialize::default(),
+                    test_clock: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for CustomerBuilder {
-        type Out = Customer;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
-                "balance" => Deserialize::begin(&mut self.balance),
-                "business_name" => Deserialize::begin(&mut self.business_name),
-                "cash_balance" => Deserialize::begin(&mut self.cash_balance),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "default_source" => Deserialize::begin(&mut self.default_source),
-                "delinquent" => Deserialize::begin(&mut self.delinquent),
-                "description" => Deserialize::begin(&mut self.description),
-                "discount" => Deserialize::begin(&mut self.discount),
-                "email" => Deserialize::begin(&mut self.email),
-                "id" => Deserialize::begin(&mut self.id),
-                "individual_name" => Deserialize::begin(&mut self.individual_name),
-                "invoice_credit_balance" => Deserialize::begin(&mut self.invoice_credit_balance),
-                "invoice_prefix" => Deserialize::begin(&mut self.invoice_prefix),
-                "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "name" => Deserialize::begin(&mut self.name),
-                "next_invoice_sequence" => Deserialize::begin(&mut self.next_invoice_sequence),
-                "phone" => Deserialize::begin(&mut self.phone),
-                "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
-                "shipping" => Deserialize::begin(&mut self.shipping),
-                "sources" => Deserialize::begin(&mut self.sources),
-                "subscriptions" => Deserialize::begin(&mut self.subscriptions),
-                "tax" => Deserialize::begin(&mut self.tax),
-                "tax_exempt" => Deserialize::begin(&mut self.tax_exempt),
-                "tax_ids" => Deserialize::begin(&mut self.tax_ids),
-                "test_clock" => Deserialize::begin(&mut self.test_clock),
+                "address" => Deserialize::begin(&mut self.builder.address),
+                "balance" => Deserialize::begin(&mut self.builder.balance),
+                "business_name" => Deserialize::begin(&mut self.builder.business_name),
+                "cash_balance" => Deserialize::begin(&mut self.builder.cash_balance),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "default_source" => Deserialize::begin(&mut self.builder.default_source),
+                "delinquent" => Deserialize::begin(&mut self.builder.delinquent),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "discount" => Deserialize::begin(&mut self.builder.discount),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "individual_name" => Deserialize::begin(&mut self.builder.individual_name),
+                "invoice_credit_balance" => {
+                    Deserialize::begin(&mut self.builder.invoice_credit_balance)
+                }
+                "invoice_prefix" => Deserialize::begin(&mut self.builder.invoice_prefix),
+                "invoice_settings" => Deserialize::begin(&mut self.builder.invoice_settings),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "next_invoice_sequence" => {
+                    Deserialize::begin(&mut self.builder.next_invoice_sequence)
+                }
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                "preferred_locales" => Deserialize::begin(&mut self.builder.preferred_locales),
+                "shipping" => Deserialize::begin(&mut self.builder.shipping),
+                "sources" => Deserialize::begin(&mut self.builder.sources),
+                "subscriptions" => Deserialize::begin(&mut self.builder.subscriptions),
+                "tax" => Deserialize::begin(&mut self.builder.tax),
+                "tax_exempt" => Deserialize::begin(&mut self.builder.tax_exempt),
+                "tax_ids" => Deserialize::begin(&mut self.builder.tax_ids),
+                "test_clock" => Deserialize::begin(&mut self.builder.test_clock),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                address: Deserialize::default(),
-                balance: Deserialize::default(),
-                business_name: Deserialize::default(),
-                cash_balance: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                default_source: Deserialize::default(),
-                delinquent: Deserialize::default(),
-                description: Deserialize::default(),
-                discount: Deserialize::default(),
-                email: Deserialize::default(),
-                id: Deserialize::default(),
-                individual_name: Deserialize::default(),
-                invoice_credit_balance: Deserialize::default(),
-                invoice_prefix: Deserialize::default(),
-                invoice_settings: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
-                next_invoice_sequence: Deserialize::default(),
-                phone: Deserialize::default(),
-                preferred_locales: Deserialize::default(),
-                shipping: Deserialize::default(),
-                sources: Deserialize::default(),
-                subscriptions: Deserialize::default(),
-                tax: Deserialize::default(),
-                tax_exempt: Deserialize::default(),
-                tax_ids: Deserialize::default(),
-                test_clock: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(address),
                 Some(balance),
@@ -272,41 +272,41 @@ const _: () = {
                 Some(tax_ids),
                 Some(test_clock),
             ) = (
-                self.address.take(),
-                self.balance,
-                self.business_name.take(),
-                self.cash_balance.take(),
-                self.created,
-                self.currency.take(),
-                self.customer_account.take(),
-                self.default_source.take(),
-                self.delinquent,
-                self.description.take(),
-                self.discount.take(),
-                self.email.take(),
-                self.id.take(),
-                self.individual_name.take(),
-                self.invoice_credit_balance.take(),
-                self.invoice_prefix.take(),
-                self.invoice_settings.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.name.take(),
-                self.next_invoice_sequence,
-                self.phone.take(),
-                self.preferred_locales.take(),
-                self.shipping.take(),
-                self.sources.take(),
-                self.subscriptions.take(),
-                self.tax.take(),
-                self.tax_exempt.take(),
-                self.tax_ids.take(),
-                self.test_clock.take(),
+                self.builder.address.take(),
+                self.builder.balance,
+                self.builder.business_name.take(),
+                self.builder.cash_balance.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.customer_account.take(),
+                self.builder.default_source.take(),
+                self.builder.delinquent,
+                self.builder.description.take(),
+                self.builder.discount.take(),
+                self.builder.email.take(),
+                self.builder.id.take(),
+                self.builder.individual_name.take(),
+                self.builder.invoice_credit_balance.take(),
+                self.builder.invoice_prefix.take(),
+                self.builder.invoice_settings.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.name.take(),
+                self.builder.next_invoice_sequence,
+                self.builder.phone.take(),
+                self.builder.preferred_locales.take(),
+                self.builder.shipping.take(),
+                self.builder.sources.take(),
+                self.builder.subscriptions.take(),
+                self.builder.tax.take(),
+                self.builder.tax_exempt.take(),
+                self.builder.tax_ids.take(),
+                self.builder.test_clock.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Customer {
                 address,
                 balance,
                 business_name,
@@ -337,71 +337,8 @@ const _: () = {
                 tax_exempt,
                 tax_ids,
                 test_clock,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Customer {
-        type Builder = CustomerBuilder;
-    }
-
-    impl FromValueOpt for Customer {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "balance" => b.balance = FromValueOpt::from_value(v),
-                    "business_name" => b.business_name = FromValueOpt::from_value(v),
-                    "cash_balance" => b.cash_balance = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "default_source" => b.default_source = FromValueOpt::from_value(v),
-                    "delinquent" => b.delinquent = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discount" => b.discount = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "individual_name" => b.individual_name = FromValueOpt::from_value(v),
-                    "invoice_credit_balance" => {
-                        b.invoice_credit_balance = FromValueOpt::from_value(v)
-                    }
-                    "invoice_prefix" => b.invoice_prefix = FromValueOpt::from_value(v),
-                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "next_invoice_sequence" => {
-                        b.next_invoice_sequence = FromValueOpt::from_value(v)
-                    }
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    "sources" => b.sources = FromValueOpt::from_value(v),
-                    "subscriptions" => b.subscriptions = FromValueOpt::from_value(v),
-                    "tax" => b.tax = FromValueOpt::from_value(v),
-                    "tax_exempt" => b.tax_exempt = FromValueOpt::from_value(v),
-                    "tax_ids" => b.tax_ids = FromValueOpt::from_value(v),
-                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -518,21 +455,19 @@ impl serde::Serialize for CustomerTaxExempt {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CustomerTaxExempt {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CustomerTaxExempt {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CustomerTaxExempt> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CustomerTaxExempt> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CustomerTaxExempt::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CustomerTaxExempt);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

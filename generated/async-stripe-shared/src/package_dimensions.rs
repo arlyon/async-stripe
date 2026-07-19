@@ -29,16 +29,14 @@ pub struct PackageDimensionsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,73 +55,35 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PackageDimensionsBuilder::deser_default(),
+                builder: PackageDimensionsBuilder {
+                    height: Deserialize::default(),
+                    length: Deserialize::default(),
+                    weight: Deserialize::default(),
+                    width: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PackageDimensionsBuilder {
-        type Out = PackageDimensions;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "height" => Deserialize::begin(&mut self.height),
-                "length" => Deserialize::begin(&mut self.length),
-                "weight" => Deserialize::begin(&mut self.weight),
-                "width" => Deserialize::begin(&mut self.width),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                height: Deserialize::default(),
-                length: Deserialize::default(),
-                weight: Deserialize::default(),
-                width: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(height), Some(length), Some(weight), Some(width)) =
-                (self.height, self.length, self.weight, self.width)
-            else {
-                return None;
-            };
-            Some(Self::Out { height, length, weight, width })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "height" => Deserialize::begin(&mut self.builder.height),
+                "length" => Deserialize::begin(&mut self.builder.length),
+                "weight" => Deserialize::begin(&mut self.builder.weight),
+                "width" => Deserialize::begin(&mut self.builder.width),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PackageDimensions {
-        type Builder = PackageDimensionsBuilder;
-    }
-
-    impl FromValueOpt for PackageDimensions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(height), Some(length), Some(weight), Some(width)) =
+                (self.builder.height, self.builder.length, self.builder.weight, self.builder.width)
+            else {
+                return Ok(());
             };
-            let mut b = PackageDimensionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "height" => b.height = FromValueOpt::from_value(v),
-                    "length" => b.length = FromValueOpt::from_value(v),
-                    "weight" => b.weight = FromValueOpt::from_value(v),
-                    "width" => b.width = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PackageDimensions { height, length, weight, width });
+            Ok(())
         }
     }
 };

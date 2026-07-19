@@ -30,16 +30,14 @@ pub struct InsightsResourcesPaymentEvaluationSignalV2Builder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -58,70 +56,37 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InsightsResourcesPaymentEvaluationSignalV2Builder::deser_default(),
+                builder: InsightsResourcesPaymentEvaluationSignalV2Builder {
+                    evaluated_at: Deserialize::default(),
+                    risk_level: Deserialize::default(),
+                    score: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InsightsResourcesPaymentEvaluationSignalV2Builder {
-        type Out = InsightsResourcesPaymentEvaluationSignalV2;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "evaluated_at" => Deserialize::begin(&mut self.evaluated_at),
-                "risk_level" => Deserialize::begin(&mut self.risk_level),
-                "score" => Deserialize::begin(&mut self.score),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                evaluated_at: Deserialize::default(),
-                risk_level: Deserialize::default(),
-                score: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(evaluated_at), Some(risk_level), Some(score)) =
-                (self.evaluated_at, self.risk_level.take(), self.score)
-            else {
-                return None;
-            };
-            Some(Self::Out { evaluated_at, risk_level, score })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "evaluated_at" => Deserialize::begin(&mut self.builder.evaluated_at),
+                "risk_level" => Deserialize::begin(&mut self.builder.risk_level),
+                "score" => Deserialize::begin(&mut self.builder.score),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InsightsResourcesPaymentEvaluationSignalV2 {
-        type Builder = InsightsResourcesPaymentEvaluationSignalV2Builder;
-    }
-
-    impl FromValueOpt for InsightsResourcesPaymentEvaluationSignalV2 {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(evaluated_at), Some(risk_level), Some(score)) =
+                (self.builder.evaluated_at, self.builder.risk_level.take(), self.builder.score)
+            else {
+                return Ok(());
             };
-            let mut b = InsightsResourcesPaymentEvaluationSignalV2Builder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "evaluated_at" => b.evaluated_at = FromValueOpt::from_value(v),
-                    "risk_level" => b.risk_level = FromValueOpt::from_value(v),
-                    "score" => b.score = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InsightsResourcesPaymentEvaluationSignalV2 {
+                evaluated_at,
+                risk_level,
+                score,
+            });
+            Ok(())
         }
     }
 };
@@ -194,14 +159,14 @@ impl serde::Serialize for InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<InsightsResourcesPaymentEvaluationSignalV2RiskLevel> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<InsightsResourcesPaymentEvaluationSignalV2RiskLevel> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             InsightsResourcesPaymentEvaluationSignalV2RiskLevel::from_str(s).expect("infallible"),
@@ -209,8 +174,6 @@ impl miniserde::de::Visitor for crate::Place<InsightsResourcesPaymentEvaluationS
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(InsightsResourcesPaymentEvaluationSignalV2RiskLevel);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

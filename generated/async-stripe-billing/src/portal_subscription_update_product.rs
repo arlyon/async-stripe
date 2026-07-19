@@ -25,16 +25,14 @@ pub struct PortalSubscriptionUpdateProductBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,70 +51,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PortalSubscriptionUpdateProductBuilder::deser_default(),
+                builder: PortalSubscriptionUpdateProductBuilder {
+                    adjustable_quantity: Deserialize::default(),
+                    prices: Deserialize::default(),
+                    product: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PortalSubscriptionUpdateProductBuilder {
-        type Out = PortalSubscriptionUpdateProduct;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "adjustable_quantity" => Deserialize::begin(&mut self.adjustable_quantity),
-                "prices" => Deserialize::begin(&mut self.prices),
-                "product" => Deserialize::begin(&mut self.product),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                adjustable_quantity: Deserialize::default(),
-                prices: Deserialize::default(),
-                product: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(adjustable_quantity), Some(prices), Some(product)) =
-                (self.adjustable_quantity, self.prices.take(), self.product.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { adjustable_quantity, prices, product })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "adjustable_quantity" => Deserialize::begin(&mut self.builder.adjustable_quantity),
+                "prices" => Deserialize::begin(&mut self.builder.prices),
+                "product" => Deserialize::begin(&mut self.builder.product),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PortalSubscriptionUpdateProduct {
-        type Builder = PortalSubscriptionUpdateProductBuilder;
-    }
-
-    impl FromValueOpt for PortalSubscriptionUpdateProduct {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(adjustable_quantity), Some(prices), Some(product)) = (
+                self.builder.adjustable_quantity,
+                self.builder.prices.take(),
+                self.builder.product.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PortalSubscriptionUpdateProductBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "adjustable_quantity" => b.adjustable_quantity = FromValueOpt::from_value(v),
-                    "prices" => b.prices = FromValueOpt::from_value(v),
-                    "product" => b.product = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PortalSubscriptionUpdateProduct { adjustable_quantity, prices, product });
+            Ok(())
         }
     }
 };

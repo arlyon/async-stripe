@@ -32,16 +32,14 @@ pub struct BillingCreditBalanceSummaryBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,76 +58,43 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BillingCreditBalanceSummaryBuilder::deser_default(),
+                builder: BillingCreditBalanceSummaryBuilder {
+                    balances: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for BillingCreditBalanceSummaryBuilder {
-        type Out = BillingCreditBalanceSummary;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "balances" => Deserialize::begin(&mut self.balances),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                balances: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                livemode: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(balances), Some(customer), Some(customer_account), Some(livemode)) = (
-                self.balances.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.livemode,
-            ) else {
-                return None;
-            };
-            Some(Self::Out { balances, customer, customer_account, livemode })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "balances" => Deserialize::begin(&mut self.builder.balances),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingCreditBalanceSummary {
-        type Builder = BillingCreditBalanceSummaryBuilder;
-    }
-
-    impl FromValueOpt for BillingCreditBalanceSummary {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(balances), Some(customer), Some(customer_account), Some(livemode)) = (
+                self.builder.balances.take(),
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.livemode,
+            ) else {
+                return Ok(());
             };
-            let mut b = BillingCreditBalanceSummaryBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "balances" => b.balances = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(BillingCreditBalanceSummary {
+                balances,
+                customer,
+                customer_account,
+                livemode,
+            });
+            Ok(())
         }
     }
 };

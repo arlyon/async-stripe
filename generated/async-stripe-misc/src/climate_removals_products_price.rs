@@ -26,16 +26,14 @@ pub struct ClimateRemovalsProductsPriceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ClimateRemovalsProductsPriceBuilder::deser_default(),
+                builder: ClimateRemovalsProductsPriceBuilder {
+                    amount_fees: Deserialize::default(),
+                    amount_subtotal: Deserialize::default(),
+                    amount_total: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ClimateRemovalsProductsPriceBuilder {
-        type Out = ClimateRemovalsProductsPrice;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount_fees" => Deserialize::begin(&mut self.amount_fees),
-                "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
-                "amount_total" => Deserialize::begin(&mut self.amount_total),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount_fees: Deserialize::default(),
-                amount_subtotal: Deserialize::default(),
-                amount_total: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_fees), Some(amount_subtotal), Some(amount_total)) =
-                (self.amount_fees, self.amount_subtotal, self.amount_total)
-            else {
-                return None;
-            };
-            Some(Self::Out { amount_fees, amount_subtotal, amount_total })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount_fees" => Deserialize::begin(&mut self.builder.amount_fees),
+                "amount_subtotal" => Deserialize::begin(&mut self.builder.amount_subtotal),
+                "amount_total" => Deserialize::begin(&mut self.builder.amount_total),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ClimateRemovalsProductsPrice {
-        type Builder = ClimateRemovalsProductsPriceBuilder;
-    }
-
-    impl FromValueOpt for ClimateRemovalsProductsPrice {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount_fees), Some(amount_subtotal), Some(amount_total)) =
+                (self.builder.amount_fees, self.builder.amount_subtotal, self.builder.amount_total)
+            else {
+                return Ok(());
             };
-            let mut b = ClimateRemovalsProductsPriceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_fees" => b.amount_fees = FromValueOpt::from_value(v),
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(ClimateRemovalsProductsPrice { amount_fees, amount_subtotal, amount_total });
+            Ok(())
         }
     }
 };

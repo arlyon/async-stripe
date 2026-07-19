@@ -33,16 +33,14 @@ pub struct InsightsResourcesPaymentEvaluationCustomerDetailsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -61,80 +59,47 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InsightsResourcesPaymentEvaluationCustomerDetailsBuilder::deser_default(),
+                builder: InsightsResourcesPaymentEvaluationCustomerDetailsBuilder {
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    email: Deserialize::default(),
+                    name: Deserialize::default(),
+                    phone: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InsightsResourcesPaymentEvaluationCustomerDetailsBuilder {
-        type Out = InsightsResourcesPaymentEvaluationCustomerDetails;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "email" => Deserialize::begin(&mut self.email),
-                "name" => Deserialize::begin(&mut self.name),
-                "phone" => Deserialize::begin(&mut self.phone),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                email: Deserialize::default(),
-                name: Deserialize::default(),
-                phone: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer), Some(customer_account), Some(email), Some(name), Some(phone)) = (
-                self.customer.take(),
-                self.customer_account.take(),
-                self.email.take(),
-                self.name.take(),
-                self.phone.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { customer, customer_account, email, name, phone })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InsightsResourcesPaymentEvaluationCustomerDetails {
-        type Builder = InsightsResourcesPaymentEvaluationCustomerDetailsBuilder;
-    }
-
-    impl FromValueOpt for InsightsResourcesPaymentEvaluationCustomerDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(customer), Some(customer_account), Some(email), Some(name), Some(phone)) = (
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.email.take(),
+                self.builder.name.take(),
+                self.builder.phone.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = InsightsResourcesPaymentEvaluationCustomerDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InsightsResourcesPaymentEvaluationCustomerDetails {
+                customer,
+                customer_account,
+                email,
+                name,
+                phone,
+            });
+            Ok(())
         }
     }
 };

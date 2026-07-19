@@ -62,16 +62,14 @@ pub struct TerminalReaderBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -90,49 +88,44 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderBuilder::deser_default(),
+                builder: TerminalReaderBuilder {
+                    action: Deserialize::default(),
+                    device_sw_version: Deserialize::default(),
+                    device_type: Deserialize::default(),
+                    id: Deserialize::default(),
+                    ip_address: Deserialize::default(),
+                    label: Deserialize::default(),
+                    last_seen_at: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    location: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    serial_number: Deserialize::default(),
+                    status: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TerminalReaderBuilder {
-        type Out = TerminalReader;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "action" => Deserialize::begin(&mut self.action),
-                "device_sw_version" => Deserialize::begin(&mut self.device_sw_version),
-                "device_type" => Deserialize::begin(&mut self.device_type),
-                "id" => Deserialize::begin(&mut self.id),
-                "ip_address" => Deserialize::begin(&mut self.ip_address),
-                "label" => Deserialize::begin(&mut self.label),
-                "last_seen_at" => Deserialize::begin(&mut self.last_seen_at),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "location" => Deserialize::begin(&mut self.location),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "serial_number" => Deserialize::begin(&mut self.serial_number),
-                "status" => Deserialize::begin(&mut self.status),
+                "action" => Deserialize::begin(&mut self.builder.action),
+                "device_sw_version" => Deserialize::begin(&mut self.builder.device_sw_version),
+                "device_type" => Deserialize::begin(&mut self.builder.device_type),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "ip_address" => Deserialize::begin(&mut self.builder.ip_address),
+                "label" => Deserialize::begin(&mut self.builder.label),
+                "last_seen_at" => Deserialize::begin(&mut self.builder.last_seen_at),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "location" => Deserialize::begin(&mut self.builder.location),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "serial_number" => Deserialize::begin(&mut self.builder.serial_number),
+                "status" => Deserialize::begin(&mut self.builder.status),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                action: Deserialize::default(),
-                device_sw_version: Deserialize::default(),
-                device_type: Deserialize::default(),
-                id: Deserialize::default(),
-                ip_address: Deserialize::default(),
-                label: Deserialize::default(),
-                last_seen_at: Deserialize::default(),
-                livemode: Deserialize::default(),
-                location: Deserialize::default(),
-                metadata: Deserialize::default(),
-                serial_number: Deserialize::default(),
-                status: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(action),
                 Some(device_sw_version),
@@ -147,23 +140,23 @@ const _: () = {
                 Some(serial_number),
                 Some(status),
             ) = (
-                self.action.take(),
-                self.device_sw_version.take(),
-                self.device_type.take(),
-                self.id.take(),
-                self.ip_address.take(),
-                self.label.take(),
-                self.last_seen_at,
-                self.livemode,
-                self.location.take(),
-                self.metadata.take(),
-                self.serial_number.take(),
-                self.status.take(),
+                self.builder.action.take(),
+                self.builder.device_sw_version.take(),
+                self.builder.device_type.take(),
+                self.builder.id.take(),
+                self.builder.ip_address.take(),
+                self.builder.label.take(),
+                self.builder.last_seen_at,
+                self.builder.livemode,
+                self.builder.location.take(),
+                self.builder.metadata.take(),
+                self.builder.serial_number.take(),
+                self.builder.status.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TerminalReader {
                 action,
                 device_sw_version,
                 device_type,
@@ -176,49 +169,8 @@ const _: () = {
                 metadata,
                 serial_number,
                 status,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReader {
-        type Builder = TerminalReaderBuilder;
-    }
-
-    impl FromValueOpt for TerminalReader {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalReaderBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "action" => b.action = FromValueOpt::from_value(v),
-                    "device_sw_version" => b.device_sw_version = FromValueOpt::from_value(v),
-                    "device_type" => b.device_type = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "label" => b.label = FromValueOpt::from_value(v),
-                    "last_seen_at" => b.last_seen_at = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "location" => b.location = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "serial_number" => b.serial_number = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -341,21 +293,19 @@ impl serde::Serialize for TerminalReaderDeviceType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TerminalReaderDeviceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TerminalReaderDeviceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TerminalReaderDeviceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TerminalReaderDeviceType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TerminalReaderDeviceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderDeviceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TerminalReaderDeviceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -423,21 +373,19 @@ impl serde::Serialize for TerminalReaderStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TerminalReaderStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TerminalReaderStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TerminalReaderStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TerminalReaderStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TerminalReaderStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TerminalReaderStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

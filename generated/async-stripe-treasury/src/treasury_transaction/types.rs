@@ -63,16 +63,14 @@ pub struct TreasuryTransactionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -91,53 +89,48 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TreasuryTransactionBuilder::deser_default(),
+                builder: TreasuryTransactionBuilder {
+                    amount: Deserialize::default(),
+                    balance_impact: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    description: Deserialize::default(),
+                    entries: Deserialize::default(),
+                    financial_account: Deserialize::default(),
+                    flow: Deserialize::default(),
+                    flow_details: Deserialize::default(),
+                    flow_type: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    status: Deserialize::default(),
+                    status_transitions: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TreasuryTransactionBuilder {
-        type Out = TreasuryTransaction;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "balance_impact" => Deserialize::begin(&mut self.balance_impact),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "description" => Deserialize::begin(&mut self.description),
-                "entries" => Deserialize::begin(&mut self.entries),
-                "financial_account" => Deserialize::begin(&mut self.financial_account),
-                "flow" => Deserialize::begin(&mut self.flow),
-                "flow_details" => Deserialize::begin(&mut self.flow_details),
-                "flow_type" => Deserialize::begin(&mut self.flow_type),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "status" => Deserialize::begin(&mut self.status),
-                "status_transitions" => Deserialize::begin(&mut self.status_transitions),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "balance_impact" => Deserialize::begin(&mut self.builder.balance_impact),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "entries" => Deserialize::begin(&mut self.builder.entries),
+                "financial_account" => Deserialize::begin(&mut self.builder.financial_account),
+                "flow" => Deserialize::begin(&mut self.builder.flow),
+                "flow_details" => Deserialize::begin(&mut self.builder.flow_details),
+                "flow_type" => Deserialize::begin(&mut self.builder.flow_type),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "status_transitions" => Deserialize::begin(&mut self.builder.status_transitions),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                balance_impact: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                entries: Deserialize::default(),
-                financial_account: Deserialize::default(),
-                flow: Deserialize::default(),
-                flow_details: Deserialize::default(),
-                flow_type: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                status: Deserialize::default(),
-                status_transitions: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(balance_impact),
@@ -154,25 +147,25 @@ const _: () = {
                 Some(status),
                 Some(status_transitions),
             ) = (
-                self.amount,
-                self.balance_impact,
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.entries.take(),
-                self.financial_account.take(),
-                self.flow.take(),
-                self.flow_details.take(),
-                self.flow_type.take(),
-                self.id.take(),
-                self.livemode,
-                self.status.take(),
-                self.status_transitions,
+                self.builder.amount,
+                self.builder.balance_impact,
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.description.take(),
+                self.builder.entries.take(),
+                self.builder.financial_account.take(),
+                self.builder.flow.take(),
+                self.builder.flow_details.take(),
+                self.builder.flow_type.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.status.take(),
+                self.builder.status_transitions,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TreasuryTransaction {
                 amount,
                 balance_impact,
                 created,
@@ -187,51 +180,8 @@ const _: () = {
                 livemode,
                 status,
                 status_transitions,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryTransaction {
-        type Builder = TreasuryTransactionBuilder;
-    }
-
-    impl FromValueOpt for TreasuryTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_impact" => b.balance_impact = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "entries" => b.entries = FromValueOpt::from_value(v),
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "flow" => b.flow = FromValueOpt::from_value(v),
-                    "flow_details" => b.flow_details = FromValueOpt::from_value(v),
-                    "flow_type" => b.flow_type = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -345,21 +295,19 @@ impl serde::Serialize for TreasuryTransactionFlowType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TreasuryTransactionFlowType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TreasuryTransactionFlowType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TreasuryTransactionFlowType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TreasuryTransactionFlowType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TreasuryTransactionFlowType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TreasuryTransactionFlowType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryTransactionFlowType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -441,21 +389,19 @@ impl serde::Serialize for TreasuryTransactionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TreasuryTransactionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TreasuryTransactionStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<TreasuryTransactionStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<TreasuryTransactionStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(TreasuryTransactionStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TreasuryTransactionStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryTransactionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

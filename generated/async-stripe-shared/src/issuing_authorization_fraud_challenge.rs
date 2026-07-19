@@ -26,16 +26,14 @@ pub struct IssuingAuthorizationFraudChallengeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -54,70 +52,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingAuthorizationFraudChallengeBuilder::deser_default(),
+                builder: IssuingAuthorizationFraudChallengeBuilder {
+                    channel: Deserialize::default(),
+                    status: Deserialize::default(),
+                    undeliverable_reason: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for IssuingAuthorizationFraudChallengeBuilder {
-        type Out = IssuingAuthorizationFraudChallenge;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "channel" => Deserialize::begin(&mut self.channel),
-                "status" => Deserialize::begin(&mut self.status),
-                "undeliverable_reason" => Deserialize::begin(&mut self.undeliverable_reason),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                channel: Deserialize::default(),
-                status: Deserialize::default(),
-                undeliverable_reason: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(channel), Some(status), Some(undeliverable_reason)) =
-                (self.channel.take(), self.status.take(), self.undeliverable_reason.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { channel, status, undeliverable_reason })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "channel" => Deserialize::begin(&mut self.builder.channel),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "undeliverable_reason" => {
+                    Deserialize::begin(&mut self.builder.undeliverable_reason)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingAuthorizationFraudChallenge {
-        type Builder = IssuingAuthorizationFraudChallengeBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationFraudChallenge {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(channel), Some(status), Some(undeliverable_reason)) = (
+                self.builder.channel.take(),
+                self.builder.status.take(),
+                self.builder.undeliverable_reason.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = IssuingAuthorizationFraudChallengeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "channel" => b.channel = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "undeliverable_reason" => b.undeliverable_reason = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(IssuingAuthorizationFraudChallenge { channel, status, undeliverable_reason });
+            Ok(())
         }
     }
 };
@@ -184,22 +150,20 @@ impl serde::Serialize for IssuingAuthorizationFraudChallengeChannel {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingAuthorizationFraudChallengeChannel {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingAuthorizationFraudChallengeChannel {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFraudChallengeChannel> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingAuthorizationFraudChallengeChannel> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(IssuingAuthorizationFraudChallengeChannel::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFraudChallengeChannel);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFraudChallengeChannel {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -282,21 +246,19 @@ impl serde::Serialize for IssuingAuthorizationFraudChallengeStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingAuthorizationFraudChallengeStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingAuthorizationFraudChallengeStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFraudChallengeStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IssuingAuthorizationFraudChallengeStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IssuingAuthorizationFraudChallengeStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFraudChallengeStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFraudChallengeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -371,16 +333,16 @@ impl serde::Serialize for IssuingAuthorizationFraudChallengeUndeliverableReason 
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IssuingAuthorizationFraudChallengeUndeliverableReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IssuingAuthorizationFraudChallengeUndeliverableReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<IssuingAuthorizationFraudChallengeUndeliverableReason>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             IssuingAuthorizationFraudChallengeUndeliverableReason::from_str(s).expect("infallible"),
@@ -388,8 +350,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFraudChallengeUndeliverableReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFraudChallengeUndeliverableReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

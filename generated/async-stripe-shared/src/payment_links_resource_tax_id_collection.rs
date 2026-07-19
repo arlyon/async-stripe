@@ -22,16 +22,14 @@ pub struct PaymentLinksResourceTaxIdCollectionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -50,62 +48,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentLinksResourceTaxIdCollectionBuilder::deser_default(),
+                builder: PaymentLinksResourceTaxIdCollectionBuilder {
+                    enabled: Deserialize::default(),
+                    required: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentLinksResourceTaxIdCollectionBuilder {
-        type Out = PaymentLinksResourceTaxIdCollection;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "enabled" => Deserialize::begin(&mut self.enabled),
-                "required" => Deserialize::begin(&mut self.required),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { enabled: Deserialize::default(), required: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(required)) = (self.enabled, self.required.take()) else {
-                return None;
-            };
-            Some(Self::Out { enabled, required })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "enabled" => Deserialize::begin(&mut self.builder.enabled),
+                "required" => Deserialize::begin(&mut self.builder.required),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentLinksResourceTaxIdCollection {
-        type Builder = PaymentLinksResourceTaxIdCollectionBuilder;
-    }
-
-    impl FromValueOpt for PaymentLinksResourceTaxIdCollection {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(enabled), Some(required)) =
+                (self.builder.enabled, self.builder.required.take())
+            else {
+                return Ok(());
             };
-            let mut b = PaymentLinksResourceTaxIdCollectionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    "required" => b.required = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentLinksResourceTaxIdCollection { enabled, required });
+            Ok(())
         }
     }
 };
@@ -174,22 +141,20 @@ impl serde::Serialize for PaymentLinksResourceTaxIdCollectionRequired {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentLinksResourceTaxIdCollectionRequired {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentLinksResourceTaxIdCollectionRequired {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentLinksResourceTaxIdCollectionRequired> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentLinksResourceTaxIdCollectionRequired> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out =
             Some(PaymentLinksResourceTaxIdCollectionRequired::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinksResourceTaxIdCollectionRequired);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentLinksResourceTaxIdCollectionRequired {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

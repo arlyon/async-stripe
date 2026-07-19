@@ -21,16 +21,14 @@ pub struct PaymentPagesCheckoutSessionNameCollectionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -49,62 +47,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentPagesCheckoutSessionNameCollectionBuilder::deser_default(),
+                builder: PaymentPagesCheckoutSessionNameCollectionBuilder {
+                    business: Deserialize::default(),
+                    individual: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentPagesCheckoutSessionNameCollectionBuilder {
-        type Out = PaymentPagesCheckoutSessionNameCollection;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "business" => Deserialize::begin(&mut self.business),
-                "individual" => Deserialize::begin(&mut self.individual),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { business: Deserialize::default(), individual: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(business), Some(individual)) = (self.business, self.individual) else {
-                return None;
-            };
-            Some(Self::Out { business, individual })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "business" => Deserialize::begin(&mut self.builder.business),
+                "individual" => Deserialize::begin(&mut self.builder.individual),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentPagesCheckoutSessionNameCollection {
-        type Builder = PaymentPagesCheckoutSessionNameCollectionBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionNameCollection {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(business), Some(individual)) =
+                (self.builder.business, self.builder.individual)
+            else {
+                return Ok(());
             };
-            let mut b = PaymentPagesCheckoutSessionNameCollectionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "business" => b.business = FromValueOpt::from_value(v),
-                    "individual" => b.individual = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentPagesCheckoutSessionNameCollection { business, individual });
+            Ok(())
         }
     }
 };

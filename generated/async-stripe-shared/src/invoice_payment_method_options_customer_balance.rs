@@ -25,16 +25,14 @@ pub struct InvoicePaymentMethodOptionsCustomerBalanceBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,64 +51,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoicePaymentMethodOptionsCustomerBalanceBuilder::deser_default(),
+                builder: InvoicePaymentMethodOptionsCustomerBalanceBuilder {
+                    bank_transfer: Deserialize::default(),
+                    funding_type: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoicePaymentMethodOptionsCustomerBalanceBuilder {
-        type Out = InvoicePaymentMethodOptionsCustomerBalance;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "bank_transfer" => Deserialize::begin(&mut self.bank_transfer),
-                "funding_type" => Deserialize::begin(&mut self.funding_type),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { bank_transfer: Deserialize::default(), funding_type: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank_transfer), Some(funding_type)) =
-                (self.bank_transfer.take(), self.funding_type.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { bank_transfer, funding_type })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "bank_transfer" => Deserialize::begin(&mut self.builder.bank_transfer),
+                "funding_type" => Deserialize::begin(&mut self.builder.funding_type),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoicePaymentMethodOptionsCustomerBalance {
-        type Builder = InvoicePaymentMethodOptionsCustomerBalanceBuilder;
-    }
-
-    impl FromValueOpt for InvoicePaymentMethodOptionsCustomerBalance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(bank_transfer), Some(funding_type)) =
+                (self.builder.bank_transfer.take(), self.builder.funding_type.take())
+            else {
+                return Ok(());
             };
-            let mut b = InvoicePaymentMethodOptionsCustomerBalanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_transfer" => b.bank_transfer = FromValueOpt::from_value(v),
-                    "funding_type" => b.funding_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(InvoicePaymentMethodOptionsCustomerBalance { bank_transfer, funding_type });
+            Ok(())
         }
     }
 };
@@ -178,16 +144,16 @@ impl serde::Serialize for InvoicePaymentMethodOptionsCustomerBalanceFundingType 
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for InvoicePaymentMethodOptionsCustomerBalanceFundingType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for InvoicePaymentMethodOptionsCustomerBalanceFundingType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<InvoicePaymentMethodOptionsCustomerBalanceFundingType>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             InvoicePaymentMethodOptionsCustomerBalanceFundingType::from_str(s).expect("infallible"),
@@ -195,8 +161,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(InvoicePaymentMethodOptionsCustomerBalanceFundingType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsCustomerBalanceFundingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

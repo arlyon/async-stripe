@@ -37,16 +37,14 @@ pub struct BillingAlertBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -65,37 +63,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: BillingAlertBuilder::deser_default(),
+                builder: BillingAlertBuilder {
+                    alert_type: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    status: Deserialize::default(),
+                    title: Deserialize::default(),
+                    usage_threshold: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for BillingAlertBuilder {
-        type Out = BillingAlert;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "alert_type" => Deserialize::begin(&mut self.alert_type),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "status" => Deserialize::begin(&mut self.status),
-                "title" => Deserialize::begin(&mut self.title),
-                "usage_threshold" => Deserialize::begin(&mut self.usage_threshold),
+                "alert_type" => Deserialize::begin(&mut self.builder.alert_type),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "title" => Deserialize::begin(&mut self.builder.title),
+                "usage_threshold" => Deserialize::begin(&mut self.builder.usage_threshold),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                alert_type: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                status: Deserialize::default(),
-                title: Deserialize::default(),
-                usage_threshold: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(alert_type),
                 Some(id),
@@ -104,53 +97,19 @@ const _: () = {
                 Some(title),
                 Some(usage_threshold),
             ) = (
-                self.alert_type.take(),
-                self.id.take(),
-                self.livemode,
-                self.status.take(),
-                self.title.take(),
-                self.usage_threshold.take(),
+                self.builder.alert_type.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.status.take(),
+                self.builder.title.take(),
+                self.builder.usage_threshold.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { alert_type, id, livemode, status, title, usage_threshold })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out =
+                Some(BillingAlert { alert_type, id, livemode, status, title, usage_threshold });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for BillingAlert {
-        type Builder = BillingAlertBuilder;
-    }
-
-    impl FromValueOpt for BillingAlert {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingAlertBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "alert_type" => b.alert_type = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "title" => b.title = FromValueOpt::from_value(v),
-                    "usage_threshold" => b.usage_threshold = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -234,21 +193,19 @@ impl serde::Serialize for BillingAlertStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BillingAlertStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BillingAlertStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BillingAlertStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BillingAlertStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BillingAlertStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BillingAlertStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingAlertStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -324,21 +281,19 @@ impl serde::Serialize for BillingAlertAlertType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for BillingAlertAlertType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for BillingAlertAlertType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<BillingAlertAlertType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<BillingAlertAlertType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(BillingAlertAlertType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(BillingAlertAlertType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingAlertAlertType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -64,16 +64,14 @@ pub struct ApplicationFeeBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -92,53 +90,50 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ApplicationFeeBuilder::deser_default(),
+                builder: ApplicationFeeBuilder {
+                    account: Deserialize::default(),
+                    amount: Deserialize::default(),
+                    amount_refunded: Deserialize::default(),
+                    application: Deserialize::default(),
+                    balance_transaction: Deserialize::default(),
+                    charge: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    fee_source: Deserialize::default(),
+                    id: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    originating_transaction: Deserialize::default(),
+                    refunded: Deserialize::default(),
+                    refunds: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for ApplicationFeeBuilder {
-        type Out = ApplicationFee;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account" => Deserialize::begin(&mut self.account),
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_refunded" => Deserialize::begin(&mut self.amount_refunded),
-                "application" => Deserialize::begin(&mut self.application),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
-                "charge" => Deserialize::begin(&mut self.charge),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "fee_source" => Deserialize::begin(&mut self.fee_source),
-                "id" => Deserialize::begin(&mut self.id),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "originating_transaction" => Deserialize::begin(&mut self.originating_transaction),
-                "refunded" => Deserialize::begin(&mut self.refunded),
-                "refunds" => Deserialize::begin(&mut self.refunds),
+                "account" => Deserialize::begin(&mut self.builder.account),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_refunded" => Deserialize::begin(&mut self.builder.amount_refunded),
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "balance_transaction" => Deserialize::begin(&mut self.builder.balance_transaction),
+                "charge" => Deserialize::begin(&mut self.builder.charge),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "fee_source" => Deserialize::begin(&mut self.builder.fee_source),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "originating_transaction" => {
+                    Deserialize::begin(&mut self.builder.originating_transaction)
+                }
+                "refunded" => Deserialize::begin(&mut self.builder.refunded),
+                "refunds" => Deserialize::begin(&mut self.builder.refunds),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                account: Deserialize::default(),
-                amount: Deserialize::default(),
-                amount_refunded: Deserialize::default(),
-                application: Deserialize::default(),
-                balance_transaction: Deserialize::default(),
-                charge: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                fee_source: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                originating_transaction: Deserialize::default(),
-                refunded: Deserialize::default(),
-                refunds: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(account),
                 Some(amount),
@@ -155,25 +150,25 @@ const _: () = {
                 Some(refunded),
                 Some(refunds),
             ) = (
-                self.account.take(),
-                self.amount,
-                self.amount_refunded,
-                self.application.take(),
-                self.balance_transaction.take(),
-                self.charge.take(),
-                self.created,
-                self.currency.take(),
-                self.fee_source.take(),
-                self.id.take(),
-                self.livemode,
-                self.originating_transaction.take(),
-                self.refunded,
-                self.refunds.take(),
+                self.builder.account.take(),
+                self.builder.amount,
+                self.builder.amount_refunded,
+                self.builder.application.take(),
+                self.builder.balance_transaction.take(),
+                self.builder.charge.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.fee_source.take(),
+                self.builder.id.take(),
+                self.builder.livemode,
+                self.builder.originating_transaction.take(),
+                self.builder.refunded,
+                self.builder.refunds.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(ApplicationFee {
                 account,
                 amount,
                 amount_refunded,
@@ -188,53 +183,8 @@ const _: () = {
                 originating_transaction,
                 refunded,
                 refunds,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for ApplicationFee {
-        type Builder = ApplicationFeeBuilder;
-    }
-
-    impl FromValueOpt for ApplicationFee {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ApplicationFeeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account" => b.account = FromValueOpt::from_value(v),
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_refunded" => b.amount_refunded = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "fee_source" => b.fee_source = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "originating_transaction" => {
-                        b.originating_transaction = FromValueOpt::from_value(v)
-                    }
-                    "refunded" => b.refunded = FromValueOpt::from_value(v),
-                    "refunds" => b.refunds = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

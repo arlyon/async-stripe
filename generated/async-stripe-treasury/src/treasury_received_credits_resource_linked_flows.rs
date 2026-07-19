@@ -39,16 +39,14 @@ pub struct TreasuryReceivedCreditsResourceLinkedFlowsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,37 +65,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TreasuryReceivedCreditsResourceLinkedFlowsBuilder::deser_default(),
+                builder: TreasuryReceivedCreditsResourceLinkedFlowsBuilder {
+                    credit_reversal: Deserialize::default(),
+                    issuing_authorization: Deserialize::default(),
+                    issuing_transaction: Deserialize::default(),
+                    source_flow: Deserialize::default(),
+                    source_flow_details: Deserialize::default(),
+                    source_flow_type: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TreasuryReceivedCreditsResourceLinkedFlowsBuilder {
-        type Out = TreasuryReceivedCreditsResourceLinkedFlows;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "credit_reversal" => Deserialize::begin(&mut self.credit_reversal),
-                "issuing_authorization" => Deserialize::begin(&mut self.issuing_authorization),
-                "issuing_transaction" => Deserialize::begin(&mut self.issuing_transaction),
-                "source_flow" => Deserialize::begin(&mut self.source_flow),
-                "source_flow_details" => Deserialize::begin(&mut self.source_flow_details),
-                "source_flow_type" => Deserialize::begin(&mut self.source_flow_type),
+                "credit_reversal" => Deserialize::begin(&mut self.builder.credit_reversal),
+                "issuing_authorization" => {
+                    Deserialize::begin(&mut self.builder.issuing_authorization)
+                }
+                "issuing_transaction" => Deserialize::begin(&mut self.builder.issuing_transaction),
+                "source_flow" => Deserialize::begin(&mut self.builder.source_flow),
+                "source_flow_details" => Deserialize::begin(&mut self.builder.source_flow_details),
+                "source_flow_type" => Deserialize::begin(&mut self.builder.source_flow_type),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                credit_reversal: Deserialize::default(),
-                issuing_authorization: Deserialize::default(),
-                issuing_transaction: Deserialize::default(),
-                source_flow: Deserialize::default(),
-                source_flow_details: Deserialize::default(),
-                source_flow_type: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(credit_reversal),
                 Some(issuing_authorization),
@@ -106,62 +101,25 @@ const _: () = {
                 Some(source_flow_details),
                 Some(source_flow_type),
             ) = (
-                self.credit_reversal.take(),
-                self.issuing_authorization.take(),
-                self.issuing_transaction.take(),
-                self.source_flow.take(),
-                self.source_flow_details.take(),
-                self.source_flow_type.take(),
+                self.builder.credit_reversal.take(),
+                self.builder.issuing_authorization.take(),
+                self.builder.issuing_transaction.take(),
+                self.builder.source_flow.take(),
+                self.builder.source_flow_details.take(),
+                self.builder.source_flow_type.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TreasuryReceivedCreditsResourceLinkedFlows {
                 credit_reversal,
                 issuing_authorization,
                 issuing_transaction,
                 source_flow,
                 source_flow_details,
                 source_flow_type,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TreasuryReceivedCreditsResourceLinkedFlows {
-        type Builder = TreasuryReceivedCreditsResourceLinkedFlowsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryReceivedCreditsResourceLinkedFlows {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryReceivedCreditsResourceLinkedFlowsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "credit_reversal" => b.credit_reversal = FromValueOpt::from_value(v),
-                    "issuing_authorization" => {
-                        b.issuing_authorization = FromValueOpt::from_value(v)
-                    }
-                    "issuing_transaction" => b.issuing_transaction = FromValueOpt::from_value(v),
-                    "source_flow" => b.source_flow = FromValueOpt::from_value(v),
-                    "source_flow_details" => b.source_flow_details = FromValueOpt::from_value(v),
-                    "source_flow_type" => b.source_flow_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

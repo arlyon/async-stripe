@@ -38,16 +38,14 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodMobilepayDetails
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -70,87 +68,48 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: PaymentsPrimitivesPaymentRecordsResourcePaymentMethodMobilepayDetailsResourceCardBuilder::deser_default(),
+            builder: PaymentsPrimitivesPaymentRecordsResourcePaymentMethodMobilepayDetailsResourceCardBuilder { brand: Deserialize::default(),
+country: Deserialize::default(),
+exp_month: Deserialize::default(),
+exp_year: Deserialize::default(),
+last4: Deserialize::default(),
+ },
         }))
-        }
-    }
-
-    impl MapBuilder
-        for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodMobilepayDetailsResourceCardBuilder
-    {
-        type Out =
-            PaymentsPrimitivesPaymentRecordsResourcePaymentMethodMobilepayDetailsResourceCard;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "brand" => Deserialize::begin(&mut self.brand),
-                "country" => Deserialize::begin(&mut self.country),
-                "exp_month" => Deserialize::begin(&mut self.exp_month),
-                "exp_year" => Deserialize::begin(&mut self.exp_year),
-                "last4" => Deserialize::begin(&mut self.last4),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                brand: Deserialize::default(),
-                country: Deserialize::default(),
-                exp_month: Deserialize::default(),
-                exp_year: Deserialize::default(),
-                last4: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(brand), Some(country), Some(exp_month), Some(exp_year), Some(last4)) = (
-                self.brand.take(),
-                self.country.take(),
-                self.exp_month,
-                self.exp_year,
-                self.last4.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { brand, country, exp_month, exp_year, last4 })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "brand" => Deserialize::begin(&mut self.builder.brand),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "exp_month" => Deserialize::begin(&mut self.builder.exp_month),
+                "exp_year" => Deserialize::begin(&mut self.builder.exp_year),
+                "last4" => Deserialize::begin(&mut self.builder.last4),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser
-        for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodMobilepayDetailsResourceCard
-    {
-        type Builder = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodMobilepayDetailsResourceCardBuilder;
-    }
-
-    impl FromValueOpt
-        for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodMobilepayDetailsResourceCard
-    {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(brand), Some(country), Some(exp_month), Some(exp_year), Some(last4)) = (
+                self.builder.brand.take(),
+                self.builder.country.take(),
+                self.builder.exp_month,
+                self.builder.exp_year,
+                self.builder.last4.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodMobilepayDetailsResourceCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(
+                PaymentsPrimitivesPaymentRecordsResourcePaymentMethodMobilepayDetailsResourceCard {
+                    brand,
+                    country,
+                    exp_month,
+                    exp_year,
+                    last4,
+                },
+            );
+            Ok(())
         }
     }
 };

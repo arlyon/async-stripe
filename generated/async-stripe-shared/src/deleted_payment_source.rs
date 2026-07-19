@@ -11,93 +11,39 @@ pub enum DeletedPaymentSource {
     DeletedCard(stripe_shared::DeletedCard),
 }
 
-#[derive(Default)]
-pub struct DeletedPaymentSourceBuilder {
-    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
-}
-
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::MapBuilder;
-    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_miniserde::de::Visitor;
+    use stripe_miniserde::{Deserialize, Error, Result, make_place};
+    use stripe_miniserde::json::peek_object_tag;
 
     use super::*;
 
     make_place!(Place);
 
-    struct Builder<'a> {
-        out: &'a mut Option<DeletedPaymentSource>,
-        builder: DeletedPaymentSourceBuilder,
-    }
-
     impl Deserialize for DeletedPaymentSource {
+        const WANTS_RAW: bool = true;
+
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     impl Visitor for Place<DeletedPaymentSource> {
-        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+        fn wants_raw(&self) -> bool {
+            true
         }
 
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl MapBuilder for DeletedPaymentSourceBuilder {
-        type Out = DeletedPaymentSource;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.inner.key_inner(k)
-        }
-
-        fn deser_default() -> Self {
-            Self::default()
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (k, o) = self.inner.finish_inner()?;
-            DeletedPaymentSource::construct(&k, o)
-        }
-    }
-
-    impl stripe_types::ObjectDeser for DeletedPaymentSource {
-        type Builder = DeletedPaymentSourceBuilder;
-    }
-    impl DeletedPaymentSource {
-        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
-            Some(match key {
+        fn raw(&mut self, bytes: &str) -> Result<()> {
+            let tag = peek_object_tag(bytes).ok_or(Error)?;
+            self.out = Some(match tag.as_str() {
                 "bank_account" => {
-                    Self::DeletedBankAccount(FromValueOpt::from_value(Value::Object(o))?)
+                    DeletedPaymentSource::DeletedBankAccount(stripe_miniserde::json::from_str(bytes)?)
                 }
-                "card" => Self::DeletedCard(FromValueOpt::from_value(Value::Object(o))?),
+                "card" => DeletedPaymentSource::DeletedCard(stripe_miniserde::json::from_str(bytes)?),
 
-                _ => {
-                    tracing::warn!(
-                        "Unknown object type '{}' for enum '{}'",
-                        key,
-                        "DeletedPaymentSource"
-                    );
-                    return None;
-                }
-            })
-        }
-    }
-
-    impl FromValueOpt for DeletedPaymentSource {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
+                _ => return Err(Error),
+            });
+            Ok(())
         }
     }
 };

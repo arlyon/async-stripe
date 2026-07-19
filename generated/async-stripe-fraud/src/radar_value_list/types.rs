@@ -51,16 +51,14 @@ pub struct RadarValueListBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -79,43 +77,38 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: RadarValueListBuilder::deser_default(),
+                builder: RadarValueListBuilder {
+                    alias: Deserialize::default(),
+                    created: Deserialize::default(),
+                    created_by: Deserialize::default(),
+                    id: Deserialize::default(),
+                    item_type: Deserialize::default(),
+                    list_items: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    name: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for RadarValueListBuilder {
-        type Out = RadarValueList;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "alias" => Deserialize::begin(&mut self.alias),
-                "created" => Deserialize::begin(&mut self.created),
-                "created_by" => Deserialize::begin(&mut self.created_by),
-                "id" => Deserialize::begin(&mut self.id),
-                "item_type" => Deserialize::begin(&mut self.item_type),
-                "list_items" => Deserialize::begin(&mut self.list_items),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "name" => Deserialize::begin(&mut self.name),
+                "alias" => Deserialize::begin(&mut self.builder.alias),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "created_by" => Deserialize::begin(&mut self.builder.created_by),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "item_type" => Deserialize::begin(&mut self.builder.item_type),
+                "list_items" => Deserialize::begin(&mut self.builder.list_items),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "name" => Deserialize::begin(&mut self.builder.name),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                alias: Deserialize::default(),
-                created: Deserialize::default(),
-                created_by: Deserialize::default(),
-                id: Deserialize::default(),
-                item_type: Deserialize::default(),
-                list_items: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(alias),
                 Some(created),
@@ -127,20 +120,20 @@ const _: () = {
                 Some(metadata),
                 Some(name),
             ) = (
-                self.alias.take(),
-                self.created,
-                self.created_by.take(),
-                self.id.take(),
-                self.item_type.take(),
-                self.list_items.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.name.take(),
+                self.builder.alias.take(),
+                self.builder.created,
+                self.builder.created_by.take(),
+                self.builder.id.take(),
+                self.builder.item_type.take(),
+                self.builder.list_items.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.name.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(RadarValueList {
                 alias,
                 created,
                 created_by,
@@ -150,46 +143,8 @@ const _: () = {
                 livemode,
                 metadata,
                 name,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for RadarValueList {
-        type Builder = RadarValueListBuilder;
-    }
-
-    impl FromValueOpt for RadarValueList {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = RadarValueListBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "alias" => b.alias = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "created_by" => b.created_by = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "item_type" => b.item_type = FromValueOpt::from_value(v),
-                    "list_items" => b.list_items = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -309,21 +264,19 @@ impl serde::Serialize for RadarValueListItemType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for RadarValueListItemType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for RadarValueListItemType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<RadarValueListItemType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<RadarValueListItemType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(RadarValueListItemType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(RadarValueListItemType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RadarValueListItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

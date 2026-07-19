@@ -23,16 +23,14 @@ pub struct InvoiceSettingCustomFieldBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -51,62 +49,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: InvoiceSettingCustomFieldBuilder::deser_default(),
+                builder: InvoiceSettingCustomFieldBuilder {
+                    name: Deserialize::default(),
+                    value: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for InvoiceSettingCustomFieldBuilder {
-        type Out = InvoiceSettingCustomField;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "name" => Deserialize::begin(&mut self.name),
-                "value" => Deserialize::begin(&mut self.value),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { name: Deserialize::default(), value: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(name), Some(value)) = (self.name.take(), self.value.take()) else {
-                return None;
-            };
-            Some(Self::Out { name, value })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "value" => Deserialize::begin(&mut self.builder.value),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for InvoiceSettingCustomField {
-        type Builder = InvoiceSettingCustomFieldBuilder;
-    }
-
-    impl FromValueOpt for InvoiceSettingCustomField {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(name), Some(value)) = (self.builder.name.take(), self.builder.value.take())
+            else {
+                return Ok(());
             };
-            let mut b = InvoiceSettingCustomFieldBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "value" => b.value = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(InvoiceSettingCustomField { name, value });
+            Ok(())
         }
     }
 };

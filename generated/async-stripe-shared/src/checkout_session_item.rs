@@ -59,16 +59,14 @@ pub struct CheckoutSessionItemBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -87,51 +85,46 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CheckoutSessionItemBuilder::deser_default(),
+                builder: CheckoutSessionItemBuilder {
+                    adjustable_quantity: Deserialize::default(),
+                    amount_discount: Deserialize::default(),
+                    amount_subtotal: Deserialize::default(),
+                    amount_tax: Deserialize::default(),
+                    amount_total: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    description: Deserialize::default(),
+                    discounts: Deserialize::default(),
+                    id: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    price: Deserialize::default(),
+                    quantity: Deserialize::default(),
+                    taxes: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CheckoutSessionItemBuilder {
-        type Out = CheckoutSessionItem;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "adjustable_quantity" => Deserialize::begin(&mut self.adjustable_quantity),
-                "amount_discount" => Deserialize::begin(&mut self.amount_discount),
-                "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
-                "amount_tax" => Deserialize::begin(&mut self.amount_tax),
-                "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "description" => Deserialize::begin(&mut self.description),
-                "discounts" => Deserialize::begin(&mut self.discounts),
-                "id" => Deserialize::begin(&mut self.id),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "price" => Deserialize::begin(&mut self.price),
-                "quantity" => Deserialize::begin(&mut self.quantity),
-                "taxes" => Deserialize::begin(&mut self.taxes),
+                "adjustable_quantity" => Deserialize::begin(&mut self.builder.adjustable_quantity),
+                "amount_discount" => Deserialize::begin(&mut self.builder.amount_discount),
+                "amount_subtotal" => Deserialize::begin(&mut self.builder.amount_subtotal),
+                "amount_tax" => Deserialize::begin(&mut self.builder.amount_tax),
+                "amount_total" => Deserialize::begin(&mut self.builder.amount_total),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "discounts" => Deserialize::begin(&mut self.builder.discounts),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "price" => Deserialize::begin(&mut self.builder.price),
+                "quantity" => Deserialize::begin(&mut self.builder.quantity),
+                "taxes" => Deserialize::begin(&mut self.builder.taxes),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                adjustable_quantity: Deserialize::default(),
-                amount_discount: Deserialize::default(),
-                amount_subtotal: Deserialize::default(),
-                amount_tax: Deserialize::default(),
-                amount_total: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                discounts: Deserialize::default(),
-                id: Deserialize::default(),
-                metadata: Deserialize::default(),
-                price: Deserialize::default(),
-                quantity: Deserialize::default(),
-                taxes: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(adjustable_quantity),
                 Some(amount_discount),
@@ -147,24 +140,24 @@ const _: () = {
                 Some(quantity),
                 Some(taxes),
             ) = (
-                self.adjustable_quantity,
-                self.amount_discount,
-                self.amount_subtotal,
-                self.amount_tax,
-                self.amount_total,
-                self.currency.take(),
-                self.description.take(),
-                self.discounts.take(),
-                self.id.take(),
-                self.metadata.take(),
-                self.price.take(),
-                self.quantity,
-                self.taxes.take(),
+                self.builder.adjustable_quantity,
+                self.builder.amount_discount,
+                self.builder.amount_subtotal,
+                self.builder.amount_tax,
+                self.builder.amount_total,
+                self.builder.currency.take(),
+                self.builder.description.take(),
+                self.builder.discounts.take(),
+                self.builder.id.take(),
+                self.builder.metadata.take(),
+                self.builder.price.take(),
+                self.builder.quantity,
+                self.builder.taxes.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(CheckoutSessionItem {
                 adjustable_quantity,
                 amount_discount,
                 amount_subtotal,
@@ -178,50 +171,8 @@ const _: () = {
                 price,
                 quantity,
                 taxes,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CheckoutSessionItem {
-        type Builder = CheckoutSessionItemBuilder;
-    }
-
-    impl FromValueOpt for CheckoutSessionItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutSessionItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "adjustable_quantity" => b.adjustable_quantity = FromValueOpt::from_value(v),
-                    "amount_discount" => b.amount_discount = FromValueOpt::from_value(v),
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "price" => b.price = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "taxes" => b.taxes = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

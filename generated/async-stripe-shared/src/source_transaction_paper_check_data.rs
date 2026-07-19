@@ -24,16 +24,14 @@ pub struct SourceTransactionPaperCheckDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -52,64 +50,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SourceTransactionPaperCheckDataBuilder::deser_default(),
+                builder: SourceTransactionPaperCheckDataBuilder {
+                    available_at: Deserialize::default(),
+                    invoices: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for SourceTransactionPaperCheckDataBuilder {
-        type Out = SourceTransactionPaperCheckData;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "available_at" => Deserialize::begin(&mut self.available_at),
-                "invoices" => Deserialize::begin(&mut self.invoices),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { available_at: Deserialize::default(), invoices: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(available_at), Some(invoices)) =
-                (self.available_at.take(), self.invoices.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { available_at, invoices })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "available_at" => Deserialize::begin(&mut self.builder.available_at),
+                "invoices" => Deserialize::begin(&mut self.builder.invoices),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for SourceTransactionPaperCheckData {
-        type Builder = SourceTransactionPaperCheckDataBuilder;
-    }
-
-    impl FromValueOpt for SourceTransactionPaperCheckData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(available_at), Some(invoices)) =
+                (self.builder.available_at.take(), self.builder.invoices.take())
+            else {
+                return Ok(());
             };
-            let mut b = SourceTransactionPaperCheckDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "available_at" => b.available_at = FromValueOpt::from_value(v),
-                    "invoices" => b.invoices = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(SourceTransactionPaperCheckData { available_at, invoices });
+            Ok(())
         }
     }
 };

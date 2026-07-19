@@ -29,16 +29,14 @@ pub struct QuotesResourceTransferDataBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -57,70 +55,33 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: QuotesResourceTransferDataBuilder::deser_default(),
+                builder: QuotesResourceTransferDataBuilder {
+                    amount: Deserialize::default(),
+                    amount_percent: Deserialize::default(),
+                    destination: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for QuotesResourceTransferDataBuilder {
-        type Out = QuotesResourceTransferData;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_percent" => Deserialize::begin(&mut self.amount_percent),
-                "destination" => Deserialize::begin(&mut self.destination),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                amount_percent: Deserialize::default(),
-                destination: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(amount_percent), Some(destination)) =
-                (self.amount, self.amount_percent, self.destination.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { amount, amount_percent, destination })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_percent" => Deserialize::begin(&mut self.builder.amount_percent),
+                "destination" => Deserialize::begin(&mut self.builder.destination),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for QuotesResourceTransferData {
-        type Builder = QuotesResourceTransferDataBuilder;
-    }
-
-    impl FromValueOpt for QuotesResourceTransferData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(amount), Some(amount_percent), Some(destination)) =
+                (self.builder.amount, self.builder.amount_percent, self.builder.destination.take())
+            else {
+                return Ok(());
             };
-            let mut b = QuotesResourceTransferDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_percent" => b.amount_percent = FromValueOpt::from_value(v),
-                    "destination" => b.destination = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(QuotesResourceTransferData { amount, amount_percent, destination });
+            Ok(())
         }
     }
 };

@@ -27,16 +27,14 @@ pub struct PaymentMethodDetailsPaymentRecordSwishBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -55,72 +53,41 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsPaymentRecordSwishBuilder::deser_default(),
+                builder: PaymentMethodDetailsPaymentRecordSwishBuilder {
+                    fingerprint: Deserialize::default(),
+                    payment_reference: Deserialize::default(),
+                    verified_phone_last4: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDetailsPaymentRecordSwishBuilder {
-        type Out = PaymentMethodDetailsPaymentRecordSwish;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "payment_reference" => Deserialize::begin(&mut self.payment_reference),
-                "verified_phone_last4" => Deserialize::begin(&mut self.verified_phone_last4),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                fingerprint: Deserialize::default(),
-                payment_reference: Deserialize::default(),
-                verified_phone_last4: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fingerprint), Some(payment_reference), Some(verified_phone_last4)) = (
-                self.fingerprint.take(),
-                self.payment_reference.take(),
-                self.verified_phone_last4.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { fingerprint, payment_reference, verified_phone_last4 })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "fingerprint" => Deserialize::begin(&mut self.builder.fingerprint),
+                "payment_reference" => Deserialize::begin(&mut self.builder.payment_reference),
+                "verified_phone_last4" => {
+                    Deserialize::begin(&mut self.builder.verified_phone_last4)
+                }
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsPaymentRecordSwish {
-        type Builder = PaymentMethodDetailsPaymentRecordSwishBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsPaymentRecordSwish {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(fingerprint), Some(payment_reference), Some(verified_phone_last4)) = (
+                self.builder.fingerprint.take(),
+                self.builder.payment_reference.take(),
+                self.builder.verified_phone_last4.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDetailsPaymentRecordSwishBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "payment_reference" => b.payment_reference = FromValueOpt::from_value(v),
-                    "verified_phone_last4" => b.verified_phone_last4 = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodDetailsPaymentRecordSwish {
+                fingerprint,
+                payment_reference,
+                verified_phone_last4,
+            });
+            Ok(())
         }
     }
 };

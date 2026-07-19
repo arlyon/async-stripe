@@ -25,16 +25,14 @@ pub struct PaymentIntentNextActionKonbiniBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,70 +51,36 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentNextActionKonbiniBuilder::deser_default(),
+                builder: PaymentIntentNextActionKonbiniBuilder {
+                    expires_at: Deserialize::default(),
+                    hosted_voucher_url: Deserialize::default(),
+                    stores: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentIntentNextActionKonbiniBuilder {
-        type Out = PaymentIntentNextActionKonbini;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "expires_at" => Deserialize::begin(&mut self.expires_at),
-                "hosted_voucher_url" => Deserialize::begin(&mut self.hosted_voucher_url),
-                "stores" => Deserialize::begin(&mut self.stores),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                expires_at: Deserialize::default(),
-                hosted_voucher_url: Deserialize::default(),
-                stores: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_at), Some(hosted_voucher_url), Some(stores)) =
-                (self.expires_at, self.hosted_voucher_url.take(), self.stores.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { expires_at, hosted_voucher_url, stores })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "expires_at" => Deserialize::begin(&mut self.builder.expires_at),
+                "hosted_voucher_url" => Deserialize::begin(&mut self.builder.hosted_voucher_url),
+                "stores" => Deserialize::begin(&mut self.builder.stores),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntentNextActionKonbini {
-        type Builder = PaymentIntentNextActionKonbiniBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionKonbini {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(expires_at), Some(hosted_voucher_url), Some(stores)) = (
+                self.builder.expires_at,
+                self.builder.hosted_voucher_url.take(),
+                self.builder.stores.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentIntentNextActionKonbiniBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "hosted_voucher_url" => b.hosted_voucher_url = FromValueOpt::from_value(v),
-                    "stores" => b.stores = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out =
+                Some(PaymentIntentNextActionKonbini { expires_at, hosted_voucher_url, stores });
+            Ok(())
         }
     }
 };

@@ -56,16 +56,14 @@ pub struct SubscriptionSchedulesResourceDefaultSettingsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -84,45 +82,46 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SubscriptionSchedulesResourceDefaultSettingsBuilder::deser_default(),
+                builder: SubscriptionSchedulesResourceDefaultSettingsBuilder {
+                    application_fee_percent: Deserialize::default(),
+                    automatic_tax: Deserialize::default(),
+                    billing_cycle_anchor: Deserialize::default(),
+                    billing_thresholds: Deserialize::default(),
+                    collection_method: Deserialize::default(),
+                    default_payment_method: Deserialize::default(),
+                    description: Deserialize::default(),
+                    invoice_settings: Deserialize::default(),
+                    on_behalf_of: Deserialize::default(),
+                    transfer_data: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SubscriptionSchedulesResourceDefaultSettingsBuilder {
-        type Out = SubscriptionSchedulesResourceDefaultSettings;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "application_fee_percent" => Deserialize::begin(&mut self.application_fee_percent),
-                "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
-                "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
-                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
-                "collection_method" => Deserialize::begin(&mut self.collection_method),
-                "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
-                "description" => Deserialize::begin(&mut self.description),
-                "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
+                "application_fee_percent" => {
+                    Deserialize::begin(&mut self.builder.application_fee_percent)
+                }
+                "automatic_tax" => Deserialize::begin(&mut self.builder.automatic_tax),
+                "billing_cycle_anchor" => {
+                    Deserialize::begin(&mut self.builder.billing_cycle_anchor)
+                }
+                "billing_thresholds" => Deserialize::begin(&mut self.builder.billing_thresholds),
+                "collection_method" => Deserialize::begin(&mut self.builder.collection_method),
+                "default_payment_method" => {
+                    Deserialize::begin(&mut self.builder.default_payment_method)
+                }
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "invoice_settings" => Deserialize::begin(&mut self.builder.invoice_settings),
+                "on_behalf_of" => Deserialize::begin(&mut self.builder.on_behalf_of),
+                "transfer_data" => Deserialize::begin(&mut self.builder.transfer_data),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                application_fee_percent: Deserialize::default(),
-                automatic_tax: Deserialize::default(),
-                billing_cycle_anchor: Deserialize::default(),
-                billing_thresholds: Deserialize::default(),
-                collection_method: Deserialize::default(),
-                default_payment_method: Deserialize::default(),
-                description: Deserialize::default(),
-                invoice_settings: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                transfer_data: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(application_fee_percent),
                 Some(automatic_tax),
@@ -135,21 +134,21 @@ const _: () = {
                 Some(on_behalf_of),
                 Some(transfer_data),
             ) = (
-                self.application_fee_percent,
-                self.automatic_tax.take(),
-                self.billing_cycle_anchor.take(),
-                self.billing_thresholds,
-                self.collection_method.take(),
-                self.default_payment_method.take(),
-                self.description.take(),
-                self.invoice_settings.take(),
-                self.on_behalf_of.take(),
-                self.transfer_data.take(),
+                self.builder.application_fee_percent,
+                self.builder.automatic_tax.take(),
+                self.builder.billing_cycle_anchor.take(),
+                self.builder.billing_thresholds,
+                self.builder.collection_method.take(),
+                self.builder.default_payment_method.take(),
+                self.builder.description.take(),
+                self.builder.invoice_settings.take(),
+                self.builder.on_behalf_of.take(),
+                self.builder.transfer_data.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(SubscriptionSchedulesResourceDefaultSettings {
                 application_fee_percent,
                 automatic_tax,
                 billing_cycle_anchor,
@@ -160,51 +159,8 @@ const _: () = {
                 invoice_settings,
                 on_behalf_of,
                 transfer_data,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SubscriptionSchedulesResourceDefaultSettings {
-        type Builder = SubscriptionSchedulesResourceDefaultSettingsBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionSchedulesResourceDefaultSettings {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionSchedulesResourceDefaultSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "application_fee_percent" => {
-                        b.application_fee_percent = FromValueOpt::from_value(v)
-                    }
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
-                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
-                    "collection_method" => b.collection_method = FromValueOpt::from_value(v),
-                    "default_payment_method" => {
-                        b.default_payment_method = FromValueOpt::from_value(v)
-                    }
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -277,16 +233,16 @@ impl serde::Serialize for SubscriptionSchedulesResourceDefaultSettingsBillingCyc
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor::from_str(s)
@@ -295,10 +251,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor
@@ -377,16 +329,16 @@ impl serde::Serialize for SubscriptionSchedulesResourceDefaultSettingsCollection
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for SubscriptionSchedulesResourceDefaultSettingsCollectionMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for SubscriptionSchedulesResourceDefaultSettingsCollectionMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<SubscriptionSchedulesResourceDefaultSettingsCollectionMethod>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             SubscriptionSchedulesResourceDefaultSettingsCollectionMethod::from_str(s)
@@ -395,10 +347,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionSchedulesResourceDefaultSettingsCollectionMethod
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionSchedulesResourceDefaultSettingsCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

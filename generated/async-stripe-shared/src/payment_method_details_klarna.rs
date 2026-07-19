@@ -28,16 +28,14 @@ pub struct PaymentMethodDetailsKlarnaBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -56,74 +54,41 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodDetailsKlarnaBuilder::deser_default(),
+                builder: PaymentMethodDetailsKlarnaBuilder {
+                    payer_details: Deserialize::default(),
+                    payment_method_category: Deserialize::default(),
+                    preferred_locale: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for PaymentMethodDetailsKlarnaBuilder {
-        type Out = PaymentMethodDetailsKlarna;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "payer_details" => Deserialize::begin(&mut self.payer_details),
-                "payment_method_category" => Deserialize::begin(&mut self.payment_method_category),
-                "preferred_locale" => Deserialize::begin(&mut self.preferred_locale),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                payer_details: Deserialize::default(),
-                payment_method_category: Deserialize::default(),
-                preferred_locale: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payer_details), Some(payment_method_category), Some(preferred_locale)) = (
-                self.payer_details.take(),
-                self.payment_method_category.take(),
-                self.preferred_locale.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { payer_details, payment_method_category, preferred_locale })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "payer_details" => Deserialize::begin(&mut self.builder.payer_details),
+                "payment_method_category" => {
+                    Deserialize::begin(&mut self.builder.payment_method_category)
+                }
+                "preferred_locale" => Deserialize::begin(&mut self.builder.preferred_locale),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentMethodDetailsKlarna {
-        type Builder = PaymentMethodDetailsKlarnaBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsKlarna {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(payer_details), Some(payment_method_category), Some(preferred_locale)) = (
+                self.builder.payer_details.take(),
+                self.builder.payment_method_category.take(),
+                self.builder.preferred_locale.take(),
+            ) else {
+                return Ok(());
             };
-            let mut b = PaymentMethodDetailsKlarnaBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "payer_details" => b.payer_details = FromValueOpt::from_value(v),
-                    "payment_method_category" => {
-                        b.payment_method_category = FromValueOpt::from_value(v)
-                    }
-                    "preferred_locale" => b.preferred_locale = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(PaymentMethodDetailsKlarna {
+                payer_details,
+                payment_method_category,
+                preferred_locale,
+            });
+            Ok(())
         }
     }
 };

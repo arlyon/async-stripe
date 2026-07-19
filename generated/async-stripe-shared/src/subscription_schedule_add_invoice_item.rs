@@ -36,16 +36,14 @@ pub struct SubscriptionScheduleAddInvoiceItemBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -64,37 +62,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: SubscriptionScheduleAddInvoiceItemBuilder::deser_default(),
+                builder: SubscriptionScheduleAddInvoiceItemBuilder {
+                    discounts: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    period: Deserialize::default(),
+                    price: Deserialize::default(),
+                    quantity: Deserialize::default(),
+                    tax_rates: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for SubscriptionScheduleAddInvoiceItemBuilder {
-        type Out = SubscriptionScheduleAddInvoiceItem;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "discounts" => Deserialize::begin(&mut self.discounts),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "period" => Deserialize::begin(&mut self.period),
-                "price" => Deserialize::begin(&mut self.price),
-                "quantity" => Deserialize::begin(&mut self.quantity),
-                "tax_rates" => Deserialize::begin(&mut self.tax_rates),
+                "discounts" => Deserialize::begin(&mut self.builder.discounts),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "period" => Deserialize::begin(&mut self.builder.period),
+                "price" => Deserialize::begin(&mut self.builder.price),
+                "quantity" => Deserialize::begin(&mut self.builder.quantity),
+                "tax_rates" => Deserialize::begin(&mut self.builder.tax_rates),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                discounts: Deserialize::default(),
-                metadata: Deserialize::default(),
-                period: Deserialize::default(),
-                price: Deserialize::default(),
-                quantity: Deserialize::default(),
-                tax_rates: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(discounts),
                 Some(metadata),
@@ -103,53 +96,25 @@ const _: () = {
                 Some(quantity),
                 Some(tax_rates),
             ) = (
-                self.discounts.take(),
-                self.metadata.take(),
-                self.period.take(),
-                self.price.take(),
-                self.quantity,
-                self.tax_rates.take(),
+                self.builder.discounts.take(),
+                self.builder.metadata.take(),
+                self.builder.period.take(),
+                self.builder.price.take(),
+                self.builder.quantity,
+                self.builder.tax_rates.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { discounts, metadata, period, price, quantity, tax_rates })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(SubscriptionScheduleAddInvoiceItem {
+                discounts,
+                metadata,
+                period,
+                price,
+                quantity,
+                tax_rates,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for SubscriptionScheduleAddInvoiceItem {
-        type Builder = SubscriptionScheduleAddInvoiceItemBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionScheduleAddInvoiceItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionScheduleAddInvoiceItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "period" => b.period = FromValueOpt::from_value(v),
-                    "price" => b.price = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

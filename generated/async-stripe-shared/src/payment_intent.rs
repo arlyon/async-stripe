@@ -210,16 +210,14 @@ pub struct PaymentIntentBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -238,119 +236,122 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentIntentBuilder::deser_default(),
+                builder: PaymentIntentBuilder {
+                    amount: Deserialize::default(),
+                    amount_capturable: Deserialize::default(),
+                    amount_details: Deserialize::default(),
+                    amount_received: Deserialize::default(),
+                    application: Deserialize::default(),
+                    application_fee_amount: Deserialize::default(),
+                    automatic_payment_methods: Deserialize::default(),
+                    canceled_at: Deserialize::default(),
+                    cancellation_reason: Deserialize::default(),
+                    capture_method: Deserialize::default(),
+                    client_secret: Deserialize::default(),
+                    confirmation_method: Deserialize::default(),
+                    created: Deserialize::default(),
+                    currency: Deserialize::default(),
+                    customer: Deserialize::default(),
+                    customer_account: Deserialize::default(),
+                    description: Deserialize::default(),
+                    excluded_payment_method_types: Deserialize::default(),
+                    hooks: Deserialize::default(),
+                    id: Deserialize::default(),
+                    last_payment_error: Deserialize::default(),
+                    latest_charge: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    next_action: Deserialize::default(),
+                    on_behalf_of: Deserialize::default(),
+                    payment_details: Deserialize::default(),
+                    payment_method: Deserialize::default(),
+                    payment_method_configuration_details: Deserialize::default(),
+                    payment_method_options: Deserialize::default(),
+                    payment_method_types: Deserialize::default(),
+                    presentment_details: Deserialize::default(),
+                    processing: Deserialize::default(),
+                    receipt_email: Deserialize::default(),
+                    review: Deserialize::default(),
+                    setup_future_usage: Deserialize::default(),
+                    shipping: Deserialize::default(),
+                    source: Deserialize::default(),
+                    statement_descriptor: Deserialize::default(),
+                    statement_descriptor_suffix: Deserialize::default(),
+                    status: Deserialize::default(),
+                    transfer_data: Deserialize::default(),
+                    transfer_group: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for PaymentIntentBuilder {
-        type Out = PaymentIntent;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_capturable" => Deserialize::begin(&mut self.amount_capturable),
-                "amount_details" => Deserialize::begin(&mut self.amount_details),
-                "amount_received" => Deserialize::begin(&mut self.amount_received),
-                "application" => Deserialize::begin(&mut self.application),
-                "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_capturable" => Deserialize::begin(&mut self.builder.amount_capturable),
+                "amount_details" => Deserialize::begin(&mut self.builder.amount_details),
+                "amount_received" => Deserialize::begin(&mut self.builder.amount_received),
+                "application" => Deserialize::begin(&mut self.builder.application),
+                "application_fee_amount" => {
+                    Deserialize::begin(&mut self.builder.application_fee_amount)
+                }
                 "automatic_payment_methods" => {
-                    Deserialize::begin(&mut self.automatic_payment_methods)
+                    Deserialize::begin(&mut self.builder.automatic_payment_methods)
                 }
-                "canceled_at" => Deserialize::begin(&mut self.canceled_at),
-                "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
-                "client_secret" => Deserialize::begin(&mut self.client_secret),
-                "confirmation_method" => Deserialize::begin(&mut self.confirmation_method),
-                "created" => Deserialize::begin(&mut self.created),
-                "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
-                "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "description" => Deserialize::begin(&mut self.description),
+                "canceled_at" => Deserialize::begin(&mut self.builder.canceled_at),
+                "cancellation_reason" => Deserialize::begin(&mut self.builder.cancellation_reason),
+                "capture_method" => Deserialize::begin(&mut self.builder.capture_method),
+                "client_secret" => Deserialize::begin(&mut self.builder.client_secret),
+                "confirmation_method" => Deserialize::begin(&mut self.builder.confirmation_method),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "currency" => Deserialize::begin(&mut self.builder.currency),
+                "customer" => Deserialize::begin(&mut self.builder.customer),
+                "customer_account" => Deserialize::begin(&mut self.builder.customer_account),
+                "description" => Deserialize::begin(&mut self.builder.description),
                 "excluded_payment_method_types" => {
-                    Deserialize::begin(&mut self.excluded_payment_method_types)
+                    Deserialize::begin(&mut self.builder.excluded_payment_method_types)
                 }
-                "hooks" => Deserialize::begin(&mut self.hooks),
-                "id" => Deserialize::begin(&mut self.id),
-                "last_payment_error" => Deserialize::begin(&mut self.last_payment_error),
-                "latest_charge" => Deserialize::begin(&mut self.latest_charge),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "next_action" => Deserialize::begin(&mut self.next_action),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "payment_details" => Deserialize::begin(&mut self.payment_details),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
+                "hooks" => Deserialize::begin(&mut self.builder.hooks),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "last_payment_error" => Deserialize::begin(&mut self.builder.last_payment_error),
+                "latest_charge" => Deserialize::begin(&mut self.builder.latest_charge),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "next_action" => Deserialize::begin(&mut self.builder.next_action),
+                "on_behalf_of" => Deserialize::begin(&mut self.builder.on_behalf_of),
+                "payment_details" => Deserialize::begin(&mut self.builder.payment_details),
+                "payment_method" => Deserialize::begin(&mut self.builder.payment_method),
                 "payment_method_configuration_details" => {
-                    Deserialize::begin(&mut self.payment_method_configuration_details)
+                    Deserialize::begin(&mut self.builder.payment_method_configuration_details)
                 }
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
-                "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
-                "presentment_details" => Deserialize::begin(&mut self.presentment_details),
-                "processing" => Deserialize::begin(&mut self.processing),
-                "receipt_email" => Deserialize::begin(&mut self.receipt_email),
-                "review" => Deserialize::begin(&mut self.review),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-                "shipping" => Deserialize::begin(&mut self.shipping),
-                "source" => Deserialize::begin(&mut self.source),
-                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
+                "payment_method_options" => {
+                    Deserialize::begin(&mut self.builder.payment_method_options)
+                }
+                "payment_method_types" => {
+                    Deserialize::begin(&mut self.builder.payment_method_types)
+                }
+                "presentment_details" => Deserialize::begin(&mut self.builder.presentment_details),
+                "processing" => Deserialize::begin(&mut self.builder.processing),
+                "receipt_email" => Deserialize::begin(&mut self.builder.receipt_email),
+                "review" => Deserialize::begin(&mut self.builder.review),
+                "setup_future_usage" => Deserialize::begin(&mut self.builder.setup_future_usage),
+                "shipping" => Deserialize::begin(&mut self.builder.shipping),
+                "source" => Deserialize::begin(&mut self.builder.source),
+                "statement_descriptor" => {
+                    Deserialize::begin(&mut self.builder.statement_descriptor)
+                }
                 "statement_descriptor_suffix" => {
-                    Deserialize::begin(&mut self.statement_descriptor_suffix)
+                    Deserialize::begin(&mut self.builder.statement_descriptor_suffix)
                 }
-                "status" => Deserialize::begin(&mut self.status),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
-                "transfer_group" => Deserialize::begin(&mut self.transfer_group),
+                "status" => Deserialize::begin(&mut self.builder.status),
+                "transfer_data" => Deserialize::begin(&mut self.builder.transfer_data),
+                "transfer_group" => Deserialize::begin(&mut self.builder.transfer_group),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                amount_capturable: Deserialize::default(),
-                amount_details: Deserialize::default(),
-                amount_received: Deserialize::default(),
-                application: Deserialize::default(),
-                application_fee_amount: Deserialize::default(),
-                automatic_payment_methods: Deserialize::default(),
-                canceled_at: Deserialize::default(),
-                cancellation_reason: Deserialize::default(),
-                capture_method: Deserialize::default(),
-                client_secret: Deserialize::default(),
-                confirmation_method: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                description: Deserialize::default(),
-                excluded_payment_method_types: Deserialize::default(),
-                hooks: Deserialize::default(),
-                id: Deserialize::default(),
-                last_payment_error: Deserialize::default(),
-                latest_charge: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                next_action: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                payment_details: Deserialize::default(),
-                payment_method: Deserialize::default(),
-                payment_method_configuration_details: Deserialize::default(),
-                payment_method_options: Deserialize::default(),
-                payment_method_types: Deserialize::default(),
-                presentment_details: Deserialize::default(),
-                processing: Deserialize::default(),
-                receipt_email: Deserialize::default(),
-                review: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-                shipping: Deserialize::default(),
-                source: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-                statement_descriptor_suffix: Deserialize::default(),
-                status: Deserialize::default(),
-                transfer_data: Deserialize::default(),
-                transfer_group: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(amount_capturable),
@@ -396,54 +397,54 @@ const _: () = {
                 Some(transfer_data),
                 Some(transfer_group),
             ) = (
-                self.amount,
-                self.amount_capturable,
-                self.amount_details.take(),
-                self.amount_received,
-                self.application.take(),
-                self.application_fee_amount,
-                self.automatic_payment_methods.take(),
-                self.canceled_at,
-                self.cancellation_reason.take(),
-                self.capture_method.take(),
-                self.client_secret.take(),
-                self.confirmation_method.take(),
-                self.created,
-                self.currency.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.description.take(),
-                self.excluded_payment_method_types.take(),
-                self.hooks.take(),
-                self.id.take(),
-                self.last_payment_error.take(),
-                self.latest_charge.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.next_action.take(),
-                self.on_behalf_of.take(),
-                self.payment_details.take(),
-                self.payment_method.take(),
-                self.payment_method_configuration_details.take(),
-                self.payment_method_options.take(),
-                self.payment_method_types.take(),
-                self.presentment_details.take(),
-                self.processing.take(),
-                self.receipt_email.take(),
-                self.review.take(),
-                self.setup_future_usage.take(),
-                self.shipping.take(),
-                self.source.take(),
-                self.statement_descriptor.take(),
-                self.statement_descriptor_suffix.take(),
-                self.status.take(),
-                self.transfer_data.take(),
-                self.transfer_group.take(),
+                self.builder.amount,
+                self.builder.amount_capturable,
+                self.builder.amount_details.take(),
+                self.builder.amount_received,
+                self.builder.application.take(),
+                self.builder.application_fee_amount,
+                self.builder.automatic_payment_methods.take(),
+                self.builder.canceled_at,
+                self.builder.cancellation_reason.take(),
+                self.builder.capture_method.take(),
+                self.builder.client_secret.take(),
+                self.builder.confirmation_method.take(),
+                self.builder.created,
+                self.builder.currency.take(),
+                self.builder.customer.take(),
+                self.builder.customer_account.take(),
+                self.builder.description.take(),
+                self.builder.excluded_payment_method_types.take(),
+                self.builder.hooks.take(),
+                self.builder.id.take(),
+                self.builder.last_payment_error.take(),
+                self.builder.latest_charge.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.next_action.take(),
+                self.builder.on_behalf_of.take(),
+                self.builder.payment_details.take(),
+                self.builder.payment_method.take(),
+                self.builder.payment_method_configuration_details.take(),
+                self.builder.payment_method_options.take(),
+                self.builder.payment_method_types.take(),
+                self.builder.presentment_details.take(),
+                self.builder.processing.take(),
+                self.builder.receipt_email.take(),
+                self.builder.review.take(),
+                self.builder.setup_future_usage.take(),
+                self.builder.shipping.take(),
+                self.builder.source.take(),
+                self.builder.statement_descriptor.take(),
+                self.builder.statement_descriptor_suffix.take(),
+                self.builder.status.take(),
+                self.builder.transfer_data.take(),
+                self.builder.transfer_group.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(PaymentIntent {
                 amount,
                 amount_capturable,
                 amount_details,
@@ -487,92 +488,8 @@ const _: () = {
                 status,
                 transfer_data,
                 transfer_group,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for PaymentIntent {
-        type Builder = PaymentIntentBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_capturable" => b.amount_capturable = FromValueOpt::from_value(v),
-                    "amount_details" => b.amount_details = FromValueOpt::from_value(v),
-                    "amount_received" => b.amount_received = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee_amount" => {
-                        b.application_fee_amount = FromValueOpt::from_value(v)
-                    }
-                    "automatic_payment_methods" => {
-                        b.automatic_payment_methods = FromValueOpt::from_value(v)
-                    }
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
-                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "confirmation_method" => b.confirmation_method = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "excluded_payment_method_types" => {
-                        b.excluded_payment_method_types = FromValueOpt::from_value(v)
-                    }
-                    "hooks" => b.hooks = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last_payment_error" => b.last_payment_error = FromValueOpt::from_value(v),
-                    "latest_charge" => b.latest_charge = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "next_action" => b.next_action = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "payment_details" => b.payment_details = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_configuration_details" => {
-                        b.payment_method_configuration_details = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
-                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
-                    "processing" => b.processing = FromValueOpt::from_value(v),
-                    "receipt_email" => b.receipt_email = FromValueOpt::from_value(v),
-                    "review" => b.review = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "statement_descriptor_suffix" => {
-                        b.statement_descriptor_suffix = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -715,21 +632,19 @@ impl serde::Serialize for PaymentIntentCancellationReason {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentIntentCancellationReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentIntentCancellationReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentIntentCancellationReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentIntentCancellationReason> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentIntentCancellationReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentIntentCancellationReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -815,21 +730,19 @@ impl serde::Serialize for PaymentIntentStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentIntentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentIntentStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentIntentStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentIntentStatus> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentIntentStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentIntentStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -911,21 +824,19 @@ impl serde::Serialize for PaymentIntentCaptureMethod {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentIntentCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentIntentCaptureMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentIntentCaptureMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentIntentCaptureMethod> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentIntentCaptureMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentIntentCaptureMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -997,21 +908,19 @@ impl serde::Serialize for PaymentIntentConfirmationMethod {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentIntentConfirmationMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentIntentConfirmationMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentIntentConfirmationMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentIntentConfirmationMethod> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentIntentConfirmationMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentIntentConfirmationMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentConfirmationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1227,21 +1136,19 @@ impl serde::Serialize for PaymentIntentExcludedPaymentMethodTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentIntentExcludedPaymentMethodTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentIntentExcludedPaymentMethodTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentIntentExcludedPaymentMethodTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentIntentExcludedPaymentMethodTypes> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentIntentExcludedPaymentMethodTypes::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentIntentExcludedPaymentMethodTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentExcludedPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1313,21 +1220,19 @@ impl serde::Serialize for PaymentIntentSetupFutureUsage {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentIntentSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for PaymentIntentSetupFutureUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentIntentSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<PaymentIntentSetupFutureUsage> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(PaymentIntentSetupFutureUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(PaymentIntentSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

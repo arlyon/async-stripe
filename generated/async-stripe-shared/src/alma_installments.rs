@@ -20,16 +20,14 @@ pub struct AlmaInstallmentsBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -48,60 +46,25 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AlmaInstallmentsBuilder::deser_default(),
+                builder: AlmaInstallmentsBuilder { count: Deserialize::default() },
             }))
-        }
-    }
-
-    impl MapBuilder for AlmaInstallmentsBuilder {
-        type Out = AlmaInstallments;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "count" => Deserialize::begin(&mut self.count),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { count: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(count),) = (self.count,) else {
-                return None;
-            };
-            Some(Self::Out { count })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "count" => Deserialize::begin(&mut self.builder.count),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for AlmaInstallments {
-        type Builder = AlmaInstallmentsBuilder;
-    }
-
-    impl FromValueOpt for AlmaInstallments {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(count),) = (self.builder.count,) else {
+                return Ok(());
             };
-            let mut b = AlmaInstallmentsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "count" => b.count = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(AlmaInstallments { count });
+            Ok(())
         }
     }
 };

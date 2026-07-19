@@ -38,16 +38,14 @@ pub struct FinancialConnectionsAccountOwnerBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -66,39 +64,34 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: FinancialConnectionsAccountOwnerBuilder::deser_default(),
+                builder: FinancialConnectionsAccountOwnerBuilder {
+                    email: Deserialize::default(),
+                    id: Deserialize::default(),
+                    name: Deserialize::default(),
+                    ownership: Deserialize::default(),
+                    phone: Deserialize::default(),
+                    raw_address: Deserialize::default(),
+                    refreshed_at: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for FinancialConnectionsAccountOwnerBuilder {
-        type Out = FinancialConnectionsAccountOwner;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "email" => Deserialize::begin(&mut self.email),
-                "id" => Deserialize::begin(&mut self.id),
-                "name" => Deserialize::begin(&mut self.name),
-                "ownership" => Deserialize::begin(&mut self.ownership),
-                "phone" => Deserialize::begin(&mut self.phone),
-                "raw_address" => Deserialize::begin(&mut self.raw_address),
-                "refreshed_at" => Deserialize::begin(&mut self.refreshed_at),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "ownership" => Deserialize::begin(&mut self.builder.ownership),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                "raw_address" => Deserialize::begin(&mut self.builder.raw_address),
+                "refreshed_at" => Deserialize::begin(&mut self.builder.refreshed_at),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                email: Deserialize::default(),
-                id: Deserialize::default(),
-                name: Deserialize::default(),
-                ownership: Deserialize::default(),
-                phone: Deserialize::default(),
-                raw_address: Deserialize::default(),
-                refreshed_at: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(email),
                 Some(id),
@@ -108,55 +101,27 @@ const _: () = {
                 Some(raw_address),
                 Some(refreshed_at),
             ) = (
-                self.email.take(),
-                self.id.take(),
-                self.name.take(),
-                self.ownership.take(),
-                self.phone.take(),
-                self.raw_address.take(),
-                self.refreshed_at,
+                self.builder.email.take(),
+                self.builder.id.take(),
+                self.builder.name.take(),
+                self.builder.ownership.take(),
+                self.builder.phone.take(),
+                self.builder.raw_address.take(),
+                self.builder.refreshed_at,
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { email, id, name, ownership, phone, raw_address, refreshed_at })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(FinancialConnectionsAccountOwner {
+                email,
+                id,
+                name,
+                ownership,
+                phone,
+                raw_address,
+                refreshed_at,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for FinancialConnectionsAccountOwner {
-        type Builder = FinancialConnectionsAccountOwnerBuilder;
-    }
-
-    impl FromValueOpt for FinancialConnectionsAccountOwner {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FinancialConnectionsAccountOwnerBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "ownership" => b.ownership = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "raw_address" => b.raw_address = FromValueOpt::from_value(v),
-                    "refreshed_at" => b.refreshed_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -32,16 +32,14 @@ pub struct ConnectEmbeddedInstantPayoutsPromotionFeaturesBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -60,89 +58,48 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: ConnectEmbeddedInstantPayoutsPromotionFeaturesBuilder::deser_default(),
+                builder: ConnectEmbeddedInstantPayoutsPromotionFeaturesBuilder {
+                    disable_stripe_user_authentication: Deserialize::default(),
+                    external_account_collection: Deserialize::default(),
+                    instant_payouts: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for ConnectEmbeddedInstantPayoutsPromotionFeaturesBuilder {
-        type Out = ConnectEmbeddedInstantPayoutsPromotionFeatures;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "disable_stripe_user_authentication" => {
-                    Deserialize::begin(&mut self.disable_stripe_user_authentication)
-                }
-                "external_account_collection" => {
-                    Deserialize::begin(&mut self.external_account_collection)
-                }
-                "instant_payouts" => Deserialize::begin(&mut self.instant_payouts),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self {
-                disable_stripe_user_authentication: Deserialize::default(),
-                external_account_collection: Deserialize::default(),
-                instant_payouts: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(disable_stripe_user_authentication),
-                Some(external_account_collection),
-                Some(instant_payouts),
-            ) = (
-                self.disable_stripe_user_authentication,
-                self.external_account_collection,
-                self.instant_payouts,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                disable_stripe_user_authentication,
-                external_account_collection,
-                instant_payouts,
-            })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "disable_stripe_user_authentication" => {
+                    Deserialize::begin(&mut self.builder.disable_stripe_user_authentication)
+                }
+                "external_account_collection" => {
+                    Deserialize::begin(&mut self.builder.external_account_collection)
+                }
+                "instant_payouts" => Deserialize::begin(&mut self.builder.instant_payouts),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ConnectEmbeddedInstantPayoutsPromotionFeatures {
-        type Builder = ConnectEmbeddedInstantPayoutsPromotionFeaturesBuilder;
-    }
-
-    impl FromValueOpt for ConnectEmbeddedInstantPayoutsPromotionFeatures {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (
+                Some(disable_stripe_user_authentication),
+                Some(external_account_collection),
+                Some(instant_payouts),
+            ) = (
+                self.builder.disable_stripe_user_authentication,
+                self.builder.external_account_collection,
+                self.builder.instant_payouts,
+            )
+            else {
+                return Ok(());
             };
-            let mut b = ConnectEmbeddedInstantPayoutsPromotionFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "disable_stripe_user_authentication" => {
-                        b.disable_stripe_user_authentication = FromValueOpt::from_value(v)
-                    }
-                    "external_account_collection" => {
-                        b.external_account_collection = FromValueOpt::from_value(v)
-                    }
-                    "instant_payouts" => b.instant_payouts = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(ConnectEmbeddedInstantPayoutsPromotionFeatures {
+                disable_stripe_user_authentication,
+                external_account_collection,
+                instant_payouts,
+            });
+            Ok(())
         }
     }
 };

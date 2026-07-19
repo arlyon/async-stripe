@@ -68,16 +68,14 @@ pub struct CreditNoteLineItemBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -96,55 +94,52 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: CreditNoteLineItemBuilder::deser_default(),
+                builder: CreditNoteLineItemBuilder {
+                    amount: Deserialize::default(),
+                    description: Deserialize::default(),
+                    discount_amount: Deserialize::default(),
+                    discount_amounts: Deserialize::default(),
+                    id: Deserialize::default(),
+                    invoice_line_item: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    pretax_credit_amounts: Deserialize::default(),
+                    quantity: Deserialize::default(),
+                    tax_rates: Deserialize::default(),
+                    taxes: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    unit_amount: Deserialize::default(),
+                    unit_amount_decimal: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for CreditNoteLineItemBuilder {
-        type Out = CreditNoteLineItem;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "description" => Deserialize::begin(&mut self.description),
-                "discount_amount" => Deserialize::begin(&mut self.discount_amount),
-                "discount_amounts" => Deserialize::begin(&mut self.discount_amounts),
-                "id" => Deserialize::begin(&mut self.id),
-                "invoice_line_item" => Deserialize::begin(&mut self.invoice_line_item),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "pretax_credit_amounts" => Deserialize::begin(&mut self.pretax_credit_amounts),
-                "quantity" => Deserialize::begin(&mut self.quantity),
-                "tax_rates" => Deserialize::begin(&mut self.tax_rates),
-                "taxes" => Deserialize::begin(&mut self.taxes),
-                "type" => Deserialize::begin(&mut self.type_),
-                "unit_amount" => Deserialize::begin(&mut self.unit_amount),
-                "unit_amount_decimal" => Deserialize::begin(&mut self.unit_amount_decimal),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "description" => Deserialize::begin(&mut self.builder.description),
+                "discount_amount" => Deserialize::begin(&mut self.builder.discount_amount),
+                "discount_amounts" => Deserialize::begin(&mut self.builder.discount_amounts),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "invoice_line_item" => Deserialize::begin(&mut self.builder.invoice_line_item),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "pretax_credit_amounts" => {
+                    Deserialize::begin(&mut self.builder.pretax_credit_amounts)
+                }
+                "quantity" => Deserialize::begin(&mut self.builder.quantity),
+                "tax_rates" => Deserialize::begin(&mut self.builder.tax_rates),
+                "taxes" => Deserialize::begin(&mut self.builder.taxes),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "unit_amount" => Deserialize::begin(&mut self.builder.unit_amount),
+                "unit_amount_decimal" => Deserialize::begin(&mut self.builder.unit_amount_decimal),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                description: Deserialize::default(),
-                discount_amount: Deserialize::default(),
-                discount_amounts: Deserialize::default(),
-                id: Deserialize::default(),
-                invoice_line_item: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                pretax_credit_amounts: Deserialize::default(),
-                quantity: Deserialize::default(),
-                tax_rates: Deserialize::default(),
-                taxes: Deserialize::default(),
-                type_: Deserialize::default(),
-                unit_amount: Deserialize::default(),
-                unit_amount_decimal: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(description),
@@ -162,26 +157,26 @@ const _: () = {
                 Some(unit_amount),
                 Some(unit_amount_decimal),
             ) = (
-                self.amount,
-                self.description.take(),
-                self.discount_amount,
-                self.discount_amounts.take(),
-                self.id.take(),
-                self.invoice_line_item.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.pretax_credit_amounts.take(),
-                self.quantity,
-                self.tax_rates.take(),
-                self.taxes.take(),
-                self.type_.take(),
-                self.unit_amount,
-                self.unit_amount_decimal.take(),
+                self.builder.amount,
+                self.builder.description.take(),
+                self.builder.discount_amount,
+                self.builder.discount_amounts.take(),
+                self.builder.id.take(),
+                self.builder.invoice_line_item.take(),
+                self.builder.livemode,
+                self.builder.metadata.take(),
+                self.builder.pretax_credit_amounts.take(),
+                self.builder.quantity,
+                self.builder.tax_rates.take(),
+                self.builder.taxes.take(),
+                self.builder.type_.take(),
+                self.builder.unit_amount,
+                self.builder.unit_amount_decimal.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(CreditNoteLineItem {
                 amount,
                 description,
                 discount_amount,
@@ -197,54 +192,8 @@ const _: () = {
                 type_,
                 unit_amount,
                 unit_amount_decimal,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for CreditNoteLineItem {
-        type Builder = CreditNoteLineItemBuilder;
-    }
-
-    impl FromValueOpt for CreditNoteLineItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CreditNoteLineItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
-                    "discount_amounts" => b.discount_amounts = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice_line_item" => b.invoice_line_item = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "pretax_credit_amounts" => {
-                        b.pretax_credit_amounts = FromValueOpt::from_value(v)
-                    }
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
-                    "taxes" => b.taxes = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
-                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -335,21 +284,19 @@ impl serde::Serialize for CreditNoteLineItemType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for CreditNoteLineItemType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for CreditNoteLineItemType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<CreditNoteLineItemType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<CreditNoteLineItemType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(CreditNoteLineItemType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(CreditNoteLineItemType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreditNoteLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

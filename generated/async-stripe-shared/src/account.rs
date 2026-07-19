@@ -98,16 +98,14 @@ pub struct AccountBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -124,68 +122,66 @@ const _: () = {
 
     impl Visitor for Place<Account> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: AccountBuilder::deser_default() }))
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: AccountBuilder {
+                    business_profile: Deserialize::default(),
+                    business_type: Deserialize::default(),
+                    capabilities: Deserialize::default(),
+                    charges_enabled: Deserialize::default(),
+                    company: Deserialize::default(),
+                    controller: Deserialize::default(),
+                    country: Deserialize::default(),
+                    created: Deserialize::default(),
+                    default_currency: Deserialize::default(),
+                    details_submitted: Deserialize::default(),
+                    email: Deserialize::default(),
+                    external_accounts: Deserialize::default(),
+                    future_requirements: Deserialize::default(),
+                    groups: Deserialize::default(),
+                    id: Deserialize::default(),
+                    individual: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                    payouts_enabled: Deserialize::default(),
+                    requirements: Deserialize::default(),
+                    settings: Deserialize::default(),
+                    tos_acceptance: Deserialize::default(),
+                    type_: Deserialize::default(),
+                },
+            }))
         }
     }
 
-    impl MapBuilder for AccountBuilder {
-        type Out = Account;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "business_profile" => Deserialize::begin(&mut self.business_profile),
-                "business_type" => Deserialize::begin(&mut self.business_type),
-                "capabilities" => Deserialize::begin(&mut self.capabilities),
-                "charges_enabled" => Deserialize::begin(&mut self.charges_enabled),
-                "company" => Deserialize::begin(&mut self.company),
-                "controller" => Deserialize::begin(&mut self.controller),
-                "country" => Deserialize::begin(&mut self.country),
-                "created" => Deserialize::begin(&mut self.created),
-                "default_currency" => Deserialize::begin(&mut self.default_currency),
-                "details_submitted" => Deserialize::begin(&mut self.details_submitted),
-                "email" => Deserialize::begin(&mut self.email),
-                "external_accounts" => Deserialize::begin(&mut self.external_accounts),
-                "future_requirements" => Deserialize::begin(&mut self.future_requirements),
-                "groups" => Deserialize::begin(&mut self.groups),
-                "id" => Deserialize::begin(&mut self.id),
-                "individual" => Deserialize::begin(&mut self.individual),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "payouts_enabled" => Deserialize::begin(&mut self.payouts_enabled),
-                "requirements" => Deserialize::begin(&mut self.requirements),
-                "settings" => Deserialize::begin(&mut self.settings),
-                "tos_acceptance" => Deserialize::begin(&mut self.tos_acceptance),
-                "type" => Deserialize::begin(&mut self.type_),
+                "business_profile" => Deserialize::begin(&mut self.builder.business_profile),
+                "business_type" => Deserialize::begin(&mut self.builder.business_type),
+                "capabilities" => Deserialize::begin(&mut self.builder.capabilities),
+                "charges_enabled" => Deserialize::begin(&mut self.builder.charges_enabled),
+                "company" => Deserialize::begin(&mut self.builder.company),
+                "controller" => Deserialize::begin(&mut self.builder.controller),
+                "country" => Deserialize::begin(&mut self.builder.country),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "default_currency" => Deserialize::begin(&mut self.builder.default_currency),
+                "details_submitted" => Deserialize::begin(&mut self.builder.details_submitted),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "external_accounts" => Deserialize::begin(&mut self.builder.external_accounts),
+                "future_requirements" => Deserialize::begin(&mut self.builder.future_requirements),
+                "groups" => Deserialize::begin(&mut self.builder.groups),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "individual" => Deserialize::begin(&mut self.builder.individual),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                "payouts_enabled" => Deserialize::begin(&mut self.builder.payouts_enabled),
+                "requirements" => Deserialize::begin(&mut self.builder.requirements),
+                "settings" => Deserialize::begin(&mut self.builder.settings),
+                "tos_acceptance" => Deserialize::begin(&mut self.builder.tos_acceptance),
+                "type" => Deserialize::begin(&mut self.builder.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                business_profile: Deserialize::default(),
-                business_type: Deserialize::default(),
-                capabilities: Deserialize::default(),
-                charges_enabled: Deserialize::default(),
-                company: Deserialize::default(),
-                controller: Deserialize::default(),
-                country: Deserialize::default(),
-                created: Deserialize::default(),
-                default_currency: Deserialize::default(),
-                details_submitted: Deserialize::default(),
-                email: Deserialize::default(),
-                external_accounts: Deserialize::default(),
-                future_requirements: Deserialize::default(),
-                groups: Deserialize::default(),
-                id: Deserialize::default(),
-                individual: Deserialize::default(),
-                metadata: Deserialize::default(),
-                payouts_enabled: Deserialize::default(),
-                requirements: Deserialize::default(),
-                settings: Deserialize::default(),
-                tos_acceptance: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(business_profile),
                 Some(business_type),
@@ -210,33 +206,33 @@ const _: () = {
                 Some(tos_acceptance),
                 Some(type_),
             ) = (
-                self.business_profile.take(),
-                self.business_type.take(),
-                self.capabilities.take(),
-                self.charges_enabled,
-                self.company.take(),
-                self.controller.take(),
-                self.country.take(),
-                self.created,
-                self.default_currency.take(),
-                self.details_submitted,
-                self.email.take(),
-                self.external_accounts.take(),
-                self.future_requirements.take(),
-                self.groups.take(),
-                self.id.take(),
-                self.individual.take(),
-                self.metadata.take(),
-                self.payouts_enabled,
-                self.requirements.take(),
-                self.settings.take(),
-                self.tos_acceptance.take(),
-                self.type_.take(),
+                self.builder.business_profile.take(),
+                self.builder.business_type.take(),
+                self.builder.capabilities.take(),
+                self.builder.charges_enabled,
+                self.builder.company.take(),
+                self.builder.controller.take(),
+                self.builder.country.take(),
+                self.builder.created,
+                self.builder.default_currency.take(),
+                self.builder.details_submitted,
+                self.builder.email.take(),
+                self.builder.external_accounts.take(),
+                self.builder.future_requirements.take(),
+                self.builder.groups.take(),
+                self.builder.id.take(),
+                self.builder.individual.take(),
+                self.builder.metadata.take(),
+                self.builder.payouts_enabled,
+                self.builder.requirements.take(),
+                self.builder.settings.take(),
+                self.builder.tos_acceptance.take(),
+                self.builder.type_.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(Account {
                 business_profile,
                 business_type,
                 capabilities,
@@ -259,59 +255,8 @@ const _: () = {
                 settings,
                 tos_acceptance,
                 type_,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for Account {
-        type Builder = AccountBuilder;
-    }
-
-    impl FromValueOpt for Account {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "business_profile" => b.business_profile = FromValueOpt::from_value(v),
-                    "business_type" => b.business_type = FromValueOpt::from_value(v),
-                    "capabilities" => b.capabilities = FromValueOpt::from_value(v),
-                    "charges_enabled" => b.charges_enabled = FromValueOpt::from_value(v),
-                    "company" => b.company = FromValueOpt::from_value(v),
-                    "controller" => b.controller = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "default_currency" => b.default_currency = FromValueOpt::from_value(v),
-                    "details_submitted" => b.details_submitted = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "external_accounts" => b.external_accounts = FromValueOpt::from_value(v),
-                    "future_requirements" => b.future_requirements = FromValueOpt::from_value(v),
-                    "groups" => b.groups = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "individual" => b.individual = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "payouts_enabled" => b.payouts_enabled = FromValueOpt::from_value(v),
-                    "requirements" => b.requirements = FromValueOpt::from_value(v),
-                    "settings" => b.settings = FromValueOpt::from_value(v),
-                    "tos_acceptance" => b.tos_acceptance = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -414,21 +359,19 @@ impl serde::Serialize for AccountType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for AccountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for AccountType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<AccountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<AccountType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(AccountType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(AccountType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -513,21 +456,19 @@ impl serde::Serialize for AccountBusinessType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for AccountBusinessType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for AccountBusinessType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<AccountBusinessType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<AccountBusinessType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(AccountBusinessType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(AccountBusinessType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountBusinessType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -36,16 +36,14 @@ pub struct IssuingCardholderIndividualBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -64,35 +62,30 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IssuingCardholderIndividualBuilder::deser_default(),
+                builder: IssuingCardholderIndividualBuilder {
+                    card_issuing: Deserialize::default(),
+                    dob: Deserialize::default(),
+                    first_name: Deserialize::default(),
+                    last_name: Deserialize::default(),
+                    verification: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IssuingCardholderIndividualBuilder {
-        type Out = IssuingCardholderIndividual;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card_issuing" => Deserialize::begin(&mut self.card_issuing),
-                "dob" => Deserialize::begin(&mut self.dob),
-                "first_name" => Deserialize::begin(&mut self.first_name),
-                "last_name" => Deserialize::begin(&mut self.last_name),
-                "verification" => Deserialize::begin(&mut self.verification),
+                "card_issuing" => Deserialize::begin(&mut self.builder.card_issuing),
+                "dob" => Deserialize::begin(&mut self.builder.dob),
+                "first_name" => Deserialize::begin(&mut self.builder.first_name),
+                "last_name" => Deserialize::begin(&mut self.builder.last_name),
+                "verification" => Deserialize::begin(&mut self.builder.verification),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                card_issuing: Deserialize::default(),
-                dob: Deserialize::default(),
-                first_name: Deserialize::default(),
-                last_name: Deserialize::default(),
-                verification: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(card_issuing),
                 Some(dob),
@@ -100,51 +93,23 @@ const _: () = {
                 Some(last_name),
                 Some(verification),
             ) = (
-                self.card_issuing.take(),
-                self.dob,
-                self.first_name.take(),
-                self.last_name.take(),
-                self.verification.take(),
+                self.builder.card_issuing.take(),
+                self.builder.dob,
+                self.builder.first_name.take(),
+                self.builder.last_name.take(),
+                self.builder.verification.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out { card_issuing, dob, first_name, last_name, verification })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(IssuingCardholderIndividual {
+                card_issuing,
+                dob,
+                first_name,
+                last_name,
+                verification,
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IssuingCardholderIndividual {
-        type Builder = IssuingCardholderIndividualBuilder;
-    }
-
-    impl FromValueOpt for IssuingCardholderIndividual {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardholderIndividualBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
-                    "dob" => b.dob = FromValueOpt::from_value(v),
-                    "first_name" => b.first_name = FromValueOpt::from_value(v),
-                    "last_name" => b.last_name = FromValueOpt::from_value(v),
-                    "verification" => b.verification = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

@@ -25,16 +25,14 @@ pub struct TerminalReaderReaderResourceCollectInputsActionBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -53,62 +51,31 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalReaderReaderResourceCollectInputsActionBuilder::deser_default(),
+                builder: TerminalReaderReaderResourceCollectInputsActionBuilder {
+                    inputs: Deserialize::default(),
+                    metadata: Deserialize::default(),
+                },
             }))
-        }
-    }
-
-    impl MapBuilder for TerminalReaderReaderResourceCollectInputsActionBuilder {
-        type Out = TerminalReaderReaderResourceCollectInputsAction;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "inputs" => Deserialize::begin(&mut self.inputs),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { inputs: Deserialize::default(), metadata: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(inputs), Some(metadata)) = (self.inputs.take(), self.metadata.take()) else {
-                return None;
-            };
-            Some(Self::Out { inputs, metadata })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "inputs" => Deserialize::begin(&mut self.builder.inputs),
+                "metadata" => Deserialize::begin(&mut self.builder.metadata),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalReaderReaderResourceCollectInputsAction {
-        type Builder = TerminalReaderReaderResourceCollectInputsActionBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceCollectInputsAction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(inputs), Some(metadata)) =
+                (self.builder.inputs.take(), self.builder.metadata.take())
+            else {
+                return Ok(());
             };
-            let mut b = TerminalReaderReaderResourceCollectInputsActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "inputs" => b.inputs = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(TerminalReaderReaderResourceCollectInputsAction { inputs, metadata });
+            Ok(())
         }
     }
 };

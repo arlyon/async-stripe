@@ -65,16 +65,14 @@ pub struct IdentityVerificationReportBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -93,51 +91,48 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: IdentityVerificationReportBuilder::deser_default(),
+                builder: IdentityVerificationReportBuilder {
+                    client_reference_id: Deserialize::default(),
+                    created: Deserialize::default(),
+                    document: Deserialize::default(),
+                    email: Deserialize::default(),
+                    id: Deserialize::default(),
+                    id_number: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    options: Deserialize::default(),
+                    phone: Deserialize::default(),
+                    selfie: Deserialize::default(),
+                    type_: Deserialize::default(),
+                    verification_flow: Deserialize::default(),
+                    verification_session: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for IdentityVerificationReportBuilder {
-        type Out = IdentityVerificationReport;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "client_reference_id" => Deserialize::begin(&mut self.client_reference_id),
-                "created" => Deserialize::begin(&mut self.created),
-                "document" => Deserialize::begin(&mut self.document),
-                "email" => Deserialize::begin(&mut self.email),
-                "id" => Deserialize::begin(&mut self.id),
-                "id_number" => Deserialize::begin(&mut self.id_number),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "options" => Deserialize::begin(&mut self.options),
-                "phone" => Deserialize::begin(&mut self.phone),
-                "selfie" => Deserialize::begin(&mut self.selfie),
-                "type" => Deserialize::begin(&mut self.type_),
-                "verification_flow" => Deserialize::begin(&mut self.verification_flow),
-                "verification_session" => Deserialize::begin(&mut self.verification_session),
+                "client_reference_id" => Deserialize::begin(&mut self.builder.client_reference_id),
+                "created" => Deserialize::begin(&mut self.builder.created),
+                "document" => Deserialize::begin(&mut self.builder.document),
+                "email" => Deserialize::begin(&mut self.builder.email),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "id_number" => Deserialize::begin(&mut self.builder.id_number),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "options" => Deserialize::begin(&mut self.builder.options),
+                "phone" => Deserialize::begin(&mut self.builder.phone),
+                "selfie" => Deserialize::begin(&mut self.builder.selfie),
+                "type" => Deserialize::begin(&mut self.builder.type_),
+                "verification_flow" => Deserialize::begin(&mut self.builder.verification_flow),
+                "verification_session" => {
+                    Deserialize::begin(&mut self.builder.verification_session)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                client_reference_id: Deserialize::default(),
-                created: Deserialize::default(),
-                document: Deserialize::default(),
-                email: Deserialize::default(),
-                id: Deserialize::default(),
-                id_number: Deserialize::default(),
-                livemode: Deserialize::default(),
-                options: Deserialize::default(),
-                phone: Deserialize::default(),
-                selfie: Deserialize::default(),
-                type_: Deserialize::default(),
-                verification_flow: Deserialize::default(),
-                verification_session: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(client_reference_id),
                 Some(created),
@@ -153,24 +148,24 @@ const _: () = {
                 Some(verification_flow),
                 Some(verification_session),
             ) = (
-                self.client_reference_id.take(),
-                self.created,
-                self.document.take(),
-                self.email.take(),
-                self.id.take(),
-                self.id_number.take(),
-                self.livemode,
-                self.options.take(),
-                self.phone.take(),
-                self.selfie.take(),
-                self.type_.take(),
-                self.verification_flow.take(),
-                self.verification_session.take(),
+                self.builder.client_reference_id.take(),
+                self.builder.created,
+                self.builder.document.take(),
+                self.builder.email.take(),
+                self.builder.id.take(),
+                self.builder.id_number.take(),
+                self.builder.livemode,
+                self.builder.options.take(),
+                self.builder.phone.take(),
+                self.builder.selfie.take(),
+                self.builder.type_.take(),
+                self.builder.verification_flow.take(),
+                self.builder.verification_session.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(IdentityVerificationReport {
                 client_reference_id,
                 created,
                 document,
@@ -184,50 +179,8 @@ const _: () = {
                 type_,
                 verification_flow,
                 verification_session,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for IdentityVerificationReport {
-        type Builder = IdentityVerificationReportBuilder;
-    }
-
-    impl FromValueOpt for IdentityVerificationReport {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IdentityVerificationReportBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "document" => b.document = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "id_number" => b.id_number = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "options" => b.options = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "selfie" => b.selfie = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "verification_flow" => b.verification_flow = FromValueOpt::from_value(v),
-                    "verification_session" => b.verification_session = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -322,21 +275,19 @@ impl serde::Serialize for IdentityVerificationReportType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for IdentityVerificationReportType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for IdentityVerificationReportType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<IdentityVerificationReportType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+impl stripe_miniserde::de::Visitor for crate::Place<IdentityVerificationReportType> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(IdentityVerificationReportType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(IdentityVerificationReportType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IdentityVerificationReportType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

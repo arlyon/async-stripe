@@ -29,16 +29,14 @@ pub struct ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResour
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -62,69 +60,35 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
             out: &mut self.out,
-            builder: ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnlineBuilder::deser_default(),
+            builder: ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnlineBuilder { ip_address: Deserialize::default(),
+user_agent: Deserialize::default(),
+ },
         }))
-        }
-    }
-
-    impl MapBuilder
-        for ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnlineBuilder
-    {
-        type Out = ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnline;
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            Ok(match k {
-                "ip_address" => Deserialize::begin(&mut self.ip_address),
-                "user_agent" => Deserialize::begin(&mut self.user_agent),
-                _ => <dyn Visitor>::ignore(),
-            })
-        }
-
-        fn deser_default() -> Self {
-            Self { ip_address: Deserialize::default(), user_agent: Deserialize::default() }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(ip_address), Some(user_agent)) =
-                (self.ip_address.take(), self.user_agent.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { ip_address, user_agent })
         }
     }
 
     impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
+            Ok(match k {
+                "ip_address" => Deserialize::begin(&mut self.builder.ip_address),
+                "user_agent" => Deserialize::begin(&mut self.builder.user_agent),
+                _ => <dyn Visitor>::ignore(),
+            })
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
-            Ok(())
-        }
-    }
-
-    impl ObjectDeser for ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnline {
-        type Builder =
-            ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnlineBuilder;
-    }
-
-    impl FromValueOpt
-        for ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnline
-    {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
+            let (Some(ip_address), Some(user_agent)) =
+                (self.builder.ip_address.take(), self.builder.user_agent.take())
+            else {
+                return Ok(());
             };
-            let mut b = ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnlineBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "user_agent" => b.user_agent = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            *self.out = Some(
+                ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnline {
+                    ip_address,
+                    user_agent,
+                },
+            );
+            Ok(())
         }
     }
 };

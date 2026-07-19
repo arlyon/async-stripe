@@ -72,16 +72,14 @@ pub struct TerminalConfigurationBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -100,53 +98,48 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TerminalConfigurationBuilder::deser_default(),
+                builder: TerminalConfigurationBuilder {
+                    bbpos_wisepad3: Deserialize::default(),
+                    bbpos_wisepos_e: Deserialize::default(),
+                    cellular: Deserialize::default(),
+                    id: Deserialize::default(),
+                    is_account_default: Deserialize::default(),
+                    livemode: Deserialize::default(),
+                    name: Deserialize::default(),
+                    offline: Deserialize::default(),
+                    reboot_window: Deserialize::default(),
+                    stripe_s700: Deserialize::default(),
+                    stripe_s710: Deserialize::default(),
+                    tipping: Deserialize::default(),
+                    verifone_p400: Deserialize::default(),
+                    wifi: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TerminalConfigurationBuilder {
-        type Out = TerminalConfiguration;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bbpos_wisepad3" => Deserialize::begin(&mut self.bbpos_wisepad3),
-                "bbpos_wisepos_e" => Deserialize::begin(&mut self.bbpos_wisepos_e),
-                "cellular" => Deserialize::begin(&mut self.cellular),
-                "id" => Deserialize::begin(&mut self.id),
-                "is_account_default" => Deserialize::begin(&mut self.is_account_default),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "name" => Deserialize::begin(&mut self.name),
-                "offline" => Deserialize::begin(&mut self.offline),
-                "reboot_window" => Deserialize::begin(&mut self.reboot_window),
-                "stripe_s700" => Deserialize::begin(&mut self.stripe_s700),
-                "stripe_s710" => Deserialize::begin(&mut self.stripe_s710),
-                "tipping" => Deserialize::begin(&mut self.tipping),
-                "verifone_p400" => Deserialize::begin(&mut self.verifone_p400),
-                "wifi" => Deserialize::begin(&mut self.wifi),
+                "bbpos_wisepad3" => Deserialize::begin(&mut self.builder.bbpos_wisepad3),
+                "bbpos_wisepos_e" => Deserialize::begin(&mut self.builder.bbpos_wisepos_e),
+                "cellular" => Deserialize::begin(&mut self.builder.cellular),
+                "id" => Deserialize::begin(&mut self.builder.id),
+                "is_account_default" => Deserialize::begin(&mut self.builder.is_account_default),
+                "livemode" => Deserialize::begin(&mut self.builder.livemode),
+                "name" => Deserialize::begin(&mut self.builder.name),
+                "offline" => Deserialize::begin(&mut self.builder.offline),
+                "reboot_window" => Deserialize::begin(&mut self.builder.reboot_window),
+                "stripe_s700" => Deserialize::begin(&mut self.builder.stripe_s700),
+                "stripe_s710" => Deserialize::begin(&mut self.builder.stripe_s710),
+                "tipping" => Deserialize::begin(&mut self.builder.tipping),
+                "verifone_p400" => Deserialize::begin(&mut self.builder.verifone_p400),
+                "wifi" => Deserialize::begin(&mut self.builder.wifi),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                bbpos_wisepad3: Deserialize::default(),
-                bbpos_wisepos_e: Deserialize::default(),
-                cellular: Deserialize::default(),
-                id: Deserialize::default(),
-                is_account_default: Deserialize::default(),
-                livemode: Deserialize::default(),
-                name: Deserialize::default(),
-                offline: Deserialize::default(),
-                reboot_window: Deserialize::default(),
-                stripe_s700: Deserialize::default(),
-                stripe_s710: Deserialize::default(),
-                tipping: Deserialize::default(),
-                verifone_p400: Deserialize::default(),
-                wifi: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(bbpos_wisepad3),
                 Some(bbpos_wisepos_e),
@@ -163,25 +156,25 @@ const _: () = {
                 Some(verifone_p400),
                 Some(wifi),
             ) = (
-                self.bbpos_wisepad3.take(),
-                self.bbpos_wisepos_e.take(),
-                self.cellular,
-                self.id.take(),
-                self.is_account_default,
-                self.livemode,
-                self.name.take(),
-                self.offline,
-                self.reboot_window,
-                self.stripe_s700.take(),
-                self.stripe_s710.take(),
-                self.tipping.take(),
-                self.verifone_p400.take(),
-                self.wifi.take(),
+                self.builder.bbpos_wisepad3.take(),
+                self.builder.bbpos_wisepos_e.take(),
+                self.builder.cellular,
+                self.builder.id.take(),
+                self.builder.is_account_default,
+                self.builder.livemode,
+                self.builder.name.take(),
+                self.builder.offline,
+                self.builder.reboot_window,
+                self.builder.stripe_s700.take(),
+                self.builder.stripe_s710.take(),
+                self.builder.tipping.take(),
+                self.builder.verifone_p400.take(),
+                self.builder.wifi.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TerminalConfiguration {
                 bbpos_wisepad3,
                 bbpos_wisepos_e,
                 cellular,
@@ -196,51 +189,8 @@ const _: () = {
                 tipping,
                 verifone_p400,
                 wifi,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TerminalConfiguration {
-        type Builder = TerminalConfigurationBuilder;
-    }
-
-    impl FromValueOpt for TerminalConfiguration {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalConfigurationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bbpos_wisepad3" => b.bbpos_wisepad3 = FromValueOpt::from_value(v),
-                    "bbpos_wisepos_e" => b.bbpos_wisepos_e = FromValueOpt::from_value(v),
-                    "cellular" => b.cellular = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "is_account_default" => b.is_account_default = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "offline" => b.offline = FromValueOpt::from_value(v),
-                    "reboot_window" => b.reboot_window = FromValueOpt::from_value(v),
-                    "stripe_s700" => b.stripe_s700 = FromValueOpt::from_value(v),
-                    "stripe_s710" => b.stripe_s710 = FromValueOpt::from_value(v),
-                    "tipping" => b.tipping = FromValueOpt::from_value(v),
-                    "verifone_p400" => b.verifone_p400 = FromValueOpt::from_value(v),
-                    "wifi" => b.wifi = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };

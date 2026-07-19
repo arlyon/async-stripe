@@ -39,16 +39,14 @@ pub struct TaxProductResourceTaxTransactionShippingCostBuilder {
 #[allow(
     unused_variables,
     irrefutable_let_patterns,
+    dead_code,
     clippy::let_unit_value,
     clippy::match_single_binding,
     clippy::single_match
 )]
 const _: () = {
-    use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
-    use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
-    use stripe_types::{MapBuilder, ObjectDeser};
+    use stripe_miniserde::de::{Map, Visitor};
+    use stripe_miniserde::{Deserialize, Result, make_place};
 
     make_place!(Place);
 
@@ -67,37 +65,32 @@ const _: () = {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: TaxProductResourceTaxTransactionShippingCostBuilder::deser_default(),
+                builder: TaxProductResourceTaxTransactionShippingCostBuilder {
+                    amount: Deserialize::default(),
+                    amount_tax: Deserialize::default(),
+                    shipping_rate: Deserialize::default(),
+                    tax_behavior: Deserialize::default(),
+                    tax_breakdown: Deserialize::default(),
+                    tax_code: Deserialize::default(),
+                },
             }))
         }
     }
 
-    impl MapBuilder for TaxProductResourceTaxTransactionShippingCostBuilder {
-        type Out = TaxProductResourceTaxTransactionShippingCost;
+    impl Map for Builder<'_> {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount" => Deserialize::begin(&mut self.amount),
-                "amount_tax" => Deserialize::begin(&mut self.amount_tax),
-                "shipping_rate" => Deserialize::begin(&mut self.shipping_rate),
-                "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
-                "tax_breakdown" => Deserialize::begin(&mut self.tax_breakdown),
-                "tax_code" => Deserialize::begin(&mut self.tax_code),
+                "amount" => Deserialize::begin(&mut self.builder.amount),
+                "amount_tax" => Deserialize::begin(&mut self.builder.amount_tax),
+                "shipping_rate" => Deserialize::begin(&mut self.builder.shipping_rate),
+                "tax_behavior" => Deserialize::begin(&mut self.builder.tax_behavior),
+                "tax_breakdown" => Deserialize::begin(&mut self.builder.tax_breakdown),
+                "tax_code" => Deserialize::begin(&mut self.builder.tax_code),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
-        fn deser_default() -> Self {
-            Self {
-                amount: Deserialize::default(),
-                amount_tax: Deserialize::default(),
-                shipping_rate: Deserialize::default(),
-                tax_behavior: Deserialize::default(),
-                tax_breakdown: Deserialize::default(),
-                tax_code: Deserialize::default(),
-            }
-        }
-
-        fn take_out(&mut self) -> Option<Self::Out> {
+        fn finish(&mut self) -> Result<()> {
             let (
                 Some(amount),
                 Some(amount_tax),
@@ -106,60 +99,25 @@ const _: () = {
                 Some(tax_breakdown),
                 Some(tax_code),
             ) = (
-                self.amount,
-                self.amount_tax,
-                self.shipping_rate.take(),
-                self.tax_behavior.take(),
-                self.tax_breakdown.take(),
-                self.tax_code.take(),
+                self.builder.amount,
+                self.builder.amount_tax,
+                self.builder.shipping_rate.take(),
+                self.builder.tax_behavior.take(),
+                self.builder.tax_breakdown.take(),
+                self.builder.tax_code.take(),
             )
             else {
-                return None;
+                return Ok(());
             };
-            Some(Self::Out {
+            *self.out = Some(TaxProductResourceTaxTransactionShippingCost {
                 amount,
                 amount_tax,
                 shipping_rate,
                 tax_behavior,
                 tax_breakdown,
                 tax_code,
-            })
-        }
-    }
-
-    impl Map for Builder<'_> {
-        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
-            self.builder.key(k)
-        }
-
-        fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            });
             Ok(())
-        }
-    }
-
-    impl ObjectDeser for TaxProductResourceTaxTransactionShippingCost {
-        type Builder = TaxProductResourceTaxTransactionShippingCostBuilder;
-    }
-
-    impl FromValueOpt for TaxProductResourceTaxTransactionShippingCost {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxProductResourceTaxTransactionShippingCostBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
-                    "shipping_rate" => b.shipping_rate = FromValueOpt::from_value(v),
-                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
-                    "tax_breakdown" => b.tax_breakdown = FromValueOpt::from_value(v),
-                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
         }
     }
 };
@@ -230,16 +188,16 @@ impl serde::Serialize for TaxProductResourceTaxTransactionShippingCostTaxBehavio
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for TaxProductResourceTaxTransactionShippingCostTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+impl stripe_miniserde::Deserialize for TaxProductResourceTaxTransactionShippingCostTaxBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn stripe_miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor
+impl stripe_miniserde::de::Visitor
     for crate::Place<TaxProductResourceTaxTransactionShippingCostTaxBehavior>
 {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+    fn string(&mut self, s: &str) -> stripe_miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
             TaxProductResourceTaxTransactionShippingCostTaxBehavior::from_str(s)
@@ -248,8 +206,6 @@ impl miniserde::de::Visitor
         Ok(())
     }
 }
-
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceTaxTransactionShippingCostTaxBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxTransactionShippingCostTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
