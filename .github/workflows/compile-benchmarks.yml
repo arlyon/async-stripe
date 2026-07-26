@@ -1,0 +1,89 @@
+name: Compile benchmarks
+
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      slices:
+        description: Compile benchmark slices to run
+        required: true
+        default: minimal,requests
+        type: choice
+        options:
+          - minimal,requests
+          - all
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: compile-benchmarks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  rust_min: 1.88
+  LLVM_LINES_VERSION: 0.4.46
+
+jobs:
+  benchmark:
+    name: Compile benchmark summary
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.rust_min }}
+
+      # Cache downloads, but not target directories: each measurement is a clean build.
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin/cargo-llvm-lines
+          key: compile-benchmarks-${{ runner.os }}-llvm-lines-${{ env.LLVM_LINES_VERSION }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            compile-benchmarks-${{ runner.os }}-llvm-lines-${{ env.LLVM_LINES_VERSION }}-
+
+      - name: Install Hyperfine
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes hyperfine time
+          hyperfine --version
+
+      - name: Install cargo-llvm-lines
+        run: |
+          installed=$(cargo llvm-lines --version 2>/dev/null || true)
+          if [[ "$installed" != "cargo-llvm-lines $LLVM_LINES_VERSION" ]]; then
+            cargo install \
+              --locked \
+              --force \
+              --version "$LLVM_LINES_VERSION" \
+              cargo-llvm-lines
+          fi
+
+      - name: Run compile benchmarks
+        env:
+          BENCH_SLICES: ${{ inputs.slices || 'minimal,requests' }}
+        run: bench/compile/run.sh 2 "$RUNNER_TEMP/compile-benchmark-summary.md" "$BENCH_SLICES"
+
+      - name: Add job summary
+        run: cat "$RUNNER_TEMP/compile-benchmark-summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment on pull request
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        continue-on-error: true
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: compile-benchmarks
+          path: ${{ runner.temp }}/compile-benchmark-summary.md
