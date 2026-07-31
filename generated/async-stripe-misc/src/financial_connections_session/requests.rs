@@ -81,6 +81,10 @@ struct CreateFinancialConnectionsSessionBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     filters: Option<CreateFinancialConnectionsSessionFilters>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limits: Option<CreateFinancialConnectionsSessionLimits>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    manual_entry: Option<CreateFinancialConnectionsSessionManualEntry>,
     permissions: Vec<stripe_misc::FinancialConnectionsSessionPermissions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     prefetch: Option<Vec<stripe_misc::FinancialConnectionsSessionPrefetch>>,
@@ -102,6 +106,8 @@ impl CreateFinancialConnectionsSessionBuilder {
             account_holder: account_holder.into(),
             expand: None,
             filters: None,
+            limits: None,
+            manual_entry: None,
             permissions: permissions.into(),
             prefetch: None,
             return_url: None,
@@ -226,6 +232,10 @@ pub struct CreateFinancialConnectionsSessionFilters {
     /// List of countries from which to collect accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub countries: Option<Vec<String>>,
+    /// Whether the session should require payment method support and successful account number retrieval before completion.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_payment_method_support:
+        Option<CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateFinancialConnectionsSessionFilters {
@@ -235,7 +245,7 @@ impl std::fmt::Debug for CreateFinancialConnectionsSessionFilters {
 }
 impl CreateFinancialConnectionsSessionFilters {
     pub fn new() -> Self {
-        Self { account_subcategories: None, countries: None }
+        Self { account_subcategories: None, countries: None, require_payment_method_support: None }
     }
 }
 impl Default for CreateFinancialConnectionsSessionFilters {
@@ -326,6 +336,204 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionFiltersAc
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Whether the session should require payment method support and successful account number retrieval before completion.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport {
+    All,
+    AtLeastOne,
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport {
+    pub fn as_str(&self) -> &str {
+        use CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport::*;
+        match self {
+            All => "all",
+            AtLeastOne => "at_least_one",
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport::*;
+        match s {
+            "all" => Ok(All),
+            "at_least_one" => Ok(AtLeastOne),
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Settings for configuring Session-specific limits.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateFinancialConnectionsSessionLimits {
+    /// The number of accounts that can be linked in this Session.
+    /// Pass an empty value to allow any number of accounts.
+    pub accounts: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionLimits {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFinancialConnectionsSessionLimits").finish_non_exhaustive()
+    }
+}
+impl CreateFinancialConnectionsSessionLimits {
+    pub fn new(accounts: impl Into<i64>) -> Self {
+        Self { accounts: accounts.into() }
+    }
+}
+/// Customize manual entry behavior
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateFinancialConnectionsSessionManualEntry {
+    /// How manual entry should be handled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mode: Option<CreateFinancialConnectionsSessionManualEntryMode>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionManualEntry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFinancialConnectionsSessionManualEntry").finish_non_exhaustive()
+    }
+}
+impl CreateFinancialConnectionsSessionManualEntry {
+    pub fn new() -> Self {
+        Self { mode: None }
+    }
+}
+impl Default for CreateFinancialConnectionsSessionManualEntry {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// How manual entry should be handled.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateFinancialConnectionsSessionManualEntryMode {
+    Automatic,
+    Disabled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateFinancialConnectionsSessionManualEntryMode {
+    pub fn as_str(&self) -> &str {
+        use CreateFinancialConnectionsSessionManualEntryMode::*;
+        match self {
+            Automatic => "automatic",
+            Disabled => "disabled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateFinancialConnectionsSessionManualEntryMode {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateFinancialConnectionsSessionManualEntryMode::*;
+        match s {
+            "automatic" => Ok(Automatic),
+            "disabled" => Ok(Disabled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateFinancialConnectionsSessionManualEntryMode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateFinancialConnectionsSessionManualEntryMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionManualEntryMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionManualEntryMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateFinancialConnectionsSessionManualEntryMode))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateFinancialConnectionsSessionManualEntryMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionManualEntryMode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// To launch the Financial Connections authorization flow, create a `Session`.
 /// The session’s `client_secret` can be used to launch the flow using Stripe.js.
 #[derive(Clone)]
@@ -361,6 +569,19 @@ impl CreateFinancialConnectionsSession {
     /// Filters to restrict the kinds of accounts to collect.
     pub fn filters(mut self, filters: impl Into<CreateFinancialConnectionsSessionFilters>) -> Self {
         self.inner.filters = Some(filters.into());
+        self
+    }
+    /// Settings for configuring Session-specific limits.
+    pub fn limits(mut self, limits: impl Into<CreateFinancialConnectionsSessionLimits>) -> Self {
+        self.inner.limits = Some(limits.into());
+        self
+    }
+    /// Customize manual entry behavior
+    pub fn manual_entry(
+        mut self,
+        manual_entry: impl Into<CreateFinancialConnectionsSessionManualEntry>,
+    ) -> Self {
+        self.inner.manual_entry = Some(manual_entry.into());
         self
     }
     /// List of data features that you would like to retrieve upon account creation.

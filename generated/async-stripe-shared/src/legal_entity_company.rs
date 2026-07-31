@@ -8,6 +8,7 @@ pub struct LegalEntityCompany {
     pub address_kana: Option<stripe_shared::LegalEntityJapanAddress>,
     /// The Kanji variation of the company's primary address (Japan only).
     pub address_kanji: Option<stripe_shared::LegalEntityJapanAddress>,
+    pub administrative_address: Option<stripe_shared::Address>,
     /// Whether the company's directors have been provided.
     /// This Boolean will be `true` if you've manually indicated that all directors are provided via [the `directors_provided` parameter](https://docs.stripe.com/api/accounts/update#update_account-company-directors_provided).
     pub directors_provided: Option<bool>,
@@ -40,6 +41,7 @@ pub struct LegalEntityCompany {
     pub ownership_exemption_reason: Option<LegalEntityCompanyOwnershipExemptionReason>,
     /// The company's phone number (used for verification).
     pub phone: Option<String>,
+    pub principal_place_of_business: Option<stripe_shared::Address>,
     pub registration_date: Option<stripe_shared::LegalEntityRegistrationDate>,
     /// This hash is used to attest that the representative is authorized to act as the representative of their legal entity.
     pub representative_declaration: Option<stripe_shared::LegalEntityRepresentativeDeclaration>,
@@ -67,6 +69,7 @@ pub struct LegalEntityCompanyBuilder {
     address: Option<Option<stripe_shared::Address>>,
     address_kana: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
     address_kanji: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
+    administrative_address: Option<Option<stripe_shared::Address>>,
     directors_provided: Option<Option<bool>>,
     directorship_declaration: Option<Option<stripe_shared::LegalEntityDirectorshipDeclaration>>,
     executives_provided: Option<Option<bool>>,
@@ -79,6 +82,7 @@ pub struct LegalEntityCompanyBuilder {
     ownership_declaration: Option<Option<stripe_shared::LegalEntityUboDeclaration>>,
     ownership_exemption_reason: Option<Option<LegalEntityCompanyOwnershipExemptionReason>>,
     phone: Option<Option<String>>,
+    principal_place_of_business: Option<Option<stripe_shared::Address>>,
     registration_date: Option<Option<stripe_shared::LegalEntityRegistrationDate>>,
     representative_declaration: Option<Option<stripe_shared::LegalEntityRepresentativeDeclaration>>,
     structure: Option<Option<LegalEntityCompanyStructure>>,
@@ -131,6 +135,7 @@ const _: () = {
                 "address" => Deserialize::begin(&mut self.address),
                 "address_kana" => Deserialize::begin(&mut self.address_kana),
                 "address_kanji" => Deserialize::begin(&mut self.address_kanji),
+                "administrative_address" => Deserialize::begin(&mut self.administrative_address),
                 "directors_provided" => Deserialize::begin(&mut self.directors_provided),
                 "directorship_declaration" => {
                     Deserialize::begin(&mut self.directorship_declaration)
@@ -147,6 +152,9 @@ const _: () = {
                     Deserialize::begin(&mut self.ownership_exemption_reason)
                 }
                 "phone" => Deserialize::begin(&mut self.phone),
+                "principal_place_of_business" => {
+                    Deserialize::begin(&mut self.principal_place_of_business)
+                }
                 "registration_date" => Deserialize::begin(&mut self.registration_date),
                 "representative_declaration" => {
                     Deserialize::begin(&mut self.representative_declaration)
@@ -165,6 +173,7 @@ const _: () = {
                 address: Some(None),
                 address_kana: Some(None),
                 address_kanji: Some(None),
+                administrative_address: Some(None),
                 directors_provided: Some(None),
                 directorship_declaration: Some(None),
                 executives_provided: Some(None),
@@ -177,6 +186,7 @@ const _: () = {
                 ownership_declaration: Some(None),
                 ownership_exemption_reason: Some(None),
                 phone: Some(None),
+                principal_place_of_business: Some(None),
                 registration_date: Some(None),
                 representative_declaration: Some(None),
                 structure: Some(None),
@@ -192,6 +202,7 @@ const _: () = {
                 Some(address),
                 Some(address_kana),
                 Some(address_kanji),
+                Some(administrative_address),
                 Some(directors_provided),
                 Some(directorship_declaration),
                 Some(executives_provided),
@@ -204,6 +215,7 @@ const _: () = {
                 Some(ownership_declaration),
                 Some(ownership_exemption_reason),
                 Some(phone),
+                Some(principal_place_of_business),
                 Some(registration_date),
                 Some(representative_declaration),
                 Some(structure),
@@ -215,6 +227,7 @@ const _: () = {
                 self.address.take(),
                 self.address_kana.take(),
                 self.address_kanji.take(),
+                self.administrative_address.take(),
                 self.directors_provided,
                 self.directorship_declaration.take(),
                 self.executives_provided,
@@ -227,6 +240,7 @@ const _: () = {
                 self.ownership_declaration.take(),
                 self.ownership_exemption_reason.take(),
                 self.phone.take(),
+                self.principal_place_of_business.take(),
                 self.registration_date,
                 self.representative_declaration.take(),
                 self.structure.take(),
@@ -242,6 +256,7 @@ const _: () = {
                 address,
                 address_kana,
                 address_kanji,
+                administrative_address,
                 directors_provided,
                 directorship_declaration,
                 executives_provided,
@@ -254,6 +269,7 @@ const _: () = {
                 ownership_declaration,
                 ownership_exemption_reason,
                 phone,
+                principal_place_of_business,
                 registration_date,
                 representative_declaration,
                 structure,
@@ -291,6 +307,9 @@ const _: () = {
                     "address" => b.address = FromValueOpt::from_value(v),
                     "address_kana" => b.address_kana = FromValueOpt::from_value(v),
                     "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
+                    "administrative_address" => {
+                        b.administrative_address = FromValueOpt::from_value(v)
+                    }
                     "directors_provided" => b.directors_provided = FromValueOpt::from_value(v),
                     "directorship_declaration" => {
                         b.directorship_declaration = FromValueOpt::from_value(v)
@@ -309,6 +328,9 @@ const _: () = {
                         b.ownership_exemption_reason = FromValueOpt::from_value(v)
                     }
                     "phone" => b.phone = FromValueOpt::from_value(v),
+                    "principal_place_of_business" => {
+                        b.principal_place_of_business = FromValueOpt::from_value(v)
+                    }
                     "registration_date" => b.registration_date = FromValueOpt::from_value(v),
                     "representative_declaration" => {
                         b.representative_declaration = FromValueOpt::from_value(v)

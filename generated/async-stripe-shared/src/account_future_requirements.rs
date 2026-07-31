@@ -15,7 +15,7 @@ pub struct AccountFutureRequirements {
     pub currently_due: Option<Vec<String>>,
     /// This is typed as an enum for consistency with `requirements.disabled_reason`.
     pub disabled_reason: Option<AccountFutureRequirementsDisabledReason>,
-    /// Details about validation and verification failures for `due` requirements that must be resolved.
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Option<Vec<stripe_shared::AccountRequirementsError>>,
     /// Fields you must collect when all thresholds are reached.
     /// As they become required, they appear in `currently_due` as well.

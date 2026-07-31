@@ -453,6 +453,7 @@ pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourc
 {
     AttemptAcknowledged,
     Authenticated,
+    DataShareOnly,
     Exempted,
     Failed,
     NotSupported,
@@ -466,6 +467,7 @@ impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThr
         match self {
             AttemptAcknowledged => "attempt_acknowledged",
             Authenticated => "authenticated",
+            DataShareOnly => "data_share_only",
             Exempted => "exempted",
             Failed => "failed",
             NotSupported => "not_supported",
@@ -484,6 +486,7 @@ impl std::str::FromStr
         match s {
             "attempt_acknowledged" => Ok(AttemptAcknowledged),
             "authenticated" => Ok(Authenticated),
+            "data_share_only" => Ok(DataShareOnly),
             "exempted" => Ok(Exempted),
             "failed" => Ok(Failed),
             "not_supported" => Ok(NotSupported),

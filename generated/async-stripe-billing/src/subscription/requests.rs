@@ -4338,6 +4338,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     AchDebit,
     AcssDebit,
     Affirm,
+    Alipay,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
@@ -4359,6 +4360,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Multibanco,
     NaverPay,
     NzBankAccount,
@@ -4391,6 +4393,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             AchDebit => "ach_debit",
             AcssDebit => "acss_debit",
             Affirm => "affirm",
+            Alipay => "alipay",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
@@ -4412,6 +4415,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
             NzBankAccount => "nz_bank_account",
@@ -4447,6 +4451,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "ach_debit" => Ok(AchDebit),
             "acss_debit" => Ok(AcssDebit),
             "affirm" => Ok(Affirm),
+            "alipay" => Ok(Alipay),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
@@ -4468,6 +4473,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
             "nz_bank_account" => Ok(NzBankAccount),
@@ -9418,6 +9424,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     AchDebit,
     AcssDebit,
     Affirm,
+    Alipay,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
@@ -9439,6 +9446,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Multibanco,
     NaverPay,
     NzBankAccount,
@@ -9471,6 +9479,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             AchDebit => "ach_debit",
             AcssDebit => "acss_debit",
             Affirm => "affirm",
+            Alipay => "alipay",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
@@ -9492,6 +9501,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
             NzBankAccount => "nz_bank_account",
@@ -9527,6 +9537,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "ach_debit" => Ok(AchDebit),
             "acss_debit" => Ok(AcssDebit),
             "affirm" => Ok(Affirm),
+            "alipay" => Ok(Alipay),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
@@ -9548,6 +9559,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
             "nz_bank_account" => Ok(NzBankAccount),
@@ -10124,7 +10136,6 @@ impl UpdateSubscription {
         self
     }
     /// Indicate whether this subscription should cancel at the end of the current period (`current_period_end`).
-    /// Defaults to `false`.
     pub fn cancel_at_period_end(mut self, cancel_at_period_end: impl Into<bool>) -> Self {
         self.inner.cancel_at_period_end = Some(cancel_at_period_end.into());
         self

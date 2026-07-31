@@ -10,7 +10,7 @@ pub struct PersonRequirements {
     /// Fields that need to be resolved to keep the person's account enabled.
     /// If not resolved by the account's `current_deadline`, these fields will appear in `past_due` as well, and the account is disabled.
     pub currently_due: Vec<String>,
-    /// Details about validation and verification failures for `due` requirements that must be resolved.
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<stripe_shared::AccountRequirementsError>,
     /// Fields you must collect when all thresholds are reached.
     /// As they become required, they appear in `currently_due` as well, and the account's `current_deadline` becomes set.

@@ -244,6 +244,8 @@ impl StripeRequest for RetrieveSetupIntent {
 #[derive(serde::Serialize)]
 struct CreateSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    allowed_payment_method_types: Option<Vec<stripe_shared::SetupIntentAllowedPaymentMethodTypes>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     attach_to_self: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     automatic_payment_methods: Option<CreateSetupIntentAutomaticPaymentMethods>,
@@ -298,6 +300,7 @@ impl std::fmt::Debug for CreateSetupIntentBuilder {
 impl CreateSetupIntentBuilder {
     fn new() -> Self {
         Self {
+            allowed_payment_method_types: None,
             attach_to_self: None,
             automatic_payment_methods: None,
             confirm: None,
@@ -1281,14 +1284,17 @@ pub enum CreateSetupIntentPaymentMethodDataFpxBank {
     BankMuamalat,
     BankOfChina,
     BankRakyat,
+    BnpParibas,
     Bsn,
     Cimb,
+    Citibank,
     DeutscheBank,
     HongLeongBank,
     Hsbc,
     Kfh,
     Maybank2e,
     Maybank2u,
+    MbsbBank,
     Ocbc,
     PbEnterprise,
     PublicBank,
@@ -1310,14 +1316,17 @@ impl CreateSetupIntentPaymentMethodDataFpxBank {
             BankMuamalat => "bank_muamalat",
             BankOfChina => "bank_of_china",
             BankRakyat => "bank_rakyat",
+            BnpParibas => "bnp_paribas",
             Bsn => "bsn",
             Cimb => "cimb",
+            Citibank => "citibank",
             DeutscheBank => "deutsche_bank",
             HongLeongBank => "hong_leong_bank",
             Hsbc => "hsbc",
             Kfh => "kfh",
             Maybank2e => "maybank2e",
             Maybank2u => "maybank2u",
+            MbsbBank => "mbsb_bank",
             Ocbc => "ocbc",
             PbEnterprise => "pb_enterprise",
             PublicBank => "public_bank",
@@ -1342,14 +1351,17 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataFpxBank {
             "bank_muamalat" => Ok(BankMuamalat),
             "bank_of_china" => Ok(BankOfChina),
             "bank_rakyat" => Ok(BankRakyat),
+            "bnp_paribas" => Ok(BnpParibas),
             "bsn" => Ok(Bsn),
             "cimb" => Ok(Cimb),
+            "citibank" => Ok(Citibank),
             "deutsche_bank" => Ok(DeutscheBank),
             "hong_leong_bank" => Ok(HongLeongBank),
             "hsbc" => Ok(Hsbc),
             "kfh" => Ok(Kfh),
             "maybank2e" => Ok(Maybank2e),
             "maybank2u" => Ok(Maybank2u),
+            "mbsb_bank" => Ok(MbsbBank),
             "ocbc" => Ok(Ocbc),
             "pb_enterprise" => Ok(PbEnterprise),
             "public_bank" => Ok(PublicBank),
@@ -6479,6 +6491,18 @@ impl CreateSetupIntent {
     pub fn new() -> Self {
         Self { inner: CreateSetupIntentBuilder::new() }
     }
+    /// The list of payment method types to allow for this SetupIntent.
+    /// Stripe will only use methods in this list when determining the payment methods to offer.
+    /// A list of valid payment method types can be found [here](https://docs.stripe.com/api/payment_methods/object#payment_method_object-type).
+    pub fn allowed_payment_method_types(
+        mut self,
+        allowed_payment_method_types: impl Into<
+            Vec<stripe_shared::SetupIntentAllowedPaymentMethodTypes>,
+        >,
+    ) -> Self {
+        self.inner.allowed_payment_method_types = Some(allowed_payment_method_types.into());
+        self
+    }
     /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
     ///
     /// It can only be used for this Stripe Account’s own money movement flows like InboundTransfer and OutboundTransfers.
@@ -6677,6 +6701,8 @@ impl StripeRequest for CreateSetupIntent {
 #[derive(serde::Serialize)]
 struct UpdateSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    allowed_payment_method_types: Option<Vec<stripe_shared::SetupIntentAllowedPaymentMethodTypes>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     attach_to_self: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -6713,6 +6739,7 @@ impl std::fmt::Debug for UpdateSetupIntentBuilder {
 impl UpdateSetupIntentBuilder {
     fn new() -> Self {
         Self {
+            allowed_payment_method_types: None,
             attach_to_self: None,
             customer: None,
             customer_account: None,
@@ -7459,14 +7486,17 @@ pub enum UpdateSetupIntentPaymentMethodDataFpxBank {
     BankMuamalat,
     BankOfChina,
     BankRakyat,
+    BnpParibas,
     Bsn,
     Cimb,
+    Citibank,
     DeutscheBank,
     HongLeongBank,
     Hsbc,
     Kfh,
     Maybank2e,
     Maybank2u,
+    MbsbBank,
     Ocbc,
     PbEnterprise,
     PublicBank,
@@ -7488,14 +7518,17 @@ impl UpdateSetupIntentPaymentMethodDataFpxBank {
             BankMuamalat => "bank_muamalat",
             BankOfChina => "bank_of_china",
             BankRakyat => "bank_rakyat",
+            BnpParibas => "bnp_paribas",
             Bsn => "bsn",
             Cimb => "cimb",
+            Citibank => "citibank",
             DeutscheBank => "deutsche_bank",
             HongLeongBank => "hong_leong_bank",
             Hsbc => "hsbc",
             Kfh => "kfh",
             Maybank2e => "maybank2e",
             Maybank2u => "maybank2u",
+            MbsbBank => "mbsb_bank",
             Ocbc => "ocbc",
             PbEnterprise => "pb_enterprise",
             PublicBank => "public_bank",
@@ -7520,14 +7553,17 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataFpxBank {
             "bank_muamalat" => Ok(BankMuamalat),
             "bank_of_china" => Ok(BankOfChina),
             "bank_rakyat" => Ok(BankRakyat),
+            "bnp_paribas" => Ok(BnpParibas),
             "bsn" => Ok(Bsn),
             "cimb" => Ok(Cimb),
+            "citibank" => Ok(Citibank),
             "deutsche_bank" => Ok(DeutscheBank),
             "hong_leong_bank" => Ok(HongLeongBank),
             "hsbc" => Ok(Hsbc),
             "kfh" => Ok(Kfh),
             "maybank2e" => Ok(Maybank2e),
             "maybank2u" => Ok(Maybank2u),
+            "mbsb_bank" => Ok(MbsbBank),
             "ocbc" => Ok(Ocbc),
             "pb_enterprise" => Ok(PbEnterprise),
             "public_bank" => Ok(PublicBank),
@@ -12559,6 +12595,18 @@ impl UpdateSetupIntent {
     pub fn new(intent: impl Into<stripe_shared::SetupIntentId>) -> Self {
         Self { intent: intent.into(), inner: UpdateSetupIntentBuilder::new() }
     }
+    /// The list of payment method types to allow for this SetupIntent.
+    /// Stripe will only use methods in this list when determining the payment methods to offer.
+    /// A list of valid payment method types can be found [here](https://docs.stripe.com/api/payment_methods/object#payment_method_object-type).
+    pub fn allowed_payment_method_types(
+        mut self,
+        allowed_payment_method_types: impl Into<
+            Vec<stripe_shared::SetupIntentAllowedPaymentMethodTypes>,
+        >,
+    ) -> Self {
+        self.inner.allowed_payment_method_types = Some(allowed_payment_method_types.into());
+        self
+    }
     /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
     ///
     /// It can only be used for this Stripe Account’s own money movement flows like InboundTransfer and OutboundTransfers.
@@ -12783,6 +12831,8 @@ impl StripeRequest for CancelSetupIntent {
 #[derive(serde::Serialize)]
 struct ConfirmSetupIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    allowed_payment_method_types: Option<Vec<stripe_shared::SetupIntentAllowedPaymentMethodTypes>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     confirmation_token: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -12808,6 +12858,7 @@ impl std::fmt::Debug for ConfirmSetupIntentBuilder {
 impl ConfirmSetupIntentBuilder {
     fn new() -> Self {
         Self {
+            allowed_payment_method_types: None,
             confirmation_token: None,
             expand: None,
             mandate_data: None,
@@ -13834,14 +13885,17 @@ pub enum ConfirmSetupIntentPaymentMethodDataFpxBank {
     BankMuamalat,
     BankOfChina,
     BankRakyat,
+    BnpParibas,
     Bsn,
     Cimb,
+    Citibank,
     DeutscheBank,
     HongLeongBank,
     Hsbc,
     Kfh,
     Maybank2e,
     Maybank2u,
+    MbsbBank,
     Ocbc,
     PbEnterprise,
     PublicBank,
@@ -13863,14 +13917,17 @@ impl ConfirmSetupIntentPaymentMethodDataFpxBank {
             BankMuamalat => "bank_muamalat",
             BankOfChina => "bank_of_china",
             BankRakyat => "bank_rakyat",
+            BnpParibas => "bnp_paribas",
             Bsn => "bsn",
             Cimb => "cimb",
+            Citibank => "citibank",
             DeutscheBank => "deutsche_bank",
             HongLeongBank => "hong_leong_bank",
             Hsbc => "hsbc",
             Kfh => "kfh",
             Maybank2e => "maybank2e",
             Maybank2u => "maybank2u",
+            MbsbBank => "mbsb_bank",
             Ocbc => "ocbc",
             PbEnterprise => "pb_enterprise",
             PublicBank => "public_bank",
@@ -13895,14 +13952,17 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataFpxBank {
             "bank_muamalat" => Ok(BankMuamalat),
             "bank_of_china" => Ok(BankOfChina),
             "bank_rakyat" => Ok(BankRakyat),
+            "bnp_paribas" => Ok(BnpParibas),
             "bsn" => Ok(Bsn),
             "cimb" => Ok(Cimb),
+            "citibank" => Ok(Citibank),
             "deutsche_bank" => Ok(DeutscheBank),
             "hong_leong_bank" => Ok(HongLeongBank),
             "hsbc" => Ok(Hsbc),
             "kfh" => Ok(Kfh),
             "maybank2e" => Ok(Maybank2e),
             "maybank2u" => Ok(Maybank2u),
+            "mbsb_bank" => Ok(MbsbBank),
             "ocbc" => Ok(Ocbc),
             "pb_enterprise" => Ok(PbEnterprise),
             "public_bank" => Ok(PublicBank),
@@ -18971,6 +19031,18 @@ impl ConfirmSetupIntent {
     /// Construct a new `ConfirmSetupIntent`.
     pub fn new(intent: impl Into<stripe_shared::SetupIntentId>) -> Self {
         Self { intent: intent.into(), inner: ConfirmSetupIntentBuilder::new() }
+    }
+    /// The list of payment method types to allow for this SetupIntent.
+    /// Stripe will only use methods in this list when determining the payment methods to offer.
+    /// A list of valid payment method types can be found [here](https://docs.stripe.com/api/payment_methods/object#payment_method_object-type).
+    pub fn allowed_payment_method_types(
+        mut self,
+        allowed_payment_method_types: impl Into<
+            Vec<stripe_shared::SetupIntentAllowedPaymentMethodTypes>,
+        >,
+    ) -> Self {
+        self.inner.allowed_payment_method_types = Some(allowed_payment_method_types.into());
+        self
     }
     /// ID of the ConfirmationToken used to confirm this SetupIntent.
     ///

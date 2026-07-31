@@ -321,6 +321,9 @@ impl StripeRequest for SearchPaymentIntent {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 struct CreatePaymentIntentBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    allowed_payment_method_types:
+        Option<Vec<stripe_shared::PaymentIntentAllowedPaymentMethodTypes>>,
     amount: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_details: Option<CreatePaymentIntentAmountDetails>,
@@ -375,7 +378,7 @@ struct CreatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_types: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    radar_options: Option<CreatePaymentIntentRadarOptions>,
+    radar_options: Option<RadarOptionsWithPevalOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     receipt_email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -404,6 +407,7 @@ impl std::fmt::Debug for CreatePaymentIntentBuilder {
 impl CreatePaymentIntentBuilder {
     fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
+            allowed_payment_method_types: None,
             amount: amount.into(),
             amount_details: None,
             application_fee_amount: None,
@@ -1227,7 +1231,7 @@ pub struct CreatePaymentIntentPaymentMethodData {
     /// Options to configure Radar.
     /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub radar_options: Option<CreatePaymentIntentPaymentMethodDataRadarOptions>,
+    pub radar_options: Option<RadarOptionsWithHiddenOptions>,
     /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -1861,14 +1865,17 @@ pub enum CreatePaymentIntentPaymentMethodDataFpxBank {
     BankMuamalat,
     BankOfChina,
     BankRakyat,
+    BnpParibas,
     Bsn,
     Cimb,
+    Citibank,
     DeutscheBank,
     HongLeongBank,
     Hsbc,
     Kfh,
     Maybank2e,
     Maybank2u,
+    MbsbBank,
     Ocbc,
     PbEnterprise,
     PublicBank,
@@ -1890,14 +1897,17 @@ impl CreatePaymentIntentPaymentMethodDataFpxBank {
             BankMuamalat => "bank_muamalat",
             BankOfChina => "bank_of_china",
             BankRakyat => "bank_rakyat",
+            BnpParibas => "bnp_paribas",
             Bsn => "bsn",
             Cimb => "cimb",
+            Citibank => "citibank",
             DeutscheBank => "deutsche_bank",
             HongLeongBank => "hong_leong_bank",
             Hsbc => "hsbc",
             Kfh => "kfh",
             Maybank2e => "maybank2e",
             Maybank2u => "maybank2u",
+            MbsbBank => "mbsb_bank",
             Ocbc => "ocbc",
             PbEnterprise => "pb_enterprise",
             PublicBank => "public_bank",
@@ -1922,14 +1932,17 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataFpxBank {
             "bank_muamalat" => Ok(BankMuamalat),
             "bank_of_china" => Ok(BankOfChina),
             "bank_rakyat" => Ok(BankRakyat),
+            "bnp_paribas" => Ok(BnpParibas),
             "bsn" => Ok(Bsn),
             "cimb" => Ok(Cimb),
+            "citibank" => Ok(Citibank),
             "deutsche_bank" => Ok(DeutscheBank),
             "hong_leong_bank" => Ok(HongLeongBank),
             "hsbc" => Ok(Hsbc),
             "kfh" => Ok(Kfh),
             "maybank2e" => Ok(Maybank2e),
             "maybank2u" => Ok(Maybank2u),
+            "mbsb_bank" => Ok(MbsbBank),
             "ocbc" => Ok(Ocbc),
             "pb_enterprise" => Ok(PbEnterprise),
             "public_bank" => Ok(PublicBank),
@@ -2503,32 +2516,6 @@ impl CreatePaymentIntentPaymentMethodDataPayto {
     }
 }
 impl Default for CreatePaymentIntentPaymentMethodDataPayto {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Options to configure Radar.
-/// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentIntentPaymentMethodDataRadarOptions {
-    /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub session: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataRadarOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentIntentPaymentMethodDataRadarOptions").finish_non_exhaustive()
-    }
-}
-impl CreatePaymentIntentPaymentMethodDataRadarOptions {
-    pub fn new() -> Self {
-        Self { session: None }
-    }
-}
-impl Default for CreatePaymentIntentPaymentMethodDataRadarOptions {
     fn default() -> Self {
         Self::new()
     }
@@ -11406,6 +11393,16 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPayco {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod>,
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPayco {
@@ -11415,7 +11412,7 @@ impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPayco {
 }
 impl CreatePaymentIntentPaymentMethodOptionsPayco {
     pub fn new() -> Self {
-        Self { capture_method: None }
+        Self { capture_method: None, setup_future_usage: None }
     }
 }
 impl Default for CreatePaymentIntentPaymentMethodOptionsPayco {
@@ -11491,6 +11488,83 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMet
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage::*;
+        match self {
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -13253,6 +13327,17 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSamsungPay {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod>,
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSamsungPay {
@@ -13262,7 +13347,7 @@ impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSamsungPay {
 }
 impl CreatePaymentIntentPaymentMethodOptionsSamsungPay {
     pub fn new() -> Self {
-        Self { capture_method: None }
+        Self { capture_method: None, setup_future_usage: None }
     }
 }
 impl Default for CreatePaymentIntentPaymentMethodOptionsSamsungPay {
@@ -13339,6 +13424,87 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSamsungPayCaptu
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage::*;
+        match self {
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -15830,32 +15996,6 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsZip
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Options to configure Radar.
-/// Learn more about [Radar Sessions](https://docs.stripe.com/radar/radar-session).
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentIntentRadarOptions {
-    /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub session: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentIntentRadarOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentIntentRadarOptions").finish_non_exhaustive()
-    }
-}
-impl CreatePaymentIntentRadarOptions {
-    pub fn new() -> Self {
-        Self { session: None }
-    }
-}
-impl Default for CreatePaymentIntentRadarOptions {
-    fn default() -> Self {
-        Self::new()
-    }
-}
 /// Shipping information for this PaymentIntent.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -16010,6 +16150,17 @@ impl CreatePaymentIntent {
     /// Construct a new `CreatePaymentIntent`.
     pub fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self { inner: CreatePaymentIntentBuilder::new(amount.into(), currency.into()) }
+    }
+    /// The list of payment method types allowed for use with this payment.
+    /// Stripe automatically returns compatible payment methods from this list in the `payment_method_types` field of the response, based on the other PaymentIntent parameters, such as `currency`, `amount`, and `customer`.
+    pub fn allowed_payment_method_types(
+        mut self,
+        allowed_payment_method_types: impl Into<
+            Vec<stripe_shared::PaymentIntentAllowedPaymentMethodTypes>,
+        >,
+    ) -> Self {
+        self.inner.allowed_payment_method_types = Some(allowed_payment_method_types.into());
+        self
     }
     /// Provides industry-specific information about the amount.
     pub fn amount_details(
@@ -16205,10 +16356,7 @@ impl CreatePaymentIntent {
     }
     /// Options to configure Radar.
     /// Learn more about [Radar Sessions](https://docs.stripe.com/radar/radar-session).
-    pub fn radar_options(
-        mut self,
-        radar_options: impl Into<CreatePaymentIntentRadarOptions>,
-    ) -> Self {
+    pub fn radar_options(mut self, radar_options: impl Into<RadarOptionsWithPevalOptions>) -> Self {
         self.inner.radar_options = Some(radar_options.into());
         self
     }
@@ -16315,6 +16463,9 @@ impl StripeRequest for CreatePaymentIntent {
 #[derive(serde::Serialize)]
 struct UpdatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    allowed_payment_method_types:
+        Option<Vec<stripe_shared::PaymentIntentAllowedPaymentMethodTypes>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_details: Option<UpdatePaymentIntentAmountDetails>,
@@ -16375,6 +16526,7 @@ impl std::fmt::Debug for UpdatePaymentIntentBuilder {
 impl UpdatePaymentIntentBuilder {
     fn new() -> Self {
         Self {
+            allowed_payment_method_types: None,
             amount: None,
             amount_details: None,
             application_fee_amount: None,
@@ -16939,7 +17091,7 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     /// Options to configure Radar.
     /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub radar_options: Option<UpdatePaymentIntentPaymentMethodDataRadarOptions>,
+    pub radar_options: Option<RadarOptionsWithHiddenOptions>,
     /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -17573,14 +17725,17 @@ pub enum UpdatePaymentIntentPaymentMethodDataFpxBank {
     BankMuamalat,
     BankOfChina,
     BankRakyat,
+    BnpParibas,
     Bsn,
     Cimb,
+    Citibank,
     DeutscheBank,
     HongLeongBank,
     Hsbc,
     Kfh,
     Maybank2e,
     Maybank2u,
+    MbsbBank,
     Ocbc,
     PbEnterprise,
     PublicBank,
@@ -17602,14 +17757,17 @@ impl UpdatePaymentIntentPaymentMethodDataFpxBank {
             BankMuamalat => "bank_muamalat",
             BankOfChina => "bank_of_china",
             BankRakyat => "bank_rakyat",
+            BnpParibas => "bnp_paribas",
             Bsn => "bsn",
             Cimb => "cimb",
+            Citibank => "citibank",
             DeutscheBank => "deutsche_bank",
             HongLeongBank => "hong_leong_bank",
             Hsbc => "hsbc",
             Kfh => "kfh",
             Maybank2e => "maybank2e",
             Maybank2u => "maybank2u",
+            MbsbBank => "mbsb_bank",
             Ocbc => "ocbc",
             PbEnterprise => "pb_enterprise",
             PublicBank => "public_bank",
@@ -17634,14 +17792,17 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataFpxBank {
             "bank_muamalat" => Ok(BankMuamalat),
             "bank_of_china" => Ok(BankOfChina),
             "bank_rakyat" => Ok(BankRakyat),
+            "bnp_paribas" => Ok(BnpParibas),
             "bsn" => Ok(Bsn),
             "cimb" => Ok(Cimb),
+            "citibank" => Ok(Citibank),
             "deutsche_bank" => Ok(DeutscheBank),
             "hong_leong_bank" => Ok(HongLeongBank),
             "hsbc" => Ok(Hsbc),
             "kfh" => Ok(Kfh),
             "maybank2e" => Ok(Maybank2e),
             "maybank2u" => Ok(Maybank2u),
+            "mbsb_bank" => Ok(MbsbBank),
             "ocbc" => Ok(Ocbc),
             "pb_enterprise" => Ok(PbEnterprise),
             "public_bank" => Ok(PublicBank),
@@ -18215,32 +18376,6 @@ impl UpdatePaymentIntentPaymentMethodDataPayto {
     }
 }
 impl Default for UpdatePaymentIntentPaymentMethodDataPayto {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Options to configure Radar.
-/// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodDataRadarOptions {
-    /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub session: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataRadarOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentIntentPaymentMethodDataRadarOptions").finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentIntentPaymentMethodDataRadarOptions {
-    pub fn new() -> Self {
-        Self { session: None }
-    }
-}
-impl Default for UpdatePaymentIntentPaymentMethodDataRadarOptions {
     fn default() -> Self {
         Self::new()
     }
@@ -27118,6 +27253,16 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPayco {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod>,
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPayco {
@@ -27127,7 +27272,7 @@ impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPayco {
 }
 impl UpdatePaymentIntentPaymentMethodOptionsPayco {
     pub fn new() -> Self {
-        Self { capture_method: None }
+        Self { capture_method: None, setup_future_usage: None }
     }
 }
 impl Default for UpdatePaymentIntentPaymentMethodOptionsPayco {
@@ -27203,6 +27348,83 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMet
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage::*;
+        match self {
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -28965,6 +29187,17 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSamsungPay {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod>,
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSamsungPay {
@@ -28974,7 +29207,7 @@ impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSamsungPay {
 }
 impl UpdatePaymentIntentPaymentMethodOptionsSamsungPay {
     pub fn new() -> Self {
-        Self { capture_method: None }
+        Self { capture_method: None, setup_future_usage: None }
     }
 }
 impl Default for UpdatePaymentIntentPaymentMethodOptionsSamsungPay {
@@ -29051,6 +29284,87 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSamsungPayCaptu
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for UpdatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage::*;
+        match self {
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -31683,6 +31997,17 @@ impl UpdatePaymentIntent {
     pub fn new(intent: impl Into<stripe_shared::PaymentIntentId>) -> Self {
         Self { intent: intent.into(), inner: UpdatePaymentIntentBuilder::new() }
     }
+    /// The list of payment method types allowed for use with this payment.
+    /// Stripe automatically returns compatible payment methods from this list in the `payment_method_types` field of the response, based on the other PaymentIntent parameters, such as `currency`, `amount`, and `customer`.
+    pub fn allowed_payment_method_types(
+        mut self,
+        allowed_payment_method_types: impl Into<
+            Vec<stripe_shared::PaymentIntentAllowedPaymentMethodTypes>,
+        >,
+    ) -> Self {
+        self.inner.allowed_payment_method_types = Some(allowed_payment_method_types.into());
+        self
+    }
     /// Amount intended to be collected by this PaymentIntent.
     /// A positive integer representing how much to charge in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
     /// The minimum amount is $0.50 US or [equivalent in charge currency](https://docs.stripe.com/currencies#minimum-and-maximum-charge-amounts).
@@ -32755,6 +33080,9 @@ impl StripeRequest for CapturePaymentIntent {
 #[derive(serde::Serialize)]
 struct ConfirmPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    allowed_payment_method_types:
+        Option<Vec<stripe_shared::PaymentIntentAllowedPaymentMethodTypes>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     amount_details: Option<ConfirmPaymentIntentAmountDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_to_confirm: Option<i64>,
@@ -32788,7 +33116,7 @@ struct ConfirmPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_types: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    radar_options: Option<ConfirmPaymentIntentRadarOptions>,
+    radar_options: Option<RadarOptionsWithPevalOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     receipt_email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -32809,6 +33137,7 @@ impl std::fmt::Debug for ConfirmPaymentIntentBuilder {
 impl ConfirmPaymentIntentBuilder {
     fn new() -> Self {
         Self {
+            allowed_payment_method_types: None,
             amount_details: None,
             amount_to_confirm: None,
             capture_method: None,
@@ -33675,7 +34004,7 @@ pub struct ConfirmPaymentIntentPaymentMethodData {
     /// Options to configure Radar.
     /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub radar_options: Option<ConfirmPaymentIntentPaymentMethodDataRadarOptions>,
+    pub radar_options: Option<RadarOptionsWithHiddenOptions>,
     /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -34310,14 +34639,17 @@ pub enum ConfirmPaymentIntentPaymentMethodDataFpxBank {
     BankMuamalat,
     BankOfChina,
     BankRakyat,
+    BnpParibas,
     Bsn,
     Cimb,
+    Citibank,
     DeutscheBank,
     HongLeongBank,
     Hsbc,
     Kfh,
     Maybank2e,
     Maybank2u,
+    MbsbBank,
     Ocbc,
     PbEnterprise,
     PublicBank,
@@ -34339,14 +34671,17 @@ impl ConfirmPaymentIntentPaymentMethodDataFpxBank {
             BankMuamalat => "bank_muamalat",
             BankOfChina => "bank_of_china",
             BankRakyat => "bank_rakyat",
+            BnpParibas => "bnp_paribas",
             Bsn => "bsn",
             Cimb => "cimb",
+            Citibank => "citibank",
             DeutscheBank => "deutsche_bank",
             HongLeongBank => "hong_leong_bank",
             Hsbc => "hsbc",
             Kfh => "kfh",
             Maybank2e => "maybank2e",
             Maybank2u => "maybank2u",
+            MbsbBank => "mbsb_bank",
             Ocbc => "ocbc",
             PbEnterprise => "pb_enterprise",
             PublicBank => "public_bank",
@@ -34371,14 +34706,17 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataFpxBank {
             "bank_muamalat" => Ok(BankMuamalat),
             "bank_of_china" => Ok(BankOfChina),
             "bank_rakyat" => Ok(BankRakyat),
+            "bnp_paribas" => Ok(BnpParibas),
             "bsn" => Ok(Bsn),
             "cimb" => Ok(Cimb),
+            "citibank" => Ok(Citibank),
             "deutsche_bank" => Ok(DeutscheBank),
             "hong_leong_bank" => Ok(HongLeongBank),
             "hsbc" => Ok(Hsbc),
             "kfh" => Ok(Kfh),
             "maybank2e" => Ok(Maybank2e),
             "maybank2u" => Ok(Maybank2u),
+            "mbsb_bank" => Ok(MbsbBank),
             "ocbc" => Ok(Ocbc),
             "pb_enterprise" => Ok(PbEnterprise),
             "public_bank" => Ok(PublicBank),
@@ -34952,32 +35290,6 @@ impl ConfirmPaymentIntentPaymentMethodDataPayto {
     }
 }
 impl Default for ConfirmPaymentIntentPaymentMethodDataPayto {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Options to configure Radar.
-/// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct ConfirmPaymentIntentPaymentMethodDataRadarOptions {
-    /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub session: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataRadarOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataRadarOptions").finish_non_exhaustive()
-    }
-}
-impl ConfirmPaymentIntentPaymentMethodDataRadarOptions {
-    pub fn new() -> Self {
-        Self { session: None }
-    }
-}
-impl Default for ConfirmPaymentIntentPaymentMethodDataRadarOptions {
     fn default() -> Self {
         Self::new()
     }
@@ -43869,6 +44181,16 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPayco {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureMethod>,
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPayco {
@@ -43878,7 +44200,7 @@ impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPayco {
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsPayco {
     pub fn new() -> Self {
-        Self { capture_method: None }
+        Self { capture_method: None, setup_future_usage: None }
     }
 }
 impl Default for ConfirmPaymentIntentPaymentMethodOptionsPayco {
@@ -43954,6 +44276,85 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureMe
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage::*;
+        match self {
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -45734,6 +46135,17 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsSamsungPay {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod>,
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSamsungPay {
@@ -45743,7 +46155,7 @@ impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSamsungPay {
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsSamsungPay {
     pub fn new() -> Self {
-        Self { capture_method: None }
+        Self { capture_method: None, setup_future_usage: None }
     }
 }
 impl Default for ConfirmPaymentIntentPaymentMethodOptionsSamsungPay {
@@ -45820,6 +46232,87 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCapt
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage::*;
+        match self {
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -48325,32 +48818,6 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsZi
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Options to configure Radar.
-/// Learn more about [Radar Sessions](https://docs.stripe.com/radar/radar-session).
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct ConfirmPaymentIntentRadarOptions {
-    /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub session: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ConfirmPaymentIntentRadarOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("ConfirmPaymentIntentRadarOptions").finish_non_exhaustive()
-    }
-}
-impl ConfirmPaymentIntentRadarOptions {
-    pub fn new() -> Self {
-        Self { session: None }
-    }
-}
-impl Default for ConfirmPaymentIntentRadarOptions {
-    fn default() -> Self {
-        Self::new()
-    }
-}
 /// Shipping information for this PaymentIntent.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -48479,6 +48946,17 @@ impl ConfirmPaymentIntent {
     pub fn new(intent: impl Into<stripe_shared::PaymentIntentId>) -> Self {
         Self { intent: intent.into(), inner: ConfirmPaymentIntentBuilder::new() }
     }
+    /// The list of payment method types allowed for use with this payment.
+    /// Stripe automatically returns compatible payment methods from this list in the `payment_method_types` field of the response, based on the other PaymentIntent parameters, such as `currency`, `amount`, and `customer`.
+    pub fn allowed_payment_method_types(
+        mut self,
+        allowed_payment_method_types: impl Into<
+            Vec<stripe_shared::PaymentIntentAllowedPaymentMethodTypes>,
+        >,
+    ) -> Self {
+        self.inner.allowed_payment_method_types = Some(allowed_payment_method_types.into());
+        self
+    }
     /// Provides industry-specific information about the amount.
     pub fn amount_details(
         mut self,
@@ -48584,7 +49062,7 @@ impl ConfirmPaymentIntent {
         self
     }
     /// The list of payment method types (for example, a card) that this PaymentIntent can use.
-    /// Use `automatic_payment_methods` to manage payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
+    /// If you don't provide this, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     /// A list of valid payment method types can be found [here](https://docs.stripe.com/api/payment_methods/object#payment_method_object-type).
     pub fn payment_method_types(mut self, payment_method_types: impl Into<Vec<String>>) -> Self {
         self.inner.payment_method_types = Some(payment_method_types.into());
@@ -48592,10 +49070,7 @@ impl ConfirmPaymentIntent {
     }
     /// Options to configure Radar.
     /// Learn more about [Radar Sessions](https://docs.stripe.com/radar/radar-session).
-    pub fn radar_options(
-        mut self,
-        radar_options: impl Into<ConfirmPaymentIntentRadarOptions>,
-    ) -> Self {
+    pub fn radar_options(mut self, radar_options: impl Into<RadarOptionsWithPevalOptions>) -> Self {
         self.inner.radar_options = Some(radar_options.into());
         self
     }
@@ -49556,6 +50031,30 @@ impl DateOfBirth {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+pub struct RadarOptionsWithHiddenOptions {
+    /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RadarOptionsWithHiddenOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RadarOptionsWithHiddenOptions").finish_non_exhaustive()
+    }
+}
+impl RadarOptionsWithHiddenOptions {
+    pub fn new() -> Self {
+        Self { session: None }
+    }
+}
+impl Default for RadarOptionsWithHiddenOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PaymentMethodOptionsMandateOptionsParam {
     /// Prefix used to generate the Mandate reference.
     /// Must be at most 12 characters long.
@@ -49617,6 +50116,34 @@ impl std::fmt::Debug for SubscriptionNextBillingParam {
 impl SubscriptionNextBillingParam {
     pub fn new(amount: impl Into<i64>, date: impl Into<String>) -> Self {
         Self { amount: amount.into(), date: date.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct RadarOptionsWithPevalOptions {
+    /// The referrer URL of the current checkout session.
+    /// You can use this to supply session-level referrer data when a Radar Session isn't available or doesn't contain a referrer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub referrer: Option<String>,
+    /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RadarOptionsWithPevalOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RadarOptionsWithPevalOptions").finish_non_exhaustive()
+    }
+}
+impl RadarOptionsWithPevalOptions {
+    pub fn new() -> Self {
+        Self { referrer: None, session: None }
+    }
+}
+impl Default for RadarOptionsWithPevalOptions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Clone)]

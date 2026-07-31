@@ -13,6 +13,9 @@ pub struct ConnectEmbeddedDisputesListFeatures {
     pub dispute_management: bool,
     /// Whether sending refunds is enabled. This is `true` by default.
     pub refund_management: bool,
+    /// Whether to allow connected accounts to submit disputes using Smart Disputes.
+    /// Defaults to the value of `dispute_management`.
+    pub smart_disputes_management: bool,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ConnectEmbeddedDisputesListFeatures {
@@ -26,6 +29,7 @@ pub struct ConnectEmbeddedDisputesListFeaturesBuilder {
     destination_on_behalf_of_charge_management: Option<bool>,
     dispute_management: Option<bool>,
     refund_management: Option<bool>,
+    smart_disputes_management: Option<bool>,
 }
 
 #[allow(
@@ -74,6 +78,9 @@ const _: () = {
                 }
                 "dispute_management" => Deserialize::begin(&mut self.dispute_management),
                 "refund_management" => Deserialize::begin(&mut self.refund_management),
+                "smart_disputes_management" => {
+                    Deserialize::begin(&mut self.smart_disputes_management)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -84,6 +91,7 @@ const _: () = {
                 destination_on_behalf_of_charge_management: None,
                 dispute_management: None,
                 refund_management: None,
+                smart_disputes_management: None,
             }
         }
 
@@ -93,11 +101,13 @@ const _: () = {
                 Some(destination_on_behalf_of_charge_management),
                 Some(dispute_management),
                 Some(refund_management),
+                Some(smart_disputes_management),
             ) = (
                 self.capture_payments,
                 self.destination_on_behalf_of_charge_management,
                 self.dispute_management,
                 self.refund_management,
+                self.smart_disputes_management,
             )
             else {
                 return None;
@@ -107,6 +117,7 @@ const _: () = {
                 destination_on_behalf_of_charge_management,
                 dispute_management,
                 refund_management,
+                smart_disputes_management,
             })
         }
     }
@@ -140,6 +151,9 @@ const _: () = {
                     }
                     "dispute_management" => b.dispute_management = FromValueOpt::from_value(v),
                     "refund_management" => b.refund_management = FromValueOpt::from_value(v),
+                    "smart_disputes_management" => {
+                        b.smart_disputes_management = FromValueOpt::from_value(v)
+                    }
                     _ => {}
                 }
             }

@@ -185,7 +185,8 @@
             "capture_payments": true,
             "destination_on_behalf_of_charge_management": true,
             "dispute_management": true,
-            "refund_management": true
+            "refund_management": true,
+            "smart_disputes_management": true
           }
         },
         "documents": {
@@ -247,7 +248,8 @@
             "capture_payments": true,
             "destination_on_behalf_of_charge_management": false,
             "dispute_management": true,
-            "refund_management": true
+            "refund_management": true,
+            "smart_disputes_management": true
           }
         },
         "payment_disputes": {
@@ -255,7 +257,8 @@
           "features": {
             "destination_on_behalf_of_charge_management": true,
             "dispute_management": true,
-            "refund_management": true
+            "refund_management": true,
+            "smart_disputes_management": true
           }
         },
         "payments": {
@@ -264,7 +267,8 @@
             "capture_payments": true,
             "destination_on_behalf_of_charge_management": false,
             "dispute_management": true,
-            "refund_management": true
+            "refund_management": true,
+            "smart_disputes_management": true
           }
         },
         "payout_details": {
@@ -1780,22 +1784,7 @@
             "payment_record": "payment_record",
             "refund_group": "refund_group"
           },
-          "refund": {
-            "amount": 1413853096,
-            "balance_transaction": null,
-            "charge": null,
-            "created": 1028554472,
-            "currency": "currency",
-            "id": "obj_123",
-            "metadata": null,
-            "object": "refund",
-            "payment_intent": null,
-            "reason": null,
-            "receipt_number": null,
-            "source_transfer_reversal": null,
-            "status": null,
-            "transfer_reversal": null
-          },
+          "refund": "refund",
           "type": null
         }
       ],
@@ -2200,6 +2189,7 @@
         "card": {
           "brand": "visa",
           "case_type": "inquiry",
+          "network": "visa",
           "network_reason_code": "10.4"
         },
         "type": "card"
@@ -2500,6 +2490,14 @@
         "object": "list",
         "url": "url"
       }
+    },
+    "financial_connections.authorization": {
+      "id": "obj_123",
+      "institution_name": "institution_name",
+      "livemode": true,
+      "object": "financial_connections.authorization",
+      "status": "active",
+      "status_details": {}
     },
     "financial_connections.session": {
       "account_holder": {
@@ -3056,6 +3054,7 @@
             },
             "result": null
           },
+          "business_name": null,
           "carrier": null,
           "customs": {
             "eori_number": null
@@ -3290,6 +3289,7 @@
           },
           "result": null
         },
+        "business_name": null,
         "carrier": null,
         "customs": {
           "eori_number": null
@@ -4750,7 +4750,10 @@
       "id": "qt_1Pgc79B7WZ01zgkWHyj9Adwl",
       "invoice": null,
       "invoice_settings": {
+        "custom_fields": null,
         "days_until_due": null,
+        "description": null,
+        "footer": null,
         "issuer": {
           "type": "self"
         }
@@ -4849,6 +4852,8 @@
       "charge": "ch_1PgafuB7WZ01zgkWXYmPNZs8",
       "created": 1234567890,
       "currency": "usd",
+      "customer": null,
+      "customer_account": null,
       "destination_details": {
         "card": {
           "type": "reversal"
@@ -4859,6 +4864,7 @@
       "metadata": {},
       "object": "refund",
       "payment_intent": null,
+      "payment_method": null,
       "reason": null,
       "receipt_number": null,
       "source_transfer_reversal": null,
@@ -5609,7 +5615,10 @@
         "description": null,
         "invoice_settings": {
           "account_tax_ids": null,
+          "custom_fields": null,
           "days_until_due": null,
+          "description": null,
+          "footer": null,
           "issuer": {
             "type": "self"
           }
@@ -5646,7 +5655,10 @@
           "end_date": 1754008472,
           "invoice_settings": {
             "account_tax_ids": null,
+            "custom_fields": null,
             "days_until_due": null,
+            "description": null,
+            "footer": null,
             "issuer": {
               "type": "account"
             }
@@ -6106,6 +6118,7 @@
       "failure_code": null,
       "failure_message": null,
       "id": "tu_1Pgc7BB7WZ01zgkWwH7rkBgR",
+      "initiated_by": null,
       "livemode": false,
       "metadata": {
         "order_id": "12345678"
@@ -6696,5 +6709,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2345"
+  "version": "v2359"
 }

@@ -479,6 +479,7 @@ impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeExemptionIndicato
 pub enum ThreeDSecureDetailsChargeResult {
     AttemptAcknowledged,
     Authenticated,
+    DataShareOnly,
     Exempted,
     Failed,
     NotSupported,
@@ -492,6 +493,7 @@ impl ThreeDSecureDetailsChargeResult {
         match self {
             AttemptAcknowledged => "attempt_acknowledged",
             Authenticated => "authenticated",
+            DataShareOnly => "data_share_only",
             Exempted => "exempted",
             Failed => "failed",
             NotSupported => "not_supported",
@@ -508,6 +510,7 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeResult {
         match s {
             "attempt_acknowledged" => Ok(AttemptAcknowledged),
             "authenticated" => Ok(Authenticated),
+            "data_share_only" => Ok(DataShareOnly),
             "exempted" => Ok(Exempted),
             "failed" => Ok(Failed),
             "not_supported" => Ok(NotSupported),

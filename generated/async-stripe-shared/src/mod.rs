@@ -1669,10 +1669,6 @@ pub mod payment_flows_private_payment_methods_alipay;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_alipay::*;
 #[doc(hidden)]
-pub mod payment_flows_private_payment_methods_alipay_details;
-#[doc(inline)]
-pub use payment_flows_private_payment_methods_alipay_details::*;
-#[doc(hidden)]
 pub mod payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_extended_authorization_extended_authorization;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_extended_authorization_extended_authorization::*;
@@ -2233,6 +2229,10 @@ pub mod payment_method_details_afterpay_clearpay;
 #[doc(inline)]
 pub use payment_method_details_afterpay_clearpay::*;
 #[doc(hidden)]
+pub mod payment_method_details_alipay;
+#[doc(inline)]
+pub use payment_method_details_alipay::*;
+#[doc(hidden)]
 pub mod payment_method_details_alma;
 #[doc(inline)]
 pub use payment_method_details_alma::*;
@@ -2449,6 +2449,10 @@ pub mod payment_method_details_payment_record_afterpay_clearpay;
 #[doc(inline)]
 pub use payment_method_details_payment_record_afterpay_clearpay::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_alipay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_alipay::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_alma;
 #[doc(inline)]
 pub use payment_method_details_payment_record_alma::*;
@@ -2456,6 +2460,14 @@ pub use payment_method_details_payment_record_alma::*;
 pub mod payment_method_details_payment_record_amazon_pay;
 #[doc(inline)]
 pub use payment_method_details_payment_record_amazon_pay::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_au_becs_debit;
+#[doc(inline)]
+pub use payment_method_details_payment_record_au_becs_debit::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_bacs_debit;
+#[doc(inline)]
+pub use payment_method_details_payment_record_bacs_debit::*;
 #[doc(hidden)]
 pub mod payment_method_details_payment_record_bancontact;
 #[doc(inline)]
@@ -4105,6 +4117,10 @@ pub mod three_d_secure_usage;
 #[doc(inline)]
 pub use three_d_secure_usage::*;
 #[doc(hidden)]
+pub mod token;
+#[doc(inline)]
+pub use token::*;
+#[doc(hidden)]
 pub mod token_card_networks;
 #[doc(inline)]
 pub use token_card_networks::*;
@@ -4112,6 +4128,14 @@ pub use token_card_networks::*;
 pub mod topup;
 #[doc(inline)]
 pub use topup::*;
+#[doc(hidden)]
+pub mod topup_resource_payment_method_options;
+#[doc(inline)]
+pub use topup_resource_payment_method_options::*;
+#[doc(hidden)]
+pub mod topup_resource_us_bank_account;
+#[doc(inline)]
+pub use topup_resource_us_bank_account::*;
 #[doc(hidden)]
 pub mod transfer;
 #[doc(inline)]

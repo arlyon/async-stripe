@@ -128,6 +128,10 @@ pub fn check_fixtures(resources: &serde_json::Value) {
         resources,
         "financial_connections.account_ownership",
     );
+    check_object::<stripe_misc::FinancialConnectionsAuthorization>(
+        resources,
+        "financial_connections.authorization",
+    );
     check_object::<stripe_misc::FinancialConnectionsSession>(
         resources,
         "financial_connections.session",

@@ -294,6 +294,6 @@ pub use stripe_shared::setup_intent_payment_method_options_us_bank_account::*;
 pub use stripe_shared::smor_resource_managed_payments::*;
 pub use stripe_shared::tax_deducted_at_source::*;
 pub use stripe_shared::three_d_secure_details::*;
-pub use token::types::*;
 pub mod token;
+pub use stripe_shared::token::*;
 pub use stripe_shared::token_card_networks::*;

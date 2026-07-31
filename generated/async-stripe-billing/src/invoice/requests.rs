@@ -2528,6 +2528,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     AchDebit,
     AcssDebit,
     Affirm,
+    Alipay,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
@@ -2549,6 +2550,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Multibanco,
     NaverPay,
     NzBankAccount,
@@ -2581,6 +2583,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             AchDebit => "ach_debit",
             AcssDebit => "acss_debit",
             Affirm => "affirm",
+            Alipay => "alipay",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
@@ -2602,6 +2605,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
             NzBankAccount => "nz_bank_account",
@@ -2637,6 +2641,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "ach_debit" => Ok(AchDebit),
             "acss_debit" => Ok(AcssDebit),
             "affirm" => Ok(Affirm),
+            "alipay" => Ok(Alipay),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
@@ -2658,6 +2663,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
             "nz_bank_account" => Ok(NzBankAccount),
@@ -5943,6 +5949,7 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     AchDebit,
     AcssDebit,
     Affirm,
+    Alipay,
     AmazonPay,
     AuBecsDebit,
     BacsDebit,
@@ -5964,6 +5971,7 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     Konbini,
     KrCard,
     Link,
+    MbWay,
     Multibanco,
     NaverPay,
     NzBankAccount,
@@ -5996,6 +6004,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             AchDebit => "ach_debit",
             AcssDebit => "acss_debit",
             Affirm => "affirm",
+            Alipay => "alipay",
             AmazonPay => "amazon_pay",
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
@@ -6017,6 +6026,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             Konbini => "konbini",
             KrCard => "kr_card",
             Link => "link",
+            MbWay => "mb_way",
             Multibanco => "multibanco",
             NaverPay => "naver_pay",
             NzBankAccount => "nz_bank_account",
@@ -6052,6 +6062,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "ach_debit" => Ok(AchDebit),
             "acss_debit" => Ok(AcssDebit),
             "affirm" => Ok(Affirm),
+            "alipay" => Ok(Alipay),
             "amazon_pay" => Ok(AmazonPay),
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
@@ -6073,6 +6084,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "konbini" => Ok(Konbini),
             "kr_card" => Ok(KrCard),
             "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
             "multibanco" => Ok(Multibanco),
             "naver_pay" => Ok(NaverPay),
             "nz_bank_account" => Ok(NzBankAccount),
@@ -7703,6 +7715,8 @@ pub enum AddLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
     Igst,
     Jct,
     LeaseTax,
+    MassTransitParkingTax,
+    ParkingTax,
     Pst,
     Qst,
     RetailDeliveryFee,
@@ -7724,6 +7738,8 @@ impl AddLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
             Igst => "igst",
             Jct => "jct",
             LeaseTax => "lease_tax",
+            MassTransitParkingTax => "mass_transit_parking_tax",
+            ParkingTax => "parking_tax",
             Pst => "pst",
             Qst => "qst",
             RetailDeliveryFee => "retail_delivery_fee",
@@ -7748,6 +7764,8 @@ impl std::str::FromStr for AddLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
             "igst" => Ok(Igst),
             "jct" => Ok(Jct),
             "lease_tax" => Ok(LeaseTax),
+            "mass_transit_parking_tax" => Ok(MassTransitParkingTax),
+            "parking_tax" => Ok(ParkingTax),
             "pst" => Ok(Pst),
             "qst" => Ok(Qst),
             "retail_delivery_fee" => Ok(RetailDeliveryFee),
@@ -9094,6 +9112,8 @@ pub enum UpdateLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
     Igst,
     Jct,
     LeaseTax,
+    MassTransitParkingTax,
+    ParkingTax,
     Pst,
     Qst,
     RetailDeliveryFee,
@@ -9115,6 +9135,8 @@ impl UpdateLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
             Igst => "igst",
             Jct => "jct",
             LeaseTax => "lease_tax",
+            MassTransitParkingTax => "mass_transit_parking_tax",
+            ParkingTax => "parking_tax",
             Pst => "pst",
             Qst => "qst",
             RetailDeliveryFee => "retail_delivery_fee",
@@ -9139,6 +9161,8 @@ impl std::str::FromStr for UpdateLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
             "igst" => Ok(Igst),
             "jct" => Ok(Jct),
             "lease_tax" => Ok(LeaseTax),
+            "mass_transit_parking_tax" => Ok(MassTransitParkingTax),
+            "parking_tax" => Ok(ParkingTax),
             "pst" => Ok(Pst),
             "qst" => Ok(Qst),
             "retail_delivery_fee" => Ok(RetailDeliveryFee),
@@ -9847,7 +9871,7 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceCustomerDetailsTaxExem
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreatePreviewInvoiceCustomerDetailsTaxIds {
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `fo_vat`, `gb_vat`, `ge_vat`, `gi_tin`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `it_cf`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `py_ruc`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `fo_vat`, `gb_vat`, `ge_vat`, `gi_tin`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `ic_nif`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `it_cf`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `py_ruc`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceCustomerDetailsTaxIdsType,
     /// Value of the tax ID.
@@ -9867,7 +9891,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIds {
         Self { type_: type_.into(), value: value.into() }
     }
 }
-/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `fo_vat`, `gb_vat`, `ge_vat`, `gi_tin`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `it_cf`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `py_ruc`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
+/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `fo_vat`, `gb_vat`, `ge_vat`, `gi_tin`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `ic_nif`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `it_cf`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `py_ruc`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
@@ -9924,6 +9948,7 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     HkBr,
     HrOib,
     HuTin,
+    IcNif,
     IdNpwp,
     IlVat,
     InGst,
@@ -10047,6 +10072,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             HkBr => "hk_br",
             HrOib => "hr_oib",
             HuTin => "hu_tin",
+            IcNif => "ic_nif",
             IdNpwp => "id_npwp",
             IlVat => "il_vat",
             InGst => "in_gst",
@@ -10173,6 +10199,7 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "hk_br" => Ok(HkBr),
             "hr_oib" => Ok(HrOib),
             "hu_tin" => Ok(HuTin),
+            "ic_nif" => Ok(IcNif),
             "id_npwp" => Ok(IdNpwp),
             "il_vat" => Ok(IlVat),
             "in_gst" => Ok(InGst),
@@ -11233,6 +11260,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     pub proration_behavior: Option<CreatePreviewInvoiceScheduleDetailsPhasesProrationBehavior>,
     /// The date at which this phase of the subscription schedule starts or `now`.
     /// Must be set on the first phase.
+    /// Prefer to specify `now` over an explicit timestamp when appropriate to avoid unexpected behavior due to request delays or clock skew resulting in the phase being slightly backdated or postdated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start_date: Option<CreatePreviewInvoiceScheduleDetailsPhasesStartDate>,
     /// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
@@ -11242,7 +11270,8 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial: Option<bool>,
     /// Sets the phase to trialing from the start date to this date.
-    /// Must be before the phase end date, can not be combined with `trial`.
+    /// Must be within the phase.
+    /// When previewing an update, if combined with `trial=true`, it must match the phase end date.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<CreatePreviewInvoiceScheduleDetailsPhasesTrialEnd>,
 }
@@ -12697,6 +12726,7 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsPhasesP
 }
 /// The date at which this phase of the subscription schedule starts or `now`.
 /// Must be set on the first phase.
+/// Prefer to specify `now` over an explicit timestamp when appropriate to avoid unexpected behavior due to request delays or clock skew resulting in the phase being slightly backdated or postdated.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -12738,7 +12768,8 @@ impl CreatePreviewInvoiceScheduleDetailsPhasesTransferData {
     }
 }
 /// Sets the phase to trialing from the start date to this date.
-/// Must be before the phase end date, can not be combined with `trial`.
+/// Must be within the phase.
+/// When previewing an update, if combined with `trial=true`, it must match the phase end date.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -12866,6 +12897,12 @@ pub struct CreatePreviewInvoiceSubscriptionDetails {
     /// A list of up to 20 subscription items, each with an attached price.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CreatePreviewInvoiceSubscriptionDetailsItems>>,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     /// The default value is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12904,6 +12941,7 @@ impl CreatePreviewInvoiceSubscriptionDetails {
             cancel_now: None,
             default_tax_rates: None,
             items: None,
+            metadata: None,
             proration_behavior: None,
             proration_date: None,
             resume_at: None,

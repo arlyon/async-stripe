@@ -175,6 +175,10 @@ pub struct CreateAccountSessionComponentsDisputesListFeatures {
     /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
+    /// Whether to allow connected accounts to submit disputes using Smart Disputes.
+    /// Defaults to the value of `dispute_management`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub smart_disputes_management: Option<bool>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAccountSessionComponentsDisputesListFeatures {
@@ -189,6 +193,7 @@ impl CreateAccountSessionComponentsDisputesListFeatures {
             destination_on_behalf_of_charge_management: None,
             dispute_management: None,
             refund_management: None,
+            smart_disputes_management: None,
         }
     }
 }
@@ -548,6 +553,10 @@ pub struct CreateAccountSessionComponentsPaymentDetailsFeatures {
     /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
+    /// Whether to allow connected accounts to submit disputes using Smart Disputes.
+    /// Defaults to the value of `dispute_management`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub smart_disputes_management: Option<bool>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAccountSessionComponentsPaymentDetailsFeatures {
@@ -563,6 +572,7 @@ impl CreateAccountSessionComponentsPaymentDetailsFeatures {
             destination_on_behalf_of_charge_management: None,
             dispute_management: None,
             refund_management: None,
+            smart_disputes_management: None,
         }
     }
 }
@@ -609,6 +619,10 @@ pub struct CreateAccountSessionComponentsPaymentDisputesFeatures {
     /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
+    /// Whether to allow connected accounts to submit disputes using Smart Disputes.
+    /// Defaults to the value of `dispute_management`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub smart_disputes_management: Option<bool>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAccountSessionComponentsPaymentDisputesFeatures {
@@ -623,6 +637,7 @@ impl CreateAccountSessionComponentsPaymentDisputesFeatures {
             destination_on_behalf_of_charge_management: None,
             dispute_management: None,
             refund_management: None,
+            smart_disputes_management: None,
         }
     }
 }
@@ -672,6 +687,10 @@ pub struct CreateAccountSessionComponentsPaymentsFeatures {
     /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
+    /// Whether to allow connected accounts to submit disputes using Smart Disputes.
+    /// Defaults to the value of `dispute_management`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub smart_disputes_management: Option<bool>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAccountSessionComponentsPaymentsFeatures {
@@ -686,6 +705,7 @@ impl CreateAccountSessionComponentsPaymentsFeatures {
             destination_on_behalf_of_charge_management: None,
             dispute_management: None,
             refund_management: None,
+            smart_disputes_management: None,
         }
     }
 }

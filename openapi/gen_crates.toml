@@ -90,7 +90,7 @@ paths = [
     "confirmation_token",
     "payment_attempt_record",
     "payments_primitives_payment_records_resource_address",
-    "payment_flows_private_payment_methods_alipay_details",
+    "payment_flows_private_payment_methods_alipay",
     "payments_primitives_payment_records_resource_customer_details",
     "payments_primitives_payment_records_resource_amount",
     "payments_primitives_payment_records_resource_payment_method_card_details",

@@ -974,6 +974,11 @@ pub enum EventObject {
     /// Occurs when a Financial Connections account is disconnected.
     #[cfg(feature = "async-stripe-misc")]
     FinancialConnectionsAccountDisconnected(Box<stripe_misc::FinancialConnectionsAccount>),
+    /// Occurs when a Financial Connections account’s `expected_deactivation_date` changes.
+    #[cfg(feature = "async-stripe-misc")]
+    FinancialConnectionsAccountExpectedDeactivationDateUpdated(
+        Box<stripe_misc::FinancialConnectionsAccount>,
+    ),
     /// Occurs when a Financial Connections account's status is updated from `inactive` to `active`.
     #[cfg(feature = "async-stripe-misc")]
     FinancialConnectionsAccountReactivated(Box<stripe_misc::FinancialConnectionsAccount>),
@@ -986,10 +991,28 @@ pub enum EventObject {
     /// Occurs when an Account’s `transaction_refresh` status transitions from `pending` to either `succeeded` or `failed`.
     #[cfg(feature = "async-stripe-misc")]
     FinancialConnectionsAccountRefreshedTransactions(Box<stripe_misc::FinancialConnectionsAccount>),
+    /// Occurs when the supported_payment_method_types array on a Financial Connections account changes.
+    #[cfg(feature = "async-stripe-misc")]
+    FinancialConnectionsAccountSupportedPaymentMethodTypesUpdated(
+        Box<stripe_misc::FinancialConnectionsAccount>,
+    ),
     /// Occurs when an Account’s tokenized account number is about to expire.
     #[cfg(feature = "async-stripe-misc")]
     FinancialConnectionsAccountUpcomingAccountNumberExpiry(
         Box<stripe_misc::FinancialConnectionsAccount>,
+    ),
+    /// Occurs when a Financial Connections account is about to become `inactive`.
+    #[cfg(feature = "async-stripe-misc")]
+    FinancialConnectionsAccountUpcomingDeactivation(Box<stripe_misc::FinancialConnectionsAccount>),
+    /// Occurs when a Financial Connections authorization’s `expected_deactivation_date` changes.
+    #[cfg(feature = "async-stripe-misc")]
+    FinancialConnectionsAuthorizationExpectedDeactivationDateUpdated(
+        Box<stripe_misc::FinancialConnectionsAuthorization>,
+    ),
+    /// Occurs when a Financial Connections authorization is about to become `inactive`.
+    #[cfg(feature = "async-stripe-misc")]
+    FinancialConnectionsAuthorizationUpcomingDeactivation(
+        Box<stripe_misc::FinancialConnectionsAuthorization>,
     ),
     /// Occurs whenever a VerificationSession is canceled
     #[cfg(feature = "async-stripe-misc")]
@@ -1703,6 +1726,11 @@ impl EventObject {
             return parse_and_box(data).map(Self::FinancialConnectionsAccountDisconnected);
         }
         #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.expected_deactivation_date_updated" {
+            return parse_and_box(data)
+                .map(Self::FinancialConnectionsAccountExpectedDeactivationDateUpdated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.reactivated" {
             return parse_and_box(data).map(Self::FinancialConnectionsAccountReactivated);
         }
@@ -1719,9 +1747,28 @@ impl EventObject {
             return parse_and_box(data).map(Self::FinancialConnectionsAccountRefreshedTransactions);
         }
         #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.supported_payment_method_types_updated" {
+            return parse_and_box(data)
+                .map(Self::FinancialConnectionsAccountSupportedPaymentMethodTypesUpdated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.upcoming_account_number_expiry" {
             return parse_and_box(data)
                 .map(Self::FinancialConnectionsAccountUpcomingAccountNumberExpiry);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.upcoming_deactivation" {
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountUpcomingDeactivation);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.authorization.expected_deactivation_date_updated" {
+            return parse_and_box(data)
+                .map(Self::FinancialConnectionsAuthorizationExpectedDeactivationDateUpdated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.authorization.upcoming_deactivation" {
+            return parse_and_box(data)
+                .map(Self::FinancialConnectionsAuthorizationUpcomingDeactivation);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "identity.verification_session.canceled" {
@@ -2599,6 +2646,11 @@ impl EventObject {
             return parse_and_box(data).map(Self::FinancialConnectionsAccountDisconnected);
         }
         #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.expected_deactivation_date_updated" {
+            return parse_and_box(data)
+                .map(Self::FinancialConnectionsAccountExpectedDeactivationDateUpdated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.reactivated" {
             return parse_and_box(data).map(Self::FinancialConnectionsAccountReactivated);
         }
@@ -2615,9 +2667,28 @@ impl EventObject {
             return parse_and_box(data).map(Self::FinancialConnectionsAccountRefreshedTransactions);
         }
         #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.supported_payment_method_types_updated" {
+            return parse_and_box(data)
+                .map(Self::FinancialConnectionsAccountSupportedPaymentMethodTypesUpdated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.upcoming_account_number_expiry" {
             return parse_and_box(data)
                 .map(Self::FinancialConnectionsAccountUpcomingAccountNumberExpiry);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.upcoming_deactivation" {
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountUpcomingDeactivation);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.authorization.expected_deactivation_date_updated" {
+            return parse_and_box(data)
+                .map(Self::FinancialConnectionsAuthorizationExpectedDeactivationDateUpdated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.authorization.upcoming_deactivation" {
+            return parse_and_box(data)
+                .map(Self::FinancialConnectionsAuthorizationUpcomingDeactivation);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "identity.verification_session.canceled" {

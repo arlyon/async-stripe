@@ -192,6 +192,8 @@ pub mod secret_service_resource_scope;
 pub use secret_service_resource_scope::*;
 pub mod topup;
 pub use stripe_shared::topup::*;
+pub use stripe_shared::topup_resource_payment_method_options::*;
+pub use stripe_shared::topup_resource_us_bank_account::*;
 pub mod transfer;
 pub use stripe_shared::transfer::*;
 pub use stripe_shared::transfer_data::*;

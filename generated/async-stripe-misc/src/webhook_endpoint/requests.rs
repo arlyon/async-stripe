@@ -351,11 +351,16 @@ pub enum CreateWebhookEndpointEnabledEvents {
     FinancialConnectionsAccountCreated,
     FinancialConnectionsAccountDeactivated,
     FinancialConnectionsAccountDisconnected,
+    FinancialConnectionsAccountExpectedDeactivationDateUpdated,
     FinancialConnectionsAccountReactivated,
     FinancialConnectionsAccountRefreshedBalance,
     FinancialConnectionsAccountRefreshedOwnership,
     FinancialConnectionsAccountRefreshedTransactions,
+    FinancialConnectionsAccountSupportedPaymentMethodTypesUpdated,
     FinancialConnectionsAccountUpcomingAccountNumberExpiry,
+    FinancialConnectionsAccountUpcomingDeactivation,
+    FinancialConnectionsAuthorizationExpectedDeactivationDateUpdated,
+    FinancialConnectionsAuthorizationUpcomingDeactivation,
     IdentityVerificationSessionCanceled,
     IdentityVerificationSessionCreated,
     IdentityVerificationSessionProcessing,
@@ -627,6 +632,9 @@ impl CreateWebhookEndpointEnabledEvents {
             FinancialConnectionsAccountCreated => "financial_connections.account.created",
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
             FinancialConnectionsAccountDisconnected => "financial_connections.account.disconnected",
+            FinancialConnectionsAccountExpectedDeactivationDateUpdated => {
+                "financial_connections.account.expected_deactivation_date_updated"
+            }
             FinancialConnectionsAccountReactivated => "financial_connections.account.reactivated",
             FinancialConnectionsAccountRefreshedBalance => {
                 "financial_connections.account.refreshed_balance"
@@ -637,8 +645,20 @@ impl CreateWebhookEndpointEnabledEvents {
             FinancialConnectionsAccountRefreshedTransactions => {
                 "financial_connections.account.refreshed_transactions"
             }
+            FinancialConnectionsAccountSupportedPaymentMethodTypesUpdated => {
+                "financial_connections.account.supported_payment_method_types_updated"
+            }
             FinancialConnectionsAccountUpcomingAccountNumberExpiry => {
                 "financial_connections.account.upcoming_account_number_expiry"
+            }
+            FinancialConnectionsAccountUpcomingDeactivation => {
+                "financial_connections.account.upcoming_deactivation"
+            }
+            FinancialConnectionsAuthorizationExpectedDeactivationDateUpdated => {
+                "financial_connections.authorization.expected_deactivation_date_updated"
+            }
+            FinancialConnectionsAuthorizationUpcomingDeactivation => {
+                "financial_connections.authorization.upcoming_deactivation"
             }
             IdentityVerificationSessionCanceled => "identity.verification_session.canceled",
             IdentityVerificationSessionCreated => "identity.verification_session.created",
@@ -938,6 +958,9 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "financial_connections.account.disconnected" => {
                 Ok(FinancialConnectionsAccountDisconnected)
             }
+            "financial_connections.account.expected_deactivation_date_updated" => {
+                Ok(FinancialConnectionsAccountExpectedDeactivationDateUpdated)
+            }
             "financial_connections.account.reactivated" => {
                 Ok(FinancialConnectionsAccountReactivated)
             }
@@ -950,8 +973,20 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "financial_connections.account.refreshed_transactions" => {
                 Ok(FinancialConnectionsAccountRefreshedTransactions)
             }
+            "financial_connections.account.supported_payment_method_types_updated" => {
+                Ok(FinancialConnectionsAccountSupportedPaymentMethodTypesUpdated)
+            }
             "financial_connections.account.upcoming_account_number_expiry" => {
                 Ok(FinancialConnectionsAccountUpcomingAccountNumberExpiry)
+            }
+            "financial_connections.account.upcoming_deactivation" => {
+                Ok(FinancialConnectionsAccountUpcomingDeactivation)
+            }
+            "financial_connections.authorization.expected_deactivation_date_updated" => {
+                Ok(FinancialConnectionsAuthorizationExpectedDeactivationDateUpdated)
+            }
+            "financial_connections.authorization.upcoming_deactivation" => {
+                Ok(FinancialConnectionsAuthorizationUpcomingDeactivation)
             }
             "identity.verification_session.canceled" => Ok(IdentityVerificationSessionCanceled),
             "identity.verification_session.created" => Ok(IdentityVerificationSessionCreated),
@@ -1394,11 +1429,16 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     FinancialConnectionsAccountCreated,
     FinancialConnectionsAccountDeactivated,
     FinancialConnectionsAccountDisconnected,
+    FinancialConnectionsAccountExpectedDeactivationDateUpdated,
     FinancialConnectionsAccountReactivated,
     FinancialConnectionsAccountRefreshedBalance,
     FinancialConnectionsAccountRefreshedOwnership,
     FinancialConnectionsAccountRefreshedTransactions,
+    FinancialConnectionsAccountSupportedPaymentMethodTypesUpdated,
     FinancialConnectionsAccountUpcomingAccountNumberExpiry,
+    FinancialConnectionsAccountUpcomingDeactivation,
+    FinancialConnectionsAuthorizationExpectedDeactivationDateUpdated,
+    FinancialConnectionsAuthorizationUpcomingDeactivation,
     IdentityVerificationSessionCanceled,
     IdentityVerificationSessionCreated,
     IdentityVerificationSessionProcessing,
@@ -1670,6 +1710,9 @@ impl UpdateWebhookEndpointEnabledEvents {
             FinancialConnectionsAccountCreated => "financial_connections.account.created",
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
             FinancialConnectionsAccountDisconnected => "financial_connections.account.disconnected",
+            FinancialConnectionsAccountExpectedDeactivationDateUpdated => {
+                "financial_connections.account.expected_deactivation_date_updated"
+            }
             FinancialConnectionsAccountReactivated => "financial_connections.account.reactivated",
             FinancialConnectionsAccountRefreshedBalance => {
                 "financial_connections.account.refreshed_balance"
@@ -1680,8 +1723,20 @@ impl UpdateWebhookEndpointEnabledEvents {
             FinancialConnectionsAccountRefreshedTransactions => {
                 "financial_connections.account.refreshed_transactions"
             }
+            FinancialConnectionsAccountSupportedPaymentMethodTypesUpdated => {
+                "financial_connections.account.supported_payment_method_types_updated"
+            }
             FinancialConnectionsAccountUpcomingAccountNumberExpiry => {
                 "financial_connections.account.upcoming_account_number_expiry"
+            }
+            FinancialConnectionsAccountUpcomingDeactivation => {
+                "financial_connections.account.upcoming_deactivation"
+            }
+            FinancialConnectionsAuthorizationExpectedDeactivationDateUpdated => {
+                "financial_connections.authorization.expected_deactivation_date_updated"
+            }
+            FinancialConnectionsAuthorizationUpcomingDeactivation => {
+                "financial_connections.authorization.upcoming_deactivation"
             }
             IdentityVerificationSessionCanceled => "identity.verification_session.canceled",
             IdentityVerificationSessionCreated => "identity.verification_session.created",
@@ -1981,6 +2036,9 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "financial_connections.account.disconnected" => {
                 Ok(FinancialConnectionsAccountDisconnected)
             }
+            "financial_connections.account.expected_deactivation_date_updated" => {
+                Ok(FinancialConnectionsAccountExpectedDeactivationDateUpdated)
+            }
             "financial_connections.account.reactivated" => {
                 Ok(FinancialConnectionsAccountReactivated)
             }
@@ -1993,8 +2051,20 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "financial_connections.account.refreshed_transactions" => {
                 Ok(FinancialConnectionsAccountRefreshedTransactions)
             }
+            "financial_connections.account.supported_payment_method_types_updated" => {
+                Ok(FinancialConnectionsAccountSupportedPaymentMethodTypesUpdated)
+            }
             "financial_connections.account.upcoming_account_number_expiry" => {
                 Ok(FinancialConnectionsAccountUpcomingAccountNumberExpiry)
+            }
+            "financial_connections.account.upcoming_deactivation" => {
+                Ok(FinancialConnectionsAccountUpcomingDeactivation)
+            }
+            "financial_connections.authorization.expected_deactivation_date_updated" => {
+                Ok(FinancialConnectionsAuthorizationExpectedDeactivationDateUpdated)
+            }
+            "financial_connections.authorization.upcoming_deactivation" => {
+                Ok(FinancialConnectionsAuthorizationUpcomingDeactivation)
             }
             "identity.verification_session.canceled" => Ok(IdentityVerificationSessionCanceled),
             "identity.verification_session.created" => Ok(IdentityVerificationSessionCreated),

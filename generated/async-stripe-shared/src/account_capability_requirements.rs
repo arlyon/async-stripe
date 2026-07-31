@@ -19,7 +19,7 @@ pub struct AccountCapabilityRequirements {
     /// Description of why the capability is disabled.
     /// [Learn more about handling verification issues](https://docs.stripe.com/connect/handling-api-verification).
     pub disabled_reason: Option<AccountCapabilityRequirementsDisabledReason>,
-    /// Details about validation and verification failures for `due` requirements that must be resolved.
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<stripe_shared::AccountRequirementsError>,
     /// Fields you must collect when all thresholds are reached.
     /// As they become required, they appear in `currently_due` as well, and `current_deadline` becomes set.

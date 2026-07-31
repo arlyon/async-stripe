@@ -8,6 +8,9 @@ pub struct DisputePaymentMethodDetailsCard {
     pub brand: String,
     /// The type of dispute opened. Different case types may have varying fees and financial impact.
     pub case_type: DisputePaymentMethodDetailsCardCaseType,
+    /// Identifies which network this charge was processed on.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    pub network: String,
     /// The card network's specific dispute reason code, which maps to one of Stripe's primary dispute categories to simplify response guidance.
     /// The [Network code map](https://stripe.com/docs/disputes/categories#network-code-map) lists all available dispute reason codes by network.
     pub network_reason_code: Option<String>,
@@ -22,6 +25,7 @@ impl std::fmt::Debug for DisputePaymentMethodDetailsCard {
 pub struct DisputePaymentMethodDetailsCardBuilder {
     brand: Option<String>,
     case_type: Option<DisputePaymentMethodDetailsCardCaseType>,
+    network: Option<String>,
     network_reason_code: Option<Option<String>>,
 }
 
@@ -67,22 +71,26 @@ const _: () = {
             Ok(match k {
                 "brand" => Deserialize::begin(&mut self.brand),
                 "case_type" => Deserialize::begin(&mut self.case_type),
+                "network" => Deserialize::begin(&mut self.network),
                 "network_reason_code" => Deserialize::begin(&mut self.network_reason_code),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { brand: None, case_type: None, network_reason_code: Some(None) }
+            Self { brand: None, case_type: None, network: None, network_reason_code: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(brand), Some(case_type), Some(network_reason_code)) =
-                (self.brand.take(), self.case_type.take(), self.network_reason_code.take())
-            else {
+            let (Some(brand), Some(case_type), Some(network), Some(network_reason_code)) = (
+                self.brand.take(),
+                self.case_type.take(),
+                self.network.take(),
+                self.network_reason_code.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { brand, case_type, network_reason_code })
+            Some(Self::Out { brand, case_type, network, network_reason_code })
         }
     }
 
@@ -111,6 +119,7 @@ const _: () = {
                 match k.as_str() {
                     "brand" => b.brand = FromValueOpt::from_value(v),
                     "case_type" => b.case_type = FromValueOpt::from_value(v),
+                    "network" => b.network = FromValueOpt::from_value(v),
                     "network_reason_code" => b.network_reason_code = FromValueOpt::from_value(v),
                     _ => {}
                 }
