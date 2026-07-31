@@ -350,7 +350,7 @@ struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_address_collection: Option<CreatePaymentLinkShippingAddressCollection>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_options: Option<Vec<CreatePaymentLinkShippingOptions>>,
+    shipping_options: Option<Vec<ShippingOptionParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     submit_type: Option<stripe_shared::PaymentLinkSubmitType>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3187,31 +3187,6 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkShippingAddressCollection
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// The shipping rate options to apply to [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentLinkShippingOptions {
-    /// The ID of the Shipping Rate to use for this shipping option.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_rate: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkShippingOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentLinkShippingOptions").finish_non_exhaustive()
-    }
-}
-impl CreatePaymentLinkShippingOptions {
-    pub fn new() -> Self {
-        Self { shipping_rate: None }
-    }
-}
-impl Default for CreatePaymentLinkShippingOptions {
-    fn default() -> Self {
-        Self::new()
-    }
-}
 /// When creating a subscription, the specified configuration data will be used.
 /// There must be at least one line item with a recurring price to use `subscription_data`.
 #[derive(Clone)]
@@ -3863,7 +3838,7 @@ impl CreatePaymentLink {
     /// The shipping rate options to apply to [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link.
     pub fn shipping_options(
         mut self,
-        shipping_options: impl Into<Vec<CreatePaymentLinkShippingOptions>>,
+        shipping_options: impl Into<Vec<ShippingOptionParams>>,
     ) -> Self {
         self.inner.shipping_options = Some(shipping_options.into());
         self
@@ -3943,6 +3918,8 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_address_collection: Option<stripe_shared::PaymentLinkBillingAddressCollection>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    consent_collection: Option<UpdatePaymentLinkConsentCollection>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     custom_fields: Option<Vec<UpdatePaymentLinkCustomFields>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     custom_text: Option<CustomTextParam>,
@@ -3977,6 +3954,8 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_address_collection: Option<UpdatePaymentLinkShippingAddressCollection>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    shipping_options: Option<Vec<ShippingOptionParams>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     submit_type: Option<stripe_shared::PaymentLinkSubmitType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_data: Option<UpdatePaymentLinkSubscriptionData>,
@@ -3997,6 +3976,7 @@ impl UpdatePaymentLinkBuilder {
             allow_promotion_codes: None,
             automatic_tax: None,
             billing_address_collection: None,
+            consent_collection: None,
             custom_fields: None,
             custom_text: None,
             customer_creation: None,
@@ -4014,6 +3994,7 @@ impl UpdatePaymentLinkBuilder {
             phone_number_collection: None,
             restrictions: None,
             shipping_address_collection: None,
+            shipping_options: None,
             submit_type: None,
             subscription_data: None,
             tax_id_collection: None,
@@ -4236,6 +4217,301 @@ impl serde::Serialize for UpdatePaymentLinkAutomaticTaxLiabilityType {
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAutomaticTaxLiabilityType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Configure fields to gather active consent from customers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentLinkConsentCollection {
+    /// Determines the display of payment method reuse agreement text in the UI.
+    /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_reuse_agreement:
+        Option<UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement>,
+    /// If set to `auto`, enables the collection of customer consent for promotional communications.
+    /// The Checkout.
+    /// Session will determine whether to display an option to opt into promotional communication
+    /// from the merchant depending on the customer's locale.
+    /// Only available to US merchants and US customers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotions: Option<UpdatePaymentLinkConsentCollectionPromotions>,
+    /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
+    /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service: Option<UpdatePaymentLinkConsentCollectionTermsOfService>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkConsentCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkConsentCollection").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentLinkConsentCollection {
+    pub fn new() -> Self {
+        Self { payment_method_reuse_agreement: None, promotions: None, terms_of_service: None }
+    }
+}
+impl Default for UpdatePaymentLinkConsentCollection {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines the display of payment method reuse agreement text in the UI.
+/// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
+    /// Determines the position and visibility of the payment method reuse agreement in the UI.
+    /// When set to `auto`, Stripe's.
+    /// defaults will be used.
+    /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+    pub position: UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
+    pub fn new(
+        position: impl Into<UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition>,
+    ) -> Self {
+        Self { position: position.into() }
+    }
+}
+/// Determines the position and visibility of the payment method reuse agreement in the UI.
+/// When set to `auto`, Stripe's.
+/// defaults will be used.
+/// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    Auto,
+    Hidden,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::*;
+        match self {
+            Auto => "auto",
+            Hidden => "hidden",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::*;
+        match s {
+            "auto" => Ok(Auto),
+            "hidden" => Ok(Hidden),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If set to `auto`, enables the collection of customer consent for promotional communications.
+/// The Checkout.
+/// Session will determine whether to display an option to opt into promotional communication
+/// from the merchant depending on the customer's locale.
+/// Only available to US merchants and US customers.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentLinkConsentCollectionPromotions {
+    Auto,
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentLinkConsentCollectionPromotions {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentLinkConsentCollectionPromotions::*;
+        match self {
+            Auto => "auto",
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentLinkConsentCollectionPromotions {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentLinkConsentCollectionPromotions::*;
+        match s {
+            "auto" => Ok(Auto),
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentLinkConsentCollectionPromotions"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentLinkConsentCollectionPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkConsentCollectionPromotions))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentLinkConsentCollectionPromotions {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkConsentCollectionPromotions {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
+/// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentLinkConsentCollectionTermsOfService {
+    None,
+    Required,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentLinkConsentCollectionTermsOfService {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentLinkConsentCollectionTermsOfService::*;
+        match self {
+            None => "none",
+            Required => "required",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentLinkConsentCollectionTermsOfService {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentLinkConsentCollectionTermsOfService::*;
+        match s {
+            "none" => Ok(None),
+            "required" => Ok(Required),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentLinkConsentCollectionTermsOfService"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentLinkConsentCollectionTermsOfService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionTermsOfService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionTermsOfService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkConsentCollectionTermsOfService))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentLinkConsentCollectionTermsOfService {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkConsentCollectionTermsOfService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -4934,6 +5210,20 @@ pub struct UpdatePaymentLinkPaymentIntentData {
     /// Updates will clear prior values.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
+    ///
+    /// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
+    ///
+    /// When setting this to `off_session`, Checkout will show a notice to the customer that their payment details will be saved and used for future payments.
+    ///
+    /// If a Customer has been provided or Checkout creates a new Customer,Checkout will attach the payment method to the Customer.
+    ///
+    /// If Checkout does not create a Customer, the payment method is not attached to a Customer.
+    /// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.
+    ///
+    /// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<UpdatePaymentLinkPaymentIntentDataSetupFutureUsage>,
     /// Text that appears on the customer's statement as the statement descriptor for a non-card charge.
     /// This value overrides the account's default statement descriptor.
     /// For information about requirements, including the 22-character limit, see [the Statement Descriptor docs](https://docs.stripe.com/get-started/account/statement-descriptors).
@@ -4962,6 +5252,7 @@ impl UpdatePaymentLinkPaymentIntentData {
         Self {
             description: None,
             metadata: None,
+            setup_future_usage: None,
             statement_descriptor: None,
             statement_descriptor_suffix: None,
             transfer_group: None,
@@ -4971,6 +5262,90 @@ impl UpdatePaymentLinkPaymentIntentData {
 impl Default for UpdatePaymentLinkPaymentIntentData {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
+///
+/// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
+///
+/// When setting this to `off_session`, Checkout will show a notice to the customer that their payment details will be saved and used for future payments.
+///
+/// If a Customer has been provided or Checkout creates a new Customer,Checkout will attach the payment method to the Customer.
+///
+/// If Checkout does not create a Customer, the payment method is not attached to a Customer.
+/// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.
+///
+/// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    OffSession,
+    OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentLinkPaymentIntentDataSetupFutureUsage::*;
+        match self {
+            OffSession => "off_session",
+            OnSession => "on_session",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentLinkPaymentIntentDataSetupFutureUsage::*;
+        match s {
+            "off_session" => Ok(OffSession),
+            "on_session" => Ok(OnSession),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentLinkPaymentIntentDataSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkPaymentIntentDataSetupFutureUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Specify whether Checkout should collect a payment method.
@@ -6473,6 +6848,14 @@ impl UpdatePaymentLink {
         self.inner.billing_address_collection = Some(billing_address_collection.into());
         self
     }
+    /// Configure fields to gather active consent from customers.
+    pub fn consent_collection(
+        mut self,
+        consent_collection: impl Into<UpdatePaymentLinkConsentCollection>,
+    ) -> Self {
+        self.inner.consent_collection = Some(consent_collection.into());
+        self
+    }
     /// Collect additional information from your customer using custom fields.
     /// Up to 3 fields are supported.
     /// You can't set this parameter if `ui_mode` is `custom`.
@@ -6606,6 +6989,14 @@ impl UpdatePaymentLink {
         shipping_address_collection: impl Into<UpdatePaymentLinkShippingAddressCollection>,
     ) -> Self {
         self.inner.shipping_address_collection = Some(shipping_address_collection.into());
+        self
+    }
+    /// The shipping rate options to apply to [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link.
+    pub fn shipping_options(
+        mut self,
+        shipping_options: impl Into<Vec<ShippingOptionParams>>,
+    ) -> Self {
+        self.inner.shipping_options = Some(shipping_options.into());
         self
     }
     /// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
@@ -6897,6 +7288,30 @@ impl std::fmt::Debug for CompletedSessionsParams {
 impl CompletedSessionsParams {
     pub fn new(limit: impl Into<i64>) -> Self {
         Self { limit: limit.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ShippingOptionParams {
+    /// The ID of the Shipping Rate to use for this shipping option.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_rate: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ShippingOptionParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ShippingOptionParams").finish_non_exhaustive()
+    }
+}
+impl ShippingOptionParams {
+    pub fn new() -> Self {
+        Self { shipping_rate: None }
+    }
+}
+impl Default for ShippingOptionParams {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Clone, Eq, PartialEq)]

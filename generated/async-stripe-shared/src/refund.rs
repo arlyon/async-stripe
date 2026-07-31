@@ -20,6 +20,10 @@ pub struct Refund {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
+    /// ID of the customer of this refund.
+    pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    /// ID of the account of this refund.
+    pub customer_account: Option<String>,
     /// An arbitrary string attached to the object.
     /// You can use this for displaying to users (available on non-card refunds only).
     pub description: Option<String>,
@@ -40,6 +44,8 @@ pub struct Refund {
     pub next_action: Option<stripe_shared::RefundNextAction>,
     /// ID of the PaymentIntent that's refunded.
     pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
+    /// ID of the payment method associated with this refund.
+    pub payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
     /// Provides the reason for why the refund is pending.
     /// Possible values are: `processing`, `insufficient_funds`, or `charge_pending`.
     pub pending_reason: Option<RefundPendingReason>,
@@ -73,6 +79,8 @@ pub struct RefundBuilder {
     charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
+    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     description: Option<Option<String>>,
     destination_details: Option<Option<stripe_shared::RefundDestinationDetails>>,
     failure_balance_transaction:
@@ -83,6 +91,7 @@ pub struct RefundBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     next_action: Option<Option<stripe_shared::RefundNextAction>>,
     payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
+    payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
     pending_reason: Option<Option<RefundPendingReason>>,
     presentment_details: Option<Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>>,
     reason: Option<Option<RefundReason>>,
@@ -135,6 +144,8 @@ const _: () = {
                 "charge" => Deserialize::begin(&mut self.charge),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
+                "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "description" => Deserialize::begin(&mut self.description),
                 "destination_details" => Deserialize::begin(&mut self.destination_details),
                 "failure_balance_transaction" => {
@@ -146,6 +157,7 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "next_action" => Deserialize::begin(&mut self.next_action),
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
+                "payment_method" => Deserialize::begin(&mut self.payment_method),
                 "pending_reason" => Deserialize::begin(&mut self.pending_reason),
                 "presentment_details" => Deserialize::begin(&mut self.presentment_details),
                 "reason" => Deserialize::begin(&mut self.reason),
@@ -166,6 +178,8 @@ const _: () = {
                 charge: Some(None),
                 created: None,
                 currency: None,
+                customer: Some(None),
+                customer_account: Some(None),
                 description: Some(None),
                 destination_details: Some(None),
                 failure_balance_transaction: Some(None),
@@ -175,6 +189,7 @@ const _: () = {
                 metadata: Some(None),
                 next_action: Some(None),
                 payment_intent: Some(None),
+                payment_method: Some(None),
                 pending_reason: Some(None),
                 presentment_details: Some(None),
                 reason: Some(None),
@@ -192,6 +207,8 @@ const _: () = {
                 Some(charge),
                 Some(created),
                 Some(currency),
+                Some(customer),
+                Some(customer_account),
                 Some(description),
                 Some(destination_details),
                 Some(failure_balance_transaction),
@@ -201,6 +218,7 @@ const _: () = {
                 Some(metadata),
                 Some(next_action),
                 Some(payment_intent),
+                Some(payment_method),
                 Some(pending_reason),
                 Some(presentment_details),
                 Some(reason),
@@ -214,6 +232,8 @@ const _: () = {
                 self.charge.take(),
                 self.created,
                 self.currency.take(),
+                self.customer.take(),
+                self.customer_account.take(),
                 self.description.take(),
                 self.destination_details.take(),
                 self.failure_balance_transaction.take(),
@@ -223,6 +243,7 @@ const _: () = {
                 self.metadata.take(),
                 self.next_action.take(),
                 self.payment_intent.take(),
+                self.payment_method.take(),
                 self.pending_reason.take(),
                 self.presentment_details.take(),
                 self.reason.take(),
@@ -240,6 +261,8 @@ const _: () = {
                 charge,
                 created,
                 currency,
+                customer,
+                customer_account,
                 description,
                 destination_details,
                 failure_balance_transaction,
@@ -249,6 +272,7 @@ const _: () = {
                 metadata,
                 next_action,
                 payment_intent,
+                payment_method,
                 pending_reason,
                 presentment_details,
                 reason,
@@ -288,6 +312,8 @@ const _: () = {
                     "charge" => b.charge = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
                     "destination_details" => b.destination_details = FromValueOpt::from_value(v),
                     "failure_balance_transaction" => {
@@ -299,6 +325,7 @@ const _: () = {
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "next_action" => b.next_action = FromValueOpt::from_value(v),
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
+                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
                     "pending_reason" => b.pending_reason = FromValueOpt::from_value(v),
                     "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
                     "reason" => b.reason = FromValueOpt::from_value(v),
@@ -319,12 +346,14 @@ const _: () = {
 impl serde::Serialize for Refund {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Refund", 22)?;
+        let mut s = s.serialize_struct("Refund", 25)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("balance_transaction", &self.balance_transaction)?;
         s.serialize_field("charge", &self.charge)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("destination_details", &self.destination_details)?;
         s.serialize_field("failure_balance_transaction", &self.failure_balance_transaction)?;
@@ -334,6 +363,7 @@ impl serde::Serialize for Refund {
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("next_action", &self.next_action)?;
         s.serialize_field("payment_intent", &self.payment_intent)?;
+        s.serialize_field("payment_method", &self.payment_method)?;
         s.serialize_field("pending_reason", &self.pending_reason)?;
         s.serialize_field("presentment_details", &self.presentment_details)?;
         s.serialize_field("reason", &self.reason)?;

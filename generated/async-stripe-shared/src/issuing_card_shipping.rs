@@ -6,6 +6,8 @@ pub struct IssuingCardShipping {
     pub address: stripe_shared::Address,
     /// Address validation details for the shipment.
     pub address_validation: Option<stripe_shared::IssuingCardShippingAddressValidation>,
+    /// The name of the business at the shipping address, used on the shipping label to ensure delivery when the card is shipped to a cardholder's workplace.
+    pub business_name: Option<String>,
     /// The delivery company that shipped a card.
     pub carrier: Option<IssuingCardShippingCarrier>,
     /// Additional information that may be required for clearing customs.
@@ -45,6 +47,7 @@ impl std::fmt::Debug for IssuingCardShipping {
 pub struct IssuingCardShippingBuilder {
     address: Option<stripe_shared::Address>,
     address_validation: Option<Option<stripe_shared::IssuingCardShippingAddressValidation>>,
+    business_name: Option<Option<String>>,
     carrier: Option<Option<IssuingCardShippingCarrier>>,
     customs: Option<Option<stripe_shared::IssuingCardShippingCustoms>>,
     eta: Option<Option<stripe_types::Timestamp>>,
@@ -100,6 +103,7 @@ const _: () = {
             Ok(match k {
                 "address" => Deserialize::begin(&mut self.address),
                 "address_validation" => Deserialize::begin(&mut self.address_validation),
+                "business_name" => Deserialize::begin(&mut self.business_name),
                 "carrier" => Deserialize::begin(&mut self.carrier),
                 "customs" => Deserialize::begin(&mut self.customs),
                 "eta" => Deserialize::begin(&mut self.eta),
@@ -119,6 +123,7 @@ const _: () = {
             Self {
                 address: None,
                 address_validation: Some(None),
+                business_name: Some(None),
                 carrier: Some(None),
                 customs: Some(None),
                 eta: Some(None),
@@ -137,6 +142,7 @@ const _: () = {
             let (
                 Some(address),
                 Some(address_validation),
+                Some(business_name),
                 Some(carrier),
                 Some(customs),
                 Some(eta),
@@ -151,6 +157,7 @@ const _: () = {
             ) = (
                 self.address.take(),
                 self.address_validation.take(),
+                self.business_name.take(),
                 self.carrier.take(),
                 self.customs.take(),
                 self.eta,
@@ -169,6 +176,7 @@ const _: () = {
             Some(Self::Out {
                 address,
                 address_validation,
+                business_name,
                 carrier,
                 customs,
                 eta,
@@ -209,6 +217,7 @@ const _: () = {
                 match k.as_str() {
                     "address" => b.address = FromValueOpt::from_value(v),
                     "address_validation" => b.address_validation = FromValueOpt::from_value(v),
+                    "business_name" => b.business_name = FromValueOpt::from_value(v),
                     "carrier" => b.carrier = FromValueOpt::from_value(v),
                     "customs" => b.customs = FromValueOpt::from_value(v),
                     "eta" => b.eta = FromValueOpt::from_value(v),
@@ -231,6 +240,7 @@ const _: () = {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum IssuingCardShippingCarrier {
+    Correos,
     Dhl,
     Fedex,
     RoyalMail,
@@ -242,6 +252,7 @@ impl IssuingCardShippingCarrier {
     pub fn as_str(&self) -> &str {
         use IssuingCardShippingCarrier::*;
         match self {
+            Correos => "correos",
             Dhl => "dhl",
             Fedex => "fedex",
             RoyalMail => "royal_mail",
@@ -256,6 +267,7 @@ impl std::str::FromStr for IssuingCardShippingCarrier {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingCarrier::*;
         match s {
+            "correos" => Ok(Correos),
             "dhl" => Ok(Dhl),
             "fedex" => Ok(Fedex),
             "royal_mail" => Ok(RoyalMail),

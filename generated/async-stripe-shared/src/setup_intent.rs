@@ -25,6 +25,10 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupIntent {
+    /// The list of payment method types to allow for this SetupIntent.
+    /// Stripe will only use methods in this list when determining the payment methods to offer.
+    pub allowed_payment_method_types:
+        Option<Vec<stripe_shared::SetupIntentAllowedPaymentMethodTypes>>,
     /// ID of the Connect application that created the SetupIntent.
     pub application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
@@ -116,6 +120,8 @@ impl std::fmt::Debug for SetupIntent {
 }
 #[doc(hidden)]
 pub struct SetupIntentBuilder {
+    allowed_payment_method_types:
+        Option<Option<Vec<stripe_shared::SetupIntentAllowedPaymentMethodTypes>>>,
     application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
     attach_to_self: Option<Option<bool>>,
     automatic_payment_methods:
@@ -188,6 +194,9 @@ const _: () = {
         type Out = SetupIntent;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "allowed_payment_method_types" => {
+                    Deserialize::begin(&mut self.allowed_payment_method_types)
+                }
                 "application" => Deserialize::begin(&mut self.application),
                 "attach_to_self" => Deserialize::begin(&mut self.attach_to_self),
                 "automatic_payment_methods" => {
@@ -227,6 +236,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                allowed_payment_method_types: Some(None),
                 application: Some(None),
                 attach_to_self: Some(None),
                 automatic_payment_methods: Some(None),
@@ -259,6 +269,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(allowed_payment_method_types),
                 Some(application),
                 Some(attach_to_self),
                 Some(automatic_payment_methods),
@@ -287,6 +298,7 @@ const _: () = {
                 Some(status),
                 Some(usage),
             ) = (
+                self.allowed_payment_method_types.take(),
                 self.application.take(),
                 self.attach_to_self,
                 self.automatic_payment_methods.take(),
@@ -319,6 +331,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                allowed_payment_method_types,
                 application,
                 attach_to_self,
                 automatic_payment_methods,
@@ -373,6 +386,9 @@ const _: () = {
             let mut b = SetupIntentBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "allowed_payment_method_types" => {
+                        b.allowed_payment_method_types = FromValueOpt::from_value(v)
+                    }
                     "application" => b.application = FromValueOpt::from_value(v),
                     "attach_to_self" => b.attach_to_self = FromValueOpt::from_value(v),
                     "automatic_payment_methods" => {
@@ -419,7 +435,8 @@ const _: () = {
 impl serde::Serialize for SetupIntent {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("SetupIntent", 28)?;
+        let mut s = s.serialize_struct("SetupIntent", 29)?;
+        s.serialize_field("allowed_payment_method_types", &self.allowed_payment_method_types)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("attach_to_self", &self.attach_to_self)?;
         s.serialize_field("automatic_payment_methods", &self.automatic_payment_methods)?;
@@ -562,6 +579,374 @@ impl stripe_types::Object for SetupIntent {
     }
 }
 stripe_types::def_id!(SetupIntentId);
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum SetupIntentAllowedPaymentMethodTypes {
+    AcssDebit,
+    Affirm,
+    AfterpayClearpay,
+    Alipay,
+    Alma,
+    AmazonPay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Billie,
+    Bizum,
+    Blik,
+    BokuPromptpay,
+    Boleto,
+    CapchasePay,
+    Card,
+    Cashapp,
+    CheckScan,
+    ClickToPay,
+    Crypto,
+    CustomerBalance,
+    DemoPay,
+    Duitnow,
+    DummyAuthPush,
+    DummyPassthroughCard,
+    Edenred,
+    Eps,
+    Fpx,
+    Gcash,
+    Getbalance,
+    GiftCard,
+    Giropay,
+    Gopay,
+    Grabpay,
+    IdBankTransfer,
+    Ideal,
+    KakaoPay,
+    Klarna,
+    Knet,
+    Konbini,
+    KrCard,
+    KrMarket,
+    Kriya,
+    Link,
+    MbWay,
+    Mobilepay,
+    Momo,
+    Mondu,
+    Multibanco,
+    NaverPay,
+    Netbanking,
+    NgBank,
+    NgBankTransfer,
+    NgCard,
+    NgMarket,
+    NgUssd,
+    NgWallet,
+    NzBankAccount,
+    Octopus,
+    Oxxo,
+    P24,
+    PaperCheck,
+    PayByBank,
+    Payco,
+    Paynow,
+    Paypal,
+    Paypay,
+    Payto,
+    Pix,
+    Promptpay,
+    Qris,
+    Rechnung,
+    RevolutPay,
+    SamsungPay,
+    Satispay,
+    Scalapay,
+    SepaDebit,
+    Sequra,
+    ShopPay,
+    Shopeepay,
+    Sofort,
+    SouthKoreaMarket,
+    StripeBalance,
+    Sunbit,
+    Swish,
+    Tamara,
+    TestPay,
+    Truemoney,
+    Twint,
+    Upi,
+    UsBankAccount,
+    UsCashVoucher,
+    Vipps,
+    WechatPay,
+    Wero,
+    Zip,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl SetupIntentAllowedPaymentMethodTypes {
+    pub fn as_str(&self) -> &str {
+        use SetupIntentAllowedPaymentMethodTypes::*;
+        match self {
+            AcssDebit => "acss_debit",
+            Affirm => "affirm",
+            AfterpayClearpay => "afterpay_clearpay",
+            Alipay => "alipay",
+            Alma => "alma",
+            AmazonPay => "amazon_pay",
+            AuBecsDebit => "au_becs_debit",
+            BacsDebit => "bacs_debit",
+            Bancontact => "bancontact",
+            Billie => "billie",
+            Bizum => "bizum",
+            Blik => "blik",
+            BokuPromptpay => "boku_promptpay",
+            Boleto => "boleto",
+            CapchasePay => "capchase_pay",
+            Card => "card",
+            Cashapp => "cashapp",
+            CheckScan => "check_scan",
+            ClickToPay => "click_to_pay",
+            Crypto => "crypto",
+            CustomerBalance => "customer_balance",
+            DemoPay => "demo_pay",
+            Duitnow => "duitnow",
+            DummyAuthPush => "dummy_auth_push",
+            DummyPassthroughCard => "dummy_passthrough_card",
+            Edenred => "edenred",
+            Eps => "eps",
+            Fpx => "fpx",
+            Gcash => "gcash",
+            Getbalance => "getbalance",
+            GiftCard => "gift_card",
+            Giropay => "giropay",
+            Gopay => "gopay",
+            Grabpay => "grabpay",
+            IdBankTransfer => "id_bank_transfer",
+            Ideal => "ideal",
+            KakaoPay => "kakao_pay",
+            Klarna => "klarna",
+            Knet => "knet",
+            Konbini => "konbini",
+            KrCard => "kr_card",
+            KrMarket => "kr_market",
+            Kriya => "kriya",
+            Link => "link",
+            MbWay => "mb_way",
+            Mobilepay => "mobilepay",
+            Momo => "momo",
+            Mondu => "mondu",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            Netbanking => "netbanking",
+            NgBank => "ng_bank",
+            NgBankTransfer => "ng_bank_transfer",
+            NgCard => "ng_card",
+            NgMarket => "ng_market",
+            NgUssd => "ng_ussd",
+            NgWallet => "ng_wallet",
+            NzBankAccount => "nz_bank_account",
+            Octopus => "octopus",
+            Oxxo => "oxxo",
+            P24 => "p24",
+            PaperCheck => "paper_check",
+            PayByBank => "pay_by_bank",
+            Payco => "payco",
+            Paynow => "paynow",
+            Paypal => "paypal",
+            Paypay => "paypay",
+            Payto => "payto",
+            Pix => "pix",
+            Promptpay => "promptpay",
+            Qris => "qris",
+            Rechnung => "rechnung",
+            RevolutPay => "revolut_pay",
+            SamsungPay => "samsung_pay",
+            Satispay => "satispay",
+            Scalapay => "scalapay",
+            SepaDebit => "sepa_debit",
+            Sequra => "sequra",
+            ShopPay => "shop_pay",
+            Shopeepay => "shopeepay",
+            Sofort => "sofort",
+            SouthKoreaMarket => "south_korea_market",
+            StripeBalance => "stripe_balance",
+            Sunbit => "sunbit",
+            Swish => "swish",
+            Tamara => "tamara",
+            TestPay => "test_pay",
+            Truemoney => "truemoney",
+            Twint => "twint",
+            Upi => "upi",
+            UsBankAccount => "us_bank_account",
+            UsCashVoucher => "us_cash_voucher",
+            Vipps => "vipps",
+            WechatPay => "wechat_pay",
+            Wero => "wero",
+            Zip => "zip",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for SetupIntentAllowedPaymentMethodTypes {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SetupIntentAllowedPaymentMethodTypes::*;
+        match s {
+            "acss_debit" => Ok(AcssDebit),
+            "affirm" => Ok(Affirm),
+            "afterpay_clearpay" => Ok(AfterpayClearpay),
+            "alipay" => Ok(Alipay),
+            "alma" => Ok(Alma),
+            "amazon_pay" => Ok(AmazonPay),
+            "au_becs_debit" => Ok(AuBecsDebit),
+            "bacs_debit" => Ok(BacsDebit),
+            "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
+            "blik" => Ok(Blik),
+            "boku_promptpay" => Ok(BokuPromptpay),
+            "boleto" => Ok(Boleto),
+            "capchase_pay" => Ok(CapchasePay),
+            "card" => Ok(Card),
+            "cashapp" => Ok(Cashapp),
+            "check_scan" => Ok(CheckScan),
+            "click_to_pay" => Ok(ClickToPay),
+            "crypto" => Ok(Crypto),
+            "customer_balance" => Ok(CustomerBalance),
+            "demo_pay" => Ok(DemoPay),
+            "duitnow" => Ok(Duitnow),
+            "dummy_auth_push" => Ok(DummyAuthPush),
+            "dummy_passthrough_card" => Ok(DummyPassthroughCard),
+            "edenred" => Ok(Edenred),
+            "eps" => Ok(Eps),
+            "fpx" => Ok(Fpx),
+            "gcash" => Ok(Gcash),
+            "getbalance" => Ok(Getbalance),
+            "gift_card" => Ok(GiftCard),
+            "giropay" => Ok(Giropay),
+            "gopay" => Ok(Gopay),
+            "grabpay" => Ok(Grabpay),
+            "id_bank_transfer" => Ok(IdBankTransfer),
+            "ideal" => Ok(Ideal),
+            "kakao_pay" => Ok(KakaoPay),
+            "klarna" => Ok(Klarna),
+            "knet" => Ok(Knet),
+            "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
+            "kr_market" => Ok(KrMarket),
+            "kriya" => Ok(Kriya),
+            "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
+            "mobilepay" => Ok(Mobilepay),
+            "momo" => Ok(Momo),
+            "mondu" => Ok(Mondu),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "netbanking" => Ok(Netbanking),
+            "ng_bank" => Ok(NgBank),
+            "ng_bank_transfer" => Ok(NgBankTransfer),
+            "ng_card" => Ok(NgCard),
+            "ng_market" => Ok(NgMarket),
+            "ng_ussd" => Ok(NgUssd),
+            "ng_wallet" => Ok(NgWallet),
+            "nz_bank_account" => Ok(NzBankAccount),
+            "octopus" => Ok(Octopus),
+            "oxxo" => Ok(Oxxo),
+            "p24" => Ok(P24),
+            "paper_check" => Ok(PaperCheck),
+            "pay_by_bank" => Ok(PayByBank),
+            "payco" => Ok(Payco),
+            "paynow" => Ok(Paynow),
+            "paypal" => Ok(Paypal),
+            "paypay" => Ok(Paypay),
+            "payto" => Ok(Payto),
+            "pix" => Ok(Pix),
+            "promptpay" => Ok(Promptpay),
+            "qris" => Ok(Qris),
+            "rechnung" => Ok(Rechnung),
+            "revolut_pay" => Ok(RevolutPay),
+            "samsung_pay" => Ok(SamsungPay),
+            "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
+            "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
+            "shop_pay" => Ok(ShopPay),
+            "shopeepay" => Ok(Shopeepay),
+            "sofort" => Ok(Sofort),
+            "south_korea_market" => Ok(SouthKoreaMarket),
+            "stripe_balance" => Ok(StripeBalance),
+            "sunbit" => Ok(Sunbit),
+            "swish" => Ok(Swish),
+            "tamara" => Ok(Tamara),
+            "test_pay" => Ok(TestPay),
+            "truemoney" => Ok(Truemoney),
+            "twint" => Ok(Twint),
+            "upi" => Ok(Upi),
+            "us_bank_account" => Ok(UsBankAccount),
+            "us_cash_voucher" => Ok(UsCashVoucher),
+            "vipps" => Ok(Vipps),
+            "wechat_pay" => Ok(WechatPay),
+            "wero" => Ok(Wero),
+            "zip" => Ok(Zip),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SetupIntentAllowedPaymentMethodTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for SetupIntentAllowedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for SetupIntentAllowedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentAllowedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetupIntentAllowedPaymentMethodTypes)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for SetupIntentAllowedPaymentMethodTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for SetupIntentAllowedPaymentMethodTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<SetupIntentAllowedPaymentMethodTypes> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SetupIntentAllowedPaymentMethodTypes::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(SetupIntentAllowedPaymentMethodTypes);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for SetupIntentAllowedPaymentMethodTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SetupIntentCancellationReason {

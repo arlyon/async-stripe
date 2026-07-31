@@ -31,6 +31,18 @@ pub mod bank_connections_resource_accountholder;
 #[doc(inline)]
 pub use bank_connections_resource_accountholder::*;
 #[doc(hidden)]
+pub mod bank_connections_resource_authorization_status_details;
+#[doc(inline)]
+pub use bank_connections_resource_authorization_status_details::*;
+#[doc(hidden)]
+pub mod bank_connections_resource_authorization_status_details_api_resource_active_status_details;
+#[doc(inline)]
+pub use bank_connections_resource_authorization_status_details_api_resource_active_status_details::*;
+#[doc(hidden)]
+pub mod bank_connections_resource_authorization_status_details_api_resource_inactive_status_details;
+#[doc(inline)]
+pub use bank_connections_resource_authorization_status_details_api_resource_inactive_status_details::*;
+#[doc(hidden)]
 pub mod bank_connections_resource_balance;
 #[doc(inline)]
 pub use bank_connections_resource_balance::*;
@@ -50,6 +62,14 @@ pub use bank_connections_resource_balance_refresh::*;
 pub mod bank_connections_resource_link_account_session_filters;
 #[doc(inline)]
 pub use bank_connections_resource_link_account_session_filters::*;
+#[doc(hidden)]
+pub mod bank_connections_resource_link_account_session_limits;
+#[doc(inline)]
+pub use bank_connections_resource_link_account_session_limits::*;
+#[doc(hidden)]
+pub mod bank_connections_resource_link_account_session_manual_entry;
+#[doc(inline)]
+pub use bank_connections_resource_link_account_session_manual_entry::*;
 #[doc(hidden)]
 pub mod bank_connections_resource_ownership_refresh;
 #[doc(inline)]
@@ -114,6 +134,10 @@ pub use financial_connections_account_owner::*;
 pub mod financial_connections_account_ownership;
 #[doc(inline)]
 pub use financial_connections_account_ownership::*;
+#[doc(hidden)]
+pub mod financial_connections_authorization;
+#[doc(inline)]
+pub use financial_connections_authorization::*;
 pub use financial_connections_session::types::*;
 pub mod financial_connections_session;
 pub use financial_connections_transaction::types::*;
@@ -336,6 +360,14 @@ pub use tax_product_registrations_resource_country_options_us_local_amusement_ta
 pub mod tax_product_registrations_resource_country_options_us_local_lease_tax;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_us_local_lease_tax::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_mass_transit_parking_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_mass_transit_parking_tax::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_parking_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_parking_tax::*;
 #[doc(hidden)]
 pub mod tax_product_registrations_resource_country_options_us_state_sales_tax;
 #[doc(inline)]

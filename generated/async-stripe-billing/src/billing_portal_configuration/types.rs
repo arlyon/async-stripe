@@ -12,7 +12,7 @@ pub struct BillingPortalConfiguration {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
-    /// This can be [overriden](https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
+    /// This can be [overridden](https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
     pub default_return_url: Option<String>,
     pub features: stripe_billing::PortalFeatures,
     /// Unique identifier for the object.

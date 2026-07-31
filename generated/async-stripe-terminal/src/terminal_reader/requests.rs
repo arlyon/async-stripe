@@ -696,12 +696,101 @@ impl CancelActionTerminalReader {
 }
 
 impl StripeRequest for CancelActionTerminalReader {
-    type Output = stripe_terminal::TerminalReader;
+    type Output = CancelActionTerminalReaderReturned;
 
     fn build(&self) -> RequestBuilder {
         let reader = &self.reader;
         RequestBuilder::new(StripeMethod::Post, format!("/terminal/readers/{reader}/cancel_action"))
             .form(&self.inner)
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
+pub enum CancelActionTerminalReaderReturned {
+    TerminalReader(stripe_terminal::TerminalReader),
+    DeletedTerminalReader(stripe_terminal::DeletedTerminalReader),
+}
+
+#[derive(Default)]
+pub struct CancelActionTerminalReaderReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{Deserialize, Result, make_place};
+    use stripe_types::MapBuilder;
+    use stripe_types::miniserde_helpers::FromValueOpt;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<CancelActionTerminalReaderReturned>,
+        builder: CancelActionTerminalReaderReturnedBuilder,
+    }
+
+    impl Deserialize for CancelActionTerminalReaderReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<CancelActionTerminalReaderReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl Map for Builder<'_> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for CancelActionTerminalReaderReturnedBuilder {
+        type Out = CancelActionTerminalReaderReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                CancelActionTerminalReaderReturned::DeletedTerminalReader(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            } else {
+                CancelActionTerminalReaderReturned::TerminalReader(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for CancelActionTerminalReaderReturned {
+        type Builder = CancelActionTerminalReaderReturnedBuilder;
+    }
+};
+
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelActionTerminalReaderReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelActionTerminalReaderReturned").finish_non_exhaustive()
     }
 }
 #[derive(Clone)]

@@ -443,6 +443,11 @@ pub struct CreateIssuingCardShipping {
     /// Address validation settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_validation: Option<CreateIssuingCardShippingAddressValidation>,
+    /// The name of the business at the shipping address, used on the shipping label to ensure delivery when the card is shipped to a cardholder's workplace.
+    /// Allowed characters: `A-Z`, `a-z`, `0-9`, ` `, `.`, `-`.
+    /// All other characters are stripped or ASCII-normalized when printed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_name: Option<String>,
     /// Customs information for the shipment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customs: Option<CustomsParam>,
@@ -473,6 +478,7 @@ impl CreateIssuingCardShipping {
         Self {
             address: address.into(),
             address_validation: None,
+            business_name: None,
             customs: None,
             name: name.into(),
             phone_number: None,
@@ -4534,6 +4540,11 @@ pub struct UpdateIssuingCardShipping {
     /// Address validation settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_validation: Option<UpdateIssuingCardShippingAddressValidation>,
+    /// The name of the business at the shipping address, used on the shipping label to ensure delivery when the card is shipped to a cardholder's workplace.
+    /// Allowed characters: `A-Z`, `a-z`, `0-9`, ` `, `.`, `-`.
+    /// All other characters are stripped or ASCII-normalized when printed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_name: Option<String>,
     /// Customs information for the shipment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customs: Option<CustomsParam>,
@@ -4564,6 +4575,7 @@ impl UpdateIssuingCardShipping {
         Self {
             address: address.into(),
             address_validation: None,
+            business_name: None,
             customs: None,
             name: name.into(),
             phone_number: None,

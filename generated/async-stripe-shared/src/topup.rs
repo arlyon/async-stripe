@@ -31,12 +31,19 @@ pub struct Topup {
     pub failure_message: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_shared::TopupId,
+    /// Indicates whether the top-up was initiated by Stripe or by the user.
+    pub initiated_by: Option<TopupInitiatedBy>,
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
+    /// The ID of a PaymentMethod representing the payment method used for the top-up.
+    /// A PaymentMethod of type `us_bank_account` can be used.
+    pub payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
+    /// Payment-method-specific configuration for this top-up.
+    pub payment_method_options: Option<stripe_shared::TopupResourcePaymentMethodOptions>,
     /// The source field is deprecated. It might not always be present in the API response.
     pub source: Option<stripe_shared::Source>,
     /// Extra information about a top-up.
@@ -66,8 +73,11 @@ pub struct TopupBuilder {
     failure_code: Option<Option<String>>,
     failure_message: Option<Option<String>>,
     id: Option<stripe_shared::TopupId>,
+    initiated_by: Option<Option<TopupInitiatedBy>>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
+    payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
+    payment_method_options: Option<Option<stripe_shared::TopupResourcePaymentMethodOptions>>,
     source: Option<Option<stripe_shared::Source>>,
     statement_descriptor: Option<Option<String>>,
     status: Option<TopupStatus>,
@@ -122,8 +132,11 @@ const _: () = {
                 "failure_code" => Deserialize::begin(&mut self.failure_code),
                 "failure_message" => Deserialize::begin(&mut self.failure_message),
                 "id" => Deserialize::begin(&mut self.id),
+                "initiated_by" => Deserialize::begin(&mut self.initiated_by),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
+                "payment_method" => Deserialize::begin(&mut self.payment_method),
+                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
                 "source" => Deserialize::begin(&mut self.source),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
@@ -143,8 +156,11 @@ const _: () = {
                 failure_code: Some(None),
                 failure_message: Some(None),
                 id: None,
+                initiated_by: Some(None),
                 livemode: None,
                 metadata: None,
+                payment_method: Some(None),
+                payment_method_options: Some(None),
                 source: Some(None),
                 statement_descriptor: Some(None),
                 status: None,
@@ -163,8 +179,11 @@ const _: () = {
                 Some(failure_code),
                 Some(failure_message),
                 Some(id),
+                Some(initiated_by),
                 Some(livemode),
                 Some(metadata),
+                Some(payment_method),
+                Some(payment_method_options),
                 Some(source),
                 Some(statement_descriptor),
                 Some(status),
@@ -179,8 +198,11 @@ const _: () = {
                 self.failure_code.take(),
                 self.failure_message.take(),
                 self.id.take(),
+                self.initiated_by.take(),
                 self.livemode,
                 self.metadata.take(),
+                self.payment_method.take(),
+                self.payment_method_options.take(),
                 self.source.take(),
                 self.statement_descriptor.take(),
                 self.status.take(),
@@ -199,8 +221,11 @@ const _: () = {
                 failure_code,
                 failure_message,
                 id,
+                initiated_by,
                 livemode,
                 metadata,
+                payment_method,
+                payment_method_options,
                 source,
                 statement_descriptor,
                 status,
@@ -243,8 +268,13 @@ const _: () = {
                     "failure_code" => b.failure_code = FromValueOpt::from_value(v),
                     "failure_message" => b.failure_message = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
+                    "initiated_by" => b.initiated_by = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
+                    "payment_method_options" => {
+                        b.payment_method_options = FromValueOpt::from_value(v)
+                    }
                     "source" => b.source = FromValueOpt::from_value(v),
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
@@ -260,7 +290,7 @@ const _: () = {
 impl serde::Serialize for Topup {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Topup", 16)?;
+        let mut s = s.serialize_struct("Topup", 19)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("balance_transaction", &self.balance_transaction)?;
         s.serialize_field("created", &self.created)?;
@@ -270,8 +300,11 @@ impl serde::Serialize for Topup {
         s.serialize_field("failure_code", &self.failure_code)?;
         s.serialize_field("failure_message", &self.failure_message)?;
         s.serialize_field("id", &self.id)?;
+        s.serialize_field("initiated_by", &self.initiated_by)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("payment_method", &self.payment_method)?;
+        s.serialize_field("payment_method_options", &self.payment_method_options)?;
         s.serialize_field("source", &self.source)?;
         s.serialize_field("statement_descriptor", &self.statement_descriptor)?;
         s.serialize_field("status", &self.status)?;
@@ -279,6 +312,90 @@ impl serde::Serialize for Topup {
 
         s.serialize_field("object", "topup")?;
         s.end()
+    }
+}
+/// Indicates whether the top-up was initiated by Stripe or by the user.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum TopupInitiatedBy {
+    Stripe,
+    User,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl TopupInitiatedBy {
+    pub fn as_str(&self) -> &str {
+        use TopupInitiatedBy::*;
+        match self {
+            Stripe => "stripe",
+            User => "user",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for TopupInitiatedBy {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TopupInitiatedBy::*;
+        match s {
+            "stripe" => Ok(Stripe),
+            "user" => Ok(User),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TopupInitiatedBy");
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for TopupInitiatedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for TopupInitiatedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TopupInitiatedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TopupInitiatedBy)).finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for TopupInitiatedBy {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for TopupInitiatedBy {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TopupInitiatedBy> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TopupInitiatedBy::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TopupInitiatedBy);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for TopupInitiatedBy {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The status of the top-up is either `canceled`, `failed`, `pending`, `reversed`, or `succeeded`.

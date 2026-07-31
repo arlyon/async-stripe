@@ -5090,7 +5090,7 @@ impl Default for FleetCardholderPromptDataSpecs {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct FleetReportedBreakdownFuelSpecs {
-    /// Gross fuel amount that should equal Fuel Volume multipled by Fuel Unit Cost, inclusive of taxes.
+    /// Gross fuel amount that should equal Fuel Volume multiplied by Fuel Unit Cost, inclusive of taxes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gross_amount_decimal: Option<String>,
 }

@@ -2,7 +2,7 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentFlowsPrivatePaymentMethodsAlipayDetails {
+pub struct PaymentMethodDetailsPaymentRecordAlipay {
     /// Uniquely identifies this particular Alipay account.
     /// You can use this attribute to check whether two Alipay accounts are the same.
     pub buyer_id: Option<String>,
@@ -13,13 +13,13 @@ pub struct PaymentFlowsPrivatePaymentMethodsAlipayDetails {
     pub transaction_id: Option<String>,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsAlipayDetails {
+impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordAlipay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("PaymentFlowsPrivatePaymentMethodsAlipayDetails").finish_non_exhaustive()
+        f.debug_struct("PaymentMethodDetailsPaymentRecordAlipay").finish_non_exhaustive()
     }
 }
 #[doc(hidden)]
-pub struct PaymentFlowsPrivatePaymentMethodsAlipayDetailsBuilder {
+pub struct PaymentMethodDetailsPaymentRecordAlipayBuilder {
     buyer_id: Option<Option<String>>,
     fingerprint: Option<Option<String>>,
     transaction_id: Option<Option<String>>,
@@ -41,28 +41,28 @@ const _: () = {
 
     make_place!(Place);
 
-    impl Deserialize for PaymentFlowsPrivatePaymentMethodsAlipayDetails {
+    impl Deserialize for PaymentMethodDetailsPaymentRecordAlipay {
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     struct Builder<'a> {
-        out: &'a mut Option<PaymentFlowsPrivatePaymentMethodsAlipayDetails>,
-        builder: PaymentFlowsPrivatePaymentMethodsAlipayDetailsBuilder,
+        out: &'a mut Option<PaymentMethodDetailsPaymentRecordAlipay>,
+        builder: PaymentMethodDetailsPaymentRecordAlipayBuilder,
     }
 
-    impl Visitor for Place<PaymentFlowsPrivatePaymentMethodsAlipayDetails> {
+    impl Visitor for Place<PaymentMethodDetailsPaymentRecordAlipay> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentFlowsPrivatePaymentMethodsAlipayDetailsBuilder::deser_default(),
+                builder: PaymentMethodDetailsPaymentRecordAlipayBuilder::deser_default(),
             }))
         }
     }
 
-    impl MapBuilder for PaymentFlowsPrivatePaymentMethodsAlipayDetailsBuilder {
-        type Out = PaymentFlowsPrivatePaymentMethodsAlipayDetails;
+    impl MapBuilder for PaymentMethodDetailsPaymentRecordAlipayBuilder {
+        type Out = PaymentMethodDetailsPaymentRecordAlipay;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "buyer_id" => Deserialize::begin(&mut self.buyer_id),
@@ -97,16 +97,16 @@ const _: () = {
         }
     }
 
-    impl ObjectDeser for PaymentFlowsPrivatePaymentMethodsAlipayDetails {
-        type Builder = PaymentFlowsPrivatePaymentMethodsAlipayDetailsBuilder;
+    impl ObjectDeser for PaymentMethodDetailsPaymentRecordAlipay {
+        type Builder = PaymentMethodDetailsPaymentRecordAlipayBuilder;
     }
 
-    impl FromValueOpt for PaymentFlowsPrivatePaymentMethodsAlipayDetails {
+    impl FromValueOpt for PaymentMethodDetailsPaymentRecordAlipay {
         fn from_value(v: Value) -> Option<Self> {
             let Value::Object(obj) = v else {
                 return None;
             };
-            let mut b = PaymentFlowsPrivatePaymentMethodsAlipayDetailsBuilder::deser_default();
+            let mut b = PaymentMethodDetailsPaymentRecordAlipayBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
                     "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),

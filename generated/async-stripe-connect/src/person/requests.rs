@@ -3,7 +3,7 @@ use stripe_client_core::{
 };
 
 /// Deletes an existing person’s relationship to the account’s legal entity.
-/// Any person with a relationship for an account can be deleted through the API, except if the person is the `account_opener`.
+/// Any person with a relationship for an account can be deleted through the API, except if the person is the `representative`.
 /// If your integration is using the `executive` parameter, you cannot delete the only verified `executive` on file.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -984,6 +984,8 @@ impl CreateAccountPerson {
     /// The person's ID number, as appropriate for their country.
     /// For example, a social security number in the U.S., social insurance number in Canada, etc.
     /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
+    ///
+    /// Changing this value for the account's representative requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     pub fn id_number(mut self, id_number: impl Into<String>) -> Self {
         self.inner.id_number = Some(id_number.into());
         self
@@ -991,6 +993,8 @@ impl CreateAccountPerson {
     /// The person's secondary ID number, as appropriate for their country, will be used for enhanced verification checks.
     /// In Thailand, this would be the laser code found on the back of an ID card.
     /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
+    ///
+    /// Changing this value for the account's representative requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     pub fn id_number_secondary(mut self, id_number_secondary: impl Into<String>) -> Self {
         self.inner.id_number_secondary = Some(id_number_secondary.into());
         self
@@ -1064,6 +1068,8 @@ impl CreateAccountPerson {
         self
     }
     /// The last four digits of the person's Social Security number (U.S. only).
+    ///
+    /// Changing this value for the account's representative requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     pub fn ssn_last_4(mut self, ssn_last_4: impl Into<String>) -> Self {
         self.inner.ssn_last_4 = Some(ssn_last_4.into());
         self
@@ -1796,6 +1802,8 @@ impl UpdatePerson {
     /// The person's ID number, as appropriate for their country.
     /// For example, a social security number in the U.S., social insurance number in Canada, etc.
     /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
+    ///
+    /// Changing this value for the account's representative requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     pub fn id_number(mut self, id_number: impl Into<String>) -> Self {
         self.inner.id_number = Some(id_number.into());
         self
@@ -1803,6 +1811,8 @@ impl UpdatePerson {
     /// The person's secondary ID number, as appropriate for their country, will be used for enhanced verification checks.
     /// In Thailand, this would be the laser code found on the back of an ID card.
     /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
+    ///
+    /// Changing this value for the account's representative requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     pub fn id_number_secondary(mut self, id_number_secondary: impl Into<String>) -> Self {
         self.inner.id_number_secondary = Some(id_number_secondary.into());
         self
@@ -1876,6 +1886,8 @@ impl UpdatePerson {
         self
     }
     /// The last four digits of the person's Social Security number (U.S. only).
+    ///
+    /// Changing this value for the account's representative requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     pub fn ssn_last_4(mut self, ssn_last_4: impl Into<String>) -> Self {
         self.inner.ssn_last_4 = Some(ssn_last_4.into());
         self

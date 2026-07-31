@@ -172,6 +172,7 @@ const _: () = {
 pub enum FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
     Ach,
     Bacs,
+    Chaps,
     DomesticWireUs,
     Fps,
     Sepa,
@@ -187,6 +188,7 @@ impl FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
         match self {
             Ach => "ach",
             Bacs => "bacs",
+            Chaps => "chaps",
             DomesticWireUs => "domestic_wire_us",
             Fps => "fps",
             Sepa => "sepa",
@@ -205,6 +207,7 @@ impl std::str::FromStr for FundingInstructionsBankTransferFinancialAddressSuppor
         match s {
             "ach" => Ok(Ach),
             "bacs" => Ok(Bacs),
+            "chaps" => Ok(Chaps),
             "domestic_wire_us" => Ok(DomesticWireUs),
             "fps" => Ok(Fps),
             "sepa" => Ok(Sepa),

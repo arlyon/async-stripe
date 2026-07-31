@@ -26,7 +26,7 @@ impl RetrieveTokenBuilder {
 #[derive(serde::Serialize)]
 pub struct RetrieveToken {
     inner: RetrieveTokenBuilder,
-    token: stripe_core::TokenId,
+    token: stripe_shared::TokenId,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for RetrieveToken {
@@ -36,7 +36,7 @@ impl std::fmt::Debug for RetrieveToken {
 }
 impl RetrieveToken {
     /// Construct a new `RetrieveToken`.
-    pub fn new(token: impl Into<stripe_core::TokenId>) -> Self {
+    pub fn new(token: impl Into<stripe_shared::TokenId>) -> Self {
         Self { token: token.into(), inner: RetrieveTokenBuilder::new() }
     }
     /// Specifies which fields in the response should be expanded.
@@ -64,7 +64,7 @@ impl RetrieveToken {
 }
 
 impl StripeRequest for RetrieveToken {
-    type Output = stripe_core::Token;
+    type Output = stripe_shared::Token;
 
     fn build(&self) -> RequestBuilder {
         let token = &self.token;
@@ -239,6 +239,8 @@ pub struct CreateTokenAccountCompany {
     /// The Kanji variation of the company's primary address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kanji: Option<CreateTokenAccountCompanyAddressKanji>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub administrative_address: Option<CreateTokenAccountCompanyAdministrativeAddress>,
     /// Whether the company's directors have been provided.
     /// Set this Boolean to `true` after creating all the company's directors with [the Persons API](/api/persons) for accounts with a `relationship.director` requirement.
     /// This value is not automatically set to `true` after creating directors, so it needs to be updated to indicate all directors have been provided.
@@ -283,6 +285,8 @@ pub struct CreateTokenAccountCompany {
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub principal_place_of_business: Option<CreateTokenAccountCompanyPrincipalPlaceOfBusiness>,
     /// When the business was incorporated or registered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registration_date: Option<CreateTokenAccountCompanyRegistrationDate>,
@@ -300,6 +304,8 @@ pub struct CreateTokenAccountCompany {
     pub structure: Option<CreateTokenAccountCompanyStructure>,
     /// The business ID number of the company, as appropriate for the company’s country.
     /// (Examples are an Employer ID Number in the U.S., a Business Number in Canada, or a Company Number in the UK.).
+    ///
+    /// Changing this value requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id: Option<String>,
     /// The jurisdiction in which the `tax_id` is registered (Germany-based companies only).
@@ -324,6 +330,7 @@ impl CreateTokenAccountCompany {
             address: None,
             address_kana: None,
             address_kanji: None,
+            administrative_address: None,
             directors_provided: None,
             directorship_declaration: None,
             executives_provided: None,
@@ -337,6 +344,7 @@ impl CreateTokenAccountCompany {
             ownership_declaration_shown_and_signed: None,
             ownership_exemption_reason: None,
             phone: None,
+            principal_place_of_business: None,
             registration_date: None,
             registration_number: None,
             representative_declaration: None,
@@ -495,6 +503,45 @@ impl Default for CreateTokenAccountCompanyAddressKanji {
         Self::new()
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTokenAccountCompanyAdministrativeAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1, such as the street, PO Box, or company name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2, such as the apartment, suite, unit, or building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTokenAccountCompanyAdministrativeAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTokenAccountCompanyAdministrativeAddress").finish_non_exhaustive()
+    }
+}
+impl CreateTokenAccountCompanyAdministrativeAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for CreateTokenAccountCompanyAdministrativeAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// This hash is used to attest that the directors information provided to Stripe is both current and correct.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -633,6 +680,45 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyOwnershipExemptio
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTokenAccountCompanyPrincipalPlaceOfBusiness {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1, such as the street, PO Box, or company name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2, such as the apartment, suite, unit, or building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTokenAccountCompanyPrincipalPlaceOfBusiness {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTokenAccountCompanyPrincipalPlaceOfBusiness").finish_non_exhaustive()
+    }
+}
+impl CreateTokenAccountCompanyPrincipalPlaceOfBusiness {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for CreateTokenAccountCompanyPrincipalPlaceOfBusiness {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// When the business was incorporated or registered.
@@ -1772,11 +1858,15 @@ pub struct CreateTokenPerson {
     /// The person's ID number, as appropriate for their country.
     /// For example, a social security number in the U.S., social insurance number in Canada, etc.
     /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
+    ///
+    /// Changing this value for the account's representative requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
     /// The person's secondary ID number, as appropriate for their country, will be used for enhanced verification checks.
     /// In Thailand, this would be the laser code found on the back of an ID card.
     /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://docs.stripe.com/js/tokens/create_token?type=pii).
+    ///
+    /// Changing this value for the account's representative requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<String>,
     /// The person's last name.
@@ -1814,6 +1904,8 @@ pub struct CreateTokenPerson {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub relationship: Option<CreateTokenPersonRelationship>,
     /// The last four digits of the person's Social Security number (U.S. only).
+    ///
+    /// Changing this value for the account's representative requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ssn_last_4: Option<String>,
     /// Demographic data related to the person.
@@ -2696,7 +2788,7 @@ impl CreateToken {
 }
 
 impl StripeRequest for CreateToken {
-    type Output = stripe_core::Token;
+    type Output = stripe_shared::Token;
 
     fn build(&self) -> RequestBuilder {
         RequestBuilder::new(StripeMethod::Post, "/tokens").form(&self.inner)

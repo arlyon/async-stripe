@@ -16,7 +16,7 @@ pub struct AccountCapabilityFutureRequirements {
     pub currently_due: Vec<String>,
     /// This is typed as an enum for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is null because fields in `future_requirements` will never disable the account.
     pub disabled_reason: Option<AccountCapabilityFutureRequirementsDisabledReason>,
-    /// Details about validation and verification failures for `due` requirements that must be resolved.
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<stripe_shared::AccountRequirementsError>,
     /// Fields you must collect when all thresholds are reached.
     /// As they become required, they appear in `currently_due` as well.

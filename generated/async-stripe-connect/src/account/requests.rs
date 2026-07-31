@@ -578,7 +578,7 @@ struct CreateAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     default_currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    documents: Option<DocumentsSpecs>,
+    documents: Option<CreateAccountDocuments>,
     #[serde(skip_serializing_if = "Option::is_none")]
     email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2921,6 +2921,8 @@ pub struct CreateAccountCompany {
     /// The Kanji variation of the company's primary address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kanji: Option<CreateAccountCompanyAddressKanji>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub administrative_address: Option<CreateAccountCompanyAdministrativeAddress>,
     /// Whether the company's directors have been provided.
     /// Set this Boolean to `true` after creating all the company's directors with [the Persons API](/api/persons) for accounts with a `relationship.director` requirement.
     /// This value is not automatically set to `true` after creating directors, so it needs to be updated to indicate all directors have been provided.
@@ -2962,6 +2964,8 @@ pub struct CreateAccountCompany {
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub principal_place_of_business: Option<CreateAccountCompanyPrincipalPlaceOfBusiness>,
     /// When the business was incorporated or registered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registration_date: Option<RegistrationDateSpecs>,
@@ -2979,6 +2983,8 @@ pub struct CreateAccountCompany {
     pub structure: Option<CreateAccountCompanyStructure>,
     /// The business ID number of the company, as appropriate for the company’s country.
     /// (Examples are an Employer ID Number in the U.S., a Business Number in Canada, or a Company Number in the UK.).
+    ///
+    /// Changing this value requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id: Option<String>,
     /// The jurisdiction in which the `tax_id` is registered (Germany-based companies only).
@@ -3003,6 +3009,7 @@ impl CreateAccountCompany {
             address: None,
             address_kana: None,
             address_kanji: None,
+            administrative_address: None,
             directors_provided: None,
             directorship_declaration: None,
             executives_provided: None,
@@ -3015,6 +3022,7 @@ impl CreateAccountCompany {
             ownership_declaration: None,
             ownership_exemption_reason: None,
             phone: None,
+            principal_place_of_business: None,
             registration_date: None,
             registration_number: None,
             representative_declaration: None,
@@ -3173,6 +3181,45 @@ impl Default for CreateAccountCompanyAddressKanji {
         Self::new()
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCompanyAdministrativeAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1, such as the street, PO Box, or company name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2, such as the apartment, suite, unit, or building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCompanyAdministrativeAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCompanyAdministrativeAddress").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCompanyAdministrativeAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for CreateAccountCompanyAdministrativeAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
 /// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
 #[derive(Clone, Eq, PartialEq)]
@@ -3249,6 +3296,45 @@ impl<'de> serde::Deserialize<'de> for CreateAccountCompanyOwnershipExemptionReas
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCompanyPrincipalPlaceOfBusiness {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1, such as the street, PO Box, or company name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2, such as the apartment, suite, unit, or building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCompanyPrincipalPlaceOfBusiness {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCompanyPrincipalPlaceOfBusiness").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCompanyPrincipalPlaceOfBusiness {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for CreateAccountCompanyPrincipalPlaceOfBusiness {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The category identifying the legal structure of the company or legal entity.
@@ -3799,6 +3885,62 @@ impl<'de> serde::Deserialize<'de> for CreateAccountControllerStripeDashboardType
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Documents that may be submitted to satisfy various informational requests.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountDocuments {
+    /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
+    /// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a check.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_account_ownership_verification: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of a company's license to operate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_license: Option<DocumentsParam>,
+    /// One or more documents showing the company's governing document (for example, a memorandum of association, constitution, or articles of association).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_memorandum_of_association: Option<DocumentsParam>,
+    /// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_ministerial_decree: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_registration_verification: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of a company's tax ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_tax_id_verification: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_address: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of ultimate beneficial ownership.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_ultimate_beneficial_ownership: Option<SignerParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountDocuments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountDocuments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountDocuments {
+    pub fn new() -> Self {
+        Self {
+            bank_account_ownership_verification: None,
+            company_license: None,
+            company_memorandum_of_association: None,
+            company_ministerial_decree: None,
+            company_registration_verification: None,
+            company_tax_id_verification: None,
+            proof_of_address: None,
+            proof_of_ultimate_beneficial_ownership: None,
+        }
+    }
+}
+impl Default for CreateAccountDocuments {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Information about the person represented by the account.
@@ -4777,7 +4919,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountType {
 /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
 /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
 ///
-/// If you’ve already collected information for your connected accounts, you [can prefill that information](https://stripe.com/docs/connect/best-practices#onboarding) when.
+/// If you’ve already collected information for your connected accounts, you <a href="/connect/marketplace/tasks/create#prefill-account-information">can prefill that information</a> when.
 /// creating the account.
 /// Connect Onboarding won’t ask for the prefilled information during account onboarding.
 /// You can prefill any information on the account.
@@ -4859,7 +5001,7 @@ impl CreateAccount {
         self
     }
     /// Documents that may be submitted to satisfy various informational requests.
-    pub fn documents(mut self, documents: impl Into<DocumentsSpecs>) -> Self {
+    pub fn documents(mut self, documents: impl Into<CreateAccountDocuments>) -> Self {
         self.inner.documents = Some(documents.into());
         self
     }
@@ -4975,7 +5117,7 @@ struct UpdateAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     default_currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    documents: Option<DocumentsSpecs>,
+    documents: Option<UpdateAccountDocuments>,
     #[serde(skip_serializing_if = "Option::is_none")]
     email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7312,6 +7454,8 @@ pub struct UpdateAccountCompany {
     /// The Kanji variation of the company's primary address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kanji: Option<UpdateAccountCompanyAddressKanji>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub administrative_address: Option<UpdateAccountCompanyAdministrativeAddress>,
     /// Whether the company's directors have been provided.
     /// Set this Boolean to `true` after creating all the company's directors with [the Persons API](/api/persons) for accounts with a `relationship.director` requirement.
     /// This value is not automatically set to `true` after creating directors, so it needs to be updated to indicate all directors have been provided.
@@ -7354,6 +7498,8 @@ pub struct UpdateAccountCompany {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub principal_place_of_business: Option<UpdateAccountCompanyPrincipalPlaceOfBusiness>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub registration_date: Option<RegistrationDateSpecs>,
     /// The identification number given to a company when it is registered or incorporated, if distinct from the identification number used for filing taxes.
     /// (Examples are the CIN for companies and LLP IN for partnerships in India, and the Company Registration Number in Hong Kong).
@@ -7369,6 +7515,8 @@ pub struct UpdateAccountCompany {
     pub structure: Option<UpdateAccountCompanyStructure>,
     /// The business ID number of the company, as appropriate for the company’s country.
     /// (Examples are an Employer ID Number in the U.S., a Business Number in Canada, or a Company Number in the UK.).
+    ///
+    /// Changing this value requires that the account re-accept the [terms of service](/api/accounts/object#account_object-tos_acceptance).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id: Option<String>,
     /// The jurisdiction in which the `tax_id` is registered (Germany-based companies only).
@@ -7393,6 +7541,7 @@ impl UpdateAccountCompany {
             address: None,
             address_kana: None,
             address_kanji: None,
+            administrative_address: None,
             directors_provided: None,
             directorship_declaration: None,
             executives_provided: None,
@@ -7405,6 +7554,7 @@ impl UpdateAccountCompany {
             ownership_declaration: None,
             ownership_exemption_reason: None,
             phone: None,
+            principal_place_of_business: None,
             registration_date: None,
             registration_number: None,
             representative_declaration: None,
@@ -7563,6 +7713,45 @@ impl Default for UpdateAccountCompanyAddressKanji {
         Self::new()
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCompanyAdministrativeAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1, such as the street, PO Box, or company name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2, such as the apartment, suite, unit, or building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCompanyAdministrativeAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCompanyAdministrativeAddress").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCompanyAdministrativeAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for UpdateAccountCompanyAdministrativeAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
 /// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
 #[derive(Clone, Eq, PartialEq)]
@@ -7639,6 +7828,45 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountCompanyOwnershipExemptionReas
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCompanyPrincipalPlaceOfBusiness {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1, such as the street, PO Box, or company name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2, such as the apartment, suite, unit, or building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCompanyPrincipalPlaceOfBusiness {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCompanyPrincipalPlaceOfBusiness").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCompanyPrincipalPlaceOfBusiness {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for UpdateAccountCompanyPrincipalPlaceOfBusiness {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The category identifying the legal structure of the company or legal entity.
@@ -7776,6 +8004,66 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountCompanyStructure {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Documents that may be submitted to satisfy various informational requests.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountDocuments {
+    /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
+    /// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a check.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_account_ownership_verification: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of a company's license to operate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_license: Option<DocumentsParam>,
+    /// One or more documents showing the company's governing document (for example, a memorandum of association, constitution, or articles of association).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_memorandum_of_association: Option<DocumentsParam>,
+    /// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_ministerial_decree: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_registration_verification: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of a company's tax ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_tax_id_verification: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_address: Option<DocumentsParam>,
+    /// One or more documents showing the company’s proof of registration with the national business registry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_registration: Option<SignerParam>,
+    /// One or more documents that demonstrate proof of ultimate beneficial ownership.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_ultimate_beneficial_ownership: Option<SignerParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountDocuments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountDocuments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountDocuments {
+    pub fn new() -> Self {
+        Self {
+            bank_account_ownership_verification: None,
+            company_license: None,
+            company_memorandum_of_association: None,
+            company_ministerial_decree: None,
+            company_registration_verification: None,
+            company_tax_id_verification: None,
+            proof_of_address: None,
+            proof_of_registration: None,
+            proof_of_ultimate_beneficial_ownership: None,
+        }
+    }
+}
+impl Default for UpdateAccountDocuments {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Information about the person represented by the account.
@@ -8182,6 +8470,9 @@ pub struct UpdateAccountSettings {
     /// Settings specific to the account's payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts: Option<UpdateAccountSettingsPayouts>,
+    /// Settings specific to SEPA Direct Debit payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit_payments: Option<UpdateAccountSettingsSepaDebitPayments>,
     /// Settings specific to the account's Treasury FinancialAccounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub treasury: Option<TreasurySettingsSpecs>,
@@ -8202,6 +8493,7 @@ impl UpdateAccountSettings {
             invoices: None,
             payments: None,
             payouts: None,
+            sepa_debit_payments: None,
             treasury: None,
         }
     }
@@ -8683,6 +8975,31 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPayoutsScheduleWeekly
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Settings specific to SEPA Direct Debit payments.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountSettingsSepaDebitPayments {
+    /// The business creditor id for european payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creditor_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountSettingsSepaDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountSettingsSepaDebitPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountSettingsSepaDebitPayments {
+    pub fn new() -> Self {
+        Self { creditor_id: None }
+    }
+}
+impl Default for UpdateAccountSettingsSepaDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Updates a <a href="/connect/accounts">connected account</a> by setting the values of the parameters passed.
 /// Any parameters not provided are.
 /// left unchanged.
@@ -8764,7 +9081,7 @@ impl UpdateAccount {
         self
     }
     /// Documents that may be submitted to satisfy various informational requests.
-    pub fn documents(mut self, documents: impl Into<DocumentsSpecs>) -> Self {
+    pub fn documents(mut self, documents: impl Into<UpdateAccountDocuments>) -> Self {
         self.inner.documents = Some(documents.into());
         self
     }
@@ -8859,6 +9176,8 @@ impl StripeRequest for UpdateAccount {
 struct RejectAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payouts_action: Option<RejectAccountPayoutsAction>,
     reason: String,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -8869,14 +9188,82 @@ impl std::fmt::Debug for RejectAccountBuilder {
 }
 impl RejectAccountBuilder {
     fn new(reason: impl Into<String>) -> Self {
-        Self { expand: None, reason: reason.into() }
+        Self { expand: None, payouts_action: None, reason: reason.into() }
+    }
+}
+/// Whether to pause payouts on the account as part of the rejection.
+/// Defaults to `pause`.
+/// Use `none` to leave payouts enabled.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum RejectAccountPayoutsAction {
+    None,
+    Pause,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl RejectAccountPayoutsAction {
+    pub fn as_str(&self) -> &str {
+        use RejectAccountPayoutsAction::*;
+        match self {
+            None => "none",
+            Pause => "pause",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for RejectAccountPayoutsAction {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use RejectAccountPayoutsAction::*;
+        match s {
+            "none" => Ok(None),
+            "pause" => Ok(Pause),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RejectAccountPayoutsAction");
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for RejectAccountPayoutsAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for RejectAccountPayoutsAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RejectAccountPayoutsAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RejectAccountPayoutsAction)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for RejectAccountPayoutsAction {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for RejectAccountPayoutsAction {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// With <a href="/connect">Connect</a>, you can reject accounts that you have flagged as suspicious.
 ///
 /// Only accounts where your platform is liable for negative account balances, which includes Custom and Express accounts, can be rejected.
-/// Test-mode accounts can be rejected at any time.
-/// Live-mode accounts can only be rejected after all balances are zero.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -8898,6 +9285,13 @@ impl RejectAccount {
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
+        self
+    }
+    /// Whether to pause payouts on the account as part of the rejection.
+    /// Defaults to `pause`.
+    /// Use `none` to leave payouts enabled.
+    pub fn payouts_action(mut self, payouts_action: impl Into<RejectAccountPayoutsAction>) -> Self {
+        self.inner.payouts_action = Some(payouts_action.into());
         self
     }
 }
@@ -8925,6 +9319,82 @@ impl StripeRequest for RejectAccount {
     fn build(&self) -> RequestBuilder {
         let account = &self.account;
         RequestBuilder::new(StripeMethod::Post, format!("/accounts/{account}/reject"))
+            .form(&self.inner)
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+struct UnrejectAccountBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UnrejectAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UnrejectAccountBuilder").finish_non_exhaustive()
+    }
+}
+impl UnrejectAccountBuilder {
+    fn new() -> Self {
+        Self { expand: None }
+    }
+}
+/// With Connect, you can unreject accounts that you have previously rejected.
+///
+/// Only accounts that were rejected by your platform can be unrejected.
+/// This API cannot be used to unreject accounts that were rejected by Stripe.
+///
+/// Unreject will only enable charges and/or payouts if there are no other restrictions other than those placed by a previous rejection.
+/// If you have separately paused charges and/or payouts outside of rejection, those pauses will remain in place after unrejection.
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UnrejectAccount {
+    inner: UnrejectAccountBuilder,
+    account: stripe_shared::AccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UnrejectAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UnrejectAccount").finish_non_exhaustive()
+    }
+}
+impl UnrejectAccount {
+    /// Construct a new `UnrejectAccount`.
+    pub fn new(account: impl Into<stripe_shared::AccountId>) -> Self {
+        Self { account: account.into(), inner: UnrejectAccountBuilder::new() }
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+}
+impl UnrejectAccount {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for UnrejectAccount {
+    type Output = stripe_shared::Account;
+
+    fn build(&self) -> RequestBuilder {
+        let account = &self.account;
+        RequestBuilder::new(StripeMethod::Post, format!("/accounts/{account}/unreject"))
             .form(&self.inner)
     }
 }
@@ -9646,65 +10116,6 @@ impl TreasurySettingsSpecs {
     }
 }
 impl Default for TreasurySettingsSpecs {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct DocumentsSpecs {
-    /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
-    /// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a check.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account_ownership_verification: Option<DocumentsParam>,
-    /// One or more documents that demonstrate proof of a company's license to operate.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_license: Option<DocumentsParam>,
-    /// One or more documents showing the company's governing document (for example, a memorandum of association, constitution, or articles of association).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_memorandum_of_association: Option<DocumentsParam>,
-    /// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_ministerial_decree: Option<DocumentsParam>,
-    /// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_registration_verification: Option<DocumentsParam>,
-    /// One or more documents that demonstrate proof of a company's tax ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_tax_id_verification: Option<DocumentsParam>,
-    /// One or more documents that demonstrate proof of address.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proof_of_address: Option<DocumentsParam>,
-    /// One or more documents showing the company’s proof of registration with the national business registry.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proof_of_registration: Option<SignerParam>,
-    /// One or more documents that demonstrate proof of ultimate beneficial ownership.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proof_of_ultimate_beneficial_ownership: Option<SignerParam>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for DocumentsSpecs {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("DocumentsSpecs").finish_non_exhaustive()
-    }
-}
-impl DocumentsSpecs {
-    pub fn new() -> Self {
-        Self {
-            bank_account_ownership_verification: None,
-            company_license: None,
-            company_memorandum_of_association: None,
-            company_ministerial_decree: None,
-            company_registration_verification: None,
-            company_tax_id_verification: None,
-            proof_of_address: None,
-            proof_of_registration: None,
-            proof_of_ultimate_beneficial_ownership: None,
-        }
-    }
-}
-impl Default for DocumentsSpecs {
     fn default() -> Self {
         Self::new()
     }

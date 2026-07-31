@@ -31,7 +31,7 @@ pub struct Token {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// Unique identifier for the object.
-    pub id: stripe_core::TokenId,
+    pub id: stripe_shared::TokenId,
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
@@ -53,7 +53,7 @@ pub struct TokenBuilder {
     card: Option<Option<stripe_shared::Card>>,
     client_ip: Option<Option<String>>,
     created: Option<stripe_types::Timestamp>,
-    id: Option<stripe_core::TokenId>,
+    id: Option<stripe_shared::TokenId>,
     livemode: Option<bool>,
     type_: Option<String>,
     used: Option<bool>,
@@ -205,7 +205,7 @@ impl serde::Serialize for Token {
     }
 }
 impl stripe_types::Object for Token {
-    type Id = stripe_core::TokenId;
+    type Id = stripe_shared::TokenId;
     fn id(&self) -> &Self::Id {
         &self.id
     }

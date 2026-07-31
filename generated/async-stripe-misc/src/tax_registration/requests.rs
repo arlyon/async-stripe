@@ -15094,6 +15094,13 @@ pub struct CreateTaxRegistrationCountryOptionsUs {
     /// Options for the local lease tax registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub local_lease_tax: Option<CreateTaxRegistrationCountryOptionsUsLocalLeaseTax>,
+    /// Options for the mass transit parking tax registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mass_transit_parking_tax:
+        Option<CreateTaxRegistrationCountryOptionsUsMassTransitParkingTax>,
+    /// Options for the parking tax registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parking_tax: Option<CreateTaxRegistrationCountryOptionsUsParkingTax>,
     /// Two-letter US state code ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     pub state: String,
     /// Options for the state sales tax registration.
@@ -15117,6 +15124,8 @@ impl CreateTaxRegistrationCountryOptionsUs {
         Self {
             local_amusement_tax: None,
             local_lease_tax: None,
+            mass_transit_parking_tax: None,
+            parking_tax: None,
             state: state.into(),
             state_sales_tax: None,
             type_: type_.into(),
@@ -15159,6 +15168,45 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsLocalLeaseTax {
     }
 }
 impl CreateTaxRegistrationCountryOptionsUsLocalLeaseTax {
+    pub fn new(jurisdiction: impl Into<String>) -> Self {
+        Self { jurisdiction: jurisdiction.into() }
+    }
+}
+/// Options for the mass transit parking tax registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsUsMassTransitParkingTax {
+    /// A jurisdiction code representing the [local jurisdiction](/tax/registering?type=mass_transit_parking_tax#registration-types).
+    pub jurisdiction: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsMassTransitParkingTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUsMassTransitParkingTax")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsUsMassTransitParkingTax {
+    pub fn new(jurisdiction: impl Into<String>) -> Self {
+        Self { jurisdiction: jurisdiction.into() }
+    }
+}
+/// Options for the parking tax registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsUsParkingTax {
+    /// A jurisdiction code representing the [local jurisdiction](/tax/registering?type=parking_tax#registration-types).
+    pub jurisdiction: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsParkingTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUsParkingTax").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsUsParkingTax {
     pub fn new(jurisdiction: impl Into<String>) -> Self {
         Self { jurisdiction: jurisdiction.into() }
     }
@@ -15295,6 +15343,8 @@ impl<'de> serde::Deserialize<'de>
 pub enum CreateTaxRegistrationCountryOptionsUsType {
     LocalAmusementTax,
     LocalLeaseTax,
+    MassTransitParkingTax,
+    ParkingTax,
     StateCommunicationsTax,
     StateRetailDeliveryFee,
     StateSalesTax,
@@ -15307,6 +15357,8 @@ impl CreateTaxRegistrationCountryOptionsUsType {
         match self {
             LocalAmusementTax => "local_amusement_tax",
             LocalLeaseTax => "local_lease_tax",
+            MassTransitParkingTax => "mass_transit_parking_tax",
+            ParkingTax => "parking_tax",
             StateCommunicationsTax => "state_communications_tax",
             StateRetailDeliveryFee => "state_retail_delivery_fee",
             StateSalesTax => "state_sales_tax",
@@ -15322,6 +15374,8 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsType {
         match s {
             "local_amusement_tax" => Ok(LocalAmusementTax),
             "local_lease_tax" => Ok(LocalLeaseTax),
+            "mass_transit_parking_tax" => Ok(MassTransitParkingTax),
+            "parking_tax" => Ok(ParkingTax),
             "state_communications_tax" => Ok(StateCommunicationsTax),
             "state_retail_delivery_fee" => Ok(StateRetailDeliveryFee),
             "state_sales_tax" => Ok(StateSalesTax),

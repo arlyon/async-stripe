@@ -56,6 +56,8 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     pub start_date: stripe_types::Timestamp,
     /// The account (if any) the associated subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
     pub transfer_data: Option<stripe_shared::SubscriptionTransferData>,
+    /// If set to true the entire phase is counted as a trial and the customer will not be charged for any fees.
+    pub trial: Option<bool>,
     /// When the trial ends within the phase.
     pub trial_end: Option<stripe_types::Timestamp>,
 }
@@ -86,6 +88,7 @@ pub struct SubscriptionSchedulePhaseConfigurationBuilder {
     proration_behavior: Option<SubscriptionSchedulePhaseConfigurationProrationBehavior>,
     start_date: Option<stripe_types::Timestamp>,
     transfer_data: Option<Option<stripe_shared::SubscriptionTransferData>>,
+    trial: Option<Option<bool>>,
     trial_end: Option<Option<stripe_types::Timestamp>>,
 }
 
@@ -148,6 +151,7 @@ const _: () = {
                 "proration_behavior" => Deserialize::begin(&mut self.proration_behavior),
                 "start_date" => Deserialize::begin(&mut self.start_date),
                 "transfer_data" => Deserialize::begin(&mut self.transfer_data),
+                "trial" => Deserialize::begin(&mut self.trial),
                 "trial_end" => Deserialize::begin(&mut self.trial_end),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -174,6 +178,7 @@ const _: () = {
                 proration_behavior: None,
                 start_date: None,
                 transfer_data: Some(None),
+                trial: Some(None),
                 trial_end: Some(None),
             }
         }
@@ -199,6 +204,7 @@ const _: () = {
                 Some(proration_behavior),
                 Some(start_date),
                 Some(transfer_data),
+                Some(trial),
                 Some(trial_end),
             ) = (
                 self.add_invoice_items.take(),
@@ -220,6 +226,7 @@ const _: () = {
                 self.proration_behavior.take(),
                 self.start_date,
                 self.transfer_data.take(),
+                self.trial,
                 self.trial_end,
             )
             else {
@@ -245,6 +252,7 @@ const _: () = {
                 proration_behavior,
                 start_date,
                 transfer_data,
+                trial,
                 trial_end,
             })
         }
@@ -296,6 +304,7 @@ const _: () = {
                     "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
                     "start_date" => b.start_date = FromValueOpt::from_value(v),
                     "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
+                    "trial" => b.trial = FromValueOpt::from_value(v),
                     "trial_end" => b.trial_end = FromValueOpt::from_value(v),
                     _ => {}
                 }

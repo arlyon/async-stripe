@@ -1382,7 +1382,7 @@ impl CreateBillingPortalConfiguration {
         self
     }
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
-    /// This can be [overriden](https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
+    /// This can be [overridden](https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
     pub fn default_return_url(mut self, default_return_url: impl Into<String>) -> Self {
         self.inner.default_return_url = Some(default_return_url.into());
         self
@@ -2643,7 +2643,7 @@ impl UpdateBillingPortalConfiguration {
         self
     }
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
-    /// This can be [overriden](https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
+    /// This can be [overridden](https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
     pub fn default_return_url(mut self, default_return_url: impl Into<String>) -> Self {
         self.inner.default_return_url = Some(default_return_url.into());
         self

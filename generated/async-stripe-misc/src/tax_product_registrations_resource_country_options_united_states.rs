@@ -7,6 +7,9 @@ pub struct TaxProductRegistrationsResourceCountryOptionsUnitedStates {
         Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsLocalAmusementTax>,
     pub local_lease_tax:
         Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsLocalLeaseTax>,
+    pub mass_transit_parking_tax:
+        Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsMassTransitParkingTax>,
+    pub parking_tax: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsParkingTax>,
     /// Two-letter US state code ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     pub state: String,
     pub state_sales_tax:
@@ -29,6 +32,11 @@ pub struct TaxProductRegistrationsResourceCountryOptionsUnitedStatesBuilder {
     >,
     local_lease_tax:
         Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsLocalLeaseTax>>,
+    mass_transit_parking_tax: Option<
+        Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsMassTransitParkingTax>,
+    >,
+    parking_tax:
+        Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsParkingTax>>,
     state: Option<String>,
     state_sales_tax:
         Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsStateSalesTax>>,
@@ -79,6 +87,10 @@ const _: () = {
             Ok(match k {
                 "local_amusement_tax" => Deserialize::begin(&mut self.local_amusement_tax),
                 "local_lease_tax" => Deserialize::begin(&mut self.local_lease_tax),
+                "mass_transit_parking_tax" => {
+                    Deserialize::begin(&mut self.mass_transit_parking_tax)
+                }
+                "parking_tax" => Deserialize::begin(&mut self.parking_tax),
                 "state" => Deserialize::begin(&mut self.state),
                 "state_sales_tax" => Deserialize::begin(&mut self.state_sales_tax),
                 "type" => Deserialize::begin(&mut self.type_),
@@ -90,6 +102,8 @@ const _: () = {
             Self {
                 local_amusement_tax: Some(None),
                 local_lease_tax: Some(None),
+                mass_transit_parking_tax: Some(None),
+                parking_tax: Some(None),
                 state: None,
                 state_sales_tax: Some(None),
                 type_: None,
@@ -100,12 +114,16 @@ const _: () = {
             let (
                 Some(local_amusement_tax),
                 Some(local_lease_tax),
+                Some(mass_transit_parking_tax),
+                Some(parking_tax),
                 Some(state),
                 Some(state_sales_tax),
                 Some(type_),
             ) = (
                 self.local_amusement_tax.take(),
                 self.local_lease_tax.take(),
+                self.mass_transit_parking_tax.take(),
+                self.parking_tax.take(),
                 self.state.take(),
                 self.state_sales_tax.take(),
                 self.type_.take(),
@@ -113,7 +131,15 @@ const _: () = {
             else {
                 return None;
             };
-            Some(Self::Out { local_amusement_tax, local_lease_tax, state, state_sales_tax, type_ })
+            Some(Self::Out {
+                local_amusement_tax,
+                local_lease_tax,
+                mass_transit_parking_tax,
+                parking_tax,
+                state,
+                state_sales_tax,
+                type_,
+            })
         }
     }
 
@@ -143,6 +169,10 @@ const _: () = {
                 match k.as_str() {
                     "local_amusement_tax" => b.local_amusement_tax = FromValueOpt::from_value(v),
                     "local_lease_tax" => b.local_lease_tax = FromValueOpt::from_value(v),
+                    "mass_transit_parking_tax" => {
+                        b.mass_transit_parking_tax = FromValueOpt::from_value(v)
+                    }
+                    "parking_tax" => b.parking_tax = FromValueOpt::from_value(v),
                     "state" => b.state = FromValueOpt::from_value(v),
                     "state_sales_tax" => b.state_sales_tax = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
@@ -159,6 +189,8 @@ const _: () = {
 pub enum TaxProductRegistrationsResourceCountryOptionsUnitedStatesType {
     LocalAmusementTax,
     LocalLeaseTax,
+    MassTransitParkingTax,
+    ParkingTax,
     StateCommunicationsTax,
     StateRetailDeliveryFee,
     StateSalesTax,
@@ -171,6 +203,8 @@ impl TaxProductRegistrationsResourceCountryOptionsUnitedStatesType {
         match self {
             LocalAmusementTax => "local_amusement_tax",
             LocalLeaseTax => "local_lease_tax",
+            MassTransitParkingTax => "mass_transit_parking_tax",
+            ParkingTax => "parking_tax",
             StateCommunicationsTax => "state_communications_tax",
             StateRetailDeliveryFee => "state_retail_delivery_fee",
             StateSalesTax => "state_sales_tax",
@@ -186,6 +220,8 @@ impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsUnitedSt
         match s {
             "local_amusement_tax" => Ok(LocalAmusementTax),
             "local_lease_tax" => Ok(LocalLeaseTax),
+            "mass_transit_parking_tax" => Ok(MassTransitParkingTax),
+            "parking_tax" => Ok(ParkingTax),
             "state_communications_tax" => Ok(StateCommunicationsTax),
             "state_retail_delivery_fee" => Ok(StateRetailDeliveryFee),
             "state_sales_tax" => Ok(StateSalesTax),

@@ -1284,14 +1284,17 @@ pub enum CreatePaymentMethodFpxBank {
     BankMuamalat,
     BankOfChina,
     BankRakyat,
+    BnpParibas,
     Bsn,
     Cimb,
+    Citibank,
     DeutscheBank,
     HongLeongBank,
     Hsbc,
     Kfh,
     Maybank2e,
     Maybank2u,
+    MbsbBank,
     Ocbc,
     PbEnterprise,
     PublicBank,
@@ -1313,14 +1316,17 @@ impl CreatePaymentMethodFpxBank {
             BankMuamalat => "bank_muamalat",
             BankOfChina => "bank_of_china",
             BankRakyat => "bank_rakyat",
+            BnpParibas => "bnp_paribas",
             Bsn => "bsn",
             Cimb => "cimb",
+            Citibank => "citibank",
             DeutscheBank => "deutsche_bank",
             HongLeongBank => "hong_leong_bank",
             Hsbc => "hsbc",
             Kfh => "kfh",
             Maybank2e => "maybank2e",
             Maybank2u => "maybank2u",
+            MbsbBank => "mbsb_bank",
             Ocbc => "ocbc",
             PbEnterprise => "pb_enterprise",
             PublicBank => "public_bank",
@@ -1345,14 +1351,17 @@ impl std::str::FromStr for CreatePaymentMethodFpxBank {
             "bank_muamalat" => Ok(BankMuamalat),
             "bank_of_china" => Ok(BankOfChina),
             "bank_rakyat" => Ok(BankRakyat),
+            "bnp_paribas" => Ok(BnpParibas),
             "bsn" => Ok(Bsn),
             "cimb" => Ok(Cimb),
+            "citibank" => Ok(Citibank),
             "deutsche_bank" => Ok(DeutscheBank),
             "hong_leong_bank" => Ok(HongLeongBank),
             "hsbc" => Ok(Hsbc),
             "kfh" => Ok(Kfh),
             "maybank2e" => Ok(Maybank2e),
             "maybank2u" => Ok(Maybank2u),
+            "mbsb_bank" => Ok(MbsbBank),
             "ocbc" => Ok(Ocbc),
             "pb_enterprise" => Ok(PbEnterprise),
             "public_bank" => Ok(PublicBank),
@@ -3643,7 +3652,7 @@ impl DetachPaymentMethodBuilder {
     }
 }
 /// Detaches a PaymentMethod object from a Customer.
-/// After a PaymentMethod is detached, it can no longer be used for a payment or re-attached to a Customer.
+/// Detachment is permanent and irreversible — once detached, a PaymentMethod can no longer be used for payments or re-attached to a Customer.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
