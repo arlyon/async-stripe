@@ -60,7 +60,10 @@ impl RequestStrategy {
             // a strategy of retry or exponential backoff should retry with
             // the appropriate delay if the number of retries is less than the max
             (Retry(n), x) if x < *n => Outcome::Continue(None),
-            (ExponentialBackoff(n), x) if x < *n => Outcome::Continue(Some(calculate_backoff(x))),
+            (ExponentialBackoff(n), 0) if *n > 0 => Outcome::Continue(None),
+            (ExponentialBackoff(n), x) if x < *n => {
+                Outcome::Continue(Some(calculate_backoff(x - 1)))
+            }
 
             // unknown cases should be stopped to prevent infinite loops
             _ => Outcome::Stop,
@@ -219,11 +222,11 @@ mod tests {
     }
 
     #[test]
-    fn test_backoff_strategy() {
+    fn test_backoff_strategy_does_not_delay_initial_attempt() {
         let strategy = RequestStrategy::ExponentialBackoff(3);
-        assert_eq!(strategy.test(None, None, 0), Outcome::Continue(Some(Duration::from_secs(1))));
-        assert_eq!(strategy.test(None, None, 1), Outcome::Continue(Some(Duration::from_secs(2))));
-        assert_eq!(strategy.test(None, None, 2), Outcome::Continue(Some(Duration::from_secs(4))));
+        assert_eq!(strategy.test(None, None, 0), Outcome::Continue(None));
+        assert_eq!(strategy.test(None, None, 1), Outcome::Continue(Some(Duration::from_secs(1))));
+        assert_eq!(strategy.test(None, None, 2), Outcome::Continue(Some(Duration::from_secs(2))));
         assert_eq!(strategy.test(None, None, 3), Outcome::Stop);
         assert_eq!(strategy.test(None, None, 4), Outcome::Stop);
     }
@@ -304,16 +307,12 @@ mod tests {
         let strategy = RequestStrategy::ExponentialBackoff(3);
         // Test that exponential backoff works with Stripe-Should-Retry=true
         assert_eq!(
-            strategy.test(Some(500), Some(true), 0),
+            strategy.test(Some(500), Some(true), 1),
             Outcome::Continue(Some(Duration::from_secs(1)))
         );
         assert_eq!(
-            strategy.test(Some(500), Some(true), 1),
-            Outcome::Continue(Some(Duration::from_secs(2)))
-        );
-        assert_eq!(
             strategy.test(Some(500), Some(true), 2),
-            Outcome::Continue(Some(Duration::from_secs(4)))
+            Outcome::Continue(Some(Duration::from_secs(2)))
         );
         assert_eq!(strategy.test(Some(500), Some(true), 3), Outcome::Stop);
     }
@@ -323,11 +322,11 @@ mod tests {
         let strategy = RequestStrategy::ExponentialBackoff(3);
         // Test that exponential backoff works with 429 when header is absent
         assert_eq!(
-            strategy.test(Some(429), None, 0),
+            strategy.test(Some(429), None, 1),
             Outcome::Continue(Some(Duration::from_secs(1)))
         );
         assert_eq!(
-            strategy.test(Some(429), None, 1),
+            strategy.test(Some(429), None, 2),
             Outcome::Continue(Some(Duration::from_secs(2)))
         );
     }
