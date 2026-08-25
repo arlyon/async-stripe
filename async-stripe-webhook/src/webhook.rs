@@ -294,7 +294,7 @@ impl Webhook {
         self.parse_payload(payload)
     }
 
-    #[tracing::instrument]
+    #[tracing::instrument(skip_all)]
     fn parse_payload(self, payload: &str) -> Result<Event, WebhookError> {
         let base_evt: stripe_shared::Event = miniserde::json::from_str(payload)
             .map_err(|_| WebhookError::BadParse("could not deserialize webhook event".into()))?;
@@ -369,12 +369,50 @@ impl<'r> Signature<'r> {
 
 #[cfg(test)]
 mod tests {
+    use std::sync::{Arc, Mutex};
+
     use serde_json::{Value, json};
 
     use super::*;
     use crate::{AccountExternalAccountCreated, EventType};
 
     const WEBHOOK_SECRET: &str = "secret";
+
+    #[test]
+    fn parse_payload_trace_omits_raw_payload() {
+        struct TraceWriter(Arc<Mutex<Vec<u8>>>);
+
+        impl std::io::Write for TraceWriter {
+            fn write(&mut self, buffer: &[u8]) -> std::io::Result<usize> {
+                self.0.lock().unwrap().extend_from_slice(buffer);
+                Ok(buffer.len())
+            }
+
+            fn flush(&mut self) -> std::io::Result<()> {
+                Ok(())
+            }
+        }
+
+        let output = Arc::new(Mutex::new(Vec::new()));
+        let writer_output = output.clone();
+        let subscriber = tracing_subscriber::fmt()
+            .with_ansi(false)
+            .without_time()
+            .with_target(false)
+            .with_span_events(tracing_subscriber::fmt::format::FmtSpan::NEW)
+            .with_writer(move || TraceWriter(writer_output.clone()))
+            .finish();
+        let payload = r#"{"sensitive_marker":"must_not_be_traced"}"#;
+
+        tracing::subscriber::with_default(subscriber, || {
+            assert!(Webhook::insecure(payload).is_err());
+        });
+
+        let output = output.lock().unwrap();
+        let output = String::from_utf8_lossy(&output);
+        assert!(output.contains("parse_payload"));
+        assert!(!output.contains("must_not_be_traced"));
+    }
 
     #[test]
     fn test_signature_parse() {
