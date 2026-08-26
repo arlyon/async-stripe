@@ -146,6 +146,12 @@ impl<'de> serde::Deserialize<'de> for Event {
     }
 }
 
+/// Minimal event envelope used to recover the event ID when full deserialization fails.
+#[derive(miniserde::Deserialize)]
+struct EventIdOnly {
+    id: stripe_shared::EventId,
+}
+
 #[derive(Debug)]
 pub struct Webhook {
     current_timestamp: i64,
@@ -294,10 +300,16 @@ impl Webhook {
         self.parse_payload(payload)
     }
 
-    #[tracing::instrument(skip_all)]
+    #[tracing::instrument(skip_all, fields(event_id), err)]
     fn parse_payload(self, payload: &str) -> Result<Event, WebhookError> {
-        let base_evt: stripe_shared::Event = miniserde::json::from_str(payload)
-            .map_err(|_| WebhookError::BadParse("could not deserialize webhook event".into()))?;
+        let base_evt: stripe_shared::Event = miniserde::json::from_str(payload).map_err(|_| {
+            if let Ok(event) = miniserde::json::from_str::<EventIdOnly>(payload) {
+                tracing::Span::current().record("event_id", event.id.as_str());
+            }
+            WebhookError::BadParse("could not deserialize webhook event".into())
+        })?;
+
+        tracing::Span::current().record("event_id", base_evt.id.as_str());
 
         let event_obj =
             EventObject::from_raw_data(base_evt.type_.as_str(), base_evt.data.object)
@@ -378,8 +390,7 @@ mod tests {
 
     const WEBHOOK_SECRET: &str = "secret";
 
-    #[test]
-    fn parse_payload_trace_omits_raw_payload() {
+    fn parse_with_captured_trace(payload: &str) -> (Result<Event, WebhookError>, String) {
         struct TraceWriter(Arc<Mutex<Vec<u8>>>);
 
         impl std::io::Write for TraceWriter {
@@ -402,16 +413,52 @@ mod tests {
             .with_span_events(tracing_subscriber::fmt::format::FmtSpan::NEW)
             .with_writer(move || TraceWriter(writer_output.clone()))
             .finish();
-        let payload = r#"{"sensitive_marker":"must_not_be_traced"}"#;
 
-        tracing::subscriber::with_default(subscriber, || {
-            assert!(Webhook::insecure(payload).is_err());
-        });
-
+        let result = tracing::subscriber::with_default(subscriber, || Webhook::insecure(payload));
         let output = output.lock().unwrap();
-        let output = String::from_utf8_lossy(&output);
-        assert!(output.contains("parse_payload"));
-        assert!(!output.contains("must_not_be_traced"));
+        (result, String::from_utf8_lossy(&output).into_owned())
+    }
+
+    #[test]
+    fn trace_logs_event_id_without_payload_when_event_deserialization_fails() {
+        let payload = r#"{
+            "id":"evt_fallback_parse",
+            "sensitive_marker":"fallback_must_not_be_traced"
+        }"#;
+
+        let (result, output) = parse_with_captured_trace(payload);
+
+        let Err(WebhookError::BadParse(error)) = result else {
+            panic!("expected webhook parse error");
+        };
+        assert_eq!(error, "could not deserialize webhook event");
+        assert!(output.contains("event_id="));
+        assert!(output.contains("evt_fallback_parse"));
+        assert!(output.contains("could not deserialize webhook event"));
+        assert!(!output.contains("fallback_must_not_be_traced"));
+    }
+
+    #[test]
+    fn trace_logs_event_id_without_payload_when_event_object_parsing_fails() {
+        let payload = r#"{
+            "id":"evt_object_parse",
+            "created":1492774577,
+            "data":{"object":{"sensitive_marker":"object_must_not_be_traced"}},
+            "livemode":false,
+            "pending_webhooks":1,
+            "type":"account.external_account.created"
+        }"#;
+
+        let (result, output) = parse_with_captured_trace(payload);
+
+        let Err(WebhookError::BadParse(error)) = result else {
+            panic!("expected webhook parse error");
+        };
+        assert_eq!(error, "could not parse event object");
+        assert!(output.contains("event_id="));
+        assert!(output.contains("evt_object_parse"));
+        assert!(output.contains("could not parse event object"));
+        assert!(!output.contains("object_must_not_be_traced"));
     }
 
     #[test]
