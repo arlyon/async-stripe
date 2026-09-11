@@ -58,15 +58,15 @@ impl VisitMut for DeduplicateObjects {
     where
         Self: Sized,
     {
-        if let Some((obj, _)) = typ.as_object_mut() {
-            if let Some(dedup_spec) = self.objs.get(obj) {
-                *typ = RustType::Path {
-                    path: PathToType::Deduplicated {
-                        path: self.component_path.clone(),
-                        ident: dedup_spec.ident.clone(),
-                    },
-                    is_ref: false,
-                }
+        if let Some((obj, _)) = typ.as_object_mut()
+            && let Some(dedup_spec) = self.objs.get(obj)
+        {
+            *typ = RustType::Path {
+                path: PathToType::Deduplicated {
+                    path: self.component_path.clone(),
+                    ident: dedup_spec.ident.clone(),
+                },
+                is_ref: false,
             }
         }
         typ.visit_mut(self, usage);
@@ -118,14 +118,13 @@ fn infer_dedupped_ident(objs: &[(ObjectMetadata, ObjectUsage)]) -> Option<RustId
         }
     }
 
-    if let Some(doc_name) = implied_name_from_meta_doc(first_meta) {
-        if let Some(parent) = &first_meta.parent {
-            if objs.iter().all(|(m, _)| {
-                implied_name_from_meta_doc(m) == Some(doc_name) && m.parent.as_ref() == Some(parent)
-            }) {
-                return Some(RustIdent::joined(parent, doc_name));
-            }
-        }
+    if let Some(doc_name) = implied_name_from_meta_doc(first_meta)
+        && let Some(parent) = &first_meta.parent
+        && objs.iter().all(|(m, _)| {
+            implied_name_from_meta_doc(m) == Some(doc_name) && m.parent.as_ref() == Some(parent)
+        })
+    {
+        return Some(RustIdent::joined(parent, doc_name));
     }
     None
 }
@@ -134,10 +133,10 @@ fn infer_dedupped_object_for(
     meta: &[(ObjectMetadata, ObjectUsage)],
     obj: &RustObject,
 ) -> Option<DeduppedObjectInfo> {
-    if matches!(obj, RustObject::FieldlessEnum(_)) {
-        if let Some(dedupped) = maybe_infer_by_field_name(meta) {
-            return Some(dedupped);
-        }
+    if matches!(obj, RustObject::FieldlessEnum(_))
+        && let Some(dedupped) = maybe_infer_by_field_name(meta)
+    {
+        return Some(dedupped);
     }
     let ident = infer_dedupped_ident(meta)?;
     let first = meta.first().unwrap();

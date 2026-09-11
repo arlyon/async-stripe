@@ -80,12 +80,12 @@ pub fn fetch_spec(version: SpecVersion, in_path: &str) -> anyhow::Result<Value> 
         return Ok(value);
     }
 
-    if let Ok(file) = fs::File::open(in_path) {
-        if let Ok(value) = serde_json::from_reader(file) {
-            let cached_version = read_x_stripe_tag(&value);
-            if cached_version == Some(&desired_version) {
-                return Ok(value);
-            }
+    if let Ok(file) = fs::File::open(in_path)
+        && let Ok(value) = serde_json::from_reader(file)
+    {
+        let cached_version = read_x_stripe_tag(&value);
+        if cached_version == Some(&desired_version) {
+            return Ok(value);
         }
     }
 

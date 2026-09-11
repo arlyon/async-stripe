@@ -205,20 +205,18 @@ pub fn parse_stripe_schema_as_rust_object(
                 if field.field_name == "id" && field.rust_type.as_id_or_opt_id_path().is_some() {
                     id_type = Some(field.rust_type.clone());
                 }
-                if field.field_name == "object" {
-                    if let Some(RustObject::FieldlessEnum(variants)) =
+                if field.field_name == "object"
+                    && let Some(RustObject::FieldlessEnum(variants)) =
                         field.rust_type.as_rust_object()
-                    {
-                        if variants.len() == 1 {
-                            let first = variants.first().unwrap();
-                            object_name = Some(first.wire_name.clone());
+                    && variants.len() == 1
+                {
+                    let first = variants.first().unwrap();
+                    object_name = Some(first.wire_name.clone());
 
-                            // This constant field just helps serialize the constant "object"
-                            // key - we don't want it as part of the public API needed to
-                            // construct these types
-                            return false;
-                        }
-                    }
+                    // This constant field just helps serialize the constant "object"
+                    // key - we don't want it as part of the public API needed to
+                    // construct these types
+                    return false;
                 }
                 true
             });
@@ -298,10 +296,10 @@ impl StripeResource {
                 BaseResource::default()
             };
         let mut in_package = None;
-        if let Some(package) = resource.in_package {
-            if !package.is_empty() {
-                in_package = Some(package.to_snake_case());
-            }
+        if let Some(package) = resource.in_package
+            && !package.is_empty()
+        {
+            in_package = Some(package.to_snake_case());
         }
 
         let ident = infer_object_ident(&path);

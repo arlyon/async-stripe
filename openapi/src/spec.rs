@@ -119,10 +119,10 @@ pub fn get_request_form_parameters(operation: &Operation) -> Option<&ReferenceOr
         .as_ref();
 
     // Treat empty object as `None`
-    if let Some(obj_type) = schema.and_then(|s| s.as_item().and_then(as_object_type)) {
-        if obj_type.properties.is_empty() {
-            return None;
-        }
+    if let Some(obj_type) = schema.and_then(|s| s.as_item().and_then(as_object_type))
+        && obj_type.properties.is_empty()
+    {
+        return None;
     }
     schema
 }
