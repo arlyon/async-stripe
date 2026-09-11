@@ -67,10 +67,10 @@ fn get_override_object(
 
 impl VisitMut for Overrides {
     fn visit_typ_mut(&mut self, typ: &mut RustType, usage: ObjectUsage) {
-        if let Some((obj, _)) = typ.as_object_mut() {
-            if let Some(meta) = self.overrides.get(obj) {
-                *typ = RustType::path(PathToType::Shared(meta.metadata.ident.clone()), false);
-            }
+        if let Some((obj, _)) = typ.as_object_mut()
+            && let Some(meta) = self.overrides.get(obj)
+        {
+            *typ = RustType::path(PathToType::Shared(meta.metadata.ident.clone()), false);
         }
         typ.visit_mut(self, usage);
     }

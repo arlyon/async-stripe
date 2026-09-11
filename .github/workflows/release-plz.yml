@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  rust_min: 1.88
+  rust_min: 1.89
 
 jobs:
   # Release unpublished packages

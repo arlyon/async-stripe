@@ -125,10 +125,10 @@ impl ObjectWriter<'_> {
     ) {
         // We skip writing the doc comment for private fields because we'll write them
         // later on the corresponding builder method.
-        if field.vis.is_public() {
-            if let Some(doc_comment) = &field.doc_comment {
-                let _ = writeln!(out, "{}", write_doc_comment(doc_comment, 1).trim_end());
-            }
+        if field.vis.is_public()
+            && let Some(doc_comment) = &field.doc_comment
+        {
+            let _ = writeln!(out, "{}", write_doc_comment(doc_comment, 1).trim_end());
         }
         if let Some(renamer) = field.rename_name() {
             serde_derive.maybe_write_rename(out, renamer);

@@ -3,7 +3,7 @@
 "cargo:release-plz" = "latest"
 "cargo:wasm-pack" = "latest"
 lefthook = "latest"
-rust = "1.88"
+rust = "1.89"
 
 [tasks.build-web]
 description = "Build WASM package for web target"

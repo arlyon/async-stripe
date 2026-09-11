@@ -3,7 +3,7 @@
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
 3. Test it: `cargo test --features runtime-blocking`
-4. Lint it: `cargo +1.82.0 clippy --all --all-targets -- -D warnings`
+4. Lint it: `cargo +1.89.0 clippy --all --all-targets -- -D warnings`
 5. Commit your changes: `git commit -am 'Add some feature'`
 6. Push to the branch: `git push origin my-new-feature`
 7. Submit a pull request :D
@@ -48,8 +48,10 @@ It is expected that code is uniformly formatted. Before submitting code, make su
 to run `cargo fmt` to make sure it conforms to the standard.
 
 ## Code Generation
+
 This library is (mostly) authored via code generation by parsing the OpenAPI specification for Stripe.
 It consists of 3 main pieces:
+
 - `async-stripe`: The definition of the `Stripe` client
 - `async-stripe-types`: Core type definitions, used a ton in generated code
 - `generated/*`: Generated crates which implement `Stripe` API requests and related types.
@@ -62,6 +64,7 @@ in more detail.
 
 If you'd like to update the version of the OpenAPI specification being used to generated code, you
 can run (in the `openapi` directory)
+
 ```sh
 cargo run --release -- --fetch latest
 ```

@@ -64,10 +64,10 @@ impl Components {
                     writer.write_arbitrary_enum_variants(out, variants);
                 }
                 for variant in variants {
-                    if let Some(typ) = &variant.rust_type {
-                        if let Some((obj, meta)) = typ.extract_object() {
-                            self.write_object(obj, meta, usage, out);
-                        }
+                    if let Some(typ) = &variant.rust_type
+                        && let Some((obj, meta)) = typ.extract_object()
+                    {
+                        self.write_object(obj, meta, usage, out);
                     }
                 }
             }

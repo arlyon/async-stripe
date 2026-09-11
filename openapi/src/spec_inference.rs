@@ -168,16 +168,16 @@ impl<'a> Inference<'a> {
         if !variants.is_empty() {
             return self.build_object_type(RustObject::FieldlessEnum(variants));
         }
-        if let Some(f_name) = self.field_name {
-            if f_name == "currency" || f_name.ends_with("_currency") {
-                return RustType::ext(ExtType::Currency);
-            }
+        if let Some(f_name) = self.field_name
+            && (f_name == "currency" || f_name.ends_with("_currency"))
+        {
+            return RustType::ext(ExtType::Currency);
         }
 
-        if self.should_infer_as_id_type() {
-            if let Some(id_path) = self.id_path {
-                return RustType::object_id(id_path.clone(), self.can_borrow);
-            }
+        if self.should_infer_as_id_type()
+            && let Some(id_path) = self.id_path
+        {
+            return RustType::object_id(id_path.clone(), self.can_borrow);
         }
 
         if self.can_borrow { RustType::Simple(SimpleType::Str) } else { RustType::string() }
@@ -431,10 +431,10 @@ fn infer_enum_variant_name(schema: &Schema) -> Option<&str> {
     if let Some(title) = &schema.schema_data.title {
         return Some(title);
     }
-    if let Some(desc) = &schema.schema_data.description {
-        if desc.contains("The ID of") {
-            return Some("Id");
-        }
+    if let Some(desc) = &schema.schema_data.description
+        && desc.contains("The ID of")
+    {
+        return Some("Id");
     }
     None
 }
