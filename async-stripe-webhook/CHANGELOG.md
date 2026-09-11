@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.0-rc.9](https://github.com/arlyon/async-stripe/compare/async-stripe-webhook-v1.0.0-rc.8...async-stripe-webhook-v1.0.0-rc.9) - 2026-09-11
+
+### Fixed
+
+- *(webhook)* omit raw payload from tracing
+
+### Other
+
+- *(deps)* bump the production-dependencies group across 1 directory with 11 updates ([#958](https://github.com/arlyon/async-stripe/pull/958))
+- log the event id, including when deserialization fails
+- release v1.0.0-rc.8
+
 ## [1.0.0-rc.8](https://github.com/arlyon/async-stripe/compare/async-stripe-webhook-v1.0.0-rc.7...async-stripe-webhook-v1.0.0-rc.8) - 2026-08-05
 
 ### Other
