@@ -51,7 +51,7 @@ async fn retry() {
     let req = server_errors_req().request_strategy(RequestStrategy::Retry(5));
     let res = req.send(&client).await;
 
-    hello_mock.assert_hits_async(5).await;
+    hello_mock.assert_calls_async(5).await;
     assert!(res.is_err());
 }
 
@@ -77,7 +77,7 @@ async fn user_error() {
         .request_strategy(RequestStrategy::Retry(3));
     let res = req.send(&client).await;
 
-    mock.assert_hits_async(1).await;
+    mock.assert_calls_async(1).await;
 
     match res {
         Err(StripeError::Stripe(x, status)) => {
@@ -104,7 +104,7 @@ async fn retry_header() {
     let req = server_errors_req().request_strategy(RequestStrategy::Retry(3));
     let res = req.send(&client).await;
 
-    hello_mock.assert_hits_async(1).await;
+    hello_mock.assert_calls_async(1).await;
     assert!(res.is_err());
 }
 
@@ -119,7 +119,7 @@ async fn retry_body() {
         when.method(POST)
             .path("/v1/server-errors")
             .header("content-type", "application/x-www-form-urlencoded")
-            .x_www_form_urlencoded_tuple("id", TEST_DATA_ID);
+            .form_urlencoded_tuple("id", TEST_DATA_ID);
         then.status(500).header("Stripe-Should-Retry", "true");
     });
 
@@ -129,7 +129,7 @@ async fn retry_body() {
         .request_strategy(RequestStrategy::Retry(5));
     let res = req.send(&client).await;
 
-    hello_mock.assert_hits_async(5).await;
+    hello_mock.assert_calls_async(5).await;
     assert!(res.is_err());
 }
 
@@ -153,6 +153,6 @@ async fn timeout_per_attempt() {
 
     let res = RequestBuilder::new(StripeMethod::Get, "/slow").customize::<()>().send(&client).await;
 
-    mock.assert_hits_async(3).await;
+    mock.assert_calls_async(3).await;
     assert!(matches!(res, Err(StripeError::Timeout)));
 }

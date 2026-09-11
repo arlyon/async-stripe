@@ -66,6 +66,7 @@ uuid = ["async-stripe-client-core/uuid"]
 redact-generated-debug = ["async-stripe-client-core/redact-generated-debug", "async-stripe-shared/redact-generated-debug"]
 
 [dev-dependencies]
+async-std = { version = "1.12.0", features = ["attributes"] }
 serde.workspace = true
 serde_json.workspace = true
 httpmock = { version = "0.8.3", default-features = false }
