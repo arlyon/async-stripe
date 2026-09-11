@@ -18,6 +18,7 @@ pub struct ConnectEmbeddedAccountSessionCreateComponents {
     pub notification_banner: stripe_connect::ConnectEmbeddedAccountConfigClaim,
     pub payment_details: stripe_connect::ConnectEmbeddedPaymentsConfigClaim,
     pub payment_disputes: stripe_connect::ConnectEmbeddedPaymentDisputesConfig,
+    pub payment_method_settings: stripe_connect::ConnectEmbeddedPaymentMethodSettingsConfigClaim,
     pub payments: stripe_connect::ConnectEmbeddedPaymentsConfigClaim,
     pub payout_details: stripe_connect::ConnectEmbeddedBaseConfigClaim,
     pub payout_reconciliation_report: stripe_connect::ConnectEmbeddedBaseConfigClaim,
@@ -49,6 +50,8 @@ pub struct ConnectEmbeddedAccountSessionCreateComponentsBuilder {
     notification_banner: Option<stripe_connect::ConnectEmbeddedAccountConfigClaim>,
     payment_details: Option<stripe_connect::ConnectEmbeddedPaymentsConfigClaim>,
     payment_disputes: Option<stripe_connect::ConnectEmbeddedPaymentDisputesConfig>,
+    payment_method_settings:
+        Option<stripe_connect::ConnectEmbeddedPaymentMethodSettingsConfigClaim>,
     payments: Option<stripe_connect::ConnectEmbeddedPaymentsConfigClaim>,
     payout_details: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
     payout_reconciliation_report: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
@@ -116,6 +119,7 @@ const _: () = {
                 "notification_banner" => Deserialize::begin(&mut self.notification_banner),
                 "payment_details" => Deserialize::begin(&mut self.payment_details),
                 "payment_disputes" => Deserialize::begin(&mut self.payment_disputes),
+                "payment_method_settings" => Deserialize::begin(&mut self.payment_method_settings),
                 "payments" => Deserialize::begin(&mut self.payments),
                 "payout_details" => Deserialize::begin(&mut self.payout_details),
                 "payout_reconciliation_report" => {
@@ -145,6 +149,7 @@ const _: () = {
                 notification_banner: None,
                 payment_details: None,
                 payment_disputes: None,
+                payment_method_settings: None,
                 payments: None,
                 payout_details: None,
                 payout_reconciliation_report: None,
@@ -171,6 +176,7 @@ const _: () = {
                 Some(notification_banner),
                 Some(payment_details),
                 Some(payment_disputes),
+                Some(payment_method_settings),
                 Some(payments),
                 Some(payout_details),
                 Some(payout_reconciliation_report),
@@ -193,6 +199,7 @@ const _: () = {
                 self.notification_banner,
                 self.payment_details,
                 self.payment_disputes,
+                self.payment_method_settings,
                 self.payments,
                 self.payout_details,
                 self.payout_reconciliation_report,
@@ -219,6 +226,7 @@ const _: () = {
                 notification_banner,
                 payment_details,
                 payment_disputes,
+                payment_method_settings,
                 payments,
                 payout_details,
                 payout_reconciliation_report,
@@ -271,6 +279,9 @@ const _: () = {
                     "notification_banner" => b.notification_banner = FromValueOpt::from_value(v),
                     "payment_details" => b.payment_details = FromValueOpt::from_value(v),
                     "payment_disputes" => b.payment_disputes = FromValueOpt::from_value(v),
+                    "payment_method_settings" => {
+                        b.payment_method_settings = FromValueOpt::from_value(v)
+                    }
                     "payments" => b.payments = FromValueOpt::from_value(v),
                     "payout_details" => b.payout_details = FromValueOpt::from_value(v),
                     "payout_reconciliation_report" => {

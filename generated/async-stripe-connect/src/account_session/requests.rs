@@ -74,6 +74,9 @@ pub struct CreateAccountSessionComponents {
     /// Configuration for the [payment disputes](/connect/supported-embedded-components/payment-disputes/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_disputes: Option<CreateAccountSessionComponentsPaymentDisputes>,
+    /// Configuration for the [payment method settings](/connect/supported-embedded-components/payment-method-settings/) embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_settings: Option<CreateAccountSessionComponentsPaymentMethodSettings>,
     /// Configuration for the [payments](/connect/supported-embedded-components/payments/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payments: Option<CreateAccountSessionComponentsPayments>,
@@ -119,6 +122,7 @@ impl CreateAccountSessionComponents {
             notification_banner: None,
             payment_details: None,
             payment_disputes: None,
+            payment_method_settings: None,
             payments: None,
             payout_details: None,
             payout_reconciliation_report: None,
@@ -642,6 +646,57 @@ impl CreateAccountSessionComponentsPaymentDisputesFeatures {
     }
 }
 impl Default for CreateAccountSessionComponentsPaymentDisputesFeatures {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for the [payment method settings](/connect/supported-embedded-components/payment-method-settings/) embedded component.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountSessionComponentsPaymentMethodSettings {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsPaymentMethodSettingsFeatures>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsPaymentMethodSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsPaymentMethodSettings")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateAccountSessionComponentsPaymentMethodSettings {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// The list of features enabled in the embedded component.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountSessionComponentsPaymentMethodSettingsFeatures {
+    /// Whether Stripe user authentication is disabled.
+    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
+    /// This is `false` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_stripe_user_authentication: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsPaymentMethodSettingsFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsPaymentMethodSettingsFeatures")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateAccountSessionComponentsPaymentMethodSettingsFeatures {
+    pub fn new() -> Self {
+        Self { disable_stripe_user_authentication: None }
+    }
+}
+impl Default for CreateAccountSessionComponentsPaymentMethodSettingsFeatures {
     fn default() -> Self {
         Self::new()
     }

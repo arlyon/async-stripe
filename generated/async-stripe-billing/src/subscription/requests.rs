@@ -37,6 +37,9 @@ pub struct CancelSubscriptionCancellationDetails {
     /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub feedback: Option<CancelSubscriptionCancellationDetailsFeedback>,
+    /// Customized feedback options that provide deeper insight into why the subscription was canceled, if the subscription was canceled explicitly by the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub feedback_option: Option<String>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CancelSubscriptionCancellationDetails {
@@ -46,7 +49,7 @@ impl std::fmt::Debug for CancelSubscriptionCancellationDetails {
 }
 impl CancelSubscriptionCancellationDetails {
     pub fn new() -> Self {
-        Self { comment: None, feedback: None }
+        Self { comment: None, feedback: None, feedback_option: None }
     }
 }
 impl Default for CancelSubscriptionCancellationDetails {
@@ -1665,7 +1668,9 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingModeType {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Sets the billing schedules for the subscription.
+/// An array of billing schedules, which allow you to bill customers in advance for multiple service periods.
+/// Requires flexible billing mode and API version 2026-05-27.dahlia or later.
+/// Learn more about [prebilling](https://docs.stripe.com/billing/subscriptions/prebilling).
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -1674,6 +1679,7 @@ pub struct CreateSubscriptionBillingSchedules {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub applies_to: Option<Vec<CreateSubscriptionBillingSchedulesAppliesTo>>,
     /// The end date for the billing schedule.
+    /// You must not set this earlier than current period end for every applicable subscription item.
     pub bill_until: CreateSubscriptionBillingSchedulesBillUntil,
     /// Specify a key for the billing schedule.
     /// Must be unique to this field, alphanumeric, and up to 200 characters.
@@ -1786,6 +1792,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingSchedulesAppliesT
     }
 }
 /// The end date for the billing schedule.
+/// You must not set this earlier than current period end for every applicable subscription item.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -2571,6 +2578,10 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     /// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>,
+    /// This sub-hash contains details about the Billie payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub billie: Option<miniserde::json::Value>,
     /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard>,
@@ -2610,6 +2621,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptions {
         Self {
             acss_debit: None,
             bancontact: None,
+            billie: None,
             card: None,
             customer_balance: None,
             konbini: None,
@@ -4343,6 +4355,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Billie,
     Boleto,
     Card,
     Cashapp,
@@ -4398,6 +4411,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
+            Billie => "billie",
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
@@ -4456,6 +4470,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
@@ -5019,7 +5034,9 @@ impl CreateSubscription {
         self.inner.billing_mode = Some(billing_mode.into());
         self
     }
-    /// Sets the billing schedules for the subscription.
+    /// An array of billing schedules, which allow you to bill customers in advance for multiple service periods.
+    /// Requires flexible billing mode and API version 2026-05-27.dahlia or later.
+    /// Learn more about [prebilling](https://docs.stripe.com/billing/subscriptions/prebilling).
     pub fn billing_schedules(
         mut self,
         billing_schedules: impl Into<Vec<CreateSubscriptionBillingSchedules>>,
@@ -6507,7 +6524,9 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingCycleAnchor {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Sets the billing schedules for the subscription.
+/// An array of billing schedules, which allow you to bill customers in advance for multiple service periods.
+/// Requires flexible billing mode and API version 2026-05-27.dahlia or later.
+/// Learn more about [prebilling](https://docs.stripe.com/billing/subscriptions/prebilling).
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -6516,6 +6535,7 @@ pub struct UpdateSubscriptionBillingSchedules {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub applies_to: Option<Vec<UpdateSubscriptionBillingSchedulesAppliesTo>>,
     /// The end date for the billing schedule.
+    /// You must not set this earlier than current period end for every applicable subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bill_until: Option<UpdateSubscriptionBillingSchedulesBillUntil>,
     /// Specify a key for the billing schedule.
@@ -6634,6 +6654,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingSchedulesAppliesT
     }
 }
 /// The end date for the billing schedule.
+/// You must not set this earlier than current period end for every applicable subscription item.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -6867,6 +6888,9 @@ pub struct UpdateSubscriptionCancellationDetails {
     /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub feedback: Option<UpdateSubscriptionCancellationDetailsFeedback>,
+    /// Customized feedback options that provide deeper insight into why the subscription was canceled, if the subscription was canceled explicitly by the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub feedback_option: Option<String>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateSubscriptionCancellationDetails {
@@ -6876,7 +6900,7 @@ impl std::fmt::Debug for UpdateSubscriptionCancellationDetails {
 }
 impl UpdateSubscriptionCancellationDetails {
     pub fn new() -> Self {
-        Self { comment: None, feedback: None }
+        Self { comment: None, feedback: None, feedback_option: None }
     }
 }
 impl Default for UpdateSubscriptionCancellationDetails {
@@ -7657,6 +7681,10 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
     /// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>,
+    /// This sub-hash contains details about the Billie payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub billie: Option<miniserde::json::Value>,
     /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard>,
@@ -7696,6 +7724,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
         Self {
             acss_debit: None,
             bancontact: None,
+            billie: None,
             card: None,
             customer_balance: None,
             konbini: None,
@@ -9429,6 +9458,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Billie,
     Boleto,
     Card,
     Cashapp,
@@ -9484,6 +9514,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
+            Billie => "billie",
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
@@ -9542,6 +9573,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
@@ -10031,6 +10063,8 @@ impl<'de> serde::Deserialize<'de>
 /// If on May 15 they switch to a $200 price, then on June 1 they’ll be billed $250 ($200 for a renewal of her subscription, plus a $50 prorating adjustment for half of the previous month’s $100 difference).
 /// Similarly, a downgrade generates a credit that is applied to the next invoice.
 /// We also prorate when you make quantity changes.
+/// You can also <a href="/billing/scripts/stripe-authored/proration">use scripts to prorate your billing</a>.
+/// To learn more, see <a href="/billing/subscriptions/prorations">Prorations</a>.
 ///
 /// Switching prices does not normally change the billing date or generate an immediate charge unless:
 ///
@@ -10111,7 +10145,9 @@ impl UpdateSubscription {
         self.inner.billing_cycle_anchor = Some(billing_cycle_anchor.into());
         self
     }
-    /// Sets the billing schedules for the subscription.
+    /// An array of billing schedules, which allow you to bill customers in advance for multiple service periods.
+    /// Requires flexible billing mode and API version 2026-05-27.dahlia or later.
+    /// Learn more about [prebilling](https://docs.stripe.com/billing/subscriptions/prebilling).
     pub fn billing_schedules(
         mut self,
         billing_schedules: impl Into<Vec<UpdateSubscriptionBillingSchedules>>,

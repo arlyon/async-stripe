@@ -1,8 +1,11 @@
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodDetailsCardWalletLink {}
+pub struct PaymentMethodDetailsCardWalletLink {
+    /// The [funding source group code](https://docs.stripe.com/payments/link/link-payment-methods) applied to this Link payment at confirmation time.
+    pub funding_source_group: Option<String>,
+}
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodDetailsCardWalletLink {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -10,7 +13,9 @@ impl std::fmt::Debug for PaymentMethodDetailsCardWalletLink {
     }
 }
 #[doc(hidden)]
-pub struct PaymentMethodDetailsCardWalletLinkBuilder {}
+pub struct PaymentMethodDetailsCardWalletLinkBuilder {
+    funding_source_group: Option<Option<String>>,
+}
 
 #[allow(
     unused_variables,
@@ -52,19 +57,20 @@ const _: () = {
         type Out = PaymentMethodDetailsCardWalletLink;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "funding_source_group" => Deserialize::begin(&mut self.funding_source_group),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { funding_source_group: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(funding_source_group),) = (self.funding_source_group.take(),) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { funding_source_group })
         }
     }
 
@@ -91,6 +97,7 @@ const _: () = {
             let mut b = PaymentMethodDetailsCardWalletLinkBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "funding_source_group" => b.funding_source_group = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

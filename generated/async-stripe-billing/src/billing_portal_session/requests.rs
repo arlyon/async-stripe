@@ -488,6 +488,7 @@ impl CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateBillingPortalSessionFlowDataType {
+    CustomerUpdate,
     PaymentMethodUpdate,
     SubscriptionCancel,
     SubscriptionUpdate,
@@ -499,6 +500,7 @@ impl CreateBillingPortalSessionFlowDataType {
     pub fn as_str(&self) -> &str {
         use CreateBillingPortalSessionFlowDataType::*;
         match self {
+            CustomerUpdate => "customer_update",
             PaymentMethodUpdate => "payment_method_update",
             SubscriptionCancel => "subscription_cancel",
             SubscriptionUpdate => "subscription_update",
@@ -513,6 +515,7 @@ impl std::str::FromStr for CreateBillingPortalSessionFlowDataType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalSessionFlowDataType::*;
         match s {
+            "customer_update" => Ok(CustomerUpdate),
             "payment_method_update" => Ok(PaymentMethodUpdate),
             "subscription_cancel" => Ok(SubscriptionCancel),
             "subscription_update" => Ok(SubscriptionUpdate),

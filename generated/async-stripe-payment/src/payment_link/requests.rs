@@ -3914,6 +3914,10 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_promotion_codes: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    application_fee_amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    application_fee_percent: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     automatic_tax: Option<UpdatePaymentLinkAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_address_collection: Option<stripe_shared::PaymentLinkBillingAddressCollection>,
@@ -3938,6 +3942,8 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     name_collection: Option<NameCollectionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    on_behalf_of: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     optional_items: Option<Vec<OptionalItemParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_intent_data: Option<UpdatePaymentLinkPaymentIntentData>,
@@ -3961,6 +3967,8 @@ struct UpdatePaymentLinkBuilder {
     subscription_data: Option<UpdatePaymentLinkSubscriptionData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_id_collection: Option<UpdatePaymentLinkTaxIdCollection>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    transfer_data: Option<UpdatePaymentLinkTransferData>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentLinkBuilder {
@@ -3974,6 +3982,8 @@ impl UpdatePaymentLinkBuilder {
             active: None,
             after_completion: None,
             allow_promotion_codes: None,
+            application_fee_amount: None,
+            application_fee_percent: None,
             automatic_tax: None,
             billing_address_collection: None,
             consent_collection: None,
@@ -3986,6 +3996,7 @@ impl UpdatePaymentLinkBuilder {
             line_items: None,
             metadata: None,
             name_collection: None,
+            on_behalf_of: None,
             optional_items: None,
             payment_intent_data: None,
             payment_method_collection: None,
@@ -3998,6 +4009,7 @@ impl UpdatePaymentLinkBuilder {
             submit_type: None,
             subscription_data: None,
             tax_id_collection: None,
+            transfer_data: None,
         }
     }
 }
@@ -6794,6 +6806,31 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkTaxIdCollectionRequired {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentLinkTransferData {
+    /// The amount that will be transferred automatically when a charge succeeds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// If specified, successful charges will be attributed to the destination
+    ///  account for tax reporting, and the funds from charges will be transferred
+    ///  to the destination account. The ID of the resulting transfer will be
+    ///  returned on the successful charge's `transfer` field.
+    pub destination: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkTransferData").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentLinkTransferData {
+    pub fn new(destination: impl Into<String>) -> Self {
+        Self { amount: None, destination: destination.into() }
+    }
+}
 /// Updates a payment link.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -6830,6 +6867,19 @@ impl UpdatePaymentLink {
     /// Enables user redeemable promotion codes.
     pub fn allow_promotion_codes(mut self, allow_promotion_codes: impl Into<bool>) -> Self {
         self.inner.allow_promotion_codes = Some(allow_promotion_codes.into());
+        self
+    }
+    /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
+    /// Can only be applied when there are no line items with recurring prices.
+    pub fn application_fee_amount(mut self, application_fee_amount: impl Into<i64>) -> Self {
+        self.inner.application_fee_amount = Some(application_fee_amount.into());
+        self
+    }
+    /// A non-negative decimal between 0 and 100, with at most two decimal places.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
+    /// There must be at least 1 line item with a recurring price to use this field.
+    pub fn application_fee_percent(mut self, application_fee_percent: impl Into<f64>) -> Self {
+        self.inner.application_fee_percent = Some(application_fee_percent.into());
         self
     }
     /// Configuration for automatic tax collection.
@@ -6920,6 +6970,11 @@ impl UpdatePaymentLink {
     /// Controls settings applied for collecting the customer's name.
     pub fn name_collection(mut self, name_collection: impl Into<NameCollectionParams>) -> Self {
         self.inner.name_collection = Some(name_collection.into());
+        self
+    }
+    /// The account on behalf of which to charge.
+    pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
+        self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
     }
     /// A list of optional items the customer can add to their order at checkout.
@@ -7023,6 +7078,14 @@ impl UpdatePaymentLink {
         tax_id_collection: impl Into<UpdatePaymentLinkTaxIdCollection>,
     ) -> Self {
         self.inner.tax_id_collection = Some(tax_id_collection.into());
+        self
+    }
+    /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
+    pub fn transfer_data(
+        mut self,
+        transfer_data: impl Into<UpdatePaymentLinkTransferData>,
+    ) -> Self {
+        self.inner.transfer_data = Some(transfer_data.into());
         self
     }
 }
@@ -7318,7 +7381,8 @@ impl Default for ShippingOptionParams {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CustomFieldDropdownParam {
-    /// The value that pre-fills the field on the payment page.Must match a `value` in the `options` array.
+    /// The value that pre-fills the field on the payment page.
+    /// Must match a `value` in the `options` array.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<String>,
     /// The options available for the customer to select. Up to 200 options allowed.

@@ -5,8 +5,6 @@
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecure {
     /// For authenticated transactions: Indicates how the issuing bank authenticated the customer.
 pub authentication_flow: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureAuthenticationFlow>,
-    /// The 3D Secure cryptogram, also known as the "authentication value" (AAV, CAVV or AEVV).
-pub cryptogram: Option<String>,
         /// The Electronic Commerce Indicator (ECI).
     /// A protocol-level field indicating what degree of authentication was performed.
 pub electronic_commerce_indicator: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureElectronicCommerceIndicator>,
@@ -37,7 +35,6 @@ impl std::fmt::Debug
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureBuilder {
     authentication_flow: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureAuthenticationFlow>>,
-cryptogram: Option<Option<String>>,
 electronic_commerce_indicator: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureElectronicCommerceIndicator>>,
 exemption_indicator: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureExemptionIndicator>>,
 exemption_indicator_applied: Option<Option<bool>>,
@@ -94,7 +91,6 @@ const _: () = {
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
             "authentication_flow" => Deserialize::begin(&mut self.authentication_flow),
-            "cryptogram" => Deserialize::begin(&mut self.cryptogram),
             "electronic_commerce_indicator" => Deserialize::begin(&mut self.electronic_commerce_indicator),
             "exemption_indicator" => Deserialize::begin(&mut self.exemption_indicator),
             "exemption_indicator_applied" => Deserialize::begin(&mut self.exemption_indicator_applied),
@@ -107,7 +103,6 @@ const _: () = {
 
     fn deser_default() -> Self {
         Self { authentication_flow: Some(None),
-cryptogram: Some(None),
 electronic_commerce_indicator: Some(None),
 exemption_indicator: Some(None),
 exemption_indicator_applied: Some(None),
@@ -119,7 +114,6 @@ version: Some(None),
 
     fn take_out(&mut self) -> Option<Self::Out> {
         let (Some(authentication_flow),
-Some(cryptogram),
 Some(electronic_commerce_indicator),
 Some(exemption_indicator),
 Some(exemption_indicator_applied),
@@ -127,7 +121,6 @@ Some(result),
 Some(result_reason),
 Some(version),
 ) = (self.authentication_flow.take(),
-self.cryptogram.take(),
 self.electronic_commerce_indicator.take(),
 self.exemption_indicator.take(),
 self.exemption_indicator_applied,
@@ -137,7 +130,7 @@ self.version.take(),
 ) else {
             return None;
         };
-        Some(Self::Out { authentication_flow,cryptogram,electronic_commerce_indicator,exemption_indicator,exemption_indicator_applied,result,result_reason,version })
+        Some(Self::Out { authentication_flow,electronic_commerce_indicator,exemption_indicator,exemption_indicator_applied,result,result_reason,version })
     }
 }
 
@@ -169,7 +162,6 @@ self.version.take(),
             for (k, v) in obj {
                 match k.as_str() {
                     "authentication_flow" => b.authentication_flow = FromValueOpt::from_value(v),
-                    "cryptogram" => b.cryptogram = FromValueOpt::from_value(v),
                     "electronic_commerce_indicator" => {
                         b.electronic_commerce_indicator = FromValueOpt::from_value(v)
                     }

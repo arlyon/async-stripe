@@ -341,6 +341,10 @@ pub mod tax_product_registrations_resource_country_options_europe;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_europe::*;
 #[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_igic;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_igic::*;
+#[doc(hidden)]
 pub mod tax_product_registrations_resource_country_options_simplified;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_simplified::*;

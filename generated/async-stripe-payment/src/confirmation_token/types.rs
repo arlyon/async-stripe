@@ -20,6 +20,9 @@ pub struct ConfirmationToken {
     pub livemode: bool,
     /// Data used for generating a Mandate.
     pub mandate_data: Option<stripe_payment::ConfirmationTokensResourceMandateData>,
+    /// Set of key-value pairs that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// ID of the PaymentIntent that this ConfirmationToken was used to confirm, or null if this ConfirmationToken has not yet been used.
     pub payment_intent: Option<String>,
     /// Payment-method-specific configuration for this ConfirmationToken.
@@ -55,6 +58,7 @@ pub struct ConfirmationTokenBuilder {
     id: Option<stripe_payment::ConfirmationTokenId>,
     livemode: Option<bool>,
     mandate_data: Option<Option<stripe_payment::ConfirmationTokensResourceMandateData>>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
     payment_intent: Option<Option<String>>,
     payment_method_options:
         Option<Option<stripe_payment::ConfirmationTokensResourcePaymentMethodOptions>>,
@@ -112,6 +116,7 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "mandate_data" => Deserialize::begin(&mut self.mandate_data),
+                "metadata" => Deserialize::begin(&mut self.metadata),
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
                 "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
                 "payment_method_preview" => Deserialize::begin(&mut self.payment_method_preview),
@@ -131,6 +136,7 @@ const _: () = {
                 id: None,
                 livemode: None,
                 mandate_data: Some(None),
+                metadata: Some(None),
                 payment_intent: Some(None),
                 payment_method_options: Some(None),
                 payment_method_preview: Some(None),
@@ -149,6 +155,7 @@ const _: () = {
                 Some(id),
                 Some(livemode),
                 Some(mandate_data),
+                Some(metadata),
                 Some(payment_intent),
                 Some(payment_method_options),
                 Some(payment_method_preview),
@@ -163,6 +170,7 @@ const _: () = {
                 self.id.take(),
                 self.livemode,
                 self.mandate_data.take(),
+                self.metadata.take(),
                 self.payment_intent.take(),
                 self.payment_method_options.take(),
                 self.payment_method_preview.take(),
@@ -181,6 +189,7 @@ const _: () = {
                 id,
                 livemode,
                 mandate_data,
+                metadata,
                 payment_intent,
                 payment_method_options,
                 payment_method_preview,
@@ -221,6 +230,7 @@ const _: () = {
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "mandate_data" => b.mandate_data = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
                     "payment_method_options" => {
                         b.payment_method_options = FromValueOpt::from_value(v)
@@ -244,12 +254,13 @@ const _: () = {
 impl serde::Serialize for ConfirmationToken {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("ConfirmationToken", 14)?;
+        let mut s = s.serialize_struct("ConfirmationToken", 15)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("expires_at", &self.expires_at)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("mandate_data", &self.mandate_data)?;
+        s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("payment_intent", &self.payment_intent)?;
         s.serialize_field("payment_method_options", &self.payment_method_options)?;
         s.serialize_field("payment_method_preview", &self.payment_method_preview)?;

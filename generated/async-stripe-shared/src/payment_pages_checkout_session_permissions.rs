@@ -9,7 +9,7 @@ pub struct PaymentPagesCheckoutSessionPermissions {
     /// Stripe Checkout client will automatically update the shipping details.
     /// If set to `server_only`, only your server is allowed to update the shipping details.
     ///
-    /// When set to `server_only`, you must add the onShippingDetailsChange event handler when initializing the Stripe Checkout client and manually update the shipping details from your server using the Stripe API.
+    /// This parameter is only supported when `ui_mode=elements`.
     pub update_shipping_details:
         Option<PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails>,
 }
@@ -121,7 +121,7 @@ const _: () = {
 /// Stripe Checkout client will automatically update the shipping details.
 /// If set to `server_only`, only your server is allowed to update the shipping details.
 ///
-/// When set to `server_only`, you must add the onShippingDetailsChange event handler when initializing the Stripe Checkout client and manually update the shipping details from your server using the Stripe API.
+/// This parameter is only supported when `ui_mode=elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails {

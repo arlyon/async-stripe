@@ -4,6 +4,8 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalFlowsFlow {
     pub after_completion: stripe_billing::PortalFlowsFlowAfterCompletion,
+    /// Configuration when `flow.type=customer_update`.
+    pub customer_update: Option<stripe_billing::PortalFlowsFlowCustomerUpdate>,
     /// Configuration when `flow.type=subscription_cancel`.
     pub subscription_cancel: Option<stripe_billing::PortalFlowsFlowSubscriptionCancel>,
     /// Configuration when `flow.type=subscription_update`.
@@ -24,6 +26,7 @@ impl std::fmt::Debug for PortalFlowsFlow {
 #[doc(hidden)]
 pub struct PortalFlowsFlowBuilder {
     after_completion: Option<stripe_billing::PortalFlowsFlowAfterCompletion>,
+    customer_update: Option<Option<stripe_billing::PortalFlowsFlowCustomerUpdate>>,
     subscription_cancel: Option<Option<stripe_billing::PortalFlowsFlowSubscriptionCancel>>,
     subscription_update: Option<Option<stripe_billing::PortalFlowsFlowSubscriptionUpdate>>,
     subscription_update_confirm:
@@ -72,6 +75,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "after_completion" => Deserialize::begin(&mut self.after_completion),
+                "customer_update" => Deserialize::begin(&mut self.customer_update),
                 "subscription_cancel" => Deserialize::begin(&mut self.subscription_cancel),
                 "subscription_update" => Deserialize::begin(&mut self.subscription_update),
                 "subscription_update_confirm" => {
@@ -85,6 +89,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 after_completion: None,
+                customer_update: Some(None),
                 subscription_cancel: Some(None),
                 subscription_update: Some(None),
                 subscription_update_confirm: Some(None),
@@ -95,12 +100,14 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(after_completion),
+                Some(customer_update),
                 Some(subscription_cancel),
                 Some(subscription_update),
                 Some(subscription_update_confirm),
                 Some(type_),
             ) = (
                 self.after_completion.take(),
+                self.customer_update,
                 self.subscription_cancel.take(),
                 self.subscription_update.take(),
                 self.subscription_update_confirm.take(),
@@ -111,6 +118,7 @@ const _: () = {
             };
             Some(Self::Out {
                 after_completion,
+                customer_update,
                 subscription_cancel,
                 subscription_update,
                 subscription_update_confirm,
@@ -143,6 +151,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "after_completion" => b.after_completion = FromValueOpt::from_value(v),
+                    "customer_update" => b.customer_update = FromValueOpt::from_value(v),
                     "subscription_cancel" => b.subscription_cancel = FromValueOpt::from_value(v),
                     "subscription_update" => b.subscription_update = FromValueOpt::from_value(v),
                     "subscription_update_confirm" => {
@@ -160,6 +169,7 @@ const _: () = {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PortalFlowsFlowType {
+    CustomerUpdate,
     PaymentMethodUpdate,
     SubscriptionCancel,
     SubscriptionUpdate,
@@ -171,6 +181,7 @@ impl PortalFlowsFlowType {
     pub fn as_str(&self) -> &str {
         use PortalFlowsFlowType::*;
         match self {
+            CustomerUpdate => "customer_update",
             PaymentMethodUpdate => "payment_method_update",
             SubscriptionCancel => "subscription_cancel",
             SubscriptionUpdate => "subscription_update",
@@ -185,6 +196,7 @@ impl std::str::FromStr for PortalFlowsFlowType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalFlowsFlowType::*;
         match s {
+            "customer_update" => Ok(CustomerUpdate),
             "payment_method_update" => Ok(PaymentMethodUpdate),
             "subscription_cancel" => Ok(SubscriptionCancel),
             "subscription_update" => Ok(SubscriptionUpdate),

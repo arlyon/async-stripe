@@ -7,6 +7,8 @@ pub struct InvoicesPaymentMethodOptions {
     pub acss_debit: Option<stripe_shared::InvoicePaymentMethodOptionsAcssDebit>,
     /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
     pub bancontact: Option<stripe_shared::InvoicePaymentMethodOptionsBancontact>,
+    /// If paying by `billie`, this sub-hash contains details about the Billie payment method options to pass to the invoice’s PaymentIntent.
+    pub billie: Option<stripe_shared::InvoicePaymentMethodOptionsBillie>,
     /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     pub card: Option<stripe_shared::InvoicePaymentMethodOptionsCard>,
     /// If paying by `customer_balance`, this sub-hash contains details about the Bank transfer payment method options to pass to the invoice’s PaymentIntent.
@@ -34,6 +36,7 @@ impl std::fmt::Debug for InvoicesPaymentMethodOptions {
 pub struct InvoicesPaymentMethodOptionsBuilder {
     acss_debit: Option<Option<stripe_shared::InvoicePaymentMethodOptionsAcssDebit>>,
     bancontact: Option<Option<stripe_shared::InvoicePaymentMethodOptionsBancontact>>,
+    billie: Option<Option<stripe_shared::InvoicePaymentMethodOptionsBillie>>,
     card: Option<Option<stripe_shared::InvoicePaymentMethodOptionsCard>>,
     customer_balance: Option<Option<stripe_shared::InvoicePaymentMethodOptionsCustomerBalance>>,
     konbini: Option<Option<stripe_shared::InvoicePaymentMethodOptionsKonbini>>,
@@ -86,6 +89,7 @@ const _: () = {
             Ok(match k {
                 "acss_debit" => Deserialize::begin(&mut self.acss_debit),
                 "bancontact" => Deserialize::begin(&mut self.bancontact),
+                "billie" => Deserialize::begin(&mut self.billie),
                 "card" => Deserialize::begin(&mut self.card),
                 "customer_balance" => Deserialize::begin(&mut self.customer_balance),
                 "konbini" => Deserialize::begin(&mut self.konbini),
@@ -102,6 +106,7 @@ const _: () = {
             Self {
                 acss_debit: Some(None),
                 bancontact: Some(None),
+                billie: Some(None),
                 card: Some(None),
                 customer_balance: Some(None),
                 konbini: Some(None),
@@ -117,6 +122,7 @@ const _: () = {
             let (
                 Some(acss_debit),
                 Some(bancontact),
+                Some(billie),
                 Some(card),
                 Some(customer_balance),
                 Some(konbini),
@@ -128,6 +134,7 @@ const _: () = {
             ) = (
                 self.acss_debit.take(),
                 self.bancontact.take(),
+                self.billie,
                 self.card.take(),
                 self.customer_balance.take(),
                 self.konbini,
@@ -143,6 +150,7 @@ const _: () = {
             Some(Self::Out {
                 acss_debit,
                 bancontact,
+                billie,
                 card,
                 customer_balance,
                 konbini,
@@ -180,6 +188,7 @@ const _: () = {
                 match k.as_str() {
                     "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
                     "bancontact" => b.bancontact = FromValueOpt::from_value(v),
+                    "billie" => b.billie = FromValueOpt::from_value(v),
                     "card" => b.card = FromValueOpt::from_value(v),
                     "customer_balance" => b.customer_balance = FromValueOpt::from_value(v),
                     "konbini" => b.konbini = FromValueOpt::from_value(v),

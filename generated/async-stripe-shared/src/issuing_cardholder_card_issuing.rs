@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardholderCardIssuing {
-    /// Information about cardholder acceptance of Celtic [Authorized User Terms](https://stripe.com/docs/issuing/cards#accept-authorized-user-terms).
+    /// Information about cardholder acceptance of Celtic [Authorized User Terms](https://docs.stripe.com/issuing/compliance-us#issuing-terms).
     /// Required for cards backed by a Celtic program.
     pub user_terms_acceptance: Option<stripe_shared::IssuingCardholderUserTermsAcceptance>,
 }

@@ -32,6 +32,7 @@ pub struct ClimateOrder {
     /// Details about the delivery of carbon removal for this order.
     pub delivery_details: Vec<stripe_misc::ClimateRemovalsOrderDeliveries>,
     /// The year this order is expected to be delivered.
+    /// If the year is in the past, the order is a spot purchase and will be delivered within 30 days of purchase.
     pub expected_delivery_year: i64,
     /// Unique identifier for the object.
     pub id: stripe_misc::ClimateOrderId,

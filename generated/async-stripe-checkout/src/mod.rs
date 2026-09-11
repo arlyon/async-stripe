@@ -30,6 +30,8 @@ pub use stripe_shared::checkout_cashapp_payment_method_options::*;
 pub use stripe_shared::checkout_customer_balance_bank_transfer_payment_method_options::*;
 pub use stripe_shared::checkout_customer_balance_payment_method_options::*;
 pub use stripe_shared::checkout_eps_payment_method_options::*;
+pub use stripe_shared::checkout_financial_connections_payment_method_options::*;
+pub use stripe_shared::checkout_financial_connections_payment_method_options_filters::*;
 pub use stripe_shared::checkout_fpx_payment_method_options::*;
 pub use stripe_shared::checkout_giropay_payment_method_options::*;
 pub use stripe_shared::checkout_grab_pay_payment_method_options::*;

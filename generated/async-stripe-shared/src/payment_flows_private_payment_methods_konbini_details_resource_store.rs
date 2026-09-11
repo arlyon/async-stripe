@@ -2,19 +2,20 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodDetailsKonbiniStore {
+pub struct PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore {
     /// The name of the convenience store chain where the payment was completed.
-    pub chain: Option<PaymentMethodDetailsKonbiniStoreChain>,
+    pub chain: Option<PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain>,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodDetailsKonbiniStore {
+impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("PaymentMethodDetailsKonbiniStore").finish_non_exhaustive()
+        f.debug_struct("PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore")
+            .finish_non_exhaustive()
     }
 }
 #[doc(hidden)]
-pub struct PaymentMethodDetailsKonbiniStoreBuilder {
-    chain: Option<Option<PaymentMethodDetailsKonbiniStoreChain>>,
+pub struct PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreBuilder {
+    chain: Option<Option<PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain>>,
 }
 
 #[allow(
@@ -33,28 +34,28 @@ const _: () = {
 
     make_place!(Place);
 
-    impl Deserialize for PaymentMethodDetailsKonbiniStore {
+    impl Deserialize for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore {
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     struct Builder<'a> {
-        out: &'a mut Option<PaymentMethodDetailsKonbiniStore>,
-        builder: PaymentMethodDetailsKonbiniStoreBuilder,
+        out: &'a mut Option<PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore>,
+        builder: PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreBuilder,
     }
 
-    impl Visitor for Place<PaymentMethodDetailsKonbiniStore> {
+    impl Visitor for Place<PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
-                out: &mut self.out,
-                builder: PaymentMethodDetailsKonbiniStoreBuilder::deser_default(),
-            }))
+            out: &mut self.out,
+            builder: PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreBuilder::deser_default(),
+        }))
         }
     }
 
-    impl MapBuilder for PaymentMethodDetailsKonbiniStoreBuilder {
-        type Out = PaymentMethodDetailsKonbiniStore;
+    impl MapBuilder for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreBuilder {
+        type Out = PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "chain" => Deserialize::begin(&mut self.chain),
@@ -85,16 +86,18 @@ const _: () = {
         }
     }
 
-    impl ObjectDeser for PaymentMethodDetailsKonbiniStore {
-        type Builder = PaymentMethodDetailsKonbiniStoreBuilder;
+    impl ObjectDeser for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore {
+        type Builder = PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreBuilder;
     }
 
-    impl FromValueOpt for PaymentMethodDetailsKonbiniStore {
+    impl FromValueOpt for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore {
         fn from_value(v: Value) -> Option<Self> {
             let Value::Object(obj) = v else {
                 return None;
             };
-            let mut b = PaymentMethodDetailsKonbiniStoreBuilder::deser_default();
+            let mut b =
+                PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreBuilder::deser_default(
+                );
             for (k, v) in obj {
                 match k.as_str() {
                     "chain" => b.chain = FromValueOpt::from_value(v),
@@ -108,7 +111,7 @@ const _: () = {
 /// The name of the convenience store chain where the payment was completed.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum PaymentMethodDetailsKonbiniStoreChain {
+pub enum PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
     Familymart,
     Lawson,
     Ministop,
@@ -116,9 +119,9 @@ pub enum PaymentMethodDetailsKonbiniStoreChain {
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
-impl PaymentMethodDetailsKonbiniStoreChain {
+impl PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
     pub fn as_str(&self) -> &str {
-        use PaymentMethodDetailsKonbiniStoreChain::*;
+        use PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain::*;
         match self {
             Familymart => "familymart",
             Lawson => "lawson",
@@ -129,10 +132,10 @@ impl PaymentMethodDetailsKonbiniStoreChain {
     }
 }
 
-impl std::str::FromStr for PaymentMethodDetailsKonbiniStoreChain {
+impl std::str::FromStr for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
     type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodDetailsKonbiniStoreChain::*;
+        use PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain::*;
         match s {
             "familymart" => Ok(Familymart),
             "lawson" => Ok(Lawson),
@@ -142,33 +145,36 @@ impl std::str::FromStr for PaymentMethodDetailsKonbiniStoreChain {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
-                    "PaymentMethodDetailsKonbiniStoreChain"
+                    "PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain"
                 );
                 Ok(Unknown(v.to_owned()))
             }
         }
     }
 }
-impl std::fmt::Display for PaymentMethodDetailsKonbiniStoreChain {
+impl std::fmt::Display for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
 #[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodDetailsKonbiniStoreChain {
+impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodDetailsKonbiniStoreChain {
+impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodDetailsKonbiniStoreChain)).finish_non_exhaustive()
+        f.debug_struct(stringify!(
+            PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodDetailsKonbiniStoreChain {
+impl serde::Serialize for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -176,23 +182,32 @@ impl serde::Serialize for PaymentMethodDetailsKonbiniStoreChain {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodDetailsKonbiniStoreChain {
+impl miniserde::Deserialize for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
     fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsKonbiniStoreChain> {
+impl miniserde::de::Visitor
+    for crate::Place<PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain>
+{
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentMethodDetailsKonbiniStoreChain::from_str(s).expect("infallible"));
+        self.out = Some(
+            PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain::from_str(s)
+                .expect("infallible"),
+        );
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsKonbiniStoreChain);
+stripe_types::impl_from_val_with_from_str!(
+    PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain
+);
 #[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsKonbiniStoreChain {
+impl<'de> serde::Deserialize<'de>
+    for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;

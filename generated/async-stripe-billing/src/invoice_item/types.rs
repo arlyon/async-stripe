@@ -36,6 +36,8 @@ pub struct InvoiceItem {
     /// Item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
     pub discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
+    /// Array of field names that can't be modified. Attempting to update a frozen field returns an error.
+    pub frozen_fields: Option<Vec<InvoiceItemFrozenFields>>,
     /// Unique identifier for the object.
     pub id: stripe_billing::InvoiceItemId,
     /// The ID of the invoice this invoice item belongs to.
@@ -86,6 +88,7 @@ pub struct InvoiceItemBuilder {
     description: Option<Option<String>>,
     discountable: Option<bool>,
     discounts: Option<Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>>,
+    frozen_fields: Option<Option<Vec<InvoiceItemFrozenFields>>>,
     id: Option<stripe_billing::InvoiceItemId>,
     invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
     livemode: Option<bool>,
@@ -150,6 +153,7 @@ const _: () = {
                 "description" => Deserialize::begin(&mut self.description),
                 "discountable" => Deserialize::begin(&mut self.discountable),
                 "discounts" => Deserialize::begin(&mut self.discounts),
+                "frozen_fields" => Deserialize::begin(&mut self.frozen_fields),
                 "id" => Deserialize::begin(&mut self.id),
                 "invoice" => Deserialize::begin(&mut self.invoice),
                 "livemode" => Deserialize::begin(&mut self.livemode),
@@ -178,6 +182,7 @@ const _: () = {
                 description: Some(None),
                 discountable: None,
                 discounts: Some(None),
+                frozen_fields: Some(None),
                 id: None,
                 invoice: Some(None),
                 livemode: None,
@@ -205,6 +210,7 @@ const _: () = {
                 Some(description),
                 Some(discountable),
                 Some(discounts),
+                Some(frozen_fields),
                 Some(id),
                 Some(invoice),
                 Some(livemode),
@@ -228,6 +234,7 @@ const _: () = {
                 self.description.take(),
                 self.discountable,
                 self.discounts.take(),
+                self.frozen_fields.take(),
                 self.id.take(),
                 self.invoice.take(),
                 self.livemode,
@@ -255,6 +262,7 @@ const _: () = {
                 description,
                 discountable,
                 discounts,
+                frozen_fields,
                 id,
                 invoice,
                 livemode,
@@ -304,6 +312,7 @@ const _: () = {
                     "description" => b.description = FromValueOpt::from_value(v),
                     "discountable" => b.discountable = FromValueOpt::from_value(v),
                     "discounts" => b.discounts = FromValueOpt::from_value(v),
+                    "frozen_fields" => b.frozen_fields = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "invoice" => b.invoice = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
@@ -329,7 +338,7 @@ const _: () = {
 impl serde::Serialize for InvoiceItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("InvoiceItem", 23)?;
+        let mut s = s.serialize_struct("InvoiceItem", 24)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
@@ -338,6 +347,7 @@ impl serde::Serialize for InvoiceItem {
         s.serialize_field("description", &self.description)?;
         s.serialize_field("discountable", &self.discountable)?;
         s.serialize_field("discounts", &self.discounts)?;
+        s.serialize_field("frozen_fields", &self.frozen_fields)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("invoice", &self.invoice)?;
         s.serialize_field("livemode", &self.livemode)?;
@@ -355,6 +365,93 @@ impl serde::Serialize for InvoiceItem {
 
         s.serialize_field("object", "invoiceitem")?;
         s.end()
+    }
+}
+/// Array of field names that can't be modified. Attempting to update a frozen field returns an error.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum InvoiceItemFrozenFields {
+    Discounts,
+    Pricing,
+    Quantity,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl InvoiceItemFrozenFields {
+    pub fn as_str(&self) -> &str {
+        use InvoiceItemFrozenFields::*;
+        match self {
+            Discounts => "discounts",
+            Pricing => "pricing",
+            Quantity => "quantity",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for InvoiceItemFrozenFields {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InvoiceItemFrozenFields::*;
+        match s {
+            "discounts" => Ok(Discounts),
+            "pricing" => Ok(Pricing),
+            "quantity" => Ok(Quantity),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceItemFrozenFields");
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for InvoiceItemFrozenFields {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for InvoiceItemFrozenFields {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceItemFrozenFields {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoiceItemFrozenFields)).finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for InvoiceItemFrozenFields {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for InvoiceItemFrozenFields {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<InvoiceItemFrozenFields> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(InvoiceItemFrozenFields::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(InvoiceItemFrozenFields);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for InvoiceItemFrozenFields {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for InvoiceItem {

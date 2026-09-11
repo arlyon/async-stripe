@@ -3,7 +3,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsAlma {
-    pub installments: Option<stripe_shared::AlmaInstallments>,
+    pub installments:
+        Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsAlmaDetailsResourceInstallments>,
     /// The Alma transaction ID associated with this payment.
     pub transaction_id: Option<String>,
 }
@@ -15,7 +16,9 @@ impl std::fmt::Debug for PaymentMethodDetailsAlma {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsAlmaBuilder {
-    installments: Option<Option<stripe_shared::AlmaInstallments>>,
+    installments: Option<
+        Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsAlmaDetailsResourceInstallments>,
+    >,
     transaction_id: Option<Option<String>>,
 }
 

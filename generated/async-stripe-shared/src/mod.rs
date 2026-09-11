@@ -137,9 +137,9 @@ pub mod address;
 #[doc(inline)]
 pub use address::*;
 #[doc(hidden)]
-pub mod alma_installments;
+pub mod address_api_resource_terminal;
 #[doc(inline)]
-pub use alma_installments::*;
+pub use address_api_resource_terminal::*;
 #[doc(hidden)]
 pub mod amazon_pay_underlying_payment_method_funding_details;
 #[doc(inline)]
@@ -180,6 +180,10 @@ pub use billing_credit_balance_transaction::*;
 pub mod billing_credit_grant;
 #[doc(inline)]
 pub use billing_credit_grant::*;
+#[doc(hidden)]
+pub mod billing_feedback_option;
+#[doc(inline)]
+pub use billing_feedback_option::*;
 #[doc(hidden)]
 pub mod billing_bill_resource_invoicing_lines_common_credited_items;
 #[doc(inline)]
@@ -396,6 +400,14 @@ pub use checkout_customer_balance_payment_method_options::*;
 pub mod checkout_eps_payment_method_options;
 #[doc(inline)]
 pub use checkout_eps_payment_method_options::*;
+#[doc(hidden)]
+pub mod checkout_financial_connections_payment_method_options;
+#[doc(inline)]
+pub use checkout_financial_connections_payment_method_options::*;
+#[doc(hidden)]
+pub mod checkout_financial_connections_payment_method_options_filters;
+#[doc(inline)]
+pub use checkout_financial_connections_payment_method_options_filters::*;
 #[doc(hidden)]
 pub mod checkout_fpx_payment_method_options;
 #[doc(inline)]
@@ -853,6 +865,10 @@ pub mod application_fee_refund;
 #[doc(inline)]
 pub use application_fee_refund::*;
 #[doc(hidden)]
+pub mod feedback_options_status_transitions;
+#[doc(inline)]
+pub use feedback_options_status_transitions::*;
+#[doc(hidden)]
 pub mod file;
 #[doc(inline)]
 pub use file::*;
@@ -940,6 +956,10 @@ pub use invoice_payment_method_options_acss_debit_mandate_options::*;
 pub mod invoice_payment_method_options_bancontact;
 #[doc(inline)]
 pub use invoice_payment_method_options_bancontact::*;
+#[doc(hidden)]
+pub mod invoice_payment_method_options_billie;
+#[doc(inline)]
+pub use invoice_payment_method_options_billie::*;
 #[doc(hidden)]
 pub mod invoice_payment_method_options_card;
 #[doc(inline)]
@@ -1669,6 +1689,10 @@ pub mod payment_flows_private_payment_methods_alipay;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_alipay::*;
 #[doc(hidden)]
+pub mod payment_flows_private_payment_methods_alma_details_resource_installments;
+#[doc(inline)]
+pub use payment_flows_private_payment_methods_alma_details_resource_installments::*;
+#[doc(hidden)]
 pub mod payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_extended_authorization_extended_authorization;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_extended_authorization_extended_authorization::*;
@@ -1712,6 +1736,10 @@ pub use payment_flows_private_payment_methods_klarna_dob::*;
 pub mod payment_flows_private_payment_methods_klarna_payment_intent_amount_details_line_item_payment_method_options;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_klarna_payment_intent_amount_details_line_item_payment_method_options::*;
+#[doc(hidden)]
+pub mod payment_flows_private_payment_methods_konbini_details_resource_store;
+#[doc(inline)]
+pub use payment_flows_private_payment_methods_konbini_details_resource_store::*;
 #[doc(hidden)]
 pub mod payment_flows_private_payment_methods_naver_pay_payment_method_options;
 #[doc(inline)]
@@ -2385,10 +2413,6 @@ pub mod payment_method_details_konbini;
 #[doc(inline)]
 pub use payment_method_details_konbini::*;
 #[doc(hidden)]
-pub mod payment_method_details_konbini_store;
-#[doc(inline)]
-pub use payment_method_details_konbini_store::*;
-#[doc(hidden)]
 pub mod payment_method_details_kr_card;
 #[doc(inline)]
 pub use payment_method_details_kr_card::*;
@@ -2536,6 +2560,10 @@ pub use payment_method_details_payment_record_multibanco::*;
 pub mod payment_method_details_payment_record_naver_pay;
 #[doc(inline)]
 pub use payment_method_details_payment_record_naver_pay::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_nz_bank_account;
+#[doc(inline)]
+pub use payment_method_details_payment_record_nz_bank_account::*;
 #[doc(hidden)]
 pub mod payment_method_details_payment_record_oxxo;
 #[doc(inline)]
@@ -3944,6 +3972,10 @@ pub use subscription_item::*;
 pub mod subscription_item_billing_thresholds;
 #[doc(inline)]
 pub use subscription_item_billing_thresholds::*;
+#[doc(hidden)]
+pub mod subscription_payment_method_options_billie;
+#[doc(inline)]
+pub use subscription_payment_method_options_billie::*;
 #[doc(hidden)]
 pub mod subscription_payment_method_options_card;
 #[doc(inline)]

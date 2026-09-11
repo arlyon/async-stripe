@@ -4,6 +4,7 @@
 | BillingCreditBalanceSummary                                                                      | async-stripe-billing  | billing_credit_balance_summary          |
 | BillingCreditBalanceTransaction                                                                  | async-stripe-billing  | billing_credit_balance_transaction      |
 | BillingCreditGrant                                                                               | async-stripe-billing  | billing_credit_grant                    |
+| BillingFeedbackOption                                                                            | async-stripe-billing  | billing_feedback_option                 |
 | BillingMeter                                                                                     | async-stripe-billing  | billing_meter                           |
 | BillingMeterEvent                                                                                | async-stripe-billing  | billing_meter_event                     |
 | BillingMeterEventAdjustment                                                                      | async-stripe-billing  | billing_meter_event_adjustment          |

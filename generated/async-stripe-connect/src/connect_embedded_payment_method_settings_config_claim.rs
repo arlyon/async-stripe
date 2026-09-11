@@ -2,19 +2,21 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct AlmaInstallments {
-    /// The number of installments.
-    pub count: u64,
+pub struct ConnectEmbeddedPaymentMethodSettingsConfigClaim {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    pub features: stripe_connect::ConnectEmbeddedPaymentMethodSettingsFeatures,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for AlmaInstallments {
+impl std::fmt::Debug for ConnectEmbeddedPaymentMethodSettingsConfigClaim {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("AlmaInstallments").finish_non_exhaustive()
+        f.debug_struct("ConnectEmbeddedPaymentMethodSettingsConfigClaim").finish_non_exhaustive()
     }
 }
 #[doc(hidden)]
-pub struct AlmaInstallmentsBuilder {
-    count: Option<u64>,
+pub struct ConnectEmbeddedPaymentMethodSettingsConfigClaimBuilder {
+    enabled: Option<bool>,
+    features: Option<stripe_connect::ConnectEmbeddedPaymentMethodSettingsFeatures>,
 }
 
 #[allow(
@@ -33,44 +35,45 @@ const _: () = {
 
     make_place!(Place);
 
-    impl Deserialize for AlmaInstallments {
+    impl Deserialize for ConnectEmbeddedPaymentMethodSettingsConfigClaim {
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     struct Builder<'a> {
-        out: &'a mut Option<AlmaInstallments>,
-        builder: AlmaInstallmentsBuilder,
+        out: &'a mut Option<ConnectEmbeddedPaymentMethodSettingsConfigClaim>,
+        builder: ConnectEmbeddedPaymentMethodSettingsConfigClaimBuilder,
     }
 
-    impl Visitor for Place<AlmaInstallments> {
+    impl Visitor for Place<ConnectEmbeddedPaymentMethodSettingsConfigClaim> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: AlmaInstallmentsBuilder::deser_default(),
+                builder: ConnectEmbeddedPaymentMethodSettingsConfigClaimBuilder::deser_default(),
             }))
         }
     }
 
-    impl MapBuilder for AlmaInstallmentsBuilder {
-        type Out = AlmaInstallments;
+    impl MapBuilder for ConnectEmbeddedPaymentMethodSettingsConfigClaimBuilder {
+        type Out = ConnectEmbeddedPaymentMethodSettingsConfigClaim;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "count" => Deserialize::begin(&mut self.count),
+                "enabled" => Deserialize::begin(&mut self.enabled),
+                "features" => Deserialize::begin(&mut self.features),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { count: None }
+            Self { enabled: None, features: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(count),) = (self.count,) else {
+            let (Some(enabled), Some(features)) = (self.enabled, self.features) else {
                 return None;
             };
-            Some(Self::Out { count })
+            Some(Self::Out { enabled, features })
         }
     }
 
@@ -85,19 +88,20 @@ const _: () = {
         }
     }
 
-    impl ObjectDeser for AlmaInstallments {
-        type Builder = AlmaInstallmentsBuilder;
+    impl ObjectDeser for ConnectEmbeddedPaymentMethodSettingsConfigClaim {
+        type Builder = ConnectEmbeddedPaymentMethodSettingsConfigClaimBuilder;
     }
 
-    impl FromValueOpt for AlmaInstallments {
+    impl FromValueOpt for ConnectEmbeddedPaymentMethodSettingsConfigClaim {
         fn from_value(v: Value) -> Option<Self> {
             let Value::Object(obj) = v else {
                 return None;
             };
-            let mut b = AlmaInstallmentsBuilder::deser_default();
+            let mut b = ConnectEmbeddedPaymentMethodSettingsConfigClaimBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "count" => b.count = FromValueOpt::from_value(v),
+                    "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "features" => b.features = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

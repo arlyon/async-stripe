@@ -888,6 +888,10 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact>,
+    /// If paying by `billie`, this sub-hash contains details about the Billie payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub billie: Option<miniserde::json::Value>,
     /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCard>,
@@ -926,6 +930,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptions {
         Self {
             acss_debit: None,
             bancontact: None,
+            billie: None,
             card: None,
             customer_balance: None,
             konbini: None,
@@ -2533,6 +2538,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Billie,
     Boleto,
     Card,
     Cashapp,
@@ -2588,6 +2594,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
+            Billie => "billie",
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
@@ -2646,6 +2653,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
@@ -4309,6 +4317,10 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions {
     /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsBancontact>,
+    /// If paying by `billie`, this sub-hash contains details about the Billie payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub billie: Option<miniserde::json::Value>,
     /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsCard>,
@@ -4347,6 +4359,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptions {
         Self {
             acss_debit: None,
             bancontact: None,
+            billie: None,
             card: None,
             customer_balance: None,
             konbini: None,
@@ -5954,6 +5967,7 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Billie,
     Boleto,
     Card,
     Cashapp,
@@ -6009,6 +6023,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             AuBecsDebit => "au_becs_debit",
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
+            Billie => "billie",
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
@@ -6067,6 +6082,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "au_becs_debit" => Ok(AuBecsDebit),
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
@@ -13196,6 +13212,7 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsBillingSchedules {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub applies_to: Option<Vec<CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesTo>>,
     /// The end date for the billing schedule.
+    /// You must not set this earlier than current period end for every applicable subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bill_until: Option<CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntil>,
     /// Specify a key for the billing schedule.
@@ -13322,6 +13339,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// The end date for the billing schedule.
+/// You must not set this earlier than current period end for every applicable subscription item.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

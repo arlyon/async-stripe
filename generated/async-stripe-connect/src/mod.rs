@@ -131,6 +131,14 @@ pub mod connect_embedded_payment_disputes_features;
 #[doc(inline)]
 pub use connect_embedded_payment_disputes_features::*;
 #[doc(hidden)]
+pub mod connect_embedded_payment_method_settings_config_claim;
+#[doc(inline)]
+pub use connect_embedded_payment_method_settings_config_claim::*;
+#[doc(hidden)]
+pub mod connect_embedded_payment_method_settings_features;
+#[doc(inline)]
+pub use connect_embedded_payment_method_settings_features::*;
+#[doc(hidden)]
 pub mod connect_embedded_payments_config_claim;
 #[doc(inline)]
 pub use connect_embedded_payments_config_claim::*;

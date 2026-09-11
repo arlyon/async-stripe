@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsKonbini {
     /// If the payment succeeded, this contains the details of the convenience store where the payment was completed.
-    pub store: Option<stripe_shared::PaymentMethodDetailsKonbiniStore>,
+    pub store: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodDetailsKonbini {
@@ -14,7 +14,8 @@ impl std::fmt::Debug for PaymentMethodDetailsKonbini {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsKonbiniBuilder {
-    store: Option<Option<stripe_shared::PaymentMethodDetailsKonbiniStore>>,
+    store:
+        Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore>>,
 }
 
 #[allow(

@@ -1580,7 +1580,8 @@ impl CreateCheckoutSessionCustomFields {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsDropdown {
-    /// The value that pre-fills the field on the payment page.Must match a `value` in the `options` array.
+    /// The value that pre-fills the field on the payment page.
+    /// Must match a `value` in the `options` array.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<String>,
     /// The options available for the customer to select. Up to 200 options allowed.
@@ -3327,26 +3328,18 @@ pub struct CreateCheckoutSessionPaymentIntentData {
     /// If `receipt_email` is specified for a payment in live mode, a receipt will be sent regardless of your [email settings](https://dashboard.stripe.com/account/emails).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receipt_email: Option<String>,
-    /// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment.
-    /// method collected by this Checkout Session.
+    /// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
     ///
-    /// When setting this to `on_session`, Checkout will show a notice to the
-    /// customer that their payment details will be saved.
+    /// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
     ///
-    /// When setting this to `off_session`, Checkout will show a notice to the
-    /// customer that their payment details will be saved and used for future
-    /// payments.
+    /// When setting this to `off_session`, Checkout will show a notice to the customer that their payment details will be saved and used for future payments.
     ///
-    /// If a Customer has been provided or Checkout creates a new Customer,
-    /// Checkout will attach the payment method to the Customer.
+    /// If a Customer has been provided or Checkout creates a new Customer, Checkout will attach the payment method to the Customer.
     ///
-    /// If Checkout does not create a Customer, the payment method is not attached
-    /// to a Customer. To reuse the payment method, you can retrieve it from the
-    /// Checkout Session's PaymentIntent.
+    /// If Checkout does not create a Customer, the payment method is not attached to a Customer.
+    /// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.
     ///
-    /// When processing card payments, Checkout also uses `setup_future_usage`
-    /// to dynamically optimize your payment flow and comply with regional
-    /// legislation and network rules, such as SCA.
+    /// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentIntentDataSetupFutureUsage>,
     /// Shipping information for this payment.
@@ -3478,26 +3471,18 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentIntentDataCapt
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment.
-/// method collected by this Checkout Session.
+/// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
 ///
-/// When setting this to `on_session`, Checkout will show a notice to the
-/// customer that their payment details will be saved.
+/// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
 ///
-/// When setting this to `off_session`, Checkout will show a notice to the
-/// customer that their payment details will be saved and used for future
-/// payments.
+/// When setting this to `off_session`, Checkout will show a notice to the customer that their payment details will be saved and used for future payments.
 ///
-/// If a Customer has been provided or Checkout creates a new Customer,
-/// Checkout will attach the payment method to the Customer.
+/// If a Customer has been provided or Checkout creates a new Customer, Checkout will attach the payment method to the Customer.
 ///
-/// If Checkout does not create a Customer, the payment method is not attached
-/// to a Customer. To reuse the payment method, you can retrieve it from the
-/// Checkout Session's PaymentIntent.
+/// If Checkout does not create a Customer, the payment method is not attached to a Customer.
+/// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.
 ///
-/// When processing card payments, Checkout also uses `setup_future_usage`
-/// to dynamically optimize your payment flow and comply with regional
-/// legislation and network rules, such as SCA.
+/// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCheckoutSessionPaymentIntentDataSetupFutureUsage {
@@ -6685,6 +6670,11 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCardRestrictions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub brands_blocked:
         Option<Vec<CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsBrandsBlocked>>,
+    /// Card funding types to block for this Checkout Session.
+    /// Supported values are `credit`, `debit`, and `prepaid`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding_types_blocked:
+        Option<Vec<CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRestrictions {
@@ -6695,7 +6685,7 @@ impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRestrictio
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCardRestrictions {
     pub fn new() -> Self {
-        Self { brands_blocked: None }
+        Self { brands_blocked: None, funding_types_blocked: None }
     }
 }
 impl Default for CreateCheckoutSessionPaymentMethodOptionsCardRestrictions {
@@ -6780,6 +6770,97 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCardRestricti
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsBrandsBlocked
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Card funding types to block for this Checkout Session.
+/// Supported values are `credit`, `debit`, and `prepaid`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked {
+    Credit,
+    Debit,
+    Prepaid,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked::*;
+        match self {
+            Credit => "credit",
+            Debit => "debit",
+            Prepaid => "prepaid",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked::*;
+        match s {
+            "credit" => Ok(Credit),
+            "debit" => Ok(Debit),
+            "prepaid" => Ok(Prepaid),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -13924,7 +14005,7 @@ pub struct CreateCheckoutSessionPermissions {
     /// Stripe Checkout client will automatically update the shipping details.
     /// If set to `server_only`, only your server is allowed to update the shipping details.
     ///
-    /// When set to `server_only`, you must add the onShippingDetailsChange event handler when initializing the Stripe Checkout client and manually update the shipping details from your server using the Stripe API.
+    /// This parameter is only supported when `ui_mode=elements`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub update_shipping_details: Option<CreateCheckoutSessionPermissionsUpdateShippingDetails>,
 }
@@ -13950,7 +14031,7 @@ impl Default for CreateCheckoutSessionPermissions {
 /// Stripe Checkout client will automatically update the shipping details.
 /// If set to `server_only`, only your server is allowed to update the shipping details.
 ///
-/// When set to `server_only`, you must add the onShippingDetailsChange event handler when initializing the Stripe Checkout client and manually update the shipping details from your server using the Stripe API.
+/// This parameter is only supported when `ui_mode=elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCheckoutSessionPermissionsUpdateShippingDetails {

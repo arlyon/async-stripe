@@ -23,8 +23,10 @@ pub mod billing_credit_balance_summary;
 pub mod billing_credit_balance_transaction;
 pub use stripe_shared::billing_credit_balance_transaction::*;
 pub mod billing_credit_grant;
-pub use billing_meter::types::*;
 pub use stripe_shared::billing_credit_grant::*;
+pub mod billing_feedback_option;
+pub use billing_meter::types::*;
+pub use stripe_shared::billing_feedback_option::*;
 pub mod billing_meter;
 pub use billing_meter_event::types::*;
 pub mod billing_meter_event;
@@ -91,6 +93,7 @@ pub use stripe_shared::deleted_tax_id::*;
 pub use stripe_shared::deleted_test_helpers_test_clock::*;
 pub use stripe_shared::discounts_resource_discount_amount::*;
 pub use stripe_shared::discounts_resource_stackable_discount_with_discount_end::*;
+pub use stripe_shared::feedback_options_status_transitions::*;
 pub mod invoice;
 pub use stripe_shared::invoice::*;
 pub use stripe_shared::invoice_installments_card::*;
@@ -103,7 +106,7 @@ pub use stripe_shared::invoice_line_item_period::*;
 pub use stripe_shared::invoice_mandate_options_card::*;
 pub use stripe_shared::invoice_mandate_options_payto::*;
 pub mod invoice_payment;
-pub use stripe_shared::invoice_payment::*;pub use stripe_shared::invoice_payment_method_options_acss_debit::*;pub use stripe_shared::invoice_payment_method_options_acss_debit_mandate_options::*;pub use stripe_shared::invoice_payment_method_options_bancontact::*;pub use stripe_shared::invoice_payment_method_options_card::*;pub use stripe_shared::invoice_payment_method_options_customer_balance::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer_eu_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_konbini::*;pub use stripe_shared::invoice_payment_method_options_mandate_options_upi::*;pub use stripe_shared::invoice_payment_method_options_payto::*;pub use stripe_shared::invoice_payment_method_options_pix::*;pub use stripe_shared::invoice_payment_method_options_sepa_debit::*;pub use stripe_shared::invoice_payment_method_options_upi::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options_filters::*;pub use stripe_shared::invoice_rendering_pdf::*;pub use invoice_rendering_template::types::*;
+pub use stripe_shared::invoice_payment::*;pub use stripe_shared::invoice_payment_method_options_acss_debit::*;pub use stripe_shared::invoice_payment_method_options_acss_debit_mandate_options::*;pub use stripe_shared::invoice_payment_method_options_bancontact::*;pub use stripe_shared::invoice_payment_method_options_billie::*;pub use stripe_shared::invoice_payment_method_options_card::*;pub use stripe_shared::invoice_payment_method_options_customer_balance::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer_eu_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_konbini::*;pub use stripe_shared::invoice_payment_method_options_mandate_options_upi::*;pub use stripe_shared::invoice_payment_method_options_payto::*;pub use stripe_shared::invoice_payment_method_options_pix::*;pub use stripe_shared::invoice_payment_method_options_sepa_debit::*;pub use stripe_shared::invoice_payment_method_options_upi::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options_filters::*;pub use stripe_shared::invoice_rendering_pdf::*;pub use invoice_rendering_template::types::*;
 pub mod invoice_rendering_template;
 pub use stripe_shared::invoice_setting_checkout_rendering_options::*;
 pub use stripe_shared::invoice_setting_custom_field::*;
@@ -170,6 +173,10 @@ pub use portal_flows_flow::*;
 pub mod portal_flows_flow_after_completion;
 #[doc(inline)]
 pub use portal_flows_flow_after_completion::*;
+#[doc(hidden)]
+pub mod portal_flows_flow_customer_update;
+#[doc(inline)]
+pub use portal_flows_flow_customer_update::*;
 #[doc(hidden)]
 pub mod portal_flows_flow_subscription_cancel;
 #[doc(inline)]
@@ -294,6 +301,7 @@ pub use stripe_shared::subscription_billing_thresholds::*;
 pub mod subscription_item;
 pub use stripe_shared::subscription_item::*;
 pub use stripe_shared::subscription_item_billing_thresholds::*;
+pub use stripe_shared::subscription_payment_method_options_billie::*;
 pub use stripe_shared::subscription_payment_method_options_card::*;
 pub use stripe_shared::subscription_payment_method_options_mandate_options_pix::*;
 pub use stripe_shared::subscription_payment_method_options_pix::*;
