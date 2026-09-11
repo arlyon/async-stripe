@@ -4,7 +4,10 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerSessionResourceComponents {
+    pub active_entitlements:
+        stripe_core::CustomerSessionResourceComponentsResourceActiveEntitlements,
     pub buy_button: stripe_core::CustomerSessionResourceComponentsResourceBuyButton,
+    pub customer_portal: stripe_core::CustomerSessionResourceComponentsResourceCustomerPortal,
     pub customer_sheet: stripe_core::CustomerSessionResourceComponentsResourceCustomerSheet,
     pub mobile_payment_element:
         stripe_core::CustomerSessionResourceComponentsResourceMobilePaymentElement,
@@ -19,7 +22,10 @@ impl std::fmt::Debug for CustomerSessionResourceComponents {
 }
 #[doc(hidden)]
 pub struct CustomerSessionResourceComponentsBuilder {
+    active_entitlements:
+        Option<stripe_core::CustomerSessionResourceComponentsResourceActiveEntitlements>,
     buy_button: Option<stripe_core::CustomerSessionResourceComponentsResourceBuyButton>,
+    customer_portal: Option<stripe_core::CustomerSessionResourceComponentsResourceCustomerPortal>,
     customer_sheet: Option<stripe_core::CustomerSessionResourceComponentsResourceCustomerSheet>,
     mobile_payment_element:
         Option<stripe_core::CustomerSessionResourceComponentsResourceMobilePaymentElement>,
@@ -67,7 +73,9 @@ const _: () = {
         type Out = CustomerSessionResourceComponents;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "active_entitlements" => Deserialize::begin(&mut self.active_entitlements),
                 "buy_button" => Deserialize::begin(&mut self.buy_button),
+                "customer_portal" => Deserialize::begin(&mut self.customer_portal),
                 "customer_sheet" => Deserialize::begin(&mut self.customer_sheet),
                 "mobile_payment_element" => Deserialize::begin(&mut self.mobile_payment_element),
                 "payment_element" => Deserialize::begin(&mut self.payment_element),
@@ -78,7 +86,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                active_entitlements: None,
                 buy_button: None,
+                customer_portal: None,
                 customer_sheet: None,
                 mobile_payment_element: None,
                 payment_element: None,
@@ -88,13 +98,17 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(active_entitlements),
                 Some(buy_button),
+                Some(customer_portal),
                 Some(customer_sheet),
                 Some(mobile_payment_element),
                 Some(payment_element),
                 Some(pricing_table),
             ) = (
+                self.active_entitlements,
                 self.buy_button,
+                self.customer_portal,
                 self.customer_sheet.take(),
                 self.mobile_payment_element.take(),
                 self.payment_element.take(),
@@ -104,7 +118,9 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                active_entitlements,
                 buy_button,
+                customer_portal,
                 customer_sheet,
                 mobile_payment_element,
                 payment_element,
@@ -136,7 +152,9 @@ const _: () = {
             let mut b = CustomerSessionResourceComponentsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "active_entitlements" => b.active_entitlements = FromValueOpt::from_value(v),
                     "buy_button" => b.buy_button = FromValueOpt::from_value(v),
+                    "customer_portal" => b.customer_portal = FromValueOpt::from_value(v),
                     "customer_sheet" => b.customer_sheet = FromValueOpt::from_value(v),
                     "mobile_payment_element" => {
                         b.mobile_payment_element = FromValueOpt::from_value(v)

@@ -475,6 +475,9 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     /// Whether the feature is enabled.
     pub enabled: bool,
+    /// The IDs of custom feedback options to use for this cancellation reason.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub feedback_options: Option<Vec<String>>,
     /// Which cancellation reasons will be given as options to the customer.
     pub options:
         Vec<CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions>,
@@ -499,7 +502,7 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReaso
             >,
         >,
     ) -> Self {
-        Self { enabled: enabled.into(), options: options.into() }
+        Self { enabled: enabled.into(), feedback_options: None, options: options.into() }
     }
 }
 /// Which cancellation reasons will be given as options to the customer.
@@ -1724,6 +1727,9 @@ impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     /// Whether the feature is enabled.
     pub enabled: bool,
+    /// The IDs of custom feedback options to use for this cancellation reason.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub feedback_options: Option<Vec<String>>,
     /// Which cancellation reasons will be given as options to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<
@@ -1743,7 +1749,7 @@ impl std::fmt::Debug
 }
 impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into(), options: None }
+        Self { enabled: enabled.into(), feedback_options: None, options: None }
     }
 }
 /// Which cancellation reasons will be given as options to the customer.

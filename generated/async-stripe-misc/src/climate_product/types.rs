@@ -10,6 +10,7 @@ pub struct ClimateProduct {
     pub current_prices_per_metric_ton:
         std::collections::HashMap<String, stripe_misc::ClimateRemovalsProductsPrice>,
     /// The year in which the carbon removal is expected to be delivered.
+    /// If the year is in the past, this represents spot inventory with guaranteed delivery.
     pub delivery_year: Option<i64>,
     /// Unique identifier for the object. For convenience, Climate product IDs are human-readable strings
     /// that start with `climsku_`.

@@ -1412,6 +1412,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAoType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAt {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsAtIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsAtStandard>,
@@ -1427,7 +1430,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAt {
 }
 impl CreateTaxRegistrationCountryOptionsAt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAtType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsAtIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAtIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAtIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsAtIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -2675,6 +2772,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBdType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBe {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsBeIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsBeStandard>,
@@ -2690,7 +2790,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBe {
 }
 impl CreateTaxRegistrationCountryOptionsBe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBeType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBeIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBeIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBeIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsBeIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -3072,6 +3266,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBfType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBg {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsBgIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsBgStandard>,
@@ -3087,7 +3284,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBg {
 }
 impl CreateTaxRegistrationCountryOptionsBg {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBgType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsBgIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBgIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBgIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsBgIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -4800,6 +5091,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCvType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCy {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsCyIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsCyStandard>,
@@ -4815,7 +5109,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCy {
 }
 impl CreateTaxRegistrationCountryOptionsCy {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCyType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsCyIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCyIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCyIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsCyIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -5003,6 +5391,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCyType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCz {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsCzIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsCzStandard>,
@@ -5018,7 +5409,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCz {
 }
 impl CreateTaxRegistrationCountryOptionsCz {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCzType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsCzIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCzIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCzIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsCzIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -5206,6 +5691,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCzType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsDe {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsDeIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsDeStandard>,
@@ -5221,7 +5709,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDe {
 }
 impl CreateTaxRegistrationCountryOptionsDe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsDeType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsDeIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDeIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsDeIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsDeIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -5409,6 +5991,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDeType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsDk {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsDkIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsDkStandard>,
@@ -5424,7 +6009,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDk {
 }
 impl CreateTaxRegistrationCountryOptionsDk {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsDkType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsDkIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDkIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsDkIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsDkIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -5702,6 +6381,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEcType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEe {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsEeIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsEeStandard>,
@@ -5717,7 +6399,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEe {
 }
 impl CreateTaxRegistrationCountryOptionsEe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEeType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsEeIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEeIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsEeIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsEeIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -5995,6 +6771,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEgType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEs {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsEsIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsEsStandard>,
@@ -6010,7 +6789,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEs {
 }
 impl CreateTaxRegistrationCountryOptionsEs {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEsType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsEsIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEsIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsEsIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsEsIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -6392,6 +7265,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEtType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsFi {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsFiIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsFiStandard>,
@@ -6407,7 +7283,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFi {
 }
 impl CreateTaxRegistrationCountryOptionsFi {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsFiType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsFiIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFiIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsFiIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsFiIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -6595,6 +7565,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFiType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsFr {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsFrIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsFrStandard>,
@@ -6610,7 +7583,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFr {
 }
 impl CreateTaxRegistrationCountryOptionsFr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsFrType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsFrIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFrIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsFrIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsFrIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -7276,6 +8343,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGnType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGr {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsGrIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsGrStandard>,
@@ -7291,7 +8361,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGr {
 }
 impl CreateTaxRegistrationCountryOptionsGr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsGrType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsGrIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGrIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsGrIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsGrIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -7479,6 +8643,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGrType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsHr {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsHrIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsHrStandard>,
@@ -7494,7 +8661,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHr {
 }
 impl CreateTaxRegistrationCountryOptionsHr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsHrType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsHrIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHrIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsHrIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsHrIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -7682,6 +8943,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHrType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsHu {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsHuIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsHuStandard>,
@@ -7697,7 +8961,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHu {
 }
 impl CreateTaxRegistrationCountryOptionsHu {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsHuType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsHuIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHuIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsHuIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsHuIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -7975,6 +9333,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIdType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIe {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsIeIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsIeStandard>,
@@ -7990,7 +9351,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIe {
 }
 impl CreateTaxRegistrationCountryOptionsIe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsIeType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsIeIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIeIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsIeIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsIeIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -8462,6 +9917,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIsType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIt {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsItIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsItStandard>,
@@ -8477,7 +9935,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIt {
 }
 impl CreateTaxRegistrationCountryOptionsIt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsItType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsItIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsItIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsItIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsItIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -9489,6 +11041,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLkType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLt {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsLtIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsLtStandard>,
@@ -9504,7 +11059,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLt {
 }
 impl CreateTaxRegistrationCountryOptionsLt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsLtType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsLtIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLtIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLtIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsLtIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -9692,6 +11341,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLtType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLu {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsLuIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsLuStandard>,
@@ -9707,7 +11359,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLu {
 }
 impl CreateTaxRegistrationCountryOptionsLu {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsLuType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsLuIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLuIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLuIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsLuIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -9895,6 +11641,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLuType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLv {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsLvIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsLvStandard>,
@@ -9910,7 +11659,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLv {
 }
 impl CreateTaxRegistrationCountryOptionsLv {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsLvType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsLvIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLvIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLvIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsLvIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -10860,6 +12703,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMrType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMt {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsMtIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsMtStandard>,
@@ -10875,7 +12721,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMt {
 }
 impl CreateTaxRegistrationCountryOptionsMt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMtType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsMtIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMtIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMtIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsMtIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -11333,6 +13273,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNgType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNl {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsNlIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsNlStandard>,
@@ -11348,7 +13291,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNl {
 }
 impl CreateTaxRegistrationCountryOptionsNl {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsNlType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsNlIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNlIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsNlIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsNlIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -12388,6 +14425,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPhType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPl {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsPlIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsPlStandard>,
@@ -12403,7 +14443,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPl {
 }
 impl CreateTaxRegistrationCountryOptionsPl {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsPlType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsPlIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPlIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsPlIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsPlIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -12591,6 +14725,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPlType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPt {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsPtIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsPtStandard>,
@@ -12606,7 +14743,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPt {
 }
 impl CreateTaxRegistrationCountryOptionsPt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsPtType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsPtIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPtIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsPtIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsPtIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -12794,6 +15025,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPtType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRo {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsRoIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsRoStandard>,
@@ -12809,7 +15043,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRo {
 }
 impl CreateTaxRegistrationCountryOptionsRo {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsRoType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsRoIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRoIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsRoIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsRoIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -13371,6 +15699,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSaType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSe {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsSeIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsSeStandard>,
@@ -13386,7 +15717,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSe {
 }
 impl CreateTaxRegistrationCountryOptionsSe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSeType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsSeIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSeIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSeIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsSeIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -13768,6 +16193,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSgType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSi {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsSiIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsSiStandard>,
@@ -13783,7 +16211,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSi {
 }
 impl CreateTaxRegistrationCountryOptionsSi {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSiType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsSiIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSiIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSiIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsSiIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.
@@ -13971,6 +16493,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSiType 
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSk {
+    /// Options for the IGIC registration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub igic: Option<CreateTaxRegistrationCountryOptionsSkIgic>,
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsSkStandard>,
@@ -13986,7 +16511,101 @@ impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSk {
 }
 impl CreateTaxRegistrationCountryOptionsSk {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSkType>) -> Self {
-        Self { standard: None, type_: type_.into() }
+        Self { igic: None, standard: None, type_: type_.into() }
+    }
+}
+/// Options for the IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsSkIgic {
+    /// Place of supply scheme used in an IGIC registration.
+    pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSkIgic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSkIgic").finish_non_exhaustive()
+    }
+}
+impl CreateTaxRegistrationCountryOptionsSkIgic {
+    pub fn new(
+        place_of_supply_scheme: impl Into<CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme>,
+    ) -> Self {
+        Self { place_of_supply_scheme: place_of_supply_scheme.into() }
+    }
+}
+/// Place of supply scheme used in an IGIC registration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme {
+    InboundGoods,
+    Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme::*;
+        match self {
+            InboundGoods => "inbound_goods",
+            Standard => "standard",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme::*;
+        match s {
+            "inbound_goods" => Ok(InboundGoods),
+            "standard" => Ok(Standard),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the standard registration.

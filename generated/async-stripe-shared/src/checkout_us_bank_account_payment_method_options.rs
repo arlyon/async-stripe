@@ -3,7 +3,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutUsBankAccountPaymentMethodOptions {
-    pub financial_connections: Option<stripe_shared::LinkedAccountOptionsCommon>,
+    pub financial_connections:
+        Option<stripe_shared::CheckoutFinancialConnectionsPaymentMethodOptions>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -28,7 +29,8 @@ impl std::fmt::Debug for CheckoutUsBankAccountPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutUsBankAccountPaymentMethodOptionsBuilder {
-    financial_connections: Option<Option<stripe_shared::LinkedAccountOptionsCommon>>,
+    financial_connections:
+        Option<Option<stripe_shared::CheckoutFinancialConnectionsPaymentMethodOptions>>,
     setup_future_usage: Option<Option<CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage>>,
     target_date: Option<Option<String>>,
     verification_method:

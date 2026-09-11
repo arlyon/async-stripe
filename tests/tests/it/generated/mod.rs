@@ -23,6 +23,7 @@ pub fn check_fixtures(resources: &serde_json::Value) {
         "billing.credit_balance_transaction",
     );
     check_object::<stripe_billing::BillingCreditGrant>(resources, "billing.credit_grant");
+    check_object::<stripe_billing::BillingFeedbackOption>(resources, "billing.feedback_option");
     check_object::<stripe_billing::BillingMeter>(resources, "billing.meter");
     check_object::<stripe_billing::BillingMeterEvent>(resources, "billing.meter_event");
     check_object::<stripe_billing::BillingMeterEventAdjustment>(

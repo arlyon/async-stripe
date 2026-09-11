@@ -122,7 +122,7 @@ const _: () = {
                 self.apple_pay,
                 self.dynamic_last4.take(),
                 self.google_pay,
-                self.link,
+                self.link.take(),
                 self.masterpass.take(),
                 self.samsung_pay,
                 self.type_.take(),

@@ -261,6 +261,12 @@
             "smart_disputes_management": true
           }
         },
+        "payment_method_settings": {
+          "enabled": true,
+          "features": {
+            "disable_stripe_user_authentication": true
+          }
+        },
         "payments": {
           "enabled": false,
           "features": {
@@ -631,6 +637,16 @@
       "updated": 234430277,
       "voided_at": null
     },
+    "billing.feedback_option": {
+      "description": "description",
+      "id": "obj_123",
+      "livemode": true,
+      "object": "billing.feedback_option",
+      "status": "active",
+      "status_transitions": {
+        "deactivated_at": null
+      }
+    },
     "billing.meter": {
       "created": 1234567890,
       "customer_mapping": {
@@ -714,6 +730,7 @@
         "subscription_cancel": {
           "cancellation_reason": {
             "enabled": false,
+            "feedback_options": null,
             "options": []
           },
           "enabled": false,
@@ -762,6 +779,7 @@
           },
           "type": "hosted_confirmation"
         },
+        "customer_update": {},
         "subscription_cancel": {
           "retention": {
             "coupon_offer": {
@@ -1374,6 +1392,7 @@
           "type": "type"
         }
       },
+      "metadata": null,
       "object": "confirmation_token",
       "payment_intent": null,
       "payment_method_options": {
@@ -1925,8 +1944,14 @@
     "customer_session": {
       "client_secret": "cuss_secret_QXhWeUEtZoDV8FHnNbPiBHmAkXKnqYLGMGq7LLf8ODSQ8gL",
       "components": {
+        "active_entitlements": {
+          "enabled": true
+        },
         "buy_button": {
           "enabled": false
+        },
+        "customer_portal": {
+          "enabled": true
         },
         "customer_sheet": {
           "enabled": true,
@@ -2820,6 +2845,7 @@
           "bancontact": {
             "preferred_language": "fr"
           },
+          "billie": {},
           "card": {
             "request_three_d_secure": null
           },
@@ -3733,6 +3759,7 @@
       }
     },
     "payment_intent": {
+      "allowed_payment_method_types": null,
       "amount": 1099,
       "amount_capturable": 0,
       "amount_details": {
@@ -5058,6 +5085,7 @@
       "usage": "off_session"
     },
     "setup_intent": {
+      "allowed_payment_method_types": null,
       "application": null,
       "automatic_payment_methods": {
         "enabled": null
@@ -5317,6 +5345,7 @@
       "cancellation_details": {
         "comment": null,
         "feedback": null,
+        "feedback_option": null,
         "reason": null
       },
       "collection_method": "charge_automatically",
@@ -5440,6 +5469,7 @@
           "bancontact": {
             "preferred_language": "fr"
           },
+          "billie": {},
           "card": {
             "network": null,
             "request_three_d_secure": null
@@ -5464,6 +5494,7 @@
       "pending_setup_intent": null,
       "pending_update": {
         "billing_cycle_anchor": null,
+        "cancel_at_period_end": null,
         "discount": {
           "checkout_session": null,
           "customer": null,
@@ -6709,5 +6740,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2426"
+  "version": "v2484"
 }

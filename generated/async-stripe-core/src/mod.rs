@@ -87,9 +87,17 @@ pub mod customer_session_resource_components;
 #[doc(inline)]
 pub use customer_session_resource_components::*;
 #[doc(hidden)]
+pub mod customer_session_resource_components_resource_active_entitlements;
+#[doc(inline)]
+pub use customer_session_resource_components_resource_active_entitlements::*;
+#[doc(hidden)]
 pub mod customer_session_resource_components_resource_buy_button;
 #[doc(inline)]
 pub use customer_session_resource_components_resource_buy_button::*;
+#[doc(hidden)]
+pub mod customer_session_resource_components_resource_customer_portal;
+#[doc(inline)]
+pub use customer_session_resource_components_resource_customer_portal::*;
 #[doc(hidden)]
 pub mod customer_session_resource_components_resource_customer_sheet;
 #[doc(inline)]

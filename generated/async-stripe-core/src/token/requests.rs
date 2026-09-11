@@ -239,6 +239,7 @@ pub struct CreateTokenAccountCompany {
     /// The Kanji variation of the company's primary address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kanji: Option<CreateTokenAccountCompanyAddressKanji>,
+    /// The location where the business is administered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub administrative_address: Option<CreateTokenAccountCompanyAdministrativeAddress>,
     /// Whether the company's directors have been provided.
@@ -285,6 +286,7 @@ pub struct CreateTokenAccountCompany {
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    /// The primary location where the business conducts operations.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub principal_place_of_business: Option<CreateTokenAccountCompanyPrincipalPlaceOfBusiness>,
     /// When the business was incorporated or registered.
@@ -503,6 +505,7 @@ impl Default for CreateTokenAccountCompanyAddressKanji {
         Self::new()
     }
 }
+/// The location where the business is administered.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -682,6 +685,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyOwnershipExemptio
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The primary location where the business conducts operations.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

@@ -1,4 +1,4 @@
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
@@ -7,6 +7,8 @@ pub struct CancellationDetails {
     pub comment: Option<String>,
     /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
     pub feedback: Option<CancellationDetailsFeedback>,
+    /// Customized feedback options that provide deeper insight into why the subscription was canceled, if the subscription was canceled explicitly by the user.
+    pub feedback_option: Option<stripe_types::Expandable<stripe_shared::BillingFeedbackOption>>,
     /// Why this subscription was canceled.
     pub reason: Option<CancellationDetailsReason>,
 }
@@ -20,6 +22,7 @@ impl std::fmt::Debug for CancellationDetails {
 pub struct CancellationDetailsBuilder {
     comment: Option<Option<String>>,
     feedback: Option<Option<CancellationDetailsFeedback>>,
+    feedback_option: Option<Option<stripe_types::Expandable<stripe_shared::BillingFeedbackOption>>>,
     reason: Option<Option<CancellationDetailsReason>>,
 }
 
@@ -65,22 +68,31 @@ const _: () = {
             Ok(match k {
                 "comment" => Deserialize::begin(&mut self.comment),
                 "feedback" => Deserialize::begin(&mut self.feedback),
+                "feedback_option" => Deserialize::begin(&mut self.feedback_option),
                 "reason" => Deserialize::begin(&mut self.reason),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { comment: Some(None), feedback: Some(None), reason: Some(None) }
+            Self {
+                comment: Some(None),
+                feedback: Some(None),
+                feedback_option: Some(None),
+                reason: Some(None),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(comment), Some(feedback), Some(reason)) =
-                (self.comment.take(), self.feedback.take(), self.reason.take())
-            else {
+            let (Some(comment), Some(feedback), Some(feedback_option), Some(reason)) = (
+                self.comment.take(),
+                self.feedback.take(),
+                self.feedback_option.take(),
+                self.reason.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { comment, feedback, reason })
+            Some(Self::Out { comment, feedback, feedback_option, reason })
         }
     }
 
@@ -109,6 +121,7 @@ const _: () = {
                 match k.as_str() {
                     "comment" => b.comment = FromValueOpt::from_value(v),
                     "feedback" => b.feedback = FromValueOpt::from_value(v),
+                    "feedback_option" => b.feedback_option = FromValueOpt::from_value(v),
                     "reason" => b.reason = FromValueOpt::from_value(v),
                     _ => {}
                 }

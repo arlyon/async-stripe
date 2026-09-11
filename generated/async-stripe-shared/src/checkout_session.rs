@@ -123,7 +123,8 @@ pub struct CheckoutSession {
     pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
     /// The ID of the Payment Link that created this Session.
     pub payment_link: Option<stripe_types::Expandable<stripe_shared::PaymentLink>>,
-    /// Configure whether a Checkout Session should collect a payment method. Defaults to `always`.
+    /// Configure whether a Checkout Session should collect a payment method for sessions with mode `payment`.
+    /// Defaults to `always`.
     pub payment_method_collection: Option<CheckoutSessionPaymentMethodCollection>,
     /// Information about the payment method configuration used for this Checkout session if using dynamic payment methods.
     pub payment_method_configuration_details:
@@ -974,7 +975,8 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionCustomerCreation {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Configure whether a Checkout Session should collect a payment method. Defaults to `always`.
+/// Configure whether a Checkout Session should collect a payment method for sessions with mode `payment`.
+/// Defaults to `always`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CheckoutSessionPaymentMethodCollection {

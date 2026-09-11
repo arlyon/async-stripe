@@ -30,9 +30,15 @@ impl CreateCustomerSessionBuilder {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateCustomerSessionComponents {
+    /// Configuration for active entitlements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active_entitlements: Option<CreateCustomerSessionComponentsActiveEntitlements>,
     /// Configuration for buy button.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub buy_button: Option<CreateCustomerSessionComponentsBuyButton>,
+    /// Configuration for customer portal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_portal: Option<CreateCustomerSessionComponentsCustomerPortal>,
     /// Configuration for the customer sheet.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_sheet: Option<CreateCustomerSessionComponentsCustomerSheet>,
@@ -55,7 +61,9 @@ impl std::fmt::Debug for CreateCustomerSessionComponents {
 impl CreateCustomerSessionComponents {
     pub fn new() -> Self {
         Self {
+            active_entitlements: None,
             buy_button: None,
+            customer_portal: None,
             customer_sheet: None,
             mobile_payment_element: None,
             payment_element: None,
@@ -66,6 +74,25 @@ impl CreateCustomerSessionComponents {
 impl Default for CreateCustomerSessionComponents {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Configuration for active entitlements.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateCustomerSessionComponentsActiveEntitlements {
+    /// Whether the active entitlements is enabled.
+    pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsActiveEntitlements {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponentsActiveEntitlements").finish_non_exhaustive()
+    }
+}
+impl CreateCustomerSessionComponentsActiveEntitlements {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
     }
 }
 /// Configuration for buy button.
@@ -83,6 +110,25 @@ impl std::fmt::Debug for CreateCustomerSessionComponentsBuyButton {
     }
 }
 impl CreateCustomerSessionComponentsBuyButton {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
+    }
+}
+/// Configuration for customer portal.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateCustomerSessionComponentsCustomerPortal {
+    /// Whether the customer portal is enabled.
+    pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsCustomerPortal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponentsCustomerPortal").finish_non_exhaustive()
+    }
+}
+impl CreateCustomerSessionComponentsCustomerPortal {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into() }
     }

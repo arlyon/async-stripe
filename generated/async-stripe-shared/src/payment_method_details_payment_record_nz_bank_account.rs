@@ -1,0 +1,171 @@
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+pub struct PaymentMethodDetailsPaymentRecordNzBankAccount {
+    /// The name on the bank account.
+    /// Only present if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod's billing details.
+    pub account_holder_name: Option<String>,
+    /// The numeric code for the bank account's bank.
+    pub bank_code: String,
+    /// The name of the bank.
+    pub bank_name: String,
+    /// The numeric code for the bank account's bank branch.
+    pub branch_code: String,
+    /// Estimated date to debit the customer's bank account. A date string in YYYY-MM-DD format.
+    pub expected_debit_date: Option<String>,
+    /// Last four digits of the bank account number.
+    pub last4: String,
+    /// The suffix of the bank account number.
+    pub suffix: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordNzBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDetailsPaymentRecordNzBankAccount").finish_non_exhaustive()
+    }
+}
+#[doc(hidden)]
+pub struct PaymentMethodDetailsPaymentRecordNzBankAccountBuilder {
+    account_holder_name: Option<Option<String>>,
+    bank_code: Option<String>,
+    bank_name: Option<String>,
+    branch_code: Option<String>,
+    expected_debit_date: Option<Option<String>>,
+    last4: Option<String>,
+    suffix: Option<Option<String>>,
+}
+
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{Deserialize, Result, make_place};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PaymentMethodDetailsPaymentRecordNzBankAccount {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PaymentMethodDetailsPaymentRecordNzBankAccount>,
+        builder: PaymentMethodDetailsPaymentRecordNzBankAccountBuilder,
+    }
+
+    impl Visitor for Place<PaymentMethodDetailsPaymentRecordNzBankAccount> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PaymentMethodDetailsPaymentRecordNzBankAccountBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for PaymentMethodDetailsPaymentRecordNzBankAccountBuilder {
+        type Out = PaymentMethodDetailsPaymentRecordNzBankAccount;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "account_holder_name" => Deserialize::begin(&mut self.account_holder_name),
+                "bank_code" => Deserialize::begin(&mut self.bank_code),
+                "bank_name" => Deserialize::begin(&mut self.bank_name),
+                "branch_code" => Deserialize::begin(&mut self.branch_code),
+                "expected_debit_date" => Deserialize::begin(&mut self.expected_debit_date),
+                "last4" => Deserialize::begin(&mut self.last4),
+                "suffix" => Deserialize::begin(&mut self.suffix),
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                account_holder_name: Some(None),
+                bank_code: None,
+                bank_name: None,
+                branch_code: None,
+                expected_debit_date: Some(None),
+                last4: None,
+                suffix: Some(None),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(account_holder_name),
+                Some(bank_code),
+                Some(bank_name),
+                Some(branch_code),
+                Some(expected_debit_date),
+                Some(last4),
+                Some(suffix),
+            ) = (
+                self.account_holder_name.take(),
+                self.bank_code.take(),
+                self.bank_name.take(),
+                self.branch_code.take(),
+                self.expected_debit_date.take(),
+                self.last4.take(),
+                self.suffix.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out {
+                account_holder_name,
+                bank_code,
+                bank_name,
+                branch_code,
+                expected_debit_date,
+                last4,
+                suffix,
+            })
+        }
+    }
+
+    impl Map for Builder<'_> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PaymentMethodDetailsPaymentRecordNzBankAccount {
+        type Builder = PaymentMethodDetailsPaymentRecordNzBankAccountBuilder;
+    }
+
+    impl FromValueOpt for PaymentMethodDetailsPaymentRecordNzBankAccount {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PaymentMethodDetailsPaymentRecordNzBankAccountBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "account_holder_name" => b.account_holder_name = FromValueOpt::from_value(v),
+                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
+                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "branch_code" => b.branch_code = FromValueOpt::from_value(v),
+                    "expected_debit_date" => b.expected_debit_date = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "suffix" => b.suffix = FromValueOpt::from_value(v),
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};

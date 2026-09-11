@@ -3892,7 +3892,7 @@ impl CreateIssuingCardholder {
         self
     }
     /// The cardholder’s preferred locales (languages), ordered by preference.
-    /// Locales can be `da`, `de`, `en`, `es`, `fr`, `it`, `pl`, or `sv`.
+    /// Locales can be `de`, `en`, `es`, `fr`, or `it`.
     /// This changes the language of the [3D Secure flow](https://docs.stripe.com/issuing/3d-secure) and one-time password messages sent to the cardholder.
     pub fn preferred_locales(
         mut self,
@@ -7616,7 +7616,7 @@ impl UpdateIssuingCardholder {
         self
     }
     /// The cardholder’s preferred locales (languages), ordered by preference.
-    /// Locales can be `da`, `de`, `en`, `es`, `fr`, `it`, `pl`, or `sv`.
+    /// Locales can be `de`, `en`, `es`, `fr`, or `it`.
     /// This changes the language of the [3D Secure flow](https://docs.stripe.com/issuing/3d-secure) and one-time password messages sent to the cardholder.
     pub fn preferred_locales(
         mut self,
@@ -7835,7 +7835,7 @@ impl BillingSpecs {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CardIssuingParam {
-    /// Information about cardholder acceptance of Celtic [Authorized User Terms](https://stripe.com/docs/issuing/cards#accept-authorized-user-terms).
+    /// Information about cardholder acceptance of Celtic [Authorized User Terms](https://docs.stripe.com/issuing/compliance-us#issuing-terms).
     /// Required for cards backed by a Celtic program.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_terms_acceptance: Option<TermsAcceptanceParam>,

@@ -7,7 +7,7 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalLocation {
-    pub address: stripe_shared::Address,
+    pub address: stripe_shared::AddressApiResourceTerminal,
     pub address_kana: Option<stripe_shared::LegalEntityJapanAddress>,
     pub address_kanji: Option<stripe_shared::LegalEntityJapanAddress>,
     /// The ID of a configuration that will be used to customize all readers in this location.
@@ -37,7 +37,7 @@ impl std::fmt::Debug for TerminalLocation {
 }
 #[doc(hidden)]
 pub struct TerminalLocationBuilder {
-    address: Option<stripe_shared::Address>,
+    address: Option<stripe_shared::AddressApiResourceTerminal>,
     address_kana: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
     address_kanji: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
     configuration_overrides: Option<Option<String>>,

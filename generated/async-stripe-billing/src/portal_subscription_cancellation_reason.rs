@@ -1,10 +1,13 @@
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalSubscriptionCancellationReason {
     /// Whether the feature is enabled.
     pub enabled: bool,
+    /// The IDs of custom feedback options configured for this cancellation reason.
+    pub feedback_options:
+        Option<Vec<stripe_types::Expandable<stripe_shared::BillingFeedbackOption>>>,
     /// Which cancellation reasons will be given as options to the customer.
     pub options: Vec<PortalSubscriptionCancellationReasonOptions>,
 }
@@ -17,6 +20,8 @@ impl std::fmt::Debug for PortalSubscriptionCancellationReason {
 #[doc(hidden)]
 pub struct PortalSubscriptionCancellationReasonBuilder {
     enabled: Option<bool>,
+    feedback_options:
+        Option<Option<Vec<stripe_types::Expandable<stripe_shared::BillingFeedbackOption>>>>,
     options: Option<Vec<PortalSubscriptionCancellationReasonOptions>>,
 }
 
@@ -61,20 +66,23 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "enabled" => Deserialize::begin(&mut self.enabled),
+                "feedback_options" => Deserialize::begin(&mut self.feedback_options),
                 "options" => Deserialize::begin(&mut self.options),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { enabled: None, options: None }
+            Self { enabled: None, feedback_options: Some(None), options: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(options)) = (self.enabled, self.options.take()) else {
+            let (Some(enabled), Some(feedback_options), Some(options)) =
+                (self.enabled, self.feedback_options.take(), self.options.take())
+            else {
                 return None;
             };
-            Some(Self::Out { enabled, options })
+            Some(Self::Out { enabled, feedback_options, options })
         }
     }
 
@@ -102,6 +110,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "feedback_options" => b.feedback_options = FromValueOpt::from_value(v),
                     "options" => b.options = FromValueOpt::from_value(v),
                     _ => {}
                 }

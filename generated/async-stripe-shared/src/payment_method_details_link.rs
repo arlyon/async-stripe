@@ -6,6 +6,8 @@ pub struct PaymentMethodDetailsLink {
     /// Two-letter ISO code representing the funding source country beneath the Link payment.
     /// You could use this attribute to get a sense of international fees.
     pub country: Option<String>,
+    /// The [funding source group code](https://docs.stripe.com/payments/link/link-payment-methods) applied to this Link payment at confirmation time.
+    pub funding_source_group: Option<String>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodDetailsLink {
@@ -16,6 +18,7 @@ impl std::fmt::Debug for PaymentMethodDetailsLink {
 #[doc(hidden)]
 pub struct PaymentMethodDetailsLinkBuilder {
     country: Option<Option<String>>,
+    funding_source_group: Option<Option<String>>,
 }
 
 #[allow(
@@ -59,19 +62,22 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "country" => Deserialize::begin(&mut self.country),
+                "funding_source_group" => Deserialize::begin(&mut self.funding_source_group),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { country: Some(None) }
+            Self { country: Some(None), funding_source_group: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(country),) = (self.country.take(),) else {
+            let (Some(country), Some(funding_source_group)) =
+                (self.country.take(), self.funding_source_group.take())
+            else {
                 return None;
             };
-            Some(Self::Out { country })
+            Some(Self::Out { country, funding_source_group })
         }
     }
 
@@ -99,6 +105,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "country" => b.country = FromValueOpt::from_value(v),
+                    "funding_source_group" => b.funding_source_group = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }
