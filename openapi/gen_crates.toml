@@ -81,6 +81,7 @@ for requests mentioned in the `Issuing` section of the [Stripe API docs](https:/
 
 [[crates]]
 name = "payment"
+packages = ["three_d_secure"]
 paths = [
     "card",
     "payment_method",
@@ -110,6 +111,7 @@ of the [Stripe API docs](https://stripe.com/docs/api)
 
 [[crates]]
 name = "product"
+packages = ["product_catalog"]
 paths = [
     "product",
     "price",
