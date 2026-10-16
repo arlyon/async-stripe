@@ -1,8 +1,10 @@
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct CardMandatePaymentMethodDetails {}
+pub struct CardMandatePaymentMethodDetails {
+    pub india: Option<stripe_shared::CardMandatePaymentMethodDetailsIndia>,
+}
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CardMandatePaymentMethodDetails {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -10,7 +12,9 @@ impl std::fmt::Debug for CardMandatePaymentMethodDetails {
     }
 }
 #[doc(hidden)]
-pub struct CardMandatePaymentMethodDetailsBuilder {}
+pub struct CardMandatePaymentMethodDetailsBuilder {
+    india: Option<Option<stripe_shared::CardMandatePaymentMethodDetailsIndia>>,
+}
 
 #[allow(
     unused_variables,
@@ -52,19 +56,20 @@ const _: () = {
         type Out = CardMandatePaymentMethodDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "india" => Deserialize::begin(&mut self.india),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { india: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(india),) = (self.india.take(),) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { india })
         }
     }
 
@@ -91,6 +96,7 @@ const _: () = {
             let mut b = CardMandatePaymentMethodDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "india" => b.india = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

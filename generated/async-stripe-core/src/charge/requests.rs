@@ -461,9 +461,8 @@ impl CreateChargeTransferData {
         Self { amount: None, description: None, destination: destination.into() }
     }
 }
-/// This method is no longer recommended—use the [Payment Intents API](https://stripe.com/docs/api/payment_intents).
-/// to initiate a new payment instead. Confirmation of the PaymentIntent creates the `Charge`
-/// object used to request payment.
+/// This method is deprecated and will be removed soon.
+/// If your integration uses it, you need to update it to use a different payment flow, such as [the Payment Intents API](https://stripe.com/docs/payments/payment-intents).
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -502,7 +501,7 @@ impl CreateCharge {
     }
     /// Whether to immediately capture the charge.
     /// Defaults to `true`.
-    /// When `false`, the charge issues an authorization (or pre-authorization), and will need to be [captured](https://api.stripe.com#capture_charge) later.
+    /// When `false`, the charge issues an authorization (or pre-authorization), and will need to be [captured](https://docs.stripe.com/api#capture_charge) later.
     /// Uncaptured charges expire after a set number of days (7 by default).
     /// For more information, see the [authorizing charges and settling later](https://docs.stripe.com/charges/placing-a-hold) documentation.
     pub fn capture(mut self, capture: impl Into<bool>) -> Self {
@@ -950,12 +949,8 @@ impl Default for CaptureChargeTransferData {
         Self::new()
     }
 }
-/// Capture the payment of an existing, uncaptured charge that was created with the `capture` option set to false.
-///
-/// Uncaptured payments expire a set number of days after they are created ([7 by default](https://stripe.com/docs/charges/placing-a-hold)), after which they are marked as refunded and capture attempts will fail.
-///
-/// Don’t use this method to capture a PaymentIntent-initiated charge.
-/// Use [Capture a PaymentIntent](https://stripe.com/docs/api/payment_intents/capture).
+/// This method is deprecated and will be removed soon.
+/// If your integration uses it, you need to update it to use a different payment flow, such as [the Payment Intents API](https://stripe.com/docs/payments/payment-intents).
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

@@ -89,6 +89,7 @@ pub enum ListPaymentMethodType {
     Payco,
     Paynow,
     Paypal,
+    Paypay,
     Payto,
     Pix,
     Promptpay,
@@ -97,6 +98,7 @@ pub enum ListPaymentMethodType {
     Satispay,
     Scalapay,
     SepaDebit,
+    Sequra,
     Sofort,
     Sunbit,
     Swish,
@@ -151,6 +153,7 @@ impl ListPaymentMethodType {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Paypay => "paypay",
             Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
@@ -159,6 +162,7 @@ impl ListPaymentMethodType {
             Satispay => "satispay",
             Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Sunbit => "sunbit",
             Swish => "swish",
@@ -216,6 +220,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "paypay" => Ok(Paypay),
             "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
@@ -224,6 +229,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "satispay" => Ok(Satispay),
             "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
@@ -574,6 +580,9 @@ struct CreatePaymentMethodBuilder {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     paypal: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    paypay: Option<miniserde::json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payto: Option<CreatePaymentMethodPayto>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -597,6 +606,9 @@ struct CreatePaymentMethodBuilder {
     scalapay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sepa_debit: Option<CreatePaymentMethodSepaDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    sequra: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sofort: Option<CreatePaymentMethodSofort>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -677,6 +689,7 @@ impl CreatePaymentMethodBuilder {
             payment_method: None,
             paynow: None,
             paypal: None,
+            paypay: None,
             payto: None,
             pix: None,
             promptpay: None,
@@ -686,6 +699,7 @@ impl CreatePaymentMethodBuilder {
             satispay: None,
             scalapay: None,
             sepa_debit: None,
+            sequra: None,
             sofort: None,
             sunbit: None,
             swish: None,
@@ -2143,6 +2157,7 @@ pub enum CreatePaymentMethodType {
     Payco,
     Paynow,
     Paypal,
+    Paypay,
     Payto,
     Pix,
     Promptpay,
@@ -2151,6 +2166,7 @@ pub enum CreatePaymentMethodType {
     Satispay,
     Scalapay,
     SepaDebit,
+    Sequra,
     Sofort,
     Sunbit,
     Swish,
@@ -2205,6 +2221,7 @@ impl CreatePaymentMethodType {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Paypay => "paypay",
             Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
@@ -2213,6 +2230,7 @@ impl CreatePaymentMethodType {
             Satispay => "satispay",
             Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Sunbit => "sunbit",
             Swish => "swish",
@@ -2270,6 +2288,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "paypay" => Ok(Paypay),
             "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
@@ -2278,6 +2297,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "satispay" => Ok(Satispay),
             "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
@@ -2706,12 +2726,12 @@ impl CreatePaymentMethod {
         self.inner.allow_redisplay = Some(allow_redisplay.into());
         self
     }
-    /// If this is a Alma PaymentMethod, this hash contains details about the Alma payment method.
+    /// If this is an Alma PaymentMethod, this hash contains details about the Alma payment method.
     pub fn alma(mut self, alma: impl Into<miniserde::json::Value>) -> Self {
         self.inner.alma = Some(alma.into());
         self
     }
-    /// If this is a AmazonPay PaymentMethod, this hash contains details about the AmazonPay payment method.
+    /// If this is an AmazonPay PaymentMethod, this hash contains details about the AmazonPay payment method.
     pub fn amazon_pay(mut self, amazon_pay: impl Into<miniserde::json::Value>) -> Self {
         self.inner.amazon_pay = Some(amazon_pay.into());
         self
@@ -2929,6 +2949,11 @@ impl CreatePaymentMethod {
         self.inner.paypal = Some(paypal.into());
         self
     }
+    /// If this is a `paypay` PaymentMethod, this hash contains details about the PayPay payment method.
+    pub fn paypay(mut self, paypay: impl Into<miniserde::json::Value>) -> Self {
+        self.inner.paypay = Some(paypay.into());
+        self
+    }
     /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
     pub fn payto(mut self, payto: impl Into<CreatePaymentMethodPayto>) -> Self {
         self.inner.payto = Some(payto.into());
@@ -2976,6 +3001,11 @@ impl CreatePaymentMethod {
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     pub fn sepa_debit(mut self, sepa_debit: impl Into<CreatePaymentMethodSepaDebit>) -> Self {
         self.inner.sepa_debit = Some(sepa_debit.into());
+        self
+    }
+    /// If this is a SeQura PaymentMethod, this hash contains details about the SeQura payment method.
+    pub fn sequra(mut self, sequra: impl Into<miniserde::json::Value>) -> Self {
+        self.inner.sequra = Some(sequra.into());
         self
     }
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
@@ -3074,8 +3104,6 @@ struct UpdatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    payto: Option<UpdatePaymentMethodPayto>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     us_bank_account: Option<UpdatePaymentMethodUsBankAccount>,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -3092,7 +3120,6 @@ impl UpdatePaymentMethodBuilder {
             card: None,
             expand: None,
             metadata: None,
-            payto: None,
             us_bank_account: None,
         }
     }
@@ -3230,37 +3257,6 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentMethodCardNetworksPreferred {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentMethodPayto {
-    /// The account number for the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_number: Option<String>,
-    /// Bank-State-Branch number of the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bsb_number: Option<String>,
-    /// The PayID alias for the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pay_id: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentMethodPayto {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentMethodPayto").finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentMethodPayto {
-    pub fn new() -> Self {
-        Self { account_number: None, bsb_number: None, pay_id: None }
-    }
-}
-impl Default for UpdatePaymentMethodPayto {
-    fn default() -> Self {
-        Self::new()
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -3493,11 +3489,6 @@ impl UpdatePaymentMethod {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
-        self
-    }
-    /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
-    pub fn payto(mut self, payto: impl Into<UpdatePaymentMethodPayto>) -> Self {
-        self.inner.payto = Some(payto.into());
         self
     }
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.

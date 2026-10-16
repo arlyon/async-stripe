@@ -36,6 +36,7 @@ account_link = []
 account_session = []
 application_fee = []
 application_fee_refund = []
+apps_install = []
 apps_secret = []
 capability = []
 country_spec = []
@@ -51,6 +52,7 @@ full = ["account",
 "account_session",
 "application_fee",
 "application_fee_refund",
+"apps_install",
 "apps_secret",
 "capability",
 "country_spec",

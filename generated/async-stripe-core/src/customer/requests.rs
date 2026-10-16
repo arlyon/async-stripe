@@ -676,6 +676,7 @@ pub enum ListPaymentMethodsCustomerType {
     Payco,
     Paynow,
     Paypal,
+    Paypay,
     Payto,
     Pix,
     Promptpay,
@@ -684,6 +685,7 @@ pub enum ListPaymentMethodsCustomerType {
     Satispay,
     Scalapay,
     SepaDebit,
+    Sequra,
     Sofort,
     Sunbit,
     Swish,
@@ -738,6 +740,7 @@ impl ListPaymentMethodsCustomerType {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Paypay => "paypay",
             Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
@@ -746,6 +749,7 @@ impl ListPaymentMethodsCustomerType {
             Satispay => "satispay",
             Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Sunbit => "sunbit",
             Swish => "swish",
@@ -803,6 +807,7 @@ impl std::str::FromStr for ListPaymentMethodsCustomerType {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "paypay" => Ok(Paypay),
             "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
@@ -811,6 +816,7 @@ impl std::str::FromStr for ListPaymentMethodsCustomerType {
             "satispay" => Ok(Satispay),
             "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
@@ -2115,7 +2121,7 @@ impl CreateCustomer {
         self
     }
     /// The prefix for the customer used to generate unique invoice numbers.
-    /// Must be 3–12 uppercase letters or numbers.
+    /// Must be 1–12 uppercase letters or numbers.
     pub fn invoice_prefix(mut self, invoice_prefix: impl Into<String>) -> Self {
         self.inner.invoice_prefix = Some(invoice_prefix.into());
         self
@@ -2774,7 +2780,7 @@ impl UpdateCustomer {
         self
     }
     /// The prefix for the customer used to generate unique invoice numbers.
-    /// Must be 3–12 uppercase letters or numbers.
+    /// Must be 1–12 uppercase letters or numbers.
     pub fn invoice_prefix(mut self, invoice_prefix: impl Into<String>) -> Self {
         self.inner.invoice_prefix = Some(invoice_prefix.into());
         self

@@ -1,6 +1,6 @@
 /// Products describe the specific goods or services you offer to your customers.
 /// For example, you might offer a Standard and Premium version of your goods or service; each version would be a separate Product.
-/// They can be used in conjunction with [Prices](https://api.stripe.com#prices) to configure pricing in Payment Links, Checkout, and Subscriptions.
+/// They can be used in conjunction with [Prices](https://docs.stripe.com/api#prices) to configure pricing in Payment Links, Checkout, and Subscriptions.
 ///
 /// Related guides: [Set up a subscription](https://docs.stripe.com/billing/subscriptions/set-up-subscription),.
 /// [share a Payment Link](https://docs.stripe.com/payment-links),
@@ -46,6 +46,8 @@ pub struct Product {
     pub statement_descriptor: Option<String>,
     /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     pub tax_code: Option<stripe_types::Expandable<stripe_shared::TaxCode>>,
+    /// Tax details for this product, including the [tax code](/tax/tax-codes) and an optional performance location.
+    pub tax_details: Option<stripe_shared::TaxProductTaxDetailsResourceTaxDetails>,
     /// The type of the product.
     /// The product is either of type `good`, which is eligible for use with Orders and SKUs, or `service`, which is eligible for use with Subscriptions and Plans.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
@@ -80,6 +82,7 @@ pub struct ProductBuilder {
     shippable: Option<Option<bool>>,
     statement_descriptor: Option<Option<String>>,
     tax_code: Option<Option<stripe_types::Expandable<stripe_shared::TaxCode>>>,
+    tax_details: Option<Option<stripe_shared::TaxProductTaxDetailsResourceTaxDetails>>,
     type_: Option<stripe_shared::ProductType>,
     unit_label: Option<Option<String>>,
     updated: Option<stripe_types::Timestamp>,
@@ -137,6 +140,7 @@ const _: () = {
                 "shippable" => Deserialize::begin(&mut self.shippable),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "tax_code" => Deserialize::begin(&mut self.tax_code),
+                "tax_details" => Deserialize::begin(&mut self.tax_details),
                 "type" => Deserialize::begin(&mut self.type_),
                 "unit_label" => Deserialize::begin(&mut self.unit_label),
                 "updated" => Deserialize::begin(&mut self.updated),
@@ -161,6 +165,7 @@ const _: () = {
                 shippable: Some(None),
                 statement_descriptor: Some(None),
                 tax_code: Some(None),
+                tax_details: Some(None),
                 type_: None,
                 unit_label: Some(None),
                 updated: None,
@@ -184,6 +189,7 @@ const _: () = {
                 Some(shippable),
                 Some(statement_descriptor),
                 Some(tax_code),
+                Some(tax_details),
                 Some(type_),
                 Some(unit_label),
                 Some(updated),
@@ -203,6 +209,7 @@ const _: () = {
                 self.shippable,
                 self.statement_descriptor.take(),
                 self.tax_code.take(),
+                self.tax_details.take(),
                 self.type_.take(),
                 self.unit_label.take(),
                 self.updated,
@@ -226,6 +233,7 @@ const _: () = {
                 shippable,
                 statement_descriptor,
                 tax_code,
+                tax_details,
                 type_,
                 unit_label,
                 updated,
@@ -271,6 +279,7 @@ const _: () = {
                     "shippable" => b.shippable = FromValueOpt::from_value(v),
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
                     "tax_code" => b.tax_code = FromValueOpt::from_value(v),
+                    "tax_details" => b.tax_details = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "unit_label" => b.unit_label = FromValueOpt::from_value(v),
                     "updated" => b.updated = FromValueOpt::from_value(v),
@@ -286,7 +295,7 @@ const _: () = {
 impl serde::Serialize for Product {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Product", 19)?;
+        let mut s = s.serialize_struct("Product", 20)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("default_price", &self.default_price)?;
@@ -301,6 +310,7 @@ impl serde::Serialize for Product {
         s.serialize_field("shippable", &self.shippable)?;
         s.serialize_field("statement_descriptor", &self.statement_descriptor)?;
         s.serialize_field("tax_code", &self.tax_code)?;
+        s.serialize_field("tax_details", &self.tax_details)?;
         s.serialize_field("type", &self.type_)?;
         s.serialize_field("unit_label", &self.unit_label)?;
         s.serialize_field("updated", &self.updated)?;

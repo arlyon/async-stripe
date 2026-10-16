@@ -946,11 +946,11 @@ impl Default for CreateTokenAccountCompanyVerification {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTokenAccountCompanyVerificationDocument {
-    /// The back of a document returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `additional_verification`.
+    /// The back of a document returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `additional_verification`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<String>,
-    /// The front of a document returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `additional_verification`.
+    /// The front of a document returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `additional_verification`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<String>,
@@ -2825,11 +2825,11 @@ impl DateOfBirthSpecs {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct PersonVerificationDocumentSpecs {
-    /// The back of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
+    /// The back of an ID returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `identity_document`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<String>,
-    /// The front of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
+    /// The front of an ID returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `identity_document`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<String>,
@@ -2854,7 +2854,7 @@ impl Default for PersonVerificationDocumentSpecs {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct DocumentsParam {
-    /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
+    /// One or more document ids returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
 }

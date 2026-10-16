@@ -11,6 +11,9 @@ pub struct TaxCode {
     pub id: stripe_shared::TaxCodeId,
     /// A short name for the tax code.
     pub name: String,
+    /// An object that describes more information about the tax location required for this tax code.
+    /// Some tax codes require a [performance location](/tax/location-sales#required-versus-optional-performance-locations) to calculate tax correctly.
+    pub requirements: Option<stripe_shared::TaxCodeRequirements>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TaxCode {
@@ -23,6 +26,7 @@ pub struct TaxCodeBuilder {
     description: Option<String>,
     id: Option<stripe_shared::TaxCodeId>,
     name: Option<String>,
+    requirements: Option<Option<stripe_shared::TaxCodeRequirements>>,
 }
 
 #[allow(
@@ -65,21 +69,25 @@ const _: () = {
                 "description" => Deserialize::begin(&mut self.description),
                 "id" => Deserialize::begin(&mut self.id),
                 "name" => Deserialize::begin(&mut self.name),
+                "requirements" => Deserialize::begin(&mut self.requirements),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { description: None, id: None, name: None }
+            Self { description: None, id: None, name: None, requirements: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(description), Some(id), Some(name)) =
-                (self.description.take(), self.id.take(), self.name.take())
-            else {
+            let (Some(description), Some(id), Some(name), Some(requirements)) = (
+                self.description.take(),
+                self.id.take(),
+                self.name.take(),
+                self.requirements.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { description, id, name })
+            Some(Self::Out { description, id, name, requirements })
         }
     }
 
@@ -109,6 +117,7 @@ const _: () = {
                     "description" => b.description = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
+                    "requirements" => b.requirements = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }
@@ -120,10 +129,11 @@ const _: () = {
 impl serde::Serialize for TaxCode {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TaxCode", 4)?;
+        let mut s = s.serialize_struct("TaxCode", 5)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("name", &self.name)?;
+        s.serialize_field("requirements", &self.requirements)?;
 
         s.serialize_field("object", "tax_code")?;
         s.end()

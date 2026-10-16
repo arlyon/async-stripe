@@ -139,7 +139,7 @@ impl ListProduct {
         self
     }
     /// Only return products with the given IDs.
-    /// Cannot be used with [starting_after](https://api.stripe.com#list_products-starting_after) or [ending_before](https://api.stripe.com#list_products-ending_before).
+    /// Cannot be used with [starting_after](https://docs.stripe.com/api#list_products-starting_after) or [ending_before](https://docs.stripe.com/api#list_products-ending_before).
     pub fn ids(mut self, ids: impl Into<Vec<String>>) -> Self {
         self.inner.ids = Some(ids.into());
         self
@@ -404,6 +404,8 @@ struct CreateProductBuilder {
     statement_descriptor: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_details: Option<TaxDetails>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::ProductType>,
@@ -434,6 +436,7 @@ impl CreateProductBuilder {
             shippable: None,
             statement_descriptor: None,
             tax_code: None,
+            tax_details: None,
             type_: None,
             unit_label: None,
             url: None,
@@ -977,6 +980,11 @@ impl CreateProduct {
         self.inner.tax_code = Some(tax_code.into());
         self
     }
+    /// Tax details for this product, including the [tax code](/tax/tax-codes) and an optional performance location.
+    pub fn tax_details(mut self, tax_details: impl Into<TaxDetails>) -> Self {
+        self.inner.tax_details = Some(tax_details.into());
+        self
+    }
     /// The type of the product.
     /// Defaults to `service` if not explicitly specified, enabling use of this product with Subscriptions and Plans.
     /// Set this parameter to `good` to use this product with Orders and SKUs.
@@ -1051,6 +1059,8 @@ struct UpdateProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    tax_details: Option<TaxDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     unit_label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<String>,
@@ -1076,6 +1086,7 @@ impl UpdateProductBuilder {
             shippable: None,
             statement_descriptor: None,
             tax_code: None,
+            tax_details: None,
             unit_label: None,
             url: None,
         }
@@ -1178,6 +1189,11 @@ impl UpdateProduct {
     /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     pub fn tax_code(mut self, tax_code: impl Into<String>) -> Self {
         self.inner.tax_code = Some(tax_code.into());
+        self
+    }
+    /// Tax details for this product, including the [tax code](/tax/tax-codes) and an optional performance location.
+    pub fn tax_details(mut self, tax_details: impl Into<TaxDetails>) -> Self {
+        self.inner.tax_details = Some(tax_details.into());
         self
     }
     /// A label that represents units of this product.
@@ -1298,5 +1314,33 @@ impl PackageDimensionsSpecs {
             weight: weight.into(),
             width: width.into(),
         }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct TaxDetails {
+    /// A tax location ID.
+    /// Depending on the [tax code](/tax/tax-for-tickets/reference/tax-location-performance), this is required, optional, or not supported.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub performance_location: Option<String>,
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxDetails").finish_non_exhaustive()
+    }
+}
+impl TaxDetails {
+    pub fn new() -> Self {
+        Self { performance_location: None, tax_code: None }
+    }
+}
+impl Default for TaxDetails {
+    fn default() -> Self {
+        Self::new()
     }
 }

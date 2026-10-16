@@ -16,6 +16,8 @@ pub struct SubscriptionItem {
     pub current_period_end: stripe_types::Timestamp,
     /// The start time of this subscription item's current billing period.
     pub current_period_start: stripe_types::Timestamp,
+    /// The current trial that is applied to this subscription item.
+    pub current_trial: Option<stripe_shared::SubscriptionsTrialsResourceCurrentTrial>,
     /// The discounts applied to the subscription item.
     /// Subscription item discounts are applied before subscription discounts.
     /// Use `expand[]=discounts` to expand each discount.
@@ -48,6 +50,7 @@ pub struct SubscriptionItemBuilder {
     created: Option<i64>,
     current_period_end: Option<stripe_types::Timestamp>,
     current_period_start: Option<stripe_types::Timestamp>,
+    current_trial: Option<Option<stripe_shared::SubscriptionsTrialsResourceCurrentTrial>>,
     discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
     id: Option<stripe_shared::SubscriptionItemId>,
     metadata: Option<std::collections::HashMap<String, String>>,
@@ -103,6 +106,7 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "current_period_end" => Deserialize::begin(&mut self.current_period_end),
                 "current_period_start" => Deserialize::begin(&mut self.current_period_start),
+                "current_trial" => Deserialize::begin(&mut self.current_trial),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "id" => Deserialize::begin(&mut self.id),
                 "metadata" => Deserialize::begin(&mut self.metadata),
@@ -122,6 +126,7 @@ const _: () = {
                 created: None,
                 current_period_end: None,
                 current_period_start: None,
+                current_trial: Some(None),
                 discounts: None,
                 id: None,
                 metadata: None,
@@ -140,6 +145,7 @@ const _: () = {
                 Some(created),
                 Some(current_period_end),
                 Some(current_period_start),
+                Some(current_trial),
                 Some(discounts),
                 Some(id),
                 Some(metadata),
@@ -154,6 +160,7 @@ const _: () = {
                 self.created,
                 self.current_period_end,
                 self.current_period_start,
+                self.current_trial.take(),
                 self.discounts.take(),
                 self.id.take(),
                 self.metadata.take(),
@@ -172,6 +179,7 @@ const _: () = {
                 created,
                 current_period_end,
                 current_period_start,
+                current_trial,
                 discounts,
                 id,
                 metadata,
@@ -212,6 +220,7 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "current_period_end" => b.current_period_end = FromValueOpt::from_value(v),
                     "current_period_start" => b.current_period_start = FromValueOpt::from_value(v),
+                    "current_trial" => b.current_trial = FromValueOpt::from_value(v),
                     "discounts" => b.discounts = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
@@ -231,12 +240,13 @@ const _: () = {
 impl serde::Serialize for SubscriptionItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("SubscriptionItem", 14)?;
+        let mut s = s.serialize_struct("SubscriptionItem", 15)?;
         s.serialize_field("billed_until", &self.billed_until)?;
         s.serialize_field("billing_thresholds", &self.billing_thresholds)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("current_period_end", &self.current_period_end)?;
         s.serialize_field("current_period_start", &self.current_period_start)?;
+        s.serialize_field("current_trial", &self.current_trial)?;
         s.serialize_field("discounts", &self.discounts)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("metadata", &self.metadata)?;

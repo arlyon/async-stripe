@@ -923,7 +923,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkConsentCollectionTermsOfS
 }
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -978,7 +978,7 @@ impl CreatePaymentLinkCustomFields {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreatePaymentLinkCustomFieldsLabel {
-    /// Custom text for the label, displayed to the customer. Up to 50 characters.
+    /// Custom text for the label, displayed to the customer. Up to 100 characters.
     pub custom: String,
     /// The type of the label.
     #[serde(rename = "type")]
@@ -1683,6 +1683,9 @@ pub struct CreatePaymentLinkLineItemsPriceDataProductData {
     /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
+    /// Tax details for this product, including the [tax code](/tax/tax-codes) and an optional performance location.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_details: Option<CreatePaymentLinkLineItemsPriceDataProductDataTaxDetails>,
     /// A label that represents units of this product.
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1702,8 +1705,39 @@ impl CreatePaymentLinkLineItemsPriceDataProductData {
             metadata: None,
             name: name.into(),
             tax_code: None,
+            tax_details: None,
             unit_label: None,
         }
+    }
+}
+/// Tax details for this product, including the [tax code](/tax/tax-codes) and an optional performance location.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentLinkLineItemsPriceDataProductDataTaxDetails {
+    /// A tax location ID.
+    /// Depending on the [tax code](/tax/tax-for-tickets/reference/tax-location-performance), this is required, optional, or not supported.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub performance_location: Option<String>,
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataProductDataTaxDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkLineItemsPriceDataProductDataTaxDetails")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentLinkLineItemsPriceDataProductDataTaxDetails {
+    pub fn new() -> Self {
+        Self { performance_location: None, tax_code: None }
+    }
+}
+impl Default for CreatePaymentLinkLineItemsPriceDataProductDataTaxDetails {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
@@ -3506,7 +3540,7 @@ pub struct CreatePaymentLinkTaxIdCollection {
     pub enabled: bool,
     /// Describes whether a tax ID is required during checkout.
     /// Defaults to `never`.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<CreatePaymentLinkTaxIdCollectionRequired>,
 }
@@ -3523,7 +3557,7 @@ impl CreatePaymentLinkTaxIdCollection {
 }
 /// Describes whether a tax ID is required during checkout.
 /// Defaults to `never`.
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePaymentLinkTaxIdCollectionRequired {
@@ -3696,7 +3730,7 @@ impl CreatePaymentLink {
     }
     /// Collect additional information from your customer using custom fields.
     /// Up to 3 fields are supported.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     pub fn custom_fields(
         mut self,
         custom_fields: impl Into<Vec<CreatePaymentLinkCustomFields>>,
@@ -3705,7 +3739,7 @@ impl CreatePaymentLink {
         self
     }
     /// Display additional text for your customers using custom text.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     pub fn custom_text(mut self, custom_text: impl Into<CustomTextParam>) -> Self {
         self.inner.custom_text = Some(custom_text.into());
         self
@@ -4532,7 +4566,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkConsentCollectionTermsOfS
 }
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -4587,7 +4621,7 @@ impl UpdatePaymentLinkCustomFields {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsLabel {
-    /// Custom text for the label, displayed to the customer. Up to 50 characters.
+    /// Custom text for the label, displayed to the customer. Up to 100 characters.
     pub custom: String,
     /// The type of the label.
     #[serde(rename = "type")]
@@ -6717,7 +6751,7 @@ pub struct UpdatePaymentLinkTaxIdCollection {
     pub enabled: bool,
     /// Describes whether a tax ID is required during checkout.
     /// Defaults to `never`.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<UpdatePaymentLinkTaxIdCollectionRequired>,
 }
@@ -6734,7 +6768,7 @@ impl UpdatePaymentLinkTaxIdCollection {
 }
 /// Describes whether a tax ID is required during checkout.
 /// Defaults to `never`.
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdatePaymentLinkTaxIdCollectionRequired {
@@ -6908,7 +6942,7 @@ impl UpdatePaymentLink {
     }
     /// Collect additional information from your customer using custom fields.
     /// Up to 3 fields are supported.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     pub fn custom_fields(
         mut self,
         custom_fields: impl Into<Vec<UpdatePaymentLinkCustomFields>>,
@@ -6917,7 +6951,7 @@ impl UpdatePaymentLink {
         self
     }
     /// Display additional text for your customers using custom text.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     pub fn custom_text(mut self, custom_text: impl Into<CustomTextParam>) -> Self {
         self.inner.custom_text = Some(custom_text.into());
         self

@@ -743,6 +743,8 @@ struct UpdateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    invoicing_rules: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     period: Option<Period>,
@@ -777,6 +779,7 @@ impl UpdateInvoiceItemBuilder {
             discountable: None,
             discounts: None,
             expand: None,
+            invoicing_rules: None,
             metadata: None,
             period: None,
             price_data: None,
@@ -1036,6 +1039,12 @@ impl UpdateInvoiceItem {
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
+        self
+    }
+    /// Pass an empty string to remove previously-defined invoicing rules.
+    /// Setting invoicing rules is not supported.
+    pub fn invoicing_rules(mut self, invoicing_rules: impl Into<String>) -> Self {
+        self.inner.invoicing_rules = Some(invoicing_rules.into());
         self
     }
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.

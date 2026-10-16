@@ -150,10 +150,10 @@ impl CreateRadarPaymentEvaluationPaymentDetails {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
-    /// Describes card money movement details for the payment evaluation.
+    /// Describes card money movement details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard>,
-    /// Describes the type of money movement. Currently only `card` is supported.
+    /// Describes the type of money movement.
     pub money_movement_type:
         CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType,
 }
@@ -173,7 +173,7 @@ impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
         Self { card: None, money_movement_type: money_movement_type.into() }
     }
 }
-/// Describes card money movement details for the payment evaluation.
+/// Describes card money movement details.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -384,7 +384,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Describes the type of money movement. Currently only `card` is supported.
+/// Describes the type of money movement.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType {

@@ -124,6 +124,7 @@ const _: () = {
 #[non_exhaustive]
 pub enum CheckoutBancontactPaymentMethodOptionsSetupFutureUsage {
     None,
+    OffSession,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -132,6 +133,7 @@ impl CheckoutBancontactPaymentMethodOptionsSetupFutureUsage {
         use CheckoutBancontactPaymentMethodOptionsSetupFutureUsage::*;
         match self {
             None => "none",
+            OffSession => "off_session",
             Unknown(v) => v,
         }
     }
@@ -143,6 +145,7 @@ impl std::str::FromStr for CheckoutBancontactPaymentMethodOptionsSetupFutureUsag
         use CheckoutBancontactPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
+            "off_session" => Ok(OffSession),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",

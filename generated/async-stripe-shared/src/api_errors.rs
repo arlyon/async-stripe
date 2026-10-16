@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ApiErrors {
-    /// For card errors resulting from a card issuer decline, a short string indicating [how to proceed with an error](https://docs.stripe.com/declines#retrying-issuer-declines) if they provide one.
+    /// For card errors resulting from a card issuer decline, a short string indicating [how to proceed with an error](https://docs.stripe.com/declines/card#retrying-issuer-declines) if they provide one.
     pub advice_code: Option<String>,
     /// For card errors, the ID of the failed charge.
     pub charge: Option<String>,
@@ -303,6 +303,7 @@ pub enum ApiErrorsCode {
     CustomerSessionExpired,
     CustomerTaxLocationInvalid,
     DebitNotAuthorized,
+    DisputeEvidencePageLimitExceeded,
     EmailInvalid,
     ExpiredCard,
     ExpiredPaymentMethod,
@@ -313,6 +314,8 @@ pub enum ApiErrorsCode {
     FinancialConnectionsAccountInactive,
     FinancialConnectionsAccountPendingAccountNumbers,
     FinancialConnectionsAccountUnavailableAccountNumbers,
+    FinancialConnectionsConsentLocaleInvalid,
+    FinancialConnectionsConsentLocaleUnsupported,
     FinancialConnectionsNoSuccessfulTransactionRefresh,
     ForwardingApiInactive,
     ForwardingApiInvalidParameter,
@@ -366,6 +369,7 @@ pub enum ApiErrorsCode {
     ParameterMissing,
     ParameterUnknown,
     ParametersExclusive,
+    PaymentEvaluationOnApiVersionNotSupported,
     PaymentIntentActionRequired,
     PaymentIntentAuthenticationFailure,
     PaymentIntentIncompatiblePaymentMethod,
@@ -513,6 +517,7 @@ impl ApiErrorsCode {
             CustomerSessionExpired => "customer_session_expired",
             CustomerTaxLocationInvalid => "customer_tax_location_invalid",
             DebitNotAuthorized => "debit_not_authorized",
+            DisputeEvidencePageLimitExceeded => "dispute_evidence_page_limit_exceeded",
             EmailInvalid => "email_invalid",
             ExpiredCard => "expired_card",
             ExpiredPaymentMethod => "expired_payment_method",
@@ -528,6 +533,12 @@ impl ApiErrorsCode {
             }
             FinancialConnectionsAccountUnavailableAccountNumbers => {
                 "financial_connections_account_unavailable_account_numbers"
+            }
+            FinancialConnectionsConsentLocaleInvalid => {
+                "financial_connections_consent_locale_invalid"
+            }
+            FinancialConnectionsConsentLocaleUnsupported => {
+                "financial_connections_consent_locale_unsupported"
             }
             FinancialConnectionsNoSuccessfulTransactionRefresh => {
                 "financial_connections_no_successful_transaction_refresh"
@@ -584,6 +595,9 @@ impl ApiErrorsCode {
             ParameterMissing => "parameter_missing",
             ParameterUnknown => "parameter_unknown",
             ParametersExclusive => "parameters_exclusive",
+            PaymentEvaluationOnApiVersionNotSupported => {
+                "payment_evaluation_on_api_version_not_supported"
+            }
             PaymentIntentActionRequired => "payment_intent_action_required",
             PaymentIntentAuthenticationFailure => "payment_intent_authentication_failure",
             PaymentIntentIncompatiblePaymentMethod => "payment_intent_incompatible_payment_method",
@@ -760,6 +774,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "customer_session_expired" => Ok(CustomerSessionExpired),
             "customer_tax_location_invalid" => Ok(CustomerTaxLocationInvalid),
             "debit_not_authorized" => Ok(DebitNotAuthorized),
+            "dispute_evidence_page_limit_exceeded" => Ok(DisputeEvidencePageLimitExceeded),
             "email_invalid" => Ok(EmailInvalid),
             "expired_card" => Ok(ExpiredCard),
             "expired_payment_method" => Ok(ExpiredPaymentMethod),
@@ -775,6 +790,12 @@ impl std::str::FromStr for ApiErrorsCode {
             }
             "financial_connections_account_unavailable_account_numbers" => {
                 Ok(FinancialConnectionsAccountUnavailableAccountNumbers)
+            }
+            "financial_connections_consent_locale_invalid" => {
+                Ok(FinancialConnectionsConsentLocaleInvalid)
+            }
+            "financial_connections_consent_locale_unsupported" => {
+                Ok(FinancialConnectionsConsentLocaleUnsupported)
             }
             "financial_connections_no_successful_transaction_refresh" => {
                 Ok(FinancialConnectionsNoSuccessfulTransactionRefresh)
@@ -833,6 +854,9 @@ impl std::str::FromStr for ApiErrorsCode {
             "parameter_missing" => Ok(ParameterMissing),
             "parameter_unknown" => Ok(ParameterUnknown),
             "parameters_exclusive" => Ok(ParametersExclusive),
+            "payment_evaluation_on_api_version_not_supported" => {
+                Ok(PaymentEvaluationOnApiVersionNotSupported)
+            }
             "payment_intent_action_required" => Ok(PaymentIntentActionRequired),
             "payment_intent_authentication_failure" => Ok(PaymentIntentAuthenticationFailure),
             "payment_intent_incompatible_payment_method" => {

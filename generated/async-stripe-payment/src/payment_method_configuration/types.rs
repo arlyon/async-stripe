@@ -82,6 +82,7 @@ pub struct PaymentMethodConfiguration {
     pub payco: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub paynow: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub paypal: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub paypay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub payto: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub pix: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub promptpay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -90,6 +91,7 @@ pub struct PaymentMethodConfiguration {
     pub satispay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub scalapay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sepa_debit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub sequra: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sofort: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sunbit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub swish: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -161,6 +163,7 @@ pub struct PaymentMethodConfigurationBuilder {
     payco: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     paynow: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     paypal: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    paypay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     payto: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     pix: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     promptpay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -169,6 +172,7 @@ pub struct PaymentMethodConfigurationBuilder {
     satispay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     scalapay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sepa_debit: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    sequra: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sofort: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sunbit: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     swish: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -269,6 +273,7 @@ const _: () = {
                 "payco" => Deserialize::begin(&mut self.payco),
                 "paynow" => Deserialize::begin(&mut self.paynow),
                 "paypal" => Deserialize::begin(&mut self.paypal),
+                "paypay" => Deserialize::begin(&mut self.paypay),
                 "payto" => Deserialize::begin(&mut self.payto),
                 "pix" => Deserialize::begin(&mut self.pix),
                 "promptpay" => Deserialize::begin(&mut self.promptpay),
@@ -277,6 +282,7 @@ const _: () = {
                 "satispay" => Deserialize::begin(&mut self.satispay),
                 "scalapay" => Deserialize::begin(&mut self.scalapay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
+                "sequra" => Deserialize::begin(&mut self.sequra),
                 "sofort" => Deserialize::begin(&mut self.sofort),
                 "sunbit" => Deserialize::begin(&mut self.sunbit),
                 "swish" => Deserialize::begin(&mut self.swish),
@@ -340,6 +346,7 @@ const _: () = {
                 payco: Some(None),
                 paynow: Some(None),
                 paypal: Some(None),
+                paypay: Some(None),
                 payto: Some(None),
                 pix: Some(None),
                 promptpay: Some(None),
@@ -348,6 +355,7 @@ const _: () = {
                 satispay: Some(None),
                 scalapay: Some(None),
                 sepa_debit: Some(None),
+                sequra: Some(None),
                 sofort: Some(None),
                 sunbit: Some(None),
                 swish: Some(None),
@@ -410,6 +418,7 @@ const _: () = {
                 Some(payco),
                 Some(paynow),
                 Some(paypal),
+                Some(paypay),
                 Some(payto),
                 Some(pix),
                 Some(promptpay),
@@ -418,6 +427,7 @@ const _: () = {
                 Some(satispay),
                 Some(scalapay),
                 Some(sepa_debit),
+                Some(sequra),
                 Some(sofort),
                 Some(sunbit),
                 Some(swish),
@@ -476,6 +486,7 @@ const _: () = {
                 self.payco.take(),
                 self.paynow.take(),
                 self.paypal.take(),
+                self.paypay.take(),
                 self.payto.take(),
                 self.pix.take(),
                 self.promptpay.take(),
@@ -484,6 +495,7 @@ const _: () = {
                 self.satispay.take(),
                 self.scalapay.take(),
                 self.sepa_debit.take(),
+                self.sequra.take(),
                 self.sofort.take(),
                 self.sunbit.take(),
                 self.swish.take(),
@@ -546,6 +558,7 @@ const _: () = {
                 payco,
                 paynow,
                 paypal,
+                paypay,
                 payto,
                 pix,
                 promptpay,
@@ -554,6 +567,7 @@ const _: () = {
                 satispay,
                 scalapay,
                 sepa_debit,
+                sequra,
                 sofort,
                 sunbit,
                 swish,
@@ -638,6 +652,7 @@ const _: () = {
                     "payco" => b.payco = FromValueOpt::from_value(v),
                     "paynow" => b.paynow = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
+                    "paypay" => b.paypay = FromValueOpt::from_value(v),
                     "payto" => b.payto = FromValueOpt::from_value(v),
                     "pix" => b.pix = FromValueOpt::from_value(v),
                     "promptpay" => b.promptpay = FromValueOpt::from_value(v),
@@ -646,6 +661,7 @@ const _: () = {
                     "satispay" => b.satispay = FromValueOpt::from_value(v),
                     "scalapay" => b.scalapay = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
+                    "sequra" => b.sequra = FromValueOpt::from_value(v),
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
                     "sunbit" => b.sunbit = FromValueOpt::from_value(v),
                     "swish" => b.swish = FromValueOpt::from_value(v),
@@ -665,7 +681,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethodConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethodConfiguration", 66)?;
+        let mut s = s.serialize_struct("PaymentMethodConfiguration", 68)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("affirm", &self.affirm)?;
@@ -715,6 +731,7 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("payco", &self.payco)?;
         s.serialize_field("paynow", &self.paynow)?;
         s.serialize_field("paypal", &self.paypal)?;
+        s.serialize_field("paypay", &self.paypay)?;
         s.serialize_field("payto", &self.payto)?;
         s.serialize_field("pix", &self.pix)?;
         s.serialize_field("promptpay", &self.promptpay)?;
@@ -723,6 +740,7 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("satispay", &self.satispay)?;
         s.serialize_field("scalapay", &self.scalapay)?;
         s.serialize_field("sepa_debit", &self.sepa_debit)?;
+        s.serialize_field("sequra", &self.sequra)?;
         s.serialize_field("sofort", &self.sofort)?;
         s.serialize_field("sunbit", &self.sunbit)?;
         s.serialize_field("swish", &self.swish)?;

@@ -1,4 +1,4 @@
-/// Transactions represent changes to a [FinancialAccount's](https://api.stripe.com#financial_accounts) balance.
+/// Transactions represent changes to a [FinancialAccount's](https://docs.stripe.com/api#financial_accounts) balance.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]

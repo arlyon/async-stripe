@@ -50,6 +50,7 @@ reporting_report_type = []
 scheduled_query_run = []
 tax_association = []
 tax_calculation = []
+tax_location = []
 tax_registration = []
 tax_settings = []
 tax_transaction = []
@@ -74,6 +75,7 @@ full = ["apple_pay_domain",
 "scheduled_query_run",
 "tax_association",
 "tax_calculation",
+"tax_location",
 "tax_registration",
 "tax_settings",
 "tax_transaction",

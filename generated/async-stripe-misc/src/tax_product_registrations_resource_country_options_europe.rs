@@ -3,7 +3,6 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductRegistrationsResourceCountryOptionsEurope {
-    pub igic: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsIgic>,
     pub standard: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsEuStandard>,
     /// Type of registration in an EU country.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
@@ -18,7 +17,6 @@ impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsEurope {
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsEuropeBuilder {
-    igic: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsIgic>>,
     standard: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsEuStandard>>,
     type_: Option<TaxProductRegistrationsResourceCountryOptionsEuropeType>,
 }
@@ -64,7 +62,6 @@ const _: () = {
         type Out = TaxProductRegistrationsResourceCountryOptionsEurope;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "igic" => Deserialize::begin(&mut self.igic),
                 "standard" => Deserialize::begin(&mut self.standard),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -72,16 +69,14 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { igic: Some(None), standard: Some(None), type_: None }
+            Self { standard: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(igic), Some(standard), Some(type_)) =
-                (self.igic.take(), self.standard.take(), self.type_.take())
-            else {
+            let (Some(standard), Some(type_)) = (self.standard.take(), self.type_.take()) else {
                 return None;
             };
-            Some(Self::Out { igic, standard, type_ })
+            Some(Self::Out { standard, type_ })
         }
     }
 
@@ -108,7 +103,6 @@ const _: () = {
             let mut b = TaxProductRegistrationsResourceCountryOptionsEuropeBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "igic" => b.igic = FromValueOpt::from_value(v),
                     "standard" => b.standard = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     _ => {}

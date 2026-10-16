@@ -264,6 +264,7 @@ impl Default for UpdateTaxSettingsHeadOfficeAddress {
 }
 /// Updates Tax `Settings` parameters used in tax calculations.
 /// All parameters are editable but none can be removed once set.
+/// Check the returned Tax `Settings` object and validate that its status is `active`.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

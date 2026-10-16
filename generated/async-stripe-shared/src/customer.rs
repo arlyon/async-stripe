@@ -7,7 +7,7 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Customer {
-    /// The customer's address.
+    /// The customer's billing address.
     pub address: Option<stripe_shared::Address>,
     /// The current balance, if any, that's stored on the customer in their default currency.
     /// If negative, the customer has credit to apply to their next invoice.

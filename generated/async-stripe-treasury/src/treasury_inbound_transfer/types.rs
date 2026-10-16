@@ -1,4 +1,4 @@
-/// Use [InboundTransfers](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/into/inbound-transfers) to add funds to your [FinancialAccount](https://api.stripe.com#financial_accounts) via a PaymentMethod that is owned by you.
+/// Use [InboundTransfers](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/into/inbound-transfers) to add funds to your [FinancialAccount](https://docs.stripe.com/api#financial_accounts) via a PaymentMethod that is owned by you.
 /// The funds will be transferred via an ACH debit.
 ///
 /// Related guide: [Moving money with Treasury using InboundTransfer objects](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/into/inbound-transfers).
@@ -17,7 +17,7 @@ pub struct TreasuryInboundTransfer {
     pub currency: stripe_types::Currency,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
-    /// Details about this InboundTransfer's failure. Only set when status is `failed`.
+    /// Details about this InboundTransfer's failure. Will be set when `status=failed` or `returned=true`.
     pub failure_details: Option<stripe_treasury::TreasuryInboundTransfersResourceFailureDetails>,
     /// The FinancialAccount that received the funds.
     pub financial_account: String,

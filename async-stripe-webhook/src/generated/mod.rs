@@ -792,6 +792,18 @@ pub enum EventObject {
     /// Occurs whenever an application fee is refunded, whether from refunding a charge or from [refunding the application fee directly](#fee_refunds).
     /// This includes partial refunds.
     ApplicationFeeRefunded(Box<stripe_shared::ApplicationFee>),
+    /// Occurs whenever a user installs a Stripe app.
+    /// Sent to the app developer, embedding platform, and installing merchant.
+    #[cfg(feature = "async-stripe-connect")]
+    AppsInstallCreated(Box<stripe_connect::AppsInstall>),
+    /// Occurs whenever a user uninstalls a Stripe app.
+    /// Sent to the app developer, embedding platform, and installing merchant.
+    #[cfg(feature = "async-stripe-connect")]
+    AppsInstallDeleted(Box<stripe_connect::AppsInstall>),
+    /// Occurs whenever a user updates a Stripe app.
+    /// Sent to the app developer, embedding platform, and installing merchant.
+    #[cfg(feature = "async-stripe-connect")]
+    AppsInstallUpdated(Box<stripe_connect::AppsInstall>),
     /// Occurs whenever your Stripe balance has been updated (e.g., when a charge is available to be paid out).
     /// By default, Stripe automatically transfers funds in your balance to your bank account on a daily basis.
     /// This event is not fired for negative transactions.
@@ -1079,10 +1091,12 @@ pub enum EventObject {
     #[cfg(feature = "async-stripe-billing")]
     InvoiceitemDeleted(Box<stripe_billing::InvoiceItem>),
     /// Occurs whenever an authorization is created.
+    /// For verification authorizations, this event is only accessible via private preview.
     IssuingAuthorizationCreated(Box<stripe_shared::IssuingAuthorization>),
     /// Represents a synchronous request for authorization, see [Using your integration to handle authorization requests](https://docs.stripe.com/issuing/purchases/authorizations#authorization-handling).
     IssuingAuthorizationRequest(Box<stripe_shared::IssuingAuthorization>),
     /// Occurs whenever an authorization is updated.
+    /// For verification authorizations, this event is only accessible via private preview.
     IssuingAuthorizationUpdated(Box<stripe_shared::IssuingAuthorization>),
     /// Occurs whenever a card is created.
     IssuingCardCreated(Box<stripe_shared::IssuingCard>),
@@ -1263,7 +1277,7 @@ pub enum EventObject {
     SetupIntentRequiresAction(Box<stripe_shared::SetupIntent>),
     /// Occurs when a SetupIntent has failed the attempt to setup a payment method.
     SetupIntentSetupFailed(Box<stripe_shared::SetupIntent>),
-    /// Occurs when an SetupIntent has successfully setup a payment method.
+    /// Occurs when a SetupIntent has successfully setup a payment method.
     SetupIntentSucceeded(Box<stripe_shared::SetupIntent>),
     /// Occurs whenever a Sigma scheduled query run finishes.
     #[cfg(feature = "async-stripe-misc")]
@@ -1339,10 +1353,10 @@ pub enum EventObject {
     TransferReversed(Box<stripe_shared::Transfer>),
     /// Occurs whenever a transfer's description or metadata is updated.
     TransferUpdated(Box<stripe_shared::Transfer>),
-    /// Occurs whenever an CreditReversal is submitted and created.
+    /// Occurs whenever a CreditReversal is submitted and created.
     #[cfg(feature = "async-stripe-treasury")]
     TreasuryCreditReversalCreated(Box<stripe_treasury::TreasuryCreditReversal>),
-    /// Occurs whenever an CreditReversal post is posted.
+    /// Occurs whenever a CreditReversal post is posted.
     #[cfg(feature = "async-stripe-treasury")]
     TreasuryCreditReversalPosted(Box<stripe_treasury::TreasuryCreditReversal>),
     /// Occurs whenever a DebitReversal is completed.
@@ -1483,6 +1497,18 @@ impl EventObject {
         }
         if typ == "application_fee.refunded" {
             return parse_and_box(data).map(Self::ApplicationFeeRefunded);
+        }
+        #[cfg(feature = "async-stripe-connect")]
+        if typ == "apps.install.created" {
+            return parse_and_box(data).map(Self::AppsInstallCreated);
+        }
+        #[cfg(feature = "async-stripe-connect")]
+        if typ == "apps.install.deleted" {
+            return parse_and_box(data).map(Self::AppsInstallDeleted);
+        }
+        #[cfg(feature = "async-stripe-connect")]
+        if typ == "apps.install.updated" {
+            return parse_and_box(data).map(Self::AppsInstallUpdated);
         }
         #[cfg(feature = "async-stripe-core")]
         if typ == "balance.available" {
@@ -2403,6 +2429,18 @@ impl EventObject {
         }
         if typ == "application_fee.refunded" {
             return parse_and_box(data).map(Self::ApplicationFeeRefunded);
+        }
+        #[cfg(feature = "async-stripe-connect")]
+        if typ == "apps.install.created" {
+            return parse_and_box(data).map(Self::AppsInstallCreated);
+        }
+        #[cfg(feature = "async-stripe-connect")]
+        if typ == "apps.install.deleted" {
+            return parse_and_box(data).map(Self::AppsInstallDeleted);
+        }
+        #[cfg(feature = "async-stripe-connect")]
+        if typ == "apps.install.updated" {
+            return parse_and_box(data).map(Self::AppsInstallUpdated);
         }
         #[cfg(feature = "async-stripe-core")]
         if typ == "balance.available" {

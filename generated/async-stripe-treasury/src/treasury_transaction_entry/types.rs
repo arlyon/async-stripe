@@ -1,4 +1,4 @@
-/// TransactionEntries represent individual units of money movements within a single [Transaction](https://api.stripe.com#transactions).
+/// TransactionEntries represent individual units of money movements within a single [Transaction](https://docs.stripe.com/api#transactions).
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]

@@ -4,6 +4,10 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationSignals {
+    /// The likelihood that this `PaymentEvaluation` results in an early fraud warning.
+    pub early_fraud_warning: Option<stripe_fraud::InsightsResourcesPaymentEvaluationSignalV2>,
+    /// The likelihood that this `PaymentEvaluation` results in a dispute with reason code `fraudulent`.
+    pub fraudulent_dispute: Option<stripe_fraud::InsightsResourcesPaymentEvaluationSignalV2>,
     pub fraudulent_payment: stripe_fraud::InsightsResourcesPaymentEvaluationSignalV2,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -14,6 +18,8 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSignals {
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationSignalsBuilder {
+    early_fraud_warning: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationSignalV2>>,
+    fraudulent_dispute: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationSignalV2>>,
     fraudulent_payment: Option<stripe_fraud::InsightsResourcesPaymentEvaluationSignalV2>,
 }
 
@@ -57,20 +63,30 @@ const _: () = {
         type Out = InsightsResourcesPaymentEvaluationSignals;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "early_fraud_warning" => Deserialize::begin(&mut self.early_fraud_warning),
+                "fraudulent_dispute" => Deserialize::begin(&mut self.fraudulent_dispute),
                 "fraudulent_payment" => Deserialize::begin(&mut self.fraudulent_payment),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { fraudulent_payment: None }
+            Self {
+                early_fraud_warning: Some(None),
+                fraudulent_dispute: Some(None),
+                fraudulent_payment: None,
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fraudulent_payment),) = (self.fraudulent_payment.take(),) else {
+            let (Some(early_fraud_warning), Some(fraudulent_dispute), Some(fraudulent_payment)) = (
+                self.early_fraud_warning.take(),
+                self.fraudulent_dispute.take(),
+                self.fraudulent_payment.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { fraudulent_payment })
+            Some(Self::Out { early_fraud_warning, fraudulent_dispute, fraudulent_payment })
         }
     }
 
@@ -97,6 +113,8 @@ const _: () = {
             let mut b = InsightsResourcesPaymentEvaluationSignalsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "early_fraud_warning" => b.early_fraud_warning = FromValueOpt::from_value(v),
+                    "fraudulent_dispute" => b.fraudulent_dispute = FromValueOpt::from_value(v),
                     "fraudulent_payment" => b.fraudulent_payment = FromValueOpt::from_value(v),
                     _ => {}
                 }

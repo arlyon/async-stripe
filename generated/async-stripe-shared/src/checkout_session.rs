@@ -24,6 +24,8 @@ pub struct CheckoutSession {
     pub after_expiration: Option<stripe_shared::PaymentPagesCheckoutSessionAfterExpiration>,
     /// Enables user redeemable promotion codes.
     pub allow_promotion_codes: Option<bool>,
+    /// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
+    pub allowed_payment_method_types: Option<Vec<String>>,
     /// Total of all items before discounts or taxes are applied.
     pub amount_subtotal: Option<i64>,
     /// Total of all items after discounts and taxes are applied.
@@ -59,7 +61,7 @@ pub struct CheckoutSession {
     pub currency_conversion: Option<stripe_shared::PaymentPagesCheckoutSessionCurrencyConversion>,
     /// Collect additional information from your customer using custom fields.
     /// Up to 3 fields are supported.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     pub custom_fields: Vec<stripe_shared::PaymentPagesCheckoutSessionCustomFields>,
     pub custom_text: stripe_shared::PaymentPagesCheckoutSessionCustomText,
     /// The ID of the customer for this Session.
@@ -205,6 +207,7 @@ pub struct CheckoutSessionBuilder {
     adaptive_pricing: Option<Option<stripe_shared::PaymentPagesCheckoutSessionAdaptivePricing>>,
     after_expiration: Option<Option<stripe_shared::PaymentPagesCheckoutSessionAfterExpiration>>,
     allow_promotion_codes: Option<Option<bool>>,
+    allowed_payment_method_types: Option<Option<Vec<String>>>,
     amount_subtotal: Option<Option<i64>>,
     amount_total: Option<Option<i64>>,
     automatic_tax: Option<stripe_shared::PaymentPagesCheckoutSessionAutomaticTax>,
@@ -321,6 +324,9 @@ const _: () = {
                 "adaptive_pricing" => Deserialize::begin(&mut self.adaptive_pricing),
                 "after_expiration" => Deserialize::begin(&mut self.after_expiration),
                 "allow_promotion_codes" => Deserialize::begin(&mut self.allow_promotion_codes),
+                "allowed_payment_method_types" => {
+                    Deserialize::begin(&mut self.allowed_payment_method_types)
+                }
                 "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
                 "amount_total" => Deserialize::begin(&mut self.amount_total),
                 "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
@@ -406,6 +412,7 @@ const _: () = {
                 adaptive_pricing: Some(None),
                 after_expiration: Some(None),
                 allow_promotion_codes: Some(None),
+                allowed_payment_method_types: Some(None),
                 amount_subtotal: Some(None),
                 amount_total: Some(None),
                 automatic_tax: None,
@@ -478,6 +485,7 @@ const _: () = {
                 Some(adaptive_pricing),
                 Some(after_expiration),
                 Some(allow_promotion_codes),
+                Some(allowed_payment_method_types),
                 Some(amount_subtotal),
                 Some(amount_total),
                 Some(automatic_tax),
@@ -546,6 +554,7 @@ const _: () = {
                 self.adaptive_pricing,
                 self.after_expiration.take(),
                 self.allow_promotion_codes,
+                self.allowed_payment_method_types.take(),
                 self.amount_subtotal,
                 self.amount_total,
                 self.automatic_tax.take(),
@@ -618,6 +627,7 @@ const _: () = {
                 adaptive_pricing,
                 after_expiration,
                 allow_promotion_codes,
+                allowed_payment_method_types,
                 amount_subtotal,
                 amount_total,
                 automatic_tax,
@@ -713,6 +723,9 @@ const _: () = {
                     "after_expiration" => b.after_expiration = FromValueOpt::from_value(v),
                     "allow_promotion_codes" => {
                         b.allow_promotion_codes = FromValueOpt::from_value(v)
+                    }
+                    "allowed_payment_method_types" => {
+                        b.allowed_payment_method_types = FromValueOpt::from_value(v)
                     }
                     "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
                     "amount_total" => b.amount_total = FromValueOpt::from_value(v),
@@ -811,10 +824,11 @@ const _: () = {
 impl serde::Serialize for CheckoutSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CheckoutSession", 68)?;
+        let mut s = s.serialize_struct("CheckoutSession", 69)?;
         s.serialize_field("adaptive_pricing", &self.adaptive_pricing)?;
         s.serialize_field("after_expiration", &self.after_expiration)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
+        s.serialize_field("allowed_payment_method_types", &self.allowed_payment_method_types)?;
         s.serialize_field("amount_subtotal", &self.amount_subtotal)?;
         s.serialize_field("amount_total", &self.amount_total)?;
         s.serialize_field("automatic_tax", &self.automatic_tax)?;
