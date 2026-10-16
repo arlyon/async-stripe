@@ -298,6 +298,8 @@ pub mod tax_calculation;
 pub mod tax_calculation_line_item;
 #[doc(inline)]
 pub use tax_calculation_line_item::*;
+pub use tax_location::types::*;
+pub mod tax_location;
 pub use tax_registration::types::*;
 pub mod tax_registration;
 pub use tax_settings::types::*;
@@ -341,13 +343,13 @@ pub mod tax_product_registrations_resource_country_options_europe;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_europe::*;
 #[doc(hidden)]
-pub mod tax_product_registrations_resource_country_options_igic;
-#[doc(inline)]
-pub use tax_product_registrations_resource_country_options_igic::*;
-#[doc(hidden)]
 pub mod tax_product_registrations_resource_country_options_simplified;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_simplified::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_spain;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_spain::*;
 #[doc(hidden)]
 pub mod tax_product_registrations_resource_country_options_thailand;
 #[doc(inline)]
@@ -357,6 +359,26 @@ pub mod tax_product_registrations_resource_country_options_united_states;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_united_states::*;
 #[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_admissions_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_admissions_tax::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_attendance_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_attendance_tax::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_entertainment_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_entertainment_tax::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_gross_receipts_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_gross_receipts_tax::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_hospitality_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_hospitality_tax::*;
+#[doc(hidden)]
 pub mod tax_product_registrations_resource_country_options_us_local_amusement_tax;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_us_local_amusement_tax::*;
@@ -364,6 +386,10 @@ pub use tax_product_registrations_resource_country_options_us_local_amusement_ta
 pub mod tax_product_registrations_resource_country_options_us_local_lease_tax;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_us_local_lease_tax::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_luxury_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_luxury_tax::*;
 #[doc(hidden)]
 pub mod tax_product_registrations_resource_country_options_us_mass_transit_parking_tax;
 #[doc(inline)]
@@ -373,6 +399,10 @@ pub mod tax_product_registrations_resource_country_options_us_parking_tax;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_us_parking_tax::*;
 #[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_resort_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_resort_tax::*;
+#[doc(hidden)]
 pub mod tax_product_registrations_resource_country_options_us_state_sales_tax;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_us_state_sales_tax::*;
@@ -380,6 +410,10 @@ pub use tax_product_registrations_resource_country_options_us_state_sales_tax::*
 pub mod tax_product_registrations_resource_country_options_us_state_sales_tax_election;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_us_state_sales_tax_election::*;
+#[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_tourism_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_tourism_tax::*;
 #[doc(hidden)]
 pub mod tax_product_resource_customer_details;
 #[doc(inline)]

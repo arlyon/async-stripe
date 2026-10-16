@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct NotificationEventData {
     /// Object containing the API resource relevant to the event.
-    /// For example, an `invoice.created` event will have a full [invoice object](https://api.stripe.com#invoice_object) as the value of the object key.
+    /// For example, an `invoice.created` event will have a full [invoice object](https://docs.stripe.com/api#invoice_object) as the value of the object key.
     #[cfg_attr(
         any(feature = "deserialize", feature = "serialize"),
         serde(with = "stripe_types::with_serde_json")

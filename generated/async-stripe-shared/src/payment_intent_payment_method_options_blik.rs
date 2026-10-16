@@ -3,6 +3,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentPaymentMethodOptionsBlik {
+    pub mandate_options: Option<stripe_shared::PaymentIntentPaymentMethodOptionsMandateOptionsBlik>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -21,6 +22,8 @@ impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsBlik {
 }
 #[doc(hidden)]
 pub struct PaymentIntentPaymentMethodOptionsBlikBuilder {
+    mandate_options:
+        Option<Option<stripe_shared::PaymentIntentPaymentMethodOptionsMandateOptionsBlik>>,
     setup_future_usage: Option<Option<PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage>>,
 }
 
@@ -64,20 +67,23 @@ const _: () = {
         type Out = PaymentIntentPaymentMethodOptionsBlik;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { setup_future_usage: Some(None) }
+            Self { mandate_options: Some(None), setup_future_usage: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(setup_future_usage),) = (self.setup_future_usage.take(),) else {
+            let (Some(mandate_options), Some(setup_future_usage)) =
+                (self.mandate_options.take(), self.setup_future_usage.take())
+            else {
                 return None;
             };
-            Some(Self::Out { setup_future_usage })
+            Some(Self::Out { mandate_options, setup_future_usage })
         }
     }
 
@@ -104,6 +110,7 @@ const _: () = {
             let mut b = PaymentIntentPaymentMethodOptionsBlikBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
                     _ => {}
                 }
@@ -124,6 +131,7 @@ const _: () = {
 #[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
     None,
+    OffSession,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -132,6 +140,7 @@ impl PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
         use PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage::*;
         match self {
             None => "none",
+            OffSession => "off_session",
             Unknown(v) => v,
         }
     }
@@ -143,6 +152,7 @@ impl std::str::FromStr for PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage
         use PaymentIntentPaymentMethodOptionsBlikSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
+            "off_session" => Ok(OffSession),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",

@@ -7,8 +7,6 @@ pub struct BankConnectionsResourceLinkAccountSessionFilters {
     /// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.
     pub account_subcategories:
         Option<Vec<BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories>>,
-    /// List of countries from which to filter accounts.
-    pub countries: Option<Vec<String>>,
     /// Country from which to filter accounts.
     pub country: Option<String>,
     /// Whether the Session should require that linked accounts support payments and retrieve account numbers before completion.
@@ -25,7 +23,6 @@ impl std::fmt::Debug for BankConnectionsResourceLinkAccountSessionFilters {
 pub struct BankConnectionsResourceLinkAccountSessionFiltersBuilder {
     account_subcategories:
         Option<Option<Vec<BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories>>>,
-    countries: Option<Option<Vec<String>>>,
     country: Option<Option<String>>,
     require_payment_method_support:
         Option<Option<BankConnectionsResourceLinkAccountSessionFiltersRequirePaymentMethodSupport>>,
@@ -72,7 +69,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "account_subcategories" => Deserialize::begin(&mut self.account_subcategories),
-                "countries" => Deserialize::begin(&mut self.countries),
                 "country" => Deserialize::begin(&mut self.country),
                 "require_payment_method_support" => {
                     Deserialize::begin(&mut self.require_payment_method_support)
@@ -84,33 +80,20 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 account_subcategories: Some(None),
-                countries: Some(None),
                 country: Some(None),
                 require_payment_method_support: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_subcategories),
-                Some(countries),
-                Some(country),
-                Some(require_payment_method_support),
-            ) = (
+            let (Some(account_subcategories), Some(country), Some(require_payment_method_support)) = (
                 self.account_subcategories.take(),
-                self.countries.take(),
                 self.country.take(),
                 self.require_payment_method_support.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
-            Some(Self::Out {
-                account_subcategories,
-                countries,
-                country,
-                require_payment_method_support,
-            })
+            Some(Self::Out { account_subcategories, country, require_payment_method_support })
         }
     }
 
@@ -140,7 +123,6 @@ const _: () = {
                     "account_subcategories" => {
                         b.account_subcategories = FromValueOpt::from_value(v)
                     }
-                    "countries" => b.countries = FromValueOpt::from_value(v),
                     "country" => b.country = FromValueOpt::from_value(v),
                     "require_payment_method_support" => {
                         b.require_payment_method_support = FromValueOpt::from_value(v)

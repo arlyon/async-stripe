@@ -49,7 +49,6 @@ invoice_item = []
 invoice_line_item = []
 invoice_payment = []
 invoice_rendering_template = []
-payment_record = []
 plan = []
 quote = []
 subscription = []
@@ -76,7 +75,6 @@ full = ["billing_alert",
 "invoice_line_item",
 "invoice_payment",
 "invoice_rendering_template",
-"payment_record",
 "plan",
 "quote",
 "subscription",

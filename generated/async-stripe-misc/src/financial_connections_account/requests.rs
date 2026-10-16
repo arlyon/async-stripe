@@ -183,7 +183,7 @@ impl RetrieveFinancialConnectionsAccountBuilder {
         Self { expand: None }
     }
 }
-/// Retrieves the details of an Financial Connections `Account`.
+/// Retrieves the details of a Financial Connections `Account`.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

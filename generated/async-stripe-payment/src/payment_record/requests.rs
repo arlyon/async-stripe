@@ -201,6 +201,8 @@ impl StripeRequest for RetrievePaymentRecord {
 #[derive(serde::Serialize)]
 struct ReportPaymentAttemptPaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    canceled: Option<Canceled>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -227,6 +229,7 @@ impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordBuilder {
 impl ReportPaymentAttemptPaymentRecordBuilder {
     fn new(initiated_at: impl Into<stripe_types::Timestamp>) -> Self {
         Self {
+            canceled: None,
             description: None,
             expand: None,
             failed: None,
@@ -243,6 +246,7 @@ impl ReportPaymentAttemptPaymentRecordBuilder {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ReportPaymentAttemptPaymentRecordOutcome {
+    Canceled,
     Failed,
     Guaranteed,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -252,6 +256,7 @@ impl ReportPaymentAttemptPaymentRecordOutcome {
     pub fn as_str(&self) -> &str {
         use ReportPaymentAttemptPaymentRecordOutcome::*;
         match self {
+            Canceled => "canceled",
             Failed => "failed",
             Guaranteed => "guaranteed",
             Unknown(v) => v,
@@ -264,6 +269,7 @@ impl std::str::FromStr for ReportPaymentAttemptPaymentRecordOutcome {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReportPaymentAttemptPaymentRecordOutcome::*;
         match s {
+            "canceled" => Ok(Canceled),
             "failed" => Ok(Failed),
             "guaranteed" => Ok(Guaranteed),
             v => {
@@ -446,6 +452,11 @@ impl ReportPaymentAttemptPaymentRecord {
             id: id.into(),
             inner: ReportPaymentAttemptPaymentRecordBuilder::new(initiated_at.into()),
         }
+    }
+    /// Information about the payment attempt cancelation.
+    pub fn canceled(mut self, canceled: impl Into<Canceled>) -> Self {
+        self.inner.canceled = Some(canceled.into());
+        self
     }
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub fn description(mut self, description: impl Into<String>) -> Self {
@@ -1259,6 +1270,8 @@ impl StripeRequest for ReportRefundPaymentRecord {
 struct ReportPaymentPaymentRecordBuilder {
     amount_requested: Amount,
     #[serde(skip_serializing_if = "Option::is_none")]
+    canceled: Option<Canceled>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     customer_details: Option<CustomerDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     customer_presence: Option<stripe_shared::PaymentRecordCustomerPresence>,
@@ -1295,6 +1308,7 @@ impl ReportPaymentPaymentRecordBuilder {
     ) -> Self {
         Self {
             amount_requested: amount_requested.into(),
+            canceled: None,
             customer_details: None,
             customer_presence: None,
             description: None,
@@ -1314,6 +1328,7 @@ impl ReportPaymentPaymentRecordBuilder {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ReportPaymentPaymentRecordOutcome {
+    Canceled,
     Failed,
     Guaranteed,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -1323,6 +1338,7 @@ impl ReportPaymentPaymentRecordOutcome {
     pub fn as_str(&self) -> &str {
         use ReportPaymentPaymentRecordOutcome::*;
         match self {
+            Canceled => "canceled",
             Failed => "failed",
             Guaranteed => "guaranteed",
             Unknown(v) => v,
@@ -1335,6 +1351,7 @@ impl std::str::FromStr for ReportPaymentPaymentRecordOutcome {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReportPaymentPaymentRecordOutcome::*;
         match s {
+            "canceled" => Ok(Canceled),
             "failed" => Ok(Failed),
             "guaranteed" => Ok(Guaranteed),
             v => {
@@ -1637,6 +1654,11 @@ impl ReportPaymentPaymentRecord {
             ),
         }
     }
+    /// Information about the payment attempt cancelation.
+    pub fn canceled(mut self, canceled: impl Into<Canceled>) -> Self {
+        self.inner.canceled = Some(canceled.into());
+        self
+    }
     /// Customer information for this payment.
     pub fn customer_details(mut self, customer_details: impl Into<CustomerDetails>) -> Self {
         self.inner.customer_details = Some(customer_details.into());
@@ -1726,6 +1748,24 @@ impl StripeRequest for ReportPaymentPaymentRecord {
     }
 }
 
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct Canceled {
+    /// When the reported payment was canceled. Measured in seconds since the Unix epoch.
+    pub canceled_at: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Canceled {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Canceled").finish_non_exhaustive()
+    }
+}
+impl Canceled {
+    pub fn new(canceled_at: impl Into<stripe_types::Timestamp>) -> Self {
+        Self { canceled_at: canceled_at.into() }
+    }
+}
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -1836,7 +1876,7 @@ pub struct CustomerDetails {
     /// The customer who made the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
-    /// The customer's phone number.
+    /// The customer's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     /// The customer's name.

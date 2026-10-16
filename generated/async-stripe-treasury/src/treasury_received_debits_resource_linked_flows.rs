@@ -7,13 +7,13 @@ pub struct TreasuryReceivedDebitsResourceLinkedFlows {
     pub debit_reversal: Option<String>,
     /// Set if the ReceivedDebit is associated with an InboundTransfer's return of funds.
     pub inbound_transfer: Option<String>,
-    /// Set if the ReceivedDebit was created due to an [Issuing Authorization](https://api.stripe.com#issuing_authorizations) object.
+    /// Set if the ReceivedDebit was created due to an [Issuing Authorization](https://docs.stripe.com/api#issuing_authorizations) object.
     pub issuing_authorization: Option<String>,
-    /// Set if the ReceivedDebit is also viewable as an [Issuing Dispute](https://api.stripe.com#issuing_disputes) object.
+    /// Set if the ReceivedDebit is also viewable as an [Issuing Dispute](https://docs.stripe.com/api#issuing_disputes) object.
     pub issuing_transaction: Option<String>,
-    /// Set if the ReceivedDebit was created due to a [Payout](https://api.stripe.com#payouts) object.
+    /// Set if the ReceivedDebit was created due to a [Payout](https://docs.stripe.com/api#payouts) object.
     pub payout: Option<String>,
-    /// Set if the ReceivedDebit was created due to a [Topup](https://api.stripe.com#topups) object.
+    /// Set if the ReceivedDebit was created due to a [Topup](https://docs.stripe.com/api#topups) object.
     pub topup: Option<String>,
 }
 #[cfg(feature = "redact-generated-debug")]

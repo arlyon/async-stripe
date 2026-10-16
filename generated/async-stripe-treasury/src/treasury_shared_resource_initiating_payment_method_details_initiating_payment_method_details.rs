@@ -10,7 +10,7 @@ pub struct TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPayment
     pub billing_details: stripe_treasury::TreasurySharedResourceBillingDetails,
     pub financial_account: Option<stripe_treasury::ReceivedPaymentMethodDetailsFinancialAccount>,
     /// Set when `type` is `issuing_card`.
-    /// This is an [Issuing Card](https://api.stripe.com#issuing_cards) ID.
+    /// This is an [Issuing Card](https://docs.stripe.com/api#issuing_cards) ID.
     pub issuing_card: Option<String>,
     /// Polymorphic type matching the originating money movement's source.
     /// This can be an external account, a Stripe balance, or a FinancialAccount.

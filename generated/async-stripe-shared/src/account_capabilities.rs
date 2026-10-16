@@ -29,6 +29,8 @@ pub struct AccountCapabilities {
     pub bizum_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the blik payments capability of the account, or whether the account can directly process blik charges.
     pub blik_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the BLIK recurring payments capability of the account, or whether the account can accept recurring and subscription BLIK payments.
+    pub blik_recurring_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the boleto payments capability of the account, or whether the account can directly process boleto charges.
     pub boleto_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the card issuing capability of the account, or whether you can use Issuing to distribute funds on cards.
@@ -93,6 +95,8 @@ pub struct AccountCapabilities {
     pub payco_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the paynow payments capability of the account, or whether the account can directly process paynow charges.
     pub paynow_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the Paypay capability of the account, or whether the account can directly process Paypay payments.
+    pub paypay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the PayTo capability of the account, or whether the account can directly process PayTo charges.
     pub payto_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the pix payments capability of the account, or whether the account can directly process pix charges.
@@ -111,6 +115,8 @@ pub struct AccountCapabilities {
     pub sepa_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the SEPA Direct Debits payments capability of the account, or whether the account can directly process SEPA Direct Debits charges.
     pub sepa_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the SeQura capability of the account, or whether the account can directly process SeQura payments.
+    pub sequra_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Sofort payments capability of the account, or whether the account can directly process Sofort charges.
     pub sofort_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Sunbit capability of the account, or whether the account can directly process Sunbit payments.
@@ -157,6 +163,7 @@ pub struct AccountCapabilitiesBuilder {
     billie_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     bizum_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     blik_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    blik_recurring_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     boleto_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     card_issuing: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     card_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -189,6 +196,7 @@ pub struct AccountCapabilitiesBuilder {
     pay_by_bank_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     payco_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     paynow_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    paypay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     payto_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     pix_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     promptpay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -198,6 +206,7 @@ pub struct AccountCapabilitiesBuilder {
     scalapay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     sepa_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     sepa_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    sequra_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     sofort_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     sunbit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     swish_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -267,6 +276,7 @@ const _: () = {
                 "billie_payments" => Deserialize::begin(&mut self.billie_payments),
                 "bizum_payments" => Deserialize::begin(&mut self.bizum_payments),
                 "blik_payments" => Deserialize::begin(&mut self.blik_payments),
+                "blik_recurring_payments" => Deserialize::begin(&mut self.blik_recurring_payments),
                 "boleto_payments" => Deserialize::begin(&mut self.boleto_payments),
                 "card_issuing" => Deserialize::begin(&mut self.card_issuing),
                 "card_payments" => Deserialize::begin(&mut self.card_payments),
@@ -311,6 +321,7 @@ const _: () = {
                 "pay_by_bank_payments" => Deserialize::begin(&mut self.pay_by_bank_payments),
                 "payco_payments" => Deserialize::begin(&mut self.payco_payments),
                 "paynow_payments" => Deserialize::begin(&mut self.paynow_payments),
+                "paypay_payments" => Deserialize::begin(&mut self.paypay_payments),
                 "payto_payments" => Deserialize::begin(&mut self.payto_payments),
                 "pix_payments" => Deserialize::begin(&mut self.pix_payments),
                 "promptpay_payments" => Deserialize::begin(&mut self.promptpay_payments),
@@ -322,6 +333,7 @@ const _: () = {
                     Deserialize::begin(&mut self.sepa_bank_transfer_payments)
                 }
                 "sepa_debit_payments" => Deserialize::begin(&mut self.sepa_debit_payments),
+                "sequra_payments" => Deserialize::begin(&mut self.sequra_payments),
                 "sofort_payments" => Deserialize::begin(&mut self.sofort_payments),
                 "sunbit_payments" => Deserialize::begin(&mut self.sunbit_payments),
                 "swish_payments" => Deserialize::begin(&mut self.swish_payments),
@@ -359,6 +371,7 @@ const _: () = {
                 billie_payments: Some(None),
                 bizum_payments: Some(None),
                 blik_payments: Some(None),
+                blik_recurring_payments: Some(None),
                 boleto_payments: Some(None),
                 card_issuing: Some(None),
                 card_payments: Some(None),
@@ -391,6 +404,7 @@ const _: () = {
                 pay_by_bank_payments: Some(None),
                 payco_payments: Some(None),
                 paynow_payments: Some(None),
+                paypay_payments: Some(None),
                 payto_payments: Some(None),
                 pix_payments: Some(None),
                 promptpay_payments: Some(None),
@@ -400,6 +414,7 @@ const _: () = {
                 scalapay_payments: Some(None),
                 sepa_bank_transfer_payments: Some(None),
                 sepa_debit_payments: Some(None),
+                sequra_payments: Some(None),
                 sofort_payments: Some(None),
                 sunbit_payments: Some(None),
                 swish_payments: Some(None),
@@ -430,6 +445,7 @@ const _: () = {
                 Some(billie_payments),
                 Some(bizum_payments),
                 Some(blik_payments),
+                Some(blik_recurring_payments),
                 Some(boleto_payments),
                 Some(card_issuing),
                 Some(card_payments),
@@ -462,6 +478,7 @@ const _: () = {
                 Some(pay_by_bank_payments),
                 Some(payco_payments),
                 Some(paynow_payments),
+                Some(paypay_payments),
                 Some(payto_payments),
                 Some(pix_payments),
                 Some(promptpay_payments),
@@ -471,6 +488,7 @@ const _: () = {
                 Some(scalapay_payments),
                 Some(sepa_bank_transfer_payments),
                 Some(sepa_debit_payments),
+                Some(sequra_payments),
                 Some(sofort_payments),
                 Some(sunbit_payments),
                 Some(swish_payments),
@@ -497,6 +515,7 @@ const _: () = {
                 self.billie_payments.take(),
                 self.bizum_payments.take(),
                 self.blik_payments.take(),
+                self.blik_recurring_payments.take(),
                 self.boleto_payments.take(),
                 self.card_issuing.take(),
                 self.card_payments.take(),
@@ -529,6 +548,7 @@ const _: () = {
                 self.pay_by_bank_payments.take(),
                 self.payco_payments.take(),
                 self.paynow_payments.take(),
+                self.paypay_payments.take(),
                 self.payto_payments.take(),
                 self.pix_payments.take(),
                 self.promptpay_payments.take(),
@@ -538,6 +558,7 @@ const _: () = {
                 self.scalapay_payments.take(),
                 self.sepa_bank_transfer_payments.take(),
                 self.sepa_debit_payments.take(),
+                self.sequra_payments.take(),
                 self.sofort_payments.take(),
                 self.sunbit_payments.take(),
                 self.swish_payments.take(),
@@ -568,6 +589,7 @@ const _: () = {
                 billie_payments,
                 bizum_payments,
                 blik_payments,
+                blik_recurring_payments,
                 boleto_payments,
                 card_issuing,
                 card_payments,
@@ -600,6 +622,7 @@ const _: () = {
                 pay_by_bank_payments,
                 payco_payments,
                 paynow_payments,
+                paypay_payments,
                 payto_payments,
                 pix_payments,
                 promptpay_payments,
@@ -609,6 +632,7 @@ const _: () = {
                 scalapay_payments,
                 sepa_bank_transfer_payments,
                 sepa_debit_payments,
+                sequra_payments,
                 sofort_payments,
                 sunbit_payments,
                 swish_payments,
@@ -667,6 +691,9 @@ const _: () = {
                     "billie_payments" => b.billie_payments = FromValueOpt::from_value(v),
                     "bizum_payments" => b.bizum_payments = FromValueOpt::from_value(v),
                     "blik_payments" => b.blik_payments = FromValueOpt::from_value(v),
+                    "blik_recurring_payments" => {
+                        b.blik_recurring_payments = FromValueOpt::from_value(v)
+                    }
                     "boleto_payments" => b.boleto_payments = FromValueOpt::from_value(v),
                     "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
                     "card_payments" => b.card_payments = FromValueOpt::from_value(v),
@@ -711,6 +738,7 @@ const _: () = {
                     "pay_by_bank_payments" => b.pay_by_bank_payments = FromValueOpt::from_value(v),
                     "payco_payments" => b.payco_payments = FromValueOpt::from_value(v),
                     "paynow_payments" => b.paynow_payments = FromValueOpt::from_value(v),
+                    "paypay_payments" => b.paypay_payments = FromValueOpt::from_value(v),
                     "payto_payments" => b.payto_payments = FromValueOpt::from_value(v),
                     "pix_payments" => b.pix_payments = FromValueOpt::from_value(v),
                     "promptpay_payments" => b.promptpay_payments = FromValueOpt::from_value(v),
@@ -722,6 +750,7 @@ const _: () = {
                         b.sepa_bank_transfer_payments = FromValueOpt::from_value(v)
                     }
                     "sepa_debit_payments" => b.sepa_debit_payments = FromValueOpt::from_value(v),
+                    "sequra_payments" => b.sequra_payments = FromValueOpt::from_value(v),
                     "sofort_payments" => b.sofort_payments = FromValueOpt::from_value(v),
                     "sunbit_payments" => b.sunbit_payments = FromValueOpt::from_value(v),
                     "swish_payments" => b.swish_payments = FromValueOpt::from_value(v),

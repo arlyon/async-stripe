@@ -125,6 +125,7 @@ const _: () = {
 #[non_exhaustive]
 pub enum TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
     Ach,
+    Rtp,
     UsDomesticWire,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
@@ -134,6 +135,7 @@ impl TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
         use TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks::*;
         match self {
             Ach => "ach",
+            Rtp => "rtp",
             UsDomesticWire => "us_domestic_wire",
             Unknown(v) => v,
         }
@@ -146,6 +148,7 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourceFinancialAddressSupp
         use TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks::*;
         match s {
             "ach" => Ok(Ach),
+            "rtp" => Ok(Rtp),
             "us_domestic_wire" => Ok(UsDomesticWire),
             v => {
                 tracing::warn!(

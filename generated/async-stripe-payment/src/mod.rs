@@ -21,6 +21,7 @@ pub use stripe_shared::card::*;
 pub use stripe_shared::card_generated_from_payment_method_details::*;
 pub use stripe_shared::card_issuing_account_terms_of_service::*;
 pub use stripe_shared::card_mandate_payment_method_details::*;
+pub use stripe_shared::card_mandate_payment_method_details_india::*;
 pub mod confirmation_token;
 #[doc(hidden)]
 pub mod confirmation_tokens_resource_mandate_data;
@@ -66,7 +67,7 @@ pub use stripe_shared::klarna_address::*;
 pub use stripe_shared::klarna_payer_details::*;
 pub use stripe_shared::networks::*;
 pub mod payment_attempt_record;
-pub use stripe_shared::payment_flows_private_payment_methods_alipay::*;pub use stripe_shared::payment_flows_private_payment_methods_alma_details_resource_installments::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_extended_authorization_extended_authorization::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_incremental_authorization_incremental_authorization::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_overcapture_overcapture::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_multicapture::*;pub use stripe_shared::payment_flows_private_payment_methods_card_present_common_wallet::*;pub use stripe_shared::payment_flows_private_payment_methods_klarna_dob::*;pub use stripe_shared::payment_flows_private_payment_methods_konbini_details_resource_store::*;
+pub use stripe_shared::payment_flows_private_payment_methods_alipay::*;pub use stripe_shared::payment_flows_private_payment_methods_alma_details_resource_installments::*;pub use stripe_shared::payment_flows_private_payment_methods_billie_payment_method_options_resource_company_details::*;pub use stripe_shared::payment_flows_private_payment_methods_billie_payment_method_options_resource_company_details_resource_company_details_registered_address::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_extended_authorization_extended_authorization::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_incremental_authorization_incremental_authorization::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_overcapture_overcapture::*;pub use stripe_shared::payment_flows_private_payment_methods_card_details_api_resource_multicapture::*;pub use stripe_shared::payment_flows_private_payment_methods_card_present_common_wallet::*;pub use stripe_shared::payment_flows_private_payment_methods_klarna_dob::*;pub use stripe_shared::payment_flows_private_payment_methods_konbini_details_resource_store::*;
 pub mod payment_link;
 pub use stripe_shared::payment_link::*;
 pub use stripe_shared::payment_links_resource_after_completion::*;
@@ -226,6 +227,7 @@ pub use stripe_shared::payment_method_details_payment_record_konbini::*;
 pub use stripe_shared::payment_method_details_payment_record_link::*;
 pub use stripe_shared::payment_method_details_payment_record_mb_way::*;
 pub use stripe_shared::payment_method_details_payment_record_mobilepay::*;
+pub use stripe_shared::payment_method_details_payment_record_momo::*;
 pub use stripe_shared::payment_method_details_payment_record_multibanco::*;
 pub use stripe_shared::payment_method_details_payment_record_naver_pay::*;
 pub use stripe_shared::payment_method_details_payment_record_nz_bank_account::*;
@@ -234,6 +236,7 @@ pub use stripe_shared::payment_method_details_payment_record_p24::*;
 pub use stripe_shared::payment_method_details_payment_record_pay_by_bank::*;
 pub use stripe_shared::payment_method_details_payment_record_payco::*;
 pub use stripe_shared::payment_method_details_payment_record_paynow::*;
+pub use stripe_shared::payment_method_details_payment_record_paypay::*;
 pub use stripe_shared::payment_method_details_payment_record_payto::*;
 pub use stripe_shared::payment_method_details_payment_record_pix::*;
 pub use stripe_shared::payment_method_details_payment_record_promptpay::*;
@@ -242,6 +245,7 @@ pub use stripe_shared::payment_method_details_payment_record_samsung_pay::*;
 pub use stripe_shared::payment_method_details_payment_record_satispay::*;
 pub use stripe_shared::payment_method_details_payment_record_scalapay::*;
 pub use stripe_shared::payment_method_details_payment_record_sepa_debit::*;
+pub use stripe_shared::payment_method_details_payment_record_sequra::*;
 pub use stripe_shared::payment_method_details_payment_record_sofort::*;
 pub use stripe_shared::payment_method_details_payment_record_sunbit::*;
 pub use stripe_shared::payment_method_details_payment_record_swish::*;
@@ -252,6 +256,7 @@ pub use stripe_shared::payment_method_details_payment_record_wechat_pay::*;
 pub use stripe_shared::payment_method_details_payment_record_zip::*;
 pub use stripe_shared::payment_method_details_paynow::*;
 pub use stripe_shared::payment_method_details_paypal::*;
+pub use stripe_shared::payment_method_details_paypay::*;
 pub use stripe_shared::payment_method_details_payto::*;
 pub use stripe_shared::payment_method_details_pix::*;
 pub use stripe_shared::payment_method_details_promptpay::*;
@@ -261,6 +266,7 @@ pub use stripe_shared::payment_method_details_satispay::*;
 pub use stripe_shared::payment_method_details_scalapay::*;
 pub use stripe_shared::payment_method_details_sepa_credit_transfer::*;
 pub use stripe_shared::payment_method_details_sepa_debit::*;
+pub use stripe_shared::payment_method_details_sequra::*;
 pub use stripe_shared::payment_method_details_sofort::*;
 pub use stripe_shared::payment_method_details_stripe_account::*;
 pub use stripe_shared::payment_method_details_sunbit::*;
@@ -279,7 +285,100 @@ pub use payment_method_domain_resource_payment_method_status::*;
 #[doc(hidden)]
 pub mod payment_method_domain_resource_payment_method_status_details;
 #[doc(inline)]
-pub use payment_method_domain_resource_payment_method_status_details::*;pub use stripe_shared::payment_method_eps::*;pub use stripe_shared::payment_method_fpx::*;pub use stripe_shared::payment_method_giropay::*;pub use stripe_shared::payment_method_grabpay::*;pub use stripe_shared::payment_method_ideal::*;pub use stripe_shared::payment_method_interac_present::*;pub use stripe_shared::payment_method_kakao_pay::*;pub use stripe_shared::payment_method_klarna::*;pub use stripe_shared::payment_method_konbini::*;pub use stripe_shared::payment_method_kr_card::*;pub use stripe_shared::payment_method_link::*;pub use stripe_shared::payment_method_mb_way::*;pub use stripe_shared::payment_method_mobilepay::*;pub use stripe_shared::payment_method_multibanco::*;pub use stripe_shared::payment_method_naver_pay::*;pub use stripe_shared::payment_method_nz_bank_account::*;pub use stripe_shared::payment_method_options_affirm::*;pub use stripe_shared::payment_method_options_afterpay_clearpay::*;pub use stripe_shared::payment_method_options_alipay::*;pub use stripe_shared::payment_method_options_alma::*;pub use stripe_shared::payment_method_options_amazon_pay::*;pub use stripe_shared::payment_method_options_bancontact::*;pub use stripe_shared::payment_method_options_billie::*;pub use stripe_shared::payment_method_options_bizum::*;pub use stripe_shared::payment_method_options_boleto::*;pub use stripe_shared::payment_method_options_card_installments::*;pub use stripe_shared::payment_method_options_card_mandate_options::*;pub use stripe_shared::payment_method_options_card_present::*;pub use stripe_shared::payment_method_options_card_present_routing::*;pub use stripe_shared::payment_method_options_cashapp::*;pub use stripe_shared::payment_method_options_crypto::*;pub use stripe_shared::payment_method_options_customer_balance::*;pub use stripe_shared::payment_method_options_customer_balance_bank_transfer::*;pub use stripe_shared::payment_method_options_customer_balance_eu_bank_account::*;pub use stripe_shared::payment_method_options_fpx::*;pub use stripe_shared::payment_method_options_giropay::*;pub use stripe_shared::payment_method_options_grabpay::*;pub use stripe_shared::payment_method_options_ideal::*;pub use stripe_shared::payment_method_options_interac_present::*;pub use stripe_shared::payment_method_options_klarna::*;pub use stripe_shared::payment_method_options_konbini::*;pub use stripe_shared::payment_method_options_kr_card::*;pub use stripe_shared::payment_method_options_mandate_options_pix::*;pub use stripe_shared::payment_method_options_mandate_options_upi::*;pub use stripe_shared::payment_method_options_mb_way::*;pub use stripe_shared::payment_method_options_multibanco::*;pub use stripe_shared::payment_method_options_oxxo::*;pub use stripe_shared::payment_method_options_p24::*;pub use stripe_shared::payment_method_options_pay_by_bank::*;pub use stripe_shared::payment_method_options_paynow::*;pub use stripe_shared::payment_method_options_paypal::*;pub use stripe_shared::payment_method_options_pix::*;pub use stripe_shared::payment_method_options_promptpay::*;pub use stripe_shared::payment_method_options_revolut_pay::*;pub use stripe_shared::payment_method_options_satispay::*;pub use stripe_shared::payment_method_options_scalapay::*;pub use stripe_shared::payment_method_options_sofort::*;pub use stripe_shared::payment_method_options_sunbit::*;pub use stripe_shared::payment_method_options_twint::*;pub use stripe_shared::payment_method_options_upi::*;pub use stripe_shared::payment_method_options_us_bank_account_mandate_options::*;pub use stripe_shared::payment_method_options_wechat_pay::*;pub use stripe_shared::payment_method_options_zip::*;pub use stripe_shared::payment_method_oxxo::*;pub use stripe_shared::payment_method_p24::*;pub use stripe_shared::payment_method_pay_by_bank::*;pub use stripe_shared::payment_method_payco::*;pub use stripe_shared::payment_method_paynow::*;pub use stripe_shared::payment_method_paypal::*;pub use stripe_shared::payment_method_payto::*;pub use stripe_shared::payment_method_pix::*;pub use stripe_shared::payment_method_promptpay::*;pub use stripe_shared::payment_method_revolut_pay::*;pub use stripe_shared::payment_method_samsung_pay::*;pub use stripe_shared::payment_method_satispay::*;pub use stripe_shared::payment_method_scalapay::*;pub use stripe_shared::payment_method_sepa_debit::*;pub use stripe_shared::payment_method_sofort::*;pub use stripe_shared::payment_method_sunbit::*;pub use stripe_shared::payment_method_swish::*;pub use stripe_shared::payment_method_twint::*;pub use stripe_shared::payment_method_upi::*;pub use stripe_shared::payment_method_us_bank_account::*;pub use stripe_shared::payment_method_us_bank_account_blocked::*;pub use stripe_shared::payment_method_us_bank_account_status_details::*;pub use stripe_shared::payment_method_wechat_pay::*;pub use stripe_shared::payment_method_zip::*;pub use stripe_shared::payments_primitives_payment_records_resource_address::*;pub use stripe_shared::payments_primitives_payment_records_resource_amount::*;pub use stripe_shared::payments_primitives_payment_records_resource_billing_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_customer_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_alma_details_resource_installments::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_amazon_pay_details_resource_funding::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_amazon_pay_details_resource_funding_resource_funding_card::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_checks::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_installment_plan::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_installments::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_network_token::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_three_d_secure::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_apple_pay::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_google_pay::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_custom_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_klarna_details_resource_payer_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_klarna_details_resource_payer_details_resource_payer_details_address::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_konbini_details_resource_store::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_mobilepay_details_resource_card::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_revolut_pay_details_resource_funding::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_revolut_pay_details_resource_funding_resource_funding_card::*;pub use stripe_shared::payments_primitives_payment_records_resource_processor_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_processor_details_resource_custom_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_shipping_details::*;pub use stripe_shared::paypal_seller_protection::*;pub use stripe_shared::revolut_pay_underlying_payment_method_funding_details::*;pub use stripe_shared::sepa_debit_generated_from::*;
+pub use payment_method_domain_resource_payment_method_status_details::*;
+pub use stripe_shared::payment_method_eps::*;
+pub use stripe_shared::payment_method_fpx::*;
+pub use stripe_shared::payment_method_giropay::*;
+pub use stripe_shared::payment_method_grabpay::*;
+pub use stripe_shared::payment_method_ideal::*;
+pub use stripe_shared::payment_method_interac_present::*;
+pub use stripe_shared::payment_method_kakao_pay::*;
+pub use stripe_shared::payment_method_klarna::*;
+pub use stripe_shared::payment_method_konbini::*;
+pub use stripe_shared::payment_method_kr_card::*;
+pub use stripe_shared::payment_method_link::*;
+pub use stripe_shared::payment_method_mb_way::*;
+pub use stripe_shared::payment_method_mobilepay::*;
+pub use stripe_shared::payment_method_multibanco::*;
+pub use stripe_shared::payment_method_naver_pay::*;
+pub use stripe_shared::payment_method_nz_bank_account::*;
+pub use stripe_shared::payment_method_options_affirm::*;
+pub use stripe_shared::payment_method_options_afterpay_clearpay::*;
+pub use stripe_shared::payment_method_options_alipay::*;
+pub use stripe_shared::payment_method_options_alma::*;
+pub use stripe_shared::payment_method_options_amazon_pay::*;
+pub use stripe_shared::payment_method_options_bancontact::*;
+pub use stripe_shared::payment_method_options_billie::*;
+pub use stripe_shared::payment_method_options_bizum::*;
+pub use stripe_shared::payment_method_options_boleto::*;
+pub use stripe_shared::payment_method_options_card_installments::*;
+pub use stripe_shared::payment_method_options_card_mandate_options::*;
+pub use stripe_shared::payment_method_options_card_present::*;
+pub use stripe_shared::payment_method_options_card_present_routing::*;
+pub use stripe_shared::payment_method_options_cashapp::*;
+pub use stripe_shared::payment_method_options_crypto::*;
+pub use stripe_shared::payment_method_options_customer_balance::*;
+pub use stripe_shared::payment_method_options_customer_balance_bank_transfer::*;
+pub use stripe_shared::payment_method_options_customer_balance_eu_bank_account::*;
+pub use stripe_shared::payment_method_options_fpx::*;
+pub use stripe_shared::payment_method_options_giropay::*;
+pub use stripe_shared::payment_method_options_grabpay::*;
+pub use stripe_shared::payment_method_options_ideal::*;
+pub use stripe_shared::payment_method_options_interac_present::*;
+pub use stripe_shared::payment_method_options_klarna::*;
+pub use stripe_shared::payment_method_options_konbini::*;
+pub use stripe_shared::payment_method_options_kr_card::*;
+pub use stripe_shared::payment_method_options_mandate_options_pix::*;
+pub use stripe_shared::payment_method_options_mandate_options_upi::*;
+pub use stripe_shared::payment_method_options_mb_way::*;
+pub use stripe_shared::payment_method_options_multibanco::*;
+pub use stripe_shared::payment_method_options_oxxo::*;
+pub use stripe_shared::payment_method_options_p24::*;
+pub use stripe_shared::payment_method_options_pay_by_bank::*;
+pub use stripe_shared::payment_method_options_paynow::*;
+pub use stripe_shared::payment_method_options_paypal::*;
+pub use stripe_shared::payment_method_options_paypay::*;
+pub use stripe_shared::payment_method_options_pix::*;
+pub use stripe_shared::payment_method_options_promptpay::*;
+pub use stripe_shared::payment_method_options_revolut_pay::*;
+pub use stripe_shared::payment_method_options_satispay::*;
+pub use stripe_shared::payment_method_options_scalapay::*;
+pub use stripe_shared::payment_method_options_sequra::*;
+pub use stripe_shared::payment_method_options_sofort::*;
+pub use stripe_shared::payment_method_options_sunbit::*;
+pub use stripe_shared::payment_method_options_twint::*;
+pub use stripe_shared::payment_method_options_upi::*;
+pub use stripe_shared::payment_method_options_us_bank_account_mandate_options::*;
+pub use stripe_shared::payment_method_options_wechat_pay::*;
+pub use stripe_shared::payment_method_options_zip::*;
+pub use stripe_shared::payment_method_oxxo::*;
+pub use stripe_shared::payment_method_p24::*;
+pub use stripe_shared::payment_method_pay_by_bank::*;
+pub use stripe_shared::payment_method_payco::*;
+pub use stripe_shared::payment_method_paynow::*;
+pub use stripe_shared::payment_method_paypal::*;
+pub use stripe_shared::payment_method_paypay::*;
+pub use stripe_shared::payment_method_payto::*;
+pub use stripe_shared::payment_method_pix::*;
+pub use stripe_shared::payment_method_promptpay::*;
+pub use stripe_shared::payment_method_revolut_pay::*;
+pub use stripe_shared::payment_method_samsung_pay::*;
+pub use stripe_shared::payment_method_satispay::*;
+pub use stripe_shared::payment_method_scalapay::*;
+pub use stripe_shared::payment_method_sepa_debit::*;
+pub use stripe_shared::payment_method_sequra::*;
+pub use stripe_shared::payment_method_sofort::*;
+pub use stripe_shared::payment_method_sunbit::*;
+pub use stripe_shared::payment_method_swish::*;
+pub use stripe_shared::payment_method_twint::*;
+pub use stripe_shared::payment_method_upi::*;
+pub use stripe_shared::payment_method_us_bank_account::*;
+pub use stripe_shared::payment_method_us_bank_account_blocked::*;
+pub use stripe_shared::payment_method_us_bank_account_status_details::*;
+pub use stripe_shared::payment_method_wechat_pay::*;
+pub use stripe_shared::payment_method_zip::*;
+pub mod payment_record;
+pub use stripe_shared::payment_record::*;pub use stripe_shared::payments_primitives_payment_records_resource_address::*;pub use stripe_shared::payments_primitives_payment_records_resource_amount::*;pub use stripe_shared::payments_primitives_payment_records_resource_billing_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_customer_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_alma_details_resource_installments::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_amazon_pay_details_resource_funding::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_amazon_pay_details_resource_funding_resource_funding_card::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_checks::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_installment_plan::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_installments::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_network_token::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_three_d_secure::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_apple_pay::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_google_pay::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_link::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_custom_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_klarna_details_resource_payer_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_klarna_details_resource_payer_details_resource_payer_details_address::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_konbini_details_resource_store::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_mobilepay_details_resource_card::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_revolut_pay_details_resource_funding::*;pub use stripe_shared::payments_primitives_payment_records_resource_payment_method_revolut_pay_details_resource_funding_resource_funding_card::*;pub use stripe_shared::payments_primitives_payment_records_resource_processor_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_processor_details_resource_custom_details::*;pub use stripe_shared::payments_primitives_payment_records_resource_shipping_details::*;pub use stripe_shared::paypal_seller_protection::*;pub use stripe_shared::revolut_pay_underlying_payment_method_funding_details::*;pub use stripe_shared::sepa_debit_generated_from::*;
 pub mod source;
 pub use stripe_shared::source::*;
 pub use stripe_shared::source_code_verification_flow::*;
@@ -329,6 +428,72 @@ pub use stripe_shared::source_type_sepa_debit::*;
 pub use stripe_shared::source_type_sofort::*;
 pub use stripe_shared::source_type_three_d_secure::*;
 pub use stripe_shared::source_type_wechat::*;
+pub use three_d_secure_authentication::types::*;
+pub mod three_d_secure_authentication;
 pub use stripe_shared::three_d_secure_details_charge::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_acquirer_details;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_acquirer_details::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_browser_details;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_browser_details::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_cartes_bancaires;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_cartes_bancaires::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_challenge_details;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_challenge_details::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_channel;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_channel::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_data_share_details;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_data_share_details::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_expiry;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_expiry::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_flow_preference;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_flow_preference::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_frictionless_details;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_frictionless_details::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_future_usage;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_future_usage::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_installment;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_installment::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_network_details;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_network_details::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_outcome_details;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_outcome_details::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_recurring;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_recurring::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_shipping_address;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_shipping_address::*;
+#[doc(hidden)]
+pub mod three_d_secure_standalone_resource_three_ri_details;
 pub use stripe_shared::three_d_secure_usage::*;
 pub use stripe_shared::us_bank_account_networks::*;
+#[doc(inline)]
+pub use three_d_secure_standalone_resource_three_ri_details::*;

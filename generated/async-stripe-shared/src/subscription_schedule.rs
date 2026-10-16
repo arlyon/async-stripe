@@ -36,6 +36,8 @@ pub struct SubscriptionSchedule {
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The pause schedules for this subscription schedule.
+    pub pause_schedules: Option<Vec<stripe_shared::SubscriptionSchedulesResourcePauseSchedule>>,
     /// Configuration for the subscription schedule's phases.
     pub phases: Vec<stripe_shared::SubscriptionSchedulePhaseConfiguration>,
     /// Time at which the subscription schedule was released. Measured in seconds since the Unix epoch.
@@ -72,6 +74,7 @@ pub struct SubscriptionScheduleBuilder {
     id: Option<stripe_shared::SubscriptionScheduleId>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    pause_schedules: Option<Option<Vec<stripe_shared::SubscriptionSchedulesResourcePauseSchedule>>>,
     phases: Option<Vec<stripe_shared::SubscriptionSchedulePhaseConfiguration>>,
     released_at: Option<Option<stripe_types::Timestamp>>,
     released_subscription: Option<Option<String>>,
@@ -133,6 +136,7 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
+                "pause_schedules" => Deserialize::begin(&mut self.pause_schedules),
                 "phases" => Deserialize::begin(&mut self.phases),
                 "released_at" => Deserialize::begin(&mut self.released_at),
                 "released_subscription" => Deserialize::begin(&mut self.released_subscription),
@@ -158,6 +162,7 @@ const _: () = {
                 id: None,
                 livemode: None,
                 metadata: Some(None),
+                pause_schedules: Some(None),
                 phases: None,
                 released_at: Some(None),
                 released_subscription: Some(None),
@@ -182,6 +187,7 @@ const _: () = {
                 Some(id),
                 Some(livemode),
                 Some(metadata),
+                Some(pause_schedules),
                 Some(phases),
                 Some(released_at),
                 Some(released_subscription),
@@ -202,6 +208,7 @@ const _: () = {
                 self.id.take(),
                 self.livemode,
                 self.metadata.take(),
+                self.pause_schedules.take(),
                 self.phases.take(),
                 self.released_at,
                 self.released_subscription.take(),
@@ -226,6 +233,7 @@ const _: () = {
                 id,
                 livemode,
                 metadata,
+                pause_schedules,
                 phases,
                 released_at,
                 released_subscription,
@@ -272,6 +280,7 @@ const _: () = {
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
+                    "pause_schedules" => b.pause_schedules = FromValueOpt::from_value(v),
                     "phases" => b.phases = FromValueOpt::from_value(v),
                     "released_at" => b.released_at = FromValueOpt::from_value(v),
                     "released_subscription" => {
@@ -291,7 +300,7 @@ const _: () = {
 impl serde::Serialize for SubscriptionSchedule {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("SubscriptionSchedule", 20)?;
+        let mut s = s.serialize_struct("SubscriptionSchedule", 21)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("billing_mode", &self.billing_mode)?;
         s.serialize_field("canceled_at", &self.canceled_at)?;
@@ -305,6 +314,7 @@ impl serde::Serialize for SubscriptionSchedule {
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("pause_schedules", &self.pause_schedules)?;
         s.serialize_field("phases", &self.phases)?;
         s.serialize_field("released_at", &self.released_at)?;
         s.serialize_field("released_subscription", &self.released_subscription)?;

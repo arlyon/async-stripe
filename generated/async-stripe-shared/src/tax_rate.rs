@@ -501,6 +501,7 @@ stripe_types::def_id!(TaxRateId);
 pub enum TaxRateTaxType {
     AmusementTax,
     CommunicationsTax,
+    DigitalExciseTax,
     Gst,
     Hst,
     Igst,
@@ -514,6 +515,7 @@ pub enum TaxRateTaxType {
     Rst,
     SalesTax,
     ServiceTax,
+    UtilityUsersTax,
     Vat,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
@@ -524,6 +526,7 @@ impl TaxRateTaxType {
         match self {
             AmusementTax => "amusement_tax",
             CommunicationsTax => "communications_tax",
+            DigitalExciseTax => "digital_excise_tax",
             Gst => "gst",
             Hst => "hst",
             Igst => "igst",
@@ -537,6 +540,7 @@ impl TaxRateTaxType {
             Rst => "rst",
             SalesTax => "sales_tax",
             ServiceTax => "service_tax",
+            UtilityUsersTax => "utility_users_tax",
             Vat => "vat",
             Unknown(v) => v,
         }
@@ -550,6 +554,7 @@ impl std::str::FromStr for TaxRateTaxType {
         match s {
             "amusement_tax" => Ok(AmusementTax),
             "communications_tax" => Ok(CommunicationsTax),
+            "digital_excise_tax" => Ok(DigitalExciseTax),
             "gst" => Ok(Gst),
             "hst" => Ok(Hst),
             "igst" => Ok(Igst),
@@ -563,6 +568,7 @@ impl std::str::FromStr for TaxRateTaxType {
             "rst" => Ok(Rst),
             "sales_tax" => Ok(SalesTax),
             "service_tax" => Ok(ServiceTax),
+            "utility_users_tax" => Ok(UtilityUsersTax),
             "vat" => Ok(Vat),
             v => {
                 tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxRateTaxType");

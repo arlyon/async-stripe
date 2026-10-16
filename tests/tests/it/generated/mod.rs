@@ -7,6 +7,7 @@ pub fn check_fixtures(resources: &serde_json::Value) {
     check_object::<stripe_misc::ApplePayDomain>(resources, "apple_pay_domain");
     check_object::<stripe_connect::Application>(resources, "application");
     check_object::<stripe_connect::ApplicationFee>(resources, "application_fee");
+    check_object::<stripe_connect::AppsInstall>(resources, "apps.install");
     check_object::<stripe_connect::AppsSecret>(resources, "apps.secret");
     check_object::<stripe_core::Balance>(resources, "balance");
     check_object::<stripe_core::BalanceSettings>(resources, "balance_settings");
@@ -186,12 +187,16 @@ pub fn check_fixtures(resources: &serde_json::Value) {
         "payment_method_configuration",
     );
     check_object::<stripe_payment::PaymentMethodDomain>(resources, "payment_method_domain");
-    check_object::<stripe_billing::PaymentRecord>(resources, "payment_record");
+    check_object::<stripe_payment::PaymentRecord>(resources, "payment_record");
     check_object::<stripe_core::Payout>(resources, "payout");
     check_object::<stripe_connect::Person>(resources, "person");
     check_object::<stripe_billing::Plan>(resources, "plan");
     check_object::<stripe_product::Price>(resources, "price");
     check_object::<stripe_product::Product>(resources, "product");
+    check_object::<stripe_product::ProductCatalogTrialOffer>(
+        resources,
+        "product_catalog.trial_offer",
+    );
     check_object::<stripe_product::ProductFeature>(resources, "product_feature");
     check_object::<stripe_product::PromotionCode>(resources, "promotion_code");
     check_object::<stripe_billing::Quote>(resources, "quote");
@@ -223,6 +228,7 @@ pub fn check_fixtures(resources: &serde_json::Value) {
     check_object::<stripe_misc::TaxAssociation>(resources, "tax.association");
     check_object::<stripe_misc::TaxCalculation>(resources, "tax.calculation");
     check_object::<stripe_misc::TaxCalculationLineItem>(resources, "tax.calculation_line_item");
+    check_object::<stripe_misc::TaxLocation>(resources, "tax.location");
     check_object::<stripe_misc::TaxRegistration>(resources, "tax.registration");
     check_object::<stripe_misc::TaxSettings>(resources, "tax.settings");
     check_object::<stripe_misc::TaxTransaction>(resources, "tax.transaction");
@@ -240,6 +246,10 @@ pub fn check_fixtures(resources: &serde_json::Value) {
     check_object::<stripe_terminal::TerminalOnboardingLink>(resources, "terminal.onboarding_link");
     check_object::<stripe_terminal::TerminalReader>(resources, "terminal.reader");
     check_object::<stripe_billing::TestHelpersTestClock>(resources, "test_helpers.test_clock");
+    check_object::<stripe_payment::ThreeDSecureAuthentication>(
+        resources,
+        "three_d_secure.authentication",
+    );
     check_object::<stripe_core::Token>(resources, "token");
     check_object::<stripe_connect::Topup>(resources, "topup");
     check_object::<stripe_connect::Transfer>(resources, "transfer");
