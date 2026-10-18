@@ -17,20 +17,24 @@ To update the library to the latest Stripe API version, run the generator from t
 ```bash
 cd openapi
 # Fetches the latest spec from GitHub and regenerates code
-cargo run --release -- --fetch latest
+cargo run --release -- generate --update-spec latest
 ```
 
 ### CLI Arguments
 
-The generator (`openapi/src/main.rs`) supports several flags to control the build process:
+Commands use the release pinned in `openapi/version.json`. A matching local spec cache avoids downloading it again; missing, malformed, or mismatched caches are refreshed automatically. Generation also synchronizes fixtures. Updating the pin is explicit:
 
-| Argument | Description |
-|----------|-------------|
-| `--fetch <VERSION>` | Fetches a specific OpenAPI spec version. Options: `latest` (from GitHub releases), `current` (defined in `version.json`), or specific tags like `v171`. |
-| `--spec-path <PATH>` | Input path for the OpenAPI JSON spec. Defaults to `spec3.sdk.json`. |
-| `--out <DIR>` | Output directory for generated code. Defaults to `out`. The tool automatically copies valid output to `generated/`. |
-| `--graph` | Generates dependency graphs in DOT format (`graphs/crate_graph.txt`, `graphs/components_graph.txt`) to aid in debugging cyclic dependencies. |
-| `--dry-run` | Runs generation logic without copying files to the final `generated/` destination. |
+| Command or option | Description |
+|-------------------|-------------|
+| `generate` | Regenerates and installs bindings using the pinned release. |
+| `generate --update-spec <VERSION>` | Updates to `latest` or an exact release such as `v171`. The pin advances after both the spec and fixtures are available. |
+| `generate --no-install` | Generates staging output without installing it. `--dry-run` is an alias. |
+| `generate --out <DIR>` | Selects the output directory; defaults to `out`. |
+| `generate --emit-warnings` | Writes crate inference warnings to `out/crate_warnings.md`. |
+| `graph` | Writes `out/graphs/crate_graph.txt` and `out/graphs/components_graph.txt`. |
+| `update-api-docs` | Refreshes the Stripe documentation URL mapping. |
+
+Run `cargo run -- --help` or a subcommand's `--help` for its options.
 
 ## Architecture & Workflow
 
