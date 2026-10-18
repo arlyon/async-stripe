@@ -1,0 +1,19 @@
+[package]
+name = "compile-bench"
+version = "0.0.0"
+publish = false
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+anyhow = "1"
+cargo_metadata = "0.23.1"
+clap = { version = "4.5", features = ["derive"] }
+object = { version = "0.36.7", default-features = false, features = ["read", "std"] }
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.10"
+tempfile = "3"
+toml = "0.8"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "ansi"] }
