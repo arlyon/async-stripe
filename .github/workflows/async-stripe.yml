@@ -55,7 +55,7 @@ jobs:
         run: cargo clippy
 
       - name: Run codegen
-        run: cargo run --release -- --fetch current
+        run: cargo run --release -- generate
 
       - name: Ensure generated files unchanged
         shell: bash
