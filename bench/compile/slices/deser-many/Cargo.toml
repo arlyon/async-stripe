@@ -1,0 +1,20 @@
+[package]
+name = "bench-deser-many"
+version = "0.0.0"
+publish = false
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+miniserde.workspace = true
+# Response types are available without enabling request-builder features.
+async-stripe-core = { path = "../../../../generated/async-stripe-core" }
+async-stripe-billing = { path = "../../../../generated/async-stripe-billing" }
+async-stripe-product = { path = "../../../../generated/async-stripe-product" }
+async-stripe-payment = { path = "../../../../generated/async-stripe-payment" }
+async-stripe-checkout = { path = "../../../../generated/async-stripe-checkout" }
+async-stripe-connect = { path = "../../../../generated/async-stripe-connect" }
+async-stripe-treasury = { path = "../../../../generated/async-stripe-treasury" }
+async-stripe-fraud = { path = "../../../../generated/async-stripe-fraud" }
+async-stripe-terminal = { path = "../../../../generated/async-stripe-terminal" }
+async-stripe-misc = { path = "../../../../generated/async-stripe-misc" }
