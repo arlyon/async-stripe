@@ -1,0 +1,9 @@
+[package]
+name = "bench-webhook"
+version = "0.0.0"
+publish = false
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+async-stripe-webhook = { path = "../../../../async-stripe-webhook", features = ["full"] }
