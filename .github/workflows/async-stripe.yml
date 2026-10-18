@@ -58,19 +58,15 @@ jobs:
         run: cargo run --release -- --fetch current
 
       - name: Ensure generated files unchanged
-        uses: tj-actions/verify-changed-files@v20
-        id: verify-changed-files
-        with:
-          files: |
-            **/*.rs
-
-      - name: Report changed files
-        if: steps.verify-changed-files.outputs.files_changed == 'true'
-        env:
-          CHANGED_FILES: ${{ steps.verify-changed-files.outputs.changed_files }}
+        shell: bash
         run: |
-          echo "Some files changed after code generation: $CHANGED_FILES"
-          exit 1
+          changed_files="$(git -C .. status --porcelain --untracked-files=all)"
+          if [[ -n "$changed_files" ]]; then
+            echo "The worktree changed after code generation:"
+            printf '%s\n' "$changed_files"
+            git -C .. diff --stat
+            exit 1
+          fi
 
   clippy:
     runs-on: ubuntu-latest
