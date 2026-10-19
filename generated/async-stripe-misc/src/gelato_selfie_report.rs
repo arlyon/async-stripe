@@ -11,7 +11,7 @@ pub struct GelatoSelfieReport {
     /// ID of the [File](https://docs.stripe.com/api/files) holding the image of the selfie used in this check.
     pub selfie: Option<String>,
     /// Status of this `selfie` check.
-    pub status: GelatoSelfieReportStatus,
+    pub status: stripe_shared::GelatoEmailReportStatus,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for GelatoSelfieReport {
@@ -24,7 +24,7 @@ pub struct GelatoSelfieReportBuilder {
     document: Option<Option<String>>,
     error: Option<Option<stripe_misc::GelatoSelfieReportError>>,
     selfie: Option<Option<String>>,
-    status: Option<GelatoSelfieReportStatus>,
+    status: Option<stripe_shared::GelatoEmailReportStatus>,
 }
 
 #[allow(
@@ -124,86 +124,4 @@ const _: () = {
     }
 };
 /// Status of this `selfie` check.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum GelatoSelfieReportStatus {
-    Unverified,
-    Verified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl GelatoSelfieReportStatus {
-    pub fn as_str(&self) -> &str {
-        use GelatoSelfieReportStatus::*;
-        match self {
-            Unverified => "unverified",
-            Verified => "verified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoSelfieReportStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoSelfieReportStatus::*;
-        match s {
-            "unverified" => Ok(Unverified),
-            "verified" => Ok(Verified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoSelfieReportStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for GelatoSelfieReportStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for GelatoSelfieReportStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for GelatoSelfieReportStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(GelatoSelfieReportStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for GelatoSelfieReportStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for GelatoSelfieReportStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<GelatoSelfieReportStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(GelatoSelfieReportStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(GelatoSelfieReportStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for GelatoSelfieReportStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type GelatoSelfieReportStatus = stripe_shared::GelatoEmailReportStatus;

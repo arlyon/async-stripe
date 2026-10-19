@@ -17,14 +17,14 @@ pub struct BillingMeter {
     /// Corresponds with the `event_name` field on meter events.
     pub event_name: String,
     /// The time window which meter events have been pre-aggregated for, if any.
-    pub event_time_window: Option<stripe_billing::BillingMeterEventTimeWindow>,
+    pub event_time_window: Option<stripe_shared::BillingMeterEventTimeWindow>,
     /// Unique identifier for the object.
     pub id: stripe_billing::BillingMeterId,
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The meter's status.
-    pub status: stripe_billing::BillingMeterStatus,
+    pub status: stripe_shared::BillingMeterStatus,
     pub status_transitions: stripe_billing::BillingMeterResourceBillingMeterStatusTransitions,
     /// Time at which the object was last updated. Measured in seconds since the Unix epoch.
     pub updated: stripe_types::Timestamp,
@@ -43,10 +43,10 @@ pub struct BillingMeterBuilder {
     default_aggregation: Option<stripe_billing::BillingMeterResourceAggregationSettings>,
     display_name: Option<String>,
     event_name: Option<String>,
-    event_time_window: Option<Option<stripe_billing::BillingMeterEventTimeWindow>>,
+    event_time_window: Option<Option<stripe_shared::BillingMeterEventTimeWindow>>,
     id: Option<stripe_billing::BillingMeterId>,
     livemode: Option<bool>,
-    status: Option<stripe_billing::BillingMeterStatus>,
+    status: Option<stripe_shared::BillingMeterStatus>,
     status_transitions: Option<stripe_billing::BillingMeterResourceBillingMeterStatusTransitions>,
     updated: Option<stripe_types::Timestamp>,
     value_settings: Option<stripe_billing::BillingMeterResourceBillingMeterValue>,
@@ -248,171 +248,7 @@ impl stripe_types::Object for BillingMeter {
     }
 }
 stripe_types::def_id!(BillingMeterId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BillingMeterEventTimeWindow {
-    Day,
-    Hour,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BillingMeterEventTimeWindow {
-    pub fn as_str(&self) -> &str {
-        use BillingMeterEventTimeWindow::*;
-        match self {
-            Day => "day",
-            Hour => "hour",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BillingMeterEventTimeWindow {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BillingMeterEventTimeWindow::*;
-        match s {
-            "day" => Ok(Day),
-            "hour" => Ok(Hour),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingMeterEventTimeWindow"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BillingMeterEventTimeWindow {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BillingMeterEventTimeWindow {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BillingMeterEventTimeWindow {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BillingMeterEventTimeWindow)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for BillingMeterEventTimeWindow {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BillingMeterEventTimeWindow {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<BillingMeterEventTimeWindow> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BillingMeterEventTimeWindow::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(BillingMeterEventTimeWindow);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BillingMeterEventTimeWindow {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BillingMeterStatus {
-    Active,
-    Inactive,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BillingMeterStatus {
-    pub fn as_str(&self) -> &str {
-        use BillingMeterStatus::*;
-        match self {
-            Active => "active",
-            Inactive => "inactive",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BillingMeterStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BillingMeterStatus::*;
-        match s {
-            "active" => Ok(Active),
-            "inactive" => Ok(Inactive),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingMeterStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BillingMeterStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BillingMeterStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BillingMeterStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BillingMeterStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for BillingMeterStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BillingMeterStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<BillingMeterStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BillingMeterStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(BillingMeterStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BillingMeterStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// The time window which meter events have been pre-aggregated for, if any.
+pub type BillingMeterEventTimeWindow = stripe_shared::BillingMeterEventTimeWindow;
+/// The meter's status.
+pub type BillingMeterStatus = stripe_shared::BillingMeterStatus;

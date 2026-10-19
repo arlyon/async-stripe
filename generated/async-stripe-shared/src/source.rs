@@ -21,7 +21,7 @@ pub struct Source {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
     /// The field defaults to “unspecified”.
-    pub allow_redisplay: Option<SourceAllowRedisplay>,
+    pub allow_redisplay: Option<stripe_shared::CardAllowRedisplay>,
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount associated with the source.
     /// This is the amount for which the source will be chargeable once ready.
     /// Required for `single_use` sources.
@@ -99,7 +99,7 @@ pub struct SourceBuilder {
     ach_debit: Option<Option<stripe_shared::SourceTypeAchDebit>>,
     acss_debit: Option<Option<stripe_shared::SourceTypeAcssDebit>>,
     alipay: Option<Option<stripe_shared::SourceTypeAlipay>>,
-    allow_redisplay: Option<Option<SourceAllowRedisplay>>,
+    allow_redisplay: Option<Option<stripe_shared::CardAllowRedisplay>>,
     amount: Option<Option<i64>>,
     au_becs_debit: Option<Option<stripe_shared::SourceTypeAuBecsDebit>>,
     bancontact: Option<Option<stripe_shared::SourceTypeBancontact>>,
@@ -499,95 +499,6 @@ impl serde::Serialize for Source {
         s.end()
     }
 }
-/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
-/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
-/// The field defaults to “unspecified”.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SourceAllowRedisplay {
-    Always,
-    Limited,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SourceAllowRedisplay {
-    pub fn as_str(&self) -> &str {
-        use SourceAllowRedisplay::*;
-        match self {
-            Always => "always",
-            Limited => "limited",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SourceAllowRedisplay {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SourceAllowRedisplay::*;
-        match s {
-            "always" => Ok(Always),
-            "limited" => Ok(Limited),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SourceAllowRedisplay");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SourceAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SourceAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SourceAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SourceAllowRedisplay)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SourceAllowRedisplay {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SourceAllowRedisplay {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<SourceAllowRedisplay> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SourceAllowRedisplay::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(SourceAllowRedisplay);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SourceAllowRedisplay {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The `type` of the source.
 /// The `type` is a payment method, one of `ach_credit_transfer`, `ach_debit`, `alipay`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `multibanco`, `klarna`, `p24`, `sepa_debit`, `sofort`, `three_d_secure`, or `wechat`.
 /// An additional hash is included on the source with a name matching this value.
@@ -737,3 +648,7 @@ impl stripe_types::Object for Source {
     }
 }
 stripe_types::def_id!(SourceId);
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+/// The field defaults to “unspecified”.
+pub type SourceAllowRedisplay = stripe_shared::CardAllowRedisplay;

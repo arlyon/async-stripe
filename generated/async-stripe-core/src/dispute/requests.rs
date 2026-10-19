@@ -483,33 +483,32 @@ impl Default for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
 #[derive(serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction {
     /// User Account ID used to log into business platform. Must be recognizable by the user.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub customer_account_id: Option<String>,
-        /// Unique identifier of the cardholder’s device derived from a combination of at least two hardware and software attributes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_account_id: Option<String>,
+    /// Unique identifier of the cardholder’s device derived from a combination of at least two hardware and software attributes.
     /// Must be at least 20 characters.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub customer_device_fingerprint: Option<String>,
-        /// Unique identifier of the cardholder’s device such as a device serial number (e.g., International Mobile Equipment Identity [IMEI]).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_device_fingerprint: Option<String>,
+    /// Unique identifier of the cardholder’s device such as a device serial number (e.g., International Mobile Equipment Identity [IMEI]).
     /// Must be at least 15 characters.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub customer_device_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_device_id: Option<String>,
     /// The email address of the customer.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub customer_email_address: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_email_address: Option<String>,
     /// The IP address that the customer used when making the purchase.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub customer_purchase_ip: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_purchase_ip: Option<String>,
     /// Categorization of disputed payment.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub merchandise_or_services: Option<UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub merchandise_or_services: Option<stripe_shared::MerchandiseOrServices>,
     /// A description of the product or service that was sold.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub product_description: Option<String>,
-        /// The address to which a physical product was shipped.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_description: Option<String>,
+    /// The address to which a physical product was shipped.
     /// All fields are required for Visa Compelling Evidence 3.0 evidence submission.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub shipping_address: Option<ShippingAddress>,
-
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<ShippingAddress>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug
@@ -539,71 +538,6 @@ impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransac
 impl Default for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Categorization of disputed payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
-{
-    Merchandise,
-    Services,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    pub fn as_str(&self) -> &str {
-        use UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::*;
-        match self {
-Merchandise => "merchandise",
-Services => "services",
-Unknown(v) => v,
-
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::*;
-        match s {
-    "merchandise" => Ok(Merchandise),
-"services" => Ok(Services),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices"); Ok(Unknown(v.to_owned())) }
-
-        }
-    }
-}
-impl std::fmt::Display for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List of exactly two prior undisputed transaction objects for Visa Compelling Evidence 3.0 evidence submission.
@@ -883,3 +817,14 @@ impl Default for ShippingAddress {
         Self::new()
     }
 }
+/// Categorization of disputed payment.
+pub type UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices =
+    stripe_shared::MerchandiseOrServices;
+/// The address to which a physical product was shipped.
+/// All fields are required for Visa Compelling Evidence 3.0 evidence submission.
+pub type UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionShippingAddress =
+    ShippingAddress;
+/// The address to which a physical product was shipped.
+/// All fields are required for Visa Compelling Evidence 3.0 evidence submission.
+pub type UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputedTransactionsShippingAddress =
+    ShippingAddress;

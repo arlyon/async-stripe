@@ -475,7 +475,7 @@ pub struct CreateProductDefaultPriceData {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateProductDefaultPriceDataTaxBehavior>,
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     /// One of `unit_amount`, `unit_amount_decimal`, or `custom_unit_amount` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -519,7 +519,7 @@ pub struct CreateProductDefaultPriceDataCurrencyOptions {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior>,
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     /// Each element represents a pricing tier.
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
@@ -553,85 +553,6 @@ impl CreateProductDefaultPriceDataCurrencyOptions {
 impl Default for CreateProductDefaultPriceDataCurrencyOptions {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Each element represents a pricing tier.
@@ -702,7 +623,7 @@ impl std::fmt::Debug for CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo {
 #[derive(serde::Serialize)]
 pub struct CreateProductDefaultPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-    pub interval: CreateProductDefaultPriceDataRecurringInterval,
+    pub interval: stripe_shared::PlanInterval,
     /// The number of intervals between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
@@ -716,165 +637,8 @@ impl std::fmt::Debug for CreateProductDefaultPriceDataRecurring {
     }
 }
 impl CreateProductDefaultPriceDataRecurring {
-    pub fn new(interval: impl Into<CreateProductDefaultPriceDataRecurringInterval>) -> Self {
+    pub fn new(interval: impl Into<stripe_shared::PlanInterval>) -> Self {
         Self { interval: interval.into(), interval_count: None }
-    }
-}
-/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateProductDefaultPriceDataRecurringInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateProductDefaultPriceDataRecurringInterval {
-    pub fn as_str(&self) -> &str {
-        use CreateProductDefaultPriceDataRecurringInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateProductDefaultPriceDataRecurringInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateProductDefaultPriceDataRecurringInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateProductDefaultPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateProductDefaultPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateProductDefaultPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateProductDefaultPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateProductDefaultPriceDataRecurringInterval))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateProductDefaultPriceDataRecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataRecurringInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateProductDefaultPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateProductDefaultPriceDataTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreateProductDefaultPriceDataTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateProductDefaultPriceDataTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateProductDefaultPriceDataTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateProductDefaultPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateProductDefaultPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateProductDefaultPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateProductDefaultPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateProductDefaultPriceDataTaxBehavior)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateProductDefaultPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a new product object.
@@ -1300,3 +1064,36 @@ impl PackageDimensionsSpecs {
         }
     }
 }
+/// Only return products of this type.
+pub type ListProductType = stripe_shared::ProductType;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
+pub type CreateProductDefaultPriceDataRecurringInterval = stripe_shared::PlanInterval;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type CreateProductDefaultPriceDataTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// The type of the product.
+/// Defaults to `service` if not explicitly specified, enabling use of this product with Subscriptions and Plans.
+/// Set this parameter to `good` to use this product with Orders and SKUs.
+/// On API versions before `2018-02-05`, this field defaults to `good` for compatibility reasons.
+pub type CreateProductType = stripe_shared::ProductType;
+/// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
+pub type CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount = CustomUnitAmount;
+/// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
+pub type CreateProductDefaultPriceDataCustomUnitAmount = CustomUnitAmount;
+/// A list of up to 15 marketing features for this product.
+/// These are displayed in [pricing tables](https://docs.stripe.com/payments/checkout/pricing-table).
+pub type CreateProductMarketingFeatures = Features;
+/// The dimensions of this product for shipping purposes.
+pub type CreateProductPackageDimensions = PackageDimensionsSpecs;
+/// A list of up to 15 marketing features for this product.
+/// These are displayed in [pricing tables](https://docs.stripe.com/payments/checkout/pricing-table).
+pub type UpdateProductMarketingFeatures = Features;
+/// The dimensions of this product for shipping purposes.
+pub type UpdateProductPackageDimensions = PackageDimensionsSpecs;

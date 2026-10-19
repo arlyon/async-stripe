@@ -7,10 +7,10 @@ pub struct PaymentLinksResourceConsentCollection {
     pub payment_method_reuse_agreement:
         Option<stripe_shared::PaymentLinksResourcePaymentMethodReuseAgreement>,
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
-    pub promotions: Option<PaymentLinksResourceConsentCollectionPromotions>,
+    pub promotions: Option<stripe_shared::Promotions>,
     /// If set to `required`, it requires cutomers to accept the terms of service before being able to pay.
     /// If set to `none`, customers won't be shown a checkbox to accept the terms of service.
-    pub terms_of_service: Option<PaymentLinksResourceConsentCollectionTermsOfService>,
+    pub terms_of_service: Option<stripe_shared::TermsOfService>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentLinksResourceConsentCollection {
@@ -22,8 +22,8 @@ impl std::fmt::Debug for PaymentLinksResourceConsentCollection {
 pub struct PaymentLinksResourceConsentCollectionBuilder {
     payment_method_reuse_agreement:
         Option<Option<stripe_shared::PaymentLinksResourcePaymentMethodReuseAgreement>>,
-    promotions: Option<Option<PaymentLinksResourceConsentCollectionPromotions>>,
-    terms_of_service: Option<Option<PaymentLinksResourceConsentCollectionTermsOfService>>,
+    promotions: Option<Option<stripe_shared::Promotions>>,
+    terms_of_service: Option<Option<stripe_shared::TermsOfService>>,
 }
 
 #[allow(
@@ -131,184 +131,7 @@ const _: () = {
     }
 };
 /// If set to `auto`, enables the collection of customer consent for promotional communications.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentLinksResourceConsentCollectionPromotions {
-    Auto,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentLinksResourceConsentCollectionPromotions {
-    pub fn as_str(&self) -> &str {
-        use PaymentLinksResourceConsentCollectionPromotions::*;
-        match self {
-            Auto => "auto",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentLinksResourceConsentCollectionPromotions {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentLinksResourceConsentCollectionPromotions::*;
-        match s {
-            "auto" => Ok(Auto),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourceConsentCollectionPromotions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentLinksResourceConsentCollectionPromotions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentLinksResourceConsentCollectionPromotions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentLinksResourceConsentCollectionPromotions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentLinksResourceConsentCollectionPromotions))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentLinksResourceConsentCollectionPromotions {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentLinksResourceConsentCollectionPromotions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentLinksResourceConsentCollectionPromotions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PaymentLinksResourceConsentCollectionPromotions::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinksResourceConsentCollectionPromotions);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentLinksResourceConsentCollectionPromotions {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentLinksResourceConsentCollectionPromotions = stripe_shared::Promotions;
 /// If set to `required`, it requires cutomers to accept the terms of service before being able to pay.
 /// If set to `none`, customers won't be shown a checkbox to accept the terms of service.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentLinksResourceConsentCollectionTermsOfService {
-    None,
-    Required,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentLinksResourceConsentCollectionTermsOfService {
-    pub fn as_str(&self) -> &str {
-        use PaymentLinksResourceConsentCollectionTermsOfService::*;
-        match self {
-            None => "none",
-            Required => "required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentLinksResourceConsentCollectionTermsOfService {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentLinksResourceConsentCollectionTermsOfService::*;
-        match s {
-            "none" => Ok(None),
-            "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourceConsentCollectionTermsOfService"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentLinksResourceConsentCollectionTermsOfService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentLinksResourceConsentCollectionTermsOfService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentLinksResourceConsentCollectionTermsOfService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentLinksResourceConsentCollectionTermsOfService))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentLinksResourceConsentCollectionTermsOfService {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentLinksResourceConsentCollectionTermsOfService {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentLinksResourceConsentCollectionTermsOfService> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentLinksResourceConsentCollectionTermsOfService::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinksResourceConsentCollectionTermsOfService);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentLinksResourceConsentCollectionTermsOfService {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentLinksResourceConsentCollectionTermsOfService = stripe_shared::TermsOfService;

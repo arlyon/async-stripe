@@ -260,7 +260,7 @@ struct CreateRadarValueListBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    item_type: Option<stripe_fraud::RadarValueListItemType>,
+    item_type: Option<stripe_shared::ItemType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     name: String,
@@ -308,7 +308,7 @@ impl CreateRadarValueList {
     /// Type of the items in the value list.
     /// One of `card_fingerprint`, `card_bin`, `crypto_fingerprint`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, `customer_id`, `account`, `sepa_debit_fingerprint`, or `us_bank_account_fingerprint`.
     /// Use `string` if the item type is unknown or mixed.
-    pub fn item_type(mut self, item_type: impl Into<stripe_fraud::RadarValueListItemType>) -> Self {
+    pub fn item_type(mut self, item_type: impl Into<stripe_shared::ItemType>) -> Self {
         self.inner.item_type = Some(item_type.into());
         self
     }
@@ -448,3 +448,8 @@ impl StripeRequest for UpdateRadarValueList {
             .form(&self.inner)
     }
 }
+
+/// Type of the items in the value list.
+/// One of `card_fingerprint`, `card_bin`, `crypto_fingerprint`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, `customer_id`, `account`, `sepa_debit_fingerprint`, or `us_bank_account_fingerprint`.
+/// Use `string` if the item type is unknown or mixed.
+pub type CreateRadarValueListItemType = stripe_shared::ItemType;

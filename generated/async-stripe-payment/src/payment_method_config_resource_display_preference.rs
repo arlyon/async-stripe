@@ -7,7 +7,7 @@ pub struct PaymentMethodConfigResourceDisplayPreference {
     /// If `false`, the parent configuration's default is used.
     pub overridable: Option<bool>,
     /// The account's display preference.
-    pub preference: PaymentMethodConfigResourceDisplayPreferencePreference,
+    pub preference: stripe_shared::Preference,
     /// The effective display preference value.
     pub value: PaymentMethodConfigResourceDisplayPreferenceValue,
 }
@@ -20,7 +20,7 @@ impl std::fmt::Debug for PaymentMethodConfigResourceDisplayPreference {
 #[doc(hidden)]
 pub struct PaymentMethodConfigResourceDisplayPreferenceBuilder {
     overridable: Option<Option<bool>>,
-    preference: Option<PaymentMethodConfigResourceDisplayPreferencePreference>,
+    preference: Option<stripe_shared::Preference>,
     value: Option<PaymentMethodConfigResourceDisplayPreferenceValue>,
 }
 
@@ -118,103 +118,6 @@ const _: () = {
         }
     }
 };
-/// The account's display preference.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodConfigResourceDisplayPreferencePreference {
-    None,
-    Off,
-    On,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodConfigResourceDisplayPreferencePreference {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodConfigResourceDisplayPreferencePreference::*;
-        match self {
-            None => "none",
-            Off => "off",
-            On => "on",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodConfigResourceDisplayPreferencePreference {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodConfigResourceDisplayPreferencePreference::*;
-        match s {
-            "none" => Ok(None),
-            "off" => Ok(Off),
-            "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodConfigResourceDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodConfigResourceDisplayPreferencePreference {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodConfigResourceDisplayPreferencePreference {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodConfigResourceDisplayPreferencePreference {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodConfigResourceDisplayPreferencePreference))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodConfigResourceDisplayPreferencePreference {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodConfigResourceDisplayPreferencePreference {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<PaymentMethodConfigResourceDisplayPreferencePreference>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodConfigResourceDisplayPreferencePreference::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodConfigResourceDisplayPreferencePreference);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodConfigResourceDisplayPreferencePreference {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The effective display preference value.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -306,3 +209,5 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodConfigResourceDisplayPreferen
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The account's display preference.
+pub type PaymentMethodConfigResourceDisplayPreferencePreference = stripe_shared::Preference;

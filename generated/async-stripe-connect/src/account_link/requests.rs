@@ -8,7 +8,7 @@ use stripe_client_core::{
 struct CreateAccountLinkBuilder {
     account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    collect: Option<CreateAccountLinkCollect>,
+    collect: Option<stripe_shared::CreateAccountLinkCollect>,
     #[serde(skip_serializing_if = "Option::is_none")]
     collection_options: Option<CreateAccountLinkCollectionOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39,74 +39,6 @@ impl CreateAccountLinkBuilder {
         }
     }
 }
-/// The collect parameter is deprecated. Use `collection_options` instead.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountLinkCollect {
-    CurrentlyDue,
-    EventuallyDue,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountLinkCollect {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountLinkCollect::*;
-        match self {
-            CurrentlyDue => "currently_due",
-            EventuallyDue => "eventually_due",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountLinkCollect {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountLinkCollect::*;
-        match s {
-            "currently_due" => Ok(CurrentlyDue),
-            "eventually_due" => Ok(EventuallyDue),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAccountLinkCollect");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountLinkCollect {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountLinkCollect {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountLinkCollect {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountLinkCollect)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountLinkCollect {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollect {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -115,7 +47,7 @@ pub struct CreateAccountLinkCollectionOptions {
     /// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
     /// If you don't specify `collection_options`, the default value is `currently_due`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fields: Option<CreateAccountLinkCollectionOptionsFields>,
+    pub fields: Option<stripe_shared::CreateAccountLinkCollect>,
     /// Specifies whether the platform collects future_requirements in addition to requirements in Connect Onboarding.
     /// The default value is `omit`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -135,79 +67,6 @@ impl CreateAccountLinkCollectionOptions {
 impl Default for CreateAccountLinkCollectionOptions {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
-/// If you don't specify `collection_options`, the default value is `currently_due`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountLinkCollectionOptionsFields {
-    CurrentlyDue,
-    EventuallyDue,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountLinkCollectionOptionsFields {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountLinkCollectionOptionsFields::*;
-        match self {
-            CurrentlyDue => "currently_due",
-            EventuallyDue => "eventually_due",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountLinkCollectionOptionsFields {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountLinkCollectionOptionsFields::*;
-        match s {
-            "currently_due" => Ok(CurrentlyDue),
-            "eventually_due" => Ok(EventuallyDue),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountLinkCollectionOptionsFields"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountLinkCollectionOptionsFields {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountLinkCollectionOptionsFields {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountLinkCollectionOptionsFields {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountLinkCollectionOptionsFields)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountLinkCollectionOptionsFields {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollectionOptionsFields {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Specifies whether the platform collects future_requirements in addition to requirements in Connect Onboarding.
@@ -376,7 +235,7 @@ impl CreateAccountLink {
         Self { inner: CreateAccountLinkBuilder::new(account.into(), type_.into()) }
     }
     /// The collect parameter is deprecated. Use `collection_options` instead.
-    pub fn collect(mut self, collect: impl Into<CreateAccountLinkCollect>) -> Self {
+    pub fn collect(mut self, collect: impl Into<stripe_shared::CreateAccountLinkCollect>) -> Self {
         self.inner.collect = Some(collect.into());
         self
     }
@@ -431,3 +290,9 @@ impl StripeRequest for CreateAccountLink {
         RequestBuilder::new(StripeMethod::Post, "/account_links").form(&self.inner)
     }
 }
+
+/// The collect parameter is deprecated. Use `collection_options` instead.
+pub type CreateAccountLinkCollect = stripe_shared::CreateAccountLinkCollect;
+/// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
+/// If you don't specify `collection_options`, the default value is `currently_due`.
+pub type CreateAccountLinkCollectionOptionsFields = stripe_shared::CreateAccountLinkCollect;

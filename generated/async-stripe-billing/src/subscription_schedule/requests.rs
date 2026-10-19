@@ -253,7 +253,7 @@ struct CreateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     default_settings: Option<CreateSubscriptionScheduleDefaultSettings>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    end_behavior: Option<stripe_shared::SubscriptionScheduleEndBehavior>,
+    end_behavior: Option<stripe_shared::EndBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -298,7 +298,7 @@ pub struct CreateSubscriptionScheduleBillingMode {
     /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
     /// If no value is passed, the default is `flexible`.
     #[serde(rename = "type")]
-    pub type_: CreateSubscriptionScheduleBillingModeType,
+    pub type_: stripe_shared::CreateSubscriptionBillingModeType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateSubscriptionScheduleBillingMode {
@@ -307,7 +307,7 @@ impl std::fmt::Debug for CreateSubscriptionScheduleBillingMode {
     }
 }
 impl CreateSubscriptionScheduleBillingMode {
-    pub fn new(type_: impl Into<CreateSubscriptionScheduleBillingModeType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateSubscriptionBillingModeType>) -> Self {
         Self { flexible: None, type_: type_.into() }
     }
 }
@@ -318,8 +318,7 @@ impl CreateSubscriptionScheduleBillingMode {
 pub struct CreateSubscriptionScheduleBillingModeFlexible {
     /// Controls how invoices and invoice items display proration amounts and discount amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_discounts:
-        Option<CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts>,
+    pub proration_discounts: Option<stripe_shared::ProrationDiscounts>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeFlexible {
@@ -335,155 +334,6 @@ impl CreateSubscriptionScheduleBillingModeFlexible {
 impl Default for CreateSubscriptionScheduleBillingModeFlexible {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Controls how invoices and invoice items display proration amounts and discount amounts.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
-    Included,
-    Itemized,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts::*;
-        match self {
-            Included => "included",
-            Itemized => "itemized",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts::*;
-        match s {
-            "included" => Ok(Included),
-            "itemized" => Ok(Itemized),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Controls the calculation and orchestration of prorations and invoices for subscriptions.
-/// If no value is passed, the default is `flexible`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionScheduleBillingModeType {
-    Classic,
-    Flexible,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionScheduleBillingModeType {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionScheduleBillingModeType::*;
-        match self {
-            Classic => "classic",
-            Flexible => "flexible",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionScheduleBillingModeType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionScheduleBillingModeType::*;
-        match s {
-            "classic" => Ok(Classic),
-            "flexible" => Ok(Flexible),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleBillingModeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionScheduleBillingModeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionScheduleBillingModeType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionScheduleBillingModeType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionScheduleBillingModeType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Object representing the subscription schedule's default settings.
@@ -504,7 +354,8 @@ pub struct CreateSubscriptionScheduleDefaultSettings {
     /// Cannot be set to `phase_start` if this phase specifies a trial.
     /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_cycle_anchor: Option<CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor>,
+    pub billing_cycle_anchor:
+        Option<stripe_shared::CreateSubscriptionSchedulePhasesBillingCycleAnchor>,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// Pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -514,7 +365,7 @@ pub struct CreateSubscriptionScheduleDefaultSettings {
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     /// Defaults to `charge_automatically` on creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<CreateSubscriptionScheduleDefaultSettingsCollectionMethod>,
+    pub collection_method: Option<stripe_shared::CollectionMethod>,
     /// ID of the default payment method for the subscription schedule.
     /// It must belong to the customer associated with the subscription schedule.
     /// If not set, invoices will use the default payment method in the customer's invoice settings.
@@ -598,7 +449,7 @@ pub struct CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
@@ -608,238 +459,8 @@ impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLi
     }
 }
 impl CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
-    pub fn new(
-        type_: impl Into<CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
-/// Cannot be set to `phase_start` if this phase specifies a trial.
-/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    Automatic,
-    PhaseStart,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor::*;
-        match self {
-            Automatic => "automatic",
-            PhaseStart => "phase_start",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor::*;
-        match s {
-            "automatic" => Ok(Automatic),
-            "phase_start" => Ok(PhaseStart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Either `charge_automatically`, or `send_invoice`.
-/// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
-/// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
-/// Defaults to `charge_automatically` on creation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    ChargeAutomatically,
-    SendInvoice,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionScheduleDefaultSettingsCollectionMethod::*;
-        match self {
-            ChargeAutomatically => "charge_automatically",
-            SendInvoice => "send_invoice",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionScheduleDefaultSettingsCollectionMethod::*;
-        match s {
-            "charge_automatically" => Ok(ChargeAutomatically),
-            "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleDefaultSettingsCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionScheduleDefaultSettingsCollectionMethod))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -901,7 +522,7 @@ pub struct CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
@@ -911,87 +532,8 @@ impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsInvoiceSetting
     }
 }
 impl CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
-    pub fn new(
-        type_: impl Into<CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List representing phases of the subscription schedule.
@@ -1018,7 +560,8 @@ pub struct CreateSubscriptionSchedulePhases {
     /// Cannot be set to `phase_start` if this phase specifies a trial.
     /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_cycle_anchor: Option<CreateSubscriptionSchedulePhasesBillingCycleAnchor>,
+    pub billing_cycle_anchor:
+        Option<stripe_shared::CreateSubscriptionSchedulePhasesBillingCycleAnchor>,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// Pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1028,7 +571,7 @@ pub struct CreateSubscriptionSchedulePhases {
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     /// Defaults to `charge_automatically` on creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<CreateSubscriptionSchedulePhasesCollectionMethod>,
+    pub collection_method: Option<stripe_shared::CollectionMethod>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1053,7 +596,7 @@ pub struct CreateSubscriptionSchedulePhases {
     pub discounts: Option<Vec<CreateSubscriptionSchedulePhasesDiscounts>>,
     /// The number of intervals the phase should last. If set, `end_date` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub duration: Option<CreateSubscriptionSchedulePhasesDuration>,
+    pub duration: Option<DurationParams>,
     /// The date at which this phase of the subscription schedule ends. If set, `duration` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<stripe_types::Timestamp>,
@@ -1074,7 +617,7 @@ pub struct CreateSubscriptionSchedulePhases {
     /// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
     /// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<CreateSubscriptionSchedulePhasesProrationBehavior>,
+    pub proration_behavior: Option<stripe_shared::ProrationBehavior>,
     /// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<TransferDataSpecs>,
@@ -1140,14 +683,14 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The period associated with this invoice item.
     /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub period: Option<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod>,
+    pub period: Option<InvoiceItemPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
     /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData>,
+    pub price_data: Option<OneTimePriceDataWithNegativeAmounts>,
     /// Quantity for this item. Defaults to 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -1212,366 +755,6 @@ impl Default for CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
         Self::new()
     }
 }
-/// The period associated with this invoice item.
-/// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
-    /// End of the invoice item period.
-    pub end: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd,
-    /// Start of the invoice item period.
-    pub start: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod")
-            .finish_non_exhaustive()
-    }
-}
-impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
-    pub fn new(
-        end: impl Into<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd>,
-        start: impl Into<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart>,
-    ) -> Self {
-        Self { end: end.into(), start: start.into() }
-    }
-}
-/// End of the invoice item period.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
-    /// A precise Unix timestamp for the end of the invoice item period.
-    /// Must be greater than or equal to `period.start`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub timestamp: Option<stripe_types::Timestamp>,
-    /// Select how to calculate the end of the invoice item period.
-    #[serde(rename = "type")]
-    pub type_: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd")
-            .finish_non_exhaustive()
-    }
-}
-impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
-    pub fn new(
-        type_: impl Into<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType>,
-    ) -> Self {
-        Self { timestamp: None, type_: type_.into() }
-    }
-}
-/// Select how to calculate the end of the invoice item period.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    MinItemPeriodEnd,
-    PhaseEnd,
-    Timestamp,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType::*;
-        match self {
-            MinItemPeriodEnd => "min_item_period_end",
-            PhaseEnd => "phase_end",
-            Timestamp => "timestamp",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType::*;
-        match s {
-            "min_item_period_end" => Ok(MinItemPeriodEnd),
-            "phase_end" => Ok(PhaseEnd),
-            "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Start of the invoice item period.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
-    /// A precise Unix timestamp for the start of the invoice item period.
-    /// Must be less than or equal to `period.end`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub timestamp: Option<stripe_types::Timestamp>,
-    /// Select how to calculate the start of the invoice item period.
-    #[serde(rename = "type")]
-    pub type_: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart")
-            .finish_non_exhaustive()
-    }
-}
-impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
-    pub fn new(
-        type_: impl Into<CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType>,
-    ) -> Self {
-        Self { timestamp: None, type_: type_.into() }
-    }
-}
-/// Select how to calculate the start of the invoice item period.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    MaxItemPeriodStart,
-    PhaseStart,
-    Timestamp,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType::*;
-        match self {
-            MaxItemPeriodStart => "max_item_period_start",
-            PhaseStart => "phase_start",
-            Timestamp => "timestamp",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType::*;
-        match s {
-            "max_item_period_start" => Ok(MaxItemPeriodStart),
-            "phase_start" => Ok(PhaseStart),
-            "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-/// One of `price` or `price_data` is required.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
-    pub product: String,
-    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge or a negative integer representing the amount to credit to the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData")
-            .finish_non_exhaustive()
-    }
-}
-impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
-    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
-        Self {
-            currency: currency.into(),
-            product: product.into(),
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Automatic tax settings for this phase.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1608,7 +791,7 @@ pub struct CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
@@ -1618,234 +801,8 @@ impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
     }
 }
 impl CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
-    pub fn new(
-        type_: impl Into<CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
-/// Cannot be set to `phase_start` if this phase specifies a trial.
-/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesBillingCycleAnchor {
-    Automatic,
-    PhaseStart,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesBillingCycleAnchor {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesBillingCycleAnchor::*;
-        match self {
-            Automatic => "automatic",
-            PhaseStart => "phase_start",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesBillingCycleAnchor::*;
-        match s {
-            "automatic" => Ok(Automatic),
-            "phase_start" => Ok(PhaseStart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesBillingCycleAnchor))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Either `charge_automatically`, or `send_invoice`.
-/// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
-/// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
-/// Defaults to `charge_automatically` on creation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesCollectionMethod {
-    ChargeAutomatically,
-    SendInvoice,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesCollectionMethod {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesCollectionMethod::*;
-        match self {
-            ChargeAutomatically => "charge_automatically",
-            SendInvoice => "send_invoice",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesCollectionMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesCollectionMethod::*;
-        match s {
-            "charge_automatically" => Ok(ChargeAutomatically),
-            "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesCollectionMethod))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesCollectionMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesCollectionMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The coupons to redeem into discounts for the schedule phase.
@@ -1879,107 +836,6 @@ impl CreateSubscriptionSchedulePhasesDiscounts {
 impl Default for CreateSubscriptionSchedulePhasesDiscounts {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The number of intervals the phase should last. If set, `end_date` must not be set.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateSubscriptionSchedulePhasesDuration {
-    /// Specifies phase duration. Either `day`, `week`, `month` or `year`.
-    pub interval: CreateSubscriptionSchedulePhasesDurationInterval,
-    /// The multiplier applied to the interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<u64>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesDuration {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateSubscriptionSchedulePhasesDuration").finish_non_exhaustive()
-    }
-}
-impl CreateSubscriptionSchedulePhasesDuration {
-    pub fn new(interval: impl Into<CreateSubscriptionSchedulePhasesDurationInterval>) -> Self {
-        Self { interval: interval.into(), interval_count: None }
-    }
-}
-/// Specifies phase duration. Either `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesDurationInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesDurationInterval {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesDurationInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesDurationInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesDurationInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesDurationInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesDurationInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesDurationInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesDurationInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesDurationInterval))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesDurationInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesDurationInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -2043,7 +899,7 @@ pub struct CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
@@ -2053,83 +909,8 @@ impl std::fmt::Debug for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
     }
 }
 impl CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
-    pub fn new(
-        type_: impl Into<CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
@@ -2158,7 +939,7 @@ pub struct CreateSubscriptionSchedulePhasesItems {
     pub price: Option<String>,
     /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<CreateSubscriptionSchedulePhasesItemsPriceData>,
+    pub price_data: Option<RecurringPriceData>,
     /// Quantity for the given price.
     /// Can be set only if the price's `usage_type` is `licensed` and not `metered`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2223,318 +1004,6 @@ impl CreateSubscriptionSchedulePhasesItemsDiscounts {
 impl Default for CreateSubscriptionSchedulePhasesItemsDiscounts {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
-    pub product: String,
-    /// The recurring components of a price such as `interval` and `interval_count`.
-    pub recurring: CreateSubscriptionSchedulePhasesItemsPriceDataRecurring,
-    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceData {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateSubscriptionSchedulePhasesItemsPriceData").finish_non_exhaustive()
-    }
-}
-impl CreateSubscriptionSchedulePhasesItemsPriceData {
-    pub fn new(
-        currency: impl Into<stripe_types::Currency>,
-        product: impl Into<String>,
-        recurring: impl Into<CreateSubscriptionSchedulePhasesItemsPriceDataRecurring>,
-    ) -> Self {
-        Self {
-            currency: currency.into(),
-            product: product.into(),
-            recurring: recurring.into(),
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
-    }
-}
-/// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
-    /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-    pub interval: CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
-    /// The number of intervals between subscription billings.
-    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<u64>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateSubscriptionSchedulePhasesItemsPriceDataRecurring")
-            .finish_non_exhaustive()
-    }
-}
-impl CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
-    pub fn new(
-        interval: impl Into<CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval>,
-    ) -> Self {
-        Self { interval: interval.into(), interval_count: None }
-    }
-}
-/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
-/// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSubscriptionSchedulePhasesProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSubscriptionSchedulePhasesProrationBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreateSubscriptionSchedulePhasesProrationBehavior::*;
-        match self {
-            AlwaysInvoice => "always_invoice",
-            CreateProrations => "create_prorations",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionSchedulePhasesProrationBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSubscriptionSchedulePhasesProrationBehavior::*;
-        match s {
-            "always_invoice" => Ok(AlwaysInvoice),
-            "create_prorations" => Ok(CreateProrations),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSubscriptionSchedulePhasesProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSubscriptionSchedulePhasesProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesProrationBehavior))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSubscriptionSchedulePhasesProrationBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesProrationBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// When the subscription schedule starts.
@@ -2604,10 +1073,7 @@ impl CreateSubscriptionSchedule {
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.
     /// `cancel` will end the subscription schedule and cancel the underlying subscription.
-    pub fn end_behavior(
-        mut self,
-        end_behavior: impl Into<stripe_shared::SubscriptionScheduleEndBehavior>,
-    ) -> Self {
+    pub fn end_behavior(mut self, end_behavior: impl Into<stripe_shared::EndBehavior>) -> Self {
         self.inner.end_behavior = Some(end_behavior.into());
         self
     }
@@ -2690,7 +1156,7 @@ struct UpdateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     default_settings: Option<UpdateSubscriptionScheduleDefaultSettings>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    end_behavior: Option<stripe_shared::SubscriptionScheduleEndBehavior>,
+    end_behavior: Option<stripe_shared::EndBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2698,7 +1164,7 @@ struct UpdateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     phases: Option<Vec<UpdateSubscriptionSchedulePhases>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    proration_behavior: Option<UpdateSubscriptionScheduleProrationBehavior>,
+    proration_behavior: Option<stripe_shared::ProrationBehavior>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateSubscriptionScheduleBuilder {
@@ -2736,7 +1202,8 @@ pub struct UpdateSubscriptionScheduleDefaultSettings {
     /// Cannot be set to `phase_start` if this phase specifies a trial.
     /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_cycle_anchor: Option<UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor>,
+    pub billing_cycle_anchor:
+        Option<stripe_shared::CreateSubscriptionSchedulePhasesBillingCycleAnchor>,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// Pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2746,7 +1213,7 @@ pub struct UpdateSubscriptionScheduleDefaultSettings {
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     /// Defaults to `charge_automatically` on creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<UpdateSubscriptionScheduleDefaultSettingsCollectionMethod>,
+    pub collection_method: Option<stripe_shared::CollectionMethod>,
     /// ID of the default payment method for the subscription schedule.
     /// It must belong to the customer associated with the subscription schedule.
     /// If not set, invoices will use the default payment method in the customer's invoice settings.
@@ -2830,7 +1297,7 @@ pub struct UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
@@ -2840,238 +1307,8 @@ impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLi
     }
 }
 impl UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
-    pub fn new(
-        type_: impl Into<UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
-/// Cannot be set to `phase_start` if this phase specifies a trial.
-/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    Automatic,
-    PhaseStart,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor::*;
-        match self {
-            Automatic => "automatic",
-            PhaseStart => "phase_start",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor::*;
-        match s {
-            "automatic" => Ok(Automatic),
-            "phase_start" => Ok(PhaseStart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Either `charge_automatically`, or `send_invoice`.
-/// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
-/// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
-/// Defaults to `charge_automatically` on creation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    ChargeAutomatically,
-    SendInvoice,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionScheduleDefaultSettingsCollectionMethod::*;
-        match self {
-            ChargeAutomatically => "charge_automatically",
-            SendInvoice => "send_invoice",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionScheduleDefaultSettingsCollectionMethod::*;
-        match s {
-            "charge_automatically" => Ok(ChargeAutomatically),
-            "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionScheduleDefaultSettingsCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionScheduleDefaultSettingsCollectionMethod))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -3133,7 +1370,7 @@ pub struct UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
@@ -3143,87 +1380,8 @@ impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsInvoiceSetting
     }
 }
 impl UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
-    pub fn new(
-        type_: impl Into<UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List representing phases of the subscription schedule.
@@ -3251,7 +1409,8 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// Cannot be set to `phase_start` if this phase specifies a trial.
     /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_cycle_anchor: Option<UpdateSubscriptionSchedulePhasesBillingCycleAnchor>,
+    pub billing_cycle_anchor:
+        Option<stripe_shared::CreateSubscriptionSchedulePhasesBillingCycleAnchor>,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// Pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3261,7 +1420,7 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     /// Defaults to `charge_automatically` on creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<UpdateSubscriptionSchedulePhasesCollectionMethod>,
+    pub collection_method: Option<stripe_shared::CollectionMethod>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3286,7 +1445,7 @@ pub struct UpdateSubscriptionSchedulePhases {
     pub discounts: Option<Vec<UpdateSubscriptionSchedulePhasesDiscounts>>,
     /// The number of intervals the phase should last. If set, `end_date` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub duration: Option<UpdateSubscriptionSchedulePhasesDuration>,
+    pub duration: Option<DurationParams>,
     /// The date at which this phase of the subscription schedule ends. If set, `duration` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<UpdateSubscriptionSchedulePhasesEndDate>,
@@ -3307,7 +1466,7 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
     /// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<UpdateSubscriptionSchedulePhasesProrationBehavior>,
+    pub proration_behavior: Option<stripe_shared::ProrationBehavior>,
     /// The date at which this phase of the subscription schedule starts or `now`.
     /// Must be set on the first phase.
     /// Prefer to specify `now` over an explicit timestamp when appropriate to avoid unexpected behavior due to request delays or clock skew resulting in the phase being slightly backdated or postdated.
@@ -3380,14 +1539,14 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The period associated with this invoice item.
     /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub period: Option<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod>,
+    pub period: Option<InvoiceItemPeriod>,
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
     /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData>,
+    pub price_data: Option<OneTimePriceDataWithNegativeAmounts>,
     /// Quantity for this item. Defaults to 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -3452,366 +1611,6 @@ impl Default for UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
         Self::new()
     }
 }
-/// The period associated with this invoice item.
-/// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
-    /// End of the invoice item period.
-    pub end: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd,
-    /// Start of the invoice item period.
-    pub start: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod")
-            .finish_non_exhaustive()
-    }
-}
-impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
-    pub fn new(
-        end: impl Into<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd>,
-        start: impl Into<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart>,
-    ) -> Self {
-        Self { end: end.into(), start: start.into() }
-    }
-}
-/// End of the invoice item period.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
-    /// A precise Unix timestamp for the end of the invoice item period.
-    /// Must be greater than or equal to `period.start`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub timestamp: Option<stripe_types::Timestamp>,
-    /// Select how to calculate the end of the invoice item period.
-    #[serde(rename = "type")]
-    pub type_: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd")
-            .finish_non_exhaustive()
-    }
-}
-impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
-    pub fn new(
-        type_: impl Into<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType>,
-    ) -> Self {
-        Self { timestamp: None, type_: type_.into() }
-    }
-}
-/// Select how to calculate the end of the invoice item period.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    MinItemPeriodEnd,
-    PhaseEnd,
-    Timestamp,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType::*;
-        match self {
-            MinItemPeriodEnd => "min_item_period_end",
-            PhaseEnd => "phase_end",
-            Timestamp => "timestamp",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType::*;
-        match s {
-            "min_item_period_end" => Ok(MinItemPeriodEnd),
-            "phase_end" => Ok(PhaseEnd),
-            "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Start of the invoice item period.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
-    /// A precise Unix timestamp for the start of the invoice item period.
-    /// Must be less than or equal to `period.end`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub timestamp: Option<stripe_types::Timestamp>,
-    /// Select how to calculate the start of the invoice item period.
-    #[serde(rename = "type")]
-    pub type_: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart")
-            .finish_non_exhaustive()
-    }
-}
-impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
-    pub fn new(
-        type_: impl Into<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType>,
-    ) -> Self {
-        Self { timestamp: None, type_: type_.into() }
-    }
-}
-/// Select how to calculate the start of the invoice item period.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    MaxItemPeriodStart,
-    PhaseStart,
-    Timestamp,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType::*;
-        match self {
-            MaxItemPeriodStart => "max_item_period_start",
-            PhaseStart => "phase_start",
-            Timestamp => "timestamp",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType::*;
-        match s {
-            "max_item_period_start" => Ok(MaxItemPeriodStart),
-            "phase_start" => Ok(PhaseStart),
-            "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-/// One of `price` or `price_data` is required.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
-    pub product: String,
-    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge or a negative integer representing the amount to credit to the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData")
-            .finish_non_exhaustive()
-    }
-}
-impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
-    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
-        Self {
-            currency: currency.into(),
-            product: product.into(),
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Automatic tax settings for this phase.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -3848,7 +1647,7 @@ pub struct UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
@@ -3858,234 +1657,8 @@ impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
     }
 }
 impl UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
-    pub fn new(
-        type_: impl Into<UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
-/// Cannot be set to `phase_start` if this phase specifies a trial.
-/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
-    Automatic,
-    PhaseStart,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesBillingCycleAnchor::*;
-        match self {
-            Automatic => "automatic",
-            PhaseStart => "phase_start",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesBillingCycleAnchor::*;
-        match s {
-            "automatic" => Ok(Automatic),
-            "phase_start" => Ok(PhaseStart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesBillingCycleAnchor))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Either `charge_automatically`, or `send_invoice`.
-/// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
-/// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
-/// Defaults to `charge_automatically` on creation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesCollectionMethod {
-    ChargeAutomatically,
-    SendInvoice,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesCollectionMethod {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesCollectionMethod::*;
-        match self {
-            ChargeAutomatically => "charge_automatically",
-            SendInvoice => "send_invoice",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesCollectionMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesCollectionMethod::*;
-        match s {
-            "charge_automatically" => Ok(ChargeAutomatically),
-            "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesCollectionMethod))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesCollectionMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesCollectionMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The coupons to redeem into discounts for the schedule phase.
@@ -4119,107 +1692,6 @@ impl UpdateSubscriptionSchedulePhasesDiscounts {
 impl Default for UpdateSubscriptionSchedulePhasesDiscounts {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The number of intervals the phase should last. If set, `end_date` must not be set.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateSubscriptionSchedulePhasesDuration {
-    /// Specifies phase duration. Either `day`, `week`, `month` or `year`.
-    pub interval: UpdateSubscriptionSchedulePhasesDurationInterval,
-    /// The multiplier applied to the interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<u64>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesDuration {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateSubscriptionSchedulePhasesDuration").finish_non_exhaustive()
-    }
-}
-impl UpdateSubscriptionSchedulePhasesDuration {
-    pub fn new(interval: impl Into<UpdateSubscriptionSchedulePhasesDurationInterval>) -> Self {
-        Self { interval: interval.into(), interval_count: None }
-    }
-}
-/// Specifies phase duration. Either `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesDurationInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesDurationInterval {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesDurationInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesDurationInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesDurationInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesDurationInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesDurationInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesDurationInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesDurationInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesDurationInterval))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesDurationInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesDurationInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The date at which this phase of the subscription schedule ends. If set, `duration` must not be set.
@@ -4299,7 +1771,7 @@ pub struct UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
@@ -4309,83 +1781,8 @@ impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
     }
 }
 impl UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
-    pub fn new(
-        type_: impl Into<UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
@@ -4414,7 +1811,7 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
     pub price: Option<String>,
     /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpdateSubscriptionSchedulePhasesItemsPriceData>,
+    pub price_data: Option<RecurringPriceData>,
     /// Quantity for the given price.
     /// Can be set only if the price's `usage_type` is `licensed` and not `metered`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4481,318 +1878,6 @@ impl Default for UpdateSubscriptionSchedulePhasesItemsDiscounts {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
-    pub product: String,
-    /// The recurring components of a price such as `interval` and `interval_count`.
-    pub recurring: UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring,
-    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceData {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateSubscriptionSchedulePhasesItemsPriceData").finish_non_exhaustive()
-    }
-}
-impl UpdateSubscriptionSchedulePhasesItemsPriceData {
-    pub fn new(
-        currency: impl Into<stripe_types::Currency>,
-        product: impl Into<String>,
-        recurring: impl Into<UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring>,
-    ) -> Self {
-        Self {
-            currency: currency.into(),
-            product: product.into(),
-            recurring: recurring.into(),
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
-    }
-}
-/// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
-    /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-    pub interval: UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
-    /// The number of intervals between subscription billings.
-    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<u64>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring")
-            .finish_non_exhaustive()
-    }
-}
-impl UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
-    pub fn new(
-        interval: impl Into<UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval>,
-    ) -> Self {
-        Self { interval: interval.into(), interval_count: None }
-    }
-}
-/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
-/// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionSchedulePhasesProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionSchedulePhasesProrationBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionSchedulePhasesProrationBehavior::*;
-        match self {
-            AlwaysInvoice => "always_invoice",
-            CreateProrations => "create_prorations",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionSchedulePhasesProrationBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionSchedulePhasesProrationBehavior::*;
-        match s {
-            "always_invoice" => Ok(AlwaysInvoice),
-            "create_prorations" => Ok(CreateProrations),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionSchedulePhasesProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesProrationBehavior))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionSchedulePhasesProrationBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesProrationBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The date at which this phase of the subscription schedule starts or `now`.
 /// Must be set on the first phase.
 /// Prefer to specify `now` over an explicit timestamp when appropriate to avoid unexpected behavior due to request delays or clock skew resulting in the phase being slightly backdated or postdated.
@@ -4829,83 +1914,6 @@ impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesTrialEnd {
         f.debug_struct("UpdateSubscriptionSchedulePhasesTrialEnd").finish_non_exhaustive()
     }
 }
-/// If the update changes the billing configuration (item price, quantity, etc.) of the current phase, indicates how prorations from this change should be handled.
-/// The default value is `create_prorations`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSubscriptionScheduleProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSubscriptionScheduleProrationBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionScheduleProrationBehavior::*;
-        match self {
-            AlwaysInvoice => "always_invoice",
-            CreateProrations => "create_prorations",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionScheduleProrationBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionScheduleProrationBehavior::*;
-        match s {
-            "always_invoice" => Ok(AlwaysInvoice),
-            "create_prorations" => Ok(CreateProrations),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionScheduleProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSubscriptionScheduleProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionScheduleProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionScheduleProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionScheduleProrationBehavior))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSubscriptionScheduleProrationBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionScheduleProrationBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Updates an existing subscription schedule.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -4937,10 +1945,7 @@ impl UpdateSubscriptionSchedule {
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.
     /// `cancel` will end the subscription schedule and cancel the underlying subscription.
-    pub fn end_behavior(
-        mut self,
-        end_behavior: impl Into<stripe_shared::SubscriptionScheduleEndBehavior>,
-    ) -> Self {
+    pub fn end_behavior(mut self, end_behavior: impl Into<stripe_shared::EndBehavior>) -> Self {
         self.inner.end_behavior = Some(end_behavior.into());
         self
     }
@@ -4972,7 +1977,7 @@ impl UpdateSubscriptionSchedule {
     /// The default value is `create_prorations`.
     pub fn proration_behavior(
         mut self,
-        proration_behavior: impl Into<UpdateSubscriptionScheduleProrationBehavior>,
+        proration_behavior: impl Into<stripe_shared::ProrationBehavior>,
     ) -> Self {
         self.inner.proration_behavior = Some(proration_behavior.into());
         self
@@ -5249,6 +2254,117 @@ impl TransferDataSpecs {
         Self { amount_percent: None, destination: destination.into() }
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct InvoiceItemPeriodEnd {
+    /// A precise Unix timestamp for the end of the invoice item period.
+    /// Must be greater than or equal to `period.start`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the end of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceItemPeriodEnd {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceItemPeriodEnd").finish_non_exhaustive()
+    }
+}
+impl InvoiceItemPeriodEnd {
+    pub fn new(
+        type_: impl Into<stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType>,
+    ) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct InvoiceItemPeriodStart {
+    /// A precise Unix timestamp for the start of the invoice item period.
+    /// Must be less than or equal to `period.end`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Select how to calculate the start of the invoice item period.
+    #[serde(rename = "type")]
+    pub type_: stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceItemPeriodStart {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceItemPeriodStart").finish_non_exhaustive()
+    }
+}
+impl InvoiceItemPeriodStart {
+    pub fn new(
+        type_: impl Into<stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType>,
+    ) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct OneTimePriceDataWithNegativeAmounts {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: stripe_types::Currency,
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
+    pub product: String,
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge or a negative integer representing the amount to credit to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OneTimePriceDataWithNegativeAmounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OneTimePriceDataWithNegativeAmounts").finish_non_exhaustive()
+    }
+}
+impl OneTimePriceDataWithNegativeAmounts {
+    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
+        Self {
+            currency: currency.into(),
+            product: product.into(),
+            tax_behavior: None,
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct DurationParams {
+    /// Specifies phase duration. Either `day`, `week`, `month` or `year`.
+    pub interval: stripe_shared::PlanInterval,
+    /// The multiplier applied to the interval.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DurationParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DurationParams").finish_non_exhaustive()
+    }
+}
+impl DurationParams {
+    pub fn new(interval: impl Into<stripe_shared::PlanInterval>) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -5267,3 +2383,300 @@ impl ItemBillingThresholdsParam {
         Self { usage_gte: usage_gte.into() }
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct RecurringAdhoc {
+    /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
+    pub interval: stripe_shared::PlanInterval,
+    /// The number of intervals between subscription billings.
+    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
+    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RecurringAdhoc {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RecurringAdhoc").finish_non_exhaustive()
+    }
+}
+impl RecurringAdhoc {
+    pub fn new(interval: impl Into<stripe_shared::PlanInterval>) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct InvoiceItemPeriod {
+    /// End of the invoice item period.
+    pub end: InvoiceItemPeriodEnd,
+    /// Start of the invoice item period.
+    pub start: InvoiceItemPeriodStart,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceItemPeriod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceItemPeriod").finish_non_exhaustive()
+    }
+}
+impl InvoiceItemPeriod {
+    pub fn new(
+        end: impl Into<InvoiceItemPeriodEnd>,
+        start: impl Into<InvoiceItemPeriodStart>,
+    ) -> Self {
+        Self { end: end.into(), start: start.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct RecurringPriceData {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: stripe_types::Currency,
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
+    pub product: String,
+    /// The recurring components of a price such as `interval` and `interval_count`.
+    pub recurring: RecurringAdhoc,
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RecurringPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RecurringPriceData").finish_non_exhaustive()
+    }
+}
+impl RecurringPriceData {
+    pub fn new(
+        currency: impl Into<stripe_types::Currency>,
+        product: impl Into<String>,
+        recurring: impl Into<RecurringAdhoc>,
+    ) -> Self {
+        Self {
+            currency: currency.into(),
+            product: product.into(),
+            recurring: recurring.into(),
+            tax_behavior: None,
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
+    }
+}
+/// Controls how invoices and invoice items display proration amounts and discount amounts.
+pub type CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts =
+    stripe_shared::ProrationDiscounts;
+/// Controls the calculation and orchestration of prorations and invoices for subscriptions.
+/// If no value is passed, the default is `flexible`.
+pub type CreateSubscriptionScheduleBillingModeType =
+    stripe_shared::CreateSubscriptionBillingModeType;
+/// Type of the account referenced in the request.
+pub type CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
+/// Cannot be set to `phase_start` if this phase specifies a trial.
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+pub type CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor =
+    stripe_shared::CreateSubscriptionSchedulePhasesBillingCycleAnchor;
+/// Either `charge_automatically`, or `send_invoice`.
+/// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
+/// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
+/// Defaults to `charge_automatically` on creation.
+pub type CreateSubscriptionScheduleDefaultSettingsCollectionMethod =
+    stripe_shared::CollectionMethod;
+/// Type of the account referenced in the request.
+pub type CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// Behavior of the subscription schedule and underlying subscription when it ends.
+/// Possible values are `release` or `cancel` with the default being `release`.
+/// `release` will end the subscription schedule and keep the underlying subscription running.
+/// `cancel` will end the subscription schedule and cancel the underlying subscription.
+pub type CreateSubscriptionScheduleEndBehavior = stripe_shared::EndBehavior;
+/// Select how to calculate the end of the invoice item period.
+pub type CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType =
+    stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType;
+/// Select how to calculate the start of the invoice item period.
+pub type CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType =
+    stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior =
+    stripe_shared::PriceTaxBehavior;
+/// Type of the account referenced in the request.
+pub type CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
+/// Cannot be set to `phase_start` if this phase specifies a trial.
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+pub type CreateSubscriptionSchedulePhasesBillingCycleAnchor =
+    stripe_shared::CreateSubscriptionSchedulePhasesBillingCycleAnchor;
+/// Either `charge_automatically`, or `send_invoice`.
+/// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
+/// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
+/// Defaults to `charge_automatically` on creation.
+pub type CreateSubscriptionSchedulePhasesCollectionMethod = stripe_shared::CollectionMethod;
+/// Specifies phase duration. Either `day`, `week`, `month` or `year`.
+pub type CreateSubscriptionSchedulePhasesDurationInterval = stripe_shared::PlanInterval;
+/// Type of the account referenced in the request.
+pub type CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
+pub type CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval =
+    stripe_shared::PlanInterval;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior =
+    stripe_shared::PriceTaxBehavior;
+/// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+/// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
+pub type CreateSubscriptionSchedulePhasesProrationBehavior = stripe_shared::ProrationBehavior;
+/// Type of the account referenced in the request.
+pub type UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
+/// Cannot be set to `phase_start` if this phase specifies a trial.
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+pub type UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor =
+    stripe_shared::CreateSubscriptionSchedulePhasesBillingCycleAnchor;
+/// Either `charge_automatically`, or `send_invoice`.
+/// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
+/// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
+/// Defaults to `charge_automatically` on creation.
+pub type UpdateSubscriptionScheduleDefaultSettingsCollectionMethod =
+    stripe_shared::CollectionMethod;
+/// Type of the account referenced in the request.
+pub type UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// Behavior of the subscription schedule and underlying subscription when it ends.
+/// Possible values are `release` or `cancel` with the default being `release`.
+/// `release` will end the subscription schedule and keep the underlying subscription running.
+/// `cancel` will end the subscription schedule and cancel the underlying subscription.
+pub type UpdateSubscriptionScheduleEndBehavior = stripe_shared::EndBehavior;
+/// Select how to calculate the end of the invoice item period.
+pub type UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType =
+    stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType;
+/// Select how to calculate the start of the invoice item period.
+pub type UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType =
+    stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior =
+    stripe_shared::PriceTaxBehavior;
+/// Type of the account referenced in the request.
+pub type UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
+/// Cannot be set to `phase_start` if this phase specifies a trial.
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+pub type UpdateSubscriptionSchedulePhasesBillingCycleAnchor =
+    stripe_shared::CreateSubscriptionSchedulePhasesBillingCycleAnchor;
+/// Either `charge_automatically`, or `send_invoice`.
+/// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
+/// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
+/// Defaults to `charge_automatically` on creation.
+pub type UpdateSubscriptionSchedulePhasesCollectionMethod = stripe_shared::CollectionMethod;
+/// Specifies phase duration. Either `day`, `week`, `month` or `year`.
+pub type UpdateSubscriptionSchedulePhasesDurationInterval = stripe_shared::PlanInterval;
+/// Type of the account referenced in the request.
+pub type UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
+pub type UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval =
+    stripe_shared::PlanInterval;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior =
+    stripe_shared::PriceTaxBehavior;
+/// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+/// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
+pub type UpdateSubscriptionSchedulePhasesProrationBehavior = stripe_shared::ProrationBehavior;
+/// If the update changes the billing configuration (item price, quantity, etc.) of the current phase, indicates how prorations from this change should be handled.
+/// The default value is `create_prorations`.
+pub type UpdateSubscriptionScheduleProrationBehavior = stripe_shared::ProrationBehavior;
+/// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+/// Pass an empty string to remove previously-defined thresholds.
+pub type CreateSubscriptionScheduleDefaultSettingsBillingThresholds = BillingThresholdsParam;
+pub type CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsCustomFields = CustomFieldParams;
+/// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
+pub type CreateSubscriptionScheduleDefaultSettingsTransferData = TransferDataSpecs;
+/// End of the invoice item period.
+pub type CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd = InvoiceItemPeriodEnd;
+/// Start of the invoice item period.
+pub type CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart = InvoiceItemPeriodStart;
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
+/// One of `price` or `price_data` is required.
+pub type CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData =
+    OneTimePriceDataWithNegativeAmounts;
+/// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+/// Pass an empty string to remove previously-defined thresholds.
+pub type CreateSubscriptionSchedulePhasesBillingThresholds = BillingThresholdsParam;
+/// The number of intervals the phase should last. If set, `end_date` must not be set.
+pub type CreateSubscriptionSchedulePhasesDuration = DurationParams;
+/// A list of up to 4 custom fields to be displayed on the invoice.
+pub type CreateSubscriptionSchedulePhasesInvoiceSettingsCustomFields = CustomFieldParams;
+/// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+/// Pass an empty string to remove previously-defined thresholds.
+pub type CreateSubscriptionSchedulePhasesItemsBillingThresholds = ItemBillingThresholdsParam;
+/// The recurring components of a price such as `interval` and `interval_count`.
+pub type CreateSubscriptionSchedulePhasesItemsPriceDataRecurring = RecurringAdhoc;
+/// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
+pub type CreateSubscriptionSchedulePhasesTransferData = TransferDataSpecs;
+/// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+/// Pass an empty string to remove previously-defined thresholds.
+pub type UpdateSubscriptionScheduleDefaultSettingsBillingThresholds = BillingThresholdsParam;
+pub type UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsCustomFields = CustomFieldParams;
+/// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
+pub type UpdateSubscriptionScheduleDefaultSettingsTransferData = TransferDataSpecs;
+/// End of the invoice item period.
+pub type UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd = InvoiceItemPeriodEnd;
+/// Start of the invoice item period.
+pub type UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart = InvoiceItemPeriodStart;
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
+/// One of `price` or `price_data` is required.
+pub type UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData =
+    OneTimePriceDataWithNegativeAmounts;
+/// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+/// Pass an empty string to remove previously-defined thresholds.
+pub type UpdateSubscriptionSchedulePhasesBillingThresholds = BillingThresholdsParam;
+/// The number of intervals the phase should last. If set, `end_date` must not be set.
+pub type UpdateSubscriptionSchedulePhasesDuration = DurationParams;
+/// A list of up to 4 custom fields to be displayed on the invoice.
+pub type UpdateSubscriptionSchedulePhasesInvoiceSettingsCustomFields = CustomFieldParams;
+/// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+/// Pass an empty string to remove previously-defined thresholds.
+pub type UpdateSubscriptionSchedulePhasesItemsBillingThresholds = ItemBillingThresholdsParam;
+/// The recurring components of a price such as `interval` and `interval_count`.
+pub type UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring = RecurringAdhoc;
+/// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
+pub type UpdateSubscriptionSchedulePhasesTransferData = TransferDataSpecs;
+/// The period associated with this invoice item.
+/// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
+pub type CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod = InvoiceItemPeriod;
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
+pub type CreateSubscriptionSchedulePhasesItemsPriceData = RecurringPriceData;
+/// The period associated with this invoice item.
+/// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
+pub type UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod = InvoiceItemPeriod;
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
+pub type UpdateSubscriptionSchedulePhasesItemsPriceData = RecurringPriceData;

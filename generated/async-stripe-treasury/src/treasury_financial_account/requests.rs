@@ -17,7 +17,7 @@ struct ListTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_treasury::TreasuryFinancialAccountStatus>,
+    status: Option<stripe_shared::TreasuryFinancialAccountStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListTreasuryFinancialAccountBuilder {
@@ -83,7 +83,7 @@ impl ListTreasuryFinancialAccount {
     /// Only return FinancialAccounts that have the given status: `open` or `closed`
     pub fn status(
         mut self,
-        status: impl Into<stripe_treasury::TreasuryFinancialAccountStatus>,
+        status: impl Into<stripe_shared::TreasuryFinancialAccountStatus>,
     ) -> Self {
         self.inner.status = Some(status.into());
         self
@@ -292,7 +292,7 @@ struct CreateTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     nickname: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    platform_restrictions: Option<CreateTreasuryFinancialAccountPlatformRestrictions>,
+    platform_restrictions: Option<PlatformRestrictions>,
     supported_currencies: Vec<String>,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -658,184 +658,6 @@ impl CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
         Self { requested: requested.into() }
     }
 }
-/// The set of functionalities that the platform can restrict on the FinancialAccount.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateTreasuryFinancialAccountPlatformRestrictions {
-    /// Restricts all inbound money movement.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub inbound_flows: Option<CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows>,
-    /// Restricts all outbound money movement.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub outbound_flows: Option<CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTreasuryFinancialAccountPlatformRestrictions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateTreasuryFinancialAccountPlatformRestrictions").finish_non_exhaustive()
-    }
-}
-impl CreateTreasuryFinancialAccountPlatformRestrictions {
-    pub fn new() -> Self {
-        Self { inbound_flows: None, outbound_flows: None }
-    }
-}
-impl Default for CreateTreasuryFinancialAccountPlatformRestrictions {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Restricts all inbound money movement.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    Restricted,
-    Unrestricted,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    pub fn as_str(&self) -> &str {
-        use CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows::*;
-        match self {
-            Restricted => "restricted",
-            Unrestricted => "unrestricted",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows::*;
-        match s {
-            "restricted" => Ok(Restricted),
-            "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Restricts all outbound money movement.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    Restricted,
-    Unrestricted,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    pub fn as_str(&self) -> &str {
-        use CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows::*;
-        match self {
-            Restricted => "restricted",
-            Unrestricted => "unrestricted",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows::*;
-        match s {
-            "restricted" => Ok(Restricted),
-            "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Creates a new FinancialAccount.
 /// Each connected account can have up to three FinancialAccounts by default.
 #[derive(Clone)]
@@ -885,7 +707,7 @@ impl CreateTreasuryFinancialAccount {
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
     pub fn platform_restrictions(
         mut self,
-        platform_restrictions: impl Into<CreateTreasuryFinancialAccountPlatformRestrictions>,
+        platform_restrictions: impl Into<PlatformRestrictions>,
     ) -> Self {
         self.inner.platform_restrictions = Some(platform_restrictions.into());
         self
@@ -925,13 +747,13 @@ struct UpdateTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     features: Option<UpdateTreasuryFinancialAccountFeatures>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    forwarding_settings: Option<UpdateTreasuryFinancialAccountForwardingSettings>,
+    forwarding_settings: Option<ForwardingSettings>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     nickname: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    platform_restrictions: Option<UpdateTreasuryFinancialAccountPlatformRestrictions>,
+    platform_restrictions: Option<PlatformRestrictions>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateTreasuryFinancialAccountBuilder {
@@ -1296,283 +1118,6 @@ impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
         Self { requested: requested.into() }
     }
 }
-/// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateTreasuryFinancialAccountForwardingSettings {
-    /// The financial_account id
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_account: Option<String>,
-    /// The payment_method or bank account id. This needs to be a verified bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<String>,
-    /// The type of the bank account provided. This can be either "financial_account" or "payment_method"
-    #[serde(rename = "type")]
-    pub type_: UpdateTreasuryFinancialAccountForwardingSettingsType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateTreasuryFinancialAccountForwardingSettings {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateTreasuryFinancialAccountForwardingSettings").finish_non_exhaustive()
-    }
-}
-impl UpdateTreasuryFinancialAccountForwardingSettings {
-    pub fn new(type_: impl Into<UpdateTreasuryFinancialAccountForwardingSettingsType>) -> Self {
-        Self { financial_account: None, payment_method: None, type_: type_.into() }
-    }
-}
-/// The type of the bank account provided. This can be either "financial_account" or "payment_method"
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateTreasuryFinancialAccountForwardingSettingsType {
-    FinancialAccount,
-    PaymentMethod,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateTreasuryFinancialAccountForwardingSettingsType {
-    pub fn as_str(&self) -> &str {
-        use UpdateTreasuryFinancialAccountForwardingSettingsType::*;
-        match self {
-            FinancialAccount => "financial_account",
-            PaymentMethod => "payment_method",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateTreasuryFinancialAccountForwardingSettingsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateTreasuryFinancialAccountForwardingSettingsType::*;
-        match s {
-            "financial_account" => Ok(FinancialAccount),
-            "payment_method" => Ok(PaymentMethod),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateTreasuryFinancialAccountForwardingSettingsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateTreasuryFinancialAccountForwardingSettingsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateTreasuryFinancialAccountForwardingSettingsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateTreasuryFinancialAccountForwardingSettingsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateTreasuryFinancialAccountForwardingSettingsType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateTreasuryFinancialAccountForwardingSettingsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateTreasuryFinancialAccountForwardingSettingsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The set of functionalities that the platform can restrict on the FinancialAccount.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateTreasuryFinancialAccountPlatformRestrictions {
-    /// Restricts all inbound money movement.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub inbound_flows: Option<UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows>,
-    /// Restricts all outbound money movement.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub outbound_flows: Option<UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateTreasuryFinancialAccountPlatformRestrictions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateTreasuryFinancialAccountPlatformRestrictions").finish_non_exhaustive()
-    }
-}
-impl UpdateTreasuryFinancialAccountPlatformRestrictions {
-    pub fn new() -> Self {
-        Self { inbound_flows: None, outbound_flows: None }
-    }
-}
-impl Default for UpdateTreasuryFinancialAccountPlatformRestrictions {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Restricts all inbound money movement.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    Restricted,
-    Unrestricted,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    pub fn as_str(&self) -> &str {
-        use UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows::*;
-        match self {
-            Restricted => "restricted",
-            Unrestricted => "unrestricted",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows::*;
-        match s {
-            "restricted" => Ok(Restricted),
-            "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Restricts all outbound money movement.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    Restricted,
-    Unrestricted,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    pub fn as_str(&self) -> &str {
-        use UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows::*;
-        match self {
-            Restricted => "restricted",
-            Unrestricted => "unrestricted",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows::*;
-        match s {
-            "restricted" => Ok(Restricted),
-            "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Updates the details of a FinancialAccount.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1609,7 +1154,7 @@ impl UpdateTreasuryFinancialAccount {
     /// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
     pub fn forwarding_settings(
         mut self,
-        forwarding_settings: impl Into<UpdateTreasuryFinancialAccountForwardingSettings>,
+        forwarding_settings: impl Into<ForwardingSettings>,
     ) -> Self {
         self.inner.forwarding_settings = Some(forwarding_settings.into());
         self
@@ -1633,7 +1178,7 @@ impl UpdateTreasuryFinancialAccount {
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
     pub fn platform_restrictions(
         mut self,
-        platform_restrictions: impl Into<UpdateTreasuryFinancialAccountPlatformRestrictions>,
+        platform_restrictions: impl Into<PlatformRestrictions>,
     ) -> Self {
         self.inner.platform_restrictions = Some(platform_restrictions.into());
         self
@@ -1676,7 +1221,7 @@ struct CloseTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    forwarding_settings: Option<CloseTreasuryFinancialAccountForwardingSettings>,
+    forwarding_settings: Option<ForwardingSettings>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CloseTreasuryFinancialAccountBuilder {
@@ -1687,105 +1232,6 @@ impl std::fmt::Debug for CloseTreasuryFinancialAccountBuilder {
 impl CloseTreasuryFinancialAccountBuilder {
     fn new() -> Self {
         Self { expand: None, forwarding_settings: None }
-    }
-}
-/// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CloseTreasuryFinancialAccountForwardingSettings {
-    /// The financial_account id
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_account: Option<String>,
-    /// The payment_method or bank account id. This needs to be a verified bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<String>,
-    /// The type of the bank account provided. This can be either "financial_account" or "payment_method"
-    #[serde(rename = "type")]
-    pub type_: CloseTreasuryFinancialAccountForwardingSettingsType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CloseTreasuryFinancialAccountForwardingSettings {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CloseTreasuryFinancialAccountForwardingSettings").finish_non_exhaustive()
-    }
-}
-impl CloseTreasuryFinancialAccountForwardingSettings {
-    pub fn new(type_: impl Into<CloseTreasuryFinancialAccountForwardingSettingsType>) -> Self {
-        Self { financial_account: None, payment_method: None, type_: type_.into() }
-    }
-}
-/// The type of the bank account provided. This can be either "financial_account" or "payment_method"
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CloseTreasuryFinancialAccountForwardingSettingsType {
-    FinancialAccount,
-    PaymentMethod,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CloseTreasuryFinancialAccountForwardingSettingsType {
-    pub fn as_str(&self) -> &str {
-        use CloseTreasuryFinancialAccountForwardingSettingsType::*;
-        match self {
-            FinancialAccount => "financial_account",
-            PaymentMethod => "payment_method",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CloseTreasuryFinancialAccountForwardingSettingsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CloseTreasuryFinancialAccountForwardingSettingsType::*;
-        match s {
-            "financial_account" => Ok(FinancialAccount),
-            "payment_method" => Ok(PaymentMethod),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CloseTreasuryFinancialAccountForwardingSettingsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CloseTreasuryFinancialAccountForwardingSettingsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CloseTreasuryFinancialAccountForwardingSettingsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CloseTreasuryFinancialAccountForwardingSettingsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CloseTreasuryFinancialAccountForwardingSettingsType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CloseTreasuryFinancialAccountForwardingSettingsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CloseTreasuryFinancialAccountForwardingSettingsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Closes a FinancialAccount.
@@ -1819,7 +1265,7 @@ impl CloseTreasuryFinancialAccount {
     /// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
     pub fn forwarding_settings(
         mut self,
-        forwarding_settings: impl Into<CloseTreasuryFinancialAccountForwardingSettings>,
+        forwarding_settings: impl Into<ForwardingSettings>,
     ) -> Self {
         self.inner.forwarding_settings = Some(forwarding_settings.into());
         self
@@ -2303,3 +1749,88 @@ impl StripeRequest for UpdateFeaturesTreasuryFinancialAccount {
         .form(&self.inner)
     }
 }
+
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct PlatformRestrictions {
+    /// Restricts all inbound money movement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inbound_flows:
+        Option<stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows>,
+    /// Restricts all outbound money movement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub outbound_flows:
+        Option<stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PlatformRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PlatformRestrictions").finish_non_exhaustive()
+    }
+}
+impl PlatformRestrictions {
+    pub fn new() -> Self {
+        Self { inbound_flows: None, outbound_flows: None }
+    }
+}
+impl Default for PlatformRestrictions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ForwardingSettings {
+    /// The financial_account id
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_account: Option<String>,
+    /// The payment_method or bank account id. This needs to be a verified bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method: Option<String>,
+    /// The type of the bank account provided. This can be either "financial_account" or "payment_method"
+    #[serde(rename = "type")]
+    pub type_: stripe_shared::CloseTreasuryFinancialAccountForwardingSettingsType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ForwardingSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ForwardingSettings").finish_non_exhaustive()
+    }
+}
+impl ForwardingSettings {
+    pub fn new(
+        type_: impl Into<stripe_shared::CloseTreasuryFinancialAccountForwardingSettingsType>,
+    ) -> Self {
+        Self { financial_account: None, payment_method: None, type_: type_.into() }
+    }
+}
+/// Only return FinancialAccounts that have the given status: `open` or `closed`
+pub type ListTreasuryFinancialAccountStatus = stripe_shared::TreasuryFinancialAccountStatus;
+/// Restricts all inbound money movement.
+pub type CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows =
+    stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows;
+/// Restricts all outbound money movement.
+pub type CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows =
+    stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows;
+/// The type of the bank account provided. This can be either "financial_account" or "payment_method"
+pub type UpdateTreasuryFinancialAccountForwardingSettingsType =
+    stripe_shared::CloseTreasuryFinancialAccountForwardingSettingsType;
+/// Restricts all inbound money movement.
+pub type UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows =
+    stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows;
+/// Restricts all outbound money movement.
+pub type UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows =
+    stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows;
+/// The type of the bank account provided. This can be either "financial_account" or "payment_method"
+pub type CloseTreasuryFinancialAccountForwardingSettingsType =
+    stripe_shared::CloseTreasuryFinancialAccountForwardingSettingsType;
+/// The set of functionalities that the platform can restrict on the FinancialAccount.
+pub type CreateTreasuryFinancialAccountPlatformRestrictions = PlatformRestrictions;
+/// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
+pub type UpdateTreasuryFinancialAccountForwardingSettings = ForwardingSettings;
+/// The set of functionalities that the platform can restrict on the FinancialAccount.
+pub type UpdateTreasuryFinancialAccountPlatformRestrictions = PlatformRestrictions;
+/// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
+pub type CloseTreasuryFinancialAccountForwardingSettings = ForwardingSettings;

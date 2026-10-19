@@ -60,13 +60,13 @@ impl ListPriceBuilder {
 pub struct ListPriceRecurring {
     /// Filter by billing frequency. Either `day`, `week`, `month` or `year`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<ListPriceRecurringInterval>,
+    pub interval: Option<stripe_shared::PlanInterval>,
     /// Filter by the price's meter.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub meter: Option<String>,
     /// Filter by the usage type for this price. Can be either `metered` or `licensed`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage_type: Option<ListPriceRecurringUsageType>,
+    pub usage_type: Option<stripe_shared::UsageType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListPriceRecurring {
@@ -82,152 +82,6 @@ impl ListPriceRecurring {
 impl Default for ListPriceRecurring {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Filter by billing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ListPriceRecurringInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ListPriceRecurringInterval {
-    pub fn as_str(&self) -> &str {
-        use ListPriceRecurringInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ListPriceRecurringInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ListPriceRecurringInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListPriceRecurringInterval");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ListPriceRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ListPriceRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ListPriceRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ListPriceRecurringInterval)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ListPriceRecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ListPriceRecurringInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Filter by the usage type for this price. Can be either `metered` or `licensed`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ListPriceRecurringUsageType {
-    Licensed,
-    Metered,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ListPriceRecurringUsageType {
-    pub fn as_str(&self) -> &str {
-        use ListPriceRecurringUsageType::*;
-        match self {
-            Licensed => "licensed",
-            Metered => "metered",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ListPriceRecurringUsageType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ListPriceRecurringUsageType::*;
-        match s {
-            "licensed" => Ok(Licensed),
-            "metered" => Ok(Metered),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListPriceRecurringUsageType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ListPriceRecurringUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ListPriceRecurringUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ListPriceRecurringUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ListPriceRecurringUsageType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ListPriceRecurringUsageType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ListPriceRecurringUsageType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
@@ -519,7 +373,7 @@ struct CreatePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_scheme: Option<stripe_shared::PriceBillingScheme>,
+    billing_scheme: Option<stripe_shared::BillingScheme>,
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency_options:
@@ -545,7 +399,7 @@ struct CreatePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     tiers: Option<Vec<CreatePriceTiers>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tiers_mode: Option<stripe_shared::PriceTiersMode>,
+    tiers_mode: Option<stripe_shared::TiersMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_lookup_key: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -759,7 +613,7 @@ impl CreatePriceProductData {
 #[derive(serde::Serialize)]
 pub struct CreatePriceRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-    pub interval: CreatePriceRecurringInterval,
+    pub interval: stripe_shared::PlanInterval,
     /// The number of intervals between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
@@ -777,7 +631,7 @@ pub struct CreatePriceRecurring {
     /// `metered` aggregates the total usage based on usage records.
     /// Defaults to `licensed`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage_type: Option<CreatePriceRecurringUsageType>,
+    pub usage_type: Option<stripe_shared::UsageType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePriceRecurring {
@@ -786,7 +640,7 @@ impl std::fmt::Debug for CreatePriceRecurring {
     }
 }
 impl CreatePriceRecurring {
-    pub fn new(interval: impl Into<CreatePriceRecurringInterval>) -> Self {
+    pub fn new(interval: impl Into<stripe_shared::PlanInterval>) -> Self {
         Self {
             interval: interval.into(),
             interval_count: None,
@@ -794,160 +648,6 @@ impl CreatePriceRecurring {
             trial_period_days: None,
             usage_type: None,
         }
-    }
-}
-/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePriceRecurringInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePriceRecurringInterval {
-    pub fn as_str(&self) -> &str {
-        use CreatePriceRecurringInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePriceRecurringInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePriceRecurringInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePriceRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePriceRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePriceRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePriceRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePriceRecurringInterval)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePriceRecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePriceRecurringInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Configures how the quantity per period should be determined.
-/// Can be either `metered` or `licensed`.
-/// `licensed` automatically bills the `quantity` set when adding it to a subscription.
-/// `metered` aggregates the total usage based on usage records.
-/// Defaults to `licensed`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePriceRecurringUsageType {
-    Licensed,
-    Metered,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePriceRecurringUsageType {
-    pub fn as_str(&self) -> &str {
-        use CreatePriceRecurringUsageType::*;
-        match self {
-            Licensed => "licensed",
-            Metered => "metered",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePriceRecurringUsageType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePriceRecurringUsageType::*;
-        match s {
-            "licensed" => Ok(Licensed),
-            "metered" => Ok(Metered),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePriceRecurringUsageType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePriceRecurringUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePriceRecurringUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePriceRecurringUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePriceRecurringUsageType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePriceRecurringUsageType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePriceRecurringUsageType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Each element represents a pricing tier.
@@ -1020,7 +720,7 @@ pub struct CreatePriceTransformQuantity {
     /// Divide usage by this number.
     pub divide_by: i64,
     /// After division, either round the result `up` or `down`.
-    pub round: CreatePriceTransformQuantityRound,
+    pub round: stripe_shared::Round,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePriceTransformQuantity {
@@ -1029,83 +729,8 @@ impl std::fmt::Debug for CreatePriceTransformQuantity {
     }
 }
 impl CreatePriceTransformQuantity {
-    pub fn new(
-        divide_by: impl Into<i64>,
-        round: impl Into<CreatePriceTransformQuantityRound>,
-    ) -> Self {
+    pub fn new(divide_by: impl Into<i64>, round: impl Into<stripe_shared::Round>) -> Self {
         Self { divide_by: divide_by.into(), round: round.into() }
-    }
-}
-/// After division, either round the result `up` or `down`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePriceTransformQuantityRound {
-    Down,
-    Up,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePriceTransformQuantityRound {
-    pub fn as_str(&self) -> &str {
-        use CreatePriceTransformQuantityRound::*;
-        match self {
-            Down => "down",
-            Up => "up",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePriceTransformQuantityRound {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePriceTransformQuantityRound::*;
-        match s {
-            "down" => Ok(Down),
-            "up" => Ok(Up),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePriceTransformQuantityRound"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePriceTransformQuantityRound {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePriceTransformQuantityRound {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePriceTransformQuantityRound {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePriceTransformQuantityRound)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePriceTransformQuantityRound {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePriceTransformQuantityRound {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a new [Price](https://docs.stripe.com/api/prices) for an existing [Product](https://docs.stripe.com/api/products).
@@ -1138,7 +763,7 @@ impl CreatePrice {
     /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
     pub fn billing_scheme(
         mut self,
-        billing_scheme: impl Into<stripe_shared::PriceBillingScheme>,
+        billing_scheme: impl Into<stripe_shared::BillingScheme>,
     ) -> Self {
         self.inner.billing_scheme = Some(billing_scheme.into());
         self
@@ -1221,7 +846,7 @@ impl CreatePrice {
     }
     /// Defines if the tiering price should be `graduated` or `volume` based.
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
-    pub fn tiers_mode(mut self, tiers_mode: impl Into<stripe_shared::PriceTiersMode>) -> Self {
+    pub fn tiers_mode(mut self, tiers_mode: impl Into<stripe_shared::TiersMode>) -> Self {
         self.inner.tiers_mode = Some(tiers_mode.into());
         self
     }
@@ -1565,3 +1190,53 @@ impl CustomUnitAmount {
         Self { enabled: enabled.into(), maximum: None, minimum: None, preset: None }
     }
 }
+/// Filter by billing frequency. Either `day`, `week`, `month` or `year`.
+pub type ListPriceRecurringInterval = stripe_shared::PlanInterval;
+/// Filter by the usage type for this price. Can be either `metered` or `licensed`.
+pub type ListPriceRecurringUsageType = stripe_shared::UsageType;
+/// Only return prices of type `recurring` or `one_time`.
+pub type ListPriceType = stripe_shared::PriceType;
+/// Describes how to compute the price per period.
+/// Either `per_unit` or `tiered`.
+/// `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`).
+/// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
+pub type CreatePriceBillingScheme = stripe_shared::BillingScheme;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type CreatePriceCurrencyOptionsTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
+pub type CreatePriceRecurringInterval = stripe_shared::PlanInterval;
+/// Configures how the quantity per period should be determined.
+/// Can be either `metered` or `licensed`.
+/// `licensed` automatically bills the `quantity` set when adding it to a subscription.
+/// `metered` aggregates the total usage based on usage records.
+/// Defaults to `licensed`.
+pub type CreatePriceRecurringUsageType = stripe_shared::UsageType;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type CreatePriceTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Defines if the tiering price should be `graduated` or `volume` based.
+/// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
+pub type CreatePriceTiersMode = stripe_shared::TiersMode;
+/// After division, either round the result `up` or `down`.
+pub type CreatePriceTransformQuantityRound = stripe_shared::Round;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type UpdatePriceCurrencyOptionsTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type UpdatePriceTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
+pub type CreatePriceCurrencyOptionsCustomUnitAmount = CustomUnitAmount;
+/// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
+pub type CreatePriceCustomUnitAmount = CustomUnitAmount;
+/// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
+pub type UpdatePriceCurrencyOptionsCustomUnitAmount = CustomUnitAmount;

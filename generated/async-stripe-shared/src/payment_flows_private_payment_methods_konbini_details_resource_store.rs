@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore {
     /// The name of the convenience store chain where the payment was completed.
-    pub chain: Option<PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain>,
+    pub chain: Option<stripe_shared::Chain>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore {
@@ -15,7 +15,7 @@ impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResource
 }
 #[doc(hidden)]
 pub struct PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreBuilder {
-    chain: Option<Option<PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain>>,
+    chain: Option<Option<stripe_shared::Chain>>,
 }
 
 #[allow(
@@ -109,108 +109,4 @@ const _: () = {
     }
 };
 /// The name of the convenience store chain where the payment was completed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
-    Familymart,
-    Lawson,
-    Ministop,
-    Seicomart,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
-    pub fn as_str(&self) -> &str {
-        use PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain::*;
-        match self {
-            Familymart => "familymart",
-            Lawson => "lawson",
-            Ministop => "ministop",
-            Seicomart => "seicomart",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain::*;
-        match s {
-            "familymart" => Ok(Familymart),
-            "lawson" => Ok(Lawson),
-            "ministop" => Ok(Ministop),
-            "seicomart" => Ok(Seicomart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain = stripe_shared::Chain;

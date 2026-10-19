@@ -5,7 +5,7 @@
 pub struct TaxProductRegistrationsResourceCountryOptionsDefault {
     /// Type of registration in `country`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: TaxProductRegistrationsResourceCountryOptionsDefaultType,
+    pub type_: stripe_shared::CreateTaxRegistrationCountryOptionsAeType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsDefault {
@@ -16,7 +16,7 @@ impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsDefault {
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsDefaultBuilder {
-    type_: Option<TaxProductRegistrationsResourceCountryOptionsDefaultType>,
+    type_: Option<stripe_shared::CreateTaxRegistrationCountryOptionsAeType>,
 }
 
 #[allow(
@@ -110,95 +110,5 @@ const _: () = {
     }
 };
 /// Type of registration in `country`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxProductRegistrationsResourceCountryOptionsDefaultType {
-    Standard,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxProductRegistrationsResourceCountryOptionsDefaultType {
-    pub fn as_str(&self) -> &str {
-        use TaxProductRegistrationsResourceCountryOptionsDefaultType::*;
-        match self {
-            Standard => "standard",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsDefaultType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductRegistrationsResourceCountryOptionsDefaultType::*;
-        match s {
-            "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductRegistrationsResourceCountryOptionsDefaultType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxProductRegistrationsResourceCountryOptionsDefaultType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsDefaultType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsDefaultType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxProductRegistrationsResourceCountryOptionsDefaultType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxProductRegistrationsResourceCountryOptionsDefaultType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxProductRegistrationsResourceCountryOptionsDefaultType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TaxProductRegistrationsResourceCountryOptionsDefaultType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TaxProductRegistrationsResourceCountryOptionsDefaultType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    TaxProductRegistrationsResourceCountryOptionsDefaultType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxProductRegistrationsResourceCountryOptionsDefaultType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TaxProductRegistrationsResourceCountryOptionsDefaultType =
+    stripe_shared::CreateTaxRegistrationCountryOptionsAeType;

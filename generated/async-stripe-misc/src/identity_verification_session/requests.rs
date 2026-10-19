@@ -23,7 +23,7 @@ struct ListIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_misc::IdentityVerificationSessionStatus>,
+    status: Option<stripe_shared::IdentityVerificationSessionStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListIdentityVerificationSessionBuilder {
@@ -114,7 +114,7 @@ impl ListIdentityVerificationSession {
     /// [Learn more about the lifecycle of sessions](https://docs.stripe.com/identity/how-sessions-work).
     pub fn status(
         mut self,
-        status: impl Into<stripe_misc::IdentityVerificationSessionStatus>,
+        status: impl Into<stripe_shared::IdentityVerificationSessionStatus>,
     ) -> Self {
         self.inner.status = Some(status.into());
         self
@@ -242,7 +242,7 @@ struct CreateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    options: Option<CreateIdentityVerificationSessionOptions>,
+    options: Option<SessionOptionsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
     provided_details: Option<ProvidedDetailsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -255,7 +255,7 @@ struct CreateIdentityVerificationSessionBuilder {
     return_url: Option<String>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    type_: Option<CreateIdentityVerificationSessionType>,
+    type_: Option<stripe_shared::ListIdentityVerificationReportType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     verification_flow: Option<String>,
 }
@@ -282,149 +282,6 @@ impl CreateIdentityVerificationSessionBuilder {
         }
     }
 }
-/// A set of options for the session’s verification checks.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateIdentityVerificationSessionOptions {
-    /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<CreateIdentityVerificationSessionOptionsDocument>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateIdentityVerificationSessionOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateIdentityVerificationSessionOptions").finish_non_exhaustive()
-    }
-}
-impl CreateIdentityVerificationSessionOptions {
-    pub fn new() -> Self {
-        Self { document: None }
-    }
-}
-impl Default for CreateIdentityVerificationSessionOptions {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateIdentityVerificationSessionOptionsDocument {
-    /// Array of strings of allowed identity document types.
-    /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_types: Option<Vec<CreateIdentityVerificationSessionOptionsDocumentAllowedTypes>>,
-    /// Collect an ID number and perform an [ID number check](https://docs.stripe.com/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_id_number: Option<bool>,
-    /// Disable image uploads, identity document images have to be captured using the device’s camera.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_live_capture: Option<bool>,
-    /// Capture a face image and perform a [selfie check](https://docs.stripe.com/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
-    /// [Learn more](https://docs.stripe.com/identity/selfie).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_matching_selfie: Option<bool>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateIdentityVerificationSessionOptionsDocument {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateIdentityVerificationSessionOptionsDocument").finish_non_exhaustive()
-    }
-}
-impl CreateIdentityVerificationSessionOptionsDocument {
-    pub fn new() -> Self {
-        Self {
-            allowed_types: None,
-            require_id_number: None,
-            require_live_capture: None,
-            require_matching_selfie: None,
-        }
-    }
-}
-impl Default for CreateIdentityVerificationSessionOptionsDocument {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Array of strings of allowed identity document types.
-/// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    DrivingLicense,
-    IdCard,
-    Passport,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    pub fn as_str(&self) -> &str {
-        use CreateIdentityVerificationSessionOptionsDocumentAllowedTypes::*;
-        match self {
-            DrivingLicense => "driving_license",
-            IdCard => "id_card",
-            Passport => "passport",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateIdentityVerificationSessionOptionsDocumentAllowedTypes::*;
-        match s {
-            "driving_license" => Ok(DrivingLicense),
-            "id_card" => Ok(IdCard),
-            "passport" => Ok(Passport),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIdentityVerificationSessionOptionsDocumentAllowedTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateIdentityVerificationSessionOptionsDocumentAllowedTypes))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Tokens referencing a Person resource and its associated account.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -445,79 +302,6 @@ impl std::fmt::Debug for CreateIdentityVerificationSessionRelatedPerson {
 impl CreateIdentityVerificationSessionRelatedPerson {
     pub fn new(account: impl Into<String>, person: impl Into<String>) -> Self {
         Self { account: account.into(), person: person.into() }
-    }
-}
-/// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
-/// You must provide a `type` if not passing `verification_flow`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateIdentityVerificationSessionType {
-    Document,
-    IdNumber,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateIdentityVerificationSessionType {
-    pub fn as_str(&self) -> &str {
-        use CreateIdentityVerificationSessionType::*;
-        match self {
-            Document => "document",
-            IdNumber => "id_number",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateIdentityVerificationSessionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateIdentityVerificationSessionType::*;
-        match s {
-            "document" => Ok(Document),
-            "id_number" => Ok(IdNumber),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIdentityVerificationSessionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateIdentityVerificationSessionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateIdentityVerificationSessionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateIdentityVerificationSessionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateIdentityVerificationSessionType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateIdentityVerificationSessionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a VerificationSession object.
@@ -567,7 +351,7 @@ impl CreateIdentityVerificationSession {
         self
     }
     /// A set of options for the session’s verification checks.
-    pub fn options(mut self, options: impl Into<CreateIdentityVerificationSessionOptions>) -> Self {
+    pub fn options(mut self, options: impl Into<SessionOptionsParam>) -> Self {
         self.inner.options = Some(options.into());
         self
     }
@@ -601,7 +385,10 @@ impl CreateIdentityVerificationSession {
     }
     /// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
     /// You must provide a `type` if not passing `verification_flow`.
-    pub fn type_(mut self, type_: impl Into<CreateIdentityVerificationSessionType>) -> Self {
+    pub fn type_(
+        mut self,
+        type_: impl Into<stripe_shared::ListIdentityVerificationReportType>,
+    ) -> Self {
         self.inner.type_ = Some(type_.into());
         self
     }
@@ -651,12 +438,12 @@ struct UpdateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    options: Option<UpdateIdentityVerificationSessionOptions>,
+    options: Option<SessionOptionsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
     provided_details: Option<ProvidedDetailsParam>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    type_: Option<UpdateIdentityVerificationSessionType>,
+    type_: Option<stripe_shared::ListIdentityVerificationReportType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateIdentityVerificationSessionBuilder {
@@ -667,221 +454,6 @@ impl std::fmt::Debug for UpdateIdentityVerificationSessionBuilder {
 impl UpdateIdentityVerificationSessionBuilder {
     fn new() -> Self {
         Self { expand: None, metadata: None, options: None, provided_details: None, type_: None }
-    }
-}
-/// A set of options for the session’s verification checks.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateIdentityVerificationSessionOptions {
-    /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<UpdateIdentityVerificationSessionOptionsDocument>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateIdentityVerificationSessionOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateIdentityVerificationSessionOptions").finish_non_exhaustive()
-    }
-}
-impl UpdateIdentityVerificationSessionOptions {
-    pub fn new() -> Self {
-        Self { document: None }
-    }
-}
-impl Default for UpdateIdentityVerificationSessionOptions {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateIdentityVerificationSessionOptionsDocument {
-    /// Array of strings of allowed identity document types.
-    /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_types: Option<Vec<UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes>>,
-    /// Collect an ID number and perform an [ID number check](https://docs.stripe.com/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_id_number: Option<bool>,
-    /// Disable image uploads, identity document images have to be captured using the device’s camera.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_live_capture: Option<bool>,
-    /// Capture a face image and perform a [selfie check](https://docs.stripe.com/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
-    /// [Learn more](https://docs.stripe.com/identity/selfie).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_matching_selfie: Option<bool>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateIdentityVerificationSessionOptionsDocument {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateIdentityVerificationSessionOptionsDocument").finish_non_exhaustive()
-    }
-}
-impl UpdateIdentityVerificationSessionOptionsDocument {
-    pub fn new() -> Self {
-        Self {
-            allowed_types: None,
-            require_id_number: None,
-            require_live_capture: None,
-            require_matching_selfie: None,
-        }
-    }
-}
-impl Default for UpdateIdentityVerificationSessionOptionsDocument {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Array of strings of allowed identity document types.
-/// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    DrivingLicense,
-    IdCard,
-    Passport,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    pub fn as_str(&self) -> &str {
-        use UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes::*;
-        match self {
-            DrivingLicense => "driving_license",
-            IdCard => "id_card",
-            Passport => "passport",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes::*;
-        match s {
-            "driving_license" => Ok(DrivingLicense),
-            "id_card" => Ok(IdCard),
-            "passport" => Ok(Passport),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateIdentityVerificationSessionType {
-    Document,
-    IdNumber,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateIdentityVerificationSessionType {
-    pub fn as_str(&self) -> &str {
-        use UpdateIdentityVerificationSessionType::*;
-        match self {
-            Document => "document",
-            IdNumber => "id_number",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateIdentityVerificationSessionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateIdentityVerificationSessionType::*;
-        match s {
-            "document" => Ok(Document),
-            "id_number" => Ok(IdNumber),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIdentityVerificationSessionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateIdentityVerificationSessionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateIdentityVerificationSessionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateIdentityVerificationSessionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateIdentityVerificationSessionType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateIdentityVerificationSessionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates a VerificationSession object.
@@ -923,7 +495,7 @@ impl UpdateIdentityVerificationSession {
         self
     }
     /// A set of options for the session’s verification checks.
-    pub fn options(mut self, options: impl Into<UpdateIdentityVerificationSessionOptions>) -> Self {
+    pub fn options(mut self, options: impl Into<SessionOptionsParam>) -> Self {
         self.inner.options = Some(options.into());
         self
     }
@@ -933,7 +505,10 @@ impl UpdateIdentityVerificationSession {
         self
     }
     /// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
-    pub fn type_(mut self, type_: impl Into<UpdateIdentityVerificationSessionType>) -> Self {
+    pub fn type_(
+        mut self,
+        type_: impl Into<stripe_shared::ListIdentityVerificationReportType>,
+    ) -> Self {
         self.inner.type_ = Some(type_.into());
         self
     }
@@ -1141,6 +716,46 @@ impl StripeRequest for RedactIdentityVerificationSession {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+pub struct DocumentOptions {
+    /// Array of strings of allowed identity document types.
+    /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_types: Option<Vec<stripe_shared::GelatoDocumentReportType>>,
+    /// Collect an ID number and perform an [ID number check](https://docs.stripe.com/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_id_number: Option<bool>,
+    /// Disable image uploads, identity document images have to be captured using the device’s camera.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_live_capture: Option<bool>,
+    /// Capture a face image and perform a [selfie check](https://docs.stripe.com/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
+    /// [Learn more](https://docs.stripe.com/identity/selfie).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_matching_selfie: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DocumentOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DocumentOptions").finish_non_exhaustive()
+    }
+}
+impl DocumentOptions {
+    pub fn new() -> Self {
+        Self {
+            allowed_types: None,
+            require_id_number: None,
+            require_live_capture: None,
+            require_matching_selfie: None,
+        }
+    }
+}
+impl Default for DocumentOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ProvidedDetailsParam {
     /// Email of user being verified
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1165,3 +780,55 @@ impl Default for ProvidedDetailsParam {
         Self::new()
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct SessionOptionsParam {
+    /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<DocumentOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SessionOptionsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SessionOptionsParam").finish_non_exhaustive()
+    }
+}
+impl SessionOptionsParam {
+    pub fn new() -> Self {
+        Self { document: None }
+    }
+}
+impl Default for SessionOptionsParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Only return VerificationSessions with this status.
+/// [Learn more about the lifecycle of sessions](https://docs.stripe.com/identity/how-sessions-work).
+pub type ListIdentityVerificationSessionStatus = stripe_shared::IdentityVerificationSessionStatus;
+/// Array of strings of allowed identity document types.
+/// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
+pub type CreateIdentityVerificationSessionOptionsDocumentAllowedTypes =
+    stripe_shared::GelatoDocumentReportType;
+/// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
+/// You must provide a `type` if not passing `verification_flow`.
+pub type CreateIdentityVerificationSessionType = stripe_shared::ListIdentityVerificationReportType;
+/// Array of strings of allowed identity document types.
+/// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
+pub type UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes =
+    stripe_shared::GelatoDocumentReportType;
+/// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
+pub type UpdateIdentityVerificationSessionType = stripe_shared::ListIdentityVerificationReportType;
+/// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
+pub type CreateIdentityVerificationSessionOptionsDocument = DocumentOptions;
+/// Details provided about the user being verified. These details might be shown to the user.
+pub type CreateIdentityVerificationSessionProvidedDetails = ProvidedDetailsParam;
+/// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
+pub type UpdateIdentityVerificationSessionOptionsDocument = DocumentOptions;
+/// Details provided about the user being verified. These details may be shown to the user.
+pub type UpdateIdentityVerificationSessionProvidedDetails = ProvidedDetailsParam;
+/// A set of options for the session’s verification checks.
+pub type CreateIdentityVerificationSessionOptions = SessionOptionsParam;
+/// A set of options for the session’s verification checks.
+pub type UpdateIdentityVerificationSessionOptions = SessionOptionsParam;

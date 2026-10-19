@@ -5,7 +5,7 @@
 pub struct PaymentMethodDetailsPaymentRecordP24 {
     /// The customer's bank.
     /// Can be one of `ing`, `citi_handlowy`, `tmobile_usbugi_bankowe`, `plus_bank`, `etransfer_pocztowy24`, `banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`, `velobank`, `blik`, `noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`, `nest_przelew`, `mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`, `credit_agricole`, `toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`, `bank_millennium`, `alior_bank`, or `boz`.
-    pub bank: Option<PaymentMethodDetailsPaymentRecordP24Bank>,
+    pub bank: Option<stripe_shared::PaymentMethodP24Bank>,
     /// Unique reference for this Przelewy24 payment.
     pub reference: Option<String>,
     /// Owner's verified full name.
@@ -22,7 +22,7 @@ impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordP24 {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsPaymentRecordP24Builder {
-    bank: Option<Option<PaymentMethodDetailsPaymentRecordP24Bank>>,
+    bank: Option<Option<stripe_shared::PaymentMethodP24Bank>>,
     reference: Option<Option<String>>,
     verified_name: Option<Option<String>>,
 }
@@ -123,162 +123,4 @@ const _: () = {
 };
 /// The customer's bank.
 /// Can be one of `ing`, `citi_handlowy`, `tmobile_usbugi_bankowe`, `plus_bank`, `etransfer_pocztowy24`, `banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`, `velobank`, `blik`, `noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`, `nest_przelew`, `mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`, `credit_agricole`, `toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`, `bank_millennium`, `alior_bank`, or `boz`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodDetailsPaymentRecordP24Bank {
-    AliorBank,
-    BankMillennium,
-    BankNowyBfgSa,
-    BankPekaoSa,
-    BankiSpbdzielcze,
-    Blik,
-    BnpParibas,
-    Boz,
-    CitiHandlowy,
-    CreditAgricole,
-    Envelobank,
-    EtransferPocztowy24,
-    GetinBank,
-    Ideabank,
-    Ing,
-    Inteligo,
-    MbankMtransfer,
-    NestPrzelew,
-    NoblePay,
-    PbacZIpko,
-    PlusBank,
-    SantanderPrzelew24,
-    TmobileUsbugiBankowe,
-    ToyotaBank,
-    Velobank,
-    VolkswagenBank,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodDetailsPaymentRecordP24Bank {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodDetailsPaymentRecordP24Bank::*;
-        match self {
-            AliorBank => "alior_bank",
-            BankMillennium => "bank_millennium",
-            BankNowyBfgSa => "bank_nowy_bfg_sa",
-            BankPekaoSa => "bank_pekao_sa",
-            BankiSpbdzielcze => "banki_spbdzielcze",
-            Blik => "blik",
-            BnpParibas => "bnp_paribas",
-            Boz => "boz",
-            CitiHandlowy => "citi_handlowy",
-            CreditAgricole => "credit_agricole",
-            Envelobank => "envelobank",
-            EtransferPocztowy24 => "etransfer_pocztowy24",
-            GetinBank => "getin_bank",
-            Ideabank => "ideabank",
-            Ing => "ing",
-            Inteligo => "inteligo",
-            MbankMtransfer => "mbank_mtransfer",
-            NestPrzelew => "nest_przelew",
-            NoblePay => "noble_pay",
-            PbacZIpko => "pbac_z_ipko",
-            PlusBank => "plus_bank",
-            SantanderPrzelew24 => "santander_przelew24",
-            TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
-            ToyotaBank => "toyota_bank",
-            Velobank => "velobank",
-            VolkswagenBank => "volkswagen_bank",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodDetailsPaymentRecordP24Bank {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodDetailsPaymentRecordP24Bank::*;
-        match s {
-            "alior_bank" => Ok(AliorBank),
-            "bank_millennium" => Ok(BankMillennium),
-            "bank_nowy_bfg_sa" => Ok(BankNowyBfgSa),
-            "bank_pekao_sa" => Ok(BankPekaoSa),
-            "banki_spbdzielcze" => Ok(BankiSpbdzielcze),
-            "blik" => Ok(Blik),
-            "bnp_paribas" => Ok(BnpParibas),
-            "boz" => Ok(Boz),
-            "citi_handlowy" => Ok(CitiHandlowy),
-            "credit_agricole" => Ok(CreditAgricole),
-            "envelobank" => Ok(Envelobank),
-            "etransfer_pocztowy24" => Ok(EtransferPocztowy24),
-            "getin_bank" => Ok(GetinBank),
-            "ideabank" => Ok(Ideabank),
-            "ing" => Ok(Ing),
-            "inteligo" => Ok(Inteligo),
-            "mbank_mtransfer" => Ok(MbankMtransfer),
-            "nest_przelew" => Ok(NestPrzelew),
-            "noble_pay" => Ok(NoblePay),
-            "pbac_z_ipko" => Ok(PbacZIpko),
-            "plus_bank" => Ok(PlusBank),
-            "santander_przelew24" => Ok(SantanderPrzelew24),
-            "tmobile_usbugi_bankowe" => Ok(TmobileUsbugiBankowe),
-            "toyota_bank" => Ok(ToyotaBank),
-            "velobank" => Ok(Velobank),
-            "volkswagen_bank" => Ok(VolkswagenBank),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsPaymentRecordP24Bank"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodDetailsPaymentRecordP24Bank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordP24Bank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordP24Bank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodDetailsPaymentRecordP24Bank)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodDetailsPaymentRecordP24Bank {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodDetailsPaymentRecordP24Bank {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsPaymentRecordP24Bank> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentMethodDetailsPaymentRecordP24Bank::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsPaymentRecordP24Bank);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsPaymentRecordP24Bank {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodDetailsPaymentRecordP24Bank = stripe_shared::PaymentMethodP24Bank;

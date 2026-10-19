@@ -5,7 +5,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourceTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-    pub missing_payment_method: SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod,
+    pub missing_payment_method: stripe_shared::MissingPaymentMethod,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for SubscriptionsResourceTrialSettingsEndBehavior {
@@ -15,8 +15,7 @@ impl std::fmt::Debug for SubscriptionsResourceTrialSettingsEndBehavior {
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourceTrialSettingsEndBehaviorBuilder {
-    missing_payment_method:
-        Option<SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod>,
+    missing_payment_method: Option<stripe_shared::MissingPaymentMethod>,
 }
 
 #[allow(
@@ -110,105 +109,5 @@ const _: () = {
     }
 };
 /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
-    Cancel,
-    CreateInvoice,
-    Pause,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
-    pub fn as_str(&self) -> &str {
-        use SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod::*;
-        match self {
-            Cancel => "cancel",
-            CreateInvoice => "create_invoice",
-            Pause => "pause",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod::*;
-        match s {
-            "cancel" => Ok(Cancel),
-            "create_invoice" => Ok(CreateInvoice),
-            "pause" => Ok(Pause),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod =
+    stripe_shared::MissingPaymentMethod;

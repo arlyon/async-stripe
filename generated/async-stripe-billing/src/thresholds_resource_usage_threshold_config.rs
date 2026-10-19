@@ -12,7 +12,7 @@ pub struct ThresholdsResourceUsageThresholdConfig {
     /// The [Billing Meter](/api/billing/meter) ID whose usage is monitored.
     pub meter: stripe_types::Expandable<stripe_billing::BillingMeter>,
     /// Defines how the alert will behave.
-    pub recurrence: ThresholdsResourceUsageThresholdConfigRecurrence,
+    pub recurrence: stripe_shared::Recurrence,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ThresholdsResourceUsageThresholdConfig {
@@ -25,7 +25,7 @@ pub struct ThresholdsResourceUsageThresholdConfigBuilder {
     filters: Option<Option<Vec<stripe_billing::ThresholdsResourceUsageAlertFilter>>>,
     gte: Option<i64>,
     meter: Option<stripe_types::Expandable<stripe_billing::BillingMeter>>,
-    recurrence: Option<ThresholdsResourceUsageThresholdConfigRecurrence>,
+    recurrence: Option<stripe_shared::Recurrence>,
 }
 
 #[allow(
@@ -125,90 +125,4 @@ const _: () = {
     }
 };
 /// Defines how the alert will behave.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ThresholdsResourceUsageThresholdConfigRecurrence {
-    OneTime,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ThresholdsResourceUsageThresholdConfigRecurrence {
-    pub fn as_str(&self) -> &str {
-        use ThresholdsResourceUsageThresholdConfigRecurrence::*;
-        match self {
-            OneTime => "one_time",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ThresholdsResourceUsageThresholdConfigRecurrence {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ThresholdsResourceUsageThresholdConfigRecurrence::*;
-        match s {
-            "one_time" => Ok(OneTime),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThresholdsResourceUsageThresholdConfigRecurrence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ThresholdsResourceUsageThresholdConfigRecurrence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ThresholdsResourceUsageThresholdConfigRecurrence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ThresholdsResourceUsageThresholdConfigRecurrence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ThresholdsResourceUsageThresholdConfigRecurrence))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for ThresholdsResourceUsageThresholdConfigRecurrence {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ThresholdsResourceUsageThresholdConfigRecurrence {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<ThresholdsResourceUsageThresholdConfigRecurrence> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            ThresholdsResourceUsageThresholdConfigRecurrence::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(ThresholdsResourceUsageThresholdConfigRecurrence);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ThresholdsResourceUsageThresholdConfigRecurrence {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type ThresholdsResourceUsageThresholdConfigRecurrence = stripe_shared::Recurrence;

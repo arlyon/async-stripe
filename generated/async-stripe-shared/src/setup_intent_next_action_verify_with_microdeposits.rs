@@ -9,7 +9,7 @@ pub struct SetupIntentNextActionVerifyWithMicrodeposits {
     pub hosted_verification_url: String,
     /// The type of the microdeposit sent to the customer.
     /// Used to distinguish between different verification methods.
-    pub microdeposit_type: Option<SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType>,
+    pub microdeposit_type: Option<stripe_shared::MicrodepositType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for SetupIntentNextActionVerifyWithMicrodeposits {
@@ -21,7 +21,7 @@ impl std::fmt::Debug for SetupIntentNextActionVerifyWithMicrodeposits {
 pub struct SetupIntentNextActionVerifyWithMicrodepositsBuilder {
     arrival_date: Option<stripe_types::Timestamp>,
     hosted_verification_url: Option<String>,
-    microdeposit_type: Option<Option<SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType>>,
+    microdeposit_type: Option<Option<stripe_shared::MicrodepositType>>,
 }
 
 #[allow(
@@ -128,98 +128,5 @@ const _: () = {
 };
 /// The type of the microdeposit sent to the customer.
 /// Used to distinguish between different verification methods.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    Amounts,
-    DescriptorCode,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    pub fn as_str(&self) -> &str {
-        use SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType::*;
-        match self {
-            Amounts => "amounts",
-            DescriptorCode => "descriptor_code",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType::*;
-        match s {
-            "amounts" => Ok(Amounts),
-            "descriptor_code" => Ok(DescriptorCode),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType =
+    stripe_shared::MicrodepositType;

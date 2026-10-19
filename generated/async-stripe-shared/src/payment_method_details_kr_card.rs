@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsKrCard {
     /// The local credit or debit card brand.
-    pub brand: Option<PaymentMethodDetailsKrCardBrand>,
+    pub brand: Option<stripe_shared::Brand>,
     /// A unique identifier for the buyer as determined by the local payment processor.
     pub buyer_id: Option<String>,
     /// The last four digits of the card. This may not be present for American Express cards.
@@ -20,7 +20,7 @@ impl std::fmt::Debug for PaymentMethodDetailsKrCard {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsKrCardBuilder {
-    brand: Option<Option<PaymentMethodDetailsKrCardBrand>>,
+    brand: Option<Option<stripe_shared::Brand>>,
     buyer_id: Option<Option<String>>,
     last4: Option<Option<String>>,
     transaction_id: Option<Option<String>>,
@@ -131,150 +131,4 @@ const _: () = {
     }
 };
 /// The local credit or debit card brand.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodDetailsKrCardBrand {
-    Bc,
-    Citi,
-    Hana,
-    Hyundai,
-    Jeju,
-    Jeonbuk,
-    Kakaobank,
-    Kbank,
-    Kdbbank,
-    Kookmin,
-    Kwangju,
-    Lotte,
-    Mg,
-    Nh,
-    Post,
-    Samsung,
-    Savingsbank,
-    Shinhan,
-    Shinhyup,
-    Suhyup,
-    Tossbank,
-    Woori,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodDetailsKrCardBrand {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodDetailsKrCardBrand::*;
-        match self {
-            Bc => "bc",
-            Citi => "citi",
-            Hana => "hana",
-            Hyundai => "hyundai",
-            Jeju => "jeju",
-            Jeonbuk => "jeonbuk",
-            Kakaobank => "kakaobank",
-            Kbank => "kbank",
-            Kdbbank => "kdbbank",
-            Kookmin => "kookmin",
-            Kwangju => "kwangju",
-            Lotte => "lotte",
-            Mg => "mg",
-            Nh => "nh",
-            Post => "post",
-            Samsung => "samsung",
-            Savingsbank => "savingsbank",
-            Shinhan => "shinhan",
-            Shinhyup => "shinhyup",
-            Suhyup => "suhyup",
-            Tossbank => "tossbank",
-            Woori => "woori",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodDetailsKrCardBrand {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodDetailsKrCardBrand::*;
-        match s {
-            "bc" => Ok(Bc),
-            "citi" => Ok(Citi),
-            "hana" => Ok(Hana),
-            "hyundai" => Ok(Hyundai),
-            "jeju" => Ok(Jeju),
-            "jeonbuk" => Ok(Jeonbuk),
-            "kakaobank" => Ok(Kakaobank),
-            "kbank" => Ok(Kbank),
-            "kdbbank" => Ok(Kdbbank),
-            "kookmin" => Ok(Kookmin),
-            "kwangju" => Ok(Kwangju),
-            "lotte" => Ok(Lotte),
-            "mg" => Ok(Mg),
-            "nh" => Ok(Nh),
-            "post" => Ok(Post),
-            "samsung" => Ok(Samsung),
-            "savingsbank" => Ok(Savingsbank),
-            "shinhan" => Ok(Shinhan),
-            "shinhyup" => Ok(Shinhyup),
-            "suhyup" => Ok(Suhyup),
-            "tossbank" => Ok(Tossbank),
-            "woori" => Ok(Woori),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsKrCardBrand"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodDetailsKrCardBrand {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodDetailsKrCardBrand {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodDetailsKrCardBrand {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodDetailsKrCardBrand)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodDetailsKrCardBrand {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodDetailsKrCardBrand {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsKrCardBrand> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentMethodDetailsKrCardBrand::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsKrCardBrand);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsKrCardBrand {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodDetailsKrCardBrand = stripe_shared::Brand;

@@ -7,9 +7,9 @@ pub struct InvoiceMandateOptionsPayto {
     /// If you don't specify a maximum, then there is no limit.
     pub amount: Option<i64>,
     /// Only `maximum` is supported.
-    pub amount_type: Option<InvoiceMandateOptionsPaytoAmountType>,
+    pub amount_type: Option<stripe_shared::AmountType>,
     /// The purpose for which payments are made. Has a default value based on your merchant category code.
-    pub purpose: Option<InvoiceMandateOptionsPaytoPurpose>,
+    pub purpose: Option<stripe_shared::Purpose>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for InvoiceMandateOptionsPayto {
@@ -20,8 +20,8 @@ impl std::fmt::Debug for InvoiceMandateOptionsPayto {
 #[doc(hidden)]
 pub struct InvoiceMandateOptionsPaytoBuilder {
     amount: Option<Option<i64>>,
-    amount_type: Option<Option<InvoiceMandateOptionsPaytoAmountType>>,
-    purpose: Option<Option<InvoiceMandateOptionsPaytoPurpose>>,
+    amount_type: Option<Option<stripe_shared::AmountType>>,
+    purpose: Option<Option<stripe_shared::Purpose>>,
 }
 
 #[allow(
@@ -119,205 +119,6 @@ const _: () = {
     }
 };
 /// Only `maximum` is supported.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InvoiceMandateOptionsPaytoAmountType {
-    Fixed,
-    Maximum,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InvoiceMandateOptionsPaytoAmountType {
-    pub fn as_str(&self) -> &str {
-        use InvoiceMandateOptionsPaytoAmountType::*;
-        match self {
-            Fixed => "fixed",
-            Maximum => "maximum",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InvoiceMandateOptionsPaytoAmountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InvoiceMandateOptionsPaytoAmountType::*;
-        match s {
-            "fixed" => Ok(Fixed),
-            "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoiceMandateOptionsPaytoAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InvoiceMandateOptionsPaytoAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InvoiceMandateOptionsPaytoAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InvoiceMandateOptionsPaytoAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(InvoiceMandateOptionsPaytoAmountType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InvoiceMandateOptionsPaytoAmountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for InvoiceMandateOptionsPaytoAmountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<InvoiceMandateOptionsPaytoAmountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(InvoiceMandateOptionsPaytoAmountType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(InvoiceMandateOptionsPaytoAmountType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for InvoiceMandateOptionsPaytoAmountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InvoiceMandateOptionsPaytoAmountType = stripe_shared::AmountType;
 /// The purpose for which payments are made. Has a default value based on your merchant category code.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InvoiceMandateOptionsPaytoPurpose {
-    DependantSupport,
-    Government,
-    Loan,
-    Mortgage,
-    Other,
-    Pension,
-    Personal,
-    Retail,
-    Salary,
-    Tax,
-    Utility,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InvoiceMandateOptionsPaytoPurpose {
-    pub fn as_str(&self) -> &str {
-        use InvoiceMandateOptionsPaytoPurpose::*;
-        match self {
-            DependantSupport => "dependant_support",
-            Government => "government",
-            Loan => "loan",
-            Mortgage => "mortgage",
-            Other => "other",
-            Pension => "pension",
-            Personal => "personal",
-            Retail => "retail",
-            Salary => "salary",
-            Tax => "tax",
-            Utility => "utility",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InvoiceMandateOptionsPaytoPurpose {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InvoiceMandateOptionsPaytoPurpose::*;
-        match s {
-            "dependant_support" => Ok(DependantSupport),
-            "government" => Ok(Government),
-            "loan" => Ok(Loan),
-            "mortgage" => Ok(Mortgage),
-            "other" => Ok(Other),
-            "pension" => Ok(Pension),
-            "personal" => Ok(Personal),
-            "retail" => Ok(Retail),
-            "salary" => Ok(Salary),
-            "tax" => Ok(Tax),
-            "utility" => Ok(Utility),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoiceMandateOptionsPaytoPurpose"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InvoiceMandateOptionsPaytoPurpose {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InvoiceMandateOptionsPaytoPurpose {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InvoiceMandateOptionsPaytoPurpose {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(InvoiceMandateOptionsPaytoPurpose)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InvoiceMandateOptionsPaytoPurpose {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for InvoiceMandateOptionsPaytoPurpose {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<InvoiceMandateOptionsPaytoPurpose> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(InvoiceMandateOptionsPaytoPurpose::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(InvoiceMandateOptionsPaytoPurpose);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for InvoiceMandateOptionsPaytoPurpose {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InvoiceMandateOptionsPaytoPurpose = stripe_shared::Purpose;

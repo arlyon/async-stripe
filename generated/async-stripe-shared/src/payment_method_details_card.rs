@@ -62,7 +62,7 @@ pub network_token: Option<stripe_shared::PaymentMethodDetailsCardNetworkToken>,
 pub network_transaction_id: Option<String>,
 pub overcapture: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture>,
     /// Status of a card based on the card issuer.
-pub regulated_status: Option<PaymentMethodDetailsCardRegulatedStatus>,
+pub regulated_status: Option<stripe_shared::RegulatedStatus>,
     /// Populated if this transaction used 3D Secure authentication.
 pub three_d_secure: Option<stripe_shared::ThreeDSecureDetailsCharge>,
         /// Transaction Link ID (TLID) is a unique identifier for a transaction.
@@ -105,7 +105,7 @@ network: Option<Option<String>>,
 network_token: Option<Option<stripe_shared::PaymentMethodDetailsCardNetworkToken>>,
 network_transaction_id: Option<Option<String>>,
 overcapture: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture>>,
-regulated_status: Option<Option<PaymentMethodDetailsCardRegulatedStatus>>,
+regulated_status: Option<Option<stripe_shared::RegulatedStatus>>,
 three_d_secure: Option<Option<stripe_shared::ThreeDSecureDetailsCharge>>,
 transaction_link_id: Option<Option<String>>,
 wallet: Option<Option<stripe_shared::PaymentMethodDetailsCardWallet>>,
@@ -380,90 +380,4 @@ const _: () = {
     }
 };
 /// Status of a card based on the card issuer.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodDetailsCardRegulatedStatus {
-    Regulated,
-    Unregulated,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodDetailsCardRegulatedStatus {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodDetailsCardRegulatedStatus::*;
-        match self {
-            Regulated => "regulated",
-            Unregulated => "unregulated",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodDetailsCardRegulatedStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodDetailsCardRegulatedStatus::*;
-        match s {
-            "regulated" => Ok(Regulated),
-            "unregulated" => Ok(Unregulated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsCardRegulatedStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodDetailsCardRegulatedStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodDetailsCardRegulatedStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodDetailsCardRegulatedStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodDetailsCardRegulatedStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodDetailsCardRegulatedStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodDetailsCardRegulatedStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardRegulatedStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentMethodDetailsCardRegulatedStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsCardRegulatedStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardRegulatedStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodDetailsCardRegulatedStatus = stripe_shared::RegulatedStatus;

@@ -9,7 +9,7 @@ pub struct BillingCreditGrant {
     pub applicability_config: stripe_shared::BillingCreditGrantsResourceApplicabilityConfig,
     /// The category of this credit grant.
     /// This is for tracking purposes and isn't displayed to the customer.
-    pub category: stripe_shared::BillingCreditGrantCategory,
+    pub category: stripe_shared::Category,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// ID of the customer receiving the billing credits.
@@ -49,7 +49,7 @@ impl std::fmt::Debug for BillingCreditGrant {
 pub struct BillingCreditGrantBuilder {
     amount: Option<stripe_shared::BillingCreditGrantsResourceAmount>,
     applicability_config: Option<stripe_shared::BillingCreditGrantsResourceApplicabilityConfig>,
-    category: Option<stripe_shared::BillingCreditGrantCategory>,
+    category: Option<stripe_shared::Category>,
     created: Option<stripe_types::Timestamp>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
@@ -289,85 +289,6 @@ impl stripe_types::Object for BillingCreditGrant {
     }
 }
 stripe_types::def_id!(BillingCreditGrantId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BillingCreditGrantCategory {
-    Paid,
-    Promotional,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BillingCreditGrantCategory {
-    pub fn as_str(&self) -> &str {
-        use BillingCreditGrantCategory::*;
-        match self {
-            Paid => "paid",
-            Promotional => "promotional",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BillingCreditGrantCategory {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BillingCreditGrantCategory::*;
-        match s {
-            "paid" => Ok(Paid),
-            "promotional" => Ok(Promotional),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingCreditGrantCategory");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BillingCreditGrantCategory {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BillingCreditGrantCategory {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BillingCreditGrantCategory {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BillingCreditGrantCategory)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for BillingCreditGrantCategory {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BillingCreditGrantCategory {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<BillingCreditGrantCategory> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BillingCreditGrantCategory::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(BillingCreditGrantCategory);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BillingCreditGrantCategory {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// The category of this credit grant.
+/// This is for tracking purposes and isn't displayed to the customer.
+pub type BillingCreditGrantCategory = stripe_shared::Category;

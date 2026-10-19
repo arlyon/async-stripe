@@ -18,7 +18,7 @@ struct ListTreasuryCreditReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_treasury::TreasuryCreditReversalStatus>,
+    status: Option<stripe_shared::TreasuryCreditReversalStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListTreasuryCreditReversalBuilder {
@@ -90,7 +90,7 @@ impl ListTreasuryCreditReversal {
     /// Only return CreditReversals for a given status.
     pub fn status(
         mut self,
-        status: impl Into<stripe_treasury::TreasuryCreditReversalStatus>,
+        status: impl Into<stripe_shared::TreasuryCreditReversalStatus>,
     ) -> Self {
         self.inner.status = Some(status.into());
         self
@@ -286,3 +286,6 @@ impl StripeRequest for CreateTreasuryCreditReversal {
         RequestBuilder::new(StripeMethod::Post, "/treasury/credit_reversals").form(&self.inner)
     }
 }
+
+/// Only return CreditReversals for a given status.
+pub type ListTreasuryCreditReversalStatus = stripe_shared::TreasuryCreditReversalStatus;

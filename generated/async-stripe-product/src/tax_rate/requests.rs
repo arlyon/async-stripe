@@ -227,7 +227,7 @@ struct CreateTaxRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     state: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_type: Option<stripe_shared::TaxRateTaxType>,
+    tax_type: Option<stripe_shared::TaxType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateTaxRateBuilder {
@@ -331,7 +331,7 @@ impl CreateTaxRate {
         self
     }
     /// The high-level tax type, such as `vat` or `sales_tax`.
-    pub fn tax_type(mut self, tax_type: impl Into<stripe_shared::TaxRateTaxType>) -> Self {
+    pub fn tax_type(mut self, tax_type: impl Into<stripe_shared::TaxType>) -> Self {
         self.inner.tax_type = Some(tax_type.into());
         self
     }
@@ -382,7 +382,7 @@ struct UpdateTaxRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     state: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_type: Option<stripe_shared::TaxRateTaxType>,
+    tax_type: Option<stripe_shared::TaxType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateTaxRateBuilder {
@@ -476,7 +476,7 @@ impl UpdateTaxRate {
         self
     }
     /// The high-level tax type, such as `vat` or `sales_tax`.
-    pub fn tax_type(mut self, tax_type: impl Into<stripe_shared::TaxRateTaxType>) -> Self {
+    pub fn tax_type(mut self, tax_type: impl Into<stripe_shared::TaxType>) -> Self {
         self.inner.tax_type = Some(tax_type.into());
         self
     }
@@ -507,3 +507,8 @@ impl StripeRequest for UpdateTaxRate {
         RequestBuilder::new(StripeMethod::Post, format!("/tax_rates/{tax_rate}")).form(&self.inner)
     }
 }
+
+/// The high-level tax type, such as `vat` or `sales_tax`.
+pub type CreateTaxRateTaxType = stripe_shared::TaxType;
+/// The high-level tax type, such as `vat` or `sales_tax`.
+pub type UpdateTaxRateTaxType = stripe_shared::TaxType;

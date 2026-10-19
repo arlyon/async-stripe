@@ -9,13 +9,13 @@ pub struct IssuingAuthorizationFleetData {
     pub cardholder_prompt_data:
         Option<stripe_shared::IssuingAuthorizationFleetCardholderPromptData>,
     /// The type of purchase.
-    pub purchase_type: Option<IssuingAuthorizationFleetDataPurchaseType>,
+    pub purchase_type: Option<stripe_shared::PurchaseType>,
     /// More information about the total amount.
     /// Typically this information is received from the merchant after the authorization has been approved and the fuel dispensed.
     /// This information is not guaranteed to be accurate as some merchants may provide unreliable data.
     pub reported_breakdown: Option<stripe_shared::IssuingAuthorizationFleetReportedBreakdown>,
     /// The type of fuel service.
-    pub service_type: Option<IssuingAuthorizationFleetDataServiceType>,
+    pub service_type: Option<stripe_shared::ServiceType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for IssuingAuthorizationFleetData {
@@ -27,9 +27,9 @@ impl std::fmt::Debug for IssuingAuthorizationFleetData {
 pub struct IssuingAuthorizationFleetDataBuilder {
     cardholder_prompt_data:
         Option<Option<stripe_shared::IssuingAuthorizationFleetCardholderPromptData>>,
-    purchase_type: Option<Option<IssuingAuthorizationFleetDataPurchaseType>>,
+    purchase_type: Option<Option<stripe_shared::PurchaseType>>,
     reported_breakdown: Option<Option<stripe_shared::IssuingAuthorizationFleetReportedBreakdown>>,
-    service_type: Option<Option<IssuingAuthorizationFleetDataServiceType>>,
+    service_type: Option<Option<stripe_shared::ServiceType>>,
 }
 
 #[allow(
@@ -150,186 +150,6 @@ const _: () = {
     }
 };
 /// The type of purchase.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationFleetDataPurchaseType {
-    FuelAndNonFuelPurchase,
-    FuelPurchase,
-    NonFuelPurchase,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationFleetDataPurchaseType {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationFleetDataPurchaseType::*;
-        match self {
-            FuelAndNonFuelPurchase => "fuel_and_non_fuel_purchase",
-            FuelPurchase => "fuel_purchase",
-            NonFuelPurchase => "non_fuel_purchase",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationFleetDataPurchaseType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationFleetDataPurchaseType::*;
-        match s {
-            "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
-            "fuel_purchase" => Ok(FuelPurchase),
-            "non_fuel_purchase" => Ok(NonFuelPurchase),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFleetDataPurchaseType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationFleetDataPurchaseType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationFleetDataPurchaseType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationFleetDataPurchaseType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationFleetDataPurchaseType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingAuthorizationFleetDataPurchaseType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationFleetDataPurchaseType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFleetDataPurchaseType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(IssuingAuthorizationFleetDataPurchaseType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFleetDataPurchaseType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFleetDataPurchaseType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingAuthorizationFleetDataPurchaseType = stripe_shared::PurchaseType;
 /// The type of fuel service.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationFleetDataServiceType {
-    FullService,
-    NonFuelTransaction,
-    SelfService,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationFleetDataServiceType {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationFleetDataServiceType::*;
-        match self {
-            FullService => "full_service",
-            NonFuelTransaction => "non_fuel_transaction",
-            SelfService => "self_service",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationFleetDataServiceType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationFleetDataServiceType::*;
-        match s {
-            "full_service" => Ok(FullService),
-            "non_fuel_transaction" => Ok(NonFuelTransaction),
-            "self_service" => Ok(SelfService),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFleetDataServiceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationFleetDataServiceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationFleetDataServiceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationFleetDataServiceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationFleetDataServiceType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingAuthorizationFleetDataServiceType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationFleetDataServiceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFleetDataServiceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingAuthorizationFleetDataServiceType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFleetDataServiceType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFleetDataServiceType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingAuthorizationFleetDataServiceType = stripe_shared::ServiceType;

@@ -26,7 +26,7 @@ pub struct SetupAttempt {
     /// Include `inbound` if you intend to use the payment method as the origin to pull funds from.
     /// Include `outbound` if you intend to use the payment method as the destination to send funds to.
     /// You can include both if you intend to use the payment method for both purposes.
-    pub flow_directions: Option<Vec<SetupAttemptFlowDirections>>,
+    pub flow_directions: Option<Vec<stripe_shared::FlowDirections>>,
     /// Unique identifier for the object.
     pub id: stripe_shared::SetupAttemptId,
     /// If the object exists in live mode, the value is `true`.
@@ -59,7 +59,7 @@ pub struct SetupAttemptBuilder {
     created: Option<stripe_types::Timestamp>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
     customer_account: Option<Option<String>>,
-    flow_directions: Option<Option<Vec<SetupAttemptFlowDirections>>>,
+    flow_directions: Option<Option<Vec<stripe_shared::FlowDirections>>>,
     id: Option<stripe_shared::SetupAttemptId>,
     livemode: Option<bool>,
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
@@ -279,94 +279,6 @@ impl serde::Serialize for SetupAttempt {
         s.end()
     }
 }
-/// Indicates the directions of money movement for which this payment method is intended to be used.
-///
-/// Include `inbound` if you intend to use the payment method as the origin to pull funds from.
-/// Include `outbound` if you intend to use the payment method as the destination to send funds to.
-/// You can include both if you intend to use the payment method for both purposes.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SetupAttemptFlowDirections {
-    Inbound,
-    Outbound,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SetupAttemptFlowDirections {
-    pub fn as_str(&self) -> &str {
-        use SetupAttemptFlowDirections::*;
-        match self {
-            Inbound => "inbound",
-            Outbound => "outbound",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SetupAttemptFlowDirections {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SetupAttemptFlowDirections::*;
-        match s {
-            "inbound" => Ok(Inbound),
-            "outbound" => Ok(Outbound),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SetupAttemptFlowDirections");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SetupAttemptFlowDirections {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SetupAttemptFlowDirections {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SetupAttemptFlowDirections {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SetupAttemptFlowDirections)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SetupAttemptFlowDirections {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SetupAttemptFlowDirections {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<SetupAttemptFlowDirections> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SetupAttemptFlowDirections::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(SetupAttemptFlowDirections);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SetupAttemptFlowDirections {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for SetupAttempt {
     type Id = stripe_shared::SetupAttemptId;
     fn id(&self) -> &Self::Id {
@@ -378,3 +290,9 @@ impl stripe_types::Object for SetupAttempt {
     }
 }
 stripe_types::def_id!(SetupAttemptId);
+/// Indicates the directions of money movement for which this payment method is intended to be used.
+///
+/// Include `inbound` if you intend to use the payment method as the origin to pull funds from.
+/// Include `outbound` if you intend to use the payment method as the destination to send funds to.
+/// You can include both if you intend to use the payment method for both purposes.
+pub type SetupAttemptFlowDirections = stripe_shared::FlowDirections;

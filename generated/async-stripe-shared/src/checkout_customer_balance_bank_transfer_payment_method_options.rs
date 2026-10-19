@@ -8,11 +8,10 @@ pub struct CheckoutCustomerBalanceBankTransferPaymentMethodOptions {
     /// If not specified, all valid types will be returned.
     ///
     /// Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-    pub requested_address_types:
-        Option<Vec<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes>>,
+    pub requested_address_types: Option<Vec<stripe_shared::RequestedAddressTypes>>,
     /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: Option<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType>,
+    pub type_: Option<stripe_shared::CreateFundingInstructionsCustomerBankTransferType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CheckoutCustomerBalanceBankTransferPaymentMethodOptions {
@@ -25,10 +24,8 @@ impl std::fmt::Debug for CheckoutCustomerBalanceBankTransferPaymentMethodOptions
 pub struct CheckoutCustomerBalanceBankTransferPaymentMethodOptionsBuilder {
     eu_bank_transfer:
         Option<Option<stripe_shared::PaymentMethodOptionsCustomerBalanceEuBankAccount>>,
-    requested_address_types: Option<
-        Option<Vec<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes>>,
-    >,
-    type_: Option<Option<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType>>,
+    requested_address_types: Option<Option<Vec<stripe_shared::RequestedAddressTypes>>>,
+    type_: Option<Option<stripe_shared::CreateFundingInstructionsCustomerBankTransferType>>,
 }
 
 #[allow(
@@ -139,236 +136,8 @@ const _: () = {
 /// If not specified, all valid types will be returned.
 ///
 /// Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
-    Aba,
-    Iban,
-    Sepa,
-    SortCode,
-    Spei,
-    Swift,
-    Zengin,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
-    pub fn as_str(&self) -> &str {
-        use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::*;
-        match self {
-            Aba => "aba",
-            Iban => "iban",
-            Sepa => "sepa",
-            SortCode => "sort_code",
-            Spei => "spei",
-            Swift => "swift",
-            Zengin => "zengin",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::*;
-        match s {
-            "aba" => Ok(Aba),
-            "iban" => Ok(Iban),
-            "sepa" => Ok(Sepa),
-            "sort_code" => Ok(SortCode),
-            "spei" => Ok(Spei),
-            "swift" => Ok(Swift),
-            "zengin" => Ok(Zengin),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize
-    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::from_str(
-                s,
-            )
-            .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes =
+    stripe_shared::RequestedAddressTypes;
 /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    EuBankTransfer,
-    GbBankTransfer,
-    JpBankTransfer,
-    MxBankTransfer,
-    UsBankTransfer,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    pub fn as_str(&self) -> &str {
-        use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::*;
-        match self {
-            EuBankTransfer => "eu_bank_transfer",
-            GbBankTransfer => "gb_bank_transfer",
-            JpBankTransfer => "jp_bank_transfer",
-            MxBankTransfer => "mx_bank_transfer",
-            UsBankTransfer => "us_bank_transfer",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::*;
-        match s {
-            "eu_bank_transfer" => Ok(EuBankTransfer),
-            "gb_bank_transfer" => Ok(GbBankTransfer),
-            "jp_bank_transfer" => Ok(JpBankTransfer),
-            "mx_bank_transfer" => Ok(MxBankTransfer),
-            "us_bank_transfer" => Ok(UsBankTransfer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType =
+    stripe_shared::CreateFundingInstructionsCustomerBankTransferType;

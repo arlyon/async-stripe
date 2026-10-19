@@ -9,7 +9,7 @@ pub struct CurrencyOption {
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    pub tax_behavior: Option<CurrencyOptionTaxBehavior>,
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     /// Each element represents a pricing tier.
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
@@ -30,7 +30,7 @@ impl std::fmt::Debug for CurrencyOption {
 #[doc(hidden)]
 pub struct CurrencyOptionBuilder {
     custom_unit_amount: Option<Option<stripe_shared::CustomUnitAmount>>,
-    tax_behavior: Option<Option<CurrencyOptionTaxBehavior>>,
+    tax_behavior: Option<Option<stripe_shared::PriceTaxBehavior>>,
     tiers: Option<Option<Vec<stripe_shared::PriceTier>>>,
     unit_amount: Option<Option<i64>>,
     unit_amount_decimal: Option<Option<String>>,
@@ -161,89 +161,4 @@ const _: () = {
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CurrencyOptionTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CurrencyOptionTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use CurrencyOptionTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CurrencyOptionTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CurrencyOptionTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CurrencyOptionTaxBehavior");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CurrencyOptionTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CurrencyOptionTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CurrencyOptionTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CurrencyOptionTaxBehavior)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CurrencyOptionTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CurrencyOptionTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CurrencyOptionTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CurrencyOptionTaxBehavior::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CurrencyOptionTaxBehavior);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CurrencyOptionTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CurrencyOptionTaxBehavior = stripe_shared::PriceTaxBehavior;

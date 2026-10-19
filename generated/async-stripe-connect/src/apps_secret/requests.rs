@@ -12,7 +12,7 @@ struct ListAppsSecretBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
-    scope: ListAppsSecretScope,
+    scope: ScopeParam,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
@@ -23,7 +23,7 @@ impl std::fmt::Debug for ListAppsSecretBuilder {
     }
 }
 impl ListAppsSecretBuilder {
-    fn new(scope: impl Into<ListAppsSecretScope>) -> Self {
+    fn new(scope: impl Into<ScopeParam>) -> Self {
         Self {
             ending_before: None,
             expand: None,
@@ -31,99 +31,6 @@ impl ListAppsSecretBuilder {
             scope: scope.into(),
             starting_after: None,
         }
-    }
-}
-/// Specifies the scoping of the secret.
-/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct ListAppsSecretScope {
-    /// The secret scope type.
-    #[serde(rename = "type")]
-    pub type_: ListAppsSecretScopeType,
-    /// The user ID.
-    /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ListAppsSecretScope {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("ListAppsSecretScope").finish_non_exhaustive()
-    }
-}
-impl ListAppsSecretScope {
-    pub fn new(type_: impl Into<ListAppsSecretScopeType>) -> Self {
-        Self { type_: type_.into(), user: None }
-    }
-}
-/// The secret scope type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ListAppsSecretScopeType {
-    Account,
-    User,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ListAppsSecretScopeType {
-    pub fn as_str(&self) -> &str {
-        use ListAppsSecretScopeType::*;
-        match self {
-            Account => "account",
-            User => "user",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ListAppsSecretScopeType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ListAppsSecretScopeType::*;
-        match s {
-            "account" => Ok(Account),
-            "user" => Ok(User),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListAppsSecretScopeType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ListAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ListAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ListAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ListAppsSecretScopeType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ListAppsSecretScopeType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ListAppsSecretScopeType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List all secrets stored on the given scope.
@@ -141,7 +48,7 @@ impl std::fmt::Debug for ListAppsSecret {
 }
 impl ListAppsSecret {
     /// Construct a new `ListAppsSecret`.
-    pub fn new(scope: impl Into<ListAppsSecretScope>) -> Self {
+    pub fn new(scope: impl Into<ScopeParam>) -> Self {
         Self { inner: ListAppsSecretBuilder::new(scope.into()) }
     }
     /// A cursor for use in pagination.
@@ -208,7 +115,7 @@ struct FindAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     name: String,
-    scope: FindAppsSecretScope,
+    scope: ScopeParam,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for FindAppsSecretBuilder {
@@ -217,101 +124,8 @@ impl std::fmt::Debug for FindAppsSecretBuilder {
     }
 }
 impl FindAppsSecretBuilder {
-    fn new(name: impl Into<String>, scope: impl Into<FindAppsSecretScope>) -> Self {
+    fn new(name: impl Into<String>, scope: impl Into<ScopeParam>) -> Self {
         Self { expand: None, name: name.into(), scope: scope.into() }
-    }
-}
-/// Specifies the scoping of the secret.
-/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct FindAppsSecretScope {
-    /// The secret scope type.
-    #[serde(rename = "type")]
-    pub type_: FindAppsSecretScopeType,
-    /// The user ID.
-    /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for FindAppsSecretScope {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("FindAppsSecretScope").finish_non_exhaustive()
-    }
-}
-impl FindAppsSecretScope {
-    pub fn new(type_: impl Into<FindAppsSecretScopeType>) -> Self {
-        Self { type_: type_.into(), user: None }
-    }
-}
-/// The secret scope type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum FindAppsSecretScopeType {
-    Account,
-    User,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl FindAppsSecretScopeType {
-    pub fn as_str(&self) -> &str {
-        use FindAppsSecretScopeType::*;
-        match self {
-            Account => "account",
-            User => "user",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for FindAppsSecretScopeType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use FindAppsSecretScopeType::*;
-        match s {
-            "account" => Ok(Account),
-            "user" => Ok(User),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "FindAppsSecretScopeType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for FindAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for FindAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for FindAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(FindAppsSecretScopeType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for FindAppsSecretScopeType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for FindAppsSecretScopeType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Finds a secret in the secret store by name and scope.
@@ -329,7 +143,7 @@ impl std::fmt::Debug for FindAppsSecret {
 }
 impl FindAppsSecret {
     /// Construct a new `FindAppsSecret`.
-    pub fn new(name: impl Into<String>, scope: impl Into<FindAppsSecretScope>) -> Self {
+    pub fn new(name: impl Into<String>, scope: impl Into<ScopeParam>) -> Self {
         Self { inner: FindAppsSecretBuilder::new(name.into(), scope.into()) }
     }
     /// Specifies which fields in the response should be expanded.
@@ -373,7 +187,7 @@ struct CreateAppsSecretBuilder {
     expires_at: Option<stripe_types::Timestamp>,
     name: String,
     payload: String,
-    scope: CreateAppsSecretScope,
+    scope: ScopeParam,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAppsSecretBuilder {
@@ -385,7 +199,7 @@ impl CreateAppsSecretBuilder {
     fn new(
         name: impl Into<String>,
         payload: impl Into<String>,
-        scope: impl Into<CreateAppsSecretScope>,
+        scope: impl Into<ScopeParam>,
     ) -> Self {
         Self {
             expand: None,
@@ -394,99 +208,6 @@ impl CreateAppsSecretBuilder {
             payload: payload.into(),
             scope: scope.into(),
         }
-    }
-}
-/// Specifies the scoping of the secret.
-/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateAppsSecretScope {
-    /// The secret scope type.
-    #[serde(rename = "type")]
-    pub type_: CreateAppsSecretScopeType,
-    /// The user ID.
-    /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAppsSecretScope {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateAppsSecretScope").finish_non_exhaustive()
-    }
-}
-impl CreateAppsSecretScope {
-    pub fn new(type_: impl Into<CreateAppsSecretScopeType>) -> Self {
-        Self { type_: type_.into(), user: None }
-    }
-}
-/// The secret scope type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAppsSecretScopeType {
-    Account,
-    User,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAppsSecretScopeType {
-    pub fn as_str(&self) -> &str {
-        use CreateAppsSecretScopeType::*;
-        match self {
-            Account => "account",
-            User => "user",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAppsSecretScopeType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAppsSecretScopeType::*;
-        match s {
-            "account" => Ok(Account),
-            "user" => Ok(User),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAppsSecretScopeType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAppsSecretScopeType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAppsSecretScopeType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAppsSecretScopeType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Create or replace a secret in the secret store.
@@ -507,7 +228,7 @@ impl CreateAppsSecret {
     pub fn new(
         name: impl Into<String>,
         payload: impl Into<String>,
-        scope: impl Into<CreateAppsSecretScope>,
+        scope: impl Into<ScopeParam>,
     ) -> Self {
         Self { inner: CreateAppsSecretBuilder::new(name.into(), payload.into(), scope.into()) }
     }
@@ -554,7 +275,7 @@ struct DeleteWhereAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     name: String,
-    scope: DeleteWhereAppsSecretScope,
+    scope: ScopeParam,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for DeleteWhereAppsSecretBuilder {
@@ -563,105 +284,8 @@ impl std::fmt::Debug for DeleteWhereAppsSecretBuilder {
     }
 }
 impl DeleteWhereAppsSecretBuilder {
-    fn new(name: impl Into<String>, scope: impl Into<DeleteWhereAppsSecretScope>) -> Self {
+    fn new(name: impl Into<String>, scope: impl Into<ScopeParam>) -> Self {
         Self { expand: None, name: name.into(), scope: scope.into() }
-    }
-}
-/// Specifies the scoping of the secret.
-/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct DeleteWhereAppsSecretScope {
-    /// The secret scope type.
-    #[serde(rename = "type")]
-    pub type_: DeleteWhereAppsSecretScopeType,
-    /// The user ID.
-    /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for DeleteWhereAppsSecretScope {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("DeleteWhereAppsSecretScope").finish_non_exhaustive()
-    }
-}
-impl DeleteWhereAppsSecretScope {
-    pub fn new(type_: impl Into<DeleteWhereAppsSecretScopeType>) -> Self {
-        Self { type_: type_.into(), user: None }
-    }
-}
-/// The secret scope type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum DeleteWhereAppsSecretScopeType {
-    Account,
-    User,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl DeleteWhereAppsSecretScopeType {
-    pub fn as_str(&self) -> &str {
-        use DeleteWhereAppsSecretScopeType::*;
-        match self {
-            Account => "account",
-            User => "user",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for DeleteWhereAppsSecretScopeType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use DeleteWhereAppsSecretScopeType::*;
-        match s {
-            "account" => Ok(Account),
-            "user" => Ok(User),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DeleteWhereAppsSecretScopeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for DeleteWhereAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for DeleteWhereAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for DeleteWhereAppsSecretScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(DeleteWhereAppsSecretScopeType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for DeleteWhereAppsSecretScopeType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for DeleteWhereAppsSecretScopeType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Deletes a secret from the secret store by name and scope.
@@ -679,7 +303,7 @@ impl std::fmt::Debug for DeleteWhereAppsSecret {
 }
 impl DeleteWhereAppsSecret {
     /// Construct a new `DeleteWhereAppsSecret`.
-    pub fn new(name: impl Into<String>, scope: impl Into<DeleteWhereAppsSecretScope>) -> Self {
+    pub fn new(name: impl Into<String>, scope: impl Into<ScopeParam>) -> Self {
         Self { inner: DeleteWhereAppsSecretBuilder::new(name.into(), scope.into()) }
     }
     /// Specifies which fields in the response should be expanded.
@@ -713,3 +337,47 @@ impl StripeRequest for DeleteWhereAppsSecret {
         RequestBuilder::new(StripeMethod::Post, "/apps/secrets/delete").form(&self.inner)
     }
 }
+
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ScopeParam {
+    /// The secret scope type.
+    #[serde(rename = "type")]
+    pub type_: stripe_shared::FindAppsSecretScopeType,
+    /// The user ID.
+    /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ScopeParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ScopeParam").finish_non_exhaustive()
+    }
+}
+impl ScopeParam {
+    pub fn new(type_: impl Into<stripe_shared::FindAppsSecretScopeType>) -> Self {
+        Self { type_: type_.into(), user: None }
+    }
+}
+/// The secret scope type.
+pub type ListAppsSecretScopeType = stripe_shared::FindAppsSecretScopeType;
+/// The secret scope type.
+pub type FindAppsSecretScopeType = stripe_shared::FindAppsSecretScopeType;
+/// The secret scope type.
+pub type CreateAppsSecretScopeType = stripe_shared::FindAppsSecretScopeType;
+/// The secret scope type.
+pub type DeleteWhereAppsSecretScopeType = stripe_shared::FindAppsSecretScopeType;
+/// Specifies the scoping of the secret.
+/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
+pub type ListAppsSecretScope = ScopeParam;
+/// Specifies the scoping of the secret.
+/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
+pub type FindAppsSecretScope = ScopeParam;
+/// Specifies the scoping of the secret.
+/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
+pub type CreateAppsSecretScope = ScopeParam;
+/// Specifies the scoping of the secret.
+/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
+pub type DeleteWhereAppsSecretScope = ScopeParam;

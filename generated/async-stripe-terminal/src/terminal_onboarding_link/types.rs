@@ -5,7 +5,7 @@
 pub struct TerminalOnboardingLink {
     pub link_options: stripe_terminal::TerminalOnboardingLinkLinkOptions,
     /// The type of link being generated.
-    pub link_type: stripe_terminal::TerminalOnboardingLinkLinkType,
+    pub link_type: stripe_shared::LinkType,
     /// Stripe account ID to generate the link for.
     pub on_behalf_of: Option<String>,
     /// The link passed back to the user for their onboarding.
@@ -20,7 +20,7 @@ impl std::fmt::Debug for TerminalOnboardingLink {
 #[doc(hidden)]
 pub struct TerminalOnboardingLinkBuilder {
     link_options: Option<stripe_terminal::TerminalOnboardingLinkLinkOptions>,
-    link_type: Option<stripe_terminal::TerminalOnboardingLinkLinkType>,
+    link_type: Option<stripe_shared::LinkType>,
     on_behalf_of: Option<Option<String>>,
     redirect_url: Option<String>,
 }
@@ -143,86 +143,5 @@ impl serde::Serialize for TerminalOnboardingLink {
         s.end()
     }
 }
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TerminalOnboardingLinkLinkType {
-    AppleTermsAndConditions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TerminalOnboardingLinkLinkType {
-    pub fn as_str(&self) -> &str {
-        use TerminalOnboardingLinkLinkType::*;
-        match self {
-            AppleTermsAndConditions => "apple_terms_and_conditions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TerminalOnboardingLinkLinkType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TerminalOnboardingLinkLinkType::*;
-        match s {
-            "apple_terms_and_conditions" => Ok(AppleTermsAndConditions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalOnboardingLinkLinkType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TerminalOnboardingLinkLinkType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TerminalOnboardingLinkLinkType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TerminalOnboardingLinkLinkType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TerminalOnboardingLinkLinkType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for TerminalOnboardingLinkLinkType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TerminalOnboardingLinkLinkType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TerminalOnboardingLinkLinkType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TerminalOnboardingLinkLinkType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TerminalOnboardingLinkLinkType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TerminalOnboardingLinkLinkType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// The type of link being generated.
+pub type TerminalOnboardingLinkLinkType = stripe_shared::LinkType;

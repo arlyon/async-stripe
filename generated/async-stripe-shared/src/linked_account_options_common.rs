@@ -5,9 +5,9 @@
 pub struct LinkedAccountOptionsCommon {
 pub filters: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsFinancialConnectionsCommonLinkedAccountOptionsFilters>,
     /// The list of permissions to request. The `payment_method` permission must be included.
-pub permissions: Option<Vec<LinkedAccountOptionsCommonPermissions>>,
+pub permissions: Option<Vec<stripe_shared::Permissions>>,
     /// Data features requested to be retrieved upon account creation.
-pub prefetch: Option<Vec<LinkedAccountOptionsCommonPrefetch>>,
+pub prefetch: Option<Vec<stripe_shared::Prefetch>>,
         /// For webview integrations only.
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
 pub return_url: Option<String>,
@@ -22,8 +22,8 @@ impl std::fmt::Debug for LinkedAccountOptionsCommon {
 #[doc(hidden)]
 pub struct LinkedAccountOptionsCommonBuilder {
     filters: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsFinancialConnectionsCommonLinkedAccountOptionsFilters>>,
-permissions: Option<Option<Vec<LinkedAccountOptionsCommonPermissions>>>,
-prefetch: Option<Option<Vec<LinkedAccountOptionsCommonPrefetch>>>,
+permissions: Option<Option<Vec<stripe_shared::Permissions>>>,
+prefetch: Option<Option<Vec<stripe_shared::Prefetch>>>,
 return_url: Option<Option<String>>,
 
 }
@@ -133,187 +133,6 @@ const _: () = {
     }
 };
 /// The list of permissions to request. The `payment_method` permission must be included.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum LinkedAccountOptionsCommonPermissions {
-    Balances,
-    Ownership,
-    PaymentMethod,
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl LinkedAccountOptionsCommonPermissions {
-    pub fn as_str(&self) -> &str {
-        use LinkedAccountOptionsCommonPermissions::*;
-        match self {
-            Balances => "balances",
-            Ownership => "ownership",
-            PaymentMethod => "payment_method",
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for LinkedAccountOptionsCommonPermissions {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use LinkedAccountOptionsCommonPermissions::*;
-        match s {
-            "balances" => Ok(Balances),
-            "ownership" => Ok(Ownership),
-            "payment_method" => Ok(PaymentMethod),
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "LinkedAccountOptionsCommonPermissions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for LinkedAccountOptionsCommonPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for LinkedAccountOptionsCommonPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for LinkedAccountOptionsCommonPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(LinkedAccountOptionsCommonPermissions)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for LinkedAccountOptionsCommonPermissions {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for LinkedAccountOptionsCommonPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<LinkedAccountOptionsCommonPermissions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(LinkedAccountOptionsCommonPermissions::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(LinkedAccountOptionsCommonPermissions);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for LinkedAccountOptionsCommonPermissions {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type LinkedAccountOptionsCommonPermissions = stripe_shared::Permissions;
 /// Data features requested to be retrieved upon account creation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum LinkedAccountOptionsCommonPrefetch {
-    Balances,
-    Ownership,
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl LinkedAccountOptionsCommonPrefetch {
-    pub fn as_str(&self) -> &str {
-        use LinkedAccountOptionsCommonPrefetch::*;
-        match self {
-            Balances => "balances",
-            Ownership => "ownership",
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for LinkedAccountOptionsCommonPrefetch {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use LinkedAccountOptionsCommonPrefetch::*;
-        match s {
-            "balances" => Ok(Balances),
-            "ownership" => Ok(Ownership),
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "LinkedAccountOptionsCommonPrefetch"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for LinkedAccountOptionsCommonPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for LinkedAccountOptionsCommonPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for LinkedAccountOptionsCommonPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(LinkedAccountOptionsCommonPrefetch)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for LinkedAccountOptionsCommonPrefetch {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for LinkedAccountOptionsCommonPrefetch {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<LinkedAccountOptionsCommonPrefetch> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(LinkedAccountOptionsCommonPrefetch::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(LinkedAccountOptionsCommonPrefetch);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for LinkedAccountOptionsCommonPrefetch {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type LinkedAccountOptionsCommonPrefetch = stripe_shared::Prefetch;

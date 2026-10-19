@@ -8,7 +8,7 @@ pub struct QuotesResourceRecurring {
     /// Total after discounts and taxes are applied.
     pub amount_total: i64,
     /// The frequency at which a subscription is billed. One of `day`, `week`, `month` or `year`.
-    pub interval: QuotesResourceRecurringInterval,
+    pub interval: stripe_shared::PlanInterval,
     /// The number of intervals (specified in the `interval` attribute) between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     pub interval_count: u64,
@@ -24,7 +24,7 @@ impl std::fmt::Debug for QuotesResourceRecurring {
 pub struct QuotesResourceRecurringBuilder {
     amount_subtotal: Option<i64>,
     amount_total: Option<i64>,
-    interval: Option<QuotesResourceRecurringInterval>,
+    interval: Option<stripe_shared::PlanInterval>,
     interval_count: Option<u64>,
     total_details: Option<stripe_billing::QuotesResourceTotalDetails>,
 }
@@ -151,96 +151,4 @@ const _: () = {
     }
 };
 /// The frequency at which a subscription is billed. One of `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum QuotesResourceRecurringInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl QuotesResourceRecurringInterval {
-    pub fn as_str(&self) -> &str {
-        use QuotesResourceRecurringInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for QuotesResourceRecurringInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use QuotesResourceRecurringInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "QuotesResourceRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for QuotesResourceRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for QuotesResourceRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for QuotesResourceRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(QuotesResourceRecurringInterval)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for QuotesResourceRecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for QuotesResourceRecurringInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<QuotesResourceRecurringInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(QuotesResourceRecurringInterval::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(QuotesResourceRecurringInterval);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for QuotesResourceRecurringInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type QuotesResourceRecurringInterval = stripe_shared::PlanInterval;

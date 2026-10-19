@@ -23,7 +23,7 @@ pub struct PaymentAttemptRecord {
     pub customer_details:
         Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceCustomerDetails>,
     /// Indicates whether the customer was present in your checkout flow during this payment.
-    pub customer_presence: Option<PaymentAttemptRecordCustomerPresence>,
+    pub customer_presence: Option<stripe_shared::CreateSetupIntentUsage>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
     /// Unique identifier for the object.
@@ -41,7 +41,7 @@ pub struct PaymentAttemptRecord {
     pub payment_record: Option<String>,
     pub processor_details: stripe_shared::PaymentsPrimitivesPaymentRecordsResourceProcessorDetails,
     /// Indicates who reported the payment.
-    pub reported_by: PaymentAttemptRecordReportedBy,
+    pub reported_by: stripe_shared::ReportedBy,
     /// Shipping information for this payment.
     pub shipping_details:
         Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceShippingDetails>,
@@ -65,7 +65,7 @@ pub struct PaymentAttemptRecordBuilder {
     created: Option<stripe_types::Timestamp>,
     customer_details:
         Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceCustomerDetails>>,
-    customer_presence: Option<Option<PaymentAttemptRecordCustomerPresence>>,
+    customer_presence: Option<Option<stripe_shared::CreateSetupIntentUsage>>,
     description: Option<Option<String>>,
     id: Option<stripe_payment::PaymentAttemptRecordId>,
     livemode: Option<bool>,
@@ -75,7 +75,7 @@ pub struct PaymentAttemptRecordBuilder {
     payment_record: Option<Option<String>>,
     processor_details:
         Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceProcessorDetails>,
-    reported_by: Option<PaymentAttemptRecordReportedBy>,
+    reported_by: Option<stripe_shared::ReportedBy>,
     shipping_details:
         Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceShippingDetails>>,
 }
@@ -323,182 +323,6 @@ impl serde::Serialize for PaymentAttemptRecord {
         s.end()
     }
 }
-/// Indicates whether the customer was present in your checkout flow during this payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentAttemptRecordCustomerPresence {
-    OffSession,
-    OnSession,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentAttemptRecordCustomerPresence {
-    pub fn as_str(&self) -> &str {
-        use PaymentAttemptRecordCustomerPresence::*;
-        match self {
-            OffSession => "off_session",
-            OnSession => "on_session",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentAttemptRecordCustomerPresence {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentAttemptRecordCustomerPresence::*;
-        match s {
-            "off_session" => Ok(OffSession),
-            "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentAttemptRecordCustomerPresence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentAttemptRecordCustomerPresence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentAttemptRecordCustomerPresence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentAttemptRecordCustomerPresence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentAttemptRecordCustomerPresence)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentAttemptRecordCustomerPresence {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentAttemptRecordCustomerPresence {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentAttemptRecordCustomerPresence> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentAttemptRecordCustomerPresence::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentAttemptRecordCustomerPresence);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentAttemptRecordCustomerPresence {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Indicates who reported the payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentAttemptRecordReportedBy {
-    Self_,
-    Stripe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentAttemptRecordReportedBy {
-    pub fn as_str(&self) -> &str {
-        use PaymentAttemptRecordReportedBy::*;
-        match self {
-            Self_ => "self",
-            Stripe => "stripe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentAttemptRecordReportedBy {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentAttemptRecordReportedBy::*;
-        match s {
-            "self" => Ok(Self_),
-            "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentAttemptRecordReportedBy"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentAttemptRecordReportedBy {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentAttemptRecordReportedBy {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentAttemptRecordReportedBy {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentAttemptRecordReportedBy)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentAttemptRecordReportedBy {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentAttemptRecordReportedBy {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentAttemptRecordReportedBy> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentAttemptRecordReportedBy::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentAttemptRecordReportedBy);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentAttemptRecordReportedBy {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for PaymentAttemptRecord {
     type Id = stripe_payment::PaymentAttemptRecordId;
     fn id(&self) -> &Self::Id {
@@ -510,3 +334,7 @@ impl stripe_types::Object for PaymentAttemptRecord {
     }
 }
 stripe_types::def_id!(PaymentAttemptRecordId);
+/// Indicates whether the customer was present in your checkout flow during this payment.
+pub type PaymentAttemptRecordCustomerPresence = stripe_shared::CreateSetupIntentUsage;
+/// Indicates who reported the payment.
+pub type PaymentAttemptRecordReportedBy = stripe_shared::ReportedBy;

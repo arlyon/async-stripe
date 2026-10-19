@@ -6,7 +6,7 @@ pub struct RevolutPayUnderlyingPaymentMethodFundingDetails {
     pub card: Option<stripe_shared::PaymentMethodDetailsPassthroughCard>,
     /// funding type of the underlying payment method.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: Option<RevolutPayUnderlyingPaymentMethodFundingDetailsType>,
+    pub type_: Option<stripe_shared::PaymentIntentProcessingType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for RevolutPayUnderlyingPaymentMethodFundingDetails {
@@ -17,7 +17,7 @@ impl std::fmt::Debug for RevolutPayUnderlyingPaymentMethodFundingDetails {
 #[doc(hidden)]
 pub struct RevolutPayUnderlyingPaymentMethodFundingDetailsBuilder {
     card: Option<Option<stripe_shared::PaymentMethodDetailsPassthroughCard>>,
-    type_: Option<Option<RevolutPayUnderlyingPaymentMethodFundingDetailsType>>,
+    type_: Option<Option<stripe_shared::PaymentIntentProcessingType>>,
 }
 
 #[allow(
@@ -111,90 +111,5 @@ const _: () = {
     }
 };
 /// funding type of the underlying payment method.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    Card,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    pub fn as_str(&self) -> &str {
-        use RevolutPayUnderlyingPaymentMethodFundingDetailsType::*;
-        match self {
-            Card => "card",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use RevolutPayUnderlyingPaymentMethodFundingDetailsType::*;
-        match s {
-            "card" => Ok(Card),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "RevolutPayUnderlyingPaymentMethodFundingDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(RevolutPayUnderlyingPaymentMethodFundingDetailsType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<RevolutPayUnderlyingPaymentMethodFundingDetailsType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            RevolutPayUnderlyingPaymentMethodFundingDetailsType::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(RevolutPayUnderlyingPaymentMethodFundingDetailsType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type RevolutPayUnderlyingPaymentMethodFundingDetailsType =
+    stripe_shared::PaymentIntentProcessingType;

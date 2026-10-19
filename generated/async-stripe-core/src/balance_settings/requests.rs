@@ -188,7 +188,7 @@ pub struct UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrency 
     pub transfer_up_to_amount: Option<i64>,
     /// The type of automatic transfer rule.
     #[serde(rename = "type")]
-    pub type_: UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType,
+    pub type_: stripe_shared::BalanceSettingsResourceAutomaticTransferRuleType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrency {
@@ -200,94 +200,13 @@ impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRu
 impl UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrency {
     pub fn new(
         payout_method: impl Into<String>,
-        type_: impl Into<UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType>,
+        type_: impl Into<stripe_shared::BalanceSettingsResourceAutomaticTransferRuleType>,
     ) -> Self {
         Self {
             payout_method: payout_method.into(),
             transfer_up_to_amount: None,
             type_: type_.into(),
         }
-    }
-}
-/// The type of automatic transfer rule.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType {
-    TransferAll,
-    TransferUpToAmount,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType {
-    pub fn as_str(&self) -> &str {
-        use UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType::*;
-        match self {
-            TransferAll => "transfer_all",
-            TransferUpToAmount => "transfer_up_to_amount",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType::*;
-        match s {
-            "transfer_all" => Ok(TransferAll),
-            "transfer_up_to_amount" => Ok(TransferUpToAmount),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Details on when funds from charges are available, and when they are paid out to an external account.
@@ -300,7 +219,7 @@ pub struct UpdateBalanceSettingsPaymentsPayoutsSchedule {
     /// One of: `daily`, `manual`, `weekly`, or `monthly`.
     /// Default is `daily`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<UpdateBalanceSettingsPaymentsPayoutsScheduleInterval>,
+    pub interval: Option<stripe_shared::Interval>,
     /// The days of the month when available funds are paid out, specified as an array of numbers between 1--31.
     /// Payouts nominally scheduled between the 29th and 31st of the month are instead sent on the last day of a shorter month.
     /// Required and applicable only if `interval` is `monthly`.
@@ -309,8 +228,7 @@ pub struct UpdateBalanceSettingsPaymentsPayoutsSchedule {
     /// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
     /// Required and applicable only if `interval` is `weekly`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub weekly_payout_days:
-        Option<Vec<UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays>>,
+    pub weekly_payout_days: Option<Vec<stripe_shared::WeeklyPayoutDays>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsSchedule {
@@ -326,170 +244,6 @@ impl UpdateBalanceSettingsPaymentsPayoutsSchedule {
 impl Default for UpdateBalanceSettingsPaymentsPayoutsSchedule {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// How frequently available funds are paid out.
-/// One of: `daily`, `manual`, `weekly`, or `monthly`.
-/// Default is `daily`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
-    Daily,
-    Manual,
-    Monthly,
-    Weekly,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
-    pub fn as_str(&self) -> &str {
-        use UpdateBalanceSettingsPaymentsPayoutsScheduleInterval::*;
-        match self {
-            Daily => "daily",
-            Manual => "manual",
-            Monthly => "monthly",
-            Weekly => "weekly",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBalanceSettingsPaymentsPayoutsScheduleInterval::*;
-        match s {
-            "daily" => Ok(Daily),
-            "manual" => Ok(Manual),
-            "monthly" => Ok(Monthly),
-            "weekly" => Ok(Weekly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBalanceSettingsPaymentsPayoutsScheduleInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateBalanceSettingsPaymentsPayoutsScheduleInterval))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
-/// Required and applicable only if `interval` is `weekly`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
-    Friday,
-    Monday,
-    Thursday,
-    Tuesday,
-    Wednesday,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
-    pub fn as_str(&self) -> &str {
-        use UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays::*;
-        match self {
-            Friday => "friday",
-            Monday => "monday",
-            Thursday => "thursday",
-            Tuesday => "tuesday",
-            Wednesday => "wednesday",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays::*;
-        match s {
-            "friday" => Ok(Friday),
-            "monday" => Ok(Monday),
-            "thursday" => Ok(Thursday),
-            "tuesday" => Ok(Tuesday),
-            "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Settings related to the account's balance settlement timing.
@@ -620,3 +374,15 @@ impl StripeRequest for UpdateBalanceSettings {
         RequestBuilder::new(StripeMethod::Post, "/balance_settings").form(&self.inner)
     }
 }
+
+/// The type of automatic transfer rule.
+pub type UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType =
+    stripe_shared::BalanceSettingsResourceAutomaticTransferRuleType;
+/// How frequently available funds are paid out.
+/// One of: `daily`, `manual`, `weekly`, or `monthly`.
+/// Default is `daily`.
+pub type UpdateBalanceSettingsPaymentsPayoutsScheduleInterval = stripe_shared::Interval;
+/// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
+/// Required and applicable only if `interval` is `weekly`.
+pub type UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays =
+    stripe_shared::WeeklyPayoutDays;

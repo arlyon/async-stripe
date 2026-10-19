@@ -5,7 +5,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourceBillingSchedulesBillUntilDuration {
     /// Specifies billing duration. Either `day`, `week`, `month` or `year`.
-    pub interval: SubscriptionsResourceBillingSchedulesBillUntilDurationInterval,
+    pub interval: stripe_shared::PlanInterval,
     /// The multiplier applied to the interval.
     pub interval_count: Option<u64>,
 }
@@ -18,7 +18,7 @@ impl std::fmt::Debug for SubscriptionsResourceBillingSchedulesBillUntilDuration 
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourceBillingSchedulesBillUntilDurationBuilder {
-    interval: Option<SubscriptionsResourceBillingSchedulesBillUntilDurationInterval>,
+    interval: Option<stripe_shared::PlanInterval>,
     interval_count: Option<Option<u64>>,
 }
 
@@ -117,106 +117,5 @@ const _: () = {
     }
 };
 /// Specifies billing duration. Either `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SubscriptionsResourceBillingSchedulesBillUntilDurationInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SubscriptionsResourceBillingSchedulesBillUntilDurationInterval {
-    pub fn as_str(&self) -> &str {
-        use SubscriptionsResourceBillingSchedulesBillUntilDurationInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SubscriptionsResourceBillingSchedulesBillUntilDurationInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SubscriptionsResourceBillingSchedulesBillUntilDurationInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionsResourceBillingSchedulesBillUntilDurationInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SubscriptionsResourceBillingSchedulesBillUntilDurationInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SubscriptionsResourceBillingSchedulesBillUntilDurationInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SubscriptionsResourceBillingSchedulesBillUntilDurationInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SubscriptionsResourceBillingSchedulesBillUntilDurationInterval))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SubscriptionsResourceBillingSchedulesBillUntilDurationInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SubscriptionsResourceBillingSchedulesBillUntilDurationInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<SubscriptionsResourceBillingSchedulesBillUntilDurationInterval>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            SubscriptionsResourceBillingSchedulesBillUntilDurationInterval::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionsResourceBillingSchedulesBillUntilDurationInterval
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for SubscriptionsResourceBillingSchedulesBillUntilDurationInterval
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SubscriptionsResourceBillingSchedulesBillUntilDurationInterval =
+    stripe_shared::PlanInterval;

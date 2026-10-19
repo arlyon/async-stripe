@@ -7,7 +7,7 @@ pub struct MandateBacsDebit {
     pub display_name: Option<String>,
     /// The status of the mandate on the Bacs network.
     /// Can be one of `pending`, `revoked`, `refused`, or `accepted`.
-    pub network_status: MandateBacsDebitNetworkStatus,
+    pub network_status: stripe_shared::MandateBacsDebitNetworkStatus,
     /// The unique reference identifying the mandate on the Bacs network.
     pub reference: String,
     /// When the mandate is revoked on the Bacs network this field displays the reason for the revocation.
@@ -26,7 +26,7 @@ impl std::fmt::Debug for MandateBacsDebit {
 #[doc(hidden)]
 pub struct MandateBacsDebitBuilder {
     display_name: Option<Option<String>>,
-    network_status: Option<MandateBacsDebitNetworkStatus>,
+    network_status: Option<stripe_shared::MandateBacsDebitNetworkStatus>,
     reference: Option<String>,
     revocation_reason: Option<Option<MandateBacsDebitRevocationReason>>,
     service_user_number: Option<Option<String>>,
@@ -160,101 +160,6 @@ const _: () = {
         }
     }
 };
-/// The status of the mandate on the Bacs network.
-/// Can be one of `pending`, `revoked`, `refused`, or `accepted`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum MandateBacsDebitNetworkStatus {
-    Accepted,
-    Pending,
-    Refused,
-    Revoked,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl MandateBacsDebitNetworkStatus {
-    pub fn as_str(&self) -> &str {
-        use MandateBacsDebitNetworkStatus::*;
-        match self {
-            Accepted => "accepted",
-            Pending => "pending",
-            Refused => "refused",
-            Revoked => "revoked",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for MandateBacsDebitNetworkStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use MandateBacsDebitNetworkStatus::*;
-        match s {
-            "accepted" => Ok(Accepted),
-            "pending" => Ok(Pending),
-            "refused" => Ok(Refused),
-            "revoked" => Ok(Revoked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandateBacsDebitNetworkStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for MandateBacsDebitNetworkStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for MandateBacsDebitNetworkStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for MandateBacsDebitNetworkStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(MandateBacsDebitNetworkStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for MandateBacsDebitNetworkStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for MandateBacsDebitNetworkStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<MandateBacsDebitNetworkStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(MandateBacsDebitNetworkStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(MandateBacsDebitNetworkStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for MandateBacsDebitNetworkStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// When the mandate is revoked on the Bacs network this field displays the reason for the revocation.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -352,3 +257,6 @@ impl<'de> serde::Deserialize<'de> for MandateBacsDebitRevocationReason {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The status of the mandate on the Bacs network.
+/// Can be one of `pending`, `revoked`, `refused`, or `accepted`.
+pub type MandateBacsDebitNetworkStatus = stripe_shared::MandateBacsDebitNetworkStatus;

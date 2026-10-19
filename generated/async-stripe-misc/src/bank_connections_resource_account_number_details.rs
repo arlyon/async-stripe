@@ -10,7 +10,7 @@ pub struct BankConnectionsResourceAccountNumberDetails {
     /// Whether the account number is currently active and usable for transactions.
     pub status: BankConnectionsResourceAccountNumberDetailsStatus,
     /// The payment networks that the account number can be used for.
-    pub supported_networks: Vec<BankConnectionsResourceAccountNumberDetailsSupportedNetworks>,
+    pub supported_networks: Vec<stripe_shared::TopupResourceUsBankAccountNetwork>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for BankConnectionsResourceAccountNumberDetails {
@@ -23,7 +23,7 @@ pub struct BankConnectionsResourceAccountNumberDetailsBuilder {
     expected_expiry_date: Option<Option<stripe_types::Timestamp>>,
     identifier_type: Option<BankConnectionsResourceAccountNumberDetailsIdentifierType>,
     status: Option<BankConnectionsResourceAccountNumberDetailsStatus>,
-    supported_networks: Option<Vec<BankConnectionsResourceAccountNumberDetailsSupportedNetworks>>,
+    supported_networks: Option<Vec<stripe_shared::TopupResourceUsBankAccountNetwork>>,
 }
 
 #[allow(
@@ -324,95 +324,5 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetail
     }
 }
 /// The payment networks that the account number can be used for.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    Ach,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    pub fn as_str(&self) -> &str {
-        use BankConnectionsResourceAccountNumberDetailsSupportedNetworks::*;
-        match self {
-            Ach => "ach",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BankConnectionsResourceAccountNumberDetailsSupportedNetworks::*;
-        match s {
-            "ach" => Ok(Ach),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceAccountNumberDetailsSupportedNetworks"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BankConnectionsResourceAccountNumberDetailsSupportedNetworks))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<BankConnectionsResourceAccountNumberDetailsSupportedNetworks>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            BankConnectionsResourceAccountNumberDetailsSupportedNetworks::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    BankConnectionsResourceAccountNumberDetailsSupportedNetworks
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type BankConnectionsResourceAccountNumberDetailsSupportedNetworks =
+    stripe_shared::TopupResourceUsBankAccountNetwork;

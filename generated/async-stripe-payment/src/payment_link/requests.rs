@@ -297,7 +297,7 @@ impl StripeRequest for ListLineItemsPaymentLink {
 #[derive(serde::Serialize)]
 struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    after_completion: Option<CreatePaymentLinkAfterCompletion>,
+    after_completion: Option<AfterCompletionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_promotion_codes: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -307,9 +307,9 @@ struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     automatic_tax: Option<CreatePaymentLinkAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_address_collection: Option<stripe_shared::PaymentLinkBillingAddressCollection>,
+    billing_address_collection: Option<stripe_shared::BillingAddressCollection>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    consent_collection: Option<CreatePaymentLinkConsentCollection>,
+    consent_collection: Option<ConsentCollectionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -317,7 +317,7 @@ struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     custom_text: Option<CustomTextParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer_creation: Option<CreatePaymentLinkCustomerCreation>,
+    customer_creation: Option<stripe_shared::PaymentLinkCustomerCreation>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -338,7 +338,7 @@ struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_intent_data: Option<CreatePaymentLinkPaymentIntentData>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_method_collection: Option<CreatePaymentLinkPaymentMethodCollection>,
+    payment_method_collection: Option<stripe_shared::PaymentLinkCustomerCreation>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_options: Option<CreatePaymentLinkPaymentMethodOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -348,15 +348,15 @@ struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     restrictions: Option<RestrictionsParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_address_collection: Option<CreatePaymentLinkShippingAddressCollection>,
+    shipping_address_collection: Option<ShippingAddressCollectionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_options: Option<Vec<ShippingOptionParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    submit_type: Option<stripe_shared::PaymentLinkSubmitType>,
+    submit_type: Option<stripe_shared::SubmitType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_data: Option<CreatePaymentLinkSubscriptionData>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_id_collection: Option<CreatePaymentLinkTaxIdCollection>,
+    tax_id_collection: Option<TaxIdCollectionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_data: Option<CreatePaymentLinkTransferData>,
 }
@@ -404,104 +404,6 @@ impl CreatePaymentLinkBuilder {
         }
     }
 }
-/// Behavior after the purchase is complete.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentLinkAfterCompletion {
-    /// Configuration when `type=hosted_confirmation`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_confirmation: Option<AfterCompletionConfirmationPageParams>,
-    /// Configuration when `type=redirect`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub redirect: Option<AfterCompletionRedirectParams>,
-    /// The specified behavior after the purchase is complete. Either `redirect` or `hosted_confirmation`.
-    #[serde(rename = "type")]
-    pub type_: CreatePaymentLinkAfterCompletionType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkAfterCompletion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentLinkAfterCompletion").finish_non_exhaustive()
-    }
-}
-impl CreatePaymentLinkAfterCompletion {
-    pub fn new(type_: impl Into<CreatePaymentLinkAfterCompletionType>) -> Self {
-        Self { hosted_confirmation: None, redirect: None, type_: type_.into() }
-    }
-}
-/// The specified behavior after the purchase is complete. Either `redirect` or `hosted_confirmation`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkAfterCompletionType {
-    HostedConfirmation,
-    Redirect,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkAfterCompletionType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkAfterCompletionType::*;
-        match self {
-            HostedConfirmation => "hosted_confirmation",
-            Redirect => "redirect",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkAfterCompletionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkAfterCompletionType::*;
-        match s {
-            "hosted_confirmation" => Ok(HostedConfirmation),
-            "redirect" => Ok(Redirect),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkAfterCompletionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkAfterCompletionType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkAfterCompletionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkAfterCompletionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Configuration for automatic tax collection.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -540,7 +442,7 @@ pub struct CreatePaymentLinkAutomaticTaxLiability {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: CreatePaymentLinkAutomaticTaxLiabilityType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentLinkAutomaticTaxLiability {
@@ -549,376 +451,8 @@ impl std::fmt::Debug for CreatePaymentLinkAutomaticTaxLiability {
     }
 }
 impl CreatePaymentLinkAutomaticTaxLiability {
-    pub fn new(type_: impl Into<CreatePaymentLinkAutomaticTaxLiabilityType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkAutomaticTaxLiabilityType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkAutomaticTaxLiabilityType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkAutomaticTaxLiabilityType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkAutomaticTaxLiabilityType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkAutomaticTaxLiabilityType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkAutomaticTaxLiabilityType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkAutomaticTaxLiabilityType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkAutomaticTaxLiabilityType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Configure fields to gather active consent from customers.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentLinkConsentCollection {
-    /// Determines the display of payment method reuse agreement text in the UI.
-    /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_reuse_agreement:
-        Option<CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement>,
-    /// If set to `auto`, enables the collection of customer consent for promotional communications.
-    /// The Checkout.
-    /// Session will determine whether to display an option to opt into promotional communication
-    /// from the merchant depending on the customer's locale.
-    /// Only available to US merchants and US customers.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotions: Option<CreatePaymentLinkConsentCollectionPromotions>,
-    /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
-    /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub terms_of_service: Option<CreatePaymentLinkConsentCollectionTermsOfService>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkConsentCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentLinkConsentCollection").finish_non_exhaustive()
-    }
-}
-impl CreatePaymentLinkConsentCollection {
-    pub fn new() -> Self {
-        Self { payment_method_reuse_agreement: None, promotions: None, terms_of_service: None }
-    }
-}
-impl Default for CreatePaymentLinkConsentCollection {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Determines the display of payment method reuse agreement text in the UI.
-/// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
-    /// Determines the position and visibility of the payment method reuse agreement in the UI.
-    /// When set to `auto`, Stripe's.
-    /// defaults will be used.
-    /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
-    pub position: CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement")
-            .finish_non_exhaustive()
-    }
-}
-impl CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
-    pub fn new(
-        position: impl Into<CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition>,
-    ) -> Self {
-        Self { position: position.into() }
-    }
-}
-/// Determines the position and visibility of the payment method reuse agreement in the UI.
-/// When set to `auto`, Stripe's.
-/// defaults will be used.
-/// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    Auto,
-    Hidden,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::*;
-        match self {
-            Auto => "auto",
-            Hidden => "hidden",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::*;
-        match s {
-            "auto" => Ok(Auto),
-            "hidden" => Ok(Hidden),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// If set to `auto`, enables the collection of customer consent for promotional communications.
-/// The Checkout.
-/// Session will determine whether to display an option to opt into promotional communication
-/// from the merchant depending on the customer's locale.
-/// Only available to US merchants and US customers.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkConsentCollectionPromotions {
-    Auto,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkConsentCollectionPromotions {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkConsentCollectionPromotions::*;
-        match self {
-            Auto => "auto",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkConsentCollectionPromotions {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkConsentCollectionPromotions::*;
-        match s {
-            "auto" => Ok(Auto),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkConsentCollectionPromotions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkConsentCollectionPromotions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPromotions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPromotions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkConsentCollectionPromotions))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkConsentCollectionPromotions {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkConsentCollectionPromotions {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
-/// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkConsentCollectionTermsOfService {
-    None,
-    Required,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkConsentCollectionTermsOfService {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkConsentCollectionTermsOfService::*;
-        match self {
-            None => "none",
-            Required => "required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkConsentCollectionTermsOfService {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkConsentCollectionTermsOfService::*;
-        match s {
-            "none" => Ok(None),
-            "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkConsentCollectionTermsOfService"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkConsentCollectionTermsOfService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkConsentCollectionTermsOfService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkConsentCollectionTermsOfService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkConsentCollectionTermsOfService))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkConsentCollectionTermsOfService {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkConsentCollectionTermsOfService {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Collect additional information from your customer using custom fields.
@@ -935,7 +469,7 @@ pub struct CreatePaymentLinkCustomFields {
     /// Must be unique to this field, alphanumeric, and up to 200 characters.
     pub key: String,
     /// The label for the field, displayed to the customer.
-    pub label: CreatePaymentLinkCustomFieldsLabel,
+    pub label: CustomFieldLabelParam,
     /// Configuration for `type=numeric` fields.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub numeric: Option<CreatePaymentLinkCustomFieldsNumeric>,
@@ -948,7 +482,7 @@ pub struct CreatePaymentLinkCustomFields {
     pub text: Option<CreatePaymentLinkCustomFieldsText>,
     /// The type of the field.
     #[serde(rename = "type")]
-    pub type_: CreatePaymentLinkCustomFieldsType,
+    pub type_: stripe_shared::CreatePaymentLinkCustomFieldsType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentLinkCustomFields {
@@ -959,8 +493,8 @@ impl std::fmt::Debug for CreatePaymentLinkCustomFields {
 impl CreatePaymentLinkCustomFields {
     pub fn new(
         key: impl Into<String>,
-        label: impl Into<CreatePaymentLinkCustomFieldsLabel>,
-        type_: impl Into<CreatePaymentLinkCustomFieldsType>,
+        label: impl Into<CustomFieldLabelParam>,
+        type_: impl Into<stripe_shared::CreatePaymentLinkCustomFieldsType>,
     ) -> Self {
         Self {
             dropdown: None,
@@ -971,100 +505,6 @@ impl CreatePaymentLinkCustomFields {
             text: None,
             type_: type_.into(),
         }
-    }
-}
-/// The label for the field, displayed to the customer.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentLinkCustomFieldsLabel {
-    /// Custom text for the label, displayed to the customer. Up to 50 characters.
-    pub custom: String,
-    /// The type of the label.
-    #[serde(rename = "type")]
-    pub type_: CreatePaymentLinkCustomFieldsLabelType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkCustomFieldsLabel {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentLinkCustomFieldsLabel").finish_non_exhaustive()
-    }
-}
-impl CreatePaymentLinkCustomFieldsLabel {
-    pub fn new(
-        custom: impl Into<String>,
-        type_: impl Into<CreatePaymentLinkCustomFieldsLabelType>,
-    ) -> Self {
-        Self { custom: custom.into(), type_: type_.into() }
-    }
-}
-/// The type of the label.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkCustomFieldsLabelType {
-    Custom,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkCustomFieldsLabelType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkCustomFieldsLabelType::*;
-        match self {
-            Custom => "custom",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkCustomFieldsLabelType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkCustomFieldsLabelType::*;
-        match s {
-            "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkCustomFieldsLabelType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkCustomFieldsLabelType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkCustomFieldsLabelType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkCustomFieldsLabelType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkCustomFieldsLabelType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkCustomFieldsLabelType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomFieldsLabelType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configuration for `type=numeric` fields.
@@ -1129,153 +569,6 @@ impl Default for CreatePaymentLinkCustomFieldsText {
         Self::new()
     }
 }
-/// The type of the field.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkCustomFieldsType {
-    Dropdown,
-    Numeric,
-    Text,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkCustomFieldsType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkCustomFieldsType::*;
-        match self {
-            Dropdown => "dropdown",
-            Numeric => "numeric",
-            Text => "text",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkCustomFieldsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkCustomFieldsType::*;
-        match s {
-            "dropdown" => Ok(Dropdown),
-            "numeric" => Ok(Numeric),
-            "text" => Ok(Text),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkCustomFieldsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkCustomFieldsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkCustomFieldsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkCustomFieldsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkCustomFieldsType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkCustomFieldsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomFieldsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Configures whether [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link create a [Customer](https://docs.stripe.com/api/customers).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkCustomerCreation {
-    Always,
-    IfRequired,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkCustomerCreation {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkCustomerCreation::*;
-        match self {
-            Always => "always",
-            IfRequired => "if_required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkCustomerCreation {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkCustomerCreation::*;
-        match s {
-            "always" => Ok(Always),
-            "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkCustomerCreation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkCustomerCreation)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkCustomerCreation {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomerCreation {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Generate a post-purchase Invoice for one-time payments.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1327,7 +620,7 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceData {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Default options for invoice PDF rendering for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub rendering_options: Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions>,
+    pub rendering_options: Option<CheckoutRenderingOptionsParam>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceData {
@@ -1364,7 +657,7 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
@@ -1373,204 +666,8 @@ impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     }
 }
 impl CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
-    pub fn new(type_: impl Into<CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Default options for invoice PDF rendering for this customer.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
-    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
-    /// One of `exclude_tax` or `include_inclusive_tax`.
-    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
-    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_tax_display:
-        Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
-    /// ID of the invoice rendering template to use for this invoice.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub template: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions")
-            .finish_non_exhaustive()
-    }
-}
-impl CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
-    pub fn new() -> Self {
-        Self { amount_tax_display: None, template: None }
-    }
-}
-impl Default for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
-/// One of `exclude_tax` or `include_inclusive_tax`.
-/// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
-/// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
-    ExcludeTax,
-    IncludeInclusiveTax,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::*;
-        match self {
-            ExcludeTax => "exclude_tax",
-            IncludeInclusiveTax => "include_inclusive_tax",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::*;
-        match s {
-            "exclude_tax" => Ok(ExcludeTax),
-            "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The line items representing what is being sold.
@@ -1630,7 +727,7 @@ pub struct CreatePaymentLinkLineItemsPriceData {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreatePaymentLinkLineItemsPriceDataTaxBehavior>,
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     /// A non-negative integer in cents (or local equivalent) representing how much to charge.
     /// One of `unit_amount` or `unit_amount_decimal` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1712,7 +809,7 @@ impl CreatePaymentLinkLineItemsPriceDataProductData {
 #[derive(serde::Serialize)]
 pub struct CreatePaymentLinkLineItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-    pub interval: CreatePaymentLinkLineItemsPriceDataRecurringInterval,
+    pub interval: stripe_shared::PlanInterval,
     /// The number of intervals between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
@@ -1726,166 +823,8 @@ impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataRecurring {
     }
 }
 impl CreatePaymentLinkLineItemsPriceDataRecurring {
-    pub fn new(interval: impl Into<CreatePaymentLinkLineItemsPriceDataRecurringInterval>) -> Self {
+    pub fn new(interval: impl Into<stripe_shared::PlanInterval>) -> Self {
         Self { interval: interval.into(), interval_count: None }
-    }
-}
-/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkLineItemsPriceDataRecurringInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkLineItemsPriceDataRecurringInterval {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkLineItemsPriceDataRecurringInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkLineItemsPriceDataRecurringInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkLineItemsPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkLineItemsPriceDataRecurringInterval))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkLineItemsPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkLineItemsPriceDataTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkLineItemsPriceDataTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkLineItemsPriceDataTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkLineItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkLineItemsPriceDataTaxBehavior))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Settings for Managed Payments for this Payment Link and resulting [CheckoutSessions](/api/checkout/sessions/object), [PaymentIntents](/api/payment_intents/object), [Invoices](/api/invoices/object), and [Subscriptions](/api/subscriptions/object).
@@ -1920,7 +859,7 @@ impl Default for CreatePaymentLinkManagedPayments {
 pub struct CreatePaymentLinkPaymentIntentData {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method: Option<CreatePaymentLinkPaymentIntentDataCaptureMethod>,
+    pub capture_method: Option<stripe_shared::CaptureMethod>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -1942,7 +881,7 @@ pub struct CreatePaymentLinkPaymentIntentData {
     ///
     /// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<CreatePaymentLinkPaymentIntentDataSetupFutureUsage>,
+    pub setup_future_usage: Option<stripe_shared::CreateSetupIntentUsage>,
     /// Text that appears on the customer's statement as the statement descriptor for a non-card charge.
     /// This value overrides the account's default statement descriptor.
     /// For information about requirements, including the 22-character limit, see [the Statement Descriptor docs](https://docs.stripe.com/get-started/account/statement-descriptors).
@@ -1982,243 +921,6 @@ impl CreatePaymentLinkPaymentIntentData {
 impl Default for CreatePaymentLinkPaymentIntentData {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Controls when the funds will be captured from the customer's account.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkPaymentIntentDataCaptureMethod {
-    Automatic,
-    AutomaticAsync,
-    Manual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkPaymentIntentDataCaptureMethod {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkPaymentIntentDataCaptureMethod::*;
-        match self {
-            Automatic => "automatic",
-            AutomaticAsync => "automatic_async",
-            Manual => "manual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkPaymentIntentDataCaptureMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkPaymentIntentDataCaptureMethod::*;
-        match s {
-            "automatic" => Ok(Automatic),
-            "automatic_async" => Ok(AutomaticAsync),
-            "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkPaymentIntentDataCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkPaymentIntentDataCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkPaymentIntentDataCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkPaymentIntentDataCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkPaymentIntentDataCaptureMethod))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkPaymentIntentDataCaptureMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentIntentDataCaptureMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
-///
-/// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
-///
-/// When setting this to `off_session`, Checkout will show a notice to the customer that their payment details will be saved and used for future payments.
-///
-/// If a Customer has been provided or Checkout creates a new Customer,Checkout will attach the payment method to the Customer.
-///
-/// If Checkout does not create a Customer, the payment method is not attached to a Customer.
-/// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.
-///
-/// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    OffSession,
-    OnSession,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkPaymentIntentDataSetupFutureUsage::*;
-        match self {
-            OffSession => "off_session",
-            OnSession => "on_session",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkPaymentIntentDataSetupFutureUsage::*;
-        match s {
-            "off_session" => Ok(OffSession),
-            "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkPaymentIntentDataSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkPaymentIntentDataSetupFutureUsage))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Specify whether Checkout should collect a payment method.
-/// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.
-///
-/// Can only be set in `subscription` mode. Defaults to `always`.
-///
-/// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://docs.stripe.com/payments/checkout/free-trials).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkPaymentMethodCollection {
-    Always,
-    IfRequired,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkPaymentMethodCollection {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkPaymentMethodCollection::*;
-        match self {
-            Always => "always",
-            IfRequired => "if_required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkPaymentMethodCollection {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkPaymentMethodCollection::*;
-        match s {
-            "always" => Ok(Always),
-            "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkPaymentMethodCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkPaymentMethodCollection)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkPaymentMethodCollection {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentMethodCollection {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Payment-method-specific configuration.
@@ -2279,8 +981,7 @@ pub struct CreatePaymentLinkPaymentMethodOptionsCardRestrictions {
     /// The card brands to block.
     /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub brands_blocked:
-        Option<Vec<CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked>>,
+    pub brands_blocked: Option<Vec<stripe_shared::BrandsBlocked>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentLinkPaymentMethodOptionsCardRestrictions {
@@ -2297,894 +998,6 @@ impl CreatePaymentLinkPaymentMethodOptionsCardRestrictions {
 impl Default for CreatePaymentLinkPaymentMethodOptionsCardRestrictions {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The card brands to block.
-/// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    AmericanExpress,
-    DiscoverGlobalNetwork,
-    Mastercard,
-    Visa,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked::*;
-        match self {
-            AmericanExpress => "american_express",
-            DiscoverGlobalNetwork => "discover_global_network",
-            Mastercard => "mastercard",
-            Visa => "visa",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked::*;
-        match s {
-            "american_express" => Ok(AmericanExpress),
-            "discover_global_network" => Ok(DiscoverGlobalNetwork),
-            "mastercard" => Ok(Mastercard),
-            "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Configuration for collecting the customer's shipping address.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentLinkShippingAddressCollection {
-    /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
-    /// shipping locations.
-    pub allowed_countries: Vec<CreatePaymentLinkShippingAddressCollectionAllowedCountries>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkShippingAddressCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentLinkShippingAddressCollection").finish_non_exhaustive()
-    }
-}
-impl CreatePaymentLinkShippingAddressCollection {
-    pub fn new(
-        allowed_countries: impl Into<Vec<CreatePaymentLinkShippingAddressCollectionAllowedCountries>>,
-    ) -> Self {
-        Self { allowed_countries: allowed_countries.into() }
-    }
-}
-/// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
-/// shipping locations.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkShippingAddressCollectionAllowedCountries {
-    Ac,
-    Ad,
-    Ae,
-    Af,
-    Ag,
-    Ai,
-    Al,
-    Am,
-    Ao,
-    Aq,
-    Ar,
-    At,
-    Au,
-    Aw,
-    Ax,
-    Az,
-    Ba,
-    Bb,
-    Bd,
-    Be,
-    Bf,
-    Bg,
-    Bh,
-    Bi,
-    Bj,
-    Bl,
-    Bm,
-    Bn,
-    Bo,
-    Bq,
-    Br,
-    Bs,
-    Bt,
-    Bv,
-    Bw,
-    By,
-    Bz,
-    Ca,
-    Cd,
-    Cf,
-    Cg,
-    Ch,
-    Ci,
-    Ck,
-    Cl,
-    Cm,
-    Cn,
-    Co,
-    Cr,
-    Cv,
-    Cw,
-    Cy,
-    Cz,
-    De,
-    Dj,
-    Dk,
-    Dm,
-    Do,
-    Dz,
-    Ec,
-    Ee,
-    Eg,
-    Eh,
-    Er,
-    Es,
-    Et,
-    Fi,
-    Fj,
-    Fk,
-    Fo,
-    Fr,
-    Ga,
-    Gb,
-    Gd,
-    Ge,
-    Gf,
-    Gg,
-    Gh,
-    Gi,
-    Gl,
-    Gm,
-    Gn,
-    Gp,
-    Gq,
-    Gr,
-    Gs,
-    Gt,
-    Gu,
-    Gw,
-    Gy,
-    Hk,
-    Hn,
-    Hr,
-    Ht,
-    Hu,
-    Id,
-    Ie,
-    Il,
-    Im,
-    In,
-    Io,
-    Iq,
-    Is,
-    It,
-    Je,
-    Jm,
-    Jo,
-    Jp,
-    Ke,
-    Kg,
-    Kh,
-    Ki,
-    Km,
-    Kn,
-    Kr,
-    Kw,
-    Ky,
-    Kz,
-    La,
-    Lb,
-    Lc,
-    Li,
-    Lk,
-    Lr,
-    Ls,
-    Lt,
-    Lu,
-    Lv,
-    Ly,
-    Ma,
-    Mc,
-    Md,
-    Me,
-    Mf,
-    Mg,
-    Mk,
-    Ml,
-    Mm,
-    Mn,
-    Mo,
-    Mq,
-    Mr,
-    Ms,
-    Mt,
-    Mu,
-    Mv,
-    Mw,
-    Mx,
-    My,
-    Mz,
-    Na,
-    Nc,
-    Ne,
-    Ng,
-    Ni,
-    Nl,
-    No,
-    Np,
-    Nr,
-    Nu,
-    Nz,
-    Om,
-    Pa,
-    Pe,
-    Pf,
-    Pg,
-    Ph,
-    Pk,
-    Pl,
-    Pm,
-    Pn,
-    Pr,
-    Ps,
-    Pt,
-    Py,
-    Qa,
-    Re,
-    Ro,
-    Rs,
-    Ru,
-    Rw,
-    Sa,
-    Sb,
-    Sc,
-    Sd,
-    Se,
-    Sg,
-    Sh,
-    Si,
-    Sj,
-    Sk,
-    Sl,
-    Sm,
-    Sn,
-    So,
-    Sr,
-    Ss,
-    St,
-    Sv,
-    Sx,
-    Sz,
-    Ta,
-    Tc,
-    Td,
-    Tf,
-    Tg,
-    Th,
-    Tj,
-    Tk,
-    Tl,
-    Tm,
-    Tn,
-    To,
-    Tr,
-    Tt,
-    Tv,
-    Tw,
-    Tz,
-    Ua,
-    Ug,
-    Us,
-    Uy,
-    Uz,
-    Va,
-    Vc,
-    Ve,
-    Vg,
-    Vn,
-    Vu,
-    Wf,
-    Ws,
-    Xk,
-    Ye,
-    Yt,
-    Za,
-    Zm,
-    Zw,
-    Zz,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkShippingAddressCollectionAllowedCountries {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkShippingAddressCollectionAllowedCountries::*;
-        match self {
-            Ac => "AC",
-            Ad => "AD",
-            Ae => "AE",
-            Af => "AF",
-            Ag => "AG",
-            Ai => "AI",
-            Al => "AL",
-            Am => "AM",
-            Ao => "AO",
-            Aq => "AQ",
-            Ar => "AR",
-            At => "AT",
-            Au => "AU",
-            Aw => "AW",
-            Ax => "AX",
-            Az => "AZ",
-            Ba => "BA",
-            Bb => "BB",
-            Bd => "BD",
-            Be => "BE",
-            Bf => "BF",
-            Bg => "BG",
-            Bh => "BH",
-            Bi => "BI",
-            Bj => "BJ",
-            Bl => "BL",
-            Bm => "BM",
-            Bn => "BN",
-            Bo => "BO",
-            Bq => "BQ",
-            Br => "BR",
-            Bs => "BS",
-            Bt => "BT",
-            Bv => "BV",
-            Bw => "BW",
-            By => "BY",
-            Bz => "BZ",
-            Ca => "CA",
-            Cd => "CD",
-            Cf => "CF",
-            Cg => "CG",
-            Ch => "CH",
-            Ci => "CI",
-            Ck => "CK",
-            Cl => "CL",
-            Cm => "CM",
-            Cn => "CN",
-            Co => "CO",
-            Cr => "CR",
-            Cv => "CV",
-            Cw => "CW",
-            Cy => "CY",
-            Cz => "CZ",
-            De => "DE",
-            Dj => "DJ",
-            Dk => "DK",
-            Dm => "DM",
-            Do => "DO",
-            Dz => "DZ",
-            Ec => "EC",
-            Ee => "EE",
-            Eg => "EG",
-            Eh => "EH",
-            Er => "ER",
-            Es => "ES",
-            Et => "ET",
-            Fi => "FI",
-            Fj => "FJ",
-            Fk => "FK",
-            Fo => "FO",
-            Fr => "FR",
-            Ga => "GA",
-            Gb => "GB",
-            Gd => "GD",
-            Ge => "GE",
-            Gf => "GF",
-            Gg => "GG",
-            Gh => "GH",
-            Gi => "GI",
-            Gl => "GL",
-            Gm => "GM",
-            Gn => "GN",
-            Gp => "GP",
-            Gq => "GQ",
-            Gr => "GR",
-            Gs => "GS",
-            Gt => "GT",
-            Gu => "GU",
-            Gw => "GW",
-            Gy => "GY",
-            Hk => "HK",
-            Hn => "HN",
-            Hr => "HR",
-            Ht => "HT",
-            Hu => "HU",
-            Id => "ID",
-            Ie => "IE",
-            Il => "IL",
-            Im => "IM",
-            In => "IN",
-            Io => "IO",
-            Iq => "IQ",
-            Is => "IS",
-            It => "IT",
-            Je => "JE",
-            Jm => "JM",
-            Jo => "JO",
-            Jp => "JP",
-            Ke => "KE",
-            Kg => "KG",
-            Kh => "KH",
-            Ki => "KI",
-            Km => "KM",
-            Kn => "KN",
-            Kr => "KR",
-            Kw => "KW",
-            Ky => "KY",
-            Kz => "KZ",
-            La => "LA",
-            Lb => "LB",
-            Lc => "LC",
-            Li => "LI",
-            Lk => "LK",
-            Lr => "LR",
-            Ls => "LS",
-            Lt => "LT",
-            Lu => "LU",
-            Lv => "LV",
-            Ly => "LY",
-            Ma => "MA",
-            Mc => "MC",
-            Md => "MD",
-            Me => "ME",
-            Mf => "MF",
-            Mg => "MG",
-            Mk => "MK",
-            Ml => "ML",
-            Mm => "MM",
-            Mn => "MN",
-            Mo => "MO",
-            Mq => "MQ",
-            Mr => "MR",
-            Ms => "MS",
-            Mt => "MT",
-            Mu => "MU",
-            Mv => "MV",
-            Mw => "MW",
-            Mx => "MX",
-            My => "MY",
-            Mz => "MZ",
-            Na => "NA",
-            Nc => "NC",
-            Ne => "NE",
-            Ng => "NG",
-            Ni => "NI",
-            Nl => "NL",
-            No => "NO",
-            Np => "NP",
-            Nr => "NR",
-            Nu => "NU",
-            Nz => "NZ",
-            Om => "OM",
-            Pa => "PA",
-            Pe => "PE",
-            Pf => "PF",
-            Pg => "PG",
-            Ph => "PH",
-            Pk => "PK",
-            Pl => "PL",
-            Pm => "PM",
-            Pn => "PN",
-            Pr => "PR",
-            Ps => "PS",
-            Pt => "PT",
-            Py => "PY",
-            Qa => "QA",
-            Re => "RE",
-            Ro => "RO",
-            Rs => "RS",
-            Ru => "RU",
-            Rw => "RW",
-            Sa => "SA",
-            Sb => "SB",
-            Sc => "SC",
-            Sd => "SD",
-            Se => "SE",
-            Sg => "SG",
-            Sh => "SH",
-            Si => "SI",
-            Sj => "SJ",
-            Sk => "SK",
-            Sl => "SL",
-            Sm => "SM",
-            Sn => "SN",
-            So => "SO",
-            Sr => "SR",
-            Ss => "SS",
-            St => "ST",
-            Sv => "SV",
-            Sx => "SX",
-            Sz => "SZ",
-            Ta => "TA",
-            Tc => "TC",
-            Td => "TD",
-            Tf => "TF",
-            Tg => "TG",
-            Th => "TH",
-            Tj => "TJ",
-            Tk => "TK",
-            Tl => "TL",
-            Tm => "TM",
-            Tn => "TN",
-            To => "TO",
-            Tr => "TR",
-            Tt => "TT",
-            Tv => "TV",
-            Tw => "TW",
-            Tz => "TZ",
-            Ua => "UA",
-            Ug => "UG",
-            Us => "US",
-            Uy => "UY",
-            Uz => "UZ",
-            Va => "VA",
-            Vc => "VC",
-            Ve => "VE",
-            Vg => "VG",
-            Vn => "VN",
-            Vu => "VU",
-            Wf => "WF",
-            Ws => "WS",
-            Xk => "XK",
-            Ye => "YE",
-            Yt => "YT",
-            Za => "ZA",
-            Zm => "ZM",
-            Zw => "ZW",
-            Zz => "ZZ",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkShippingAddressCollectionAllowedCountries::*;
-        match s {
-            "AC" => Ok(Ac),
-            "AD" => Ok(Ad),
-            "AE" => Ok(Ae),
-            "AF" => Ok(Af),
-            "AG" => Ok(Ag),
-            "AI" => Ok(Ai),
-            "AL" => Ok(Al),
-            "AM" => Ok(Am),
-            "AO" => Ok(Ao),
-            "AQ" => Ok(Aq),
-            "AR" => Ok(Ar),
-            "AT" => Ok(At),
-            "AU" => Ok(Au),
-            "AW" => Ok(Aw),
-            "AX" => Ok(Ax),
-            "AZ" => Ok(Az),
-            "BA" => Ok(Ba),
-            "BB" => Ok(Bb),
-            "BD" => Ok(Bd),
-            "BE" => Ok(Be),
-            "BF" => Ok(Bf),
-            "BG" => Ok(Bg),
-            "BH" => Ok(Bh),
-            "BI" => Ok(Bi),
-            "BJ" => Ok(Bj),
-            "BL" => Ok(Bl),
-            "BM" => Ok(Bm),
-            "BN" => Ok(Bn),
-            "BO" => Ok(Bo),
-            "BQ" => Ok(Bq),
-            "BR" => Ok(Br),
-            "BS" => Ok(Bs),
-            "BT" => Ok(Bt),
-            "BV" => Ok(Bv),
-            "BW" => Ok(Bw),
-            "BY" => Ok(By),
-            "BZ" => Ok(Bz),
-            "CA" => Ok(Ca),
-            "CD" => Ok(Cd),
-            "CF" => Ok(Cf),
-            "CG" => Ok(Cg),
-            "CH" => Ok(Ch),
-            "CI" => Ok(Ci),
-            "CK" => Ok(Ck),
-            "CL" => Ok(Cl),
-            "CM" => Ok(Cm),
-            "CN" => Ok(Cn),
-            "CO" => Ok(Co),
-            "CR" => Ok(Cr),
-            "CV" => Ok(Cv),
-            "CW" => Ok(Cw),
-            "CY" => Ok(Cy),
-            "CZ" => Ok(Cz),
-            "DE" => Ok(De),
-            "DJ" => Ok(Dj),
-            "DK" => Ok(Dk),
-            "DM" => Ok(Dm),
-            "DO" => Ok(Do),
-            "DZ" => Ok(Dz),
-            "EC" => Ok(Ec),
-            "EE" => Ok(Ee),
-            "EG" => Ok(Eg),
-            "EH" => Ok(Eh),
-            "ER" => Ok(Er),
-            "ES" => Ok(Es),
-            "ET" => Ok(Et),
-            "FI" => Ok(Fi),
-            "FJ" => Ok(Fj),
-            "FK" => Ok(Fk),
-            "FO" => Ok(Fo),
-            "FR" => Ok(Fr),
-            "GA" => Ok(Ga),
-            "GB" => Ok(Gb),
-            "GD" => Ok(Gd),
-            "GE" => Ok(Ge),
-            "GF" => Ok(Gf),
-            "GG" => Ok(Gg),
-            "GH" => Ok(Gh),
-            "GI" => Ok(Gi),
-            "GL" => Ok(Gl),
-            "GM" => Ok(Gm),
-            "GN" => Ok(Gn),
-            "GP" => Ok(Gp),
-            "GQ" => Ok(Gq),
-            "GR" => Ok(Gr),
-            "GS" => Ok(Gs),
-            "GT" => Ok(Gt),
-            "GU" => Ok(Gu),
-            "GW" => Ok(Gw),
-            "GY" => Ok(Gy),
-            "HK" => Ok(Hk),
-            "HN" => Ok(Hn),
-            "HR" => Ok(Hr),
-            "HT" => Ok(Ht),
-            "HU" => Ok(Hu),
-            "ID" => Ok(Id),
-            "IE" => Ok(Ie),
-            "IL" => Ok(Il),
-            "IM" => Ok(Im),
-            "IN" => Ok(In),
-            "IO" => Ok(Io),
-            "IQ" => Ok(Iq),
-            "IS" => Ok(Is),
-            "IT" => Ok(It),
-            "JE" => Ok(Je),
-            "JM" => Ok(Jm),
-            "JO" => Ok(Jo),
-            "JP" => Ok(Jp),
-            "KE" => Ok(Ke),
-            "KG" => Ok(Kg),
-            "KH" => Ok(Kh),
-            "KI" => Ok(Ki),
-            "KM" => Ok(Km),
-            "KN" => Ok(Kn),
-            "KR" => Ok(Kr),
-            "KW" => Ok(Kw),
-            "KY" => Ok(Ky),
-            "KZ" => Ok(Kz),
-            "LA" => Ok(La),
-            "LB" => Ok(Lb),
-            "LC" => Ok(Lc),
-            "LI" => Ok(Li),
-            "LK" => Ok(Lk),
-            "LR" => Ok(Lr),
-            "LS" => Ok(Ls),
-            "LT" => Ok(Lt),
-            "LU" => Ok(Lu),
-            "LV" => Ok(Lv),
-            "LY" => Ok(Ly),
-            "MA" => Ok(Ma),
-            "MC" => Ok(Mc),
-            "MD" => Ok(Md),
-            "ME" => Ok(Me),
-            "MF" => Ok(Mf),
-            "MG" => Ok(Mg),
-            "MK" => Ok(Mk),
-            "ML" => Ok(Ml),
-            "MM" => Ok(Mm),
-            "MN" => Ok(Mn),
-            "MO" => Ok(Mo),
-            "MQ" => Ok(Mq),
-            "MR" => Ok(Mr),
-            "MS" => Ok(Ms),
-            "MT" => Ok(Mt),
-            "MU" => Ok(Mu),
-            "MV" => Ok(Mv),
-            "MW" => Ok(Mw),
-            "MX" => Ok(Mx),
-            "MY" => Ok(My),
-            "MZ" => Ok(Mz),
-            "NA" => Ok(Na),
-            "NC" => Ok(Nc),
-            "NE" => Ok(Ne),
-            "NG" => Ok(Ng),
-            "NI" => Ok(Ni),
-            "NL" => Ok(Nl),
-            "NO" => Ok(No),
-            "NP" => Ok(Np),
-            "NR" => Ok(Nr),
-            "NU" => Ok(Nu),
-            "NZ" => Ok(Nz),
-            "OM" => Ok(Om),
-            "PA" => Ok(Pa),
-            "PE" => Ok(Pe),
-            "PF" => Ok(Pf),
-            "PG" => Ok(Pg),
-            "PH" => Ok(Ph),
-            "PK" => Ok(Pk),
-            "PL" => Ok(Pl),
-            "PM" => Ok(Pm),
-            "PN" => Ok(Pn),
-            "PR" => Ok(Pr),
-            "PS" => Ok(Ps),
-            "PT" => Ok(Pt),
-            "PY" => Ok(Py),
-            "QA" => Ok(Qa),
-            "RE" => Ok(Re),
-            "RO" => Ok(Ro),
-            "RS" => Ok(Rs),
-            "RU" => Ok(Ru),
-            "RW" => Ok(Rw),
-            "SA" => Ok(Sa),
-            "SB" => Ok(Sb),
-            "SC" => Ok(Sc),
-            "SD" => Ok(Sd),
-            "SE" => Ok(Se),
-            "SG" => Ok(Sg),
-            "SH" => Ok(Sh),
-            "SI" => Ok(Si),
-            "SJ" => Ok(Sj),
-            "SK" => Ok(Sk),
-            "SL" => Ok(Sl),
-            "SM" => Ok(Sm),
-            "SN" => Ok(Sn),
-            "SO" => Ok(So),
-            "SR" => Ok(Sr),
-            "SS" => Ok(Ss),
-            "ST" => Ok(St),
-            "SV" => Ok(Sv),
-            "SX" => Ok(Sx),
-            "SZ" => Ok(Sz),
-            "TA" => Ok(Ta),
-            "TC" => Ok(Tc),
-            "TD" => Ok(Td),
-            "TF" => Ok(Tf),
-            "TG" => Ok(Tg),
-            "TH" => Ok(Th),
-            "TJ" => Ok(Tj),
-            "TK" => Ok(Tk),
-            "TL" => Ok(Tl),
-            "TM" => Ok(Tm),
-            "TN" => Ok(Tn),
-            "TO" => Ok(To),
-            "TR" => Ok(Tr),
-            "TT" => Ok(Tt),
-            "TV" => Ok(Tv),
-            "TW" => Ok(Tw),
-            "TZ" => Ok(Tz),
-            "UA" => Ok(Ua),
-            "UG" => Ok(Ug),
-            "US" => Ok(Us),
-            "UY" => Ok(Uy),
-            "UZ" => Ok(Uz),
-            "VA" => Ok(Va),
-            "VC" => Ok(Vc),
-            "VE" => Ok(Ve),
-            "VG" => Ok(Vg),
-            "VN" => Ok(Vn),
-            "VU" => Ok(Vu),
-            "WF" => Ok(Wf),
-            "WS" => Ok(Ws),
-            "XK" => Ok(Xk),
-            "YE" => Ok(Ye),
-            "YT" => Ok(Yt),
-            "ZA" => Ok(Za),
-            "ZM" => Ok(Zm),
-            "ZW" => Ok(Zw),
-            "ZZ" => Ok(Zz),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkShippingAddressCollectionAllowedCountries"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkShippingAddressCollectionAllowedCountries))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// When creating a subscription, the specified configuration data will be used.
@@ -3211,7 +1024,7 @@ pub struct CreatePaymentLinkSubscriptionData {
     pub trial_period_days: Option<u32>,
     /// Settings related to subscription trials.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_settings: Option<CreatePaymentLinkSubscriptionDataTrialSettings>,
+    pub trial_settings: Option<TrialSettingsConfig>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentLinkSubscriptionData {
@@ -3272,7 +1085,7 @@ pub struct CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
@@ -3282,317 +1095,8 @@ impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer 
     }
 }
 impl CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
-    pub fn new(
-        type_: impl Into<CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Settings related to subscription trials.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentLinkSubscriptionDataTrialSettings {
-    /// Defines how the subscription should behave when the user's free trial ends.
-    pub end_behavior: CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataTrialSettings {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentLinkSubscriptionDataTrialSettings").finish_non_exhaustive()
-    }
-}
-impl CreatePaymentLinkSubscriptionDataTrialSettings {
-    pub fn new(
-        end_behavior: impl Into<CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior>,
-    ) -> Self {
-        Self { end_behavior: end_behavior.into() }
-    }
-}
-/// Defines how the subscription should behave when the user's free trial ends.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
-    /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-    pub missing_payment_method:
-        CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior")
-            .finish_non_exhaustive()
-    }
-}
-impl CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
-    pub fn new(
-        missing_payment_method: impl Into<
-            CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
-        >,
-    ) -> Self {
-        Self { missing_payment_method: missing_payment_method.into() }
-    }
-}
-/// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
-    Cancel,
-    CreateInvoice,
-    Pause,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::*;
-        match self {
-            Cancel => "cancel",
-            CreateInvoice => "create_invoice",
-            Pause => "pause",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::*;
-        match s {
-            "cancel" => Ok(Cancel),
-            "create_invoice" => Ok(CreateInvoice),
-            "pause" => Ok(Pause),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Controls tax ID collection during checkout.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreatePaymentLinkTaxIdCollection {
-    /// Enable tax ID collection during checkout. Defaults to `false`.
-    pub enabled: bool,
-    /// Describes whether a tax ID is required during checkout.
-    /// Defaults to `never`.
-    /// You can't set this parameter if `ui_mode` is `custom`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub required: Option<CreatePaymentLinkTaxIdCollectionRequired>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkTaxIdCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreatePaymentLinkTaxIdCollection").finish_non_exhaustive()
-    }
-}
-impl CreatePaymentLinkTaxIdCollection {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into(), required: None }
-    }
-}
-/// Describes whether a tax ID is required during checkout.
-/// Defaults to `never`.
-/// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentLinkTaxIdCollectionRequired {
-    IfSupported,
-    Never,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentLinkTaxIdCollectionRequired {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentLinkTaxIdCollectionRequired::*;
-        match self {
-            IfSupported => "if_supported",
-            Never => "never",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentLinkTaxIdCollectionRequired {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentLinkTaxIdCollectionRequired::*;
-        match s {
-            "if_supported" => Ok(IfSupported),
-            "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentLinkTaxIdCollectionRequired"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentLinkTaxIdCollectionRequired {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentLinkTaxIdCollectionRequired {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentLinkTaxIdCollectionRequired {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentLinkTaxIdCollectionRequired)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentLinkTaxIdCollectionRequired {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentLinkTaxIdCollectionRequired {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
@@ -3639,10 +1143,7 @@ impl CreatePaymentLink {
         Self { inner: CreatePaymentLinkBuilder::new(line_items.into()) }
     }
     /// Behavior after the purchase is complete.
-    pub fn after_completion(
-        mut self,
-        after_completion: impl Into<CreatePaymentLinkAfterCompletion>,
-    ) -> Self {
+    pub fn after_completion(mut self, after_completion: impl Into<AfterCompletionParams>) -> Self {
         self.inner.after_completion = Some(after_completion.into());
         self
     }
@@ -3675,7 +1176,7 @@ impl CreatePaymentLink {
     /// Configuration for collecting the customer's billing address. Defaults to `auto`.
     pub fn billing_address_collection(
         mut self,
-        billing_address_collection: impl Into<stripe_shared::PaymentLinkBillingAddressCollection>,
+        billing_address_collection: impl Into<stripe_shared::BillingAddressCollection>,
     ) -> Self {
         self.inner.billing_address_collection = Some(billing_address_collection.into());
         self
@@ -3683,7 +1184,7 @@ impl CreatePaymentLink {
     /// Configure fields to gather active consent from customers.
     pub fn consent_collection(
         mut self,
-        consent_collection: impl Into<CreatePaymentLinkConsentCollection>,
+        consent_collection: impl Into<ConsentCollectionParams>,
     ) -> Self {
         self.inner.consent_collection = Some(consent_collection.into());
         self
@@ -3713,7 +1214,7 @@ impl CreatePaymentLink {
     /// Configures whether [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link create a [Customer](https://docs.stripe.com/api/customers).
     pub fn customer_creation(
         mut self,
-        customer_creation: impl Into<CreatePaymentLinkCustomerCreation>,
+        customer_creation: impl Into<stripe_shared::PaymentLinkCustomerCreation>,
     ) -> Self {
         self.inner.customer_creation = Some(customer_creation.into());
         self
@@ -3790,7 +1291,7 @@ impl CreatePaymentLink {
     /// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://docs.stripe.com/payments/checkout/free-trials).
     pub fn payment_method_collection(
         mut self,
-        payment_method_collection: impl Into<CreatePaymentLinkPaymentMethodCollection>,
+        payment_method_collection: impl Into<stripe_shared::PaymentLinkCustomerCreation>,
     ) -> Self {
         self.inner.payment_method_collection = Some(payment_method_collection.into());
         self
@@ -3830,7 +1331,7 @@ impl CreatePaymentLink {
     /// Configuration for collecting the customer's shipping address.
     pub fn shipping_address_collection(
         mut self,
-        shipping_address_collection: impl Into<CreatePaymentLinkShippingAddressCollection>,
+        shipping_address_collection: impl Into<ShippingAddressCollectionParams>,
     ) -> Self {
         self.inner.shipping_address_collection = Some(shipping_address_collection.into());
         self
@@ -3845,10 +1346,7 @@ impl CreatePaymentLink {
     }
     /// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
     /// Changing this value will also affect the hostname in the [url](https://docs.stripe.com/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
-    pub fn submit_type(
-        mut self,
-        submit_type: impl Into<stripe_shared::PaymentLinkSubmitType>,
-    ) -> Self {
+    pub fn submit_type(mut self, submit_type: impl Into<stripe_shared::SubmitType>) -> Self {
         self.inner.submit_type = Some(submit_type.into());
         self
     }
@@ -3864,7 +1362,7 @@ impl CreatePaymentLink {
     /// Controls tax ID collection during checkout.
     pub fn tax_id_collection(
         mut self,
-        tax_id_collection: impl Into<CreatePaymentLinkTaxIdCollection>,
+        tax_id_collection: impl Into<TaxIdCollectionParams>,
     ) -> Self {
         self.inner.tax_id_collection = Some(tax_id_collection.into());
         self
@@ -3910,7 +1408,7 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    after_completion: Option<UpdatePaymentLinkAfterCompletion>,
+    after_completion: Option<AfterCompletionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_promotion_codes: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3920,15 +1418,15 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     automatic_tax: Option<UpdatePaymentLinkAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_address_collection: Option<stripe_shared::PaymentLinkBillingAddressCollection>,
+    billing_address_collection: Option<stripe_shared::BillingAddressCollection>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    consent_collection: Option<UpdatePaymentLinkConsentCollection>,
+    consent_collection: Option<ConsentCollectionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     custom_fields: Option<Vec<UpdatePaymentLinkCustomFields>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     custom_text: Option<CustomTextParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer_creation: Option<UpdatePaymentLinkCustomerCreation>,
+    customer_creation: Option<stripe_shared::PaymentLinkCustomerCreation>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3948,7 +1446,7 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_intent_data: Option<UpdatePaymentLinkPaymentIntentData>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_method_collection: Option<UpdatePaymentLinkPaymentMethodCollection>,
+    payment_method_collection: Option<stripe_shared::PaymentLinkCustomerCreation>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_options: Option<UpdatePaymentLinkPaymentMethodOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3958,15 +1456,15 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     restrictions: Option<RestrictionsParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_address_collection: Option<UpdatePaymentLinkShippingAddressCollection>,
+    shipping_address_collection: Option<ShippingAddressCollectionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_options: Option<Vec<ShippingOptionParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    submit_type: Option<stripe_shared::PaymentLinkSubmitType>,
+    submit_type: Option<stripe_shared::SubmitType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription_data: Option<UpdatePaymentLinkSubscriptionData>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_id_collection: Option<UpdatePaymentLinkTaxIdCollection>,
+    tax_id_collection: Option<TaxIdCollectionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_data: Option<UpdatePaymentLinkTransferData>,
 }
@@ -4013,104 +1511,6 @@ impl UpdatePaymentLinkBuilder {
         }
     }
 }
-/// Behavior after the purchase is complete.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentLinkAfterCompletion {
-    /// Configuration when `type=hosted_confirmation`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_confirmation: Option<AfterCompletionConfirmationPageParams>,
-    /// Configuration when `type=redirect`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub redirect: Option<AfterCompletionRedirectParams>,
-    /// The specified behavior after the purchase is complete. Either `redirect` or `hosted_confirmation`.
-    #[serde(rename = "type")]
-    pub type_: UpdatePaymentLinkAfterCompletionType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkAfterCompletion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentLinkAfterCompletion").finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentLinkAfterCompletion {
-    pub fn new(type_: impl Into<UpdatePaymentLinkAfterCompletionType>) -> Self {
-        Self { hosted_confirmation: None, redirect: None, type_: type_.into() }
-    }
-}
-/// The specified behavior after the purchase is complete. Either `redirect` or `hosted_confirmation`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkAfterCompletionType {
-    HostedConfirmation,
-    Redirect,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkAfterCompletionType {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkAfterCompletionType::*;
-        match self {
-            HostedConfirmation => "hosted_confirmation",
-            Redirect => "redirect",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkAfterCompletionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkAfterCompletionType::*;
-        match s {
-            "hosted_confirmation" => Ok(HostedConfirmation),
-            "redirect" => Ok(Redirect),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkAfterCompletionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkAfterCompletionType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkAfterCompletionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAfterCompletionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Configuration for automatic tax collection.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -4149,7 +1549,7 @@ pub struct UpdatePaymentLinkAutomaticTaxLiability {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: UpdatePaymentLinkAutomaticTaxLiabilityType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentLinkAutomaticTaxLiability {
@@ -4158,376 +1558,8 @@ impl std::fmt::Debug for UpdatePaymentLinkAutomaticTaxLiability {
     }
 }
 impl UpdatePaymentLinkAutomaticTaxLiability {
-    pub fn new(type_: impl Into<UpdatePaymentLinkAutomaticTaxLiabilityType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkAutomaticTaxLiabilityType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkAutomaticTaxLiabilityType {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkAutomaticTaxLiabilityType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkAutomaticTaxLiabilityType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkAutomaticTaxLiabilityType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkAutomaticTaxLiabilityType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkAutomaticTaxLiabilityType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAutomaticTaxLiabilityType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Configure fields to gather active consent from customers.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentLinkConsentCollection {
-    /// Determines the display of payment method reuse agreement text in the UI.
-    /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_reuse_agreement:
-        Option<UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement>,
-    /// If set to `auto`, enables the collection of customer consent for promotional communications.
-    /// The Checkout.
-    /// Session will determine whether to display an option to opt into promotional communication
-    /// from the merchant depending on the customer's locale.
-    /// Only available to US merchants and US customers.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotions: Option<UpdatePaymentLinkConsentCollectionPromotions>,
-    /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
-    /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub terms_of_service: Option<UpdatePaymentLinkConsentCollectionTermsOfService>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkConsentCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentLinkConsentCollection").finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentLinkConsentCollection {
-    pub fn new() -> Self {
-        Self { payment_method_reuse_agreement: None, promotions: None, terms_of_service: None }
-    }
-}
-impl Default for UpdatePaymentLinkConsentCollection {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Determines the display of payment method reuse agreement text in the UI.
-/// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
-    /// Determines the position and visibility of the payment method reuse agreement in the UI.
-    /// When set to `auto`, Stripe's.
-    /// defaults will be used.
-    /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
-    pub position: UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement")
-            .finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
-    pub fn new(
-        position: impl Into<UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition>,
-    ) -> Self {
-        Self { position: position.into() }
-    }
-}
-/// Determines the position and visibility of the payment method reuse agreement in the UI.
-/// When set to `auto`, Stripe's.
-/// defaults will be used.
-/// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    Auto,
-    Hidden,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::*;
-        match self {
-            Auto => "auto",
-            Hidden => "hidden",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::*;
-        match s {
-            "auto" => Ok(Auto),
-            "hidden" => Ok(Hidden),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// If set to `auto`, enables the collection of customer consent for promotional communications.
-/// The Checkout.
-/// Session will determine whether to display an option to opt into promotional communication
-/// from the merchant depending on the customer's locale.
-/// Only available to US merchants and US customers.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkConsentCollectionPromotions {
-    Auto,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkConsentCollectionPromotions {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkConsentCollectionPromotions::*;
-        match self {
-            Auto => "auto",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkConsentCollectionPromotions {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkConsentCollectionPromotions::*;
-        match s {
-            "auto" => Ok(Auto),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkConsentCollectionPromotions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkConsentCollectionPromotions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionPromotions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionPromotions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkConsentCollectionPromotions))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkConsentCollectionPromotions {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkConsentCollectionPromotions {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
-/// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkConsentCollectionTermsOfService {
-    None,
-    Required,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkConsentCollectionTermsOfService {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkConsentCollectionTermsOfService::*;
-        match self {
-            None => "none",
-            Required => "required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkConsentCollectionTermsOfService {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkConsentCollectionTermsOfService::*;
-        match s {
-            "none" => Ok(None),
-            "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkConsentCollectionTermsOfService"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkConsentCollectionTermsOfService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionTermsOfService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkConsentCollectionTermsOfService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkConsentCollectionTermsOfService))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkConsentCollectionTermsOfService {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkConsentCollectionTermsOfService {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Collect additional information from your customer using custom fields.
@@ -4544,7 +1576,7 @@ pub struct UpdatePaymentLinkCustomFields {
     /// Must be unique to this field, alphanumeric, and up to 200 characters.
     pub key: String,
     /// The label for the field, displayed to the customer.
-    pub label: UpdatePaymentLinkCustomFieldsLabel,
+    pub label: CustomFieldLabelParam,
     /// Configuration for `type=numeric` fields.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub numeric: Option<UpdatePaymentLinkCustomFieldsNumeric>,
@@ -4557,7 +1589,7 @@ pub struct UpdatePaymentLinkCustomFields {
     pub text: Option<UpdatePaymentLinkCustomFieldsText>,
     /// The type of the field.
     #[serde(rename = "type")]
-    pub type_: UpdatePaymentLinkCustomFieldsType,
+    pub type_: stripe_shared::CreatePaymentLinkCustomFieldsType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentLinkCustomFields {
@@ -4568,8 +1600,8 @@ impl std::fmt::Debug for UpdatePaymentLinkCustomFields {
 impl UpdatePaymentLinkCustomFields {
     pub fn new(
         key: impl Into<String>,
-        label: impl Into<UpdatePaymentLinkCustomFieldsLabel>,
-        type_: impl Into<UpdatePaymentLinkCustomFieldsType>,
+        label: impl Into<CustomFieldLabelParam>,
+        type_: impl Into<stripe_shared::CreatePaymentLinkCustomFieldsType>,
     ) -> Self {
         Self {
             dropdown: None,
@@ -4580,100 +1612,6 @@ impl UpdatePaymentLinkCustomFields {
             text: None,
             type_: type_.into(),
         }
-    }
-}
-/// The label for the field, displayed to the customer.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentLinkCustomFieldsLabel {
-    /// Custom text for the label, displayed to the customer. Up to 50 characters.
-    pub custom: String,
-    /// The type of the label.
-    #[serde(rename = "type")]
-    pub type_: UpdatePaymentLinkCustomFieldsLabelType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsLabel {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentLinkCustomFieldsLabel").finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentLinkCustomFieldsLabel {
-    pub fn new(
-        custom: impl Into<String>,
-        type_: impl Into<UpdatePaymentLinkCustomFieldsLabelType>,
-    ) -> Self {
-        Self { custom: custom.into(), type_: type_.into() }
-    }
-}
-/// The type of the label.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkCustomFieldsLabelType {
-    Custom,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkCustomFieldsLabelType {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkCustomFieldsLabelType::*;
-        match self {
-            Custom => "custom",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkCustomFieldsLabelType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkCustomFieldsLabelType::*;
-        match s {
-            "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkCustomFieldsLabelType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkCustomFieldsLabelType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsLabelType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsLabelType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkCustomFieldsLabelType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkCustomFieldsLabelType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomFieldsLabelType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configuration for `type=numeric` fields.
@@ -4738,153 +1676,6 @@ impl Default for UpdatePaymentLinkCustomFieldsText {
         Self::new()
     }
 }
-/// The type of the field.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkCustomFieldsType {
-    Dropdown,
-    Numeric,
-    Text,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkCustomFieldsType {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkCustomFieldsType::*;
-        match self {
-            Dropdown => "dropdown",
-            Numeric => "numeric",
-            Text => "text",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkCustomFieldsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkCustomFieldsType::*;
-        match s {
-            "dropdown" => Ok(Dropdown),
-            "numeric" => Ok(Numeric),
-            "text" => Ok(Text),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkCustomFieldsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkCustomFieldsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkCustomFieldsType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkCustomFieldsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomFieldsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Configures whether [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link create a [Customer](https://docs.stripe.com/api/customers).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkCustomerCreation {
-    Always,
-    IfRequired,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkCustomerCreation {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkCustomerCreation::*;
-        match self {
-            Always => "always",
-            IfRequired => "if_required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkCustomerCreation {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkCustomerCreation::*;
-        match s {
-            "always" => Ok(Always),
-            "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkCustomerCreation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkCustomerCreation)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkCustomerCreation {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomerCreation {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Generate a post-purchase Invoice for one-time payments.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -4936,7 +1727,7 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceData {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Default options for invoice PDF rendering for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub rendering_options: Option<UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions>,
+    pub rendering_options: Option<CheckoutRenderingOptionsParam>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceData {
@@ -4973,7 +1764,7 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
@@ -4982,204 +1773,8 @@ impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     }
 }
 impl UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
-    pub fn new(type_: impl Into<UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Default options for invoice PDF rendering for this customer.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
-    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
-    /// One of `exclude_tax` or `include_inclusive_tax`.
-    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
-    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_tax_display:
-        Option<UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
-    /// ID of the invoice rendering template to use for this invoice.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub template: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions")
-            .finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
-    pub fn new() -> Self {
-        Self { amount_tax_display: None, template: None }
-    }
-}
-impl Default for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
-/// One of `exclude_tax` or `include_inclusive_tax`.
-/// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
-/// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
-    ExcludeTax,
-    IncludeInclusiveTax,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::*;
-        match self {
-            ExcludeTax => "exclude_tax",
-            IncludeInclusiveTax => "include_inclusive_tax",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::*;
-        match s {
-            "exclude_tax" => Ok(ExcludeTax),
-            "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The line items representing what is being sold.
@@ -5235,7 +1830,7 @@ pub struct UpdatePaymentLinkPaymentIntentData {
     ///
     /// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<UpdatePaymentLinkPaymentIntentDataSetupFutureUsage>,
+    pub setup_future_usage: Option<stripe_shared::CreateSetupIntentUsage>,
     /// Text that appears on the customer's statement as the statement descriptor for a non-card charge.
     /// This value overrides the account's default statement descriptor.
     /// For information about requirements, including the 22-character limit, see [the Statement Descriptor docs](https://docs.stripe.com/get-started/account/statement-descriptors).
@@ -5274,167 +1869,6 @@ impl UpdatePaymentLinkPaymentIntentData {
 impl Default for UpdatePaymentLinkPaymentIntentData {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
-///
-/// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
-///
-/// When setting this to `off_session`, Checkout will show a notice to the customer that their payment details will be saved and used for future payments.
-///
-/// If a Customer has been provided or Checkout creates a new Customer,Checkout will attach the payment method to the Customer.
-///
-/// If Checkout does not create a Customer, the payment method is not attached to a Customer.
-/// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.
-///
-/// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    OffSession,
-    OnSession,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkPaymentIntentDataSetupFutureUsage::*;
-        match self {
-            OffSession => "off_session",
-            OnSession => "on_session",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkPaymentIntentDataSetupFutureUsage::*;
-        match s {
-            "off_session" => Ok(OffSession),
-            "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkPaymentIntentDataSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkPaymentIntentDataSetupFutureUsage))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkPaymentIntentDataSetupFutureUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Specify whether Checkout should collect a payment method.
-/// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.
-///
-/// Can only be set in `subscription` mode. Defaults to `always`.
-///
-/// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://docs.stripe.com/payments/checkout/free-trials).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkPaymentMethodCollection {
-    Always,
-    IfRequired,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkPaymentMethodCollection {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkPaymentMethodCollection::*;
-        match self {
-            Always => "always",
-            IfRequired => "if_required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkPaymentMethodCollection {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkPaymentMethodCollection::*;
-        match s {
-            "always" => Ok(Always),
-            "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkPaymentMethodCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkPaymentMethodCollection)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkPaymentMethodCollection {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkPaymentMethodCollection {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Payment-method-specific configuration.
@@ -5495,8 +1929,7 @@ pub struct UpdatePaymentLinkPaymentMethodOptionsCardRestrictions {
     /// The card brands to block.
     /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub brands_blocked:
-        Option<Vec<UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked>>,
+    pub brands_blocked: Option<Vec<stripe_shared::BrandsBlocked>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodOptionsCardRestrictions {
@@ -5513,894 +1946,6 @@ impl UpdatePaymentLinkPaymentMethodOptionsCardRestrictions {
 impl Default for UpdatePaymentLinkPaymentMethodOptionsCardRestrictions {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The card brands to block.
-/// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    AmericanExpress,
-    DiscoverGlobalNetwork,
-    Mastercard,
-    Visa,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked::*;
-        match self {
-            AmericanExpress => "american_express",
-            DiscoverGlobalNetwork => "discover_global_network",
-            Mastercard => "mastercard",
-            Visa => "visa",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked::*;
-        match s {
-            "american_express" => Ok(AmericanExpress),
-            "discover_global_network" => Ok(DiscoverGlobalNetwork),
-            "mastercard" => Ok(Mastercard),
-            "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Configuration for collecting the customer's shipping address.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentLinkShippingAddressCollection {
-    /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
-    /// shipping locations.
-    pub allowed_countries: Vec<UpdatePaymentLinkShippingAddressCollectionAllowedCountries>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkShippingAddressCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentLinkShippingAddressCollection").finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentLinkShippingAddressCollection {
-    pub fn new(
-        allowed_countries: impl Into<Vec<UpdatePaymentLinkShippingAddressCollectionAllowedCountries>>,
-    ) -> Self {
-        Self { allowed_countries: allowed_countries.into() }
-    }
-}
-/// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
-/// shipping locations.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
-    Ac,
-    Ad,
-    Ae,
-    Af,
-    Ag,
-    Ai,
-    Al,
-    Am,
-    Ao,
-    Aq,
-    Ar,
-    At,
-    Au,
-    Aw,
-    Ax,
-    Az,
-    Ba,
-    Bb,
-    Bd,
-    Be,
-    Bf,
-    Bg,
-    Bh,
-    Bi,
-    Bj,
-    Bl,
-    Bm,
-    Bn,
-    Bo,
-    Bq,
-    Br,
-    Bs,
-    Bt,
-    Bv,
-    Bw,
-    By,
-    Bz,
-    Ca,
-    Cd,
-    Cf,
-    Cg,
-    Ch,
-    Ci,
-    Ck,
-    Cl,
-    Cm,
-    Cn,
-    Co,
-    Cr,
-    Cv,
-    Cw,
-    Cy,
-    Cz,
-    De,
-    Dj,
-    Dk,
-    Dm,
-    Do,
-    Dz,
-    Ec,
-    Ee,
-    Eg,
-    Eh,
-    Er,
-    Es,
-    Et,
-    Fi,
-    Fj,
-    Fk,
-    Fo,
-    Fr,
-    Ga,
-    Gb,
-    Gd,
-    Ge,
-    Gf,
-    Gg,
-    Gh,
-    Gi,
-    Gl,
-    Gm,
-    Gn,
-    Gp,
-    Gq,
-    Gr,
-    Gs,
-    Gt,
-    Gu,
-    Gw,
-    Gy,
-    Hk,
-    Hn,
-    Hr,
-    Ht,
-    Hu,
-    Id,
-    Ie,
-    Il,
-    Im,
-    In,
-    Io,
-    Iq,
-    Is,
-    It,
-    Je,
-    Jm,
-    Jo,
-    Jp,
-    Ke,
-    Kg,
-    Kh,
-    Ki,
-    Km,
-    Kn,
-    Kr,
-    Kw,
-    Ky,
-    Kz,
-    La,
-    Lb,
-    Lc,
-    Li,
-    Lk,
-    Lr,
-    Ls,
-    Lt,
-    Lu,
-    Lv,
-    Ly,
-    Ma,
-    Mc,
-    Md,
-    Me,
-    Mf,
-    Mg,
-    Mk,
-    Ml,
-    Mm,
-    Mn,
-    Mo,
-    Mq,
-    Mr,
-    Ms,
-    Mt,
-    Mu,
-    Mv,
-    Mw,
-    Mx,
-    My,
-    Mz,
-    Na,
-    Nc,
-    Ne,
-    Ng,
-    Ni,
-    Nl,
-    No,
-    Np,
-    Nr,
-    Nu,
-    Nz,
-    Om,
-    Pa,
-    Pe,
-    Pf,
-    Pg,
-    Ph,
-    Pk,
-    Pl,
-    Pm,
-    Pn,
-    Pr,
-    Ps,
-    Pt,
-    Py,
-    Qa,
-    Re,
-    Ro,
-    Rs,
-    Ru,
-    Rw,
-    Sa,
-    Sb,
-    Sc,
-    Sd,
-    Se,
-    Sg,
-    Sh,
-    Si,
-    Sj,
-    Sk,
-    Sl,
-    Sm,
-    Sn,
-    So,
-    Sr,
-    Ss,
-    St,
-    Sv,
-    Sx,
-    Sz,
-    Ta,
-    Tc,
-    Td,
-    Tf,
-    Tg,
-    Th,
-    Tj,
-    Tk,
-    Tl,
-    Tm,
-    Tn,
-    To,
-    Tr,
-    Tt,
-    Tv,
-    Tw,
-    Tz,
-    Ua,
-    Ug,
-    Us,
-    Uy,
-    Uz,
-    Va,
-    Vc,
-    Ve,
-    Vg,
-    Vn,
-    Vu,
-    Wf,
-    Ws,
-    Xk,
-    Ye,
-    Yt,
-    Za,
-    Zm,
-    Zw,
-    Zz,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkShippingAddressCollectionAllowedCountries::*;
-        match self {
-            Ac => "AC",
-            Ad => "AD",
-            Ae => "AE",
-            Af => "AF",
-            Ag => "AG",
-            Ai => "AI",
-            Al => "AL",
-            Am => "AM",
-            Ao => "AO",
-            Aq => "AQ",
-            Ar => "AR",
-            At => "AT",
-            Au => "AU",
-            Aw => "AW",
-            Ax => "AX",
-            Az => "AZ",
-            Ba => "BA",
-            Bb => "BB",
-            Bd => "BD",
-            Be => "BE",
-            Bf => "BF",
-            Bg => "BG",
-            Bh => "BH",
-            Bi => "BI",
-            Bj => "BJ",
-            Bl => "BL",
-            Bm => "BM",
-            Bn => "BN",
-            Bo => "BO",
-            Bq => "BQ",
-            Br => "BR",
-            Bs => "BS",
-            Bt => "BT",
-            Bv => "BV",
-            Bw => "BW",
-            By => "BY",
-            Bz => "BZ",
-            Ca => "CA",
-            Cd => "CD",
-            Cf => "CF",
-            Cg => "CG",
-            Ch => "CH",
-            Ci => "CI",
-            Ck => "CK",
-            Cl => "CL",
-            Cm => "CM",
-            Cn => "CN",
-            Co => "CO",
-            Cr => "CR",
-            Cv => "CV",
-            Cw => "CW",
-            Cy => "CY",
-            Cz => "CZ",
-            De => "DE",
-            Dj => "DJ",
-            Dk => "DK",
-            Dm => "DM",
-            Do => "DO",
-            Dz => "DZ",
-            Ec => "EC",
-            Ee => "EE",
-            Eg => "EG",
-            Eh => "EH",
-            Er => "ER",
-            Es => "ES",
-            Et => "ET",
-            Fi => "FI",
-            Fj => "FJ",
-            Fk => "FK",
-            Fo => "FO",
-            Fr => "FR",
-            Ga => "GA",
-            Gb => "GB",
-            Gd => "GD",
-            Ge => "GE",
-            Gf => "GF",
-            Gg => "GG",
-            Gh => "GH",
-            Gi => "GI",
-            Gl => "GL",
-            Gm => "GM",
-            Gn => "GN",
-            Gp => "GP",
-            Gq => "GQ",
-            Gr => "GR",
-            Gs => "GS",
-            Gt => "GT",
-            Gu => "GU",
-            Gw => "GW",
-            Gy => "GY",
-            Hk => "HK",
-            Hn => "HN",
-            Hr => "HR",
-            Ht => "HT",
-            Hu => "HU",
-            Id => "ID",
-            Ie => "IE",
-            Il => "IL",
-            Im => "IM",
-            In => "IN",
-            Io => "IO",
-            Iq => "IQ",
-            Is => "IS",
-            It => "IT",
-            Je => "JE",
-            Jm => "JM",
-            Jo => "JO",
-            Jp => "JP",
-            Ke => "KE",
-            Kg => "KG",
-            Kh => "KH",
-            Ki => "KI",
-            Km => "KM",
-            Kn => "KN",
-            Kr => "KR",
-            Kw => "KW",
-            Ky => "KY",
-            Kz => "KZ",
-            La => "LA",
-            Lb => "LB",
-            Lc => "LC",
-            Li => "LI",
-            Lk => "LK",
-            Lr => "LR",
-            Ls => "LS",
-            Lt => "LT",
-            Lu => "LU",
-            Lv => "LV",
-            Ly => "LY",
-            Ma => "MA",
-            Mc => "MC",
-            Md => "MD",
-            Me => "ME",
-            Mf => "MF",
-            Mg => "MG",
-            Mk => "MK",
-            Ml => "ML",
-            Mm => "MM",
-            Mn => "MN",
-            Mo => "MO",
-            Mq => "MQ",
-            Mr => "MR",
-            Ms => "MS",
-            Mt => "MT",
-            Mu => "MU",
-            Mv => "MV",
-            Mw => "MW",
-            Mx => "MX",
-            My => "MY",
-            Mz => "MZ",
-            Na => "NA",
-            Nc => "NC",
-            Ne => "NE",
-            Ng => "NG",
-            Ni => "NI",
-            Nl => "NL",
-            No => "NO",
-            Np => "NP",
-            Nr => "NR",
-            Nu => "NU",
-            Nz => "NZ",
-            Om => "OM",
-            Pa => "PA",
-            Pe => "PE",
-            Pf => "PF",
-            Pg => "PG",
-            Ph => "PH",
-            Pk => "PK",
-            Pl => "PL",
-            Pm => "PM",
-            Pn => "PN",
-            Pr => "PR",
-            Ps => "PS",
-            Pt => "PT",
-            Py => "PY",
-            Qa => "QA",
-            Re => "RE",
-            Ro => "RO",
-            Rs => "RS",
-            Ru => "RU",
-            Rw => "RW",
-            Sa => "SA",
-            Sb => "SB",
-            Sc => "SC",
-            Sd => "SD",
-            Se => "SE",
-            Sg => "SG",
-            Sh => "SH",
-            Si => "SI",
-            Sj => "SJ",
-            Sk => "SK",
-            Sl => "SL",
-            Sm => "SM",
-            Sn => "SN",
-            So => "SO",
-            Sr => "SR",
-            Ss => "SS",
-            St => "ST",
-            Sv => "SV",
-            Sx => "SX",
-            Sz => "SZ",
-            Ta => "TA",
-            Tc => "TC",
-            Td => "TD",
-            Tf => "TF",
-            Tg => "TG",
-            Th => "TH",
-            Tj => "TJ",
-            Tk => "TK",
-            Tl => "TL",
-            Tm => "TM",
-            Tn => "TN",
-            To => "TO",
-            Tr => "TR",
-            Tt => "TT",
-            Tv => "TV",
-            Tw => "TW",
-            Tz => "TZ",
-            Ua => "UA",
-            Ug => "UG",
-            Us => "US",
-            Uy => "UY",
-            Uz => "UZ",
-            Va => "VA",
-            Vc => "VC",
-            Ve => "VE",
-            Vg => "VG",
-            Vn => "VN",
-            Vu => "VU",
-            Wf => "WF",
-            Ws => "WS",
-            Xk => "XK",
-            Ye => "YE",
-            Yt => "YT",
-            Za => "ZA",
-            Zm => "ZM",
-            Zw => "ZW",
-            Zz => "ZZ",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkShippingAddressCollectionAllowedCountries::*;
-        match s {
-            "AC" => Ok(Ac),
-            "AD" => Ok(Ad),
-            "AE" => Ok(Ae),
-            "AF" => Ok(Af),
-            "AG" => Ok(Ag),
-            "AI" => Ok(Ai),
-            "AL" => Ok(Al),
-            "AM" => Ok(Am),
-            "AO" => Ok(Ao),
-            "AQ" => Ok(Aq),
-            "AR" => Ok(Ar),
-            "AT" => Ok(At),
-            "AU" => Ok(Au),
-            "AW" => Ok(Aw),
-            "AX" => Ok(Ax),
-            "AZ" => Ok(Az),
-            "BA" => Ok(Ba),
-            "BB" => Ok(Bb),
-            "BD" => Ok(Bd),
-            "BE" => Ok(Be),
-            "BF" => Ok(Bf),
-            "BG" => Ok(Bg),
-            "BH" => Ok(Bh),
-            "BI" => Ok(Bi),
-            "BJ" => Ok(Bj),
-            "BL" => Ok(Bl),
-            "BM" => Ok(Bm),
-            "BN" => Ok(Bn),
-            "BO" => Ok(Bo),
-            "BQ" => Ok(Bq),
-            "BR" => Ok(Br),
-            "BS" => Ok(Bs),
-            "BT" => Ok(Bt),
-            "BV" => Ok(Bv),
-            "BW" => Ok(Bw),
-            "BY" => Ok(By),
-            "BZ" => Ok(Bz),
-            "CA" => Ok(Ca),
-            "CD" => Ok(Cd),
-            "CF" => Ok(Cf),
-            "CG" => Ok(Cg),
-            "CH" => Ok(Ch),
-            "CI" => Ok(Ci),
-            "CK" => Ok(Ck),
-            "CL" => Ok(Cl),
-            "CM" => Ok(Cm),
-            "CN" => Ok(Cn),
-            "CO" => Ok(Co),
-            "CR" => Ok(Cr),
-            "CV" => Ok(Cv),
-            "CW" => Ok(Cw),
-            "CY" => Ok(Cy),
-            "CZ" => Ok(Cz),
-            "DE" => Ok(De),
-            "DJ" => Ok(Dj),
-            "DK" => Ok(Dk),
-            "DM" => Ok(Dm),
-            "DO" => Ok(Do),
-            "DZ" => Ok(Dz),
-            "EC" => Ok(Ec),
-            "EE" => Ok(Ee),
-            "EG" => Ok(Eg),
-            "EH" => Ok(Eh),
-            "ER" => Ok(Er),
-            "ES" => Ok(Es),
-            "ET" => Ok(Et),
-            "FI" => Ok(Fi),
-            "FJ" => Ok(Fj),
-            "FK" => Ok(Fk),
-            "FO" => Ok(Fo),
-            "FR" => Ok(Fr),
-            "GA" => Ok(Ga),
-            "GB" => Ok(Gb),
-            "GD" => Ok(Gd),
-            "GE" => Ok(Ge),
-            "GF" => Ok(Gf),
-            "GG" => Ok(Gg),
-            "GH" => Ok(Gh),
-            "GI" => Ok(Gi),
-            "GL" => Ok(Gl),
-            "GM" => Ok(Gm),
-            "GN" => Ok(Gn),
-            "GP" => Ok(Gp),
-            "GQ" => Ok(Gq),
-            "GR" => Ok(Gr),
-            "GS" => Ok(Gs),
-            "GT" => Ok(Gt),
-            "GU" => Ok(Gu),
-            "GW" => Ok(Gw),
-            "GY" => Ok(Gy),
-            "HK" => Ok(Hk),
-            "HN" => Ok(Hn),
-            "HR" => Ok(Hr),
-            "HT" => Ok(Ht),
-            "HU" => Ok(Hu),
-            "ID" => Ok(Id),
-            "IE" => Ok(Ie),
-            "IL" => Ok(Il),
-            "IM" => Ok(Im),
-            "IN" => Ok(In),
-            "IO" => Ok(Io),
-            "IQ" => Ok(Iq),
-            "IS" => Ok(Is),
-            "IT" => Ok(It),
-            "JE" => Ok(Je),
-            "JM" => Ok(Jm),
-            "JO" => Ok(Jo),
-            "JP" => Ok(Jp),
-            "KE" => Ok(Ke),
-            "KG" => Ok(Kg),
-            "KH" => Ok(Kh),
-            "KI" => Ok(Ki),
-            "KM" => Ok(Km),
-            "KN" => Ok(Kn),
-            "KR" => Ok(Kr),
-            "KW" => Ok(Kw),
-            "KY" => Ok(Ky),
-            "KZ" => Ok(Kz),
-            "LA" => Ok(La),
-            "LB" => Ok(Lb),
-            "LC" => Ok(Lc),
-            "LI" => Ok(Li),
-            "LK" => Ok(Lk),
-            "LR" => Ok(Lr),
-            "LS" => Ok(Ls),
-            "LT" => Ok(Lt),
-            "LU" => Ok(Lu),
-            "LV" => Ok(Lv),
-            "LY" => Ok(Ly),
-            "MA" => Ok(Ma),
-            "MC" => Ok(Mc),
-            "MD" => Ok(Md),
-            "ME" => Ok(Me),
-            "MF" => Ok(Mf),
-            "MG" => Ok(Mg),
-            "MK" => Ok(Mk),
-            "ML" => Ok(Ml),
-            "MM" => Ok(Mm),
-            "MN" => Ok(Mn),
-            "MO" => Ok(Mo),
-            "MQ" => Ok(Mq),
-            "MR" => Ok(Mr),
-            "MS" => Ok(Ms),
-            "MT" => Ok(Mt),
-            "MU" => Ok(Mu),
-            "MV" => Ok(Mv),
-            "MW" => Ok(Mw),
-            "MX" => Ok(Mx),
-            "MY" => Ok(My),
-            "MZ" => Ok(Mz),
-            "NA" => Ok(Na),
-            "NC" => Ok(Nc),
-            "NE" => Ok(Ne),
-            "NG" => Ok(Ng),
-            "NI" => Ok(Ni),
-            "NL" => Ok(Nl),
-            "NO" => Ok(No),
-            "NP" => Ok(Np),
-            "NR" => Ok(Nr),
-            "NU" => Ok(Nu),
-            "NZ" => Ok(Nz),
-            "OM" => Ok(Om),
-            "PA" => Ok(Pa),
-            "PE" => Ok(Pe),
-            "PF" => Ok(Pf),
-            "PG" => Ok(Pg),
-            "PH" => Ok(Ph),
-            "PK" => Ok(Pk),
-            "PL" => Ok(Pl),
-            "PM" => Ok(Pm),
-            "PN" => Ok(Pn),
-            "PR" => Ok(Pr),
-            "PS" => Ok(Ps),
-            "PT" => Ok(Pt),
-            "PY" => Ok(Py),
-            "QA" => Ok(Qa),
-            "RE" => Ok(Re),
-            "RO" => Ok(Ro),
-            "RS" => Ok(Rs),
-            "RU" => Ok(Ru),
-            "RW" => Ok(Rw),
-            "SA" => Ok(Sa),
-            "SB" => Ok(Sb),
-            "SC" => Ok(Sc),
-            "SD" => Ok(Sd),
-            "SE" => Ok(Se),
-            "SG" => Ok(Sg),
-            "SH" => Ok(Sh),
-            "SI" => Ok(Si),
-            "SJ" => Ok(Sj),
-            "SK" => Ok(Sk),
-            "SL" => Ok(Sl),
-            "SM" => Ok(Sm),
-            "SN" => Ok(Sn),
-            "SO" => Ok(So),
-            "SR" => Ok(Sr),
-            "SS" => Ok(Ss),
-            "ST" => Ok(St),
-            "SV" => Ok(Sv),
-            "SX" => Ok(Sx),
-            "SZ" => Ok(Sz),
-            "TA" => Ok(Ta),
-            "TC" => Ok(Tc),
-            "TD" => Ok(Td),
-            "TF" => Ok(Tf),
-            "TG" => Ok(Tg),
-            "TH" => Ok(Th),
-            "TJ" => Ok(Tj),
-            "TK" => Ok(Tk),
-            "TL" => Ok(Tl),
-            "TM" => Ok(Tm),
-            "TN" => Ok(Tn),
-            "TO" => Ok(To),
-            "TR" => Ok(Tr),
-            "TT" => Ok(Tt),
-            "TV" => Ok(Tv),
-            "TW" => Ok(Tw),
-            "TZ" => Ok(Tz),
-            "UA" => Ok(Ua),
-            "UG" => Ok(Ug),
-            "US" => Ok(Us),
-            "UY" => Ok(Uy),
-            "UZ" => Ok(Uz),
-            "VA" => Ok(Va),
-            "VC" => Ok(Vc),
-            "VE" => Ok(Ve),
-            "VG" => Ok(Vg),
-            "VN" => Ok(Vn),
-            "VU" => Ok(Vu),
-            "WF" => Ok(Wf),
-            "WS" => Ok(Ws),
-            "XK" => Ok(Xk),
-            "YE" => Ok(Ye),
-            "YT" => Ok(Yt),
-            "ZA" => Ok(Za),
-            "ZM" => Ok(Zm),
-            "ZW" => Ok(Zw),
-            "ZZ" => Ok(Zz),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkShippingAddressCollectionAllowedCountries"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkShippingAddressCollectionAllowedCountries))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// When creating a subscription, the specified configuration data will be used.
@@ -6423,7 +1968,7 @@ pub struct UpdatePaymentLinkSubscriptionData {
     pub trial_period_days: Option<u32>,
     /// Settings related to subscription trials.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_settings: Option<UpdatePaymentLinkSubscriptionDataTrialSettings>,
+    pub trial_settings: Option<TrialSettingsConfig>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentLinkSubscriptionData {
@@ -6483,7 +2028,7 @@ pub struct UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
     pub account: Option<String>,
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
-    pub type_: UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType,
+    pub type_: stripe_shared::CreateInvoiceIssuerType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
@@ -6493,317 +2038,8 @@ impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer 
     }
 }
 impl UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
-    pub fn new(
-        type_: impl Into<UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateInvoiceIssuerType>) -> Self {
         Self { account: None, type_: type_.into() }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    Account,
-    Self_,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Settings related to subscription trials.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentLinkSubscriptionDataTrialSettings {
-    /// Defines how the subscription should behave when the user's free trial ends.
-    pub end_behavior: UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataTrialSettings {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentLinkSubscriptionDataTrialSettings").finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentLinkSubscriptionDataTrialSettings {
-    pub fn new(
-        end_behavior: impl Into<UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior>,
-    ) -> Self {
-        Self { end_behavior: end_behavior.into() }
-    }
-}
-/// Defines how the subscription should behave when the user's free trial ends.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
-    /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-    pub missing_payment_method:
-        UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior")
-            .finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
-    pub fn new(
-        missing_payment_method: impl Into<
-            UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
-        >,
-    ) -> Self {
-        Self { missing_payment_method: missing_payment_method.into() }
-    }
-}
-/// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
-    Cancel,
-    CreateInvoice,
-    Pause,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::*;
-        match self {
-            Cancel => "cancel",
-            CreateInvoice => "create_invoice",
-            Pause => "pause",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::*;
-        match s {
-            "cancel" => Ok(Cancel),
-            "create_invoice" => Ok(CreateInvoice),
-            "pause" => Ok(Pause),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Controls tax ID collection during checkout.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdatePaymentLinkTaxIdCollection {
-    /// Enable tax ID collection during checkout. Defaults to `false`.
-    pub enabled: bool,
-    /// Describes whether a tax ID is required during checkout.
-    /// Defaults to `never`.
-    /// You can't set this parameter if `ui_mode` is `custom`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub required: Option<UpdatePaymentLinkTaxIdCollectionRequired>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkTaxIdCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdatePaymentLinkTaxIdCollection").finish_non_exhaustive()
-    }
-}
-impl UpdatePaymentLinkTaxIdCollection {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into(), required: None }
-    }
-}
-/// Describes whether a tax ID is required during checkout.
-/// Defaults to `never`.
-/// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentLinkTaxIdCollectionRequired {
-    IfSupported,
-    Never,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentLinkTaxIdCollectionRequired {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentLinkTaxIdCollectionRequired::*;
-        match self {
-            IfSupported => "if_supported",
-            Never => "never",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentLinkTaxIdCollectionRequired {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentLinkTaxIdCollectionRequired::*;
-        match s {
-            "if_supported" => Ok(IfSupported),
-            "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentLinkTaxIdCollectionRequired"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentLinkTaxIdCollectionRequired {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentLinkTaxIdCollectionRequired {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentLinkTaxIdCollectionRequired {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentLinkTaxIdCollectionRequired)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentLinkTaxIdCollectionRequired {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkTaxIdCollectionRequired {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
@@ -6857,10 +2093,7 @@ impl UpdatePaymentLink {
         self
     }
     /// Behavior after the purchase is complete.
-    pub fn after_completion(
-        mut self,
-        after_completion: impl Into<UpdatePaymentLinkAfterCompletion>,
-    ) -> Self {
+    pub fn after_completion(mut self, after_completion: impl Into<AfterCompletionParams>) -> Self {
         self.inner.after_completion = Some(after_completion.into());
         self
     }
@@ -6893,7 +2126,7 @@ impl UpdatePaymentLink {
     /// Configuration for collecting the customer's billing address. Defaults to `auto`.
     pub fn billing_address_collection(
         mut self,
-        billing_address_collection: impl Into<stripe_shared::PaymentLinkBillingAddressCollection>,
+        billing_address_collection: impl Into<stripe_shared::BillingAddressCollection>,
     ) -> Self {
         self.inner.billing_address_collection = Some(billing_address_collection.into());
         self
@@ -6901,7 +2134,7 @@ impl UpdatePaymentLink {
     /// Configure fields to gather active consent from customers.
     pub fn consent_collection(
         mut self,
-        consent_collection: impl Into<UpdatePaymentLinkConsentCollection>,
+        consent_collection: impl Into<ConsentCollectionParams>,
     ) -> Self {
         self.inner.consent_collection = Some(consent_collection.into());
         self
@@ -6925,7 +2158,7 @@ impl UpdatePaymentLink {
     /// Configures whether [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link create a [Customer](https://docs.stripe.com/api/customers).
     pub fn customer_creation(
         mut self,
-        customer_creation: impl Into<UpdatePaymentLinkCustomerCreation>,
+        customer_creation: impl Into<stripe_shared::PaymentLinkCustomerCreation>,
     ) -> Self {
         self.inner.customer_creation = Some(customer_creation.into());
         self
@@ -7001,7 +2234,7 @@ impl UpdatePaymentLink {
     /// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://docs.stripe.com/payments/checkout/free-trials).
     pub fn payment_method_collection(
         mut self,
-        payment_method_collection: impl Into<UpdatePaymentLinkPaymentMethodCollection>,
+        payment_method_collection: impl Into<stripe_shared::PaymentLinkCustomerCreation>,
     ) -> Self {
         self.inner.payment_method_collection = Some(payment_method_collection.into());
         self
@@ -7041,7 +2274,7 @@ impl UpdatePaymentLink {
     /// Configuration for collecting the customer's shipping address.
     pub fn shipping_address_collection(
         mut self,
-        shipping_address_collection: impl Into<UpdatePaymentLinkShippingAddressCollection>,
+        shipping_address_collection: impl Into<ShippingAddressCollectionParams>,
     ) -> Self {
         self.inner.shipping_address_collection = Some(shipping_address_collection.into());
         self
@@ -7056,10 +2289,7 @@ impl UpdatePaymentLink {
     }
     /// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
     /// Changing this value will also affect the hostname in the [url](https://docs.stripe.com/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
-    pub fn submit_type(
-        mut self,
-        submit_type: impl Into<stripe_shared::PaymentLinkSubmitType>,
-    ) -> Self {
+    pub fn submit_type(mut self, submit_type: impl Into<stripe_shared::SubmitType>) -> Self {
         self.inner.submit_type = Some(submit_type.into());
         self
     }
@@ -7075,7 +2305,7 @@ impl UpdatePaymentLink {
     /// Controls tax ID collection during checkout.
     pub fn tax_id_collection(
         mut self,
-        tax_id_collection: impl Into<UpdatePaymentLinkTaxIdCollection>,
+        tax_id_collection: impl Into<TaxIdCollectionParams>,
     ) -> Self {
         self.inner.tax_id_collection = Some(tax_id_collection.into());
         self
@@ -7163,6 +2393,27 @@ impl AfterCompletionRedirectParams {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+pub struct PaymentMethodReuseAgreementParams {
+    /// Determines the position and visibility of the payment method reuse agreement in the UI.
+    /// When set to `auto`, Stripe's.
+    /// defaults will be used.
+    /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+    pub position: stripe_shared::Position,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodReuseAgreementParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodReuseAgreementParams").finish_non_exhaustive()
+    }
+}
+impl PaymentMethodReuseAgreementParams {
+    pub fn new(position: impl Into<stripe_shared::Position>) -> Self {
+        Self { position: position.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomFieldOptionParam {
     /// The label for the option, displayed to the customer. Up to 100 characters.
     pub label: String,
@@ -7179,6 +2430,30 @@ impl std::fmt::Debug for CustomFieldOptionParam {
 impl CustomFieldOptionParam {
     pub fn new(label: impl Into<String>, value: impl Into<String>) -> Self {
         Self { label: label.into(), value: value.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CustomFieldLabelParam {
+    /// Custom text for the label, displayed to the customer. Up to 50 characters.
+    pub custom: String,
+    /// The type of the label.
+    #[serde(rename = "type")]
+    pub type_: stripe_shared::CreatePaymentLinkCustomFieldsLabelType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomFieldLabelParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomFieldLabelParam").finish_non_exhaustive()
+    }
+}
+impl CustomFieldLabelParam {
+    pub fn new(
+        custom: impl Into<String>,
+        type_: impl Into<stripe_shared::CreatePaymentLinkCustomFieldsLabelType>,
+    ) -> Self {
+        Self { custom: custom.into(), type_: type_.into() }
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -7217,6 +2492,36 @@ impl std::fmt::Debug for CustomFieldParams {
 impl CustomFieldParams {
     pub fn new(name: impl Into<String>, value: impl Into<String>) -> Self {
         Self { name: name.into(), value: value.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CheckoutRenderingOptionsParam {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    /// One of `exclude_tax` or `include_inclusive_tax`.
+    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_tax_display: Option<stripe_shared::AmountTaxDisplay>,
+    /// ID of the invoice rendering template to use for this invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutRenderingOptionsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CheckoutRenderingOptionsParam").finish_non_exhaustive()
+    }
+}
+impl CheckoutRenderingOptionsParam {
+    pub fn new() -> Self {
+        Self { amount_tax_display: None, template: None }
+    }
+}
+impl Default for CheckoutRenderingOptionsParam {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -7356,6 +2661,25 @@ impl CompletedSessionsParams {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+pub struct ShippingAddressCollectionParams {
+    /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
+    /// shipping locations.
+    pub allowed_countries: Vec<stripe_shared::AllowedCountries>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ShippingAddressCollectionParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ShippingAddressCollectionParams").finish_non_exhaustive()
+    }
+}
+impl ShippingAddressCollectionParams {
+    pub fn new(allowed_countries: impl Into<Vec<stripe_shared::AllowedCountries>>) -> Self {
+        Self { allowed_countries: allowed_countries.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ShippingOptionParams {
     /// The ID of the Shipping Rate to use for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7373,6 +2697,108 @@ impl ShippingOptionParams {
     }
 }
 impl Default for ShippingOptionParams {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct EndBehavior {
+    /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
+    pub missing_payment_method: stripe_shared::MissingPaymentMethod,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for EndBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("EndBehavior").finish_non_exhaustive()
+    }
+}
+impl EndBehavior {
+    pub fn new(missing_payment_method: impl Into<stripe_shared::MissingPaymentMethod>) -> Self {
+        Self { missing_payment_method: missing_payment_method.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct TaxIdCollectionParams {
+    /// Enable tax ID collection during checkout. Defaults to `false`.
+    pub enabled: bool,
+    /// Describes whether a tax ID is required during checkout.
+    /// Defaults to `never`.
+    /// You can't set this parameter if `ui_mode` is `custom`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub required: Option<stripe_shared::Required>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxIdCollectionParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxIdCollectionParams").finish_non_exhaustive()
+    }
+}
+impl TaxIdCollectionParams {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), required: None }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct AfterCompletionParams {
+    /// Configuration when `type=hosted_confirmation`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hosted_confirmation: Option<AfterCompletionConfirmationPageParams>,
+    /// Configuration when `type=redirect`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redirect: Option<AfterCompletionRedirectParams>,
+    /// The specified behavior after the purchase is complete. Either `redirect` or `hosted_confirmation`.
+    #[serde(rename = "type")]
+    pub type_: stripe_shared::CreatePaymentLinkAfterCompletionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AfterCompletionParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AfterCompletionParams").finish_non_exhaustive()
+    }
+}
+impl AfterCompletionParams {
+    pub fn new(type_: impl Into<stripe_shared::CreatePaymentLinkAfterCompletionType>) -> Self {
+        Self { hosted_confirmation: None, redirect: None, type_: type_.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConsentCollectionParams {
+    /// Determines the display of payment method reuse agreement text in the UI.
+    /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_reuse_agreement: Option<PaymentMethodReuseAgreementParams>,
+    /// If set to `auto`, enables the collection of customer consent for promotional communications.
+    /// The Checkout.
+    /// Session will determine whether to display an option to opt into promotional communication
+    /// from the merchant depending on the customer's locale.
+    /// Only available to US merchants and US customers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotions: Option<stripe_shared::Promotions>,
+    /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
+    /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service: Option<stripe_shared::TermsOfService>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConsentCollectionParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConsentCollectionParams").finish_non_exhaustive()
+    }
+}
+impl ConsentCollectionParams {
+    pub fn new() -> Self {
+        Self { payment_method_reuse_agreement: None, promotions: None, terms_of_service: None }
+    }
+}
+impl Default for ConsentCollectionParams {
     fn default() -> Self {
         Self::new()
     }
@@ -7505,3 +2931,326 @@ impl RestrictionsParams {
         Self { completed_sessions: completed_sessions.into() }
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct TrialSettingsConfig {
+    /// Defines how the subscription should behave when the user's free trial ends.
+    pub end_behavior: EndBehavior,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TrialSettingsConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TrialSettingsConfig").finish_non_exhaustive()
+    }
+}
+impl TrialSettingsConfig {
+    pub fn new(end_behavior: impl Into<EndBehavior>) -> Self {
+        Self { end_behavior: end_behavior.into() }
+    }
+}
+/// The specified behavior after the purchase is complete. Either `redirect` or `hosted_confirmation`.
+pub type CreatePaymentLinkAfterCompletionType = stripe_shared::CreatePaymentLinkAfterCompletionType;
+/// Type of the account referenced in the request.
+pub type CreatePaymentLinkAutomaticTaxLiabilityType = stripe_shared::CreateInvoiceIssuerType;
+/// Configuration for collecting the customer's billing address. Defaults to `auto`.
+pub type CreatePaymentLinkBillingAddressCollection = stripe_shared::BillingAddressCollection;
+/// Determines the position and visibility of the payment method reuse agreement in the UI.
+/// When set to `auto`, Stripe's.
+/// defaults will be used.
+/// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+pub type CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition =
+    stripe_shared::Position;
+/// If set to `auto`, enables the collection of customer consent for promotional communications.
+/// The Checkout.
+/// Session will determine whether to display an option to opt into promotional communication
+/// from the merchant depending on the customer's locale.
+/// Only available to US merchants and US customers.
+pub type CreatePaymentLinkConsentCollectionPromotions = stripe_shared::Promotions;
+/// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
+/// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
+pub type CreatePaymentLinkConsentCollectionTermsOfService = stripe_shared::TermsOfService;
+/// The type of the label.
+pub type CreatePaymentLinkCustomFieldsLabelType =
+    stripe_shared::CreatePaymentLinkCustomFieldsLabelType;
+/// The type of the field.
+pub type CreatePaymentLinkCustomFieldsType = stripe_shared::CreatePaymentLinkCustomFieldsType;
+/// Configures whether [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link create a [Customer](https://docs.stripe.com/api/customers).
+pub type CreatePaymentLinkCustomerCreation = stripe_shared::PaymentLinkCustomerCreation;
+/// Type of the account referenced in the request.
+pub type CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+/// One of `exclude_tax` or `include_inclusive_tax`.
+/// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+/// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+pub type CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay =
+    stripe_shared::AmountTaxDisplay;
+/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
+pub type CreatePaymentLinkLineItemsPriceDataRecurringInterval = stripe_shared::PlanInterval;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type CreatePaymentLinkLineItemsPriceDataTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Controls when the funds will be captured from the customer's account.
+pub type CreatePaymentLinkPaymentIntentDataCaptureMethod = stripe_shared::CaptureMethod;
+/// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
+///
+/// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
+///
+/// When setting this to `off_session`, Checkout will show a notice to the customer that their payment details will be saved and used for future payments.
+///
+/// If a Customer has been provided or Checkout creates a new Customer,Checkout will attach the payment method to the Customer.
+///
+/// If Checkout does not create a Customer, the payment method is not attached to a Customer.
+/// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.
+///
+/// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
+pub type CreatePaymentLinkPaymentIntentDataSetupFutureUsage = stripe_shared::CreateSetupIntentUsage;
+/// Specify whether Checkout should collect a payment method.
+/// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.
+///
+/// Can only be set in `subscription` mode. Defaults to `always`.
+///
+/// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://docs.stripe.com/payments/checkout/free-trials).
+pub type CreatePaymentLinkPaymentMethodCollection = stripe_shared::PaymentLinkCustomerCreation;
+/// The card brands to block.
+/// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
+pub type CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked =
+    stripe_shared::BrandsBlocked;
+/// The list of payment method types that customers can use.
+/// If no value is passed, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods) (20+ payment methods [supported](https://docs.stripe.com/payments/payment-methods/integration-options#payment-method-product-support)).
+pub type CreatePaymentLinkPaymentMethodTypes = stripe_shared::PaymentLinkPaymentMethodTypes;
+/// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
+/// shipping locations.
+pub type CreatePaymentLinkShippingAddressCollectionAllowedCountries =
+    stripe_shared::AllowedCountries;
+/// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
+/// Changing this value will also affect the hostname in the [url](https://docs.stripe.com/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
+pub type CreatePaymentLinkSubmitType = stripe_shared::SubmitType;
+/// Type of the account referenced in the request.
+pub type CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
+pub type CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod =
+    stripe_shared::MissingPaymentMethod;
+/// Describes whether a tax ID is required during checkout.
+/// Defaults to `never`.
+/// You can't set this parameter if `ui_mode` is `custom`.
+pub type CreatePaymentLinkTaxIdCollectionRequired = stripe_shared::Required;
+/// The specified behavior after the purchase is complete. Either `redirect` or `hosted_confirmation`.
+pub type UpdatePaymentLinkAfterCompletionType = stripe_shared::CreatePaymentLinkAfterCompletionType;
+/// Type of the account referenced in the request.
+pub type UpdatePaymentLinkAutomaticTaxLiabilityType = stripe_shared::CreateInvoiceIssuerType;
+/// Configuration for collecting the customer's billing address. Defaults to `auto`.
+pub type UpdatePaymentLinkBillingAddressCollection = stripe_shared::BillingAddressCollection;
+/// Determines the position and visibility of the payment method reuse agreement in the UI.
+/// When set to `auto`, Stripe's.
+/// defaults will be used.
+/// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+pub type UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition =
+    stripe_shared::Position;
+/// If set to `auto`, enables the collection of customer consent for promotional communications.
+/// The Checkout.
+/// Session will determine whether to display an option to opt into promotional communication
+/// from the merchant depending on the customer's locale.
+/// Only available to US merchants and US customers.
+pub type UpdatePaymentLinkConsentCollectionPromotions = stripe_shared::Promotions;
+/// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
+/// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
+pub type UpdatePaymentLinkConsentCollectionTermsOfService = stripe_shared::TermsOfService;
+/// The type of the label.
+pub type UpdatePaymentLinkCustomFieldsLabelType =
+    stripe_shared::CreatePaymentLinkCustomFieldsLabelType;
+/// The type of the field.
+pub type UpdatePaymentLinkCustomFieldsType = stripe_shared::CreatePaymentLinkCustomFieldsType;
+/// Configures whether [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link create a [Customer](https://docs.stripe.com/api/customers).
+pub type UpdatePaymentLinkCustomerCreation = stripe_shared::PaymentLinkCustomerCreation;
+/// Type of the account referenced in the request.
+pub type UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+/// One of `exclude_tax` or `include_inclusive_tax`.
+/// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+/// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+pub type UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay =
+    stripe_shared::AmountTaxDisplay;
+/// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
+///
+/// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
+///
+/// When setting this to `off_session`, Checkout will show a notice to the customer that their payment details will be saved and used for future payments.
+///
+/// If a Customer has been provided or Checkout creates a new Customer,Checkout will attach the payment method to the Customer.
+///
+/// If Checkout does not create a Customer, the payment method is not attached to a Customer.
+/// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.
+///
+/// When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
+pub type UpdatePaymentLinkPaymentIntentDataSetupFutureUsage = stripe_shared::CreateSetupIntentUsage;
+/// Specify whether Checkout should collect a payment method.
+/// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.
+///
+/// Can only be set in `subscription` mode. Defaults to `always`.
+///
+/// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://docs.stripe.com/payments/checkout/free-trials).
+pub type UpdatePaymentLinkPaymentMethodCollection = stripe_shared::PaymentLinkCustomerCreation;
+/// The card brands to block.
+/// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
+pub type UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked =
+    stripe_shared::BrandsBlocked;
+/// The list of payment method types that customers can use.
+/// Pass an empty string to enable dynamic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
+pub type UpdatePaymentLinkPaymentMethodTypes = stripe_shared::PaymentLinkPaymentMethodTypes;
+/// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
+/// shipping locations.
+pub type UpdatePaymentLinkShippingAddressCollectionAllowedCountries =
+    stripe_shared::AllowedCountries;
+/// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
+/// Changing this value will also affect the hostname in the [url](https://docs.stripe.com/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
+pub type UpdatePaymentLinkSubmitType = stripe_shared::SubmitType;
+/// Type of the account referenced in the request.
+pub type UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType =
+    stripe_shared::CreateInvoiceIssuerType;
+/// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
+pub type UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod =
+    stripe_shared::MissingPaymentMethod;
+/// Describes whether a tax ID is required during checkout.
+/// Defaults to `never`.
+/// You can't set this parameter if `ui_mode` is `custom`.
+pub type UpdatePaymentLinkTaxIdCollectionRequired = stripe_shared::Required;
+/// Configuration when `type=hosted_confirmation`.
+pub type CreatePaymentLinkAfterCompletionHostedConfirmation = AfterCompletionConfirmationPageParams;
+/// Configuration when `type=redirect`.
+pub type CreatePaymentLinkAfterCompletionRedirect = AfterCompletionRedirectParams;
+/// Determines the display of payment method reuse agreement text in the UI.
+/// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
+pub type CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement =
+    PaymentMethodReuseAgreementParams;
+/// The options available for the customer to select. Up to 200 options allowed.
+pub type CreatePaymentLinkCustomFieldsDropdownOptions = CustomFieldOptionParam;
+/// The label for the field, displayed to the customer.
+pub type CreatePaymentLinkCustomFieldsLabel = CustomFieldLabelParam;
+/// Custom text that should be displayed after the payment confirmation button.
+pub type CreatePaymentLinkCustomTextAfterSubmit = CustomTextPositionParam;
+/// Custom text that should be displayed alongside shipping address collection.
+pub type CreatePaymentLinkCustomTextShippingAddress = CustomTextPositionParam;
+/// Custom text that should be displayed alongside the payment confirmation button.
+pub type CreatePaymentLinkCustomTextSubmit = CustomTextPositionParam;
+/// Custom text that should be displayed in place of the default terms of service agreement text.
+pub type CreatePaymentLinkCustomTextTermsOfServiceAcceptance = CustomTextPositionParam;
+/// Default custom fields to be displayed on invoices for this customer.
+pub type CreatePaymentLinkInvoiceCreationInvoiceDataCustomFields = CustomFieldParams;
+/// Default options for invoice PDF rendering for this customer.
+pub type CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions =
+    CheckoutRenderingOptionsParam;
+/// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
+pub type CreatePaymentLinkLineItemsAdjustableQuantity = AdjustableQuantityParams;
+/// Controls settings applied for collecting the customer's business name.
+pub type CreatePaymentLinkNameCollectionBusiness = NameCollectionBusinessParams;
+/// Controls settings applied for collecting the customer's individual name.
+pub type CreatePaymentLinkNameCollectionIndividual = NameCollectionIndividualParams;
+/// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
+pub type CreatePaymentLinkOptionalItemsAdjustableQuantity = OptionalItemAdjustableQuantityParams;
+/// Controls phone number collection settings during checkout.
+///
+/// We recommend that you review your privacy policy and check with your legal contacts.
+pub type CreatePaymentLinkPhoneNumberCollection = PhoneNumberCollectionParams;
+/// Configuration for the `completed_sessions` restriction type.
+pub type CreatePaymentLinkRestrictionsCompletedSessions = CompletedSessionsParams;
+/// Configuration for collecting the customer's shipping address.
+pub type CreatePaymentLinkShippingAddressCollection = ShippingAddressCollectionParams;
+/// The shipping rate options to apply to [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link.
+pub type CreatePaymentLinkShippingOptions = ShippingOptionParams;
+/// Defines how the subscription should behave when the user's free trial ends.
+pub type CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior = EndBehavior;
+/// Controls tax ID collection during checkout.
+pub type CreatePaymentLinkTaxIdCollection = TaxIdCollectionParams;
+/// Configuration when `type=hosted_confirmation`.
+pub type UpdatePaymentLinkAfterCompletionHostedConfirmation = AfterCompletionConfirmationPageParams;
+/// Configuration when `type=redirect`.
+pub type UpdatePaymentLinkAfterCompletionRedirect = AfterCompletionRedirectParams;
+/// Determines the display of payment method reuse agreement text in the UI.
+/// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
+pub type UpdatePaymentLinkConsentCollectionPaymentMethodReuseAgreement =
+    PaymentMethodReuseAgreementParams;
+/// The options available for the customer to select. Up to 200 options allowed.
+pub type UpdatePaymentLinkCustomFieldsDropdownOptions = CustomFieldOptionParam;
+/// The label for the field, displayed to the customer.
+pub type UpdatePaymentLinkCustomFieldsLabel = CustomFieldLabelParam;
+/// Custom text that should be displayed after the payment confirmation button.
+pub type UpdatePaymentLinkCustomTextAfterSubmit = CustomTextPositionParam;
+/// Custom text that should be displayed alongside shipping address collection.
+pub type UpdatePaymentLinkCustomTextShippingAddress = CustomTextPositionParam;
+/// Custom text that should be displayed alongside the payment confirmation button.
+pub type UpdatePaymentLinkCustomTextSubmit = CustomTextPositionParam;
+/// Custom text that should be displayed in place of the default terms of service agreement text.
+pub type UpdatePaymentLinkCustomTextTermsOfServiceAcceptance = CustomTextPositionParam;
+/// Default custom fields to be displayed on invoices for this customer.
+pub type UpdatePaymentLinkInvoiceCreationInvoiceDataCustomFields = CustomFieldParams;
+/// Default options for invoice PDF rendering for this customer.
+pub type UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions =
+    CheckoutRenderingOptionsParam;
+/// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
+pub type UpdatePaymentLinkLineItemsAdjustableQuantity = AdjustableQuantityParams;
+/// Controls settings applied for collecting the customer's business name.
+pub type UpdatePaymentLinkNameCollectionBusiness = NameCollectionBusinessParams;
+/// Controls settings applied for collecting the customer's individual name.
+pub type UpdatePaymentLinkNameCollectionIndividual = NameCollectionIndividualParams;
+/// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
+pub type UpdatePaymentLinkOptionalItemsAdjustableQuantity = OptionalItemAdjustableQuantityParams;
+/// Controls phone number collection settings during checkout.
+///
+/// We recommend that you review your privacy policy and check with your legal contacts.
+pub type UpdatePaymentLinkPhoneNumberCollection = PhoneNumberCollectionParams;
+/// Configuration for the `completed_sessions` restriction type.
+pub type UpdatePaymentLinkRestrictionsCompletedSessions = CompletedSessionsParams;
+/// Configuration for collecting the customer's shipping address.
+pub type UpdatePaymentLinkShippingAddressCollection = ShippingAddressCollectionParams;
+/// The shipping rate options to apply to [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link.
+pub type UpdatePaymentLinkShippingOptions = ShippingOptionParams;
+/// Defines how the subscription should behave when the user's free trial ends.
+pub type UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior = EndBehavior;
+/// Controls tax ID collection during checkout.
+pub type UpdatePaymentLinkTaxIdCollection = TaxIdCollectionParams;
+/// Behavior after the purchase is complete.
+pub type CreatePaymentLinkAfterCompletion = AfterCompletionParams;
+/// Configure fields to gather active consent from customers.
+pub type CreatePaymentLinkConsentCollection = ConsentCollectionParams;
+/// Configuration for `type=dropdown` fields.
+pub type CreatePaymentLinkCustomFieldsDropdown = CustomFieldDropdownParam;
+/// Display additional text for your customers using custom text.
+/// You can't set this parameter if `ui_mode` is `custom`.
+pub type CreatePaymentLinkCustomText = CustomTextParam;
+/// Controls settings applied for collecting the customer's name.
+pub type CreatePaymentLinkNameCollection = NameCollectionParams;
+/// A list of optional items the customer can add to their order at checkout.
+/// Use this parameter to pass one-time or recurring [Prices](https://docs.stripe.com/api/prices).
+/// There is a maximum of 10 optional items allowed on a payment link, and the existing limits on the number of line items allowed on a payment link apply to the combined number of line items and optional items.
+/// There is a maximum of 20 combined line items and optional items.
+pub type CreatePaymentLinkOptionalItems = OptionalItemParams;
+/// Settings that restrict the usage of a payment link.
+pub type CreatePaymentLinkRestrictions = RestrictionsParams;
+/// Settings related to subscription trials.
+pub type CreatePaymentLinkSubscriptionDataTrialSettings = TrialSettingsConfig;
+/// Behavior after the purchase is complete.
+pub type UpdatePaymentLinkAfterCompletion = AfterCompletionParams;
+/// Configure fields to gather active consent from customers.
+pub type UpdatePaymentLinkConsentCollection = ConsentCollectionParams;
+/// Configuration for `type=dropdown` fields.
+pub type UpdatePaymentLinkCustomFieldsDropdown = CustomFieldDropdownParam;
+/// Display additional text for your customers using custom text.
+/// You can't set this parameter if `ui_mode` is `custom`.
+pub type UpdatePaymentLinkCustomText = CustomTextParam;
+/// Controls settings applied for collecting the customer's name.
+pub type UpdatePaymentLinkNameCollection = NameCollectionParams;
+/// A list of optional items the customer can add to their order at checkout.
+/// Use this parameter to pass one-time or recurring [Prices](https://docs.stripe.com/api/prices).
+/// There is a maximum of 10 optional items allowed on a payment link, and the existing limits on the number of line items allowed on a payment link apply to the combined number of line items and optional items.
+/// There is a maximum of 20 combined line items and optional items.
+pub type UpdatePaymentLinkOptionalItems = OptionalItemParams;
+/// Settings that restrict the usage of a payment link.
+pub type UpdatePaymentLinkRestrictions = RestrictionsParams;
+/// Settings related to subscription trials.
+pub type UpdatePaymentLinkSubscriptionDataTrialSettings = TrialSettingsConfig;

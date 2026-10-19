@@ -10,7 +10,7 @@ pub struct BankConnectionsResourceOwnershipRefresh {
     /// Measured in seconds since the Unix epoch.
     pub next_refresh_available_at: Option<stripe_types::Timestamp>,
     /// The status of the last refresh attempt.
-    pub status: BankConnectionsResourceOwnershipRefreshStatus,
+    pub status: stripe_shared::ChargeStatus,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for BankConnectionsResourceOwnershipRefresh {
@@ -22,7 +22,7 @@ impl std::fmt::Debug for BankConnectionsResourceOwnershipRefresh {
 pub struct BankConnectionsResourceOwnershipRefreshBuilder {
     last_attempted_at: Option<stripe_types::Timestamp>,
     next_refresh_available_at: Option<Option<stripe_types::Timestamp>>,
-    status: Option<BankConnectionsResourceOwnershipRefreshStatus>,
+    status: Option<stripe_shared::ChargeStatus>,
 }
 
 #[allow(
@@ -124,95 +124,4 @@ const _: () = {
     }
 };
 /// The status of the last refresh attempt.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BankConnectionsResourceOwnershipRefreshStatus {
-    Failed,
-    Pending,
-    Succeeded,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BankConnectionsResourceOwnershipRefreshStatus {
-    pub fn as_str(&self) -> &str {
-        use BankConnectionsResourceOwnershipRefreshStatus::*;
-        match self {
-            Failed => "failed",
-            Pending => "pending",
-            Succeeded => "succeeded",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BankConnectionsResourceOwnershipRefreshStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BankConnectionsResourceOwnershipRefreshStatus::*;
-        match s {
-            "failed" => Ok(Failed),
-            "pending" => Ok(Pending),
-            "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceOwnershipRefreshStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BankConnectionsResourceOwnershipRefreshStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BankConnectionsResourceOwnershipRefreshStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BankConnectionsResourceOwnershipRefreshStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BankConnectionsResourceOwnershipRefreshStatus))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for BankConnectionsResourceOwnershipRefreshStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BankConnectionsResourceOwnershipRefreshStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<BankConnectionsResourceOwnershipRefreshStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(BankConnectionsResourceOwnershipRefreshStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(BankConnectionsResourceOwnershipRefreshStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BankConnectionsResourceOwnershipRefreshStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type BankConnectionsResourceOwnershipRefreshStatus = stripe_shared::ChargeStatus;

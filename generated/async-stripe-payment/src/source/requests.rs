@@ -361,7 +361,7 @@ struct CreateSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     flow: Option<CreateSourceFlow>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    mandate: Option<CreateSourceMandate>,
+    mandate: Option<MandateParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -482,409 +482,6 @@ impl serde::Serialize for CreateSourceFlow {
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreateSourceFlow {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateSourceMandate {
-    /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub acceptance: Option<CreateSourceMandateAcceptance>,
-    /// The amount specified by the mandate. (Leave null for a mandate covering all amounts)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// The currency specified by the mandate. (Must match `currency` of the source)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    /// The interval of debits permitted by the mandate.
-    /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<CreateSourceMandateInterval>,
-    /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
-    /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub notification_method: Option<CreateSourceMandateNotificationMethod>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSourceMandate {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateSourceMandate").finish_non_exhaustive()
-    }
-}
-impl CreateSourceMandate {
-    pub fn new() -> Self {
-        Self {
-            acceptance: None,
-            amount: None,
-            currency: None,
-            interval: None,
-            notification_method: None,
-        }
-    }
-}
-impl Default for CreateSourceMandate {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateSourceMandateAcceptance {
-    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub date: Option<stripe_types::Timestamp>,
-    /// The IP address from which the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip: Option<String>,
-    /// The parameters required to store a mandate accepted offline.
-    /// Should only be set if `mandate[type]` is `offline`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub offline: Option<MandateOfflineAcceptanceParams>,
-    /// The parameters required to store a mandate accepted online.
-    /// Should only be set if `mandate[type]` is `online`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub online: Option<MandateOnlineAcceptanceParams>,
-    /// The status of the mandate acceptance.
-    /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
-    pub status: CreateSourceMandateAcceptanceStatus,
-    /// The type of acceptance information included with the mandate. Either `online` or `offline`
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<CreateSourceMandateAcceptanceType>,
-    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_agent: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSourceMandateAcceptance {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateSourceMandateAcceptance").finish_non_exhaustive()
-    }
-}
-impl CreateSourceMandateAcceptance {
-    pub fn new(status: impl Into<CreateSourceMandateAcceptanceStatus>) -> Self {
-        Self {
-            date: None,
-            ip: None,
-            offline: None,
-            online: None,
-            status: status.into(),
-            type_: None,
-            user_agent: None,
-        }
-    }
-}
-/// The status of the mandate acceptance.
-/// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSourceMandateAcceptanceStatus {
-    Accepted,
-    Pending,
-    Refused,
-    Revoked,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSourceMandateAcceptanceStatus {
-    pub fn as_str(&self) -> &str {
-        use CreateSourceMandateAcceptanceStatus::*;
-        match self {
-            Accepted => "accepted",
-            Pending => "pending",
-            Refused => "refused",
-            Revoked => "revoked",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSourceMandateAcceptanceStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSourceMandateAcceptanceStatus::*;
-        match s {
-            "accepted" => Ok(Accepted),
-            "pending" => Ok(Pending),
-            "refused" => Ok(Refused),
-            "revoked" => Ok(Revoked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateAcceptanceStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSourceMandateAcceptanceStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSourceMandateAcceptanceStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSourceMandateAcceptanceStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSourceMandateAcceptanceStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSourceMandateAcceptanceStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSourceMandateAcceptanceStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The type of acceptance information included with the mandate. Either `online` or `offline`
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSourceMandateAcceptanceType {
-    Offline,
-    Online,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSourceMandateAcceptanceType {
-    pub fn as_str(&self) -> &str {
-        use CreateSourceMandateAcceptanceType::*;
-        match self {
-            Offline => "offline",
-            Online => "online",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSourceMandateAcceptanceType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSourceMandateAcceptanceType::*;
-        match s {
-            "offline" => Ok(Offline),
-            "online" => Ok(Online),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateAcceptanceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSourceMandateAcceptanceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSourceMandateAcceptanceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSourceMandateAcceptanceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSourceMandateAcceptanceType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSourceMandateAcceptanceType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSourceMandateAcceptanceType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The interval of debits permitted by the mandate.
-/// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSourceMandateInterval {
-    OneTime,
-    Scheduled,
-    Variable,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSourceMandateInterval {
-    pub fn as_str(&self) -> &str {
-        use CreateSourceMandateInterval::*;
-        match self {
-            OneTime => "one_time",
-            Scheduled => "scheduled",
-            Variable => "variable",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSourceMandateInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSourceMandateInterval::*;
-        match s {
-            "one_time" => Ok(OneTime),
-            "scheduled" => Ok(Scheduled),
-            "variable" => Ok(Variable),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSourceMandateInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSourceMandateInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSourceMandateInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSourceMandateInterval)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSourceMandateInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSourceMandateInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
-/// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSourceMandateNotificationMethod {
-    DeprecatedNone,
-    Email,
-    Manual,
-    None,
-    StripeEmail,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSourceMandateNotificationMethod {
-    pub fn as_str(&self) -> &str {
-        use CreateSourceMandateNotificationMethod::*;
-        match self {
-            DeprecatedNone => "deprecated_none",
-            Email => "email",
-            Manual => "manual",
-            None => "none",
-            StripeEmail => "stripe_email",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSourceMandateNotificationMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSourceMandateNotificationMethod::*;
-        match s {
-            "deprecated_none" => Ok(DeprecatedNone),
-            "email" => Ok(Email),
-            "manual" => Ok(Manual),
-            "none" => Ok(None),
-            "stripe_email" => Ok(StripeEmail),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateNotificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSourceMandateNotificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSourceMandateNotificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSourceMandateNotificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSourceMandateNotificationMethod)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSourceMandateNotificationMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSourceMandateNotificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -1026,7 +623,7 @@ impl CreateSourceRedirect {
 pub struct CreateSourceSourceOrder {
     /// List of items constituting the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<CreateSourceSourceOrderItems>>,
+    pub items: Option<Vec<OrderItemSpecs>>,
     /// Shipping address for the order.
     /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1046,128 +643,6 @@ impl CreateSourceSourceOrder {
 impl Default for CreateSourceSourceOrder {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// List of items constituting the order.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateSourceSourceOrderItems {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    /// The ID of the SKU being ordered.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub parent: Option<String>,
-    /// The quantity of this order item.
-    /// When type is `sku`, this is the number of instances of the SKU to be ordered.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<CreateSourceSourceOrderItemsType>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSourceSourceOrderItems {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateSourceSourceOrderItems").finish_non_exhaustive()
-    }
-}
-impl CreateSourceSourceOrderItems {
-    pub fn new() -> Self {
-        Self {
-            amount: None,
-            currency: None,
-            description: None,
-            parent: None,
-            quantity: None,
-            type_: None,
-        }
-    }
-}
-impl Default for CreateSourceSourceOrderItems {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateSourceSourceOrderItemsType {
-    Discount,
-    Shipping,
-    Sku,
-    Tax,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateSourceSourceOrderItemsType {
-    pub fn as_str(&self) -> &str {
-        use CreateSourceSourceOrderItemsType::*;
-        match self {
-            Discount => "discount",
-            Shipping => "shipping",
-            Sku => "sku",
-            Tax => "tax",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSourceSourceOrderItemsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSourceSourceOrderItemsType::*;
-        match s {
-            "discount" => Ok(Discount),
-            "shipping" => Ok(Shipping),
-            "sku" => Ok(Sku),
-            "tax" => Ok(Tax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceSourceOrderItemsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateSourceSourceOrderItemsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateSourceSourceOrderItemsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateSourceSourceOrderItemsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateSourceSourceOrderItemsType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateSourceSourceOrderItemsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateSourceSourceOrderItemsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -1288,7 +763,7 @@ impl CreateSource {
         self
     }
     /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-    pub fn mandate(mut self, mandate: impl Into<CreateSourceMandate>) -> Self {
+    pub fn mandate(mut self, mandate: impl Into<MandateParams>) -> Self {
         self.inner.mandate = Some(mandate.into());
         self
     }
@@ -1389,7 +864,7 @@ struct UpdateSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    mandate: Option<UpdateSourceMandate>,
+    mandate: Option<MandateParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1415,409 +890,6 @@ impl UpdateSourceBuilder {
         }
     }
 }
-/// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateSourceMandate {
-    /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub acceptance: Option<UpdateSourceMandateAcceptance>,
-    /// The amount specified by the mandate. (Leave null for a mandate covering all amounts)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// The currency specified by the mandate. (Must match `currency` of the source)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    /// The interval of debits permitted by the mandate.
-    /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<UpdateSourceMandateInterval>,
-    /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
-    /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub notification_method: Option<UpdateSourceMandateNotificationMethod>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSourceMandate {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateSourceMandate").finish_non_exhaustive()
-    }
-}
-impl UpdateSourceMandate {
-    pub fn new() -> Self {
-        Self {
-            acceptance: None,
-            amount: None,
-            currency: None,
-            interval: None,
-            notification_method: None,
-        }
-    }
-}
-impl Default for UpdateSourceMandate {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateSourceMandateAcceptance {
-    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub date: Option<stripe_types::Timestamp>,
-    /// The IP address from which the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip: Option<String>,
-    /// The parameters required to store a mandate accepted offline.
-    /// Should only be set if `mandate[type]` is `offline`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub offline: Option<MandateOfflineAcceptanceParams>,
-    /// The parameters required to store a mandate accepted online.
-    /// Should only be set if `mandate[type]` is `online`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub online: Option<MandateOnlineAcceptanceParams>,
-    /// The status of the mandate acceptance.
-    /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
-    pub status: UpdateSourceMandateAcceptanceStatus,
-    /// The type of acceptance information included with the mandate. Either `online` or `offline`
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<UpdateSourceMandateAcceptanceType>,
-    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_agent: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSourceMandateAcceptance {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateSourceMandateAcceptance").finish_non_exhaustive()
-    }
-}
-impl UpdateSourceMandateAcceptance {
-    pub fn new(status: impl Into<UpdateSourceMandateAcceptanceStatus>) -> Self {
-        Self {
-            date: None,
-            ip: None,
-            offline: None,
-            online: None,
-            status: status.into(),
-            type_: None,
-            user_agent: None,
-        }
-    }
-}
-/// The status of the mandate acceptance.
-/// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSourceMandateAcceptanceStatus {
-    Accepted,
-    Pending,
-    Refused,
-    Revoked,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSourceMandateAcceptanceStatus {
-    pub fn as_str(&self) -> &str {
-        use UpdateSourceMandateAcceptanceStatus::*;
-        match self {
-            Accepted => "accepted",
-            Pending => "pending",
-            Refused => "refused",
-            Revoked => "revoked",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSourceMandateAcceptanceStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSourceMandateAcceptanceStatus::*;
-        match s {
-            "accepted" => Ok(Accepted),
-            "pending" => Ok(Pending),
-            "refused" => Ok(Refused),
-            "revoked" => Ok(Revoked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateAcceptanceStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSourceMandateAcceptanceStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSourceMandateAcceptanceStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSourceMandateAcceptanceStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSourceMandateAcceptanceStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSourceMandateAcceptanceStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSourceMandateAcceptanceStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The type of acceptance information included with the mandate. Either `online` or `offline`
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSourceMandateAcceptanceType {
-    Offline,
-    Online,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSourceMandateAcceptanceType {
-    pub fn as_str(&self) -> &str {
-        use UpdateSourceMandateAcceptanceType::*;
-        match self {
-            Offline => "offline",
-            Online => "online",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSourceMandateAcceptanceType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSourceMandateAcceptanceType::*;
-        match s {
-            "offline" => Ok(Offline),
-            "online" => Ok(Online),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateAcceptanceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSourceMandateAcceptanceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSourceMandateAcceptanceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSourceMandateAcceptanceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSourceMandateAcceptanceType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSourceMandateAcceptanceType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSourceMandateAcceptanceType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The interval of debits permitted by the mandate.
-/// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSourceMandateInterval {
-    OneTime,
-    Scheduled,
-    Variable,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSourceMandateInterval {
-    pub fn as_str(&self) -> &str {
-        use UpdateSourceMandateInterval::*;
-        match self {
-            OneTime => "one_time",
-            Scheduled => "scheduled",
-            Variable => "variable",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSourceMandateInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSourceMandateInterval::*;
-        match s {
-            "one_time" => Ok(OneTime),
-            "scheduled" => Ok(Scheduled),
-            "variable" => Ok(Variable),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSourceMandateInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSourceMandateInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSourceMandateInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSourceMandateInterval)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSourceMandateInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSourceMandateInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
-/// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSourceMandateNotificationMethod {
-    DeprecatedNone,
-    Email,
-    Manual,
-    None,
-    StripeEmail,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSourceMandateNotificationMethod {
-    pub fn as_str(&self) -> &str {
-        use UpdateSourceMandateNotificationMethod::*;
-        match self {
-            DeprecatedNone => "deprecated_none",
-            Email => "email",
-            Manual => "manual",
-            None => "none",
-            StripeEmail => "stripe_email",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSourceMandateNotificationMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSourceMandateNotificationMethod::*;
-        match s {
-            "deprecated_none" => Ok(DeprecatedNone),
-            "email" => Ok(Email),
-            "manual" => Ok(Manual),
-            "none" => Ok(None),
-            "stripe_email" => Ok(StripeEmail),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateNotificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSourceMandateNotificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSourceMandateNotificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSourceMandateNotificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSourceMandateNotificationMethod)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSourceMandateNotificationMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSourceMandateNotificationMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Information about the items and shipping associated with the source.
 /// Required for transactional credit (for example Klarna) sources before you can charge it.
 #[derive(Clone, Eq, PartialEq)]
@@ -1826,7 +898,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateNotificationMethod {
 pub struct UpdateSourceSourceOrder {
     /// List of items constituting the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<UpdateSourceSourceOrderItems>>,
+    pub items: Option<Vec<OrderItemSpecs>>,
     /// Shipping address for the order.
     /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1846,128 +918,6 @@ impl UpdateSourceSourceOrder {
 impl Default for UpdateSourceSourceOrder {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// List of items constituting the order.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateSourceSourceOrderItems {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    /// The ID of the SKU being ordered.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub parent: Option<String>,
-    /// The quantity of this order item.
-    /// When type is `sku`, this is the number of instances of the SKU to be ordered.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<UpdateSourceSourceOrderItemsType>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSourceSourceOrderItems {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateSourceSourceOrderItems").finish_non_exhaustive()
-    }
-}
-impl UpdateSourceSourceOrderItems {
-    pub fn new() -> Self {
-        Self {
-            amount: None,
-            currency: None,
-            description: None,
-            parent: None,
-            quantity: None,
-            type_: None,
-        }
-    }
-}
-impl Default for UpdateSourceSourceOrderItems {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateSourceSourceOrderItemsType {
-    Discount,
-    Shipping,
-    Sku,
-    Tax,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateSourceSourceOrderItemsType {
-    pub fn as_str(&self) -> &str {
-        use UpdateSourceSourceOrderItemsType::*;
-        match self {
-            Discount => "discount",
-            Shipping => "shipping",
-            Sku => "sku",
-            Tax => "tax",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSourceSourceOrderItemsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSourceSourceOrderItemsType::*;
-        match s {
-            "discount" => Ok(Discount),
-            "shipping" => Ok(Shipping),
-            "sku" => Ok(Sku),
-            "tax" => Ok(Tax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceSourceOrderItemsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateSourceSourceOrderItemsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSourceSourceOrderItemsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSourceSourceOrderItemsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSourceSourceOrderItemsType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateSourceSourceOrderItemsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSourceSourceOrderItemsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates the specified source by setting the values of the parameters passed.
@@ -2005,7 +955,7 @@ impl UpdateSource {
         self
     }
     /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-    pub fn mandate(mut self, mandate: impl Into<UpdateSourceMandate>) -> Self {
+    pub fn mandate(mut self, mandate: impl Into<MandateParams>) -> Self {
         self.inner.mandate = Some(mandate.into());
         self
     }
@@ -2220,6 +1170,50 @@ impl Default for SourceAddress {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+pub struct OrderItemSpecs {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The ID of the SKU being ordered.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parent: Option<String>,
+    /// The quantity of this order item.
+    /// When type is `sku`, this is the number of instances of the SKU to be ordered.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<stripe_shared::CreateSourceSourceOrderItemsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OrderItemSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OrderItemSpecs").finish_non_exhaustive()
+    }
+}
+impl OrderItemSpecs {
+    pub fn new() -> Self {
+        Self {
+            amount: None,
+            currency: None,
+            description: None,
+            parent: None,
+            quantity: None,
+            type_: None,
+        }
+    }
+}
+impl Default for OrderItemSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Address {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2254,6 +1248,54 @@ impl Address {
             line2: None,
             postal_code: None,
             state: None,
+        }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct MandateAcceptanceParams {
+    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+    /// The parameters required to store a mandate accepted offline.
+    /// Should only be set if `mandate[type]` is `offline`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub offline: Option<MandateOfflineAcceptanceParams>,
+    /// The parameters required to store a mandate accepted online.
+    /// Should only be set if `mandate[type]` is `online`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub online: Option<MandateOnlineAcceptanceParams>,
+    /// The status of the mandate acceptance.
+    /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
+    pub status: stripe_shared::MandateBacsDebitNetworkStatus,
+    /// The type of acceptance information included with the mandate. Either `online` or `offline`
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<stripe_shared::TerminalReaderStatus>,
+    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateAcceptanceParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("MandateAcceptanceParams").finish_non_exhaustive()
+    }
+}
+impl MandateAcceptanceParams {
+    pub fn new(status: impl Into<stripe_shared::MandateBacsDebitNetworkStatus>) -> Self {
+        Self {
+            date: None,
+            ip: None,
+            offline: None,
+            online: None,
+            status: status.into(),
+            type_: None,
+            user_agent: None,
         }
     }
 }
@@ -2327,3 +1369,113 @@ impl OrderShipping {
         }
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct MandateParams {
+    /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acceptance: Option<MandateAcceptanceParams>,
+    /// The amount specified by the mandate. (Leave null for a mandate covering all amounts)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// The currency specified by the mandate. (Must match `currency` of the source)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// The interval of debits permitted by the mandate.
+    /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval: Option<stripe_shared::CreateSourceMandateInterval>,
+    /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
+    /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub notification_method: Option<stripe_shared::NotificationMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("MandateParams").finish_non_exhaustive()
+    }
+}
+impl MandateParams {
+    pub fn new() -> Self {
+        Self {
+            acceptance: None,
+            amount: None,
+            currency: None,
+            interval: None,
+            notification_method: None,
+        }
+    }
+}
+impl Default for MandateParams {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The status of the mandate acceptance.
+/// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
+pub type CreateSourceMandateAcceptanceStatus = stripe_shared::MandateBacsDebitNetworkStatus;
+/// The type of acceptance information included with the mandate. Either `online` or `offline`
+pub type CreateSourceMandateAcceptanceType = stripe_shared::TerminalReaderStatus;
+/// The interval of debits permitted by the mandate.
+/// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
+pub type CreateSourceMandateInterval = stripe_shared::CreateSourceMandateInterval;
+/// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
+/// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
+pub type CreateSourceMandateNotificationMethod = stripe_shared::NotificationMethod;
+pub type CreateSourceSourceOrderItemsType = stripe_shared::CreateSourceSourceOrderItemsType;
+/// The status of the mandate acceptance.
+/// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
+pub type UpdateSourceMandateAcceptanceStatus = stripe_shared::MandateBacsDebitNetworkStatus;
+/// The type of acceptance information included with the mandate. Either `online` or `offline`
+pub type UpdateSourceMandateAcceptanceType = stripe_shared::TerminalReaderStatus;
+/// The interval of debits permitted by the mandate.
+/// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
+pub type UpdateSourceMandateInterval = stripe_shared::CreateSourceMandateInterval;
+/// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
+/// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
+pub type UpdateSourceMandateNotificationMethod = stripe_shared::NotificationMethod;
+pub type UpdateSourceSourceOrderItemsType = stripe_shared::CreateSourceSourceOrderItemsType;
+/// The parameters required to store a mandate accepted offline.
+/// Should only be set if `mandate[type]` is `offline`.
+pub type CreateSourceMandateAcceptanceOffline = MandateOfflineAcceptanceParams;
+/// The parameters required to store a mandate accepted online.
+/// Should only be set if `mandate[type]` is `online`.
+pub type CreateSourceMandateAcceptanceOnline = MandateOnlineAcceptanceParams;
+/// Owner's address.
+pub type CreateSourceOwnerAddress = SourceAddress;
+/// List of items constituting the order.
+pub type CreateSourceSourceOrderItems = OrderItemSpecs;
+/// Shipping address.
+pub type CreateSourceSourceOrderShippingAddress = Address;
+/// The parameters required to store a mandate accepted offline.
+/// Should only be set if `mandate[type]` is `offline`.
+pub type UpdateSourceMandateAcceptanceOffline = MandateOfflineAcceptanceParams;
+/// The parameters required to store a mandate accepted online.
+/// Should only be set if `mandate[type]` is `online`.
+pub type UpdateSourceMandateAcceptanceOnline = MandateOnlineAcceptanceParams;
+/// Owner's address.
+pub type UpdateSourceOwnerAddress = SourceAddress;
+/// List of items constituting the order.
+pub type UpdateSourceSourceOrderItems = OrderItemSpecs;
+/// Shipping address.
+pub type UpdateSourceSourceOrderShippingAddress = Address;
+/// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
+pub type CreateSourceMandateAcceptance = MandateAcceptanceParams;
+/// Information about the owner of the payment instrument that may be used or required by particular source types.
+pub type CreateSourceOwner = Owner;
+/// Shipping address for the order.
+/// Required if any of the SKUs are for products that have `shippable` set to true.
+pub type CreateSourceSourceOrderShipping = OrderShipping;
+/// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
+pub type UpdateSourceMandateAcceptance = MandateAcceptanceParams;
+/// Information about the owner of the payment instrument that may be used or required by particular source types.
+pub type UpdateSourceOwner = Owner;
+/// Shipping address for the order.
+/// Required if any of the SKUs are for products that have `shippable` set to true.
+pub type UpdateSourceSourceOrderShipping = OrderShipping;
+/// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
+pub type CreateSourceMandate = MandateParams;
+/// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
+pub type UpdateSourceMandate = MandateParams;

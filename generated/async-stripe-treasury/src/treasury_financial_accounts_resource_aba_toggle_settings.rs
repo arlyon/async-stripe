@@ -7,7 +7,7 @@ pub struct TreasuryFinancialAccountsResourceAbaToggleSettings {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
     /// Whether the Feature is operational.
-    pub status: TreasuryFinancialAccountsResourceAbaToggleSettingsStatus,
+    pub status: stripe_shared::TreasuryFinancialAccountsResourceToggleSettingsStatus,
     /// Additional details; includes at least one entry when the status is not `active`.
     pub status_details:
         Vec<stripe_treasury::TreasuryFinancialAccountsResourceTogglesSettingStatusDetails>,
@@ -21,7 +21,7 @@ impl std::fmt::Debug for TreasuryFinancialAccountsResourceAbaToggleSettings {
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceAbaToggleSettingsBuilder {
     requested: Option<bool>,
-    status: Option<TreasuryFinancialAccountsResourceAbaToggleSettingsStatus>,
+    status: Option<stripe_shared::TreasuryFinancialAccountsResourceToggleSettingsStatus>,
     status_details:
         Option<Vec<stripe_treasury::TreasuryFinancialAccountsResourceTogglesSettingStatusDetails>>,
 }
@@ -121,101 +121,5 @@ const _: () = {
     }
 };
 /// Whether the Feature is operational.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryFinancialAccountsResourceAbaToggleSettingsStatus {
-    Active,
-    Pending,
-    Restricted,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryFinancialAccountsResourceAbaToggleSettingsStatus {
-    pub fn as_str(&self) -> &str {
-        use TreasuryFinancialAccountsResourceAbaToggleSettingsStatus::*;
-        match self {
-            Active => "active",
-            Pending => "pending",
-            Restricted => "restricted",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryFinancialAccountsResourceAbaToggleSettingsStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryFinancialAccountsResourceAbaToggleSettingsStatus::*;
-        match s {
-            "active" => Ok(Active),
-            "pending" => Ok(Pending),
-            "restricted" => Ok(Restricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourceAbaToggleSettingsStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryFinancialAccountsResourceAbaToggleSettingsStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryFinancialAccountsResourceAbaToggleSettingsStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryFinancialAccountsResourceAbaToggleSettingsStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TreasuryFinancialAccountsResourceAbaToggleSettingsStatus))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TreasuryFinancialAccountsResourceAbaToggleSettingsStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryFinancialAccountsResourceAbaToggleSettingsStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TreasuryFinancialAccountsResourceAbaToggleSettingsStatus>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TreasuryFinancialAccountsResourceAbaToggleSettingsStatus::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryFinancialAccountsResourceAbaToggleSettingsStatus
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountsResourceAbaToggleSettingsStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TreasuryFinancialAccountsResourceAbaToggleSettingsStatus =
+    stripe_shared::TreasuryFinancialAccountsResourceToggleSettingsStatus;

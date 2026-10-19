@@ -8,7 +8,7 @@ pub struct LineItemsTaxAmount {
     pub rate: stripe_shared::TaxRate,
     /// The reasoning behind this tax, for example, if the product is tax exempt.
     /// The possible values for this field may be extended as new tax rules are supported.
-    pub taxability_reason: Option<LineItemsTaxAmountTaxabilityReason>,
+    pub taxability_reason: Option<stripe_shared::TaxabilityReason>,
     /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: Option<i64>,
 }
@@ -22,7 +22,7 @@ impl std::fmt::Debug for LineItemsTaxAmount {
 pub struct LineItemsTaxAmountBuilder {
     amount: Option<i64>,
     rate: Option<stripe_shared::TaxRate>,
-    taxability_reason: Option<Option<LineItemsTaxAmountTaxabilityReason>>,
+    taxability_reason: Option<Option<stripe_shared::TaxabilityReason>>,
     taxable_amount: Option<Option<i64>>,
 }
 
@@ -129,129 +129,4 @@ const _: () = {
 };
 /// The reasoning behind this tax, for example, if the product is tax exempt.
 /// The possible values for this field may be extended as new tax rules are supported.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum LineItemsTaxAmountTaxabilityReason {
-    CustomerExempt,
-    NotCollecting,
-    NotSubjectToTax,
-    NotSupported,
-    PortionProductExempt,
-    PortionReducedRated,
-    PortionStandardRated,
-    ProductExempt,
-    ProductExemptHoliday,
-    ProportionallyRated,
-    ReducedRated,
-    ReverseCharge,
-    StandardRated,
-    TaxableBasisReduced,
-    ZeroRated,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl LineItemsTaxAmountTaxabilityReason {
-    pub fn as_str(&self) -> &str {
-        use LineItemsTaxAmountTaxabilityReason::*;
-        match self {
-            CustomerExempt => "customer_exempt",
-            NotCollecting => "not_collecting",
-            NotSubjectToTax => "not_subject_to_tax",
-            NotSupported => "not_supported",
-            PortionProductExempt => "portion_product_exempt",
-            PortionReducedRated => "portion_reduced_rated",
-            PortionStandardRated => "portion_standard_rated",
-            ProductExempt => "product_exempt",
-            ProductExemptHoliday => "product_exempt_holiday",
-            ProportionallyRated => "proportionally_rated",
-            ReducedRated => "reduced_rated",
-            ReverseCharge => "reverse_charge",
-            StandardRated => "standard_rated",
-            TaxableBasisReduced => "taxable_basis_reduced",
-            ZeroRated => "zero_rated",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for LineItemsTaxAmountTaxabilityReason {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use LineItemsTaxAmountTaxabilityReason::*;
-        match s {
-            "customer_exempt" => Ok(CustomerExempt),
-            "not_collecting" => Ok(NotCollecting),
-            "not_subject_to_tax" => Ok(NotSubjectToTax),
-            "not_supported" => Ok(NotSupported),
-            "portion_product_exempt" => Ok(PortionProductExempt),
-            "portion_reduced_rated" => Ok(PortionReducedRated),
-            "portion_standard_rated" => Ok(PortionStandardRated),
-            "product_exempt" => Ok(ProductExempt),
-            "product_exempt_holiday" => Ok(ProductExemptHoliday),
-            "proportionally_rated" => Ok(ProportionallyRated),
-            "reduced_rated" => Ok(ReducedRated),
-            "reverse_charge" => Ok(ReverseCharge),
-            "standard_rated" => Ok(StandardRated),
-            "taxable_basis_reduced" => Ok(TaxableBasisReduced),
-            "zero_rated" => Ok(ZeroRated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "LineItemsTaxAmountTaxabilityReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for LineItemsTaxAmountTaxabilityReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for LineItemsTaxAmountTaxabilityReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for LineItemsTaxAmountTaxabilityReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(LineItemsTaxAmountTaxabilityReason)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for LineItemsTaxAmountTaxabilityReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for LineItemsTaxAmountTaxabilityReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<LineItemsTaxAmountTaxabilityReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(LineItemsTaxAmountTaxabilityReason::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(LineItemsTaxAmountTaxabilityReason);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for LineItemsTaxAmountTaxabilityReason {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type LineItemsTaxAmountTaxabilityReason = stripe_shared::TaxabilityReason;

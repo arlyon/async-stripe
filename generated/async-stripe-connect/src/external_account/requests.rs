@@ -63,7 +63,7 @@ struct ListAccountExternalAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    object: Option<ListAccountExternalAccountObject>,
+    object: Option<stripe_shared::PayoutType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
@@ -76,78 +76,6 @@ impl std::fmt::Debug for ListAccountExternalAccountBuilder {
 impl ListAccountExternalAccountBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, object: None, starting_after: None }
-    }
-}
-/// Filter external accounts according to a particular object type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ListAccountExternalAccountObject {
-    BankAccount,
-    Card,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ListAccountExternalAccountObject {
-    pub fn as_str(&self) -> &str {
-        use ListAccountExternalAccountObject::*;
-        match self {
-            BankAccount => "bank_account",
-            Card => "card",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ListAccountExternalAccountObject {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ListAccountExternalAccountObject::*;
-        match s {
-            "bank_account" => Ok(BankAccount),
-            "card" => Ok(Card),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListAccountExternalAccountObject"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ListAccountExternalAccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ListAccountExternalAccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ListAccountExternalAccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ListAccountExternalAccountObject)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ListAccountExternalAccountObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ListAccountExternalAccountObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List external accounts for an account.
@@ -188,7 +116,7 @@ impl ListAccountExternalAccount {
         self
     }
     /// Filter external accounts according to a particular object type.
-    pub fn object(mut self, object: impl Into<ListAccountExternalAccountObject>) -> Self {
+    pub fn object(mut self, object: impl Into<stripe_shared::PayoutType>) -> Self {
         self.inner.object = Some(object.into());
         self
     }
@@ -426,9 +354,9 @@ struct UpdateExternalAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_holder_type: Option<UpdateExternalAccountAccountHolderType>,
+    account_holder_type: Option<stripe_shared::IssuingCardholderType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_type: Option<UpdateExternalAccountAccountType>,
+    account_type: Option<stripe_shared::UpdateAccountCardAccountType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     address_city: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -482,158 +410,6 @@ impl UpdateExternalAccountBuilder {
             metadata: None,
             name: None,
         }
-    }
-}
-/// The type of entity that holds the account. This can be either `individual` or `company`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateExternalAccountAccountHolderType {
-    Company,
-    Individual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateExternalAccountAccountHolderType {
-    pub fn as_str(&self) -> &str {
-        use UpdateExternalAccountAccountHolderType::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateExternalAccountAccountHolderType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateExternalAccountAccountHolderType::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateExternalAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateExternalAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateExternalAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateExternalAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateExternalAccountAccountHolderType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateExternalAccountAccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountHolderType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The bank account type.
-/// This can only be `checking` or `savings` in most countries.
-/// In Japan, this can only be `futsu` or `toza`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateExternalAccountAccountType {
-    Checking,
-    Futsu,
-    Savings,
-    Toza,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateExternalAccountAccountType {
-    pub fn as_str(&self) -> &str {
-        use UpdateExternalAccountAccountType::*;
-        match self {
-            Checking => "checking",
-            Futsu => "futsu",
-            Savings => "savings",
-            Toza => "toza",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateExternalAccountAccountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateExternalAccountAccountType::*;
-        match s {
-            "checking" => Ok(Checking),
-            "futsu" => Ok(Futsu),
-            "savings" => Ok(Savings),
-            "toza" => Ok(Toza),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateExternalAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateExternalAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateExternalAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateExternalAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateExternalAccountAccountType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateExternalAccountAccountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
@@ -725,7 +501,7 @@ impl UpdateExternalAccount {
     /// The type of entity that holds the account. This can be either `individual` or `company`.
     pub fn account_holder_type(
         mut self,
-        account_holder_type: impl Into<UpdateExternalAccountAccountHolderType>,
+        account_holder_type: impl Into<stripe_shared::IssuingCardholderType>,
     ) -> Self {
         self.inner.account_holder_type = Some(account_holder_type.into());
         self
@@ -735,7 +511,7 @@ impl UpdateExternalAccount {
     /// In Japan, this can only be `futsu` or `toza`.
     pub fn account_type(
         mut self,
-        account_type: impl Into<UpdateExternalAccountAccountType>,
+        account_type: impl Into<stripe_shared::UpdateAccountCardAccountType>,
     ) -> Self {
         self.inner.account_type = Some(account_type.into());
         self
@@ -843,3 +619,12 @@ impl StripeRequest for UpdateExternalAccount {
         .form(&self.inner)
     }
 }
+
+/// Filter external accounts according to a particular object type.
+pub type ListAccountExternalAccountObject = stripe_shared::PayoutType;
+/// The type of entity that holds the account. This can be either `individual` or `company`.
+pub type UpdateExternalAccountAccountHolderType = stripe_shared::IssuingCardholderType;
+/// The bank account type.
+/// This can only be `checking` or `savings` in most countries.
+/// In Japan, this can only be `futsu` or `toza`.
+pub type UpdateExternalAccountAccountType = stripe_shared::UpdateAccountCardAccountType;

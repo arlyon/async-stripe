@@ -28,7 +28,7 @@ pub struct ShippingRate {
     pub metadata: std::collections::HashMap<String, String>,
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
-    pub tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     /// The Shipping tax code is `txcd_92010001`.
     pub tax_code: Option<stripe_types::Expandable<stripe_shared::TaxCode>>,
@@ -52,7 +52,7 @@ pub struct ShippingRateBuilder {
     id: Option<stripe_shared::ShippingRateId>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
-    tax_behavior: Option<Option<stripe_shared::ShippingRateTaxBehavior>>,
+    tax_behavior: Option<Option<stripe_shared::PriceTaxBehavior>>,
     tax_code: Option<Option<stripe_types::Expandable<stripe_shared::TaxCode>>>,
     type_: Option<stripe_shared::ShippingRateType>,
 }
@@ -246,167 +246,8 @@ impl stripe_types::Object for ShippingRate {
     }
 }
 stripe_types::def_id!(ShippingRateId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ShippingRateTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ShippingRateTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use ShippingRateTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ShippingRateTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ShippingRateTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ShippingRateTaxBehavior");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ShippingRateTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ShippingRateTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ShippingRateTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ShippingRateTaxBehavior)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ShippingRateTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ShippingRateTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<ShippingRateTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ShippingRateTaxBehavior::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(ShippingRateTaxBehavior);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ShippingRateTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ShippingRateType {
-    FixedAmount,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ShippingRateType {
-    pub fn as_str(&self) -> &str {
-        use ShippingRateType::*;
-        match self {
-            FixedAmount => "fixed_amount",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ShippingRateType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ShippingRateType::*;
-        match s {
-            "fixed_amount" => Ok(FixedAmount),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ShippingRateType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ShippingRateType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ShippingRateType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ShippingRateType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ShippingRateType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ShippingRateType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ShippingRateType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<ShippingRateType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ShippingRateType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(ShippingRateType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ShippingRateType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+pub type ShippingRateTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// The type of calculation to use on the shipping rate.
+pub type ShippingRateType = stripe_shared::ShippingRateType;

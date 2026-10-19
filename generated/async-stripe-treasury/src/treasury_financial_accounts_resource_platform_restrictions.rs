@@ -5,9 +5,11 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourcePlatformRestrictions {
     /// Restricts all inbound money movement.
-    pub inbound_flows: Option<TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows>,
+    pub inbound_flows:
+        Option<stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows>,
     /// Restricts all outbound money movement.
-    pub outbound_flows: Option<TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows>,
+    pub outbound_flows:
+        Option<stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictions {
@@ -18,10 +20,12 @@ impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictions {
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourcePlatformRestrictionsBuilder {
-    inbound_flows:
-        Option<Option<TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows>>,
-    outbound_flows:
-        Option<Option<TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows>>,
+    inbound_flows: Option<
+        Option<stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows>,
+    >,
+    outbound_flows: Option<
+        Option<stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows>,
+    >,
 }
 
 #[allow(
@@ -119,202 +123,8 @@ const _: () = {
     }
 };
 /// Restricts all inbound money movement.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    Restricted,
-    Unrestricted,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    pub fn as_str(&self) -> &str {
-        use TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::*;
-        match self {
-            Restricted => "restricted",
-            Unrestricted => "unrestricted",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::*;
-        match s {
-            "restricted" => Ok(Restricted),
-            "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows =
+    stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows;
 /// Restricts all outbound money movement.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    Restricted,
-    Unrestricted,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    pub fn as_str(&self) -> &str {
-        use TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::*;
-        match self {
-            Restricted => "restricted",
-            Unrestricted => "unrestricted",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::*;
-        match s {
-            "restricted" => Ok(Restricted),
-            "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows =
+    stripe_shared::CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows;

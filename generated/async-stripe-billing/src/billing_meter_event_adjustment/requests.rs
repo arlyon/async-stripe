@@ -12,7 +12,7 @@ struct CreateBillingMeterEventAdjustmentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(rename = "type")]
-    type_: stripe_billing::BillingMeterEventAdjustmentType,
+    type_: stripe_shared::BillingMeterEventAdjustmentType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingMeterEventAdjustmentBuilder {
@@ -23,7 +23,7 @@ impl std::fmt::Debug for CreateBillingMeterEventAdjustmentBuilder {
 impl CreateBillingMeterEventAdjustmentBuilder {
     fn new(
         event_name: impl Into<String>,
-        type_: impl Into<stripe_billing::BillingMeterEventAdjustmentType>,
+        type_: impl Into<stripe_shared::BillingMeterEventAdjustmentType>,
     ) -> Self {
         Self { cancel: None, event_name: event_name.into(), expand: None, type_: type_.into() }
     }
@@ -71,7 +71,7 @@ impl CreateBillingMeterEventAdjustment {
     /// Construct a new `CreateBillingMeterEventAdjustment`.
     pub fn new(
         event_name: impl Into<String>,
-        type_: impl Into<stripe_billing::BillingMeterEventAdjustmentType>,
+        type_: impl Into<stripe_shared::BillingMeterEventAdjustmentType>,
     ) -> Self {
         Self {
             inner: CreateBillingMeterEventAdjustmentBuilder::new(event_name.into(), type_.into()),
@@ -114,3 +114,7 @@ impl StripeRequest for CreateBillingMeterEventAdjustment {
             .form(&self.inner)
     }
 }
+
+/// Specifies whether to cancel a single event or a range of events for a time period.
+/// Time period cancellation is not supported yet.
+pub type CreateBillingMeterEventAdjustmentType = stripe_shared::BillingMeterEventAdjustmentType;

@@ -6,7 +6,7 @@ pub struct OutboundTransfersPaymentMethodDetailsFinancialAccount {
     /// Token of the FinancialAccount.
     pub id: String,
     /// The rails used to send funds.
-    pub network: OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork,
+    pub network: stripe_shared::Network,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for OutboundTransfersPaymentMethodDetailsFinancialAccount {
@@ -18,7 +18,7 @@ impl std::fmt::Debug for OutboundTransfersPaymentMethodDetailsFinancialAccount {
 #[doc(hidden)]
 pub struct OutboundTransfersPaymentMethodDetailsFinancialAccountBuilder {
     id: Option<String>,
-    network: Option<OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork>,
+    network: Option<stripe_shared::Network>,
 }
 
 #[allow(
@@ -114,95 +114,4 @@ const _: () = {
     }
 };
 /// The rails used to send funds.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
-    Stripe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
-    pub fn as_str(&self) -> &str {
-        use OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork::*;
-        match self {
-            Stripe => "stripe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork::*;
-        match s {
-            "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork = stripe_shared::Network;

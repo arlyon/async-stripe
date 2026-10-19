@@ -101,7 +101,7 @@ pub struct UpdateCashBalanceSettings {
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
     /// For more information about these reconciliation modes, see [Reconciliation](https://docs.stripe.com/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reconciliation_mode: Option<UpdateCashBalanceSettingsReconciliationMode>,
+    pub reconciliation_mode: Option<stripe_shared::ReconciliationMode>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateCashBalanceSettings {
@@ -117,84 +117,6 @@ impl UpdateCashBalanceSettings {
 impl Default for UpdateCashBalanceSettings {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Controls how funds transferred by the customer are applied to payment intents and invoices.
-/// Valid options are `automatic`, `manual`, or `merchant_default`.
-/// For more information about these reconciliation modes, see [Reconciliation](https://docs.stripe.com/payments/customer-balance/reconciliation).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateCashBalanceSettingsReconciliationMode {
-    Automatic,
-    Manual,
-    MerchantDefault,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateCashBalanceSettingsReconciliationMode {
-    pub fn as_str(&self) -> &str {
-        use UpdateCashBalanceSettingsReconciliationMode::*;
-        match self {
-            Automatic => "automatic",
-            Manual => "manual",
-            MerchantDefault => "merchant_default",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateCashBalanceSettingsReconciliationMode {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateCashBalanceSettingsReconciliationMode::*;
-        match s {
-            "automatic" => Ok(Automatic),
-            "manual" => Ok(Manual),
-            "merchant_default" => Ok(MerchantDefault),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCashBalanceSettingsReconciliationMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateCashBalanceSettingsReconciliationMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateCashBalanceSettingsReconciliationMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateCashBalanceSettingsReconciliationMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateCashBalanceSettingsReconciliationMode))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateCashBalanceSettingsReconciliationMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateCashBalanceSettingsReconciliationMode {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Changes the settings on a customer’s cash balance.
@@ -254,3 +176,8 @@ impl StripeRequest for UpdateCashBalance {
             .form(&self.inner)
     }
 }
+
+/// Controls how funds transferred by the customer are applied to payment intents and invoices.
+/// Valid options are `automatic`, `manual`, or `merchant_default`.
+/// For more information about these reconciliation modes, see [Reconciliation](https://docs.stripe.com/payments/customer-balance/reconciliation).
+pub type UpdateCashBalanceSettingsReconciliationMode = stripe_shared::ReconciliationMode;

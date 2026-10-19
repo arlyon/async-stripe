@@ -5,7 +5,7 @@
 pub struct InvoicePaymentMethodOptionsAcssDebit {
     pub mandate_options: Option<stripe_shared::InvoicePaymentMethodOptionsAcssDebitMandateOptions>,
     /// Bank account verification method. The default value is `automatic`.
-    pub verification_method: Option<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method: Option<stripe_shared::VerificationMethod>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for InvoicePaymentMethodOptionsAcssDebit {
@@ -17,7 +17,7 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsAcssDebit {
 pub struct InvoicePaymentMethodOptionsAcssDebitBuilder {
     mandate_options:
         Option<Option<stripe_shared::InvoicePaymentMethodOptionsAcssDebitMandateOptions>>,
-    verification_method: Option<Option<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>>,
+    verification_method: Option<Option<stripe_shared::VerificationMethod>>,
 }
 
 #[allow(
@@ -113,99 +113,4 @@ const _: () = {
     }
 };
 /// Bank account verification method. The default value is `automatic`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
-    Automatic,
-    Instant,
-    Microdeposits,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
-    pub fn as_str(&self) -> &str {
-        use InvoicePaymentMethodOptionsAcssDebitVerificationMethod::*;
-        match self {
-            Automatic => "automatic",
-            Instant => "instant",
-            Microdeposits => "microdeposits",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InvoicePaymentMethodOptionsAcssDebitVerificationMethod::*;
-        match s {
-            "automatic" => Ok(Automatic),
-            "instant" => Ok(Instant),
-            "microdeposits" => Ok(Microdeposits),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoicePaymentMethodOptionsAcssDebitVerificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(InvoicePaymentMethodOptionsAcssDebitVerificationMethod))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InvoicePaymentMethodOptionsAcssDebitVerificationMethod::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(InvoicePaymentMethodOptionsAcssDebitVerificationMethod);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InvoicePaymentMethodOptionsAcssDebitVerificationMethod = stripe_shared::VerificationMethod;

@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutPixPaymentMethodOptions {
     /// Determines if the amount includes the IOF tax.
-    pub amount_includes_iof: Option<CheckoutPixPaymentMethodOptionsAmountIncludesIof>,
+    pub amount_includes_iof: Option<stripe_shared::MandatePixAmountIncludesIof>,
     /// The number of seconds after which Pix payment will expire.
     pub expires_after_seconds: Option<i64>,
     pub mandate_options: Option<stripe_shared::PaymentMethodOptionsMandateOptionsPix>,
@@ -16,7 +16,7 @@ pub struct CheckoutPixPaymentMethodOptions {
     /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
     ///
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-    pub setup_future_usage: Option<CheckoutPixPaymentMethodOptionsSetupFutureUsage>,
+    pub setup_future_usage: Option<stripe_shared::PaymentMethodOptionsPixSetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CheckoutPixPaymentMethodOptions {
@@ -26,10 +26,10 @@ impl std::fmt::Debug for CheckoutPixPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutPixPaymentMethodOptionsBuilder {
-    amount_includes_iof: Option<Option<CheckoutPixPaymentMethodOptionsAmountIncludesIof>>,
+    amount_includes_iof: Option<Option<stripe_shared::MandatePixAmountIncludesIof>>,
     expires_after_seconds: Option<Option<i64>>,
     mandate_options: Option<Option<stripe_shared::PaymentMethodOptionsMandateOptionsPix>>,
-    setup_future_usage: Option<Option<CheckoutPixPaymentMethodOptionsSetupFutureUsage>>,
+    setup_future_usage: Option<Option<stripe_shared::PaymentMethodOptionsPixSetupFutureUsage>>,
 }
 
 #[allow(
@@ -150,96 +150,8 @@ const _: () = {
     }
 };
 /// Determines if the amount includes the IOF tax.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    Always,
-    Never,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    pub fn as_str(&self) -> &str {
-        use CheckoutPixPaymentMethodOptionsAmountIncludesIof::*;
-        match self {
-            Always => "always",
-            Never => "never",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutPixPaymentMethodOptionsAmountIncludesIof::*;
-        match s {
-            "always" => Ok(Always),
-            "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutPixPaymentMethodOptionsAmountIncludesIof"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutPixPaymentMethodOptionsAmountIncludesIof))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutPixPaymentMethodOptionsAmountIncludesIof> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            CheckoutPixPaymentMethodOptionsAmountIncludesIof::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutPixPaymentMethodOptionsAmountIncludesIof);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutPixPaymentMethodOptionsAmountIncludesIof =
+    stripe_shared::MandatePixAmountIncludesIof;
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -248,92 +160,5 @@ impl<'de> serde::Deserialize<'de> for CheckoutPixPaymentMethodOptionsAmountInclu
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    None,
-    OffSession,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    pub fn as_str(&self) -> &str {
-        use CheckoutPixPaymentMethodOptionsSetupFutureUsage::*;
-        match self {
-            None => "none",
-            OffSession => "off_session",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutPixPaymentMethodOptionsSetupFutureUsage::*;
-        match s {
-            "none" => Ok(None),
-            "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutPixPaymentMethodOptionsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutPixPaymentMethodOptionsSetupFutureUsage))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutPixPaymentMethodOptionsSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(CheckoutPixPaymentMethodOptionsSetupFutureUsage::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutPixPaymentMethodOptionsSetupFutureUsage);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutPixPaymentMethodOptionsSetupFutureUsage =
+    stripe_shared::PaymentMethodOptionsPixSetupFutureUsage;

@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Recurring {
     /// The frequency at which a subscription is billed. One of `day`, `week`, `month` or `year`.
-    pub interval: RecurringInterval,
+    pub interval: stripe_shared::PlanInterval,
     /// The number of intervals (specified in the `interval` attribute) between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     pub interval_count: u64,
@@ -17,7 +17,7 @@ pub struct Recurring {
     /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
     /// `metered` aggregates the total usage based on usage records.
     /// Defaults to `licensed`.
-    pub usage_type: RecurringUsageType,
+    pub usage_type: stripe_shared::UsageType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for Recurring {
@@ -27,11 +27,11 @@ impl std::fmt::Debug for Recurring {
 }
 #[doc(hidden)]
 pub struct RecurringBuilder {
-    interval: Option<RecurringInterval>,
+    interval: Option<stripe_shared::PlanInterval>,
     interval_count: Option<u64>,
     meter: Option<Option<String>>,
     trial_period_days: Option<Option<u32>>,
-    usage_type: Option<RecurringUsageType>,
+    usage_type: Option<stripe_shared::UsageType>,
 }
 
 #[allow(
@@ -147,180 +147,10 @@ const _: () = {
     }
 };
 /// The frequency at which a subscription is billed. One of `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum RecurringInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl RecurringInterval {
-    pub fn as_str(&self) -> &str {
-        use RecurringInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for RecurringInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use RecurringInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RecurringInterval");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for RecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for RecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for RecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(RecurringInterval)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for RecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for RecurringInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<RecurringInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RecurringInterval::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(RecurringInterval);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for RecurringInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type RecurringInterval = stripe_shared::PlanInterval;
 /// Configures how the quantity per period should be determined.
 /// Can be either `metered` or `licensed`.
 /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
 /// `metered` aggregates the total usage based on usage records.
 /// Defaults to `licensed`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum RecurringUsageType {
-    Licensed,
-    Metered,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl RecurringUsageType {
-    pub fn as_str(&self) -> &str {
-        use RecurringUsageType::*;
-        match self {
-            Licensed => "licensed",
-            Metered => "metered",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for RecurringUsageType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use RecurringUsageType::*;
-        match s {
-            "licensed" => Ok(Licensed),
-            "metered" => Ok(Metered),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RecurringUsageType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for RecurringUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for RecurringUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for RecurringUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(RecurringUsageType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for RecurringUsageType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for RecurringUsageType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<RecurringUsageType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RecurringUsageType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(RecurringUsageType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for RecurringUsageType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type RecurringUsageType = stripe_shared::UsageType;

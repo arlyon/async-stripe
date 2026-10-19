@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsKrCard {
     /// Controls when the funds will be captured from the customer's account.
-    pub capture_method: Option<PaymentMethodOptionsKrCardCaptureMethod>,
+    pub capture_method: Option<stripe_shared::PaymentMethodOptionsAlmaCaptureMethod>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -13,7 +13,7 @@ pub struct PaymentMethodOptionsKrCard {
     /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
     ///
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-    pub setup_future_usage: Option<PaymentMethodOptionsKrCardSetupFutureUsage>,
+    pub setup_future_usage: Option<stripe_shared::PaymentMethodOptionsPixSetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodOptionsKrCard {
@@ -23,8 +23,8 @@ impl std::fmt::Debug for PaymentMethodOptionsKrCard {
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsKrCardBuilder {
-    capture_method: Option<Option<PaymentMethodOptionsKrCardCaptureMethod>>,
-    setup_future_usage: Option<Option<PaymentMethodOptionsKrCardSetupFutureUsage>>,
+    capture_method: Option<Option<stripe_shared::PaymentMethodOptionsAlmaCaptureMethod>>,
+    setup_future_usage: Option<Option<stripe_shared::PaymentMethodOptionsPixSetupFutureUsage>>,
 }
 
 #[allow(
@@ -120,90 +120,8 @@ const _: () = {
     }
 };
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodOptionsKrCardCaptureMethod {
-    Manual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodOptionsKrCardCaptureMethod {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodOptionsKrCardCaptureMethod::*;
-        match self {
-            Manual => "manual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodOptionsKrCardCaptureMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodOptionsKrCardCaptureMethod::*;
-        match s {
-            "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsKrCardCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodOptionsKrCardCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodOptionsKrCardCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodOptionsKrCardCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodOptionsKrCardCaptureMethod)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodOptionsKrCardCaptureMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodOptionsKrCardCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsKrCardCaptureMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentMethodOptionsKrCardCaptureMethod::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsKrCardCaptureMethod);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsKrCardCaptureMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodOptionsKrCardCaptureMethod =
+    stripe_shared::PaymentMethodOptionsAlmaCaptureMethod;
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -212,92 +130,5 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsKrCardCaptureMethod {
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodOptionsKrCardSetupFutureUsage {
-    None,
-    OffSession,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodOptionsKrCardSetupFutureUsage {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodOptionsKrCardSetupFutureUsage::*;
-        match self {
-            None => "none",
-            OffSession => "off_session",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodOptionsKrCardSetupFutureUsage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodOptionsKrCardSetupFutureUsage::*;
-        match s {
-            "none" => Ok(None),
-            "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsKrCardSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodOptionsKrCardSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodOptionsKrCardSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodOptionsKrCardSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodOptionsKrCardSetupFutureUsage))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodOptionsKrCardSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodOptionsKrCardSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsKrCardSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodOptionsKrCardSetupFutureUsage::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsKrCardSetupFutureUsage);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsKrCardSetupFutureUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodOptionsKrCardSetupFutureUsage =
+    stripe_shared::PaymentMethodOptionsPixSetupFutureUsage;

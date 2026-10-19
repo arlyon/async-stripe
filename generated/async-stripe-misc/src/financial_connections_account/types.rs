@@ -34,7 +34,7 @@ pub struct FinancialConnectionsAccount {
     /// The state of the most recent attempt to refresh the account owners.
     pub ownership_refresh: Option<stripe_misc::BankConnectionsResourceOwnershipRefresh>,
     /// The list of permissions granted by this account.
-    pub permissions: Option<Vec<FinancialConnectionsAccountPermissions>>,
+    pub permissions: Option<Vec<stripe_shared::Permissions>>,
     /// The status of the link to the account.
     pub status: FinancialConnectionsAccountStatus,
     pub status_details: Option<stripe_misc::BankConnectionsResourceAccountStatusDetails>,
@@ -54,7 +54,7 @@ pub struct FinancialConnectionsAccount {
     /// If `category` is `investment` or `other`, this will be `other`.
     pub subcategory: FinancialConnectionsAccountSubcategory,
     /// The list of data refresh subscriptions requested on this account.
-    pub subscriptions: Option<Vec<FinancialConnectionsAccountSubscriptions>>,
+    pub subscriptions: Option<Vec<stripe_shared::FinancialConnectionsAccountSubscriptions>>,
     /// The [PaymentMethod type](https://docs.stripe.com/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
     pub supported_payment_method_types: Vec<FinancialConnectionsAccountSupportedPaymentMethodTypes>,
     /// The state of the most recent attempt to refresh the account transactions.
@@ -82,11 +82,11 @@ pub struct FinancialConnectionsAccountBuilder {
     ownership:
         Option<Option<stripe_types::Expandable<stripe_misc::FinancialConnectionsAccountOwnership>>>,
     ownership_refresh: Option<Option<stripe_misc::BankConnectionsResourceOwnershipRefresh>>,
-    permissions: Option<Option<Vec<FinancialConnectionsAccountPermissions>>>,
+    permissions: Option<Option<Vec<stripe_shared::Permissions>>>,
     status: Option<FinancialConnectionsAccountStatus>,
     status_details: Option<Option<stripe_misc::BankConnectionsResourceAccountStatusDetails>>,
     subcategory: Option<FinancialConnectionsAccountSubcategory>,
-    subscriptions: Option<Option<Vec<FinancialConnectionsAccountSubscriptions>>>,
+    subscriptions: Option<Option<Vec<stripe_shared::FinancialConnectionsAccountSubscriptions>>>,
     supported_payment_method_types:
         Option<Vec<FinancialConnectionsAccountSupportedPaymentMethodTypes>>,
     transaction_refresh: Option<Option<stripe_misc::BankConnectionsResourceTransactionRefresh>>,
@@ -431,100 +431,6 @@ impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountCategory {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// The list of permissions granted by this account.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum FinancialConnectionsAccountPermissions {
-    Balances,
-    Ownership,
-    PaymentMethod,
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl FinancialConnectionsAccountPermissions {
-    pub fn as_str(&self) -> &str {
-        use FinancialConnectionsAccountPermissions::*;
-        match self {
-            Balances => "balances",
-            Ownership => "ownership",
-            PaymentMethod => "payment_method",
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for FinancialConnectionsAccountPermissions {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use FinancialConnectionsAccountPermissions::*;
-        match s {
-            "balances" => Ok(Balances),
-            "ownership" => Ok(Ownership),
-            "payment_method" => Ok(PaymentMethod),
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsAccountPermissions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for FinancialConnectionsAccountPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for FinancialConnectionsAccountPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for FinancialConnectionsAccountPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(FinancialConnectionsAccountPermissions)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for FinancialConnectionsAccountPermissions {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for FinancialConnectionsAccountPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountPermissions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FinancialConnectionsAccountPermissions::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsAccountPermissions);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountPermissions {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The status of the link to the account.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -729,91 +635,6 @@ impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountSubcategory {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// The list of data refresh subscriptions requested on this account.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum FinancialConnectionsAccountSubscriptions {
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl FinancialConnectionsAccountSubscriptions {
-    pub fn as_str(&self) -> &str {
-        use FinancialConnectionsAccountSubscriptions::*;
-        match self {
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for FinancialConnectionsAccountSubscriptions {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use FinancialConnectionsAccountSubscriptions::*;
-        match s {
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsAccountSubscriptions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for FinancialConnectionsAccountSubscriptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for FinancialConnectionsAccountSubscriptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for FinancialConnectionsAccountSubscriptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(FinancialConnectionsAccountSubscriptions)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for FinancialConnectionsAccountSubscriptions {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for FinancialConnectionsAccountSubscriptions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsAccountSubscriptions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FinancialConnectionsAccountSubscriptions::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsAccountSubscriptions);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountSubscriptions {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The [PaymentMethod type](https://docs.stripe.com/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -919,3 +740,8 @@ impl stripe_types::Object for FinancialConnectionsAccount {
     }
 }
 stripe_types::def_id!(FinancialConnectionsAccountId);
+/// The list of permissions granted by this account.
+pub type FinancialConnectionsAccountPermissions = stripe_shared::Permissions;
+/// The list of data refresh subscriptions requested on this account.
+pub type FinancialConnectionsAccountSubscriptions =
+    stripe_shared::FinancialConnectionsAccountSubscriptions;

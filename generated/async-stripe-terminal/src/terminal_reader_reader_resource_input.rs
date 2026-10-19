@@ -20,7 +20,7 @@ pub struct TerminalReaderReaderResourceInput {
     pub toggles: Option<Vec<stripe_terminal::TerminalReaderReaderResourceToggle>>,
     /// Type of input being collected.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: TerminalReaderReaderResourceInputType,
+    pub type_: stripe_shared::CollectInputsTerminalReaderInputsType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TerminalReaderReaderResourceInput {
@@ -40,7 +40,7 @@ pub struct TerminalReaderReaderResourceInputBuilder {
     skipped: Option<Option<bool>>,
     text: Option<Option<stripe_terminal::TerminalReaderReaderResourceText>>,
     toggles: Option<Option<Vec<stripe_terminal::TerminalReaderReaderResourceToggle>>>,
-    type_: Option<TerminalReaderReaderResourceInputType>,
+    type_: Option<stripe_shared::CollectInputsTerminalReaderInputsType>,
 }
 
 #[allow(
@@ -201,102 +201,5 @@ const _: () = {
     }
 };
 /// Type of input being collected.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TerminalReaderReaderResourceInputType {
-    Email,
-    Numeric,
-    Phone,
-    Selection,
-    Signature,
-    Text,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TerminalReaderReaderResourceInputType {
-    pub fn as_str(&self) -> &str {
-        use TerminalReaderReaderResourceInputType::*;
-        match self {
-            Email => "email",
-            Numeric => "numeric",
-            Phone => "phone",
-            Selection => "selection",
-            Signature => "signature",
-            Text => "text",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TerminalReaderReaderResourceInputType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TerminalReaderReaderResourceInputType::*;
-        match s {
-            "email" => Ok(Email),
-            "numeric" => Ok(Numeric),
-            "phone" => Ok(Phone),
-            "selection" => Ok(Selection),
-            "signature" => Ok(Signature),
-            "text" => Ok(Text),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourceInputType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TerminalReaderReaderResourceInputType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TerminalReaderReaderResourceInputType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TerminalReaderReaderResourceInputType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TerminalReaderReaderResourceInputType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TerminalReaderReaderResourceInputType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TerminalReaderReaderResourceInputType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceInputType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TerminalReaderReaderResourceInputType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderReaderResourceInputType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceInputType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TerminalReaderReaderResourceInputType =
+    stripe_shared::CollectInputsTerminalReaderInputsType;

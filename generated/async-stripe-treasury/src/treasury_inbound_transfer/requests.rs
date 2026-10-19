@@ -16,7 +16,7 @@ struct ListTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_treasury::TreasuryInboundTransferStatus>,
+    status: Option<stripe_shared::TreasuryInboundTransferStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListTreasuryInboundTransferBuilder {
@@ -82,7 +82,7 @@ impl ListTreasuryInboundTransfer {
     /// Only return InboundTransfers that have the given status: `processing`, `succeeded`, `failed` or `canceled`.
     pub fn status(
         mut self,
-        status: impl Into<stripe_treasury::TreasuryInboundTransferStatus>,
+        status: impl Into<stripe_shared::TreasuryInboundTransferStatus>,
     ) -> Self {
         self.inner.status = Some(status.into());
         self
@@ -218,7 +218,7 @@ impl FailTreasuryInboundTransferBuilder {
 pub struct FailTreasuryInboundTransferFailureDetails {
     /// Reason for the failure.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub code: Option<FailTreasuryInboundTransferFailureDetailsCode>,
+    pub code: Option<stripe_shared::Code>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetails {
@@ -234,112 +234,6 @@ impl FailTreasuryInboundTransferFailureDetails {
 impl Default for FailTreasuryInboundTransferFailureDetails {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Reason for the failure.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum FailTreasuryInboundTransferFailureDetailsCode {
-    AccountClosed,
-    AccountFrozen,
-    BankAccountRestricted,
-    BankOwnershipChanged,
-    DebitNotAuthorized,
-    IncorrectAccountHolderAddress,
-    IncorrectAccountHolderName,
-    IncorrectAccountHolderTaxId,
-    InsufficientFunds,
-    InvalidAccountNumber,
-    InvalidCurrency,
-    NoAccount,
-    Other,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl FailTreasuryInboundTransferFailureDetailsCode {
-    pub fn as_str(&self) -> &str {
-        use FailTreasuryInboundTransferFailureDetailsCode::*;
-        match self {
-            AccountClosed => "account_closed",
-            AccountFrozen => "account_frozen",
-            BankAccountRestricted => "bank_account_restricted",
-            BankOwnershipChanged => "bank_ownership_changed",
-            DebitNotAuthorized => "debit_not_authorized",
-            IncorrectAccountHolderAddress => "incorrect_account_holder_address",
-            IncorrectAccountHolderName => "incorrect_account_holder_name",
-            IncorrectAccountHolderTaxId => "incorrect_account_holder_tax_id",
-            InsufficientFunds => "insufficient_funds",
-            InvalidAccountNumber => "invalid_account_number",
-            InvalidCurrency => "invalid_currency",
-            NoAccount => "no_account",
-            Other => "other",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for FailTreasuryInboundTransferFailureDetailsCode {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use FailTreasuryInboundTransferFailureDetailsCode::*;
-        match s {
-            "account_closed" => Ok(AccountClosed),
-            "account_frozen" => Ok(AccountFrozen),
-            "bank_account_restricted" => Ok(BankAccountRestricted),
-            "bank_ownership_changed" => Ok(BankOwnershipChanged),
-            "debit_not_authorized" => Ok(DebitNotAuthorized),
-            "incorrect_account_holder_address" => Ok(IncorrectAccountHolderAddress),
-            "incorrect_account_holder_name" => Ok(IncorrectAccountHolderName),
-            "incorrect_account_holder_tax_id" => Ok(IncorrectAccountHolderTaxId),
-            "insufficient_funds" => Ok(InsufficientFunds),
-            "invalid_account_number" => Ok(InvalidAccountNumber),
-            "invalid_currency" => Ok(InvalidCurrency),
-            "no_account" => Ok(NoAccount),
-            "other" => Ok(Other),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FailTreasuryInboundTransferFailureDetailsCode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for FailTreasuryInboundTransferFailureDetailsCode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetailsCode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetailsCode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(FailTreasuryInboundTransferFailureDetailsCode))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for FailTreasuryInboundTransferFailureDetailsCode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for FailTreasuryInboundTransferFailureDetailsCode {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Transitions a test mode created InboundTransfer to the `failed` status.
@@ -757,3 +651,8 @@ impl StripeRequest for CancelTreasuryInboundTransfer {
         .form(&self.inner)
     }
 }
+
+/// Only return InboundTransfers that have the given status: `processing`, `succeeded`, `failed` or `canceled`.
+pub type ListTreasuryInboundTransferStatus = stripe_shared::TreasuryInboundTransferStatus;
+/// Reason for the failure.
+pub type FailTreasuryInboundTransferFailureDetailsCode = stripe_shared::Code;

@@ -5,7 +5,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccount {
     /// The array of paths to active Features in the Features hash.
-    pub active_features: Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>,
+    pub active_features: Option<Vec<stripe_shared::TreasuryFinancialAccountActiveFeatures>>,
     pub balance: stripe_treasury::TreasuryFinancialAccountsResourceBalance,
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     pub country: String,
@@ -27,14 +27,14 @@ pub struct TreasuryFinancialAccount {
     /// The nickname for the FinancialAccount.
     pub nickname: Option<String>,
     /// The array of paths to pending Features in the Features hash.
-    pub pending_features: Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>,
+    pub pending_features: Option<Vec<stripe_shared::TreasuryFinancialAccountActiveFeatures>>,
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
     pub platform_restrictions:
         Option<stripe_treasury::TreasuryFinancialAccountsResourcePlatformRestrictions>,
     /// The array of paths to restricted Features in the Features hash.
-    pub restricted_features: Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>,
+    pub restricted_features: Option<Vec<stripe_shared::TreasuryFinancialAccountActiveFeatures>>,
     /// Status of this FinancialAccount.
-    pub status: stripe_treasury::TreasuryFinancialAccountStatus,
+    pub status: stripe_shared::TreasuryFinancialAccountStatus,
     pub status_details: stripe_treasury::TreasuryFinancialAccountsResourceStatusDetails,
     /// The currencies the FinancialAccount can hold a balance in.
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -48,7 +48,7 @@ impl std::fmt::Debug for TreasuryFinancialAccount {
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountBuilder {
-    active_features: Option<Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>>,
+    active_features: Option<Option<Vec<stripe_shared::TreasuryFinancialAccountActiveFeatures>>>,
     balance: Option<stripe_treasury::TreasuryFinancialAccountsResourceBalance>,
     country: Option<String>,
     created: Option<stripe_types::Timestamp>,
@@ -60,11 +60,11 @@ pub struct TreasuryFinancialAccountBuilder {
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     nickname: Option<Option<String>>,
-    pending_features: Option<Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>>,
+    pending_features: Option<Option<Vec<stripe_shared::TreasuryFinancialAccountActiveFeatures>>>,
     platform_restrictions:
         Option<Option<stripe_treasury::TreasuryFinancialAccountsResourcePlatformRestrictions>>,
-    restricted_features: Option<Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>>,
-    status: Option<stripe_treasury::TreasuryFinancialAccountStatus>,
+    restricted_features: Option<Option<Vec<stripe_shared::TreasuryFinancialAccountActiveFeatures>>>,
+    status: Option<stripe_shared::TreasuryFinancialAccountStatus>,
     status_details: Option<stripe_treasury::TreasuryFinancialAccountsResourceStatusDetails>,
     supported_currencies: Option<Vec<String>>,
 }
@@ -302,203 +302,15 @@ impl stripe_types::Object for TreasuryFinancialAccount {
     }
 }
 stripe_types::def_id!(TreasuryFinancialAccountId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryFinancialAccountArray {
-    CardIssuing,
-    DepositInsurance,
-    FinancialAddressesAba,
-    FinancialAddressesAbaForwarding,
-    InboundTransfersAch,
-    IntraStripeFlows,
-    OutboundPaymentsAch,
-    OutboundPaymentsUsDomesticWire,
-    OutboundTransfersAch,
-    OutboundTransfersUsDomesticWire,
-    RemoteDepositCapture,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryFinancialAccountArray {
-    pub fn as_str(&self) -> &str {
-        use TreasuryFinancialAccountArray::*;
-        match self {
-            CardIssuing => "card_issuing",
-            DepositInsurance => "deposit_insurance",
-            FinancialAddressesAba => "financial_addresses.aba",
-            FinancialAddressesAbaForwarding => "financial_addresses.aba.forwarding",
-            InboundTransfersAch => "inbound_transfers.ach",
-            IntraStripeFlows => "intra_stripe_flows",
-            OutboundPaymentsAch => "outbound_payments.ach",
-            OutboundPaymentsUsDomesticWire => "outbound_payments.us_domestic_wire",
-            OutboundTransfersAch => "outbound_transfers.ach",
-            OutboundTransfersUsDomesticWire => "outbound_transfers.us_domestic_wire",
-            RemoteDepositCapture => "remote_deposit_capture",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryFinancialAccountArray {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryFinancialAccountArray::*;
-        match s {
-            "card_issuing" => Ok(CardIssuing),
-            "deposit_insurance" => Ok(DepositInsurance),
-            "financial_addresses.aba" => Ok(FinancialAddressesAba),
-            "financial_addresses.aba.forwarding" => Ok(FinancialAddressesAbaForwarding),
-            "inbound_transfers.ach" => Ok(InboundTransfersAch),
-            "intra_stripe_flows" => Ok(IntraStripeFlows),
-            "outbound_payments.ach" => Ok(OutboundPaymentsAch),
-            "outbound_payments.us_domestic_wire" => Ok(OutboundPaymentsUsDomesticWire),
-            "outbound_transfers.ach" => Ok(OutboundTransfersAch),
-            "outbound_transfers.us_domestic_wire" => Ok(OutboundTransfersUsDomesticWire),
-            "remote_deposit_capture" => Ok(RemoteDepositCapture),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountArray"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryFinancialAccountArray {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryFinancialAccountArray {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryFinancialAccountArray {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TreasuryFinancialAccountArray)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TreasuryFinancialAccountArray {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryFinancialAccountArray {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TreasuryFinancialAccountArray> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TreasuryFinancialAccountArray::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TreasuryFinancialAccountArray);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountArray {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryFinancialAccountStatus {
-    Closed,
-    Open,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryFinancialAccountStatus {
-    pub fn as_str(&self) -> &str {
-        use TreasuryFinancialAccountStatus::*;
-        match self {
-            Closed => "closed",
-            Open => "open",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryFinancialAccountStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryFinancialAccountStatus::*;
-        match s {
-            "closed" => Ok(Closed),
-            "open" => Ok(Open),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryFinancialAccountStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryFinancialAccountStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryFinancialAccountStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TreasuryFinancialAccountStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for TreasuryFinancialAccountStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryFinancialAccountStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TreasuryFinancialAccountStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TreasuryFinancialAccountStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TreasuryFinancialAccountStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// The array of paths to active Features in the Features hash.
+pub type TreasuryFinancialAccountActiveFeatures =
+    stripe_shared::TreasuryFinancialAccountActiveFeatures;
+/// The array of paths to pending Features in the Features hash.
+pub type TreasuryFinancialAccountPendingFeatures =
+    stripe_shared::TreasuryFinancialAccountActiveFeatures;
+/// The array of paths to restricted Features in the Features hash.
+pub type TreasuryFinancialAccountRestrictedFeatures =
+    stripe_shared::TreasuryFinancialAccountActiveFeatures;
+/// Status of this FinancialAccount.
+pub type TreasuryFinancialAccountStatus = stripe_shared::TreasuryFinancialAccountStatus;
+pub type TreasuryFinancialAccountArray = stripe_shared::TreasuryFinancialAccountActiveFeatures;

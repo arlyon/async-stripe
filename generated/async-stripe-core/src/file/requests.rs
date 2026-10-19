@@ -200,3 +200,7 @@ impl StripeRequest for RetrieveFile {
         RequestBuilder::new(StripeMethod::Get, format!("/files/{file}")).query(&self.inner)
     }
 }
+
+/// Filter queries by the file purpose.
+/// If you don't provide a purpose, the queries return unfiltered files.
+pub type ListFilePurpose = stripe_shared::FilePurpose;

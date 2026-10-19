@@ -12,7 +12,7 @@ pub struct SubscriptionsResourceBillingSchedulesBillUntil {
     pub timestamp: Option<stripe_types::Timestamp>,
     /// Describes how the billing schedule will determine the end date. Either `duration` or `timestamp`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: SubscriptionsResourceBillingSchedulesBillUntilType,
+    pub type_: stripe_shared::CreateSubscriptionBillingSchedulesBillUntilType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for SubscriptionsResourceBillingSchedulesBillUntil {
@@ -25,7 +25,7 @@ pub struct SubscriptionsResourceBillingSchedulesBillUntilBuilder {
     computed_timestamp: Option<stripe_types::Timestamp>,
     duration: Option<Option<stripe_shared::SubscriptionsResourceBillingSchedulesBillUntilDuration>>,
     timestamp: Option<Option<stripe_types::Timestamp>>,
-    type_: Option<SubscriptionsResourceBillingSchedulesBillUntilType>,
+    type_: Option<stripe_shared::CreateSubscriptionBillingSchedulesBillUntilType>,
 }
 
 #[allow(
@@ -130,93 +130,5 @@ const _: () = {
     }
 };
 /// Describes how the billing schedule will determine the end date. Either `duration` or `timestamp`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SubscriptionsResourceBillingSchedulesBillUntilType {
-    Duration,
-    Timestamp,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SubscriptionsResourceBillingSchedulesBillUntilType {
-    pub fn as_str(&self) -> &str {
-        use SubscriptionsResourceBillingSchedulesBillUntilType::*;
-        match self {
-            Duration => "duration",
-            Timestamp => "timestamp",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SubscriptionsResourceBillingSchedulesBillUntilType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SubscriptionsResourceBillingSchedulesBillUntilType::*;
-        match s {
-            "duration" => Ok(Duration),
-            "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionsResourceBillingSchedulesBillUntilType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SubscriptionsResourceBillingSchedulesBillUntilType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SubscriptionsResourceBillingSchedulesBillUntilType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SubscriptionsResourceBillingSchedulesBillUntilType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SubscriptionsResourceBillingSchedulesBillUntilType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SubscriptionsResourceBillingSchedulesBillUntilType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SubscriptionsResourceBillingSchedulesBillUntilType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<SubscriptionsResourceBillingSchedulesBillUntilType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            SubscriptionsResourceBillingSchedulesBillUntilType::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(SubscriptionsResourceBillingSchedulesBillUntilType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SubscriptionsResourceBillingSchedulesBillUntilType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SubscriptionsResourceBillingSchedulesBillUntilType =
+    stripe_shared::CreateSubscriptionBillingSchedulesBillUntilType;

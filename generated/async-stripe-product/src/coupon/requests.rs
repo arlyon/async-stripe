@@ -243,7 +243,7 @@ struct CreateCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     currency_options: Option<std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    duration: Option<stripe_shared::CouponDuration>,
+    duration: Option<stripe_shared::Duration>,
     #[serde(skip_serializing_if = "Option::is_none")]
     duration_in_months: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -359,7 +359,7 @@ impl CreateCoupon {
         self
     }
     /// Specifies how long the discount will be in effect if used on a subscription. Defaults to `once`.
-    pub fn duration(mut self, duration: impl Into<stripe_shared::CouponDuration>) -> Self {
+    pub fn duration(mut self, duration: impl Into<stripe_shared::Duration>) -> Self {
         self.inner.duration = Some(duration.into());
         self
     }
@@ -565,3 +565,11 @@ impl CurrencyOption {
         Self { amount_off: amount_off.into() }
     }
 }
+/// Specifies how long the discount will be in effect if used on a subscription. Defaults to `once`.
+pub type CreateCouponDuration = stripe_shared::Duration;
+/// Coupons defined in each available currency option (only supported if `amount_off` is passed).
+/// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+pub type CreateCouponCurrencyOptions = CurrencyOption;
+/// Coupons defined in each available currency option (only supported if the coupon is amount-based).
+/// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+pub type UpdateCouponCurrencyOptions = CurrencyOption;

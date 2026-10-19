@@ -9,7 +9,7 @@ pub struct PortalFlowsFlowAfterCompletion {
     pub redirect: Option<stripe_billing::PortalFlowsAfterCompletionRedirect>,
     /// The specified type of behavior after the flow is completed.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: PortalFlowsFlowAfterCompletionType,
+    pub type_: stripe_shared::PortalFlowsFlowAfterCompletionType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PortalFlowsFlowAfterCompletion {
@@ -22,7 +22,7 @@ pub struct PortalFlowsFlowAfterCompletionBuilder {
     hosted_confirmation:
         Option<Option<stripe_billing::PortalFlowsAfterCompletionHostedConfirmation>>,
     redirect: Option<Option<stripe_billing::PortalFlowsAfterCompletionRedirect>>,
-    type_: Option<PortalFlowsFlowAfterCompletionType>,
+    type_: Option<stripe_shared::PortalFlowsFlowAfterCompletionType>,
 }
 
 #[allow(
@@ -120,93 +120,4 @@ const _: () = {
     }
 };
 /// The specified type of behavior after the flow is completed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PortalFlowsFlowAfterCompletionType {
-    HostedConfirmation,
-    PortalHomepage,
-    Redirect,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PortalFlowsFlowAfterCompletionType {
-    pub fn as_str(&self) -> &str {
-        use PortalFlowsFlowAfterCompletionType::*;
-        match self {
-            HostedConfirmation => "hosted_confirmation",
-            PortalHomepage => "portal_homepage",
-            Redirect => "redirect",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PortalFlowsFlowAfterCompletionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PortalFlowsFlowAfterCompletionType::*;
-        match s {
-            "hosted_confirmation" => Ok(HostedConfirmation),
-            "portal_homepage" => Ok(PortalHomepage),
-            "redirect" => Ok(Redirect),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalFlowsFlowAfterCompletionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PortalFlowsFlowAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PortalFlowsFlowAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PortalFlowsFlowAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PortalFlowsFlowAfterCompletionType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PortalFlowsFlowAfterCompletionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PortalFlowsFlowAfterCompletionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PortalFlowsFlowAfterCompletionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PortalFlowsFlowAfterCompletionType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PortalFlowsFlowAfterCompletionType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PortalFlowsFlowAfterCompletionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PortalFlowsFlowAfterCompletionType = stripe_shared::PortalFlowsFlowAfterCompletionType;

@@ -481,3 +481,9 @@ impl BeneficiaryParams {
         Self { public_name: public_name.into() }
     }
 }
+/// Publicly sharable reference for the end beneficiary of carbon removal.
+/// Assumed to be the Stripe account if not set.
+pub type CreateClimateOrderBeneficiary = BeneficiaryParams;
+/// Publicly sharable reference for the end beneficiary of carbon removal.
+/// Assumed to be the Stripe account if not set.
+pub type UpdateClimateOrderBeneficiary = BeneficiaryParams;

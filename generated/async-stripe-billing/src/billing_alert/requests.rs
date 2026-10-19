@@ -7,7 +7,7 @@ use stripe_client_core::{
 #[derive(serde::Serialize)]
 struct ListBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    alert_type: Option<stripe_billing::BillingAlertAlertType>,
+    alert_type: Option<stripe_shared::AlertType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -56,10 +56,7 @@ impl ListBillingAlert {
         Self { inner: ListBillingAlertBuilder::new() }
     }
     /// Filter results to only include this type of alert.
-    pub fn alert_type(
-        mut self,
-        alert_type: impl Into<stripe_billing::BillingAlertAlertType>,
-    ) -> Self {
+    pub fn alert_type(mut self, alert_type: impl Into<stripe_shared::AlertType>) -> Self {
         self.inner.alert_type = Some(alert_type.into());
         self
     }
@@ -203,7 +200,7 @@ impl StripeRequest for RetrieveBillingAlert {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 struct CreateBillingAlertBuilder {
-    alert_type: stripe_billing::BillingAlertAlertType,
+    alert_type: stripe_shared::AlertType,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     title: String,
@@ -217,10 +214,7 @@ impl std::fmt::Debug for CreateBillingAlertBuilder {
     }
 }
 impl CreateBillingAlertBuilder {
-    fn new(
-        alert_type: impl Into<stripe_billing::BillingAlertAlertType>,
-        title: impl Into<String>,
-    ) -> Self {
+    fn new(alert_type: impl Into<stripe_shared::AlertType>, title: impl Into<String>) -> Self {
         Self {
             alert_type: alert_type.into(),
             expand: None,
@@ -243,7 +237,7 @@ pub struct CreateBillingAlertUsageThreshold {
     /// The [Billing Meter](/api/billing/meter) ID whose usage is monitored.
     pub meter: String,
     /// Defines how the alert will behave.
-    pub recurrence: CreateBillingAlertUsageThresholdRecurrence,
+    pub recurrence: stripe_shared::Recurrence,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingAlertUsageThreshold {
@@ -255,7 +249,7 @@ impl CreateBillingAlertUsageThreshold {
     pub fn new(
         gte: impl Into<i64>,
         meter: impl Into<String>,
-        recurrence: impl Into<CreateBillingAlertUsageThresholdRecurrence>,
+        recurrence: impl Into<stripe_shared::Recurrence>,
     ) -> Self {
         Self { filters: None, gte: gte.into(), meter: meter.into(), recurrence: recurrence.into() }
     }
@@ -271,7 +265,7 @@ pub struct CreateBillingAlertUsageThresholdFilters {
     pub customer: Option<String>,
     /// What type of filter is being applied to this usage alert.
     #[serde(rename = "type")]
-    pub type_: CreateBillingAlertUsageThresholdFiltersType,
+    pub type_: stripe_shared::ThresholdsResourceUsageAlertFilterType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingAlertUsageThresholdFilters {
@@ -280,148 +274,8 @@ impl std::fmt::Debug for CreateBillingAlertUsageThresholdFilters {
     }
 }
 impl CreateBillingAlertUsageThresholdFilters {
-    pub fn new(type_: impl Into<CreateBillingAlertUsageThresholdFiltersType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::ThresholdsResourceUsageAlertFilterType>) -> Self {
         Self { customer: None, type_: type_.into() }
-    }
-}
-/// What type of filter is being applied to this usage alert.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingAlertUsageThresholdFiltersType {
-    Customer,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingAlertUsageThresholdFiltersType {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingAlertUsageThresholdFiltersType::*;
-        match self {
-            Customer => "customer",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingAlertUsageThresholdFiltersType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingAlertUsageThresholdFiltersType::*;
-        match s {
-            "customer" => Ok(Customer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingAlertUsageThresholdFiltersType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingAlertUsageThresholdFiltersType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingAlertUsageThresholdFiltersType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingAlertUsageThresholdFiltersType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateBillingAlertUsageThresholdFiltersType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingAlertUsageThresholdFiltersType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateBillingAlertUsageThresholdFiltersType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Defines how the alert will behave.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingAlertUsageThresholdRecurrence {
-    OneTime,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingAlertUsageThresholdRecurrence {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingAlertUsageThresholdRecurrence::*;
-        match self {
-            OneTime => "one_time",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingAlertUsageThresholdRecurrence {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingAlertUsageThresholdRecurrence::*;
-        match s {
-            "one_time" => Ok(OneTime),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingAlertUsageThresholdRecurrence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingAlertUsageThresholdRecurrence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingAlertUsageThresholdRecurrence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingAlertUsageThresholdRecurrence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateBillingAlertUsageThresholdRecurrence))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingAlertUsageThresholdRecurrence {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateBillingAlertUsageThresholdRecurrence {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a billing alert
@@ -439,10 +293,7 @@ impl std::fmt::Debug for CreateBillingAlert {
 }
 impl CreateBillingAlert {
     /// Construct a new `CreateBillingAlert`.
-    pub fn new(
-        alert_type: impl Into<stripe_billing::BillingAlertAlertType>,
-        title: impl Into<String>,
-    ) -> Self {
+    pub fn new(alert_type: impl Into<stripe_shared::AlertType>, title: impl Into<String>) -> Self {
         Self { inner: CreateBillingAlertBuilder::new(alert_type.into(), title.into()) }
     }
     /// Specifies which fields in the response should be expanded.
@@ -694,3 +545,13 @@ impl StripeRequest for DeactivateBillingAlert {
             .form(&self.inner)
     }
 }
+
+/// Filter results to only include this type of alert.
+pub type ListBillingAlertAlertType = stripe_shared::AlertType;
+/// The type of alert to create.
+pub type CreateBillingAlertAlertType = stripe_shared::AlertType;
+/// What type of filter is being applied to this usage alert.
+pub type CreateBillingAlertUsageThresholdFiltersType =
+    stripe_shared::ThresholdsResourceUsageAlertFilterType;
+/// Defines how the alert will behave.
+pub type CreateBillingAlertUsageThresholdRecurrence = stripe_shared::Recurrence;

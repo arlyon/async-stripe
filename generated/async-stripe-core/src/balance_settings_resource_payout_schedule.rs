@@ -5,14 +5,14 @@
 pub struct BalanceSettingsResourcePayoutSchedule {
     /// How frequently funds will be paid out.
     /// One of `manual` (payouts only created via API call), `daily`, `weekly`, or `monthly`.
-    pub interval: Option<BalanceSettingsResourcePayoutScheduleInterval>,
+    pub interval: Option<stripe_shared::Interval>,
     /// The day of the month funds will be paid out.
     /// Only shown if `interval` is monthly.
     /// Payouts scheduled between the 29th and 31st of the month are sent on the last day of shorter months.
     pub monthly_payout_days: Option<Vec<u32>>,
     /// The days of the week when available funds are paid out, specified as an array, for example, [`monday`, `tuesday`].
     /// Only shown if `interval` is weekly.
-    pub weekly_payout_days: Option<Vec<BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays>>,
+    pub weekly_payout_days: Option<Vec<stripe_shared::WeeklyPayoutDays>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for BalanceSettingsResourcePayoutSchedule {
@@ -22,9 +22,9 @@ impl std::fmt::Debug for BalanceSettingsResourcePayoutSchedule {
 }
 #[doc(hidden)]
 pub struct BalanceSettingsResourcePayoutScheduleBuilder {
-    interval: Option<Option<BalanceSettingsResourcePayoutScheduleInterval>>,
+    interval: Option<Option<stripe_shared::Interval>>,
     monthly_payout_days: Option<Option<Vec<u32>>>,
-    weekly_payout_days: Option<Option<Vec<BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays>>>,
+    weekly_payout_days: Option<Option<Vec<stripe_shared::WeeklyPayoutDays>>>,
 }
 
 #[allow(
@@ -129,201 +129,7 @@ const _: () = {
 };
 /// How frequently funds will be paid out.
 /// One of `manual` (payouts only created via API call), `daily`, `weekly`, or `monthly`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BalanceSettingsResourcePayoutScheduleInterval {
-    Daily,
-    Manual,
-    Monthly,
-    Weekly,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BalanceSettingsResourcePayoutScheduleInterval {
-    pub fn as_str(&self) -> &str {
-        use BalanceSettingsResourcePayoutScheduleInterval::*;
-        match self {
-            Daily => "daily",
-            Manual => "manual",
-            Monthly => "monthly",
-            Weekly => "weekly",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BalanceSettingsResourcePayoutScheduleInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BalanceSettingsResourcePayoutScheduleInterval::*;
-        match s {
-            "daily" => Ok(Daily),
-            "manual" => Ok(Manual),
-            "monthly" => Ok(Monthly),
-            "weekly" => Ok(Weekly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BalanceSettingsResourcePayoutScheduleInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BalanceSettingsResourcePayoutScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BalanceSettingsResourcePayoutScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BalanceSettingsResourcePayoutScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BalanceSettingsResourcePayoutScheduleInterval))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for BalanceSettingsResourcePayoutScheduleInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BalanceSettingsResourcePayoutScheduleInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<BalanceSettingsResourcePayoutScheduleInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(BalanceSettingsResourcePayoutScheduleInterval::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(BalanceSettingsResourcePayoutScheduleInterval);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BalanceSettingsResourcePayoutScheduleInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type BalanceSettingsResourcePayoutScheduleInterval = stripe_shared::Interval;
 /// The days of the week when available funds are paid out, specified as an array, for example, [`monday`, `tuesday`].
 /// Only shown if `interval` is weekly.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    Friday,
-    Monday,
-    Thursday,
-    Tuesday,
-    Wednesday,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    pub fn as_str(&self) -> &str {
-        use BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays::*;
-        match self {
-            Friday => "friday",
-            Monday => "monday",
-            Thursday => "thursday",
-            Tuesday => "tuesday",
-            Wednesday => "wednesday",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays::*;
-        match s {
-            "friday" => Ok(Friday),
-            "monday" => Ok(Monday),
-            "thursday" => Ok(Thursday),
-            "tuesday" => Ok(Tuesday),
-            "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays = stripe_shared::WeeklyPayoutDays;

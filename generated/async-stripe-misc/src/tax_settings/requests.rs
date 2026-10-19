@@ -105,7 +105,7 @@ pub struct UpdateTaxSettingsDefaults {
     /// One of inclusive, exclusive, or inferred_by_currency.
     /// Once specified, it cannot be changed back to null.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<UpdateTaxSettingsDefaultsTaxBehavior>,
+    pub tax_behavior: Option<stripe_shared::UpdateTaxSettingsDefaultsTaxBehavior>,
     /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
@@ -124,83 +124,6 @@ impl UpdateTaxSettingsDefaults {
 impl Default for UpdateTaxSettingsDefaults {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Specifies the default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) to be used when the item's price has unspecified tax behavior.
-/// One of inclusive, exclusive, or inferred_by_currency.
-/// Once specified, it cannot be changed back to null.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateTaxSettingsDefaultsTaxBehavior {
-    Exclusive,
-    Inclusive,
-    InferredByCurrency,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateTaxSettingsDefaultsTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateTaxSettingsDefaultsTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            InferredByCurrency => "inferred_by_currency",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateTaxSettingsDefaultsTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateTaxSettingsDefaultsTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "inferred_by_currency" => Ok(InferredByCurrency),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateTaxSettingsDefaultsTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateTaxSettingsDefaultsTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateTaxSettingsDefaultsTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateTaxSettingsDefaultsTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateTaxSettingsDefaultsTaxBehavior)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateTaxSettingsDefaultsTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateTaxSettingsDefaultsTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The place where your business is located.
@@ -327,3 +250,8 @@ impl StripeRequest for UpdateTaxSettings {
         RequestBuilder::new(StripeMethod::Post, "/tax/settings").form(&self.inner)
     }
 }
+
+/// Specifies the default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) to be used when the item's price has unspecified tax behavior.
+/// One of inclusive, exclusive, or inferred_by_currency.
+/// Once specified, it cannot be changed back to null.
+pub type UpdateTaxSettingsDefaultsTaxBehavior = stripe_shared::UpdateTaxSettingsDefaultsTaxBehavior;

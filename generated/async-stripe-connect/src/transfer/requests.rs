@@ -223,7 +223,7 @@ struct CreateTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     source_transaction: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    source_type: Option<CreateTransferSourceType>,
+    source_type: Option<stripe_shared::ReserveHoldSourceType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_group: Option<String>,
 }
@@ -246,79 +246,6 @@ impl CreateTransferBuilder {
             source_type: None,
             transfer_group: None,
         }
-    }
-}
-/// The source balance to use for this transfer.
-/// One of `bank_account`, `card`, or `fpx`.
-/// For most users, this will default to `card`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTransferSourceType {
-    BankAccount,
-    Card,
-    Fpx,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTransferSourceType {
-    pub fn as_str(&self) -> &str {
-        use CreateTransferSourceType::*;
-        match self {
-            BankAccount => "bank_account",
-            Card => "card",
-            Fpx => "fpx",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTransferSourceType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTransferSourceType::*;
-        match s {
-            "bank_account" => Ok(BankAccount),
-            "card" => Ok(Card),
-            "fpx" => Ok(Fpx),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateTransferSourceType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTransferSourceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTransferSourceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTransferSourceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTransferSourceType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTransferSourceType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTransferSourceType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// To send funds from your Stripe account to a connected account, you create a new transfer object.
@@ -379,7 +306,10 @@ impl CreateTransfer {
     /// The source balance to use for this transfer.
     /// One of `bank_account`, `card`, or `fpx`.
     /// For most users, this will default to `card`.
-    pub fn source_type(mut self, source_type: impl Into<CreateTransferSourceType>) -> Self {
+    pub fn source_type(
+        mut self,
+        source_type: impl Into<stripe_shared::ReserveHoldSourceType>,
+    ) -> Self {
         self.inner.source_type = Some(source_type.into());
         self
     }
@@ -507,3 +437,8 @@ impl StripeRequest for UpdateTransfer {
         RequestBuilder::new(StripeMethod::Post, format!("/transfers/{transfer}")).form(&self.inner)
     }
 }
+
+/// The source balance to use for this transfer.
+/// One of `bank_account`, `card`, or `fpx`.
+/// For most users, this will default to `card`.
+pub type CreateTransferSourceType = stripe_shared::ReserveHoldSourceType;

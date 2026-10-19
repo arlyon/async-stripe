@@ -5,7 +5,7 @@
 pub struct AccountUnificationAccountControllerStripeDashboard {
     /// A value indicating the Stripe dashboard this account has access to independent of the Connect application.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: AccountUnificationAccountControllerStripeDashboardType,
+    pub type_: stripe_shared::Type,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for AccountUnificationAccountControllerStripeDashboard {
@@ -15,7 +15,7 @@ impl std::fmt::Debug for AccountUnificationAccountControllerStripeDashboard {
 }
 #[doc(hidden)]
 pub struct AccountUnificationAccountControllerStripeDashboardBuilder {
-    type_: Option<AccountUnificationAccountControllerStripeDashboardType>,
+    type_: Option<stripe_shared::Type>,
 }
 
 #[allow(
@@ -107,99 +107,4 @@ const _: () = {
     }
 };
 /// A value indicating the Stripe dashboard this account has access to independent of the Connect application.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum AccountUnificationAccountControllerStripeDashboardType {
-    Express,
-    Full,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl AccountUnificationAccountControllerStripeDashboardType {
-    pub fn as_str(&self) -> &str {
-        use AccountUnificationAccountControllerStripeDashboardType::*;
-        match self {
-            Express => "express",
-            Full => "full",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for AccountUnificationAccountControllerStripeDashboardType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountUnificationAccountControllerStripeDashboardType::*;
-        match s {
-            "express" => Ok(Express),
-            "full" => Ok(Full),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountUnificationAccountControllerStripeDashboardType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for AccountUnificationAccountControllerStripeDashboardType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for AccountUnificationAccountControllerStripeDashboardType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for AccountUnificationAccountControllerStripeDashboardType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(AccountUnificationAccountControllerStripeDashboardType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for AccountUnificationAccountControllerStripeDashboardType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for AccountUnificationAccountControllerStripeDashboardType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<AccountUnificationAccountControllerStripeDashboardType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            AccountUnificationAccountControllerStripeDashboardType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(AccountUnificationAccountControllerStripeDashboardType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for AccountUnificationAccountControllerStripeDashboardType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type AccountUnificationAccountControllerStripeDashboardType = stripe_shared::Type;

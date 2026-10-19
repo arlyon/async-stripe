@@ -5,10 +5,10 @@
 pub struct TaxProductResourceTaxSettingsDefaults {
     /// The tax calculation provider this account uses.
     /// Defaults to `stripe` when not using a [third-party provider](/tax/third-party-apps).
-    pub provider: TaxProductResourceTaxSettingsDefaultsProvider,
+    pub provider: stripe_shared::Provider,
     /// Default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) used to specify whether the price is considered inclusive of taxes or exclusive of taxes.
     /// If the item's price has a tax behavior set, it will take precedence over the default tax behavior.
-    pub tax_behavior: Option<TaxProductResourceTaxSettingsDefaultsTaxBehavior>,
+    pub tax_behavior: Option<stripe_shared::UpdateTaxSettingsDefaultsTaxBehavior>,
     /// Default [tax code](https://stripe.com/docs/tax/tax-categories) used to classify your products and prices.
     pub tax_code: Option<String>,
 }
@@ -20,8 +20,8 @@ impl std::fmt::Debug for TaxProductResourceTaxSettingsDefaults {
 }
 #[doc(hidden)]
 pub struct TaxProductResourceTaxSettingsDefaultsBuilder {
-    provider: Option<TaxProductResourceTaxSettingsDefaultsProvider>,
-    tax_behavior: Option<Option<TaxProductResourceTaxSettingsDefaultsTaxBehavior>>,
+    provider: Option<stripe_shared::Provider>,
+    tax_behavior: Option<Option<stripe_shared::UpdateTaxSettingsDefaultsTaxBehavior>>,
     tax_code: Option<Option<String>>,
 }
 
@@ -121,193 +121,8 @@ const _: () = {
 };
 /// The tax calculation provider this account uses.
 /// Defaults to `stripe` when not using a [third-party provider](/tax/third-party-apps).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxProductResourceTaxSettingsDefaultsProvider {
-    Anrok,
-    Avalara,
-    Sphere,
-    Stripe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxProductResourceTaxSettingsDefaultsProvider {
-    pub fn as_str(&self) -> &str {
-        use TaxProductResourceTaxSettingsDefaultsProvider::*;
-        match self {
-            Anrok => "anrok",
-            Avalara => "avalara",
-            Sphere => "sphere",
-            Stripe => "stripe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductResourceTaxSettingsDefaultsProvider {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductResourceTaxSettingsDefaultsProvider::*;
-        match s {
-            "anrok" => Ok(Anrok),
-            "avalara" => Ok(Avalara),
-            "sphere" => Ok(Sphere),
-            "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceTaxSettingsDefaultsProvider"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxProductResourceTaxSettingsDefaultsProvider {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxProductResourceTaxSettingsDefaultsProvider {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxProductResourceTaxSettingsDefaultsProvider {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxProductResourceTaxSettingsDefaultsProvider))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxProductResourceTaxSettingsDefaultsProvider {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxProductResourceTaxSettingsDefaultsProvider {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxSettingsDefaultsProvider> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(TaxProductResourceTaxSettingsDefaultsProvider::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceTaxSettingsDefaultsProvider);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxSettingsDefaultsProvider {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TaxProductResourceTaxSettingsDefaultsProvider = stripe_shared::Provider;
 /// Default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) used to specify whether the price is considered inclusive of taxes or exclusive of taxes.
 /// If the item's price has a tax behavior set, it will take precedence over the default tax behavior.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    Exclusive,
-    Inclusive,
-    InferredByCurrency,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use TaxProductResourceTaxSettingsDefaultsTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            InferredByCurrency => "inferred_by_currency",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductResourceTaxSettingsDefaultsTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "inferred_by_currency" => Ok(InferredByCurrency),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceTaxSettingsDefaultsTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxProductResourceTaxSettingsDefaultsTaxBehavior))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxSettingsDefaultsTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TaxProductResourceTaxSettingsDefaultsTaxBehavior::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceTaxSettingsDefaultsTaxBehavior);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TaxProductResourceTaxSettingsDefaultsTaxBehavior =
+    stripe_shared::UpdateTaxSettingsDefaultsTaxBehavior;

@@ -14,7 +14,7 @@ pub struct AccountFutureRequirements {
     /// If not resolved by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.
     pub currently_due: Option<Vec<String>>,
     /// This is typed as an enum for consistency with `requirements.disabled_reason`.
-    pub disabled_reason: Option<AccountFutureRequirementsDisabledReason>,
+    pub disabled_reason: Option<stripe_shared::AccountRequirementsDisabledReason>,
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Option<Vec<stripe_shared::AccountRequirementsError>>,
     /// Fields you must collect when all thresholds are reached.
@@ -40,7 +40,7 @@ pub struct AccountFutureRequirementsBuilder {
     alternatives: Option<Option<Vec<stripe_shared::AccountRequirementsAlternative>>>,
     current_deadline: Option<Option<stripe_types::Timestamp>>,
     currently_due: Option<Option<Vec<String>>>,
-    disabled_reason: Option<Option<AccountFutureRequirementsDisabledReason>>,
+    disabled_reason: Option<Option<stripe_shared::AccountRequirementsDisabledReason>>,
     errors: Option<Option<Vec<stripe_shared::AccountRequirementsError>>>,
     eventually_due: Option<Option<Vec<String>>>,
     past_due: Option<Option<Vec<String>>>,
@@ -187,129 +187,4 @@ const _: () = {
     }
 };
 /// This is typed as an enum for consistency with `requirements.disabled_reason`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum AccountFutureRequirementsDisabledReason {
-    ActionRequiredRequestedCapabilities,
-    Listed,
-    Other,
-    PlatformPaused,
-    RejectedFraud,
-    RejectedIncompleteVerification,
-    RejectedListed,
-    RejectedOther,
-    RejectedPlatformFraud,
-    RejectedPlatformOther,
-    RejectedPlatformTermsOfService,
-    RejectedTermsOfService,
-    RequirementsPastDue,
-    RequirementsPendingVerification,
-    UnderReview,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl AccountFutureRequirementsDisabledReason {
-    pub fn as_str(&self) -> &str {
-        use AccountFutureRequirementsDisabledReason::*;
-        match self {
-            ActionRequiredRequestedCapabilities => "action_required.requested_capabilities",
-            Listed => "listed",
-            Other => "other",
-            PlatformPaused => "platform_paused",
-            RejectedFraud => "rejected.fraud",
-            RejectedIncompleteVerification => "rejected.incomplete_verification",
-            RejectedListed => "rejected.listed",
-            RejectedOther => "rejected.other",
-            RejectedPlatformFraud => "rejected.platform_fraud",
-            RejectedPlatformOther => "rejected.platform_other",
-            RejectedPlatformTermsOfService => "rejected.platform_terms_of_service",
-            RejectedTermsOfService => "rejected.terms_of_service",
-            RequirementsPastDue => "requirements.past_due",
-            RequirementsPendingVerification => "requirements.pending_verification",
-            UnderReview => "under_review",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for AccountFutureRequirementsDisabledReason {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountFutureRequirementsDisabledReason::*;
-        match s {
-            "action_required.requested_capabilities" => Ok(ActionRequiredRequestedCapabilities),
-            "listed" => Ok(Listed),
-            "other" => Ok(Other),
-            "platform_paused" => Ok(PlatformPaused),
-            "rejected.fraud" => Ok(RejectedFraud),
-            "rejected.incomplete_verification" => Ok(RejectedIncompleteVerification),
-            "rejected.listed" => Ok(RejectedListed),
-            "rejected.other" => Ok(RejectedOther),
-            "rejected.platform_fraud" => Ok(RejectedPlatformFraud),
-            "rejected.platform_other" => Ok(RejectedPlatformOther),
-            "rejected.platform_terms_of_service" => Ok(RejectedPlatformTermsOfService),
-            "rejected.terms_of_service" => Ok(RejectedTermsOfService),
-            "requirements.past_due" => Ok(RequirementsPastDue),
-            "requirements.pending_verification" => Ok(RequirementsPendingVerification),
-            "under_review" => Ok(UnderReview),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountFutureRequirementsDisabledReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for AccountFutureRequirementsDisabledReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for AccountFutureRequirementsDisabledReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for AccountFutureRequirementsDisabledReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(AccountFutureRequirementsDisabledReason)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for AccountFutureRequirementsDisabledReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for AccountFutureRequirementsDisabledReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<AccountFutureRequirementsDisabledReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountFutureRequirementsDisabledReason::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(AccountFutureRequirementsDisabledReason);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for AccountFutureRequirementsDisabledReason {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type AccountFutureRequirementsDisabledReason = stripe_shared::AccountRequirementsDisabledReason;

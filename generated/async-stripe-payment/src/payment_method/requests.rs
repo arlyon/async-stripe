@@ -7,7 +7,7 @@ use stripe_client_core::{
 #[derive(serde::Serialize)]
 struct ListPaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    allow_redisplay: Option<stripe_shared::PaymentMethodAllowRedisplay>,
+    allow_redisplay: Option<stripe_shared::CardAllowRedisplay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -22,7 +22,7 @@ struct ListPaymentMethodBuilder {
     starting_after: Option<String>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    type_: Option<ListPaymentMethodType>,
+    type_: Option<stripe_shared::ListPaymentMethodType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListPaymentMethodBuilder {
@@ -42,235 +42,6 @@ impl ListPaymentMethodBuilder {
             starting_after: None,
             type_: None,
         }
-    }
-}
-/// Filters the list by the object `type` field.
-/// Unfiltered, the list returns all payment method types except `custom`.
-/// If your integration expects only one type of payment method in the response, specify that type value in the request to reduce your payload.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ListPaymentMethodType {
-    AcssDebit,
-    Affirm,
-    AfterpayClearpay,
-    Alipay,
-    Alma,
-    AmazonPay,
-    AuBecsDebit,
-    BacsDebit,
-    Bancontact,
-    Billie,
-    Bizum,
-    Blik,
-    Boleto,
-    Card,
-    Cashapp,
-    Crypto,
-    Custom,
-    CustomerBalance,
-    Eps,
-    Fpx,
-    Giropay,
-    Grabpay,
-    Ideal,
-    KakaoPay,
-    Klarna,
-    Konbini,
-    KrCard,
-    Link,
-    MbWay,
-    Mobilepay,
-    Multibanco,
-    NaverPay,
-    NzBankAccount,
-    Oxxo,
-    P24,
-    PayByBank,
-    Payco,
-    Paynow,
-    Paypal,
-    Payto,
-    Pix,
-    Promptpay,
-    RevolutPay,
-    SamsungPay,
-    Satispay,
-    Scalapay,
-    SepaDebit,
-    Sofort,
-    Sunbit,
-    Swish,
-    Twint,
-    Upi,
-    UsBankAccount,
-    WechatPay,
-    Zip,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ListPaymentMethodType {
-    pub fn as_str(&self) -> &str {
-        use ListPaymentMethodType::*;
-        match self {
-            AcssDebit => "acss_debit",
-            Affirm => "affirm",
-            AfterpayClearpay => "afterpay_clearpay",
-            Alipay => "alipay",
-            Alma => "alma",
-            AmazonPay => "amazon_pay",
-            AuBecsDebit => "au_becs_debit",
-            BacsDebit => "bacs_debit",
-            Bancontact => "bancontact",
-            Billie => "billie",
-            Bizum => "bizum",
-            Blik => "blik",
-            Boleto => "boleto",
-            Card => "card",
-            Cashapp => "cashapp",
-            Crypto => "crypto",
-            Custom => "custom",
-            CustomerBalance => "customer_balance",
-            Eps => "eps",
-            Fpx => "fpx",
-            Giropay => "giropay",
-            Grabpay => "grabpay",
-            Ideal => "ideal",
-            KakaoPay => "kakao_pay",
-            Klarna => "klarna",
-            Konbini => "konbini",
-            KrCard => "kr_card",
-            Link => "link",
-            MbWay => "mb_way",
-            Mobilepay => "mobilepay",
-            Multibanco => "multibanco",
-            NaverPay => "naver_pay",
-            NzBankAccount => "nz_bank_account",
-            Oxxo => "oxxo",
-            P24 => "p24",
-            PayByBank => "pay_by_bank",
-            Payco => "payco",
-            Paynow => "paynow",
-            Paypal => "paypal",
-            Payto => "payto",
-            Pix => "pix",
-            Promptpay => "promptpay",
-            RevolutPay => "revolut_pay",
-            SamsungPay => "samsung_pay",
-            Satispay => "satispay",
-            Scalapay => "scalapay",
-            SepaDebit => "sepa_debit",
-            Sofort => "sofort",
-            Sunbit => "sunbit",
-            Swish => "swish",
-            Twint => "twint",
-            Upi => "upi",
-            UsBankAccount => "us_bank_account",
-            WechatPay => "wechat_pay",
-            Zip => "zip",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ListPaymentMethodType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ListPaymentMethodType::*;
-        match s {
-            "acss_debit" => Ok(AcssDebit),
-            "affirm" => Ok(Affirm),
-            "afterpay_clearpay" => Ok(AfterpayClearpay),
-            "alipay" => Ok(Alipay),
-            "alma" => Ok(Alma),
-            "amazon_pay" => Ok(AmazonPay),
-            "au_becs_debit" => Ok(AuBecsDebit),
-            "bacs_debit" => Ok(BacsDebit),
-            "bancontact" => Ok(Bancontact),
-            "billie" => Ok(Billie),
-            "bizum" => Ok(Bizum),
-            "blik" => Ok(Blik),
-            "boleto" => Ok(Boleto),
-            "card" => Ok(Card),
-            "cashapp" => Ok(Cashapp),
-            "crypto" => Ok(Crypto),
-            "custom" => Ok(Custom),
-            "customer_balance" => Ok(CustomerBalance),
-            "eps" => Ok(Eps),
-            "fpx" => Ok(Fpx),
-            "giropay" => Ok(Giropay),
-            "grabpay" => Ok(Grabpay),
-            "ideal" => Ok(Ideal),
-            "kakao_pay" => Ok(KakaoPay),
-            "klarna" => Ok(Klarna),
-            "konbini" => Ok(Konbini),
-            "kr_card" => Ok(KrCard),
-            "link" => Ok(Link),
-            "mb_way" => Ok(MbWay),
-            "mobilepay" => Ok(Mobilepay),
-            "multibanco" => Ok(Multibanco),
-            "naver_pay" => Ok(NaverPay),
-            "nz_bank_account" => Ok(NzBankAccount),
-            "oxxo" => Ok(Oxxo),
-            "p24" => Ok(P24),
-            "pay_by_bank" => Ok(PayByBank),
-            "payco" => Ok(Payco),
-            "paynow" => Ok(Paynow),
-            "paypal" => Ok(Paypal),
-            "payto" => Ok(Payto),
-            "pix" => Ok(Pix),
-            "promptpay" => Ok(Promptpay),
-            "revolut_pay" => Ok(RevolutPay),
-            "samsung_pay" => Ok(SamsungPay),
-            "satispay" => Ok(Satispay),
-            "scalapay" => Ok(Scalapay),
-            "sepa_debit" => Ok(SepaDebit),
-            "sofort" => Ok(Sofort),
-            "sunbit" => Ok(Sunbit),
-            "swish" => Ok(Swish),
-            "twint" => Ok(Twint),
-            "upi" => Ok(Upi),
-            "us_bank_account" => Ok(UsBankAccount),
-            "wechat_pay" => Ok(WechatPay),
-            "zip" => Ok(Zip),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListPaymentMethodType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ListPaymentMethodType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ListPaymentMethodType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ListPaymentMethodType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ListPaymentMethodType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ListPaymentMethodType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ListPaymentMethodType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Returns a list of all PaymentMethods.
@@ -295,7 +66,7 @@ impl ListPaymentMethod {
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
     pub fn allow_redisplay(
         mut self,
-        allow_redisplay: impl Into<stripe_shared::PaymentMethodAllowRedisplay>,
+        allow_redisplay: impl Into<stripe_shared::CardAllowRedisplay>,
     ) -> Self {
         self.inner.allow_redisplay = Some(allow_redisplay.into());
         self
@@ -338,7 +109,7 @@ impl ListPaymentMethod {
     /// Filters the list by the object `type` field.
     /// Unfiltered, the list returns all payment method types except `custom`.
     /// If your integration expects only one type of payment method in the response, specify that type value in the request to reduce your payload.
-    pub fn type_(mut self, type_: impl Into<ListPaymentMethodType>) -> Self {
+    pub fn type_(mut self, type_: impl Into<stripe_shared::ListPaymentMethodType>) -> Self {
         self.inner.type_ = Some(type_.into());
         self
     }
@@ -466,7 +237,7 @@ struct CreatePaymentMethodBuilder {
     #[serde(default, with = "stripe_types::with_serde_json_opt")]
     alipay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    allow_redisplay: Option<stripe_shared::PaymentMethodAllowRedisplay>,
+    allow_redisplay: Option<stripe_shared::CardAllowRedisplay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default, with = "stripe_types::with_serde_json_opt")]
     alma: Option<miniserde::json::Value>,
@@ -610,7 +381,7 @@ struct CreatePaymentMethodBuilder {
     twint: Option<miniserde::json::Value>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    type_: Option<CreatePaymentMethodType>,
+    type_: Option<stripe_shared::ListPaymentMethodType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     upi: Option<CreatePaymentMethodUpi>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -868,7 +639,7 @@ pub struct CreatePaymentMethodCardDetailsParamsNetworks {
     /// Supports `cartes_bancaires`, `mastercard`, or `visa`.
     /// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred: Option<CreatePaymentMethodCardDetailsParamsNetworksPreferred>,
+    pub preferred: Option<stripe_shared::Preferred>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentMethodCardDetailsParamsNetworks {
@@ -884,84 +655,6 @@ impl CreatePaymentMethodCardDetailsParamsNetworks {
 impl Default for CreatePaymentMethodCardDetailsParamsNetworks {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The customer's preferred card network for co-branded cards.
-/// Supports `cartes_bancaires`, `mastercard`, or `visa`.
-/// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodCardDetailsParamsNetworksPreferred {
-    CartesBancaires,
-    Mastercard,
-    Visa,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodCardDetailsParamsNetworksPreferred {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodCardDetailsParamsNetworksPreferred::*;
-        match self {
-            CartesBancaires => "cartes_bancaires",
-            Mastercard => "mastercard",
-            Visa => "visa",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodCardDetailsParamsNetworksPreferred {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodCardDetailsParamsNetworksPreferred::*;
-        match s {
-            "cartes_bancaires" => Ok(CartesBancaires),
-            "mastercard" => Ok(Mastercard),
-            "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodCardDetailsParamsNetworksPreferred"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodCardDetailsParamsNetworksPreferred {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodCardDetailsParamsNetworksPreferred {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodCardDetailsParamsNetworksPreferred {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodCardDetailsParamsNetworksPreferred))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodCardDetailsParamsNetworksPreferred {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodCardDetailsParamsNetworksPreferred {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is a `card` PaymentMethod, this hash contains the user's card details.
@@ -1014,7 +707,7 @@ impl CreatePaymentMethodCustom {
 pub struct CreatePaymentMethodEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank: Option<CreatePaymentMethodEpsBank>,
+    pub bank: Option<stripe_shared::Bank>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentMethodEps {
@@ -1032,152 +725,6 @@ impl Default for CreatePaymentMethodEps {
         Self::new()
     }
 }
-/// The customer's bank.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodEpsBank {
-    ArzteUndApothekerBank,
-    AustrianAnadiBankAg,
-    BankAustria,
-    BankhausCarlSpangler,
-    BankhausSchelhammerUndSchatteraAg,
-    BawagPskAg,
-    BksBankAg,
-    BrullKallmusBankAg,
-    BtvVierLanderBank,
-    CapitalBankGraweGruppeAg,
-    DeutscheBankAg,
-    Dolomitenbank,
-    EasybankAg,
-    ErsteBankUndSparkassen,
-    HypoAlpeadriabankInternationalAg,
-    HypoBankBurgenlandAktiengesellschaft,
-    HypoNoeLbFurNiederosterreichUWien,
-    HypoOberosterreichSalzburgSteiermark,
-    HypoTirolBankAg,
-    HypoVorarlbergBankAg,
-    MarchfelderBank,
-    OberbankAg,
-    RaiffeisenBankengruppeOsterreich,
-    SchoellerbankAg,
-    SpardaBankWien,
-    VolksbankGruppe,
-    VolkskreditbankAg,
-    VrBankBraunau,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodEpsBank {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodEpsBank::*;
-        match self {
-            ArzteUndApothekerBank => "arzte_und_apotheker_bank",
-            AustrianAnadiBankAg => "austrian_anadi_bank_ag",
-            BankAustria => "bank_austria",
-            BankhausCarlSpangler => "bankhaus_carl_spangler",
-            BankhausSchelhammerUndSchatteraAg => "bankhaus_schelhammer_und_schattera_ag",
-            BawagPskAg => "bawag_psk_ag",
-            BksBankAg => "bks_bank_ag",
-            BrullKallmusBankAg => "brull_kallmus_bank_ag",
-            BtvVierLanderBank => "btv_vier_lander_bank",
-            CapitalBankGraweGruppeAg => "capital_bank_grawe_gruppe_ag",
-            DeutscheBankAg => "deutsche_bank_ag",
-            Dolomitenbank => "dolomitenbank",
-            EasybankAg => "easybank_ag",
-            ErsteBankUndSparkassen => "erste_bank_und_sparkassen",
-            HypoAlpeadriabankInternationalAg => "hypo_alpeadriabank_international_ag",
-            HypoBankBurgenlandAktiengesellschaft => "hypo_bank_burgenland_aktiengesellschaft",
-            HypoNoeLbFurNiederosterreichUWien => "hypo_noe_lb_fur_niederosterreich_u_wien",
-            HypoOberosterreichSalzburgSteiermark => "hypo_oberosterreich_salzburg_steiermark",
-            HypoTirolBankAg => "hypo_tirol_bank_ag",
-            HypoVorarlbergBankAg => "hypo_vorarlberg_bank_ag",
-            MarchfelderBank => "marchfelder_bank",
-            OberbankAg => "oberbank_ag",
-            RaiffeisenBankengruppeOsterreich => "raiffeisen_bankengruppe_osterreich",
-            SchoellerbankAg => "schoellerbank_ag",
-            SpardaBankWien => "sparda_bank_wien",
-            VolksbankGruppe => "volksbank_gruppe",
-            VolkskreditbankAg => "volkskreditbank_ag",
-            VrBankBraunau => "vr_bank_braunau",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodEpsBank {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodEpsBank::*;
-        match s {
-            "arzte_und_apotheker_bank" => Ok(ArzteUndApothekerBank),
-            "austrian_anadi_bank_ag" => Ok(AustrianAnadiBankAg),
-            "bank_austria" => Ok(BankAustria),
-            "bankhaus_carl_spangler" => Ok(BankhausCarlSpangler),
-            "bankhaus_schelhammer_und_schattera_ag" => Ok(BankhausSchelhammerUndSchatteraAg),
-            "bawag_psk_ag" => Ok(BawagPskAg),
-            "bks_bank_ag" => Ok(BksBankAg),
-            "brull_kallmus_bank_ag" => Ok(BrullKallmusBankAg),
-            "btv_vier_lander_bank" => Ok(BtvVierLanderBank),
-            "capital_bank_grawe_gruppe_ag" => Ok(CapitalBankGraweGruppeAg),
-            "deutsche_bank_ag" => Ok(DeutscheBankAg),
-            "dolomitenbank" => Ok(Dolomitenbank),
-            "easybank_ag" => Ok(EasybankAg),
-            "erste_bank_und_sparkassen" => Ok(ErsteBankUndSparkassen),
-            "hypo_alpeadriabank_international_ag" => Ok(HypoAlpeadriabankInternationalAg),
-            "hypo_bank_burgenland_aktiengesellschaft" => Ok(HypoBankBurgenlandAktiengesellschaft),
-            "hypo_noe_lb_fur_niederosterreich_u_wien" => Ok(HypoNoeLbFurNiederosterreichUWien),
-            "hypo_oberosterreich_salzburg_steiermark" => Ok(HypoOberosterreichSalzburgSteiermark),
-            "hypo_tirol_bank_ag" => Ok(HypoTirolBankAg),
-            "hypo_vorarlberg_bank_ag" => Ok(HypoVorarlbergBankAg),
-            "marchfelder_bank" => Ok(MarchfelderBank),
-            "oberbank_ag" => Ok(OberbankAg),
-            "raiffeisen_bankengruppe_osterreich" => Ok(RaiffeisenBankengruppeOsterreich),
-            "schoellerbank_ag" => Ok(SchoellerbankAg),
-            "sparda_bank_wien" => Ok(SpardaBankWien),
-            "volksbank_gruppe" => Ok(VolksbankGruppe),
-            "volkskreditbank_ag" => Ok(VolkskreditbankAg),
-            "vr_bank_braunau" => Ok(VrBankBraunau),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePaymentMethodEpsBank");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodEpsBank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodEpsBank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodEpsBank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodEpsBank)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodEpsBank {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodEpsBank {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1185,9 +732,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodEpsBank {
 pub struct CreatePaymentMethodFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<CreatePaymentMethodFpxAccountHolderType>,
+    pub account_holder_type: Option<stripe_shared::IssuingCardholderType>,
     /// The customer's bank.
-    pub bank: CreatePaymentMethodFpxBank,
+    pub bank: stripe_shared::PaymentMethodFpxBank,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentMethodFpx {
@@ -1196,217 +743,8 @@ impl std::fmt::Debug for CreatePaymentMethodFpx {
     }
 }
 impl CreatePaymentMethodFpx {
-    pub fn new(bank: impl Into<CreatePaymentMethodFpxBank>) -> Self {
+    pub fn new(bank: impl Into<stripe_shared::PaymentMethodFpxBank>) -> Self {
         Self { account_holder_type: None, bank: bank.into() }
-    }
-}
-/// Account holder type for FPX transaction
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodFpxAccountHolderType {
-    Company,
-    Individual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodFpxAccountHolderType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodFpxAccountHolderType::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodFpxAccountHolderType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodFpxAccountHolderType::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodFpxAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodFpxAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodFpxAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodFpxAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodFpxAccountHolderType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodFpxAccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodFpxAccountHolderType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The customer's bank.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodFpxBank {
-    AffinBank,
-    Agrobank,
-    AllianceBank,
-    Ambank,
-    BankIslam,
-    BankMuamalat,
-    BankOfChina,
-    BankRakyat,
-    BnpParibas,
-    Bsn,
-    Cimb,
-    Citibank,
-    DeutscheBank,
-    HongLeongBank,
-    Hsbc,
-    Kfh,
-    Maybank2e,
-    Maybank2u,
-    MbsbBank,
-    Ocbc,
-    PbEnterprise,
-    PublicBank,
-    Rhb,
-    StandardChartered,
-    Uob,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodFpxBank {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodFpxBank::*;
-        match self {
-            AffinBank => "affin_bank",
-            Agrobank => "agrobank",
-            AllianceBank => "alliance_bank",
-            Ambank => "ambank",
-            BankIslam => "bank_islam",
-            BankMuamalat => "bank_muamalat",
-            BankOfChina => "bank_of_china",
-            BankRakyat => "bank_rakyat",
-            BnpParibas => "bnp_paribas",
-            Bsn => "bsn",
-            Cimb => "cimb",
-            Citibank => "citibank",
-            DeutscheBank => "deutsche_bank",
-            HongLeongBank => "hong_leong_bank",
-            Hsbc => "hsbc",
-            Kfh => "kfh",
-            Maybank2e => "maybank2e",
-            Maybank2u => "maybank2u",
-            MbsbBank => "mbsb_bank",
-            Ocbc => "ocbc",
-            PbEnterprise => "pb_enterprise",
-            PublicBank => "public_bank",
-            Rhb => "rhb",
-            StandardChartered => "standard_chartered",
-            Uob => "uob",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodFpxBank {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodFpxBank::*;
-        match s {
-            "affin_bank" => Ok(AffinBank),
-            "agrobank" => Ok(Agrobank),
-            "alliance_bank" => Ok(AllianceBank),
-            "ambank" => Ok(Ambank),
-            "bank_islam" => Ok(BankIslam),
-            "bank_muamalat" => Ok(BankMuamalat),
-            "bank_of_china" => Ok(BankOfChina),
-            "bank_rakyat" => Ok(BankRakyat),
-            "bnp_paribas" => Ok(BnpParibas),
-            "bsn" => Ok(Bsn),
-            "cimb" => Ok(Cimb),
-            "citibank" => Ok(Citibank),
-            "deutsche_bank" => Ok(DeutscheBank),
-            "hong_leong_bank" => Ok(HongLeongBank),
-            "hsbc" => Ok(Hsbc),
-            "kfh" => Ok(Kfh),
-            "maybank2e" => Ok(Maybank2e),
-            "maybank2u" => Ok(Maybank2u),
-            "mbsb_bank" => Ok(MbsbBank),
-            "ocbc" => Ok(Ocbc),
-            "pb_enterprise" => Ok(PbEnterprise),
-            "public_bank" => Ok(PublicBank),
-            "rhb" => Ok(Rhb),
-            "standard_chartered" => Ok(StandardChartered),
-            "uob" => Ok(Uob),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePaymentMethodFpxBank");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodFpxBank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodFpxBank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodFpxBank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodFpxBank)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodFpxBank {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodFpxBank {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
@@ -1418,7 +756,7 @@ pub struct CreatePaymentMethodIdeal {
     /// Only use this parameter for existing customers.
     /// Don't use it for new customers.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank: Option<CreatePaymentMethodIdealBank>,
+    pub bank: Option<stripe_shared::PaymentMethodIdealBank>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentMethodIdeal {
@@ -1434,134 +772,6 @@ impl CreatePaymentMethodIdeal {
 impl Default for CreatePaymentMethodIdeal {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The customer's bank.
-/// Only use this parameter for existing customers.
-/// Don't use it for new customers.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodIdealBank {
-    AbnAmro,
-    Adyen,
-    AsnBank,
-    Bunq,
-    Buut,
-    Finom,
-    Handelsbanken,
-    Ing,
-    Knab,
-    Mollie,
-    Moneyou,
-    N26,
-    Nn,
-    Rabobank,
-    Regiobank,
-    Revolut,
-    SnsBank,
-    TriodosBank,
-    VanLanschot,
-    Yoursafe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodIdealBank {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodIdealBank::*;
-        match self {
-            AbnAmro => "abn_amro",
-            Adyen => "adyen",
-            AsnBank => "asn_bank",
-            Bunq => "bunq",
-            Buut => "buut",
-            Finom => "finom",
-            Handelsbanken => "handelsbanken",
-            Ing => "ing",
-            Knab => "knab",
-            Mollie => "mollie",
-            Moneyou => "moneyou",
-            N26 => "n26",
-            Nn => "nn",
-            Rabobank => "rabobank",
-            Regiobank => "regiobank",
-            Revolut => "revolut",
-            SnsBank => "sns_bank",
-            TriodosBank => "triodos_bank",
-            VanLanschot => "van_lanschot",
-            Yoursafe => "yoursafe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodIdealBank {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodIdealBank::*;
-        match s {
-            "abn_amro" => Ok(AbnAmro),
-            "adyen" => Ok(Adyen),
-            "asn_bank" => Ok(AsnBank),
-            "bunq" => Ok(Bunq),
-            "buut" => Ok(Buut),
-            "finom" => Ok(Finom),
-            "handelsbanken" => Ok(Handelsbanken),
-            "ing" => Ok(Ing),
-            "knab" => Ok(Knab),
-            "mollie" => Ok(Mollie),
-            "moneyou" => Ok(Moneyou),
-            "n26" => Ok(N26),
-            "nn" => Ok(Nn),
-            "rabobank" => Ok(Rabobank),
-            "regiobank" => Ok(Regiobank),
-            "revolut" => Ok(Revolut),
-            "sns_bank" => Ok(SnsBank),
-            "triodos_bank" => Ok(TriodosBank),
-            "van_lanschot" => Ok(VanLanschot),
-            "yoursafe" => Ok(Yoursafe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodIdealBank"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodIdealBank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodIdealBank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodIdealBank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodIdealBank)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodIdealBank {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodIdealBank {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -1620,7 +830,7 @@ pub struct CreatePaymentMethodNaverPay {
     /// Whether to use Naver Pay points or a card to fund this transaction.
     /// If not provided, this defaults to `card`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub funding: Option<CreatePaymentMethodNaverPayFunding>,
+    pub funding: Option<stripe_shared::Funding>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentMethodNaverPay {
@@ -1636,79 +846,6 @@ impl CreatePaymentMethodNaverPay {
 impl Default for CreatePaymentMethodNaverPay {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Whether to use Naver Pay points or a card to fund this transaction.
-/// If not provided, this defaults to `card`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodNaverPayFunding {
-    Card,
-    Points,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodNaverPayFunding {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodNaverPayFunding::*;
-        match self {
-            Card => "card",
-            Points => "points",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodNaverPayFunding {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodNaverPayFunding::*;
-        match s {
-            "card" => Ok(Card),
-            "points" => Ok(Points),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodNaverPayFunding"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodNaverPayFunding {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodNaverPayFunding {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodNaverPayFunding {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodNaverPayFunding)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodNaverPayFunding {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodNaverPayFunding {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
@@ -1761,7 +898,7 @@ impl CreatePaymentMethodNzBankAccount {
 pub struct CreatePaymentMethodP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank: Option<CreatePaymentMethodP24Bank>,
+    pub bank: Option<stripe_shared::PaymentMethodP24Bank>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentMethodP24 {
@@ -1777,146 +914,6 @@ impl CreatePaymentMethodP24 {
 impl Default for CreatePaymentMethodP24 {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The customer's bank.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodP24Bank {
-    AliorBank,
-    BankMillennium,
-    BankNowyBfgSa,
-    BankPekaoSa,
-    BankiSpbdzielcze,
-    Blik,
-    BnpParibas,
-    Boz,
-    CitiHandlowy,
-    CreditAgricole,
-    Envelobank,
-    EtransferPocztowy24,
-    GetinBank,
-    Ideabank,
-    Ing,
-    Inteligo,
-    MbankMtransfer,
-    NestPrzelew,
-    NoblePay,
-    PbacZIpko,
-    PlusBank,
-    SantanderPrzelew24,
-    TmobileUsbugiBankowe,
-    ToyotaBank,
-    Velobank,
-    VolkswagenBank,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodP24Bank {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodP24Bank::*;
-        match self {
-            AliorBank => "alior_bank",
-            BankMillennium => "bank_millennium",
-            BankNowyBfgSa => "bank_nowy_bfg_sa",
-            BankPekaoSa => "bank_pekao_sa",
-            BankiSpbdzielcze => "banki_spbdzielcze",
-            Blik => "blik",
-            BnpParibas => "bnp_paribas",
-            Boz => "boz",
-            CitiHandlowy => "citi_handlowy",
-            CreditAgricole => "credit_agricole",
-            Envelobank => "envelobank",
-            EtransferPocztowy24 => "etransfer_pocztowy24",
-            GetinBank => "getin_bank",
-            Ideabank => "ideabank",
-            Ing => "ing",
-            Inteligo => "inteligo",
-            MbankMtransfer => "mbank_mtransfer",
-            NestPrzelew => "nest_przelew",
-            NoblePay => "noble_pay",
-            PbacZIpko => "pbac_z_ipko",
-            PlusBank => "plus_bank",
-            SantanderPrzelew24 => "santander_przelew24",
-            TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
-            ToyotaBank => "toyota_bank",
-            Velobank => "velobank",
-            VolkswagenBank => "volkswagen_bank",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodP24Bank {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodP24Bank::*;
-        match s {
-            "alior_bank" => Ok(AliorBank),
-            "bank_millennium" => Ok(BankMillennium),
-            "bank_nowy_bfg_sa" => Ok(BankNowyBfgSa),
-            "bank_pekao_sa" => Ok(BankPekaoSa),
-            "banki_spbdzielcze" => Ok(BankiSpbdzielcze),
-            "blik" => Ok(Blik),
-            "bnp_paribas" => Ok(BnpParibas),
-            "boz" => Ok(Boz),
-            "citi_handlowy" => Ok(CitiHandlowy),
-            "credit_agricole" => Ok(CreditAgricole),
-            "envelobank" => Ok(Envelobank),
-            "etransfer_pocztowy24" => Ok(EtransferPocztowy24),
-            "getin_bank" => Ok(GetinBank),
-            "ideabank" => Ok(Ideabank),
-            "ing" => Ok(Ing),
-            "inteligo" => Ok(Inteligo),
-            "mbank_mtransfer" => Ok(MbankMtransfer),
-            "nest_przelew" => Ok(NestPrzelew),
-            "noble_pay" => Ok(NoblePay),
-            "pbac_z_ipko" => Ok(PbacZIpko),
-            "plus_bank" => Ok(PlusBank),
-            "santander_przelew24" => Ok(SantanderPrzelew24),
-            "tmobile_usbugi_bankowe" => Ok(TmobileUsbugiBankowe),
-            "toyota_bank" => Ok(ToyotaBank),
-            "velobank" => Ok(Velobank),
-            "volkswagen_bank" => Ok(VolkswagenBank),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePaymentMethodP24Bank");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodP24Bank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodP24Bank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodP24Bank {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodP24Bank)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodP24Bank {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodP24Bank {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
@@ -2001,7 +998,7 @@ impl CreatePaymentMethodSepaDebit {
 #[derive(serde::Serialize)]
 pub struct CreatePaymentMethodSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
-    pub country: CreatePaymentMethodSofortCountry,
+    pub country: stripe_shared::Country,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentMethodSofort {
@@ -2010,321 +1007,8 @@ impl std::fmt::Debug for CreatePaymentMethodSofort {
     }
 }
 impl CreatePaymentMethodSofort {
-    pub fn new(country: impl Into<CreatePaymentMethodSofortCountry>) -> Self {
+    pub fn new(country: impl Into<stripe_shared::Country>) -> Self {
         Self { country: country.into() }
-    }
-}
-/// Two-letter ISO code representing the country the bank account is located in.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodSofortCountry {
-    At,
-    Be,
-    De,
-    Es,
-    It,
-    Nl,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodSofortCountry {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodSofortCountry::*;
-        match self {
-            At => "AT",
-            Be => "BE",
-            De => "DE",
-            Es => "ES",
-            It => "IT",
-            Nl => "NL",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodSofortCountry {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodSofortCountry::*;
-        match s {
-            "AT" => Ok(At),
-            "BE" => Ok(Be),
-            "DE" => Ok(De),
-            "ES" => Ok(Es),
-            "IT" => Ok(It),
-            "NL" => Ok(Nl),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodSofortCountry"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodSofortCountry {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodSofortCountry {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodSofortCountry {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodSofortCountry)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodSofortCountry {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodSofortCountry {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The type of the PaymentMethod.
-/// An additional hash is included on the PaymentMethod with a name matching this value.
-/// It contains additional information specific to the PaymentMethod type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodType {
-    AcssDebit,
-    Affirm,
-    AfterpayClearpay,
-    Alipay,
-    Alma,
-    AmazonPay,
-    AuBecsDebit,
-    BacsDebit,
-    Bancontact,
-    Billie,
-    Bizum,
-    Blik,
-    Boleto,
-    Card,
-    Cashapp,
-    Crypto,
-    Custom,
-    CustomerBalance,
-    Eps,
-    Fpx,
-    Giropay,
-    Grabpay,
-    Ideal,
-    KakaoPay,
-    Klarna,
-    Konbini,
-    KrCard,
-    Link,
-    MbWay,
-    Mobilepay,
-    Multibanco,
-    NaverPay,
-    NzBankAccount,
-    Oxxo,
-    P24,
-    PayByBank,
-    Payco,
-    Paynow,
-    Paypal,
-    Payto,
-    Pix,
-    Promptpay,
-    RevolutPay,
-    SamsungPay,
-    Satispay,
-    Scalapay,
-    SepaDebit,
-    Sofort,
-    Sunbit,
-    Swish,
-    Twint,
-    Upi,
-    UsBankAccount,
-    WechatPay,
-    Zip,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodType::*;
-        match self {
-            AcssDebit => "acss_debit",
-            Affirm => "affirm",
-            AfterpayClearpay => "afterpay_clearpay",
-            Alipay => "alipay",
-            Alma => "alma",
-            AmazonPay => "amazon_pay",
-            AuBecsDebit => "au_becs_debit",
-            BacsDebit => "bacs_debit",
-            Bancontact => "bancontact",
-            Billie => "billie",
-            Bizum => "bizum",
-            Blik => "blik",
-            Boleto => "boleto",
-            Card => "card",
-            Cashapp => "cashapp",
-            Crypto => "crypto",
-            Custom => "custom",
-            CustomerBalance => "customer_balance",
-            Eps => "eps",
-            Fpx => "fpx",
-            Giropay => "giropay",
-            Grabpay => "grabpay",
-            Ideal => "ideal",
-            KakaoPay => "kakao_pay",
-            Klarna => "klarna",
-            Konbini => "konbini",
-            KrCard => "kr_card",
-            Link => "link",
-            MbWay => "mb_way",
-            Mobilepay => "mobilepay",
-            Multibanco => "multibanco",
-            NaverPay => "naver_pay",
-            NzBankAccount => "nz_bank_account",
-            Oxxo => "oxxo",
-            P24 => "p24",
-            PayByBank => "pay_by_bank",
-            Payco => "payco",
-            Paynow => "paynow",
-            Paypal => "paypal",
-            Payto => "payto",
-            Pix => "pix",
-            Promptpay => "promptpay",
-            RevolutPay => "revolut_pay",
-            SamsungPay => "samsung_pay",
-            Satispay => "satispay",
-            Scalapay => "scalapay",
-            SepaDebit => "sepa_debit",
-            Sofort => "sofort",
-            Sunbit => "sunbit",
-            Swish => "swish",
-            Twint => "twint",
-            Upi => "upi",
-            UsBankAccount => "us_bank_account",
-            WechatPay => "wechat_pay",
-            Zip => "zip",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodType::*;
-        match s {
-            "acss_debit" => Ok(AcssDebit),
-            "affirm" => Ok(Affirm),
-            "afterpay_clearpay" => Ok(AfterpayClearpay),
-            "alipay" => Ok(Alipay),
-            "alma" => Ok(Alma),
-            "amazon_pay" => Ok(AmazonPay),
-            "au_becs_debit" => Ok(AuBecsDebit),
-            "bacs_debit" => Ok(BacsDebit),
-            "bancontact" => Ok(Bancontact),
-            "billie" => Ok(Billie),
-            "bizum" => Ok(Bizum),
-            "blik" => Ok(Blik),
-            "boleto" => Ok(Boleto),
-            "card" => Ok(Card),
-            "cashapp" => Ok(Cashapp),
-            "crypto" => Ok(Crypto),
-            "custom" => Ok(Custom),
-            "customer_balance" => Ok(CustomerBalance),
-            "eps" => Ok(Eps),
-            "fpx" => Ok(Fpx),
-            "giropay" => Ok(Giropay),
-            "grabpay" => Ok(Grabpay),
-            "ideal" => Ok(Ideal),
-            "kakao_pay" => Ok(KakaoPay),
-            "klarna" => Ok(Klarna),
-            "konbini" => Ok(Konbini),
-            "kr_card" => Ok(KrCard),
-            "link" => Ok(Link),
-            "mb_way" => Ok(MbWay),
-            "mobilepay" => Ok(Mobilepay),
-            "multibanco" => Ok(Multibanco),
-            "naver_pay" => Ok(NaverPay),
-            "nz_bank_account" => Ok(NzBankAccount),
-            "oxxo" => Ok(Oxxo),
-            "p24" => Ok(P24),
-            "pay_by_bank" => Ok(PayByBank),
-            "payco" => Ok(Payco),
-            "paynow" => Ok(Paynow),
-            "paypal" => Ok(Paypal),
-            "payto" => Ok(Payto),
-            "pix" => Ok(Pix),
-            "promptpay" => Ok(Promptpay),
-            "revolut_pay" => Ok(RevolutPay),
-            "samsung_pay" => Ok(SamsungPay),
-            "satispay" => Ok(Satispay),
-            "scalapay" => Ok(Scalapay),
-            "sepa_debit" => Ok(SepaDebit),
-            "sofort" => Ok(Sofort),
-            "sunbit" => Ok(Sunbit),
-            "swish" => Ok(Swish),
-            "twint" => Ok(Twint),
-            "upi" => Ok(Upi),
-            "us_bank_account" => Ok(UsBankAccount),
-            "wechat_pay" => Ok(WechatPay),
-            "zip" => Ok(Zip),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePaymentMethodType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
@@ -2364,7 +1048,7 @@ pub struct CreatePaymentMethodUpiMandateOptions {
     /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
     /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_type: Option<CreatePaymentMethodUpiMandateOptionsAmountType>,
+    pub amount_type: Option<stripe_shared::AmountType>,
     /// A description of the mandate or subscription that is meant to be displayed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -2388,81 +1072,6 @@ impl Default for CreatePaymentMethodUpiMandateOptions {
         Self::new()
     }
 }
-/// One of `fixed` or `maximum`.
-/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
-/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodUpiMandateOptionsAmountType {
-    Fixed,
-    Maximum,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodUpiMandateOptionsAmountType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodUpiMandateOptionsAmountType::*;
-        match self {
-            Fixed => "fixed",
-            Maximum => "maximum",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodUpiMandateOptionsAmountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodUpiMandateOptionsAmountType::*;
-        match s {
-            "fixed" => Ok(Fixed),
-            "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodUpiMandateOptionsAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodUpiMandateOptionsAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodUpiMandateOptionsAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodUpiMandateOptionsAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodUpiMandateOptionsAmountType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodUpiMandateOptionsAmountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodUpiMandateOptionsAmountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -2470,13 +1079,13 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodUpiMandateOptionsAmount
 pub struct CreatePaymentMethodUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<CreatePaymentMethodUsBankAccountAccountHolderType>,
+    pub account_holder_type: Option<stripe_shared::IssuingCardholderType>,
     /// Account number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<String>,
     /// Account type: checkings or savings. Defaults to checking if omitted.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_type: Option<CreatePaymentMethodUsBankAccountAccountType>,
+    pub account_type: Option<stripe_shared::PaymentMethodUsBankAccountAccountType>,
     /// The ID of a Financial Connections Account to use as a payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_connections_account: Option<String>,
@@ -2504,152 +1113,6 @@ impl CreatePaymentMethodUsBankAccount {
 impl Default for CreatePaymentMethodUsBankAccount {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Account holder type: individual or company.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodUsBankAccountAccountHolderType {
-    Company,
-    Individual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodUsBankAccountAccountHolderType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodUsBankAccountAccountHolderType::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodUsBankAccountAccountHolderType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodUsBankAccountAccountHolderType::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodUsBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodUsBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodUsBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodUsBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodUsBankAccountAccountHolderType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodUsBankAccountAccountHolderType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Account type: checkings or savings. Defaults to checking if omitted.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentMethodUsBankAccountAccountType {
-    Checking,
-    Savings,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentMethodUsBankAccountAccountType {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentMethodUsBankAccountAccountType::*;
-        match self {
-            Checking => "checking",
-            Savings => "savings",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePaymentMethodUsBankAccountAccountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentMethodUsBankAccountAccountType::*;
-        match s {
-            "checking" => Ok(Checking),
-            "savings" => Ok(Savings),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodUsBankAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePaymentMethodUsBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePaymentMethodUsBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePaymentMethodUsBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePaymentMethodUsBankAccountAccountType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePaymentMethodUsBankAccountAccountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a PaymentMethod object.
@@ -2701,7 +1164,7 @@ impl CreatePaymentMethod {
     /// The field defaults to `unspecified`.
     pub fn allow_redisplay(
         mut self,
-        allow_redisplay: impl Into<stripe_shared::PaymentMethodAllowRedisplay>,
+        allow_redisplay: impl Into<stripe_shared::CardAllowRedisplay>,
     ) -> Self {
         self.inner.allow_redisplay = Some(allow_redisplay.into());
         self
@@ -3001,7 +1464,7 @@ impl CreatePaymentMethod {
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
-    pub fn type_(mut self, type_: impl Into<CreatePaymentMethodType>) -> Self {
+    pub fn type_(mut self, type_: impl Into<stripe_shared::ListPaymentMethodType>) -> Self {
         self.inner.type_ = Some(type_.into());
         self
     }
@@ -3064,7 +1527,7 @@ impl StripeRequest for CreatePaymentMethod {
 #[derive(serde::Serialize)]
 struct UpdatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    allow_redisplay: Option<stripe_shared::PaymentMethodAllowRedisplay>,
+    allow_redisplay: Option<stripe_shared::CardAllowRedisplay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_details: Option<BillingDetailsInnerParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3137,7 +1600,7 @@ pub struct UpdatePaymentMethodCardNetworks {
     /// Supports `cartes_bancaires`, `mastercard`, or `visa`.
     /// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred: Option<UpdatePaymentMethodCardNetworksPreferred>,
+    pub preferred: Option<stripe_shared::Preferred>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentMethodCardNetworks {
@@ -3153,83 +1616,6 @@ impl UpdatePaymentMethodCardNetworks {
 impl Default for UpdatePaymentMethodCardNetworks {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The customer's preferred card network for co-branded cards.
-/// Supports `cartes_bancaires`, `mastercard`, or `visa`.
-/// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentMethodCardNetworksPreferred {
-    CartesBancaires,
-    Mastercard,
-    Visa,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentMethodCardNetworksPreferred {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentMethodCardNetworksPreferred::*;
-        match self {
-            CartesBancaires => "cartes_bancaires",
-            Mastercard => "mastercard",
-            Visa => "visa",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentMethodCardNetworksPreferred {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentMethodCardNetworksPreferred::*;
-        match s {
-            "cartes_bancaires" => Ok(CartesBancaires),
-            "mastercard" => Ok(Mastercard),
-            "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodCardNetworksPreferred"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentMethodCardNetworksPreferred {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentMethodCardNetworksPreferred {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentMethodCardNetworksPreferred {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentMethodCardNetworksPreferred)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentMethodCardNetworksPreferred {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentMethodCardNetworksPreferred {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
@@ -3270,10 +1656,10 @@ impl Default for UpdatePaymentMethodPayto {
 pub struct UpdatePaymentMethodUsBankAccount {
     /// Bank account holder type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<UpdatePaymentMethodUsBankAccountAccountHolderType>,
+    pub account_holder_type: Option<stripe_shared::IssuingCardholderType>,
     /// Bank account type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_type: Option<UpdatePaymentMethodUsBankAccountAccountType>,
+    pub account_type: Option<stripe_shared::PaymentMethodUsBankAccountAccountType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentMethodUsBankAccount {
@@ -3289,152 +1675,6 @@ impl UpdatePaymentMethodUsBankAccount {
 impl Default for UpdatePaymentMethodUsBankAccount {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Bank account holder type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentMethodUsBankAccountAccountHolderType {
-    Company,
-    Individual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentMethodUsBankAccountAccountHolderType {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentMethodUsBankAccountAccountHolderType::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentMethodUsBankAccountAccountHolderType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentMethodUsBankAccountAccountHolderType::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodUsBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentMethodUsBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentMethodUsBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentMethodUsBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentMethodUsBankAccountAccountHolderType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentMethodUsBankAccountAccountHolderType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Bank account type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentMethodUsBankAccountAccountType {
-    Checking,
-    Savings,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentMethodUsBankAccountAccountType {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentMethodUsBankAccountAccountType::*;
-        match self {
-            Checking => "checking",
-            Savings => "savings",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdatePaymentMethodUsBankAccountAccountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentMethodUsBankAccountAccountType::*;
-        match s {
-            "checking" => Ok(Checking),
-            "savings" => Ok(Savings),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodUsBankAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdatePaymentMethodUsBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdatePaymentMethodUsBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdatePaymentMethodUsBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdatePaymentMethodUsBankAccountAccountType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdatePaymentMethodUsBankAccountAccountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates a PaymentMethod object. A PaymentMethod must be attached to a customer to be updated.
@@ -3461,7 +1701,7 @@ impl UpdatePaymentMethod {
     /// The field defaults to `unspecified`.
     pub fn allow_redisplay(
         mut self,
-        allow_redisplay: impl Into<stripe_shared::PaymentMethodAllowRedisplay>,
+        allow_redisplay: impl Into<stripe_shared::CardAllowRedisplay>,
     ) -> Self {
         self.inner.allow_redisplay = Some(allow_redisplay.into());
         self
@@ -3781,3 +2021,69 @@ impl Default for BillingDetailsInnerParams {
         Self::new()
     }
 }
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+pub type ListPaymentMethodAllowRedisplay = stripe_shared::CardAllowRedisplay;
+/// Filters the list by the object `type` field.
+/// Unfiltered, the list returns all payment method types except `custom`.
+/// If your integration expects only one type of payment method in the response, specify that type value in the request to reduce your payload.
+pub type ListPaymentMethodType = stripe_shared::ListPaymentMethodType;
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+/// The field defaults to `unspecified`.
+pub type CreatePaymentMethodAllowRedisplay = stripe_shared::CardAllowRedisplay;
+/// The customer's preferred card network for co-branded cards.
+/// Supports `cartes_bancaires`, `mastercard`, or `visa`.
+/// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
+pub type CreatePaymentMethodCardDetailsParamsNetworksPreferred = stripe_shared::Preferred;
+/// The customer's bank.
+pub type CreatePaymentMethodEpsBank = stripe_shared::Bank;
+/// Account holder type for FPX transaction
+pub type CreatePaymentMethodFpxAccountHolderType = stripe_shared::IssuingCardholderType;
+/// The customer's bank.
+pub type CreatePaymentMethodFpxBank = stripe_shared::PaymentMethodFpxBank;
+/// The customer's bank.
+/// Only use this parameter for existing customers.
+/// Don't use it for new customers.
+pub type CreatePaymentMethodIdealBank = stripe_shared::PaymentMethodIdealBank;
+/// Whether to use Naver Pay points or a card to fund this transaction.
+/// If not provided, this defaults to `card`.
+pub type CreatePaymentMethodNaverPayFunding = stripe_shared::Funding;
+/// The customer's bank.
+pub type CreatePaymentMethodP24Bank = stripe_shared::PaymentMethodP24Bank;
+/// Two-letter ISO code representing the country the bank account is located in.
+pub type CreatePaymentMethodSofortCountry = stripe_shared::Country;
+/// The type of the PaymentMethod.
+/// An additional hash is included on the PaymentMethod with a name matching this value.
+/// It contains additional information specific to the PaymentMethod type.
+pub type CreatePaymentMethodType = stripe_shared::ListPaymentMethodType;
+/// One of `fixed` or `maximum`.
+/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+pub type CreatePaymentMethodUpiMandateOptionsAmountType = stripe_shared::AmountType;
+/// Account holder type: individual or company.
+pub type CreatePaymentMethodUsBankAccountAccountHolderType = stripe_shared::IssuingCardholderType;
+/// Account type: checkings or savings. Defaults to checking if omitted.
+pub type CreatePaymentMethodUsBankAccountAccountType =
+    stripe_shared::PaymentMethodUsBankAccountAccountType;
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+/// The field defaults to `unspecified`.
+pub type UpdatePaymentMethodAllowRedisplay = stripe_shared::CardAllowRedisplay;
+/// The customer's preferred card network for co-branded cards.
+/// Supports `cartes_bancaires`, `mastercard`, or `visa`.
+/// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
+pub type UpdatePaymentMethodCardNetworksPreferred = stripe_shared::Preferred;
+/// Bank account holder type.
+pub type UpdatePaymentMethodUsBankAccountAccountHolderType = stripe_shared::IssuingCardholderType;
+/// Bank account type.
+pub type UpdatePaymentMethodUsBankAccountAccountType =
+    stripe_shared::PaymentMethodUsBankAccountAccountType;
+/// Billing address.
+pub type CreatePaymentMethodBillingDetailsAddress = BillingDetailsAddress;
+/// Billing address.
+pub type UpdatePaymentMethodBillingDetailsAddress = BillingDetailsAddress;
+/// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
+pub type CreatePaymentMethodBillingDetails = BillingDetailsInnerParams;
+/// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
+pub type UpdatePaymentMethodBillingDetails = BillingDetailsInnerParams;

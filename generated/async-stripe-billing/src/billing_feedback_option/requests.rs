@@ -15,7 +15,7 @@ struct ListBillingFeedbackOptionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_shared::BillingFeedbackOptionStatus>,
+    status: Option<stripe_shared::BillingMeterStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListBillingFeedbackOptionBuilder {
@@ -72,7 +72,7 @@ impl ListBillingFeedbackOption {
         self
     }
     /// Filter results to only include feedback options with the given status.
-    pub fn status(mut self, status: impl Into<stripe_shared::BillingFeedbackOptionStatus>) -> Self {
+    pub fn status(mut self, status: impl Into<stripe_shared::BillingMeterStatus>) -> Self {
         self.inner.status = Some(status.into());
         self
     }
@@ -402,3 +402,6 @@ impl StripeRequest for DeactivateBillingFeedbackOption {
         .form(&self.inner)
     }
 }
+
+/// Filter results to only include feedback options with the given status.
+pub type ListBillingFeedbackOptionStatus = stripe_shared::BillingMeterStatus;

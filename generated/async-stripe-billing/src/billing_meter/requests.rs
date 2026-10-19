@@ -15,7 +15,7 @@ struct ListBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_billing::BillingMeterStatus>,
+    status: Option<stripe_shared::BillingMeterStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListBillingMeterBuilder {
@@ -72,7 +72,7 @@ impl ListBillingMeter {
         self
     }
     /// Filter results to only include meters with the given status.
-    pub fn status(mut self, status: impl Into<stripe_billing::BillingMeterStatus>) -> Self {
+    pub fn status(mut self, status: impl Into<stripe_shared::BillingMeterStatus>) -> Self {
         self.inner.status = Some(status.into());
         self
     }
@@ -192,7 +192,7 @@ struct CreateBillingMeterBuilder {
     display_name: String,
     event_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    event_time_window: Option<stripe_billing::BillingMeterEventTimeWindow>,
+    event_time_window: Option<stripe_shared::BillingMeterEventTimeWindow>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -230,7 +230,7 @@ pub struct CreateBillingMeterCustomerMapping {
     pub event_payload_key: String,
     /// The method for mapping a meter event to a customer. Must be `by_id`.
     #[serde(rename = "type")]
-    pub type_: CreateBillingMeterCustomerMappingType,
+    pub type_: stripe_shared::CreateBillingMeterCustomerMappingType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingMeterCustomerMapping {
@@ -241,78 +241,9 @@ impl std::fmt::Debug for CreateBillingMeterCustomerMapping {
 impl CreateBillingMeterCustomerMapping {
     pub fn new(
         event_payload_key: impl Into<String>,
-        type_: impl Into<CreateBillingMeterCustomerMappingType>,
+        type_: impl Into<stripe_shared::CreateBillingMeterCustomerMappingType>,
     ) -> Self {
         Self { event_payload_key: event_payload_key.into(), type_: type_.into() }
-    }
-}
-/// The method for mapping a meter event to a customer. Must be `by_id`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingMeterCustomerMappingType {
-    ById,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingMeterCustomerMappingType {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingMeterCustomerMappingType::*;
-        match self {
-            ById => "by_id",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingMeterCustomerMappingType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingMeterCustomerMappingType::*;
-        match s {
-            "by_id" => Ok(ById),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingMeterCustomerMappingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingMeterCustomerMappingType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingMeterCustomerMappingType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingMeterCustomerMappingType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateBillingMeterCustomerMappingType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingMeterCustomerMappingType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateBillingMeterCustomerMappingType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The default settings to aggregate a meter's events with.
@@ -321,7 +252,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterCustomerMappingType {
 #[derive(serde::Serialize)]
 pub struct CreateBillingMeterDefaultAggregation {
     /// Specifies how events are aggregated.
-    pub formula: CreateBillingMeterDefaultAggregationFormula,
+    pub formula: stripe_shared::Formula,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingMeterDefaultAggregation {
@@ -330,84 +261,8 @@ impl std::fmt::Debug for CreateBillingMeterDefaultAggregation {
     }
 }
 impl CreateBillingMeterDefaultAggregation {
-    pub fn new(formula: impl Into<CreateBillingMeterDefaultAggregationFormula>) -> Self {
+    pub fn new(formula: impl Into<stripe_shared::Formula>) -> Self {
         Self { formula: formula.into() }
-    }
-}
-/// Specifies how events are aggregated.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingMeterDefaultAggregationFormula {
-    Count,
-    Last,
-    Sum,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingMeterDefaultAggregationFormula {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingMeterDefaultAggregationFormula::*;
-        match self {
-            Count => "count",
-            Last => "last",
-            Sum => "sum",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingMeterDefaultAggregationFormula {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingMeterDefaultAggregationFormula::*;
-        match s {
-            "count" => Ok(Count),
-            "last" => Ok(Last),
-            "sum" => Ok(Sum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingMeterDefaultAggregationFormula"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingMeterDefaultAggregationFormula {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingMeterDefaultAggregationFormula {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingMeterDefaultAggregationFormula {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateBillingMeterDefaultAggregationFormula))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingMeterDefaultAggregationFormula {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateBillingMeterDefaultAggregationFormula {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Fields that specify how to calculate a meter event's value.
@@ -469,7 +324,7 @@ impl CreateBillingMeter {
     /// The time window which meter events have been pre-aggregated for, if any.
     pub fn event_time_window(
         mut self,
-        event_time_window: impl Into<stripe_billing::BillingMeterEventTimeWindow>,
+        event_time_window: impl Into<stripe_shared::BillingMeterEventTimeWindow>,
     ) -> Self {
         self.inner.event_time_window = Some(event_time_window.into());
         self
@@ -730,3 +585,13 @@ impl StripeRequest for ReactivateBillingMeter {
             .form(&self.inner)
     }
 }
+
+/// Filter results to only include meters with the given status.
+pub type ListBillingMeterStatus = stripe_shared::BillingMeterStatus;
+/// The method for mapping a meter event to a customer. Must be `by_id`.
+pub type CreateBillingMeterCustomerMappingType =
+    stripe_shared::CreateBillingMeterCustomerMappingType;
+/// Specifies how events are aggregated.
+pub type CreateBillingMeterDefaultAggregationFormula = stripe_shared::Formula;
+/// The time window which meter events have been pre-aggregated for, if any.
+pub type CreateBillingMeterEventTimeWindow = stripe_shared::BillingMeterEventTimeWindow;

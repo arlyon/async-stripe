@@ -20,7 +20,7 @@ struct ListTreasuryTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_treasury::TreasuryTransactionStatus>,
+    status: Option<stripe_shared::TreasuryTransactionStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status_transitions: Option<ListTreasuryTransactionStatusTransitions>,
 }
@@ -199,7 +199,7 @@ impl ListTreasuryTransaction {
         self
     }
     /// Only return Transactions that have the given status: `open`, `posted`, or `void`.
-    pub fn status(mut self, status: impl Into<stripe_treasury::TreasuryTransactionStatus>) -> Self {
+    pub fn status(mut self, status: impl Into<stripe_shared::TreasuryTransactionStatus>) -> Self {
         self.inner.status = Some(status.into());
         self
     }
@@ -315,3 +315,6 @@ impl StripeRequest for RetrieveTreasuryTransaction {
             .query(&self.inner)
     }
 }
+
+/// Only return Transactions that have the given status: `open`, `posted`, or `void`.
+pub type ListTreasuryTransactionStatus = stripe_shared::TreasuryTransactionStatus;

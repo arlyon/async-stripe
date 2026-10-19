@@ -18,7 +18,7 @@ pub struct TreasuryTransactionEntry {
     /// Details of the flow associated with the TransactionEntry.
     pub flow_details: Option<stripe_treasury::TreasuryTransactionsResourceFlowDetails>,
     /// Type of the flow associated with the TransactionEntry.
-    pub flow_type: TreasuryTransactionEntryFlowType,
+    pub flow_type: stripe_shared::TreasuryTransactionFlowType,
     /// Unique identifier for the object.
     pub id: stripe_treasury::TreasuryTransactionEntryId,
     /// If the object exists in live mode, the value is `true`.
@@ -45,7 +45,7 @@ pub struct TreasuryTransactionEntryBuilder {
     financial_account: Option<String>,
     flow: Option<Option<String>>,
     flow_details: Option<Option<stripe_treasury::TreasuryTransactionsResourceFlowDetails>>,
-    flow_type: Option<TreasuryTransactionEntryFlowType>,
+    flow_type: Option<stripe_shared::TreasuryTransactionFlowType>,
     id: Option<stripe_treasury::TreasuryTransactionEntryId>,
     livemode: Option<bool>,
     transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
@@ -237,115 +237,6 @@ impl serde::Serialize for TreasuryTransactionEntry {
         s.end()
     }
 }
-/// Type of the flow associated with the TransactionEntry.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryTransactionEntryFlowType {
-    CreditReversal,
-    DebitReversal,
-    InboundTransfer,
-    IssuingAuthorization,
-    Other,
-    OutboundPayment,
-    OutboundTransfer,
-    ReceivedCredit,
-    ReceivedDebit,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryTransactionEntryFlowType {
-    pub fn as_str(&self) -> &str {
-        use TreasuryTransactionEntryFlowType::*;
-        match self {
-            CreditReversal => "credit_reversal",
-            DebitReversal => "debit_reversal",
-            InboundTransfer => "inbound_transfer",
-            IssuingAuthorization => "issuing_authorization",
-            Other => "other",
-            OutboundPayment => "outbound_payment",
-            OutboundTransfer => "outbound_transfer",
-            ReceivedCredit => "received_credit",
-            ReceivedDebit => "received_debit",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryTransactionEntryFlowType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryTransactionEntryFlowType::*;
-        match s {
-            "credit_reversal" => Ok(CreditReversal),
-            "debit_reversal" => Ok(DebitReversal),
-            "inbound_transfer" => Ok(InboundTransfer),
-            "issuing_authorization" => Ok(IssuingAuthorization),
-            "other" => Ok(Other),
-            "outbound_payment" => Ok(OutboundPayment),
-            "outbound_transfer" => Ok(OutboundTransfer),
-            "received_credit" => Ok(ReceivedCredit),
-            "received_debit" => Ok(ReceivedDebit),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryTransactionEntryFlowType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryTransactionEntryFlowType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryTransactionEntryFlowType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryTransactionEntryFlowType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TreasuryTransactionEntryFlowType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TreasuryTransactionEntryFlowType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryTransactionEntryFlowType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TreasuryTransactionEntryFlowType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TreasuryTransactionEntryFlowType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TreasuryTransactionEntryFlowType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TreasuryTransactionEntryFlowType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The specific money movement that generated the TransactionEntry.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -499,3 +390,5 @@ impl stripe_types::Object for TreasuryTransactionEntry {
     }
 }
 stripe_types::def_id!(TreasuryTransactionEntryId);
+/// Type of the flow associated with the TransactionEntry.
+pub type TreasuryTransactionEntryFlowType = stripe_shared::TreasuryTransactionFlowType;

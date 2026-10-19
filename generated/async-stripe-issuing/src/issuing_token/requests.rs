@@ -339,3 +339,6 @@ impl StripeRequest for UpdateIssuingToken {
             .form(&self.inner)
     }
 }
+
+/// Select Issuing tokens with the given status.
+pub type ListIssuingTokenStatus = stripe_shared::IssuingTokenStatus;

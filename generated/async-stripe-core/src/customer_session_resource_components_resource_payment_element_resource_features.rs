@@ -4,35 +4,34 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures {
-        /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the Payment Element displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
+    /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the Payment Element displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
     ///
-        /// If not specified, defaults to ["always"].
+    /// If not specified, defaults to ["always"].
     /// In order to display all saved payment methods, specify ["always", "limited", "unspecified"].
-pub payment_method_allow_redisplay_filters: Vec<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters>,
-        /// Controls whether or not the Payment Element shows saved payment methods.
+    pub payment_method_allow_redisplay_filters: Vec<stripe_shared::CardAllowRedisplay>,
+    /// Controls whether or not the Payment Element shows saved payment methods.
     /// This parameter defaults to `disabled`.
-pub payment_method_redisplay: CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay,
-        /// Determines the max number of saved payment methods for the Payment Element to display.
+    pub payment_method_redisplay: stripe_shared::BalanceSettingsResourcePayoutsStatus,
+    /// Determines the max number of saved payment methods for the Payment Element to display.
     /// This parameter defaults to `3`.
     /// The maximum redisplay limit is `10`.
-pub payment_method_redisplay_limit: Option<i64>,
-        /// Controls whether the Payment Element displays the option to remove a saved payment method.
+    pub payment_method_redisplay_limit: Option<i64>,
+    /// Controls whether the Payment Element displays the option to remove a saved payment method.
     /// This parameter defaults to `disabled`.
     ///
-        /// Allowing buyers to remove their saved payment methods impacts subscriptions that depend on that payment method.
+    /// Allowing buyers to remove their saved payment methods impacts subscriptions that depend on that payment method.
     /// Removing the payment method detaches the [`customer` object](https://docs.stripe.com/api/payment_methods/object#payment_method_object-customer) from that [PaymentMethod](https://docs.stripe.com/api/payment_methods).
-pub payment_method_remove: CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove,
-        /// Controls whether the Payment Element displays a checkbox offering to save a new payment method.
+    pub payment_method_remove: stripe_shared::BalanceSettingsResourcePayoutsStatus,
+    /// Controls whether the Payment Element displays a checkbox offering to save a new payment method.
     /// This parameter defaults to `disabled`.
     ///
-        /// If a customer checks the box, the [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) value on the PaymentMethod is set to `'always'` at confirmation time.
+    /// If a customer checks the box, the [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) value on the PaymentMethod is set to `'always'` at confirmation time.
     /// For PaymentIntents, the [`setup_future_usage`](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-setup_future_usage) value is also set to the value defined in `payment_method_save_usage`.
-pub payment_method_save: CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave,
-        /// When using PaymentIntents and the customer checks the save checkbox, this field determines the [`setup_future_usage`](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-setup_future_usage) value used to confirm the PaymentIntent.
+    pub payment_method_save: stripe_shared::BalanceSettingsResourcePayoutsStatus,
+    /// When using PaymentIntents and the customer checks the save checkbox, this field determines the [`setup_future_usage`](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-setup_future_usage) value used to confirm the PaymentIntent.
     ///
-        /// When using SetupIntents, directly configure the [`usage`](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-usage) value on SetupIntent creation.
-pub payment_method_save_usage: Option<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage>,
-
+    /// When using SetupIntents, directly configure the [`usage`](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-usage) value on SetupIntent creation.
+    pub payment_method_save_usage: Option<stripe_shared::CreateSetupIntentUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures {
@@ -43,13 +42,12 @@ impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElement
 }
 #[doc(hidden)]
 pub struct CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesBuilder {
-    payment_method_allow_redisplay_filters: Option<Vec<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters>>,
-payment_method_redisplay: Option<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay>,
-payment_method_redisplay_limit: Option<Option<i64>>,
-payment_method_remove: Option<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove>,
-payment_method_save: Option<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave>,
-payment_method_save_usage: Option<Option<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage>>,
-
+    payment_method_allow_redisplay_filters: Option<Vec<stripe_shared::CardAllowRedisplay>>,
+    payment_method_redisplay: Option<stripe_shared::BalanceSettingsResourcePayoutsStatus>,
+    payment_method_redisplay_limit: Option<Option<i64>>,
+    payment_method_remove: Option<stripe_shared::BalanceSettingsResourcePayoutsStatus>,
+    payment_method_save: Option<stripe_shared::BalanceSettingsResourcePayoutsStatus>,
+    payment_method_save_usage: Option<Option<stripe_shared::CreateSetupIntentUsage>>,
 }
 
 #[allow(
@@ -203,478 +201,28 @@ const _: () = {
 ///
 /// If not specified, defaults to ["always"].
 /// In order to display all saved payment methods, specify ["always", "limited", "unspecified"].
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters
-{
-    Always,
-    Limited,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    pub fn as_str(&self) -> &str {
-        use CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters::*;
-        match self {
-Always => "always",
-Limited => "limited",
-Unspecified => "unspecified",
-Unknown(v) => v,
-
-        }
-    }
-}
-
-impl std::str::FromStr for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters::*;
-        match s {
-    "always" => Ok(Always),
-"limited" => Ok(Limited),
-"unspecified" => Ok(Unspecified),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters"); Ok(Unknown(v.to_owned())) }
-
-        }
-    }
-}
-impl std::fmt::Display for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters =
+    stripe_shared::CardAllowRedisplay;
 /// Controls whether or not the Payment Element shows saved payment methods.
 /// This parameter defaults to `disabled`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay
-{
-    Disabled,
-    Enabled,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
-    pub fn as_str(&self) -> &str {
-        use CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay::*;
-        match self {
-            Disabled => "disabled",
-            Enabled => "enabled",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay::*;
-        match s {
-    "disabled" => Ok(Disabled),
-"enabled" => Ok(Enabled),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay"); Ok(Unknown(v.to_owned())) }
-
-        }
-    }
-}
-impl std::fmt::Display for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay =
+    stripe_shared::BalanceSettingsResourcePayoutsStatus;
 /// Controls whether the Payment Element displays the option to remove a saved payment method.
 /// This parameter defaults to `disabled`.
 ///
 /// Allowing buyers to remove their saved payment methods impacts subscriptions that depend on that payment method.
 /// Removing the payment method detaches the [`customer` object](https://docs.stripe.com/api/payment_methods/object#payment_method_object-customer) from that [PaymentMethod](https://docs.stripe.com/api/payment_methods).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-{
-    Disabled,
-    Enabled,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove {
-    pub fn as_str(&self) -> &str {
-        use CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove::*;
-        match self {
-            Disabled => "disabled",
-            Enabled => "enabled",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove::*;
-        match s {
-            "disabled" => Ok(Disabled),
-            "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<
-        CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove,
-    >
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove =
+    stripe_shared::BalanceSettingsResourcePayoutsStatus;
 /// Controls whether the Payment Element displays a checkbox offering to save a new payment method.
 /// This parameter defaults to `disabled`.
 ///
 /// If a customer checks the box, the [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) value on the PaymentMethod is set to `'always'` at confirmation time.
 /// For PaymentIntents, the [`setup_future_usage`](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-setup_future_usage) value is also set to the value defined in `payment_method_save_usage`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave {
-    Disabled,
-    Enabled,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave {
-    pub fn as_str(&self) -> &str {
-        use CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave::*;
-        match self {
-            Disabled => "disabled",
-            Enabled => "enabled",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave::*;
-        match s {
-            "disabled" => Ok(Disabled),
-            "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<
-        CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave,
-    >
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave =
+    stripe_shared::BalanceSettingsResourcePayoutsStatus;
 /// When using PaymentIntents and the customer checks the save checkbox, this field determines the [`setup_future_usage`](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-setup_future_usage) value used to confirm the PaymentIntent.
 ///
 /// When using SetupIntents, directly configure the [`usage`](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-usage) value on SetupIntent creation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage
-{
-    OffSession,
-    OnSession,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
-    pub fn as_str(&self) -> &str {
-        use CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage::*;
-        match self {
-            OffSession => "off_session",
-            OnSession => "on_session",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage::*;
-        match s {
-    "off_session" => Ok(OffSession),
-"on_session" => Ok(OnSession),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage"); Ok(Unknown(v.to_owned())) }
-
-        }
-    }
-}
-impl std::fmt::Display for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage =
+    stripe_shared::CreateSetupIntentUsage;

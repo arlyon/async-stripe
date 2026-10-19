@@ -11,7 +11,7 @@ pub struct CheckoutGiropayPaymentMethodOptions {
     /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
     ///
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-    pub setup_future_usage: Option<CheckoutGiropayPaymentMethodOptionsSetupFutureUsage>,
+    pub setup_future_usage: Option<stripe_shared::PaymentMethodOptionsFpxSetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CheckoutGiropayPaymentMethodOptions {
@@ -21,7 +21,7 @@ impl std::fmt::Debug for CheckoutGiropayPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutGiropayPaymentMethodOptionsBuilder {
-    setup_future_usage: Option<Option<CheckoutGiropayPaymentMethodOptionsSetupFutureUsage>>,
+    setup_future_usage: Option<Option<stripe_shared::PaymentMethodOptionsFpxSetupFutureUsage>>,
 }
 
 #[allow(
@@ -120,90 +120,5 @@ const _: () = {
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutGiropayPaymentMethodOptionsSetupFutureUsage {
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutGiropayPaymentMethodOptionsSetupFutureUsage {
-    pub fn as_str(&self) -> &str {
-        use CheckoutGiropayPaymentMethodOptionsSetupFutureUsage::*;
-        match self {
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutGiropayPaymentMethodOptionsSetupFutureUsage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutGiropayPaymentMethodOptionsSetupFutureUsage::*;
-        match s {
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutGiropayPaymentMethodOptionsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutGiropayPaymentMethodOptionsSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutGiropayPaymentMethodOptionsSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutGiropayPaymentMethodOptionsSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutGiropayPaymentMethodOptionsSetupFutureUsage))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutGiropayPaymentMethodOptionsSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutGiropayPaymentMethodOptionsSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutGiropayPaymentMethodOptionsSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            CheckoutGiropayPaymentMethodOptionsSetupFutureUsage::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutGiropayPaymentMethodOptionsSetupFutureUsage);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutGiropayPaymentMethodOptionsSetupFutureUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutGiropayPaymentMethodOptionsSetupFutureUsage =
+    stripe_shared::PaymentMethodOptionsFpxSetupFutureUsage;

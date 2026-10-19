@@ -6,7 +6,7 @@ pub struct BillingBillResourceInvoicingTaxesTax {
     /// The amount of the tax, in cents (or local equivalent).
     pub amount: i64,
     /// Whether this tax is inclusive or exclusive.
-    pub tax_behavior: BillingBillResourceInvoicingTaxesTaxTaxBehavior,
+    pub tax_behavior: stripe_shared::TaxBehavior,
     /// Additional details about the tax rate. Only present when `type` is `tax_rate_details`.
     pub tax_rate_details: Option<stripe_shared::BillingBillResourceInvoicingTaxesTaxRateDetails>,
     /// The reasoning behind this tax, for example, if the product is tax exempt.
@@ -27,7 +27,7 @@ impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTax {
 #[doc(hidden)]
 pub struct BillingBillResourceInvoicingTaxesTaxBuilder {
     amount: Option<i64>,
-    tax_behavior: Option<BillingBillResourceInvoicingTaxesTaxTaxBehavior>,
+    tax_behavior: Option<stripe_shared::TaxBehavior>,
     tax_rate_details:
         Option<Option<stripe_shared::BillingBillResourceInvoicingTaxesTaxRateDetails>>,
     taxability_reason: Option<BillingBillResourceInvoicingTaxesTaxTaxabilityReason>,
@@ -162,96 +162,6 @@ const _: () = {
         }
     }
 };
-/// Whether this tax is inclusive or exclusive.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    Exclusive,
-    Inclusive,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use BillingBillResourceInvoicingTaxesTaxTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BillingBillResourceInvoicingTaxesTaxTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingBillResourceInvoicingTaxesTaxTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BillingBillResourceInvoicingTaxesTaxTaxBehavior))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<BillingBillResourceInvoicingTaxesTaxTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(BillingBillResourceInvoicingTaxesTaxTaxBehavior::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(BillingBillResourceInvoicingTaxesTaxTaxBehavior);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The reasoning behind this tax, for example, if the product is tax exempt.
 /// The possible values for this field may be extended as new tax rules are supported.
 #[derive(Clone, Eq, PartialEq)]
@@ -471,3 +381,5 @@ impl<'de> serde::Deserialize<'de> for BillingBillResourceInvoicingTaxesTaxType {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Whether this tax is inclusive or exclusive.
+pub type BillingBillResourceInvoicingTaxesTaxTaxBehavior = stripe_shared::TaxBehavior;

@@ -21,7 +21,7 @@ pub struct TransferSchedule {
     pub weekly_anchor: Option<String>,
     /// The days of the week when available funds are paid out, specified as an array, for example, [`monday`, `tuesday`].
     /// Only shown if `interval` is weekly.
-    pub weekly_payout_days: Option<Vec<TransferScheduleWeeklyPayoutDays>>,
+    pub weekly_payout_days: Option<Vec<stripe_shared::WeeklyPayoutDays>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TransferSchedule {
@@ -36,7 +36,7 @@ pub struct TransferScheduleBuilder {
     monthly_anchor: Option<Option<u8>>,
     monthly_payout_days: Option<Option<Vec<u32>>>,
     weekly_anchor: Option<Option<String>>,
-    weekly_payout_days: Option<Option<Vec<TransferScheduleWeeklyPayoutDays>>>,
+    weekly_payout_days: Option<Option<Vec<stripe_shared::WeeklyPayoutDays>>>,
 }
 
 #[allow(
@@ -168,99 +168,4 @@ const _: () = {
 };
 /// The days of the week when available funds are paid out, specified as an array, for example, [`monday`, `tuesday`].
 /// Only shown if `interval` is weekly.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TransferScheduleWeeklyPayoutDays {
-    Friday,
-    Monday,
-    Thursday,
-    Tuesday,
-    Wednesday,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TransferScheduleWeeklyPayoutDays {
-    pub fn as_str(&self) -> &str {
-        use TransferScheduleWeeklyPayoutDays::*;
-        match self {
-            Friday => "friday",
-            Monday => "monday",
-            Thursday => "thursday",
-            Tuesday => "tuesday",
-            Wednesday => "wednesday",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TransferScheduleWeeklyPayoutDays {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TransferScheduleWeeklyPayoutDays::*;
-        match s {
-            "friday" => Ok(Friday),
-            "monday" => Ok(Monday),
-            "thursday" => Ok(Thursday),
-            "tuesday" => Ok(Tuesday),
-            "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TransferScheduleWeeklyPayoutDays"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TransferScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TransferScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TransferScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TransferScheduleWeeklyPayoutDays)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TransferScheduleWeeklyPayoutDays {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TransferScheduleWeeklyPayoutDays {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TransferScheduleWeeklyPayoutDays> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TransferScheduleWeeklyPayoutDays::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TransferScheduleWeeklyPayoutDays);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TransferScheduleWeeklyPayoutDays {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TransferScheduleWeeklyPayoutDays = stripe_shared::WeeklyPayoutDays;

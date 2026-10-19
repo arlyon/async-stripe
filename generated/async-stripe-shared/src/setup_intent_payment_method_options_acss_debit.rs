@@ -4,11 +4,11 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupIntentPaymentMethodOptionsAcssDebit {
     /// Currency supported by the bank account
-    pub currency: Option<SetupIntentPaymentMethodOptionsAcssDebitCurrency>,
+    pub currency: Option<stripe_shared::Currency>,
     pub mandate_options:
         Option<stripe_shared::SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
     /// Bank account verification method. The default value is `automatic`.
-    pub verification_method: Option<SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method: Option<stripe_shared::VerificationMethod>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for SetupIntentPaymentMethodOptionsAcssDebit {
@@ -18,10 +18,10 @@ impl std::fmt::Debug for SetupIntentPaymentMethodOptionsAcssDebit {
 }
 #[doc(hidden)]
 pub struct SetupIntentPaymentMethodOptionsAcssDebitBuilder {
-    currency: Option<Option<SetupIntentPaymentMethodOptionsAcssDebitCurrency>>,
+    currency: Option<Option<stripe_shared::Currency>>,
     mandate_options:
         Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit>>,
-    verification_method: Option<Option<SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>>,
+    verification_method: Option<Option<stripe_shared::VerificationMethod>>,
 }
 
 #[allow(
@@ -125,192 +125,7 @@ const _: () = {
     }
 };
 /// Currency supported by the bank account
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SetupIntentPaymentMethodOptionsAcssDebitCurrency {
-    Cad,
-    Usd,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SetupIntentPaymentMethodOptionsAcssDebitCurrency {
-    pub fn as_str(&self) -> &str {
-        use SetupIntentPaymentMethodOptionsAcssDebitCurrency::*;
-        match self {
-            Cad => "cad",
-            Usd => "usd",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SetupIntentPaymentMethodOptionsAcssDebitCurrency {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SetupIntentPaymentMethodOptionsAcssDebitCurrency::*;
-        match s {
-            "cad" => Ok(Cad),
-            "usd" => Ok(Usd),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsAcssDebitCurrency"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SetupIntentPaymentMethodOptionsAcssDebitCurrency {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SetupIntentPaymentMethodOptionsAcssDebitCurrency {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SetupIntentPaymentMethodOptionsAcssDebitCurrency {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SetupIntentPaymentMethodOptionsAcssDebitCurrency))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SetupIntentPaymentMethodOptionsAcssDebitCurrency {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SetupIntentPaymentMethodOptionsAcssDebitCurrency {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<SetupIntentPaymentMethodOptionsAcssDebitCurrency> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            SetupIntentPaymentMethodOptionsAcssDebitCurrency::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(SetupIntentPaymentMethodOptionsAcssDebitCurrency);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsAcssDebitCurrency {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SetupIntentPaymentMethodOptionsAcssDebitCurrency = stripe_shared::Currency;
 /// Bank account verification method. The default value is `automatic`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    Automatic,
-    Instant,
-    Microdeposits,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    pub fn as_str(&self) -> &str {
-        use SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::*;
-        match self {
-            Automatic => "automatic",
-            Instant => "instant",
-            Microdeposits => "microdeposits",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::*;
-        match s {
-            "automatic" => Ok(Automatic),
-            "instant" => Ok(Instant),
-            "microdeposits" => Ok(Microdeposits),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod =
+    stripe_shared::VerificationMethod;

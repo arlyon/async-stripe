@@ -5,7 +5,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingAlert {
     /// Defines the type of the alert.
-    pub alert_type: stripe_billing::BillingAlertAlertType,
+    pub alert_type: stripe_shared::AlertType,
     /// Unique identifier for the object.
     pub id: stripe_billing::BillingAlertId,
     /// If the object exists in live mode, the value is `true`.
@@ -26,7 +26,7 @@ impl std::fmt::Debug for BillingAlert {
 }
 #[doc(hidden)]
 pub struct BillingAlertBuilder {
-    alert_type: Option<stripe_billing::BillingAlertAlertType>,
+    alert_type: Option<stripe_shared::AlertType>,
     id: Option<stripe_billing::BillingAlertId>,
     livemode: Option<bool>,
     status: Option<Option<BillingAlertStatus>>,
@@ -268,82 +268,5 @@ impl stripe_types::Object for BillingAlert {
     }
 }
 stripe_types::def_id!(BillingAlertId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BillingAlertAlertType {
-    UsageThreshold,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BillingAlertAlertType {
-    pub fn as_str(&self) -> &str {
-        use BillingAlertAlertType::*;
-        match self {
-            UsageThreshold => "usage_threshold",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BillingAlertAlertType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BillingAlertAlertType::*;
-        match s {
-            "usage_threshold" => Ok(UsageThreshold),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingAlertAlertType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BillingAlertAlertType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BillingAlertAlertType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BillingAlertAlertType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BillingAlertAlertType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for BillingAlertAlertType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BillingAlertAlertType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<BillingAlertAlertType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BillingAlertAlertType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(BillingAlertAlertType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BillingAlertAlertType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Defines the type of the alert.
+pub type BillingAlertAlertType = stripe_shared::AlertType;

@@ -11,7 +11,7 @@ pub struct ReserveHold {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// Indicates which party created this ReserveHold.
-    pub created_by: ReserveHoldCreatedBy,
+    pub created_by: stripe_shared::ReserveHoldCreatedBy,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
@@ -37,7 +37,7 @@ pub struct ReserveHold {
     pub source_charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     /// Which source balance type this ReserveHold reserves funds from.
     /// One of `bank_account`, `card`, or `fpx`.
-    pub source_type: ReserveHoldSourceType,
+    pub source_type: stripe_shared::ReserveHoldSourceType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ReserveHold {
@@ -50,7 +50,7 @@ pub struct ReserveHoldBuilder {
     amount: Option<i64>,
     amount_releasable: Option<Option<i64>>,
     created: Option<stripe_types::Timestamp>,
-    created_by: Option<ReserveHoldCreatedBy>,
+    created_by: Option<stripe_shared::ReserveHoldCreatedBy>,
     currency: Option<stripe_types::Currency>,
     id: Option<stripe_reserve::ReserveHoldId>,
     is_releasable: Option<Option<bool>>,
@@ -62,7 +62,7 @@ pub struct ReserveHoldBuilder {
     release_schedule: Option<stripe_reserve::ReservesReserveHoldsResourcesReleaseSchedule>,
     reserve_plan: Option<Option<stripe_types::Expandable<stripe_reserve::ReservePlan>>>,
     source_charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
-    source_type: Option<ReserveHoldSourceType>,
+    source_type: Option<stripe_shared::ReserveHoldSourceType>,
 }
 
 #[allow(
@@ -271,90 +271,6 @@ impl serde::Serialize for ReserveHold {
         s.end()
     }
 }
-/// Indicates which party created this ReserveHold.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ReserveHoldCreatedBy {
-    Application,
-    Stripe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ReserveHoldCreatedBy {
-    pub fn as_str(&self) -> &str {
-        use ReserveHoldCreatedBy::*;
-        match self {
-            Application => "application",
-            Stripe => "stripe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ReserveHoldCreatedBy {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ReserveHoldCreatedBy::*;
-        match s {
-            "application" => Ok(Application),
-            "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReserveHoldCreatedBy");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ReserveHoldCreatedBy {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ReserveHoldCreatedBy {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReserveHoldCreatedBy {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ReserveHoldCreatedBy)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for ReserveHoldCreatedBy {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ReserveHoldCreatedBy {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<ReserveHoldCreatedBy> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReserveHoldCreatedBy::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(ReserveHoldCreatedBy);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ReserveHoldCreatedBy {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The reason for the ReserveHold.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -439,94 +355,6 @@ impl<'de> serde::Deserialize<'de> for ReserveHoldReason {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Which source balance type this ReserveHold reserves funds from.
-/// One of `bank_account`, `card`, or `fpx`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ReserveHoldSourceType {
-    BankAccount,
-    Card,
-    Fpx,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ReserveHoldSourceType {
-    pub fn as_str(&self) -> &str {
-        use ReserveHoldSourceType::*;
-        match self {
-            BankAccount => "bank_account",
-            Card => "card",
-            Fpx => "fpx",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ReserveHoldSourceType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ReserveHoldSourceType::*;
-        match s {
-            "bank_account" => Ok(BankAccount),
-            "card" => Ok(Card),
-            "fpx" => Ok(Fpx),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReserveHoldSourceType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ReserveHoldSourceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ReserveHoldSourceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReserveHoldSourceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ReserveHoldSourceType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for ReserveHoldSourceType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ReserveHoldSourceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<ReserveHoldSourceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReserveHoldSourceType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(ReserveHoldSourceType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ReserveHoldSourceType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for ReserveHold {
     type Id = stripe_reserve::ReserveHoldId;
     fn id(&self) -> &Self::Id {
@@ -538,3 +366,8 @@ impl stripe_types::Object for ReserveHold {
     }
 }
 stripe_types::def_id!(ReserveHoldId);
+/// Indicates which party created this ReserveHold.
+pub type ReserveHoldCreatedBy = stripe_shared::ReserveHoldCreatedBy;
+/// Which source balance type this ReserveHold reserves funds from.
+/// One of `bank_account`, `card`, or `fpx`.
+pub type ReserveHoldSourceType = stripe_shared::ReserveHoldSourceType;

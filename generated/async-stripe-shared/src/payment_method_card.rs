@@ -42,7 +42,7 @@ pub struct PaymentMethodCard {
     /// Contains information about card networks that can be used to process the payment.
     pub networks: Option<stripe_shared::Networks>,
     /// Status of a card based on the card issuer.
-    pub regulated_status: Option<PaymentMethodCardRegulatedStatus>,
+    pub regulated_status: Option<stripe_shared::RegulatedStatus>,
     /// Contains details on how this Card may be used for 3D Secure authentication.
     pub three_d_secure_usage: Option<stripe_shared::ThreeDSecureUsage>,
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
@@ -70,7 +70,7 @@ pub struct PaymentMethodCardBuilder {
     issuer: Option<Option<String>>,
     last4: Option<String>,
     networks: Option<Option<stripe_shared::Networks>>,
-    regulated_status: Option<Option<PaymentMethodCardRegulatedStatus>>,
+    regulated_status: Option<Option<stripe_shared::RegulatedStatus>>,
     three_d_secure_usage: Option<Option<stripe_shared::ThreeDSecureUsage>>,
     wallet: Option<Option<stripe_shared::PaymentMethodCardWallet>>,
 }
@@ -269,90 +269,4 @@ const _: () = {
     }
 };
 /// Status of a card based on the card issuer.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodCardRegulatedStatus {
-    Regulated,
-    Unregulated,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodCardRegulatedStatus {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodCardRegulatedStatus::*;
-        match self {
-            Regulated => "regulated",
-            Unregulated => "unregulated",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodCardRegulatedStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodCardRegulatedStatus::*;
-        match s {
-            "regulated" => Ok(Regulated),
-            "unregulated" => Ok(Unregulated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodCardRegulatedStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodCardRegulatedStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodCardRegulatedStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodCardRegulatedStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodCardRegulatedStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodCardRegulatedStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodCardRegulatedStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodCardRegulatedStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentMethodCardRegulatedStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodCardRegulatedStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodCardRegulatedStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodCardRegulatedStatus = stripe_shared::RegulatedStatus;

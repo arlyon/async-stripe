@@ -230,11 +230,11 @@ struct CreatePayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    method: Option<CreatePayoutMethod>,
+    method: Option<stripe_shared::CreatePayoutMethod>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payout_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    source_type: Option<CreatePayoutSourceType>,
+    source_type: Option<stripe_shared::ReserveHoldSourceType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     statement_descriptor: Option<String>,
 }
@@ -258,150 +258,6 @@ impl CreatePayoutBuilder {
             source_type: None,
             statement_descriptor: None,
         }
-    }
-}
-/// The method used to send this payout, which is `standard` or `instant`.
-/// We support `instant` for payouts to debit cards and bank accounts in certain countries.
-/// Learn more about [bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePayoutMethod {
-    Instant,
-    Standard,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePayoutMethod {
-    pub fn as_str(&self) -> &str {
-        use CreatePayoutMethod::*;
-        match self {
-            Instant => "instant",
-            Standard => "standard",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePayoutMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePayoutMethod::*;
-        match s {
-            "instant" => Ok(Instant),
-            "standard" => Ok(Standard),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePayoutMethod");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePayoutMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePayoutMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePayoutMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePayoutMethod)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePayoutMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePayoutMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The balance type of your Stripe balance to draw this payout from.
-/// Balances for different payment sources are kept separately.
-/// You can find the amounts with the Balances API.
-/// One of `bank_account`, `card`, or `fpx`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePayoutSourceType {
-    BankAccount,
-    Card,
-    Fpx,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePayoutSourceType {
-    pub fn as_str(&self) -> &str {
-        use CreatePayoutSourceType::*;
-        match self {
-            BankAccount => "bank_account",
-            Card => "card",
-            Fpx => "fpx",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePayoutSourceType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePayoutSourceType::*;
-        match s {
-            "bank_account" => Ok(BankAccount),
-            "card" => Ok(Card),
-            "fpx" => Ok(Fpx),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePayoutSourceType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePayoutSourceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePayoutSourceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePayoutSourceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePayoutSourceType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePayoutSourceType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePayoutSourceType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// To send funds to your own bank account, create a new payout object.
@@ -459,7 +315,7 @@ impl CreatePayout {
     /// The method used to send this payout, which is `standard` or `instant`.
     /// We support `instant` for payouts to debit cards and bank accounts in certain countries.
     /// Learn more about [bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks).
-    pub fn method(mut self, method: impl Into<CreatePayoutMethod>) -> Self {
+    pub fn method(mut self, method: impl Into<stripe_shared::CreatePayoutMethod>) -> Self {
         self.inner.method = Some(method.into());
         self
     }
@@ -472,7 +328,10 @@ impl CreatePayout {
     /// Balances for different payment sources are kept separately.
     /// You can find the amounts with the Balances API.
     /// One of `bank_account`, `card`, or `fpx`.
-    pub fn source_type(mut self, source_type: impl Into<CreatePayoutSourceType>) -> Self {
+    pub fn source_type(
+        mut self,
+        source_type: impl Into<stripe_shared::ReserveHoldSourceType>,
+    ) -> Self {
         self.inner.source_type = Some(source_type.into());
         self
     }
@@ -755,3 +614,13 @@ impl StripeRequest for ReversePayout {
             .form(&self.inner)
     }
 }
+
+/// The method used to send this payout, which is `standard` or `instant`.
+/// We support `instant` for payouts to debit cards and bank accounts in certain countries.
+/// Learn more about [bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks).
+pub type CreatePayoutMethod = stripe_shared::CreatePayoutMethod;
+/// The balance type of your Stripe balance to draw this payout from.
+/// Balances for different payment sources are kept separately.
+/// You can find the amounts with the Balances API.
+/// One of `bank_account`, `card`, or `fpx`.
+pub type CreatePayoutSourceType = stripe_shared::ReserveHoldSourceType;

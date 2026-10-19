@@ -7,8 +7,7 @@ pub struct InsightsResourcesPaymentEvaluationMoneyMovementDetails {
     /// Describes card money movement details for the payment evaluation.
     pub card: Option<stripe_fraud::InsightsResourcesPaymentEvaluationMoneyMovementCard>,
     /// Describes the type of money movement. Currently only `card` is supported.
-    pub money_movement_type:
-        InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType,
+    pub money_movement_type: stripe_shared::PaymentIntentProcessingType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementDetails {
@@ -20,8 +19,7 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementDetails 
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationMoneyMovementDetailsBuilder {
     card: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationMoneyMovementCard>>,
-    money_movement_type:
-        Option<InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType>,
+    money_movement_type: Option<stripe_shared::PaymentIntentProcessingType>,
 }
 
 #[allow(
@@ -119,101 +117,5 @@ const _: () = {
     }
 };
 /// Describes the type of money movement. Currently only `card` is supported.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType {
-    Card,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType {
-    pub fn as_str(&self) -> &str {
-        use InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType::*;
-        match self {
-            Card => "card",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType::*;
-        match s {
-            "card" => Ok(Card),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType =
+    stripe_shared::PaymentIntentProcessingType;

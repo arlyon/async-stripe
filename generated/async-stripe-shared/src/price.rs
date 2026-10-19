@@ -18,7 +18,7 @@ pub struct Price {
     /// Either `per_unit` or `tiered`.
     /// `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`).
     /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-    pub billing_scheme: stripe_shared::PriceBillingScheme,
+    pub billing_scheme: stripe_shared::BillingScheme,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -59,7 +59,7 @@ pub struct Price {
     /// Defines if the tiering price should be `graduated` or `volume` based.
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
     /// In `graduated` tiering, pricing can change as the quantity grows.
-    pub tiers_mode: Option<stripe_shared::PriceTiersMode>,
+    pub tiers_mode: Option<stripe_shared::TiersMode>,
     /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     /// Cannot be combined with `tiers`.
     pub transform_quantity: Option<stripe_shared::TransformQuantity>,
@@ -82,7 +82,7 @@ impl std::fmt::Debug for Price {
 #[doc(hidden)]
 pub struct PriceBuilder {
     active: Option<bool>,
-    billing_scheme: Option<stripe_shared::PriceBillingScheme>,
+    billing_scheme: Option<stripe_shared::BillingScheme>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     currency_options: Option<
@@ -98,7 +98,7 @@ pub struct PriceBuilder {
     recurring: Option<Option<stripe_shared::Recurring>>,
     tax_behavior: Option<Option<stripe_shared::PriceTaxBehavior>>,
     tiers: Option<Option<Vec<stripe_shared::PriceTier>>>,
-    tiers_mode: Option<Option<stripe_shared::PriceTiersMode>>,
+    tiers_mode: Option<Option<stripe_shared::TiersMode>>,
     transform_quantity: Option<Option<stripe_shared::TransformQuantity>>,
     type_: Option<stripe_shared::PriceType>,
     unit_amount: Option<Option<i64>>,
@@ -354,334 +354,19 @@ impl stripe_types::Object for Price {
     }
 }
 stripe_types::def_id!(PriceId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PriceBillingScheme {
-    PerUnit,
-    Tiered,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PriceBillingScheme {
-    pub fn as_str(&self) -> &str {
-        use PriceBillingScheme::*;
-        match self {
-            PerUnit => "per_unit",
-            Tiered => "tiered",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PriceBillingScheme {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PriceBillingScheme::*;
-        match s {
-            "per_unit" => Ok(PerUnit),
-            "tiered" => Ok(Tiered),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceBillingScheme");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PriceBillingScheme {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PriceBillingScheme {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PriceBillingScheme {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PriceBillingScheme)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PriceBillingScheme {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PriceBillingScheme {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PriceBillingScheme> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PriceBillingScheme::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PriceBillingScheme);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PriceBillingScheme {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PriceTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PriceTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use PriceTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PriceTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PriceTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceTaxBehavior");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PriceTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PriceTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PriceTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PriceTaxBehavior)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PriceTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PriceTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PriceTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PriceTaxBehavior::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PriceTaxBehavior);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PriceTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PriceTiersMode {
-    Graduated,
-    Volume,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PriceTiersMode {
-    pub fn as_str(&self) -> &str {
-        use PriceTiersMode::*;
-        match self {
-            Graduated => "graduated",
-            Volume => "volume",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PriceTiersMode {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PriceTiersMode::*;
-        match s {
-            "graduated" => Ok(Graduated),
-            "volume" => Ok(Volume),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceTiersMode");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PriceTiersMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PriceTiersMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PriceTiersMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PriceTiersMode)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PriceTiersMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PriceTiersMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PriceTiersMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PriceTiersMode::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PriceTiersMode);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PriceTiersMode {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PriceType {
-    OneTime,
-    Recurring,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PriceType {
-    pub fn as_str(&self) -> &str {
-        use PriceType::*;
-        match self {
-            OneTime => "one_time",
-            Recurring => "recurring",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PriceType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PriceType::*;
-        match s {
-            "one_time" => Ok(OneTime),
-            "recurring" => Ok(Recurring),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PriceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PriceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PriceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PriceType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PriceType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PriceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PriceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PriceType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PriceType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PriceType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Describes how to compute the price per period.
+/// Either `per_unit` or `tiered`.
+/// `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`).
+/// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
+pub type PriceBillingScheme = stripe_shared::BillingScheme;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type PriceTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Defines if the tiering price should be `graduated` or `volume` based.
+/// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
+/// In `graduated` tiering, pricing can change as the quantity grows.
+pub type PriceTiersMode = stripe_shared::TiersMode;
+/// One of `one_time` or `recurring` depending on whether the price is for a one-time purchase or a recurring (subscription) purchase.
+pub type PriceType = stripe_shared::PriceType;

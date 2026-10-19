@@ -5,7 +5,7 @@
 pub struct GelatoSessionDocumentOptions {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-    pub allowed_types: Option<Vec<GelatoSessionDocumentOptionsAllowedTypes>>,
+    pub allowed_types: Option<Vec<stripe_shared::GelatoDocumentReportType>>,
     /// Collect an ID number and perform an [ID number check](https://docs.stripe.com/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
     pub require_id_number: Option<bool>,
     /// Disable image uploads, identity document images have to be captured using the device’s camera.
@@ -22,7 +22,7 @@ impl std::fmt::Debug for GelatoSessionDocumentOptions {
 }
 #[doc(hidden)]
 pub struct GelatoSessionDocumentOptionsBuilder {
-    allowed_types: Option<Option<Vec<GelatoSessionDocumentOptionsAllowedTypes>>>,
+    allowed_types: Option<Option<Vec<stripe_shared::GelatoDocumentReportType>>>,
     require_id_number: Option<Option<bool>>,
     require_live_capture: Option<Option<bool>>,
     require_matching_selfie: Option<Option<bool>>,
@@ -147,93 +147,4 @@ const _: () = {
 };
 /// Array of strings of allowed identity document types.
 /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum GelatoSessionDocumentOptionsAllowedTypes {
-    DrivingLicense,
-    IdCard,
-    Passport,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl GelatoSessionDocumentOptionsAllowedTypes {
-    pub fn as_str(&self) -> &str {
-        use GelatoSessionDocumentOptionsAllowedTypes::*;
-        match self {
-            DrivingLicense => "driving_license",
-            IdCard => "id_card",
-            Passport => "passport",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoSessionDocumentOptionsAllowedTypes {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoSessionDocumentOptionsAllowedTypes::*;
-        match s {
-            "driving_license" => Ok(DrivingLicense),
-            "id_card" => Ok(IdCard),
-            "passport" => Ok(Passport),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoSessionDocumentOptionsAllowedTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for GelatoSessionDocumentOptionsAllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for GelatoSessionDocumentOptionsAllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for GelatoSessionDocumentOptionsAllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(GelatoSessionDocumentOptionsAllowedTypes)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for GelatoSessionDocumentOptionsAllowedTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for GelatoSessionDocumentOptionsAllowedTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<GelatoSessionDocumentOptionsAllowedTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(GelatoSessionDocumentOptionsAllowedTypes::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(GelatoSessionDocumentOptionsAllowedTypes);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for GelatoSessionDocumentOptionsAllowedTypes {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type GelatoSessionDocumentOptionsAllowedTypes = stripe_shared::GelatoDocumentReportType;

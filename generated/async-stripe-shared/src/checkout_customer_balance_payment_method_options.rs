@@ -7,7 +7,7 @@ pub struct CheckoutCustomerBalancePaymentMethodOptions {
         Option<stripe_shared::CheckoutCustomerBalanceBankTransferPaymentMethodOptions>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     /// Permitted values include: `bank_transfer`.
-    pub funding_type: Option<CheckoutCustomerBalancePaymentMethodOptionsFundingType>,
+    pub funding_type: Option<stripe_shared::FundingType>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -16,7 +16,7 @@ pub struct CheckoutCustomerBalancePaymentMethodOptions {
     /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
     ///
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-    pub setup_future_usage: Option<CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage>,
+    pub setup_future_usage: Option<stripe_shared::PaymentMethodOptionsFpxSetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CheckoutCustomerBalancePaymentMethodOptions {
@@ -28,8 +28,8 @@ impl std::fmt::Debug for CheckoutCustomerBalancePaymentMethodOptions {
 pub struct CheckoutCustomerBalancePaymentMethodOptionsBuilder {
     bank_transfer:
         Option<Option<stripe_shared::CheckoutCustomerBalanceBankTransferPaymentMethodOptions>>,
-    funding_type: Option<Option<CheckoutCustomerBalancePaymentMethodOptionsFundingType>>,
-    setup_future_usage: Option<Option<CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage>>,
+    funding_type: Option<Option<stripe_shared::FundingType>>,
+    setup_future_usage: Option<Option<stripe_shared::PaymentMethodOptionsFpxSetupFutureUsage>>,
 }
 
 #[allow(
@@ -134,96 +134,7 @@ const _: () = {
 };
 /// The funding method type to be used when there are not enough funds in the customer balance.
 /// Permitted values include: `bank_transfer`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutCustomerBalancePaymentMethodOptionsFundingType {
-    BankTransfer,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutCustomerBalancePaymentMethodOptionsFundingType {
-    pub fn as_str(&self) -> &str {
-        use CheckoutCustomerBalancePaymentMethodOptionsFundingType::*;
-        match self {
-            BankTransfer => "bank_transfer",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutCustomerBalancePaymentMethodOptionsFundingType::*;
-        match s {
-            "bank_transfer" => Ok(BankTransfer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCustomerBalancePaymentMethodOptionsFundingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutCustomerBalancePaymentMethodOptionsFundingType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<CheckoutCustomerBalancePaymentMethodOptionsFundingType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            CheckoutCustomerBalancePaymentMethodOptionsFundingType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutCustomerBalancePaymentMethodOptionsFundingType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutCustomerBalancePaymentMethodOptionsFundingType = stripe_shared::FundingType;
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -232,95 +143,5 @@ impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalancePaymentMethodOption
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
-    pub fn as_str(&self) -> &str {
-        use CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage::*;
-        match self {
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage::*;
-        match s {
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage =
+    stripe_shared::PaymentMethodOptionsFpxSetupFutureUsage;

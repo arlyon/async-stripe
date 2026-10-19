@@ -34,7 +34,7 @@ pub reversal_details: Option<stripe_treasury::TreasuryReceivedDebitsResourceReve
         /// Status of the ReceivedDebit.
     /// ReceivedDebits are created with a status of either `succeeded` (approved) or `failed` (declined).
     /// The failure reason can be found under the `failure_code`.
-pub status: stripe_treasury::TreasuryReceivedDebitStatus,
+pub status: stripe_shared::TreasuryReceivedDebitStatus,
     /// The Transaction associated with this object.
 pub transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 
@@ -60,7 +60,7 @@ linked_flows: Option<stripe_treasury::TreasuryReceivedDebitsResourceLinkedFlows>
 livemode: Option<bool>,
 network: Option<TreasuryReceivedDebitNetwork>,
 reversal_details: Option<Option<stripe_treasury::TreasuryReceivedDebitsResourceReversalDetails>>,
-status: Option<stripe_treasury::TreasuryReceivedDebitStatus>,
+status: Option<stripe_shared::TreasuryReceivedDebitStatus>,
 transaction: Option<Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>>,
 
 }
@@ -482,89 +482,7 @@ impl stripe_types::Object for TreasuryReceivedDebit {
     }
 }
 stripe_types::def_id!(TreasuryReceivedDebitId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryReceivedDebitStatus {
-    Failed,
-    Succeeded,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryReceivedDebitStatus {
-    pub fn as_str(&self) -> &str {
-        use TreasuryReceivedDebitStatus::*;
-        match self {
-            Failed => "failed",
-            Succeeded => "succeeded",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryReceivedDebitStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryReceivedDebitStatus::*;
-        match s {
-            "failed" => Ok(Failed),
-            "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryReceivedDebitStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryReceivedDebitStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryReceivedDebitStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryReceivedDebitStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TreasuryReceivedDebitStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for TreasuryReceivedDebitStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryReceivedDebitStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TreasuryReceivedDebitStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TreasuryReceivedDebitStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TreasuryReceivedDebitStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TreasuryReceivedDebitStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Status of the ReceivedDebit.
+/// ReceivedDebits are created with a status of either `succeeded` (approved) or `failed` (declined).
+/// The failure reason can be found under the `failure_code`.
+pub type TreasuryReceivedDebitStatus = stripe_shared::TreasuryReceivedDebitStatus;

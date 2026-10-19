@@ -12,7 +12,7 @@ pub struct TerminalReader {
     /// The current software version of the reader.
     pub device_sw_version: Option<String>,
     /// Device type of the reader.
-    pub device_type: stripe_terminal::TerminalReaderDeviceType,
+    pub device_type: stripe_shared::DeviceType,
     /// Unique identifier for the object.
     pub id: stripe_terminal::TerminalReaderId,
     /// The local IP address of the reader.
@@ -35,7 +35,7 @@ pub struct TerminalReader {
     pub serial_number: String,
     /// The networking status of the reader.
     /// We do not recommend using this field in flows that may block taking payments.
-    pub status: Option<stripe_terminal::TerminalReaderStatus>,
+    pub status: Option<stripe_shared::TerminalReaderStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TerminalReader {
@@ -47,7 +47,7 @@ impl std::fmt::Debug for TerminalReader {
 pub struct TerminalReaderBuilder {
     action: Option<Option<stripe_terminal::TerminalReaderReaderResourceReaderAction>>,
     device_sw_version: Option<Option<String>>,
-    device_type: Option<stripe_terminal::TerminalReaderDeviceType>,
+    device_type: Option<stripe_shared::DeviceType>,
     id: Option<stripe_terminal::TerminalReaderId>,
     ip_address: Option<Option<String>>,
     label: Option<String>,
@@ -56,7 +56,7 @@ pub struct TerminalReaderBuilder {
     location: Option<Option<stripe_types::Expandable<stripe_terminal::TerminalLocation>>>,
     metadata: Option<std::collections::HashMap<String, String>>,
     serial_number: Option<String>,
-    status: Option<Option<stripe_terminal::TerminalReaderStatus>>,
+    status: Option<Option<stripe_shared::TerminalReaderStatus>>,
 }
 
 #[allow(
@@ -255,218 +255,8 @@ impl stripe_types::Object for TerminalReader {
     }
 }
 stripe_types::def_id!(TerminalReaderId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TerminalReaderDeviceType {
-    BbposChipper2x,
-    BbposWisepad3,
-    BbposWiseposE,
-    MobilePhoneReader,
-    SimulatedStripeS700,
-    SimulatedStripeS710,
-    SimulatedVerifoneM425,
-    SimulatedVerifoneP630,
-    SimulatedVerifoneUx700,
-    SimulatedVerifoneV660p,
-    SimulatedWiseposE,
-    StripeM2,
-    StripeS700,
-    StripeS710,
-    VerifoneP400,
-    VerifoneM425,
-    VerifoneP630,
-    VerifoneUx700,
-    VerifoneV660p,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TerminalReaderDeviceType {
-    pub fn as_str(&self) -> &str {
-        use TerminalReaderDeviceType::*;
-        match self {
-            BbposChipper2x => "bbpos_chipper2x",
-            BbposWisepad3 => "bbpos_wisepad3",
-            BbposWiseposE => "bbpos_wisepos_e",
-            MobilePhoneReader => "mobile_phone_reader",
-            SimulatedStripeS700 => "simulated_stripe_s700",
-            SimulatedStripeS710 => "simulated_stripe_s710",
-            SimulatedVerifoneM425 => "simulated_verifone_m425",
-            SimulatedVerifoneP630 => "simulated_verifone_p630",
-            SimulatedVerifoneUx700 => "simulated_verifone_ux700",
-            SimulatedVerifoneV660p => "simulated_verifone_v660p",
-            SimulatedWiseposE => "simulated_wisepos_e",
-            StripeM2 => "stripe_m2",
-            StripeS700 => "stripe_s700",
-            StripeS710 => "stripe_s710",
-            VerifoneP400 => "verifone_P400",
-            VerifoneM425 => "verifone_m425",
-            VerifoneP630 => "verifone_p630",
-            VerifoneUx700 => "verifone_ux700",
-            VerifoneV660p => "verifone_v660p",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TerminalReaderDeviceType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TerminalReaderDeviceType::*;
-        match s {
-            "bbpos_chipper2x" => Ok(BbposChipper2x),
-            "bbpos_wisepad3" => Ok(BbposWisepad3),
-            "bbpos_wisepos_e" => Ok(BbposWiseposE),
-            "mobile_phone_reader" => Ok(MobilePhoneReader),
-            "simulated_stripe_s700" => Ok(SimulatedStripeS700),
-            "simulated_stripe_s710" => Ok(SimulatedStripeS710),
-            "simulated_verifone_m425" => Ok(SimulatedVerifoneM425),
-            "simulated_verifone_p630" => Ok(SimulatedVerifoneP630),
-            "simulated_verifone_ux700" => Ok(SimulatedVerifoneUx700),
-            "simulated_verifone_v660p" => Ok(SimulatedVerifoneV660p),
-            "simulated_wisepos_e" => Ok(SimulatedWiseposE),
-            "stripe_m2" => Ok(StripeM2),
-            "stripe_s700" => Ok(StripeS700),
-            "stripe_s710" => Ok(StripeS710),
-            "verifone_P400" => Ok(VerifoneP400),
-            "verifone_m425" => Ok(VerifoneM425),
-            "verifone_p630" => Ok(VerifoneP630),
-            "verifone_ux700" => Ok(VerifoneUx700),
-            "verifone_v660p" => Ok(VerifoneV660p),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TerminalReaderDeviceType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TerminalReaderDeviceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TerminalReaderDeviceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TerminalReaderDeviceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TerminalReaderDeviceType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for TerminalReaderDeviceType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TerminalReaderDeviceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TerminalReaderDeviceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TerminalReaderDeviceType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderDeviceType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TerminalReaderDeviceType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TerminalReaderStatus {
-    Offline,
-    Online,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TerminalReaderStatus {
-    pub fn as_str(&self) -> &str {
-        use TerminalReaderStatus::*;
-        match self {
-            Offline => "offline",
-            Online => "online",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TerminalReaderStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TerminalReaderStatus::*;
-        match s {
-            "offline" => Ok(Offline),
-            "online" => Ok(Online),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TerminalReaderStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TerminalReaderStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TerminalReaderStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TerminalReaderStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TerminalReaderStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for TerminalReaderStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TerminalReaderStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TerminalReaderStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TerminalReaderStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TerminalReaderStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Device type of the reader.
+pub type TerminalReaderDeviceType = stripe_shared::DeviceType;
+/// The networking status of the reader.
+/// We do not recommend using this field in flows that may block taking payments.
+pub type TerminalReaderStatus = stripe_shared::TerminalReaderStatus;

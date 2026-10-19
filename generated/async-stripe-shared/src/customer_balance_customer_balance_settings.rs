@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerBalanceCustomerBalanceSettings {
     /// The configuration for how funds that land in the customer cash balance are reconciled.
-    pub reconciliation_mode: CustomerBalanceCustomerBalanceSettingsReconciliationMode,
+    pub reconciliation_mode: stripe_shared::PaymentIntentConfirmationMethod,
     /// A flag to indicate if reconciliation mode returned is the user's default or is specific to this customer cash balance.
     pub using_merchant_default: bool,
 }
@@ -16,7 +16,7 @@ impl std::fmt::Debug for CustomerBalanceCustomerBalanceSettings {
 }
 #[doc(hidden)]
 pub struct CustomerBalanceCustomerBalanceSettingsBuilder {
-    reconciliation_mode: Option<CustomerBalanceCustomerBalanceSettingsReconciliationMode>,
+    reconciliation_mode: Option<stripe_shared::PaymentIntentConfirmationMethod>,
     using_merchant_default: Option<bool>,
 }
 
@@ -115,98 +115,5 @@ const _: () = {
     }
 };
 /// The configuration for how funds that land in the customer cash balance are reconciled.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CustomerBalanceCustomerBalanceSettingsReconciliationMode {
-    Automatic,
-    Manual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CustomerBalanceCustomerBalanceSettingsReconciliationMode {
-    pub fn as_str(&self) -> &str {
-        use CustomerBalanceCustomerBalanceSettingsReconciliationMode::*;
-        match self {
-            Automatic => "automatic",
-            Manual => "manual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CustomerBalanceCustomerBalanceSettingsReconciliationMode {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CustomerBalanceCustomerBalanceSettingsReconciliationMode::*;
-        match s {
-            "automatic" => Ok(Automatic),
-            "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CustomerBalanceCustomerBalanceSettingsReconciliationMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CustomerBalanceCustomerBalanceSettingsReconciliationMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CustomerBalanceCustomerBalanceSettingsReconciliationMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CustomerBalanceCustomerBalanceSettingsReconciliationMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CustomerBalanceCustomerBalanceSettingsReconciliationMode))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CustomerBalanceCustomerBalanceSettingsReconciliationMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CustomerBalanceCustomerBalanceSettingsReconciliationMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<CustomerBalanceCustomerBalanceSettingsReconciliationMode>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            CustomerBalanceCustomerBalanceSettingsReconciliationMode::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerBalanceCustomerBalanceSettingsReconciliationMode
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CustomerBalanceCustomerBalanceSettingsReconciliationMode {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CustomerBalanceCustomerBalanceSettingsReconciliationMode =
+    stripe_shared::PaymentIntentConfirmationMethod;

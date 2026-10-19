@@ -24,7 +24,7 @@ pub struct Quote {
     /// When charging automatically, Stripe will attempt to pay invoices at the end of the subscription cycle or on finalization using the default payment method attached to the subscription or customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     /// Defaults to `charge_automatically`.
-    pub collection_method: stripe_billing::QuoteCollectionMethod,
+    pub collection_method: stripe_shared::CollectionMethod,
     pub computed: stripe_billing::QuotesResourceComputed,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -75,7 +75,7 @@ pub struct Quote {
     /// See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// The status of the quote.
-    pub status: stripe_billing::QuoteStatus,
+    pub status: stripe_shared::QuoteStatus,
     pub status_transitions: stripe_billing::QuotesResourceStatusTransitions,
     /// The subscription that was created or updated from this quote.
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
@@ -103,7 +103,7 @@ pub struct QuoteBuilder {
     application_fee_amount: Option<Option<i64>>,
     application_fee_percent: Option<Option<f64>>,
     automatic_tax: Option<stripe_billing::QuotesResourceAutomaticTax>,
-    collection_method: Option<stripe_billing::QuoteCollectionMethod>,
+    collection_method: Option<stripe_shared::CollectionMethod>,
     computed: Option<stripe_billing::QuotesResourceComputed>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<Option<stripe_types::Currency>>,
@@ -124,7 +124,7 @@ pub struct QuoteBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     number: Option<Option<String>>,
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
-    status: Option<stripe_billing::QuoteStatus>,
+    status: Option<stripe_shared::QuoteStatus>,
     status_transitions: Option<stripe_billing::QuotesResourceStatusTransitions>,
     subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
     subscription_data: Option<stripe_billing::QuotesResourceSubscriptionDataSubscriptionData>,
@@ -495,173 +495,10 @@ impl stripe_types::Object for Quote {
     }
 }
 stripe_types::def_id!(QuoteId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum QuoteCollectionMethod {
-    ChargeAutomatically,
-    SendInvoice,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl QuoteCollectionMethod {
-    pub fn as_str(&self) -> &str {
-        use QuoteCollectionMethod::*;
-        match self {
-            ChargeAutomatically => "charge_automatically",
-            SendInvoice => "send_invoice",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for QuoteCollectionMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use QuoteCollectionMethod::*;
-        match s {
-            "charge_automatically" => Ok(ChargeAutomatically),
-            "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "QuoteCollectionMethod");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for QuoteCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for QuoteCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for QuoteCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(QuoteCollectionMethod)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for QuoteCollectionMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for QuoteCollectionMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<QuoteCollectionMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(QuoteCollectionMethod::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(QuoteCollectionMethod);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for QuoteCollectionMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum QuoteStatus {
-    Accepted,
-    Canceled,
-    Draft,
-    Open,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl QuoteStatus {
-    pub fn as_str(&self) -> &str {
-        use QuoteStatus::*;
-        match self {
-            Accepted => "accepted",
-            Canceled => "canceled",
-            Draft => "draft",
-            Open => "open",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for QuoteStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use QuoteStatus::*;
-        match s {
-            "accepted" => Ok(Accepted),
-            "canceled" => Ok(Canceled),
-            "draft" => Ok(Draft),
-            "open" => Ok(Open),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "QuoteStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for QuoteStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for QuoteStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for QuoteStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(QuoteStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for QuoteStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for QuoteStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<QuoteStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(QuoteStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(QuoteStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for QuoteStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Either `charge_automatically`, or `send_invoice`.
+/// When charging automatically, Stripe will attempt to pay invoices at the end of the subscription cycle or on finalization using the default payment method attached to the subscription or customer.
+/// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
+/// Defaults to `charge_automatically`.
+pub type QuoteCollectionMethod = stripe_shared::CollectionMethod;
+/// The status of the quote.
+pub type QuoteStatus = stripe_shared::QuoteStatus;

@@ -212,9 +212,9 @@ struct ReportPaymentAttemptPaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    outcome: Option<ReportPaymentAttemptPaymentRecordOutcome>,
+    outcome: Option<stripe_shared::Outcome>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_method_details: Option<ReportPaymentAttemptPaymentRecordPaymentMethodDetails>,
+    payment_method_details: Option<PaymentMethodDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_details: Option<ShippingDetails>,
 }
@@ -237,188 +237,6 @@ impl ReportPaymentAttemptPaymentRecordBuilder {
             payment_method_details: None,
             shipping_details: None,
         }
-    }
-}
-/// The outcome of the reported payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ReportPaymentAttemptPaymentRecordOutcome {
-    Failed,
-    Guaranteed,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ReportPaymentAttemptPaymentRecordOutcome {
-    pub fn as_str(&self) -> &str {
-        use ReportPaymentAttemptPaymentRecordOutcome::*;
-        match self {
-            Failed => "failed",
-            Guaranteed => "guaranteed",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ReportPaymentAttemptPaymentRecordOutcome {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ReportPaymentAttemptPaymentRecordOutcome::*;
-        match s {
-            "failed" => Ok(Failed),
-            "guaranteed" => Ok(Guaranteed),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentAttemptPaymentRecordOutcome"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ReportPaymentAttemptPaymentRecordOutcome {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordOutcome {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordOutcome {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ReportPaymentAttemptPaymentRecordOutcome)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ReportPaymentAttemptPaymentRecordOutcome {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ReportPaymentAttemptPaymentRecordOutcome {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Information about the Payment Method debited for this payment.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct ReportPaymentAttemptPaymentRecordPaymentMethodDetails {
-    /// The billing details associated with the method of payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<BillingDetails>,
-    /// Information about the custom (user-defined) payment method used to make this payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom: Option<Custom>,
-    /// ID of the Stripe Payment Method used to make this payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<String>,
-    /// The type of the payment method details.
-    /// An additional hash is included on the payment_method_details with a name matching this value.
-    /// It contains additional information specific to the type.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordPaymentMethodDetails {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("ReportPaymentAttemptPaymentRecordPaymentMethodDetails")
-            .finish_non_exhaustive()
-    }
-}
-impl ReportPaymentAttemptPaymentRecordPaymentMethodDetails {
-    pub fn new() -> Self {
-        Self { billing_details: None, custom: None, payment_method: None, type_: None }
-    }
-}
-impl Default for ReportPaymentAttemptPaymentRecordPaymentMethodDetails {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// The type of the payment method details.
-/// An additional hash is included on the payment_method_details with a name matching this value.
-/// It contains additional information specific to the type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
-    Custom,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
-    pub fn as_str(&self) -> &str {
-        use ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType::*;
-        match self {
-            Custom => "custom",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType::*;
-        match s {
-            "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Report a new payment attempt on the specified Payment Record. A new payment
@@ -479,14 +297,14 @@ impl ReportPaymentAttemptPaymentRecord {
         self
     }
     /// The outcome of the reported payment.
-    pub fn outcome(mut self, outcome: impl Into<ReportPaymentAttemptPaymentRecordOutcome>) -> Self {
+    pub fn outcome(mut self, outcome: impl Into<stripe_shared::Outcome>) -> Self {
         self.inner.outcome = Some(outcome.into());
         self
     }
     /// Information about the Payment Method debited for this payment.
     pub fn payment_method_details(
         mut self,
-        payment_method_details: impl Into<ReportPaymentAttemptPaymentRecordPaymentMethodDetails>,
+        payment_method_details: impl Into<PaymentMethodDetails>,
     ) -> Self {
         self.inner.payment_method_details = Some(payment_method_details.into());
         self
@@ -1043,7 +861,7 @@ pub struct ReportRefundPaymentRecordProcessorDetails {
     /// An additional hash is included on processor_details with a name matching this value.
     /// It contains additional information specific to the processor.
     #[serde(rename = "type")]
-    pub type_: ReportRefundPaymentRecordProcessorDetailsType,
+    pub type_: stripe_shared::CreatePaymentLinkCustomFieldsLabelType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ReportRefundPaymentRecordProcessorDetails {
@@ -1052,7 +870,7 @@ impl std::fmt::Debug for ReportRefundPaymentRecordProcessorDetails {
     }
 }
 impl ReportRefundPaymentRecordProcessorDetails {
-    pub fn new(type_: impl Into<ReportRefundPaymentRecordProcessorDetailsType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreatePaymentLinkCustomFieldsLabelType>) -> Self {
         Self { custom: None, type_: type_.into() }
     }
 }
@@ -1073,78 +891,6 @@ impl std::fmt::Debug for ReportRefundPaymentRecordProcessorDetailsCustom {
 impl ReportRefundPaymentRecordProcessorDetailsCustom {
     pub fn new(refund_reference: impl Into<String>) -> Self {
         Self { refund_reference: refund_reference.into() }
-    }
-}
-/// The type of the processor details.
-/// An additional hash is included on processor_details with a name matching this value.
-/// It contains additional information specific to the processor.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ReportRefundPaymentRecordProcessorDetailsType {
-    Custom,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ReportRefundPaymentRecordProcessorDetailsType {
-    pub fn as_str(&self) -> &str {
-        use ReportRefundPaymentRecordProcessorDetailsType::*;
-        match self {
-            Custom => "custom",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ReportRefundPaymentRecordProcessorDetailsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ReportRefundPaymentRecordProcessorDetailsType::*;
-        match s {
-            "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportRefundPaymentRecordProcessorDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ReportRefundPaymentRecordProcessorDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ReportRefundPaymentRecordProcessorDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReportRefundPaymentRecordProcessorDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ReportRefundPaymentRecordProcessorDetailsType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ReportRefundPaymentRecordProcessorDetailsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ReportRefundPaymentRecordProcessorDetailsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Information about the payment attempt refund.
@@ -1261,7 +1007,7 @@ struct ReportPaymentPaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer_details: Option<CustomerDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer_presence: Option<stripe_shared::PaymentRecordCustomerPresence>,
+    customer_presence: Option<stripe_shared::CreateSetupIntentUsage>,
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1274,8 +1020,8 @@ struct ReportPaymentPaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    outcome: Option<ReportPaymentPaymentRecordOutcome>,
-    payment_method_details: ReportPaymentPaymentRecordPaymentMethodDetails,
+    outcome: Option<stripe_shared::Outcome>,
+    payment_method_details: PaymentMethodDetails,
     #[serde(skip_serializing_if = "Option::is_none")]
     processor_details: Option<ReportPaymentPaymentRecordProcessorDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1291,7 +1037,7 @@ impl ReportPaymentPaymentRecordBuilder {
     fn new(
         amount_requested: impl Into<Amount>,
         initiated_at: impl Into<stripe_types::Timestamp>,
-        payment_method_details: impl Into<ReportPaymentPaymentRecordPaymentMethodDetails>,
+        payment_method_details: impl Into<PaymentMethodDetails>,
     ) -> Self {
         Self {
             amount_requested: amount_requested.into(),
@@ -1310,187 +1056,6 @@ impl ReportPaymentPaymentRecordBuilder {
         }
     }
 }
-/// The outcome of the reported payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ReportPaymentPaymentRecordOutcome {
-    Failed,
-    Guaranteed,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ReportPaymentPaymentRecordOutcome {
-    pub fn as_str(&self) -> &str {
-        use ReportPaymentPaymentRecordOutcome::*;
-        match self {
-            Failed => "failed",
-            Guaranteed => "guaranteed",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ReportPaymentPaymentRecordOutcome {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ReportPaymentPaymentRecordOutcome::*;
-        match s {
-            "failed" => Ok(Failed),
-            "guaranteed" => Ok(Guaranteed),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentPaymentRecordOutcome"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ReportPaymentPaymentRecordOutcome {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ReportPaymentPaymentRecordOutcome {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReportPaymentPaymentRecordOutcome {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ReportPaymentPaymentRecordOutcome)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ReportPaymentPaymentRecordOutcome {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordOutcome {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Information about the Payment Method debited for this payment.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct ReportPaymentPaymentRecordPaymentMethodDetails {
-    /// The billing details associated with the method of payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<BillingDetails>,
-    /// Information about the custom (user-defined) payment method used to make this payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom: Option<Custom>,
-    /// ID of the Stripe Payment Method used to make this payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<String>,
-    /// The type of the payment method details.
-    /// An additional hash is included on the payment_method_details with a name matching this value.
-    /// It contains additional information specific to the type.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<ReportPaymentPaymentRecordPaymentMethodDetailsType>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReportPaymentPaymentRecordPaymentMethodDetails {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("ReportPaymentPaymentRecordPaymentMethodDetails").finish_non_exhaustive()
-    }
-}
-impl ReportPaymentPaymentRecordPaymentMethodDetails {
-    pub fn new() -> Self {
-        Self { billing_details: None, custom: None, payment_method: None, type_: None }
-    }
-}
-impl Default for ReportPaymentPaymentRecordPaymentMethodDetails {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// The type of the payment method details.
-/// An additional hash is included on the payment_method_details with a name matching this value.
-/// It contains additional information specific to the type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ReportPaymentPaymentRecordPaymentMethodDetailsType {
-    Custom,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ReportPaymentPaymentRecordPaymentMethodDetailsType {
-    pub fn as_str(&self) -> &str {
-        use ReportPaymentPaymentRecordPaymentMethodDetailsType::*;
-        match self {
-            Custom => "custom",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ReportPaymentPaymentRecordPaymentMethodDetailsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ReportPaymentPaymentRecordPaymentMethodDetailsType::*;
-        match s {
-            "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentPaymentRecordPaymentMethodDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ReportPaymentPaymentRecordPaymentMethodDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ReportPaymentPaymentRecordPaymentMethodDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReportPaymentPaymentRecordPaymentMethodDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ReportPaymentPaymentRecordPaymentMethodDetailsType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ReportPaymentPaymentRecordPaymentMethodDetailsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordPaymentMethodDetailsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Processor information for this payment.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1503,7 +1068,7 @@ pub struct ReportPaymentPaymentRecordProcessorDetails {
     /// An additional hash is included on processor_details with a name matching this value.
     /// It contains additional information specific to the processor.
     #[serde(rename = "type")]
-    pub type_: ReportPaymentPaymentRecordProcessorDetailsType,
+    pub type_: stripe_shared::CreatePaymentLinkCustomFieldsLabelType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ReportPaymentPaymentRecordProcessorDetails {
@@ -1512,7 +1077,7 @@ impl std::fmt::Debug for ReportPaymentPaymentRecordProcessorDetails {
     }
 }
 impl ReportPaymentPaymentRecordProcessorDetails {
-    pub fn new(type_: impl Into<ReportPaymentPaymentRecordProcessorDetailsType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreatePaymentLinkCustomFieldsLabelType>) -> Self {
         Self { custom: None, type_: type_.into() }
     }
 }
@@ -1535,78 +1100,6 @@ impl ReportPaymentPaymentRecordProcessorDetailsCustom {
         Self { payment_reference: payment_reference.into() }
     }
 }
-/// The type of the processor details.
-/// An additional hash is included on processor_details with a name matching this value.
-/// It contains additional information specific to the processor.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ReportPaymentPaymentRecordProcessorDetailsType {
-    Custom,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ReportPaymentPaymentRecordProcessorDetailsType {
-    pub fn as_str(&self) -> &str {
-        use ReportPaymentPaymentRecordProcessorDetailsType::*;
-        match self {
-            Custom => "custom",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ReportPaymentPaymentRecordProcessorDetailsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ReportPaymentPaymentRecordProcessorDetailsType::*;
-        match s {
-            "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentPaymentRecordProcessorDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ReportPaymentPaymentRecordProcessorDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ReportPaymentPaymentRecordProcessorDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReportPaymentPaymentRecordProcessorDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ReportPaymentPaymentRecordProcessorDetailsType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ReportPaymentPaymentRecordProcessorDetailsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordProcessorDetailsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Report a new Payment Record. You may report a Payment Record as it is
 ///  initialized and later report updates through the other report_* methods, or report Payment
 ///  Records in a terminal state directly, through this method.
@@ -1627,7 +1120,7 @@ impl ReportPaymentPaymentRecord {
     pub fn new(
         amount_requested: impl Into<Amount>,
         initiated_at: impl Into<stripe_types::Timestamp>,
-        payment_method_details: impl Into<ReportPaymentPaymentRecordPaymentMethodDetails>,
+        payment_method_details: impl Into<PaymentMethodDetails>,
     ) -> Self {
         Self {
             inner: ReportPaymentPaymentRecordBuilder::new(
@@ -1645,7 +1138,7 @@ impl ReportPaymentPaymentRecord {
     /// Indicates whether the customer was present in your checkout flow during this payment.
     pub fn customer_presence(
         mut self,
-        customer_presence: impl Into<stripe_shared::PaymentRecordCustomerPresence>,
+        customer_presence: impl Into<stripe_shared::CreateSetupIntentUsage>,
     ) -> Self {
         self.inner.customer_presence = Some(customer_presence.into());
         self
@@ -1682,7 +1175,7 @@ impl ReportPaymentPaymentRecord {
         self
     }
     /// The outcome of the reported payment.
-    pub fn outcome(mut self, outcome: impl Into<ReportPaymentPaymentRecordOutcome>) -> Self {
+    pub fn outcome(mut self, outcome: impl Into<stripe_shared::Outcome>) -> Self {
         self.inner.outcome = Some(outcome.into());
         self
     }
@@ -1947,3 +1440,110 @@ impl Default for ShippingDetails {
         Self::new()
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct PaymentMethodDetails {
+    /// The billing details associated with the method of payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_details: Option<BillingDetails>,
+    /// Information about the custom (user-defined) payment method used to make this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom: Option<Custom>,
+    /// ID of the Stripe Payment Method used to make this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method: Option<String>,
+    /// The type of the payment method details.
+    /// An additional hash is included on the payment_method_details with a name matching this value.
+    /// It contains additional information specific to the type.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<stripe_shared::CreatePaymentLinkCustomFieldsLabelType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDetails").finish_non_exhaustive()
+    }
+}
+impl PaymentMethodDetails {
+    pub fn new() -> Self {
+        Self { billing_details: None, custom: None, payment_method: None, type_: None }
+    }
+}
+impl Default for PaymentMethodDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The outcome of the reported payment.
+pub type ReportPaymentAttemptPaymentRecordOutcome = stripe_shared::Outcome;
+/// The type of the payment method details.
+/// An additional hash is included on the payment_method_details with a name matching this value.
+/// It contains additional information specific to the type.
+pub type ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType =
+    stripe_shared::CreatePaymentLinkCustomFieldsLabelType;
+/// The type of the processor details.
+/// An additional hash is included on processor_details with a name matching this value.
+/// It contains additional information specific to the processor.
+pub type ReportRefundPaymentRecordProcessorDetailsType =
+    stripe_shared::CreatePaymentLinkCustomFieldsLabelType;
+/// Indicates whether the customer was present in your checkout flow during this payment.
+pub type ReportPaymentPaymentRecordCustomerPresence = stripe_shared::CreateSetupIntentUsage;
+/// The outcome of the reported payment.
+pub type ReportPaymentPaymentRecordOutcome = stripe_shared::Outcome;
+/// The type of the payment method details.
+/// An additional hash is included on the payment_method_details with a name matching this value.
+/// It contains additional information specific to the type.
+pub type ReportPaymentPaymentRecordPaymentMethodDetailsType =
+    stripe_shared::CreatePaymentLinkCustomFieldsLabelType;
+/// The type of the processor details.
+/// An additional hash is included on processor_details with a name matching this value.
+/// It contains additional information specific to the processor.
+pub type ReportPaymentPaymentRecordProcessorDetailsType =
+    stripe_shared::CreatePaymentLinkCustomFieldsLabelType;
+/// Information about the payment attempt failure.
+pub type ReportPaymentAttemptPaymentRecordFailed = Failed;
+/// Information about the payment attempt guarantee.
+pub type ReportPaymentAttemptPaymentRecordGuaranteed = Guaranteed;
+/// The billing address associated with the method of payment.
+pub type ReportPaymentAttemptPaymentRecordPaymentMethodDetailsBillingDetailsAddress = Address;
+/// Information about the custom (user-defined) payment method used to make this payment.
+pub type ReportPaymentAttemptPaymentRecordPaymentMethodDetailsCustom = Custom;
+/// The physical shipping address.
+pub type ReportPaymentAttemptPaymentRecordShippingDetailsAddress = Address;
+/// Customer information for this payment.
+pub type ReportPaymentAttemptInformationalPaymentRecordCustomerDetails = CustomerDetails;
+/// The physical shipping address.
+pub type ReportPaymentAttemptInformationalPaymentRecordShippingDetailsAddress = Address;
+/// A positive integer in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) representing how much of this payment to refund.
+/// Can refund only up to the remaining, unrefunded amount of the payment.
+pub type ReportRefundPaymentRecordAmount = Amount;
+/// The amount you initially requested for this payment.
+pub type ReportPaymentPaymentRecordAmountRequested = Amount;
+/// Customer information for this payment.
+pub type ReportPaymentPaymentRecordCustomerDetails = CustomerDetails;
+/// Information about the payment attempt failure.
+pub type ReportPaymentPaymentRecordFailed = Failed;
+/// Information about the payment attempt guarantee.
+pub type ReportPaymentPaymentRecordGuaranteed = Guaranteed;
+/// The billing address associated with the method of payment.
+pub type ReportPaymentPaymentRecordPaymentMethodDetailsBillingDetailsAddress = Address;
+/// Information about the custom (user-defined) payment method used to make this payment.
+pub type ReportPaymentPaymentRecordPaymentMethodDetailsCustom = Custom;
+/// The physical shipping address.
+pub type ReportPaymentPaymentRecordShippingDetailsAddress = Address;
+/// The billing details associated with the method of payment.
+pub type ReportPaymentAttemptPaymentRecordPaymentMethodDetailsBillingDetails = BillingDetails;
+/// Shipping information for this payment.
+pub type ReportPaymentAttemptPaymentRecordShippingDetails = ShippingDetails;
+/// Shipping information for this payment.
+pub type ReportPaymentAttemptInformationalPaymentRecordShippingDetails = ShippingDetails;
+/// The billing details associated with the method of payment.
+pub type ReportPaymentPaymentRecordPaymentMethodDetailsBillingDetails = BillingDetails;
+/// Shipping information for this payment.
+pub type ReportPaymentPaymentRecordShippingDetails = ShippingDetails;
+/// Information about the Payment Method debited for this payment.
+pub type ReportPaymentAttemptPaymentRecordPaymentMethodDetails = PaymentMethodDetails;
+/// Information about the Payment Method debited for this payment.
+pub type ReportPaymentPaymentRecordPaymentMethodDetails = PaymentMethodDetails;

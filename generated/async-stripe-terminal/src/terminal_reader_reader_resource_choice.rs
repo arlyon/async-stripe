@@ -7,7 +7,7 @@ pub struct TerminalReaderReaderResourceChoice {
     /// The identifier for the selected choice. Maximum 50 characters.
     pub id: Option<stripe_terminal::TerminalReaderReaderResourceChoiceId>,
     /// The button style for the choice. Can be `primary` or `secondary`.
-    pub style: Option<TerminalReaderReaderResourceChoiceStyle>,
+    pub style: Option<stripe_shared::Style>,
     /// The text to be selected. Maximum 30 characters.
     pub text: String,
 }
@@ -20,7 +20,7 @@ impl std::fmt::Debug for TerminalReaderReaderResourceChoice {
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceChoiceBuilder {
     id: Option<Option<stripe_terminal::TerminalReaderReaderResourceChoiceId>>,
-    style: Option<Option<TerminalReaderReaderResourceChoiceStyle>>,
+    style: Option<Option<stripe_shared::Style>>,
     text: Option<String>,
 }
 
@@ -118,94 +118,6 @@ const _: () = {
         }
     }
 };
-/// The button style for the choice. Can be `primary` or `secondary`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TerminalReaderReaderResourceChoiceStyle {
-    Primary,
-    Secondary,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TerminalReaderReaderResourceChoiceStyle {
-    pub fn as_str(&self) -> &str {
-        use TerminalReaderReaderResourceChoiceStyle::*;
-        match self {
-            Primary => "primary",
-            Secondary => "secondary",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TerminalReaderReaderResourceChoiceStyle {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TerminalReaderReaderResourceChoiceStyle::*;
-        match s {
-            "primary" => Ok(Primary),
-            "secondary" => Ok(Secondary),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourceChoiceStyle"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TerminalReaderReaderResourceChoiceStyle {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TerminalReaderReaderResourceChoiceStyle {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TerminalReaderReaderResourceChoiceStyle {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TerminalReaderReaderResourceChoiceStyle)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TerminalReaderReaderResourceChoiceStyle {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TerminalReaderReaderResourceChoiceStyle {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceChoiceStyle> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TerminalReaderReaderResourceChoiceStyle::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderReaderResourceChoiceStyle);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceChoiceStyle {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for TerminalReaderReaderResourceChoice {
     type Id = Option<stripe_terminal::TerminalReaderReaderResourceChoiceId>;
     fn id(&self) -> &Self::Id {
@@ -217,3 +129,5 @@ impl stripe_types::Object for TerminalReaderReaderResourceChoice {
     }
 }
 stripe_types::def_id!(TerminalReaderReaderResourceChoiceId);
+/// The button style for the choice. Can be `primary` or `secondary`.
+pub type TerminalReaderReaderResourceChoiceStyle = stripe_shared::Style;

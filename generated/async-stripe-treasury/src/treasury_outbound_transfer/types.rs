@@ -46,7 +46,7 @@ pub struct TreasuryOutboundTransfer {
     /// An OutboundTransfer is `processing` if it has been created and is pending.
     /// The status changes to `posted` once the OutboundTransfer has been "confirmed" and funds have left the account, or to `failed` or `canceled`.
     /// If an OutboundTransfer fails to arrive at its destination, its status will change to `returned`.
-    pub status: stripe_treasury::TreasuryOutboundTransferStatus,
+    pub status: stripe_shared::TreasuryOutboundPaymentStatus,
     pub status_transitions: stripe_treasury::TreasuryOutboundTransfersResourceStatusTransitions,
     /// Details about network-specific tracking information if available.
     pub tracking_details: Option<
@@ -78,7 +78,7 @@ livemode: Option<bool>,
 metadata: Option<std::collections::HashMap<String, String>>,
 returned_details: Option<Option<stripe_treasury::TreasuryOutboundTransfersResourceReturnedDetails>>,
 statement_descriptor: Option<String>,
-status: Option<stripe_treasury::TreasuryOutboundTransferStatus>,
+status: Option<stripe_shared::TreasuryOutboundPaymentStatus>,
 status_transitions: Option<stripe_treasury::TreasuryOutboundTransfersResourceStatusTransitions>,
 tracking_details: Option<Option<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetails>>,
 transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
@@ -347,98 +347,8 @@ impl stripe_types::Object for TreasuryOutboundTransfer {
     }
 }
 stripe_types::def_id!(TreasuryOutboundTransferId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryOutboundTransferStatus {
-    Canceled,
-    Failed,
-    Posted,
-    Processing,
-    Returned,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryOutboundTransferStatus {
-    pub fn as_str(&self) -> &str {
-        use TreasuryOutboundTransferStatus::*;
-        match self {
-            Canceled => "canceled",
-            Failed => "failed",
-            Posted => "posted",
-            Processing => "processing",
-            Returned => "returned",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryOutboundTransferStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryOutboundTransferStatus::*;
-        match s {
-            "canceled" => Ok(Canceled),
-            "failed" => Ok(Failed),
-            "posted" => Ok(Posted),
-            "processing" => Ok(Processing),
-            "returned" => Ok(Returned),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryOutboundTransferStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryOutboundTransferStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryOutboundTransferStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryOutboundTransferStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TreasuryOutboundTransferStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for TreasuryOutboundTransferStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryOutboundTransferStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TreasuryOutboundTransferStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TreasuryOutboundTransferStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TreasuryOutboundTransferStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TreasuryOutboundTransferStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Current status of the OutboundTransfer: `processing`, `failed`, `canceled`, `posted`, `returned`.
+/// An OutboundTransfer is `processing` if it has been created and is pending.
+/// The status changes to `posted` once the OutboundTransfer has been "confirmed" and funds have left the account, or to `failed` or `canceled`.
+/// If an OutboundTransfer fails to arrive at its destination, its status will change to `returned`.
+pub type TreasuryOutboundTransferStatus = stripe_shared::TreasuryOutboundPaymentStatus;

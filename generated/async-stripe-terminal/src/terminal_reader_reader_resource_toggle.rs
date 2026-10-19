@@ -5,13 +5,13 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceToggle {
     /// The toggle's default value. Can be `enabled` or `disabled`.
-    pub default_value: Option<TerminalReaderReaderResourceToggleDefaultValue>,
+    pub default_value: Option<stripe_shared::BalanceSettingsResourcePayoutsStatus>,
     /// The toggle's description text. Maximum 50 characters.
     pub description: Option<String>,
     /// The toggle's title text. Maximum 50 characters.
     pub title: Option<String>,
     /// The toggle's collected value. Can be `enabled` or `disabled`.
-    pub value: Option<TerminalReaderReaderResourceToggleValue>,
+    pub value: Option<stripe_shared::BalanceSettingsResourcePayoutsStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TerminalReaderReaderResourceToggle {
@@ -21,10 +21,10 @@ impl std::fmt::Debug for TerminalReaderReaderResourceToggle {
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceToggleBuilder {
-    default_value: Option<Option<TerminalReaderReaderResourceToggleDefaultValue>>,
+    default_value: Option<Option<stripe_shared::BalanceSettingsResourcePayoutsStatus>>,
     description: Option<Option<String>>,
     title: Option<Option<String>>,
-    value: Option<Option<TerminalReaderReaderResourceToggleValue>>,
+    value: Option<Option<stripe_shared::BalanceSettingsResourcePayoutsStatus>>,
 }
 
 #[allow(
@@ -132,180 +132,8 @@ const _: () = {
     }
 };
 /// The toggle's default value. Can be `enabled` or `disabled`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TerminalReaderReaderResourceToggleDefaultValue {
-    Disabled,
-    Enabled,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TerminalReaderReaderResourceToggleDefaultValue {
-    pub fn as_str(&self) -> &str {
-        use TerminalReaderReaderResourceToggleDefaultValue::*;
-        match self {
-            Disabled => "disabled",
-            Enabled => "enabled",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TerminalReaderReaderResourceToggleDefaultValue {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TerminalReaderReaderResourceToggleDefaultValue::*;
-        match s {
-            "disabled" => Ok(Disabled),
-            "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourceToggleDefaultValue"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TerminalReaderReaderResourceToggleDefaultValue {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TerminalReaderReaderResourceToggleDefaultValue {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TerminalReaderReaderResourceToggleDefaultValue {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TerminalReaderReaderResourceToggleDefaultValue))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TerminalReaderReaderResourceToggleDefaultValue {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TerminalReaderReaderResourceToggleDefaultValue {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceToggleDefaultValue> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(TerminalReaderReaderResourceToggleDefaultValue::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderReaderResourceToggleDefaultValue);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceToggleDefaultValue {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TerminalReaderReaderResourceToggleDefaultValue =
+    stripe_shared::BalanceSettingsResourcePayoutsStatus;
 /// The toggle's collected value. Can be `enabled` or `disabled`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TerminalReaderReaderResourceToggleValue {
-    Disabled,
-    Enabled,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TerminalReaderReaderResourceToggleValue {
-    pub fn as_str(&self) -> &str {
-        use TerminalReaderReaderResourceToggleValue::*;
-        match self {
-            Disabled => "disabled",
-            Enabled => "enabled",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TerminalReaderReaderResourceToggleValue {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TerminalReaderReaderResourceToggleValue::*;
-        match s {
-            "disabled" => Ok(Disabled),
-            "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourceToggleValue"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TerminalReaderReaderResourceToggleValue {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TerminalReaderReaderResourceToggleValue {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TerminalReaderReaderResourceToggleValue {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TerminalReaderReaderResourceToggleValue)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TerminalReaderReaderResourceToggleValue {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TerminalReaderReaderResourceToggleValue {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceToggleValue> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TerminalReaderReaderResourceToggleValue::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderReaderResourceToggleValue);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceToggleValue {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TerminalReaderReaderResourceToggleValue =
+    stripe_shared::BalanceSettingsResourcePayoutsStatus;

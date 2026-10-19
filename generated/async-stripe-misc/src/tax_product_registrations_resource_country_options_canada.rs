@@ -7,7 +7,7 @@ pub struct TaxProductRegistrationsResourceCountryOptionsCanada {
         Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard>,
     /// Type of registration in Canada.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: TaxProductRegistrationsResourceCountryOptionsCanadaType,
+    pub type_: stripe_shared::CreateTaxRegistrationCountryOptionsCaType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsCanada {
@@ -21,7 +21,7 @@ pub struct TaxProductRegistrationsResourceCountryOptionsCanadaBuilder {
     province_standard: Option<
         Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard>,
     >,
-    type_: Option<TaxProductRegistrationsResourceCountryOptionsCanadaType>,
+    type_: Option<stripe_shared::CreateTaxRegistrationCountryOptionsCaType>,
 }
 
 #[allow(
@@ -118,99 +118,5 @@ const _: () = {
     }
 };
 /// Type of registration in Canada.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    ProvinceStandard,
-    Simplified,
-    Standard,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    pub fn as_str(&self) -> &str {
-        use TaxProductRegistrationsResourceCountryOptionsCanadaType::*;
-        match self {
-            ProvinceStandard => "province_standard",
-            Simplified => "simplified",
-            Standard => "standard",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductRegistrationsResourceCountryOptionsCanadaType::*;
-        match s {
-            "province_standard" => Ok(ProvinceStandard),
-            "simplified" => Ok(Simplified),
-            "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductRegistrationsResourceCountryOptionsCanadaType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxProductRegistrationsResourceCountryOptionsCanadaType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TaxProductRegistrationsResourceCountryOptionsCanadaType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TaxProductRegistrationsResourceCountryOptionsCanadaType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TaxProductRegistrationsResourceCountryOptionsCanadaType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TaxProductRegistrationsResourceCountryOptionsCanadaType =
+    stripe_shared::CreateTaxRegistrationCountryOptionsCaType;

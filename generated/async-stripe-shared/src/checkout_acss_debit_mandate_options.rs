@@ -7,14 +7,14 @@ pub struct CheckoutAcssDebitMandateOptions {
     pub custom_mandate_url: Option<String>,
     /// List of Stripe products where this mandate can be selected automatically.
     /// Returned when the Session is in `setup` mode.
-    pub default_for: Option<Vec<CheckoutAcssDebitMandateOptionsDefaultFor>>,
+    pub default_for: Option<Vec<stripe_shared::DefaultFor>>,
     /// Description of the interval.
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
     pub interval_description: Option<String>,
     /// Payment schedule for the mandate.
-    pub payment_schedule: Option<CheckoutAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule: Option<stripe_shared::PaymentSchedule>,
     /// Transaction type of the mandate.
-    pub transaction_type: Option<CheckoutAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type: Option<stripe_shared::TransactionType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CheckoutAcssDebitMandateOptions {
@@ -25,10 +25,10 @@ impl std::fmt::Debug for CheckoutAcssDebitMandateOptions {
 #[doc(hidden)]
 pub struct CheckoutAcssDebitMandateOptionsBuilder {
     custom_mandate_url: Option<Option<String>>,
-    default_for: Option<Option<Vec<CheckoutAcssDebitMandateOptionsDefaultFor>>>,
+    default_for: Option<Option<Vec<stripe_shared::DefaultFor>>>,
     interval_description: Option<Option<String>>,
-    payment_schedule: Option<Option<CheckoutAcssDebitMandateOptionsPaymentSchedule>>,
-    transaction_type: Option<Option<CheckoutAcssDebitMandateOptionsTransactionType>>,
+    payment_schedule: Option<Option<stripe_shared::PaymentSchedule>>,
+    transaction_type: Option<Option<stripe_shared::TransactionType>>,
 }
 
 #[allow(
@@ -154,275 +154,8 @@ const _: () = {
 };
 /// List of Stripe products where this mandate can be selected automatically.
 /// Returned when the Session is in `setup` mode.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutAcssDebitMandateOptionsDefaultFor {
-    Invoice,
-    Subscription,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutAcssDebitMandateOptionsDefaultFor {
-    pub fn as_str(&self) -> &str {
-        use CheckoutAcssDebitMandateOptionsDefaultFor::*;
-        match self {
-            Invoice => "invoice",
-            Subscription => "subscription",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutAcssDebitMandateOptionsDefaultFor {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutAcssDebitMandateOptionsDefaultFor::*;
-        match s {
-            "invoice" => Ok(Invoice),
-            "subscription" => Ok(Subscription),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutAcssDebitMandateOptionsDefaultFor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutAcssDebitMandateOptionsDefaultFor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutAcssDebitMandateOptionsDefaultFor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutAcssDebitMandateOptionsDefaultFor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutAcssDebitMandateOptionsDefaultFor))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutAcssDebitMandateOptionsDefaultFor {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutAcssDebitMandateOptionsDefaultFor {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutAcssDebitMandateOptionsDefaultFor> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(CheckoutAcssDebitMandateOptionsDefaultFor::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutAcssDebitMandateOptionsDefaultFor);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitMandateOptionsDefaultFor {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutAcssDebitMandateOptionsDefaultFor = stripe_shared::DefaultFor;
 /// Payment schedule for the mandate.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutAcssDebitMandateOptionsPaymentSchedule {
-    Combined,
-    Interval,
-    Sporadic,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutAcssDebitMandateOptionsPaymentSchedule {
-    pub fn as_str(&self) -> &str {
-        use CheckoutAcssDebitMandateOptionsPaymentSchedule::*;
-        match self {
-            Combined => "combined",
-            Interval => "interval",
-            Sporadic => "sporadic",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutAcssDebitMandateOptionsPaymentSchedule {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutAcssDebitMandateOptionsPaymentSchedule::*;
-        match s {
-            "combined" => Ok(Combined),
-            "interval" => Ok(Interval),
-            "sporadic" => Ok(Sporadic),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutAcssDebitMandateOptionsPaymentSchedule"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutAcssDebitMandateOptionsPaymentSchedule {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutAcssDebitMandateOptionsPaymentSchedule {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutAcssDebitMandateOptionsPaymentSchedule {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutAcssDebitMandateOptionsPaymentSchedule))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutAcssDebitMandateOptionsPaymentSchedule {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutAcssDebitMandateOptionsPaymentSchedule {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutAcssDebitMandateOptionsPaymentSchedule> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(CheckoutAcssDebitMandateOptionsPaymentSchedule::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutAcssDebitMandateOptionsPaymentSchedule);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitMandateOptionsPaymentSchedule {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutAcssDebitMandateOptionsPaymentSchedule = stripe_shared::PaymentSchedule;
 /// Transaction type of the mandate.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutAcssDebitMandateOptionsTransactionType {
-    Business,
-    Personal,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutAcssDebitMandateOptionsTransactionType {
-    pub fn as_str(&self) -> &str {
-        use CheckoutAcssDebitMandateOptionsTransactionType::*;
-        match self {
-            Business => "business",
-            Personal => "personal",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutAcssDebitMandateOptionsTransactionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutAcssDebitMandateOptionsTransactionType::*;
-        match s {
-            "business" => Ok(Business),
-            "personal" => Ok(Personal),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutAcssDebitMandateOptionsTransactionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutAcssDebitMandateOptionsTransactionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutAcssDebitMandateOptionsTransactionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutAcssDebitMandateOptionsTransactionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutAcssDebitMandateOptionsTransactionType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutAcssDebitMandateOptionsTransactionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutAcssDebitMandateOptionsTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutAcssDebitMandateOptionsTransactionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(CheckoutAcssDebitMandateOptionsTransactionType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutAcssDebitMandateOptionsTransactionType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitMandateOptionsTransactionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutAcssDebitMandateOptionsTransactionType = stripe_shared::TransactionType;

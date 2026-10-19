@@ -5,10 +5,9 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationMoneyMovementCard {
     /// Describes the presence of the customer during the payment.
-    pub customer_presence:
-        Option<InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence>,
+    pub customer_presence: Option<stripe_shared::CreateSetupIntentUsage>,
     /// Describes the type of payment.
-    pub payment_type: Option<InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType>,
+    pub payment_type: Option<stripe_shared::PaymentType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCard {
@@ -19,9 +18,8 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCard {
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationMoneyMovementCardBuilder {
-    customer_presence:
-        Option<Option<InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence>>,
-    payment_type: Option<Option<InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType>>,
+    customer_presence: Option<Option<stripe_shared::CreateSetupIntentUsage>>,
+    payment_type: Option<Option<stripe_shared::PaymentType>>,
 }
 
 #[allow(
@@ -118,208 +116,8 @@ const _: () = {
     }
 };
 /// Describes the presence of the customer during the payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence {
-    OffSession,
-    OnSession,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence {
-    pub fn as_str(&self) -> &str {
-        use InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence::*;
-        match self {
-            OffSession => "off_session",
-            OnSession => "on_session",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence::*;
-        match s {
-            "off_session" => Ok(OffSession),
-            "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence =
+    stripe_shared::CreateSetupIntentUsage;
 /// Describes the type of payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType {
-    OneOff,
-    Recurring,
-    SetupOneOff,
-    SetupRecurring,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType {
-    pub fn as_str(&self) -> &str {
-        use InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType::*;
-        match self {
-            OneOff => "one_off",
-            Recurring => "recurring",
-            SetupOneOff => "setup_one_off",
-            SetupRecurring => "setup_recurring",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType::*;
-        match s {
-            "one_off" => Ok(OneOff),
-            "recurring" => Ok(Recurring),
-            "setup_one_off" => Ok(SetupOneOff),
-            "setup_recurring" => Ok(SetupRecurring),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType =
+    stripe_shared::PaymentType;

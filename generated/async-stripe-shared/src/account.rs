@@ -21,7 +21,7 @@ pub struct Account {
     /// Business information about the account.
     pub business_profile: Option<stripe_shared::AccountBusinessProfile>,
     /// The business type.
-    pub business_type: Option<stripe_shared::AccountBusinessType>,
+    pub business_type: Option<stripe_shared::BusinessType>,
     pub capabilities: Option<stripe_shared::AccountCapabilities>,
     /// Whether the account can process charges.
     pub charges_enabled: Option<bool>,
@@ -72,7 +72,7 @@ impl std::fmt::Debug for Account {
 #[doc(hidden)]
 pub struct AccountBuilder {
     business_profile: Option<Option<stripe_shared::AccountBusinessProfile>>,
-    business_type: Option<Option<stripe_shared::AccountBusinessType>>,
+    business_type: Option<Option<stripe_shared::BusinessType>>,
     capabilities: Option<Option<stripe_shared::AccountCapabilities>>,
     charges_enabled: Option<Option<bool>>,
     company: Option<Option<stripe_shared::LegalEntityCompany>>,
@@ -448,91 +448,5 @@ impl stripe_types::Object for Account {
     }
 }
 stripe_types::def_id!(AccountId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum AccountBusinessType {
-    Company,
-    GovernmentEntity,
-    Individual,
-    NonProfit,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl AccountBusinessType {
-    pub fn as_str(&self) -> &str {
-        use AccountBusinessType::*;
-        match self {
-            Company => "company",
-            GovernmentEntity => "government_entity",
-            Individual => "individual",
-            NonProfit => "non_profit",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for AccountBusinessType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountBusinessType::*;
-        match s {
-            "company" => Ok(Company),
-            "government_entity" => Ok(GovernmentEntity),
-            "individual" => Ok(Individual),
-            "non_profit" => Ok(NonProfit),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AccountBusinessType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for AccountBusinessType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for AccountBusinessType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for AccountBusinessType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(AccountBusinessType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for AccountBusinessType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for AccountBusinessType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<AccountBusinessType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountBusinessType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(AccountBusinessType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for AccountBusinessType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// The business type.
+pub type AccountBusinessType = stripe_shared::BusinessType;

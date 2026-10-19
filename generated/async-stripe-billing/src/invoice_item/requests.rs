@@ -301,7 +301,7 @@ struct CreateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     period: Option<Period>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    price_data: Option<CreateInvoiceItemPriceData>,
+    price_data: Option<OneTimePriceData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pricing: Option<PricingParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -311,7 +311,7 @@ struct CreateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_behavior: Option<CreateInvoiceItemTaxBehavior>,
+    tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -349,203 +349,6 @@ impl CreateInvoiceItemBuilder {
             tax_rates: None,
             unit_amount_decimal: None,
         }
-    }
-}
-/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateInvoiceItemPriceData {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
-    pub product: String,
-    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateInvoiceItemPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateInvoiceItemPriceData {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateInvoiceItemPriceData").finish_non_exhaustive()
-    }
-}
-impl CreateInvoiceItemPriceData {
-    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
-        Self {
-            currency: currency.into(),
-            product: product.into(),
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateInvoiceItemPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateInvoiceItemPriceDataTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreateInvoiceItemPriceDataTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateInvoiceItemPriceDataTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateInvoiceItemPriceDataTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateInvoiceItemPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateInvoiceItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateInvoiceItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateInvoiceItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateInvoiceItemPriceDataTaxBehavior)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateInvoiceItemPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateInvoiceItemPriceDataTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateInvoiceItemTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateInvoiceItemTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreateInvoiceItemTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateInvoiceItemTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateInvoiceItemTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateInvoiceItemTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateInvoiceItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateInvoiceItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateInvoiceItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateInvoiceItemTaxBehavior)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateInvoiceItemTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateInvoiceItemTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
@@ -640,7 +443,7 @@ impl CreateInvoiceItem {
         self
     }
     /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-    pub fn price_data(mut self, price_data: impl Into<CreateInvoiceItemPriceData>) -> Self {
+    pub fn price_data(mut self, price_data: impl Into<OneTimePriceData>) -> Self {
         self.inner.price_data = Some(price_data.into());
         self
     }
@@ -674,7 +477,10 @@ impl CreateInvoiceItem {
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    pub fn tax_behavior(mut self, tax_behavior: impl Into<CreateInvoiceItemTaxBehavior>) -> Self {
+    pub fn tax_behavior(
+        mut self,
+        tax_behavior: impl Into<stripe_shared::PriceTaxBehavior>,
+    ) -> Self {
         self.inner.tax_behavior = Some(tax_behavior.into());
         self
     }
@@ -747,7 +553,7 @@ struct UpdateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     period: Option<Period>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    price_data: Option<UpdateInvoiceItemPriceData>,
+    price_data: Option<OneTimePriceData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pricing: Option<PricingParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -755,7 +561,7 @@ struct UpdateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     quantity_decimal: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_behavior: Option<UpdateInvoiceItemTaxBehavior>,
+    tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -788,203 +594,6 @@ impl UpdateInvoiceItemBuilder {
             tax_rates: None,
             unit_amount_decimal: None,
         }
-    }
-}
-/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateInvoiceItemPriceData {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
-    pub product: String,
-    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<UpdateInvoiceItemPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateInvoiceItemPriceData {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateInvoiceItemPriceData").finish_non_exhaustive()
-    }
-}
-impl UpdateInvoiceItemPriceData {
-    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
-        Self {
-            currency: currency.into(),
-            product: product.into(),
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateInvoiceItemPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateInvoiceItemPriceDataTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateInvoiceItemPriceDataTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateInvoiceItemPriceDataTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateInvoiceItemPriceDataTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateInvoiceItemPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateInvoiceItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateInvoiceItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateInvoiceItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateInvoiceItemPriceDataTaxBehavior)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateInvoiceItemPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateInvoiceItemPriceDataTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateInvoiceItemTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateInvoiceItemTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateInvoiceItemTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateInvoiceItemTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateInvoiceItemTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateInvoiceItemTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateInvoiceItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateInvoiceItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateInvoiceItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateInvoiceItemTaxBehavior)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateInvoiceItemTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateInvoiceItemTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates the amount or description of an invoice item on an upcoming invoice.
@@ -1058,7 +667,7 @@ impl UpdateInvoiceItem {
         self
     }
     /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-    pub fn price_data(mut self, price_data: impl Into<UpdateInvoiceItemPriceData>) -> Self {
+    pub fn price_data(mut self, price_data: impl Into<OneTimePriceData>) -> Self {
         self.inner.price_data = Some(price_data.into());
         self
     }
@@ -1084,7 +693,10 @@ impl UpdateInvoiceItem {
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    pub fn tax_behavior(mut self, tax_behavior: impl Into<UpdateInvoiceItemTaxBehavior>) -> Self {
+    pub fn tax_behavior(
+        mut self,
+        tax_behavior: impl Into<stripe_shared::PriceTaxBehavior>,
+    ) -> Self {
         self.inner.tax_behavior = Some(tax_behavior.into());
         self
     }
@@ -1193,6 +805,46 @@ impl Period {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+pub struct OneTimePriceData {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: stripe_types::Currency,
+    /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
+    pub product: String,
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OneTimePriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OneTimePriceData").finish_non_exhaustive()
+    }
+}
+impl OneTimePriceData {
+    pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
+        Self {
+            currency: currency.into(),
+            product: product.into(),
+            tax_behavior: None,
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PricingParam {
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1214,3 +866,47 @@ impl Default for PricingParam {
         Self::new()
     }
 }
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type CreateInvoiceItemPriceDataTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type CreateInvoiceItemTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type UpdateInvoiceItemPriceDataTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type UpdateInvoiceItemTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// The coupons and promotion codes to redeem into discounts for the invoice item or invoice line item.
+pub type CreateInvoiceItemDiscounts = DiscountsDataParam;
+/// The period associated with this invoice item.
+/// When set to different values, the period will be rendered on the invoice.
+/// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+/// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
+pub type CreateInvoiceItemPeriod = Period;
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
+pub type CreateInvoiceItemPriceData = OneTimePriceData;
+/// The pricing information for the invoice item.
+pub type CreateInvoiceItemPricing = PricingParam;
+/// The coupons, promotion codes & existing discounts which apply to the invoice item or invoice line item.
+/// Item discounts are applied before invoice discounts.
+/// Pass an empty string to remove previously-defined discounts.
+pub type UpdateInvoiceItemDiscounts = DiscountsDataParam;
+/// The period associated with this invoice item.
+/// When set to different values, the period will be rendered on the invoice.
+/// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+/// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
+pub type UpdateInvoiceItemPeriod = Period;
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
+pub type UpdateInvoiceItemPriceData = OneTimePriceData;
+/// The pricing information for the invoice item.
+pub type UpdateInvoiceItemPricing = PricingParam;

@@ -54,7 +54,7 @@ pub struct PaymentMethodDetailsInteracPresent {
     /// Referenced from EMV tag 5F2D, data encoded on the card's chip.
     pub preferred_locales: Option<Vec<String>>,
     /// How card details were read in this transaction.
-    pub read_method: Option<PaymentMethodDetailsInteracPresentReadMethod>,
+    pub read_method: Option<stripe_shared::ReadMethod>,
     /// ID of the [reader](https://docs.stripe.com/api/terminal/readers) this transaction was made on.
     pub reader: Option<String>,
     /// A collection of fields required to be displayed on receipts. Only required for EMV transactions.
@@ -85,7 +85,7 @@ pub struct PaymentMethodDetailsInteracPresentBuilder {
     network: Option<Option<String>>,
     network_transaction_id: Option<Option<String>>,
     preferred_locales: Option<Option<Vec<String>>>,
-    read_method: Option<Option<PaymentMethodDetailsInteracPresentReadMethod>>,
+    read_method: Option<Option<stripe_shared::ReadMethod>>,
     reader: Option<Option<String>>,
     receipt: Option<Option<stripe_shared::PaymentMethodDetailsInteracPresentReceipt>>,
 }
@@ -304,101 +304,4 @@ const _: () = {
     }
 };
 /// How card details were read in this transaction.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodDetailsInteracPresentReadMethod {
-    ContactEmv,
-    ContactlessEmv,
-    ContactlessMagstripeMode,
-    MagneticStripeFallback,
-    MagneticStripeTrack2,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodDetailsInteracPresentReadMethod {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodDetailsInteracPresentReadMethod::*;
-        match self {
-            ContactEmv => "contact_emv",
-            ContactlessEmv => "contactless_emv",
-            ContactlessMagstripeMode => "contactless_magstripe_mode",
-            MagneticStripeFallback => "magnetic_stripe_fallback",
-            MagneticStripeTrack2 => "magnetic_stripe_track2",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodDetailsInteracPresentReadMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodDetailsInteracPresentReadMethod::*;
-        match s {
-            "contact_emv" => Ok(ContactEmv),
-            "contactless_emv" => Ok(ContactlessEmv),
-            "contactless_magstripe_mode" => Ok(ContactlessMagstripeMode),
-            "magnetic_stripe_fallback" => Ok(MagneticStripeFallback),
-            "magnetic_stripe_track2" => Ok(MagneticStripeTrack2),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsInteracPresentReadMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodDetailsInteracPresentReadMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodDetailsInteracPresentReadMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodDetailsInteracPresentReadMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodDetailsInteracPresentReadMethod))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodDetailsInteracPresentReadMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodDetailsInteracPresentReadMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsInteracPresentReadMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodDetailsInteracPresentReadMethod::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsInteracPresentReadMethod);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsInteracPresentReadMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodDetailsInteracPresentReadMethod = stripe_shared::ReadMethod;

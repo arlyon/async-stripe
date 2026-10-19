@@ -36,7 +36,7 @@ pub struct ConfirmationToken {
     /// Indicates that you intend to make future payments with this ConfirmationToken's payment method.
     ///
     /// The presence of this property will [attach the payment method](https://docs.stripe.com/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-    pub setup_future_usage: Option<stripe_payment::ConfirmationTokenSetupFutureUsage>,
+    pub setup_future_usage: Option<stripe_shared::CreateSetupIntentUsage>,
     /// ID of the SetupIntent that this ConfirmationToken was used to confirm, or null if this ConfirmationToken has not yet been used.
     pub setup_intent: Option<String>,
     /// Shipping information collected on this ConfirmationToken.
@@ -65,7 +65,7 @@ pub struct ConfirmationTokenBuilder {
     payment_method_preview:
         Option<Option<stripe_payment::ConfirmationTokensResourcePaymentMethodPreview>>,
     return_url: Option<Option<String>>,
-    setup_future_usage: Option<Option<stripe_payment::ConfirmationTokenSetupFutureUsage>>,
+    setup_future_usage: Option<Option<stripe_shared::CreateSetupIntentUsage>>,
     setup_intent: Option<Option<String>>,
     shipping: Option<Option<stripe_payment::ConfirmationTokensResourceShipping>>,
     use_stripe_sdk: Option<bool>,
@@ -285,89 +285,7 @@ impl stripe_types::Object for ConfirmationToken {
     }
 }
 stripe_types::def_id!(ConfirmationTokenId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ConfirmationTokenSetupFutureUsage {
-    OffSession,
-    OnSession,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ConfirmationTokenSetupFutureUsage {
-    pub fn as_str(&self) -> &str {
-        use ConfirmationTokenSetupFutureUsage::*;
-        match self {
-            OffSession => "off_session",
-            OnSession => "on_session",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ConfirmationTokenSetupFutureUsage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ConfirmationTokenSetupFutureUsage::*;
-        match s {
-            "off_session" => Ok(OffSession),
-            "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ConfirmationTokenSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ConfirmationTokenSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ConfirmationTokenSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ConfirmationTokenSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ConfirmationTokenSetupFutureUsage)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ConfirmationTokenSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ConfirmationTokenSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<ConfirmationTokenSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ConfirmationTokenSetupFutureUsage::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(ConfirmationTokenSetupFutureUsage);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ConfirmationTokenSetupFutureUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Indicates that you intend to make future payments with this ConfirmationToken's payment method.
+///
+/// The presence of this property will [attach the payment method](https://docs.stripe.com/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+pub type ConfirmationTokenSetupFutureUsage = stripe_shared::CreateSetupIntentUsage;

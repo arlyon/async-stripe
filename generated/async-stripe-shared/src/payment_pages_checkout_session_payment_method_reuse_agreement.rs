@@ -7,7 +7,7 @@ pub struct PaymentPagesCheckoutSessionPaymentMethodReuseAgreement {
     /// When set to `auto`, Stripe's defaults will be used.
     ///
     /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
-    pub position: PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition,
+    pub position: stripe_shared::Position,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentPagesCheckoutSessionPaymentMethodReuseAgreement {
@@ -18,7 +18,7 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionPaymentMethodReuseAgreement 
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionPaymentMethodReuseAgreementBuilder {
-    position: Option<PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition>,
+    position: Option<stripe_shared::Position>,
 }
 
 #[allow(
@@ -115,100 +115,4 @@ const _: () = {
 /// When set to `auto`, Stripe's defaults will be used.
 ///
 /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
-    Auto,
-    Hidden,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
-    pub fn as_str(&self) -> &str {
-        use PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition::*;
-        match self {
-            Auto => "auto",
-            Hidden => "hidden",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition::*;
-        match s {
-            "auto" => Ok(Auto),
-            "hidden" => Ok(Hidden),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition = stripe_shared::Position;

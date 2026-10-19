@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalCustomerUpdate {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
-    pub allowed_updates: Vec<PortalCustomerUpdateAllowedUpdates>,
+    pub allowed_updates: Vec<stripe_shared::AllowedUpdates>,
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
@@ -16,7 +16,7 @@ impl std::fmt::Debug for PortalCustomerUpdate {
 }
 #[doc(hidden)]
 pub struct PortalCustomerUpdateBuilder {
-    allowed_updates: Option<Vec<PortalCustomerUpdateAllowedUpdates>>,
+    allowed_updates: Option<Vec<stripe_shared::AllowedUpdates>>,
     enabled: Option<bool>,
 }
 
@@ -113,102 +113,4 @@ const _: () = {
     }
 };
 /// The types of customer updates that are supported. When empty, customers are not updateable.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PortalCustomerUpdateAllowedUpdates {
-    Address,
-    Email,
-    Name,
-    Phone,
-    Shipping,
-    TaxId,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PortalCustomerUpdateAllowedUpdates {
-    pub fn as_str(&self) -> &str {
-        use PortalCustomerUpdateAllowedUpdates::*;
-        match self {
-            Address => "address",
-            Email => "email",
-            Name => "name",
-            Phone => "phone",
-            Shipping => "shipping",
-            TaxId => "tax_id",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PortalCustomerUpdateAllowedUpdates {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PortalCustomerUpdateAllowedUpdates::*;
-        match s {
-            "address" => Ok(Address),
-            "email" => Ok(Email),
-            "name" => Ok(Name),
-            "phone" => Ok(Phone),
-            "shipping" => Ok(Shipping),
-            "tax_id" => Ok(TaxId),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalCustomerUpdateAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PortalCustomerUpdateAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PortalCustomerUpdateAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PortalCustomerUpdateAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PortalCustomerUpdateAllowedUpdates)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PortalCustomerUpdateAllowedUpdates {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PortalCustomerUpdateAllowedUpdates {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PortalCustomerUpdateAllowedUpdates> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PortalCustomerUpdateAllowedUpdates::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PortalCustomerUpdateAllowedUpdates);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PortalCustomerUpdateAllowedUpdates {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PortalCustomerUpdateAllowedUpdates = stripe_shared::AllowedUpdates;

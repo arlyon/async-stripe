@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicePaymentMethodOptionsPix {
     /// Determines if the amount includes the IOF tax.
-    pub amount_includes_iof: Option<InvoicePaymentMethodOptionsPixAmountIncludesIof>,
+    pub amount_includes_iof: Option<stripe_shared::MandatePixAmountIncludesIof>,
     /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
     /// Defaults to 86400 seconds.
     pub expires_after_seconds: Option<i64>,
@@ -17,7 +17,7 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsPix {
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsPixBuilder {
-    amount_includes_iof: Option<Option<InvoicePaymentMethodOptionsPixAmountIncludesIof>>,
+    amount_includes_iof: Option<Option<stripe_shared::MandatePixAmountIncludesIof>>,
     expires_after_seconds: Option<Option<i64>>,
 }
 
@@ -116,92 +116,5 @@ const _: () = {
     }
 };
 /// Determines if the amount includes the IOF tax.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InvoicePaymentMethodOptionsPixAmountIncludesIof {
-    Always,
-    Never,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InvoicePaymentMethodOptionsPixAmountIncludesIof {
-    pub fn as_str(&self) -> &str {
-        use InvoicePaymentMethodOptionsPixAmountIncludesIof::*;
-        match self {
-            Always => "always",
-            Never => "never",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InvoicePaymentMethodOptionsPixAmountIncludesIof {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InvoicePaymentMethodOptionsPixAmountIncludesIof::*;
-        match s {
-            "always" => Ok(Always),
-            "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoicePaymentMethodOptionsPixAmountIncludesIof"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InvoicePaymentMethodOptionsPixAmountIncludesIof {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InvoicePaymentMethodOptionsPixAmountIncludesIof {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InvoicePaymentMethodOptionsPixAmountIncludesIof {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(InvoicePaymentMethodOptionsPixAmountIncludesIof))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InvoicePaymentMethodOptionsPixAmountIncludesIof {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for InvoicePaymentMethodOptionsPixAmountIncludesIof {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<InvoicePaymentMethodOptionsPixAmountIncludesIof> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(InvoicePaymentMethodOptionsPixAmountIncludesIof::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(InvoicePaymentMethodOptionsPixAmountIncludesIof);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsPixAmountIncludesIof {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InvoicePaymentMethodOptionsPixAmountIncludesIof =
+    stripe_shared::MandatePixAmountIncludesIof;

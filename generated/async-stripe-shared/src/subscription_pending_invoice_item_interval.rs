@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionPendingInvoiceItemInterval {
     /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
-    pub interval: SubscriptionPendingInvoiceItemIntervalInterval,
+    pub interval: stripe_shared::PlanInterval,
     /// The number of intervals between invoices.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
@@ -18,7 +18,7 @@ impl std::fmt::Debug for SubscriptionPendingInvoiceItemInterval {
 }
 #[doc(hidden)]
 pub struct SubscriptionPendingInvoiceItemIntervalBuilder {
-    interval: Option<SubscriptionPendingInvoiceItemIntervalInterval>,
+    interval: Option<stripe_shared::PlanInterval>,
     interval_count: Option<u64>,
 }
 
@@ -115,98 +115,4 @@ const _: () = {
     }
 };
 /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SubscriptionPendingInvoiceItemIntervalInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SubscriptionPendingInvoiceItemIntervalInterval {
-    pub fn as_str(&self) -> &str {
-        use SubscriptionPendingInvoiceItemIntervalInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SubscriptionPendingInvoiceItemIntervalInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SubscriptionPendingInvoiceItemIntervalInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionPendingInvoiceItemIntervalInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SubscriptionPendingInvoiceItemIntervalInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SubscriptionPendingInvoiceItemIntervalInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SubscriptionPendingInvoiceItemIntervalInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SubscriptionPendingInvoiceItemIntervalInterval))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SubscriptionPendingInvoiceItemIntervalInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SubscriptionPendingInvoiceItemIntervalInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<SubscriptionPendingInvoiceItemIntervalInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(SubscriptionPendingInvoiceItemIntervalInterval::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(SubscriptionPendingInvoiceItemIntervalInterval);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SubscriptionPendingInvoiceItemIntervalInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SubscriptionPendingInvoiceItemIntervalInterval = stripe_shared::PlanInterval;

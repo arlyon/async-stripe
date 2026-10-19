@@ -9,9 +9,9 @@ pub struct IssuingAuthorizationFuelData {
     pub quantity_decimal: Option<String>,
     /// The type of fuel that was purchased.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: Option<IssuingAuthorizationFuelDataType>,
+    pub type_: Option<stripe_shared::IssuingAuthorizationFuelDataType>,
     /// The units for `quantity_decimal`.
-    pub unit: Option<IssuingAuthorizationFuelDataUnit>,
+    pub unit: Option<stripe_shared::IssuingAuthorizationFuelDataUnit>,
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     pub unit_cost_decimal: Option<String>,
 }
@@ -25,8 +25,8 @@ impl std::fmt::Debug for IssuingAuthorizationFuelData {
 pub struct IssuingAuthorizationFuelDataBuilder {
     industry_product_code: Option<Option<String>>,
     quantity_decimal: Option<Option<String>>,
-    type_: Option<Option<IssuingAuthorizationFuelDataType>>,
-    unit: Option<Option<IssuingAuthorizationFuelDataUnit>>,
+    type_: Option<Option<stripe_shared::IssuingAuthorizationFuelDataType>>,
+    unit: Option<Option<stripe_shared::IssuingAuthorizationFuelDataUnit>>,
     unit_cost_decimal: Option<Option<String>>,
 }
 
@@ -154,205 +154,6 @@ const _: () = {
     }
 };
 /// The type of fuel that was purchased.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationFuelDataType {
-    Diesel,
-    Other,
-    UnleadedPlus,
-    UnleadedRegular,
-    UnleadedSuper,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationFuelDataType {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationFuelDataType::*;
-        match self {
-            Diesel => "diesel",
-            Other => "other",
-            UnleadedPlus => "unleaded_plus",
-            UnleadedRegular => "unleaded_regular",
-            UnleadedSuper => "unleaded_super",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationFuelDataType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationFuelDataType::*;
-        match s {
-            "diesel" => Ok(Diesel),
-            "other" => Ok(Other),
-            "unleaded_plus" => Ok(UnleadedPlus),
-            "unleaded_regular" => Ok(UnleadedRegular),
-            "unleaded_super" => Ok(UnleadedSuper),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFuelDataType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationFuelDataType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationFuelDataType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationFuelDataType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationFuelDataType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingAuthorizationFuelDataType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationFuelDataType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFuelDataType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingAuthorizationFuelDataType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFuelDataType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFuelDataType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingAuthorizationFuelDataType = stripe_shared::IssuingAuthorizationFuelDataType;
 /// The units for `quantity_decimal`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationFuelDataUnit {
-    ChargingMinute,
-    ImperialGallon,
-    Kilogram,
-    KilowattHour,
-    Liter,
-    Other,
-    Pound,
-    UsGallon,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationFuelDataUnit {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationFuelDataUnit::*;
-        match self {
-            ChargingMinute => "charging_minute",
-            ImperialGallon => "imperial_gallon",
-            Kilogram => "kilogram",
-            KilowattHour => "kilowatt_hour",
-            Liter => "liter",
-            Other => "other",
-            Pound => "pound",
-            UsGallon => "us_gallon",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationFuelDataUnit {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationFuelDataUnit::*;
-        match s {
-            "charging_minute" => Ok(ChargingMinute),
-            "imperial_gallon" => Ok(ImperialGallon),
-            "kilogram" => Ok(Kilogram),
-            "kilowatt_hour" => Ok(KilowattHour),
-            "liter" => Ok(Liter),
-            "other" => Ok(Other),
-            "pound" => Ok(Pound),
-            "us_gallon" => Ok(UsGallon),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFuelDataUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationFuelDataUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationFuelDataUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationFuelDataUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationFuelDataUnit)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingAuthorizationFuelDataUnit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationFuelDataUnit {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFuelDataUnit> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingAuthorizationFuelDataUnit::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFuelDataUnit);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFuelDataUnit {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingAuthorizationFuelDataUnit = stripe_shared::IssuingAuthorizationFuelDataUnit;

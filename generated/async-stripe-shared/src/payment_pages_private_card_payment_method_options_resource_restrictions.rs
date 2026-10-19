@@ -5,13 +5,10 @@
 pub struct PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictions {
     /// The card brands to block.
     /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
-    pub brands_blocked:
-        Option<Vec<PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked>>,
+    pub brands_blocked: Option<Vec<stripe_shared::BrandsBlocked>>,
     /// Card funding types to block for this Checkout Session.
     /// Supported values are `credit`, `debit`, and `prepaid`.
-    pub funding_types_blocked: Option<
-        Vec<PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked>,
-    >,
+    pub funding_types_blocked: Option<Vec<stripe_shared::FundingTypesBlocked>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictions {
@@ -22,14 +19,8 @@ impl std::fmt::Debug for PaymentPagesPrivateCardPaymentMethodOptionsResourceRest
 }
 #[doc(hidden)]
 pub struct PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBuilder {
-    brands_blocked: Option<
-        Option<Vec<PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked>>,
-    >,
-    funding_types_blocked: Option<
-        Option<
-            Vec<PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked>,
-        >,
-    >,
+    brands_blocked: Option<Option<Vec<stripe_shared::BrandsBlocked>>>,
+    funding_types_blocked: Option<Option<Vec<stripe_shared::FundingTypesBlocked>>>,
 }
 
 #[allow(
@@ -128,237 +119,9 @@ const _: () = {
 };
 /// The card brands to block.
 /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked {
-    AmericanExpress,
-    DiscoverGlobalNetwork,
-    Mastercard,
-    Visa,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked {
-    pub fn as_str(&self) -> &str {
-        use PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked::*;
-        match self {
-            AmericanExpress => "american_express",
-            DiscoverGlobalNetwork => "discover_global_network",
-            Mastercard => "mastercard",
-            Visa => "visa",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked::*;
-        match s {
-            "american_express" => Ok(AmericanExpress),
-            "discover_global_network" => Ok(DiscoverGlobalNetwork),
-            "mastercard" => Ok(Mastercard),
-            "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked::from_str(
-                s,
-            )
-            .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked =
+    stripe_shared::BrandsBlocked;
 /// Card funding types to block for this Checkout Session.
 /// Supported values are `credit`, `debit`, and `prepaid`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked {
-    Credit,
-    Debit,
-    Prepaid,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked {
-    pub fn as_str(&self) -> &str {
-        use PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked::*;
-        match self {
-            Credit => "credit",
-            Debit => "debit",
-            Prepaid => "prepaid",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked::*;
-        match s {
-            "credit" => Ok(Credit),
-            "debit" => Ok(Debit),
-            "prepaid" => Ok(Prepaid),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<
-        PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked,
-    >
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked =
+    stripe_shared::FundingTypesBlocked;

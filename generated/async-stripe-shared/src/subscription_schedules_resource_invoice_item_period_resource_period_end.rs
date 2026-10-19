@@ -8,7 +8,7 @@ pub struct SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEnd {
     pub timestamp: Option<stripe_types::Timestamp>,
     /// Select how to calculate the end of the invoice item period.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType,
+    pub type_: stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEnd {
@@ -20,7 +20,7 @@ impl std::fmt::Debug for SubscriptionSchedulesResourceInvoiceItemPeriodResourceP
 #[doc(hidden)]
 pub struct SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndBuilder {
     timestamp: Option<Option<stripe_types::Timestamp>>,
-    type_: Option<SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType>,
+    type_: Option<stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType>,
 }
 
 #[allow(
@@ -114,107 +114,5 @@ const _: () = {
     }
 };
 /// Select how to calculate the end of the invoice item period.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType {
-    MinItemPeriodEnd,
-    PhaseEnd,
-    Timestamp,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType {
-    pub fn as_str(&self) -> &str {
-        use SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType::*;
-        match self {
-            MinItemPeriodEnd => "min_item_period_end",
-            PhaseEnd => "phase_end",
-            Timestamp => "timestamp",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType::*;
-        match s {
-            "min_item_period_end" => Ok(MinItemPeriodEnd),
-            "phase_end" => Ok(PhaseEnd),
-            "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType =
+    stripe_shared::CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType;

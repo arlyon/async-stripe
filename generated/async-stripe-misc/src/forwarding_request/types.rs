@@ -33,7 +33,7 @@ pub struct ForwardingRequest {
     /// Forwarding previously consumed PaymentMethods is allowed.
     pub payment_method: String,
     /// The field kinds to be replaced in the forwarded request.
-    pub replacements: Vec<stripe_misc::ForwardingRequestReplacements>,
+    pub replacements: Vec<stripe_shared::Replacements>,
     /// Context about the request from Stripe's servers to the destination endpoint.
     pub request_context: Option<stripe_misc::ForwardedRequestContext>,
     /// The request that was sent to the destination endpoint. We redact any sensitive fields.
@@ -56,7 +56,7 @@ pub struct ForwardingRequestBuilder {
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     payment_method: Option<String>,
-    replacements: Option<Vec<stripe_misc::ForwardingRequestReplacements>>,
+    replacements: Option<Vec<stripe_shared::Replacements>>,
     request_context: Option<Option<stripe_misc::ForwardedRequestContext>>,
     request_details: Option<Option<stripe_misc::ForwardedRequestDetails>>,
     response_details: Option<Option<stripe_misc::ForwardedResponseDetails>>,
@@ -245,98 +245,5 @@ impl stripe_types::Object for ForwardingRequest {
     }
 }
 stripe_types::def_id!(ForwardingRequestId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ForwardingRequestReplacements {
-    CardCvc,
-    CardExpiry,
-    CardNumber,
-    CardholderName,
-    RequestSignature,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ForwardingRequestReplacements {
-    pub fn as_str(&self) -> &str {
-        use ForwardingRequestReplacements::*;
-        match self {
-            CardCvc => "card_cvc",
-            CardExpiry => "card_expiry",
-            CardNumber => "card_number",
-            CardholderName => "cardholder_name",
-            RequestSignature => "request_signature",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ForwardingRequestReplacements {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ForwardingRequestReplacements::*;
-        match s {
-            "card_cvc" => Ok(CardCvc),
-            "card_expiry" => Ok(CardExpiry),
-            "card_number" => Ok(CardNumber),
-            "cardholder_name" => Ok(CardholderName),
-            "request_signature" => Ok(RequestSignature),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ForwardingRequestReplacements"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ForwardingRequestReplacements {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ForwardingRequestReplacements {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ForwardingRequestReplacements {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ForwardingRequestReplacements)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ForwardingRequestReplacements {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ForwardingRequestReplacements {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<ForwardingRequestReplacements> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ForwardingRequestReplacements::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(ForwardingRequestReplacements);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ForwardingRequestReplacements {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// The field kinds to be replaced in the forwarded request.
+pub type ForwardingRequestReplacements = stripe_shared::Replacements;

@@ -6,7 +6,7 @@ pub struct TreasuryReceivedCreditsResourceReversalDetails {
     /// Time before which a ReceivedCredit can be reversed.
     pub deadline: Option<stripe_types::Timestamp>,
     /// Set if a ReceivedCredit cannot be reversed.
-    pub restricted_reason: Option<TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason>,
+    pub restricted_reason: Option<stripe_shared::RestrictedReason>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TreasuryReceivedCreditsResourceReversalDetails {
@@ -17,8 +17,7 @@ impl std::fmt::Debug for TreasuryReceivedCreditsResourceReversalDetails {
 #[doc(hidden)]
 pub struct TreasuryReceivedCreditsResourceReversalDetailsBuilder {
     deadline: Option<Option<stripe_types::Timestamp>>,
-    restricted_reason:
-        Option<Option<TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason>>,
+    restricted_reason: Option<Option<stripe_shared::RestrictedReason>>,
 }
 
 #[allow(
@@ -114,109 +113,5 @@ const _: () = {
     }
 };
 /// Set if a ReceivedCredit cannot be reversed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
-    AlreadyReversed,
-    DeadlinePassed,
-    NetworkRestricted,
-    Other,
-    SourceFlowRestricted,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
-    pub fn as_str(&self) -> &str {
-        use TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason::*;
-        match self {
-            AlreadyReversed => "already_reversed",
-            DeadlinePassed => "deadline_passed",
-            NetworkRestricted => "network_restricted",
-            Other => "other",
-            SourceFlowRestricted => "source_flow_restricted",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason::*;
-        match s {
-            "already_reversed" => Ok(AlreadyReversed),
-            "deadline_passed" => Ok(DeadlinePassed),
-            "network_restricted" => Ok(NetworkRestricted),
-            "other" => Ok(Other),
-            "source_flow_restricted" => Ok(SourceFlowRestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason =
+    stripe_shared::RestrictedReason;

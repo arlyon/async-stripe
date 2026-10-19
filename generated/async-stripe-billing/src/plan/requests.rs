@@ -261,7 +261,7 @@ struct CreatePlanBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_decimal: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_scheme: Option<stripe_shared::PlanBillingScheme>,
+    billing_scheme: Option<stripe_shared::BillingScheme>,
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -281,13 +281,13 @@ struct CreatePlanBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     tiers: Option<Vec<CreatePlanTiers>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tiers_mode: Option<stripe_shared::PlanTiersMode>,
+    tiers_mode: Option<stripe_shared::TiersMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transform_usage: Option<CreatePlanTransformUsage>,
     #[serde(skip_serializing_if = "Option::is_none")]
     trial_period_days: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    usage_type: Option<stripe_shared::PlanUsageType>,
+    usage_type: Option<stripe_shared::UsageType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePlanBuilder {
@@ -463,7 +463,7 @@ pub struct CreatePlanTransformUsage {
     /// Divide usage by this number.
     pub divide_by: i64,
     /// After division, either round the result `up` or `down`.
-    pub round: CreatePlanTransformUsageRound,
+    pub round: stripe_shared::Round,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePlanTransformUsage {
@@ -472,80 +472,8 @@ impl std::fmt::Debug for CreatePlanTransformUsage {
     }
 }
 impl CreatePlanTransformUsage {
-    pub fn new(divide_by: impl Into<i64>, round: impl Into<CreatePlanTransformUsageRound>) -> Self {
+    pub fn new(divide_by: impl Into<i64>, round: impl Into<stripe_shared::Round>) -> Self {
         Self { divide_by: divide_by.into(), round: round.into() }
-    }
-}
-/// After division, either round the result `up` or `down`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePlanTransformUsageRound {
-    Down,
-    Up,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePlanTransformUsageRound {
-    pub fn as_str(&self) -> &str {
-        use CreatePlanTransformUsageRound::*;
-        match self {
-            Down => "down",
-            Up => "up",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePlanTransformUsageRound {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePlanTransformUsageRound::*;
-        match s {
-            "down" => Ok(Down),
-            "up" => Ok(Up),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePlanTransformUsageRound"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePlanTransformUsageRound {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePlanTransformUsageRound {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePlanTransformUsageRound {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePlanTransformUsageRound)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePlanTransformUsageRound {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePlanTransformUsageRound {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// You can now model subscriptions more flexibly using the [Prices API](https://stripe.com/docs/api#prices).
@@ -592,7 +520,7 @@ impl CreatePlan {
     /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
     pub fn billing_scheme(
         mut self,
-        billing_scheme: impl Into<stripe_shared::PlanBillingScheme>,
+        billing_scheme: impl Into<stripe_shared::BillingScheme>,
     ) -> Self {
         self.inner.billing_scheme = Some(billing_scheme.into());
         self
@@ -651,7 +579,7 @@ impl CreatePlan {
     }
     /// Defines if the tiering price should be `graduated` or `volume` based.
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
-    pub fn tiers_mode(mut self, tiers_mode: impl Into<stripe_shared::PlanTiersMode>) -> Self {
+    pub fn tiers_mode(mut self, tiers_mode: impl Into<stripe_shared::TiersMode>) -> Self {
         self.inner.tiers_mode = Some(tiers_mode.into());
         self
     }
@@ -671,7 +599,7 @@ impl CreatePlan {
     /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
     /// `metered` aggregates the total usage based on usage records.
     /// Defaults to `licensed`.
-    pub fn usage_type(mut self, usage_type: impl Into<stripe_shared::PlanUsageType>) -> Self {
+    pub fn usage_type(mut self, usage_type: impl Into<stripe_shared::UsageType>) -> Self {
         self.inner.usage_type = Some(usage_type.into());
         self
     }
@@ -821,3 +749,22 @@ impl StripeRequest for UpdatePlan {
         RequestBuilder::new(StripeMethod::Post, format!("/plans/{plan}")).form(&self.inner)
     }
 }
+
+/// Describes how to compute the price per period.
+/// Either `per_unit` or `tiered`.
+/// `per_unit` indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`).
+/// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
+pub type CreatePlanBillingScheme = stripe_shared::BillingScheme;
+/// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
+pub type CreatePlanInterval = stripe_shared::PlanInterval;
+/// Defines if the tiering price should be `graduated` or `volume` based.
+/// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
+pub type CreatePlanTiersMode = stripe_shared::TiersMode;
+/// After division, either round the result `up` or `down`.
+pub type CreatePlanTransformUsageRound = stripe_shared::Round;
+/// Configures how the quantity per period should be determined.
+/// Can be either `metered` or `licensed`.
+/// `licensed` automatically bills the `quantity` set when adding it to a subscription.
+/// `metered` aggregates the total usage based on usage records.
+/// Defaults to `licensed`.
+pub type CreatePlanUsageType = stripe_shared::UsageType;

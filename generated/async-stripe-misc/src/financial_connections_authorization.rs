@@ -11,7 +11,7 @@ pub struct FinancialConnectionsAuthorization {
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The status of the connection to the Authorization.
-    pub status: FinancialConnectionsAuthorizationStatus,
+    pub status: stripe_shared::BillingMeterStatus,
     pub status_details: stripe_misc::BankConnectionsResourceAuthorizationStatusDetails,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -25,7 +25,7 @@ pub struct FinancialConnectionsAuthorizationBuilder {
     id: Option<stripe_misc::FinancialConnectionsAuthorizationId>,
     institution_name: Option<String>,
     livemode: Option<bool>,
-    status: Option<FinancialConnectionsAuthorizationStatus>,
+    status: Option<stripe_shared::BillingMeterStatus>,
     status_details: Option<stripe_misc::BankConnectionsResourceAuthorizationStatusDetails>,
 }
 
@@ -159,94 +159,6 @@ impl serde::Serialize for FinancialConnectionsAuthorization {
         s.end()
     }
 }
-/// The status of the connection to the Authorization.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum FinancialConnectionsAuthorizationStatus {
-    Active,
-    Inactive,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl FinancialConnectionsAuthorizationStatus {
-    pub fn as_str(&self) -> &str {
-        use FinancialConnectionsAuthorizationStatus::*;
-        match self {
-            Active => "active",
-            Inactive => "inactive",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for FinancialConnectionsAuthorizationStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use FinancialConnectionsAuthorizationStatus::*;
-        match s {
-            "active" => Ok(Active),
-            "inactive" => Ok(Inactive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsAuthorizationStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for FinancialConnectionsAuthorizationStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for FinancialConnectionsAuthorizationStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for FinancialConnectionsAuthorizationStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(FinancialConnectionsAuthorizationStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for FinancialConnectionsAuthorizationStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for FinancialConnectionsAuthorizationStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsAuthorizationStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FinancialConnectionsAuthorizationStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsAuthorizationStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for FinancialConnectionsAuthorizationStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for FinancialConnectionsAuthorization {
     type Id = stripe_misc::FinancialConnectionsAuthorizationId;
     fn id(&self) -> &Self::Id {
@@ -258,3 +170,5 @@ impl stripe_types::Object for FinancialConnectionsAuthorization {
     }
 }
 stripe_types::def_id!(FinancialConnectionsAuthorizationId);
+/// The status of the connection to the Authorization.
+pub type FinancialConnectionsAuthorizationStatus = stripe_shared::BillingMeterStatus;

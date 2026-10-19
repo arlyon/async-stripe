@@ -25,12 +25,12 @@ pub struct GelatoDocumentReport {
     /// Document ID number.
     pub number: Option<String>,
     /// Sex of the person in the document.
-    pub sex: Option<GelatoDocumentReportSex>,
+    pub sex: Option<stripe_shared::Sex>,
     /// Status of this `document` check.
-    pub status: GelatoDocumentReportStatus,
+    pub status: stripe_shared::GelatoEmailReportStatus,
     /// Type of the document.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: Option<GelatoDocumentReportType>,
+    pub type_: Option<stripe_shared::GelatoDocumentReportType>,
     /// Place of birth as it appears in the document.
     pub unparsed_place_of_birth: Option<String>,
     /// Sex as it appears in the document.
@@ -54,9 +54,9 @@ pub struct GelatoDocumentReportBuilder {
     issuing_country: Option<Option<String>>,
     last_name: Option<Option<String>>,
     number: Option<Option<String>>,
-    sex: Option<Option<GelatoDocumentReportSex>>,
-    status: Option<GelatoDocumentReportStatus>,
-    type_: Option<Option<GelatoDocumentReportType>>,
+    sex: Option<Option<stripe_shared::Sex>>,
+    status: Option<stripe_shared::GelatoEmailReportStatus>,
+    type_: Option<Option<stripe_shared::GelatoDocumentReportType>>,
     unparsed_place_of_birth: Option<Option<String>>,
     unparsed_sex: Option<Option<String>>,
 }
@@ -245,264 +245,8 @@ const _: () = {
     }
 };
 /// Sex of the person in the document.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum GelatoDocumentReportSex {
-    Redacted,
-    Female,
-    Male,
-    Unknown,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
-    _Unknown(String),
-}
-impl GelatoDocumentReportSex {
-    pub fn as_str(&self) -> &str {
-        use GelatoDocumentReportSex::*;
-        match self {
-            Redacted => "[redacted]",
-            Female => "female",
-            Male => "male",
-            Unknown => "unknown",
-            _Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoDocumentReportSex {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoDocumentReportSex::*;
-        match s {
-            "[redacted]" => Ok(Redacted),
-            "female" => Ok(Female),
-            "male" => Ok(Male),
-            "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoDocumentReportSex");
-                Ok(_Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for GelatoDocumentReportSex {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for GelatoDocumentReportSex {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for GelatoDocumentReportSex {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(GelatoDocumentReportSex)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for GelatoDocumentReportSex {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for GelatoDocumentReportSex {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportSex> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(GelatoDocumentReportSex::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(GelatoDocumentReportSex);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for GelatoDocumentReportSex {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type GelatoDocumentReportSex = stripe_shared::Sex;
 /// Status of this `document` check.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum GelatoDocumentReportStatus {
-    Unverified,
-    Verified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl GelatoDocumentReportStatus {
-    pub fn as_str(&self) -> &str {
-        use GelatoDocumentReportStatus::*;
-        match self {
-            Unverified => "unverified",
-            Verified => "verified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoDocumentReportStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoDocumentReportStatus::*;
-        match s {
-            "unverified" => Ok(Unverified),
-            "verified" => Ok(Verified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoDocumentReportStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for GelatoDocumentReportStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for GelatoDocumentReportStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for GelatoDocumentReportStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(GelatoDocumentReportStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for GelatoDocumentReportStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for GelatoDocumentReportStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(GelatoDocumentReportStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(GelatoDocumentReportStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for GelatoDocumentReportStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type GelatoDocumentReportStatus = stripe_shared::GelatoEmailReportStatus;
 /// Type of the document.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum GelatoDocumentReportType {
-    DrivingLicense,
-    IdCard,
-    Passport,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl GelatoDocumentReportType {
-    pub fn as_str(&self) -> &str {
-        use GelatoDocumentReportType::*;
-        match self {
-            DrivingLicense => "driving_license",
-            IdCard => "id_card",
-            Passport => "passport",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoDocumentReportType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoDocumentReportType::*;
-        match s {
-            "driving_license" => Ok(DrivingLicense),
-            "id_card" => Ok(IdCard),
-            "passport" => Ok(Passport),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoDocumentReportType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for GelatoDocumentReportType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for GelatoDocumentReportType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for GelatoDocumentReportType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(GelatoDocumentReportType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for GelatoDocumentReportType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for GelatoDocumentReportType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(GelatoDocumentReportType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(GelatoDocumentReportType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for GelatoDocumentReportType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type GelatoDocumentReportType = stripe_shared::GelatoDocumentReportType;

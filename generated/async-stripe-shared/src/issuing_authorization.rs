@@ -20,12 +20,12 @@ pub struct IssuingAuthorization {
     /// Whether the authorization has been approved.
     pub approved: bool,
     /// How the card details were provided.
-    pub authorization_method: stripe_shared::IssuingAuthorizationAuthorizationMethod,
+    pub authorization_method: stripe_shared::AuthorizationMethod,
     /// List of balance transactions associated with this authorization.
     pub balance_transactions: Vec<stripe_shared::BalanceTransaction>,
     pub card: stripe_shared::IssuingCard,
     /// Whether the card was present at the point of sale for the authorization.
-    pub card_presence: Option<IssuingAuthorizationCardPresence>,
+    pub card_presence: Option<stripe_shared::IssuingAuthorizationCardPresence>,
     /// The cardholder to whom this authorization belongs.
     pub cardholder: Option<stripe_types::Expandable<stripe_shared::IssuingCardholder>>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -98,10 +98,10 @@ pub struct IssuingAuthorizationBuilder {
     amount: Option<i64>,
     amount_details: Option<Option<stripe_shared::IssuingAuthorizationAmountDetails>>,
     approved: Option<bool>,
-    authorization_method: Option<stripe_shared::IssuingAuthorizationAuthorizationMethod>,
+    authorization_method: Option<stripe_shared::AuthorizationMethod>,
     balance_transactions: Option<Vec<stripe_shared::BalanceTransaction>>,
     card: Option<stripe_shared::IssuingCard>,
-    card_presence: Option<Option<IssuingAuthorizationCardPresence>>,
+    card_presence: Option<Option<stripe_shared::IssuingAuthorizationCardPresence>>,
     cardholder: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCardholder>>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
@@ -434,94 +434,6 @@ impl serde::Serialize for IssuingAuthorization {
         s.end()
     }
 }
-/// Whether the card was present at the point of sale for the authorization.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationCardPresence {
-    NotPresent,
-    Present,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationCardPresence {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationCardPresence::*;
-        match self {
-            NotPresent => "not_present",
-            Present => "present",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationCardPresence {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationCardPresence::*;
-        match s {
-            "not_present" => Ok(NotPresent),
-            "present" => Ok(Present),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationCardPresence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationCardPresence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationCardPresence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationCardPresence {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationCardPresence)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingAuthorizationCardPresence {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationCardPresence {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationCardPresence> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingAuthorizationCardPresence::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationCardPresence);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationCardPresence {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for IssuingAuthorization {
     type Id = stripe_shared::IssuingAuthorizationId;
     fn id(&self) -> &Self::Id {
@@ -533,186 +445,9 @@ impl stripe_types::Object for IssuingAuthorization {
     }
 }
 stripe_types::def_id!(IssuingAuthorizationId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationAuthorizationMethod {
-    Chip,
-    Contactless,
-    KeyedIn,
-    Online,
-    Swipe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationAuthorizationMethod {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationAuthorizationMethod::*;
-        match self {
-            Chip => "chip",
-            Contactless => "contactless",
-            KeyedIn => "keyed_in",
-            Online => "online",
-            Swipe => "swipe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationAuthorizationMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationAuthorizationMethod::*;
-        match s {
-            "chip" => Ok(Chip),
-            "contactless" => Ok(Contactless),
-            "keyed_in" => Ok(KeyedIn),
-            "online" => Ok(Online),
-            "swipe" => Ok(Swipe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationAuthorizationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationAuthorizationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationAuthorizationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationAuthorizationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationAuthorizationMethod)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for IssuingAuthorizationAuthorizationMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationAuthorizationMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationAuthorizationMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingAuthorizationAuthorizationMethod::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationAuthorizationMethod);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthorizationMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationStatus {
-    Closed,
-    Expired,
-    Pending,
-    Reversed,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationStatus {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationStatus::*;
-        match self {
-            Closed => "closed",
-            Expired => "expired",
-            Pending => "pending",
-            Reversed => "reversed",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationStatus::*;
-        match s {
-            "closed" => Ok(Closed),
-            "expired" => Ok(Expired),
-            "pending" => Ok(Pending),
-            "reversed" => Ok(Reversed),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingAuthorizationStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for IssuingAuthorizationStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingAuthorizationStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// How the card details were provided.
+pub type IssuingAuthorizationAuthorizationMethod = stripe_shared::AuthorizationMethod;
+/// Whether the card was present at the point of sale for the authorization.
+pub type IssuingAuthorizationCardPresence = stripe_shared::IssuingAuthorizationCardPresence;
+/// The current status of the authorization in its lifecycle.
+pub type IssuingAuthorizationStatus = stripe_shared::IssuingAuthorizationStatus;

@@ -4,13 +4,13 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourcePaymentIntentData {
     /// Indicates when the funds will be captured from the customer's account.
-    pub capture_method: Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>,
+    pub capture_method: Option<stripe_shared::CaptureMethod>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that will set metadata on [Payment Intents](https://docs.stripe.com/api/payment_intents) generated from this payment link.
     pub metadata: std::collections::HashMap<String, String>,
     /// Indicates that you intend to make future payments with the payment method collected during checkout.
-    pub setup_future_usage: Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>,
+    pub setup_future_usage: Option<stripe_shared::CreateSetupIntentUsage>,
     /// For a non-card payment, information about the charge that appears on the customer's statement when this payment succeeds in creating a charge.
     pub statement_descriptor: Option<String>,
     /// For a card payment, information about the charge that appears on the customer's statement when this payment succeeds in creating a charge.
@@ -28,10 +28,10 @@ impl std::fmt::Debug for PaymentLinksResourcePaymentIntentData {
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourcePaymentIntentDataBuilder {
-    capture_method: Option<Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>>,
+    capture_method: Option<Option<stripe_shared::CaptureMethod>>,
     description: Option<Option<String>>,
     metadata: Option<std::collections::HashMap<String, String>>,
-    setup_future_usage: Option<Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>>,
+    setup_future_usage: Option<Option<stripe_shared::CreateSetupIntentUsage>>,
     statement_descriptor: Option<Option<String>>,
     statement_descriptor_suffix: Option<Option<String>>,
     transfer_group: Option<Option<String>>,
@@ -175,189 +175,7 @@ const _: () = {
     }
 };
 /// Indicates when the funds will be captured from the customer's account.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    Automatic,
-    AutomaticAsync,
-    Manual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    pub fn as_str(&self) -> &str {
-        use PaymentLinksResourcePaymentIntentDataCaptureMethod::*;
-        match self {
-            Automatic => "automatic",
-            AutomaticAsync => "automatic_async",
-            Manual => "manual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentLinksResourcePaymentIntentDataCaptureMethod::*;
-        match s {
-            "automatic" => Ok(Automatic),
-            "automatic_async" => Ok(AutomaticAsync),
-            "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourcePaymentIntentDataCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentLinksResourcePaymentIntentDataCaptureMethod))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentLinksResourcePaymentIntentDataCaptureMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentLinksResourcePaymentIntentDataCaptureMethod::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinksResourcePaymentIntentDataCaptureMethod);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentLinksResourcePaymentIntentDataCaptureMethod = stripe_shared::CaptureMethod;
 /// Indicates that you intend to make future payments with the payment method collected during checkout.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    OffSession,
-    OnSession,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    pub fn as_str(&self) -> &str {
-        use PaymentLinksResourcePaymentIntentDataSetupFutureUsage::*;
-        match self {
-            OffSession => "off_session",
-            OnSession => "on_session",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentLinksResourcePaymentIntentDataSetupFutureUsage::*;
-        match s {
-            "off_session" => Ok(OffSession),
-            "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourcePaymentIntentDataSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentLinksResourcePaymentIntentDataSetupFutureUsage))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentLinksResourcePaymentIntentDataSetupFutureUsage::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinksResourcePaymentIntentDataSetupFutureUsage);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentLinksResourcePaymentIntentDataSetupFutureUsage =
+    stripe_shared::CreateSetupIntentUsage;

@@ -16,7 +16,7 @@ struct ListTreasuryReceivedDebitBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_treasury::TreasuryReceivedDebitStatus>,
+    status: Option<stripe_shared::TreasuryReceivedDebitStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListTreasuryReceivedDebitBuilder {
@@ -80,10 +80,7 @@ impl ListTreasuryReceivedDebit {
         self
     }
     /// Only return ReceivedDebits that have the given status: `succeeded` or `failed`.
-    pub fn status(
-        mut self,
-        status: impl Into<stripe_treasury::TreasuryReceivedDebitStatus>,
-    ) -> Self {
+    pub fn status(mut self, status: impl Into<stripe_shared::TreasuryReceivedDebitStatus>) -> Self {
         self.inner.status = Some(status.into());
         self
     }
@@ -204,7 +201,7 @@ struct CreateTreasuryReceivedDebitBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     initiating_payment_method_details:
         Option<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails>,
-    network: CreateTreasuryReceivedDebitNetwork,
+    network: stripe_shared::TopupResourceUsBankAccountNetwork,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateTreasuryReceivedDebitBuilder {
@@ -217,7 +214,7 @@ impl CreateTreasuryReceivedDebitBuilder {
         amount: impl Into<i64>,
         currency: impl Into<stripe_types::Currency>,
         financial_account: impl Into<String>,
-        network: impl Into<CreateTreasuryReceivedDebitNetwork>,
+        network: impl Into<stripe_shared::TopupResourceUsBankAccountNetwork>,
     ) -> Self {
         Self {
             amount: amount.into(),
@@ -237,7 +234,7 @@ impl CreateTreasuryReceivedDebitBuilder {
 pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails {
     /// The source type.
     #[serde(rename = "type")]
-    pub type_: CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType,
+    pub type_: stripe_shared::InboundTransfersType,
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account:
@@ -251,82 +248,8 @@ impl std::fmt::Debug for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetai
     }
 }
 impl CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails {
-    pub fn new(
-        type_: impl Into<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType>,
-    ) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::InboundTransfersType>) -> Self {
         Self { type_: type_.into(), us_bank_account: None }
-    }
-}
-/// The source type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
-    UsBankAccount,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
-    pub fn as_str(&self) -> &str {
-        use CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType::*;
-        match self {
-            UsBankAccount => "us_bank_account",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType::*;
-        match s {
-            "us_bank_account" => Ok(UsBankAccount),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Optional fields for `us_bank_account`.
@@ -361,77 +284,6 @@ impl Default for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBank
         Self::new()
     }
 }
-/// Specifies the network rails to be used.
-/// If not set, will default to the PaymentMethod's preferred network.
-/// See the [docs](https://docs.stripe.com/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTreasuryReceivedDebitNetwork {
-    Ach,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTreasuryReceivedDebitNetwork {
-    pub fn as_str(&self) -> &str {
-        use CreateTreasuryReceivedDebitNetwork::*;
-        match self {
-            Ach => "ach",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTreasuryReceivedDebitNetwork {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTreasuryReceivedDebitNetwork::*;
-        match s {
-            "ach" => Ok(Ach),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryReceivedDebitNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTreasuryReceivedDebitNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTreasuryReceivedDebitNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTreasuryReceivedDebitNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTreasuryReceivedDebitNetwork)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTreasuryReceivedDebitNetwork {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedDebitNetwork {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Use this endpoint to simulate a test mode ReceivedDebit initiated by a third party.
 /// In live mode, you can’t directly create ReceivedDebits initiated by third parties.
 #[derive(Clone)]
@@ -452,7 +304,7 @@ impl CreateTreasuryReceivedDebit {
         amount: impl Into<i64>,
         currency: impl Into<stripe_types::Currency>,
         financial_account: impl Into<String>,
-        network: impl Into<CreateTreasuryReceivedDebitNetwork>,
+        network: impl Into<stripe_shared::TopupResourceUsBankAccountNetwork>,
     ) -> Self {
         Self {
             inner: CreateTreasuryReceivedDebitBuilder::new(
@@ -511,3 +363,13 @@ impl StripeRequest for CreateTreasuryReceivedDebit {
             .form(&self.inner)
     }
 }
+
+/// Only return ReceivedDebits that have the given status: `succeeded` or `failed`.
+pub type ListTreasuryReceivedDebitStatus = stripe_shared::TreasuryReceivedDebitStatus;
+/// The source type.
+pub type CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType =
+    stripe_shared::InboundTransfersType;
+/// Specifies the network rails to be used.
+/// If not set, will default to the PaymentMethod's preferred network.
+/// See the [docs](https://docs.stripe.com/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
+pub type CreateTreasuryReceivedDebitNetwork = stripe_shared::TopupResourceUsBankAccountNetwork;

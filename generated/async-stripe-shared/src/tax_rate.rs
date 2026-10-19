@@ -38,7 +38,7 @@ pub struct TaxRate {
     pub jurisdiction: Option<String>,
     /// The level of the jurisdiction that imposes this tax rate.
     /// Will be `null` for manually defined tax rates.
-    pub jurisdiction_level: Option<TaxRateJurisdictionLevel>,
+    pub jurisdiction_level: Option<stripe_shared::JurisdictionLevel>,
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
@@ -51,12 +51,12 @@ pub struct TaxRate {
     /// Indicates the type of tax rate applied to the taxable amount.
     /// This value can be `null` when no tax applies to the location.
     /// This field is only present for TaxRates created by Stripe Tax.
-    pub rate_type: Option<TaxRateRateType>,
+    pub rate_type: Option<stripe_shared::RateType>,
     /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2), without country prefix.
     /// For example, "NY" for New York, United States.
     pub state: Option<String>,
     /// The high-level tax type, such as `vat` or `sales_tax`.
-    pub tax_type: Option<stripe_shared::TaxRateTaxType>,
+    pub tax_type: Option<stripe_shared::TaxType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TaxRate {
@@ -76,13 +76,13 @@ pub struct TaxRateBuilder {
     id: Option<stripe_shared::TaxRateId>,
     inclusive: Option<bool>,
     jurisdiction: Option<Option<String>>,
-    jurisdiction_level: Option<Option<TaxRateJurisdictionLevel>>,
+    jurisdiction_level: Option<Option<stripe_shared::JurisdictionLevel>>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     percentage: Option<f64>,
-    rate_type: Option<Option<TaxRateRateType>>,
+    rate_type: Option<Option<stripe_shared::RateType>>,
     state: Option<Option<String>>,
-    tax_type: Option<Option<stripe_shared::TaxRateTaxType>>,
+    tax_type: Option<Option<stripe_shared::TaxType>>,
 }
 
 #[allow(
@@ -302,189 +302,6 @@ impl serde::Serialize for TaxRate {
         s.end()
     }
 }
-/// The level of the jurisdiction that imposes this tax rate.
-/// Will be `null` for manually defined tax rates.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxRateJurisdictionLevel {
-    City,
-    Country,
-    County,
-    District,
-    Multiple,
-    State,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxRateJurisdictionLevel {
-    pub fn as_str(&self) -> &str {
-        use TaxRateJurisdictionLevel::*;
-        match self {
-            City => "city",
-            Country => "country",
-            County => "county",
-            District => "district",
-            Multiple => "multiple",
-            State => "state",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxRateJurisdictionLevel {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxRateJurisdictionLevel::*;
-        match s {
-            "city" => Ok(City),
-            "country" => Ok(Country),
-            "county" => Ok(County),
-            "district" => Ok(District),
-            "multiple" => Ok(Multiple),
-            "state" => Ok(State),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxRateJurisdictionLevel");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxRateJurisdictionLevel {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxRateJurisdictionLevel {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxRateJurisdictionLevel {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxRateJurisdictionLevel)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxRateJurisdictionLevel {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxRateJurisdictionLevel {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TaxRateJurisdictionLevel> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TaxRateJurisdictionLevel::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TaxRateJurisdictionLevel);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxRateJurisdictionLevel {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Indicates the type of tax rate applied to the taxable amount.
-/// This value can be `null` when no tax applies to the location.
-/// This field is only present for TaxRates created by Stripe Tax.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxRateRateType {
-    FlatAmount,
-    Percentage,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxRateRateType {
-    pub fn as_str(&self) -> &str {
-        use TaxRateRateType::*;
-        match self {
-            FlatAmount => "flat_amount",
-            Percentage => "percentage",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxRateRateType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxRateRateType::*;
-        match s {
-            "flat_amount" => Ok(FlatAmount),
-            "percentage" => Ok(Percentage),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxRateRateType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxRateRateType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxRateRateType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxRateRateType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxRateRateType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxRateRateType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxRateRateType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TaxRateRateType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TaxRateRateType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TaxRateRateType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxRateRateType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for TaxRate {
     type Id = stripe_shared::TaxRateId;
     fn id(&self) -> &Self::Id {
@@ -496,127 +313,12 @@ impl stripe_types::Object for TaxRate {
     }
 }
 stripe_types::def_id!(TaxRateId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxRateTaxType {
-    AmusementTax,
-    CommunicationsTax,
-    Gst,
-    Hst,
-    Igst,
-    Jct,
-    LeaseTax,
-    MassTransitParkingTax,
-    ParkingTax,
-    Pst,
-    Qst,
-    RetailDeliveryFee,
-    Rst,
-    SalesTax,
-    ServiceTax,
-    Vat,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxRateTaxType {
-    pub fn as_str(&self) -> &str {
-        use TaxRateTaxType::*;
-        match self {
-            AmusementTax => "amusement_tax",
-            CommunicationsTax => "communications_tax",
-            Gst => "gst",
-            Hst => "hst",
-            Igst => "igst",
-            Jct => "jct",
-            LeaseTax => "lease_tax",
-            MassTransitParkingTax => "mass_transit_parking_tax",
-            ParkingTax => "parking_tax",
-            Pst => "pst",
-            Qst => "qst",
-            RetailDeliveryFee => "retail_delivery_fee",
-            Rst => "rst",
-            SalesTax => "sales_tax",
-            ServiceTax => "service_tax",
-            Vat => "vat",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxRateTaxType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxRateTaxType::*;
-        match s {
-            "amusement_tax" => Ok(AmusementTax),
-            "communications_tax" => Ok(CommunicationsTax),
-            "gst" => Ok(Gst),
-            "hst" => Ok(Hst),
-            "igst" => Ok(Igst),
-            "jct" => Ok(Jct),
-            "lease_tax" => Ok(LeaseTax),
-            "mass_transit_parking_tax" => Ok(MassTransitParkingTax),
-            "parking_tax" => Ok(ParkingTax),
-            "pst" => Ok(Pst),
-            "qst" => Ok(Qst),
-            "retail_delivery_fee" => Ok(RetailDeliveryFee),
-            "rst" => Ok(Rst),
-            "sales_tax" => Ok(SalesTax),
-            "service_tax" => Ok(ServiceTax),
-            "vat" => Ok(Vat),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxRateTaxType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxRateTaxType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxRateTaxType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxRateTaxType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxRateTaxType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for TaxRateTaxType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxRateTaxType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TaxRateTaxType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TaxRateTaxType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TaxRateTaxType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// The level of the jurisdiction that imposes this tax rate.
+/// Will be `null` for manually defined tax rates.
+pub type TaxRateJurisdictionLevel = stripe_shared::JurisdictionLevel;
+/// Indicates the type of tax rate applied to the taxable amount.
+/// This value can be `null` when no tax applies to the location.
+/// This field is only present for TaxRates created by Stripe Tax.
+pub type TaxRateRateType = stripe_shared::RateType;
+/// The high-level tax type, such as `vat` or `sales_tax`.
+pub type TaxRateTaxType = stripe_shared::TaxType;

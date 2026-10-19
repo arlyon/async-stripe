@@ -6,7 +6,7 @@ pub struct TransformQuantity {
     /// Divide usage by this number.
     pub divide_by: i64,
     /// After division, either round the result `up` or `down`.
-    pub round: TransformQuantityRound,
+    pub round: stripe_shared::Round,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TransformQuantity {
@@ -17,7 +17,7 @@ impl std::fmt::Debug for TransformQuantity {
 #[doc(hidden)]
 pub struct TransformQuantityBuilder {
     divide_by: Option<i64>,
-    round: Option<TransformQuantityRound>,
+    round: Option<stripe_shared::Round>,
 }
 
 #[allow(
@@ -111,86 +111,4 @@ const _: () = {
     }
 };
 /// After division, either round the result `up` or `down`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TransformQuantityRound {
-    Down,
-    Up,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TransformQuantityRound {
-    pub fn as_str(&self) -> &str {
-        use TransformQuantityRound::*;
-        match self {
-            Down => "down",
-            Up => "up",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TransformQuantityRound {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TransformQuantityRound::*;
-        match s {
-            "down" => Ok(Down),
-            "up" => Ok(Up),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TransformQuantityRound");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TransformQuantityRound {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TransformQuantityRound {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TransformQuantityRound {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TransformQuantityRound)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TransformQuantityRound {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TransformQuantityRound {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TransformQuantityRound> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TransformQuantityRound::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TransformQuantityRound);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TransformQuantityRound {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TransformQuantityRound = stripe_shared::Round;

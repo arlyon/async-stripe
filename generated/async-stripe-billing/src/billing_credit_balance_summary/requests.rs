@@ -65,8 +65,7 @@ pub struct RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilitySco
     /// We currently only support the `metered` price type.
     /// Cannot be used in combination with `prices`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_type:
-        Option<RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType>,
+    pub price_type: Option<stripe_shared::BillingCreditGrantsResourceScopePriceType>,
     /// A list of prices that the credit grant can apply to.
     /// We currently only support the `metered` prices.
     /// Cannot be used in combination with `price_type`.
@@ -90,92 +89,6 @@ impl RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScope {
 impl Default for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScope {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The price type that credit grants can apply to.
-/// We currently only support the `metered` price type.
-/// Cannot be used in combination with `prices`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType {
-    Metered,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType {
-    pub fn as_str(&self) -> &str {
-        use RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType::*;
-        match self {
-            Metered => "metered",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType::*;
-        match s {
-            "metered" => Ok(Metered),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A list of prices that the credit grant can apply to.
@@ -337,3 +250,9 @@ impl StripeRequest for RetrieveForMyAccountBillingCreditBalanceSummary {
         RequestBuilder::new(StripeMethod::Get, "/billing/credit_balance_summary").query(&self.inner)
     }
 }
+
+/// The price type that credit grants can apply to.
+/// We currently only support the `metered` price type.
+/// Cannot be used in combination with `prices`.
+pub type RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType =
+    stripe_shared::BillingCreditGrantsResourceScopePriceType;

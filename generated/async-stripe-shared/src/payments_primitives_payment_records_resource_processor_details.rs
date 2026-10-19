@@ -7,7 +7,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourceProcessorDetails {
 pub custom: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsResourceCustomDetails>,
     /// The processor used for this payment attempt.
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-pub type_: PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType,
+pub type_: stripe_shared::CreatePaymentLinkCustomFieldsLabelType,
 
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -20,7 +20,7 @@ impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourceProcessorDetail
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsBuilder {
     custom: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsResourceCustomDetails>>,
-type_: Option<PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType>,
+type_: Option<stripe_shared::CreatePaymentLinkCustomFieldsLabelType>,
 
 }
 
@@ -117,95 +117,5 @@ const _: () = {
     }
 };
 /// The processor used for this payment attempt.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
-    Custom,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
-    pub fn as_str(&self) -> &str {
-        use PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType::*;
-        match self {
-            Custom => "custom",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType::*;
-        match s {
-            "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType =
+    stripe_shared::CreatePaymentLinkCustomFieldsLabelType;

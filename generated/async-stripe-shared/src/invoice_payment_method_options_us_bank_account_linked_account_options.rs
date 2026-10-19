@@ -6,10 +6,9 @@ pub struct InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions {
     pub filters:
         Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsFilters>,
     /// The list of permissions to request. The `payment_method` permission must be included.
-    pub permissions:
-        Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions>>,
+    pub permissions: Option<Vec<stripe_shared::Permissions>>,
     /// Data features requested to be retrieved upon account creation.
-    pub prefetch: Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch>>,
+    pub prefetch: Option<Vec<stripe_shared::Prefetch>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions {
@@ -23,11 +22,8 @@ pub struct InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsBuilder {
     filters: Option<
         Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsFilters>,
     >,
-    permissions: Option<
-        Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions>>,
-    >,
-    prefetch:
-        Option<Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch>>>,
+    permissions: Option<Option<Vec<stripe_shared::Permissions>>>,
+    prefetch: Option<Option<Vec<stripe_shared::Prefetch>>>,
 }
 
 #[allow(
@@ -127,215 +123,8 @@ const _: () = {
     }
 };
 /// The list of permissions to request. The `payment_method` permission must be included.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
-    Balances,
-    Ownership,
-    PaymentMethod,
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
-    pub fn as_str(&self) -> &str {
-        use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::*;
-        match self {
-            Balances => "balances",
-            Ownership => "ownership",
-            PaymentMethod => "payment_method",
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::*;
-        match s {
-            "balances" => Ok(Balances),
-            "ownership" => Ok(Ownership),
-            "payment_method" => Ok(PaymentMethod),
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions =
+    stripe_shared::Permissions;
 /// Data features requested to be retrieved upon account creation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
-    Balances,
-    Ownership,
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
-    pub fn as_str(&self) -> &str {
-        use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::*;
-        match self {
-            Balances => "balances",
-            Ownership => "ownership",
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::*;
-        match s {
-            "balances" => Ok(Balances),
-            "ownership" => Ok(Ownership),
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch =
+    stripe_shared::Prefetch;

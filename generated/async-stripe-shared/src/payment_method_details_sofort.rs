@@ -19,7 +19,7 @@ pub struct PaymentMethodDetailsSofort {
     pub iban_last4: Option<String>,
     /// Preferred language of the SOFORT authorization page that the customer is redirected to.
     /// Can be one of `de`, `en`, `es`, `fr`, `it`, `nl`, or `pl`
-    pub preferred_language: Option<PaymentMethodDetailsSofortPreferredLanguage>,
+    pub preferred_language: Option<stripe_shared::PaymentMethodDetailsSofortPreferredLanguage>,
     /// Owner's verified full name. Values are verified or provided by SOFORT directly
     /// (if supported) at the time of authorization or settlement. They cannot be set or mutated.
     pub verified_name: Option<String>,
@@ -39,7 +39,7 @@ pub struct PaymentMethodDetailsSofortBuilder {
     generated_sepa_debit: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
     generated_sepa_debit_mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
     iban_last4: Option<Option<String>>,
-    preferred_language: Option<Option<PaymentMethodDetailsSofortPreferredLanguage>>,
+    preferred_language: Option<Option<stripe_shared::PaymentMethodDetailsSofortPreferredLanguage>>,
     verified_name: Option<Option<String>>,
 }
 
@@ -194,107 +194,5 @@ const _: () = {
 };
 /// Preferred language of the SOFORT authorization page that the customer is redirected to.
 /// Can be one of `de`, `en`, `es`, `fr`, `it`, `nl`, or `pl`
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodDetailsSofortPreferredLanguage {
-    De,
-    En,
-    Es,
-    Fr,
-    It,
-    Nl,
-    Pl,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodDetailsSofortPreferredLanguage {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodDetailsSofortPreferredLanguage::*;
-        match self {
-            De => "de",
-            En => "en",
-            Es => "es",
-            Fr => "fr",
-            It => "it",
-            Nl => "nl",
-            Pl => "pl",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodDetailsSofortPreferredLanguage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodDetailsSofortPreferredLanguage::*;
-        match s {
-            "de" => Ok(De),
-            "en" => Ok(En),
-            "es" => Ok(Es),
-            "fr" => Ok(Fr),
-            "it" => Ok(It),
-            "nl" => Ok(Nl),
-            "pl" => Ok(Pl),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsSofortPreferredLanguage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodDetailsSofortPreferredLanguage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodDetailsSofortPreferredLanguage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodDetailsSofortPreferredLanguage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodDetailsSofortPreferredLanguage))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodDetailsSofortPreferredLanguage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodDetailsSofortPreferredLanguage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsSofortPreferredLanguage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodDetailsSofortPreferredLanguage::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsSofortPreferredLanguage);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsSofortPreferredLanguage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodDetailsSofortPreferredLanguage =
+    stripe_shared::PaymentMethodDetailsSofortPreferredLanguage;

@@ -223,7 +223,7 @@ struct CreateShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
+    tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_code: Option<String>,
     #[serde(rename = "type")]
@@ -258,10 +258,10 @@ impl CreateShippingRateBuilder {
 pub struct CreateShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<CreateShippingRateDeliveryEstimateMaximum>,
+    pub maximum: Option<DeliveryEstimateBound>,
     /// The lower bound of the estimated range. If empty, represents no lower bound.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<CreateShippingRateDeliveryEstimateMinimum>,
+    pub minimum: Option<DeliveryEstimateBound>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateShippingRateDeliveryEstimate {
@@ -277,218 +277,6 @@ impl CreateShippingRateDeliveryEstimate {
 impl Default for CreateShippingRateDeliveryEstimate {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateShippingRateDeliveryEstimateMaximum {
-    /// A unit of time.
-    pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
-    /// Must be greater than 0.
-    pub value: i64,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMaximum {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateShippingRateDeliveryEstimateMaximum").finish_non_exhaustive()
-    }
-}
-impl CreateShippingRateDeliveryEstimateMaximum {
-    pub fn new(
-        unit: impl Into<CreateShippingRateDeliveryEstimateMaximumUnit>,
-        value: impl Into<i64>,
-    ) -> Self {
-        Self { unit: unit.into(), value: value.into() }
-    }
-}
-/// A unit of time.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateShippingRateDeliveryEstimateMaximumUnit {
-    BusinessDay,
-    Day,
-    Hour,
-    Month,
-    Week,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateShippingRateDeliveryEstimateMaximumUnit {
-    pub fn as_str(&self) -> &str {
-        use CreateShippingRateDeliveryEstimateMaximumUnit::*;
-        match self {
-            BusinessDay => "business_day",
-            Day => "day",
-            Hour => "hour",
-            Month => "month",
-            Week => "week",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateShippingRateDeliveryEstimateMaximumUnit {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateShippingRateDeliveryEstimateMaximumUnit::*;
-        match s {
-            "business_day" => Ok(BusinessDay),
-            "day" => Ok(Day),
-            "hour" => Ok(Hour),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateShippingRateDeliveryEstimateMaximumUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateShippingRateDeliveryEstimateMaximumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMaximumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMaximumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateShippingRateDeliveryEstimateMaximumUnit))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateShippingRateDeliveryEstimateMaximumUnit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMaximumUnit {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The lower bound of the estimated range. If empty, represents no lower bound.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateShippingRateDeliveryEstimateMinimum {
-    /// A unit of time.
-    pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,
-    /// Must be greater than 0.
-    pub value: i64,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMinimum {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateShippingRateDeliveryEstimateMinimum").finish_non_exhaustive()
-    }
-}
-impl CreateShippingRateDeliveryEstimateMinimum {
-    pub fn new(
-        unit: impl Into<CreateShippingRateDeliveryEstimateMinimumUnit>,
-        value: impl Into<i64>,
-    ) -> Self {
-        Self { unit: unit.into(), value: value.into() }
-    }
-}
-/// A unit of time.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateShippingRateDeliveryEstimateMinimumUnit {
-    BusinessDay,
-    Day,
-    Hour,
-    Month,
-    Week,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateShippingRateDeliveryEstimateMinimumUnit {
-    pub fn as_str(&self) -> &str {
-        use CreateShippingRateDeliveryEstimateMinimumUnit::*;
-        match self {
-            BusinessDay => "business_day",
-            Day => "day",
-            Hour => "hour",
-            Month => "month",
-            Week => "week",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateShippingRateDeliveryEstimateMinimumUnit {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateShippingRateDeliveryEstimateMinimumUnit::*;
-        match s {
-            "business_day" => Ok(BusinessDay),
-            "day" => Ok(Day),
-            "hour" => Ok(Hour),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateShippingRateDeliveryEstimateMinimumUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateShippingRateDeliveryEstimateMinimumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMinimumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMinimumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateShippingRateDeliveryEstimateMinimumUnit))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateShippingRateDeliveryEstimateMinimumUnit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMinimumUnit {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
@@ -533,7 +321,7 @@ pub struct CreateShippingRateFixedAmountCurrencyOptions {
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateShippingRateFixedAmountCurrencyOptions {
@@ -598,7 +386,7 @@ impl CreateShippingRate {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     pub fn tax_behavior(
         mut self,
-        tax_behavior: impl Into<stripe_shared::ShippingRateTaxBehavior>,
+        tax_behavior: impl Into<stripe_shared::PriceTaxBehavior>,
     ) -> Self {
         self.inner.tax_behavior = Some(tax_behavior.into());
         self
@@ -653,7 +441,7 @@ struct UpdateShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
+    tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateShippingRateBuilder {
@@ -709,7 +497,7 @@ pub struct UpdateShippingRateFixedAmountCurrencyOptions {
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateShippingRateFixedAmountCurrencyOptions {
@@ -779,7 +567,7 @@ impl UpdateShippingRate {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     pub fn tax_behavior(
         mut self,
-        tax_behavior: impl Into<stripe_shared::ShippingRateTaxBehavior>,
+        tax_behavior: impl Into<stripe_shared::PriceTaxBehavior>,
     ) -> Self {
         self.inner.tax_behavior = Some(tax_behavior.into());
         self
@@ -812,3 +600,46 @@ impl StripeRequest for UpdateShippingRate {
             .form(&self.inner)
     }
 }
+
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct DeliveryEstimateBound {
+    /// A unit of time.
+    pub unit: stripe_shared::Unit,
+    /// Must be greater than 0.
+    pub value: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeliveryEstimateBound {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeliveryEstimateBound").finish_non_exhaustive()
+    }
+}
+impl DeliveryEstimateBound {
+    pub fn new(unit: impl Into<stripe_shared::Unit>, value: impl Into<i64>) -> Self {
+        Self { unit: unit.into(), value: value.into() }
+    }
+}
+/// A unit of time.
+pub type CreateShippingRateDeliveryEstimateMaximumUnit = stripe_shared::Unit;
+/// A unit of time.
+pub type CreateShippingRateDeliveryEstimateMinimumUnit = stripe_shared::Unit;
+/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+pub type CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+pub type CreateShippingRateTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// The type of calculation to use on the shipping rate.
+pub type CreateShippingRateType = stripe_shared::ShippingRateType;
+/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+pub type UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+pub type UpdateShippingRateTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
+pub type CreateShippingRateDeliveryEstimateMaximum = DeliveryEstimateBound;
+/// The lower bound of the estimated range. If empty, represents no lower bound.
+pub type CreateShippingRateDeliveryEstimateMinimum = DeliveryEstimateBound;

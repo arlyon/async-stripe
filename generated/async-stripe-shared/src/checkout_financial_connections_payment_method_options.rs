@@ -5,9 +5,9 @@
 pub struct CheckoutFinancialConnectionsPaymentMethodOptions {
     pub filters: Option<stripe_shared::CheckoutFinancialConnectionsPaymentMethodOptionsFilters>,
     /// The list of permissions to request. The `payment_method` permission must be included.
-    pub permissions: Option<Vec<CheckoutFinancialConnectionsPaymentMethodOptionsPermissions>>,
+    pub permissions: Option<Vec<stripe_shared::Permissions>>,
     /// Data features requested to be retrieved upon account creation.
-    pub prefetch: Option<Vec<CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch>>,
+    pub prefetch: Option<Vec<stripe_shared::Prefetch>>,
     /// For webview integrations only.
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
     pub return_url: Option<String>,
@@ -21,8 +21,8 @@ impl std::fmt::Debug for CheckoutFinancialConnectionsPaymentMethodOptions {
 #[doc(hidden)]
 pub struct CheckoutFinancialConnectionsPaymentMethodOptionsBuilder {
     filters: Option<Option<stripe_shared::CheckoutFinancialConnectionsPaymentMethodOptionsFilters>>,
-    permissions: Option<Option<Vec<CheckoutFinancialConnectionsPaymentMethodOptionsPermissions>>>,
-    prefetch: Option<Option<Vec<CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch>>>,
+    permissions: Option<Option<Vec<stripe_shared::Permissions>>>,
+    prefetch: Option<Option<Vec<stripe_shared::Prefetch>>>,
     return_url: Option<Option<String>>,
 }
 
@@ -131,203 +131,6 @@ const _: () = {
     }
 };
 /// The list of permissions to request. The `payment_method` permission must be included.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutFinancialConnectionsPaymentMethodOptionsPermissions {
-    Balances,
-    Ownership,
-    PaymentMethod,
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutFinancialConnectionsPaymentMethodOptionsPermissions {
-    pub fn as_str(&self) -> &str {
-        use CheckoutFinancialConnectionsPaymentMethodOptionsPermissions::*;
-        match self {
-            Balances => "balances",
-            Ownership => "ownership",
-            PaymentMethod => "payment_method",
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutFinancialConnectionsPaymentMethodOptionsPermissions {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutFinancialConnectionsPaymentMethodOptionsPermissions::*;
-        match s {
-            "balances" => Ok(Balances),
-            "ownership" => Ok(Ownership),
-            "payment_method" => Ok(PaymentMethod),
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutFinancialConnectionsPaymentMethodOptionsPermissions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutFinancialConnectionsPaymentMethodOptionsPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutFinancialConnectionsPaymentMethodOptionsPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutFinancialConnectionsPaymentMethodOptionsPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutFinancialConnectionsPaymentMethodOptionsPermissions))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutFinancialConnectionsPaymentMethodOptionsPermissions {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutFinancialConnectionsPaymentMethodOptionsPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<CheckoutFinancialConnectionsPaymentMethodOptionsPermissions>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            CheckoutFinancialConnectionsPaymentMethodOptionsPermissions::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutFinancialConnectionsPaymentMethodOptionsPermissions
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutFinancialConnectionsPaymentMethodOptionsPermissions {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutFinancialConnectionsPaymentMethodOptionsPermissions = stripe_shared::Permissions;
 /// Data features requested to be retrieved upon account creation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch {
-    Balances,
-    Ownership,
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch {
-    pub fn as_str(&self) -> &str {
-        use CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch::*;
-        match self {
-            Balances => "balances",
-            Ownership => "ownership",
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch::*;
-        match s {
-            "balances" => Ok(Balances),
-            "ownership" => Ok(Ownership),
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch = stripe_shared::Prefetch;

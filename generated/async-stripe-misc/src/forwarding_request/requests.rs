@@ -225,7 +225,7 @@ struct CreateForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     payment_method: String,
-    replacements: Vec<stripe_misc::ForwardingRequestReplacements>,
+    replacements: Vec<stripe_shared::Replacements>,
     #[serde(skip_serializing_if = "Option::is_none")]
     request: Option<CreateForwardingRequestRequest>,
     url: String,
@@ -239,7 +239,7 @@ impl std::fmt::Debug for CreateForwardingRequestBuilder {
 impl CreateForwardingRequestBuilder {
     fn new(
         payment_method: impl Into<String>,
-        replacements: impl Into<Vec<stripe_misc::ForwardingRequestReplacements>>,
+        replacements: impl Into<Vec<stripe_shared::Replacements>>,
         url: impl Into<String>,
     ) -> Self {
         Self {
@@ -320,7 +320,7 @@ impl CreateForwardingRequest {
     /// Construct a new `CreateForwardingRequest`.
     pub fn new(
         payment_method: impl Into<String>,
-        replacements: impl Into<Vec<stripe_misc::ForwardingRequestReplacements>>,
+        replacements: impl Into<Vec<stripe_shared::Replacements>>,
         url: impl Into<String>,
     ) -> Self {
         Self {
@@ -378,3 +378,6 @@ impl StripeRequest for CreateForwardingRequest {
         RequestBuilder::new(StripeMethod::Post, "/forwarding/requests").form(&self.inner)
     }
 }
+
+/// The field kinds to be replaced in the forwarded request.
+pub type CreateForwardingRequestReplacements = stripe_shared::Replacements;

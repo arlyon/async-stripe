@@ -9,7 +9,7 @@ struct CreateTerminalOnboardingLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     link_options: CreateTerminalOnboardingLinkLinkOptions,
-    link_type: stripe_terminal::TerminalOnboardingLinkLinkType,
+    link_type: stripe_shared::LinkType,
     #[serde(skip_serializing_if = "Option::is_none")]
     on_behalf_of: Option<String>,
 }
@@ -22,7 +22,7 @@ impl std::fmt::Debug for CreateTerminalOnboardingLinkBuilder {
 impl CreateTerminalOnboardingLinkBuilder {
     fn new(
         link_options: impl Into<CreateTerminalOnboardingLinkLinkOptions>,
-        link_type: impl Into<stripe_terminal::TerminalOnboardingLinkLinkType>,
+        link_type: impl Into<stripe_shared::LinkType>,
     ) -> Self {
         Self {
             expand: None,
@@ -98,7 +98,7 @@ impl CreateTerminalOnboardingLink {
     /// Construct a new `CreateTerminalOnboardingLink`.
     pub fn new(
         link_options: impl Into<CreateTerminalOnboardingLinkLinkOptions>,
-        link_type: impl Into<stripe_terminal::TerminalOnboardingLinkLinkType>,
+        link_type: impl Into<stripe_shared::LinkType>,
     ) -> Self {
         Self {
             inner: CreateTerminalOnboardingLinkBuilder::new(link_options.into(), link_type.into()),
@@ -140,3 +140,6 @@ impl StripeRequest for CreateTerminalOnboardingLink {
         RequestBuilder::new(StripeMethod::Post, "/terminal/onboarding_links").form(&self.inner)
     }
 }
+
+/// The type of link being generated.
+pub type CreateTerminalOnboardingLinkLinkType = stripe_shared::LinkType;

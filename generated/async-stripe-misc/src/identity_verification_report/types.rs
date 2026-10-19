@@ -33,7 +33,7 @@ pub struct IdentityVerificationReport {
     pub selfie: Option<stripe_misc::GelatoSelfieReport>,
     /// Type of report.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
-    pub type_: IdentityVerificationReportType,
+    pub type_: stripe_shared::IdentityVerificationReportType,
     /// The configuration token of a verification flow from the dashboard.
     pub verification_flow: Option<String>,
     /// ID of the VerificationSession that created this report.
@@ -57,7 +57,7 @@ pub struct IdentityVerificationReportBuilder {
     options: Option<Option<stripe_misc::GelatoVerificationReportOptions>>,
     phone: Option<Option<stripe_misc::GelatoPhoneReport>>,
     selfie: Option<Option<stripe_misc::GelatoSelfieReport>>,
-    type_: Option<IdentityVerificationReportType>,
+    type_: Option<stripe_shared::IdentityVerificationReportType>,
     verification_flow: Option<Option<String>>,
     verification_session: Option<Option<String>>,
 }
@@ -254,97 +254,6 @@ impl serde::Serialize for IdentityVerificationReport {
         s.end()
     }
 }
-/// Type of report.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IdentityVerificationReportType {
-    Document,
-    IdNumber,
-    VerificationFlow,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IdentityVerificationReportType {
-    pub fn as_str(&self) -> &str {
-        use IdentityVerificationReportType::*;
-        match self {
-            Document => "document",
-            IdNumber => "id_number",
-            VerificationFlow => "verification_flow",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IdentityVerificationReportType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IdentityVerificationReportType::*;
-        match s {
-            "document" => Ok(Document),
-            "id_number" => Ok(IdNumber),
-            "verification_flow" => Ok(VerificationFlow),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IdentityVerificationReportType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IdentityVerificationReportType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IdentityVerificationReportType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IdentityVerificationReportType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IdentityVerificationReportType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IdentityVerificationReportType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IdentityVerificationReportType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IdentityVerificationReportType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IdentityVerificationReportType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IdentityVerificationReportType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IdentityVerificationReportType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for IdentityVerificationReport {
     type Id = stripe_misc::IdentityVerificationReportId;
     fn id(&self) -> &Self::Id {
@@ -356,3 +265,5 @@ impl stripe_types::Object for IdentityVerificationReport {
     }
 }
 stripe_types::def_id!(IdentityVerificationReportId);
+/// Type of report.
+pub type IdentityVerificationReportType = stripe_shared::IdentityVerificationReportType;

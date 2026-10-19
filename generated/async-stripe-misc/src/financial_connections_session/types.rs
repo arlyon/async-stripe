@@ -21,9 +21,9 @@ pub struct FinancialConnectionsSession {
     pub livemode: bool,
     pub manual_entry: Option<stripe_misc::BankConnectionsResourceLinkAccountSessionManualEntry>,
     /// Permissions requested for accounts collected during this session.
-    pub permissions: Vec<stripe_misc::FinancialConnectionsSessionPermissions>,
+    pub permissions: Vec<stripe_shared::Permissions>,
     /// Data features requested to be retrieved upon account creation.
-    pub prefetch: Option<Vec<stripe_misc::FinancialConnectionsSessionPrefetch>>,
+    pub prefetch: Option<Vec<stripe_shared::Prefetch>>,
     /// For webview integrations only.
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
     pub return_url: Option<String>,
@@ -45,8 +45,8 @@ pub struct FinancialConnectionsSessionBuilder {
     limits: Option<Option<stripe_misc::BankConnectionsResourceLinkAccountSessionLimits>>,
     livemode: Option<bool>,
     manual_entry: Option<Option<stripe_misc::BankConnectionsResourceLinkAccountSessionManualEntry>>,
-    permissions: Option<Vec<stripe_misc::FinancialConnectionsSessionPermissions>>,
-    prefetch: Option<Option<Vec<stripe_misc::FinancialConnectionsSessionPrefetch>>>,
+    permissions: Option<Vec<stripe_shared::Permissions>>,
+    prefetch: Option<Option<Vec<stripe_shared::Prefetch>>>,
     return_url: Option<Option<String>>,
 }
 
@@ -246,184 +246,7 @@ impl stripe_types::Object for FinancialConnectionsSession {
     }
 }
 stripe_types::def_id!(FinancialConnectionsSessionId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum FinancialConnectionsSessionPermissions {
-    Balances,
-    Ownership,
-    PaymentMethod,
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl FinancialConnectionsSessionPermissions {
-    pub fn as_str(&self) -> &str {
-        use FinancialConnectionsSessionPermissions::*;
-        match self {
-            Balances => "balances",
-            Ownership => "ownership",
-            PaymentMethod => "payment_method",
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for FinancialConnectionsSessionPermissions {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use FinancialConnectionsSessionPermissions::*;
-        match s {
-            "balances" => Ok(Balances),
-            "ownership" => Ok(Ownership),
-            "payment_method" => Ok(PaymentMethod),
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsSessionPermissions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for FinancialConnectionsSessionPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for FinancialConnectionsSessionPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for FinancialConnectionsSessionPermissions {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(FinancialConnectionsSessionPermissions)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for FinancialConnectionsSessionPermissions {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for FinancialConnectionsSessionPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsSessionPermissions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FinancialConnectionsSessionPermissions::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsSessionPermissions);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for FinancialConnectionsSessionPermissions {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum FinancialConnectionsSessionPrefetch {
-    Balances,
-    Ownership,
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl FinancialConnectionsSessionPrefetch {
-    pub fn as_str(&self) -> &str {
-        use FinancialConnectionsSessionPrefetch::*;
-        match self {
-            Balances => "balances",
-            Ownership => "ownership",
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for FinancialConnectionsSessionPrefetch {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use FinancialConnectionsSessionPrefetch::*;
-        match s {
-            "balances" => Ok(Balances),
-            "ownership" => Ok(Ownership),
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsSessionPrefetch"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for FinancialConnectionsSessionPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for FinancialConnectionsSessionPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for FinancialConnectionsSessionPrefetch {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(FinancialConnectionsSessionPrefetch)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for FinancialConnectionsSessionPrefetch {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for FinancialConnectionsSessionPrefetch {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsSessionPrefetch> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FinancialConnectionsSessionPrefetch::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsSessionPrefetch);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for FinancialConnectionsSessionPrefetch {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Permissions requested for accounts collected during this session.
+pub type FinancialConnectionsSessionPermissions = stripe_shared::Permissions;
+/// Data features requested to be retrieved upon account creation.
+pub type FinancialConnectionsSessionPrefetch = stripe_shared::Prefetch;

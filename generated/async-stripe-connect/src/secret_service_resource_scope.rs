@@ -5,7 +5,7 @@
 pub struct SecretServiceResourceScope {
     /// The secret scope type.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: SecretServiceResourceScopeType,
+    pub type_: stripe_shared::FindAppsSecretScopeType,
     /// The user ID, if type is set to "user"
     pub user: Option<String>,
 }
@@ -17,7 +17,7 @@ impl std::fmt::Debug for SecretServiceResourceScope {
 }
 #[doc(hidden)]
 pub struct SecretServiceResourceScopeBuilder {
-    type_: Option<SecretServiceResourceScopeType>,
+    type_: Option<stripe_shared::FindAppsSecretScopeType>,
     user: Option<Option<String>>,
 }
 
@@ -112,90 +112,4 @@ const _: () = {
     }
 };
 /// The secret scope type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SecretServiceResourceScopeType {
-    Account,
-    User,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SecretServiceResourceScopeType {
-    pub fn as_str(&self) -> &str {
-        use SecretServiceResourceScopeType::*;
-        match self {
-            Account => "account",
-            User => "user",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SecretServiceResourceScopeType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SecretServiceResourceScopeType::*;
-        match s {
-            "account" => Ok(Account),
-            "user" => Ok(User),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SecretServiceResourceScopeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SecretServiceResourceScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SecretServiceResourceScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SecretServiceResourceScopeType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SecretServiceResourceScopeType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SecretServiceResourceScopeType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SecretServiceResourceScopeType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<SecretServiceResourceScopeType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SecretServiceResourceScopeType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(SecretServiceResourceScopeType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SecretServiceResourceScopeType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SecretServiceResourceScopeType = stripe_shared::FindAppsSecretScopeType;

@@ -597,7 +597,7 @@ impl StripeRequest for RefreshFinancialConnectionsAccount {
 struct SubscribeFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
-    features: Vec<SubscribeFinancialConnectionsAccountFeatures>,
+    features: Vec<stripe_shared::FinancialConnectionsAccountSubscriptions>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for SubscribeFinancialConnectionsAccountBuilder {
@@ -606,78 +606,10 @@ impl std::fmt::Debug for SubscribeFinancialConnectionsAccountBuilder {
     }
 }
 impl SubscribeFinancialConnectionsAccountBuilder {
-    fn new(features: impl Into<Vec<SubscribeFinancialConnectionsAccountFeatures>>) -> Self {
+    fn new(
+        features: impl Into<Vec<stripe_shared::FinancialConnectionsAccountSubscriptions>>,
+    ) -> Self {
         Self { expand: None, features: features.into() }
-    }
-}
-/// The list of account features to which you would like to subscribe.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SubscribeFinancialConnectionsAccountFeatures {
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SubscribeFinancialConnectionsAccountFeatures {
-    pub fn as_str(&self) -> &str {
-        use SubscribeFinancialConnectionsAccountFeatures::*;
-        match self {
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SubscribeFinancialConnectionsAccountFeatures {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SubscribeFinancialConnectionsAccountFeatures::*;
-        match s {
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscribeFinancialConnectionsAccountFeatures"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SubscribeFinancialConnectionsAccountFeatures {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SubscribeFinancialConnectionsAccountFeatures {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SubscribeFinancialConnectionsAccountFeatures {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SubscribeFinancialConnectionsAccountFeatures))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for SubscribeFinancialConnectionsAccountFeatures {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SubscribeFinancialConnectionsAccountFeatures {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Subscribes to periodic refreshes of data associated with a Financial Connections `Account`.
@@ -699,7 +631,7 @@ impl SubscribeFinancialConnectionsAccount {
     /// Construct a new `SubscribeFinancialConnectionsAccount`.
     pub fn new(
         account: impl Into<stripe_misc::FinancialConnectionsAccountId>,
-        features: impl Into<Vec<SubscribeFinancialConnectionsAccountFeatures>>,
+        features: impl Into<Vec<stripe_shared::FinancialConnectionsAccountSubscriptions>>,
     ) -> Self {
         Self {
             account: account.into(),
@@ -748,7 +680,7 @@ impl StripeRequest for SubscribeFinancialConnectionsAccount {
 struct UnsubscribeFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
-    features: Vec<UnsubscribeFinancialConnectionsAccountFeatures>,
+    features: Vec<stripe_shared::FinancialConnectionsAccountSubscriptions>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UnsubscribeFinancialConnectionsAccountBuilder {
@@ -757,78 +689,10 @@ impl std::fmt::Debug for UnsubscribeFinancialConnectionsAccountBuilder {
     }
 }
 impl UnsubscribeFinancialConnectionsAccountBuilder {
-    fn new(features: impl Into<Vec<UnsubscribeFinancialConnectionsAccountFeatures>>) -> Self {
+    fn new(
+        features: impl Into<Vec<stripe_shared::FinancialConnectionsAccountSubscriptions>>,
+    ) -> Self {
         Self { expand: None, features: features.into() }
-    }
-}
-/// The list of account features from which you would like to unsubscribe.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UnsubscribeFinancialConnectionsAccountFeatures {
-    Transactions,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UnsubscribeFinancialConnectionsAccountFeatures {
-    pub fn as_str(&self) -> &str {
-        use UnsubscribeFinancialConnectionsAccountFeatures::*;
-        match self {
-            Transactions => "transactions",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UnsubscribeFinancialConnectionsAccountFeatures {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UnsubscribeFinancialConnectionsAccountFeatures::*;
-        match s {
-            "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UnsubscribeFinancialConnectionsAccountFeatures"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UnsubscribeFinancialConnectionsAccountFeatures {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UnsubscribeFinancialConnectionsAccountFeatures {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UnsubscribeFinancialConnectionsAccountFeatures {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UnsubscribeFinancialConnectionsAccountFeatures))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UnsubscribeFinancialConnectionsAccountFeatures {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UnsubscribeFinancialConnectionsAccountFeatures {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Unsubscribes from periodic refreshes of data associated with a Financial Connections `Account`.
@@ -849,7 +713,7 @@ impl UnsubscribeFinancialConnectionsAccount {
     /// Construct a new `UnsubscribeFinancialConnectionsAccount`.
     pub fn new(
         account: impl Into<stripe_misc::FinancialConnectionsAccountId>,
-        features: impl Into<Vec<UnsubscribeFinancialConnectionsAccountFeatures>>,
+        features: impl Into<Vec<stripe_shared::FinancialConnectionsAccountSubscriptions>>,
     ) -> Self {
         Self {
             account: account.into(),
@@ -892,3 +756,10 @@ impl StripeRequest for UnsubscribeFinancialConnectionsAccount {
         .form(&self.inner)
     }
 }
+
+/// The list of account features to which you would like to subscribe.
+pub type SubscribeFinancialConnectionsAccountFeatures =
+    stripe_shared::FinancialConnectionsAccountSubscriptions;
+/// The list of account features from which you would like to unsubscribe.
+pub type UnsubscribeFinancialConnectionsAccountFeatures =
+    stripe_shared::FinancialConnectionsAccountSubscriptions;

@@ -4,10 +4,9 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccount {
     /// Account holder type: individual or company.
-    pub account_holder_type:
-        Option<OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType>,
+    pub account_holder_type: Option<stripe_shared::IssuingCardholderType>,
     /// Account type: checkings or savings. Defaults to checking if omitted.
-    pub account_type: Option<OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType>,
+    pub account_type: Option<stripe_shared::PaymentMethodUsBankAccountAccountType>,
     /// Name of the bank associated with the bank account.
     pub bank_name: Option<String>,
     /// Uniquely identifies this particular bank account.
@@ -19,7 +18,7 @@ pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccount {
     pub mandate: Option<stripe_types::Expandable<stripe_shared::Mandate>>,
     /// The network rails used.
     /// See the [docs](https://docs.stripe.com/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
-    pub network: OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork,
+    pub network: stripe_shared::UsBankAccountNetworksSupported,
     /// Routing number of the bank account.
     pub routing_number: Option<String>,
 }
@@ -31,14 +30,13 @@ impl std::fmt::Debug for OutboundPaymentsPaymentMethodDetailsUsBankAccount {
 }
 #[doc(hidden)]
 pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccountBuilder {
-    account_holder_type:
-        Option<Option<OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType>>,
-    account_type: Option<Option<OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType>>,
+    account_holder_type: Option<Option<stripe_shared::IssuingCardholderType>>,
+    account_type: Option<Option<stripe_shared::PaymentMethodUsBankAccountAccountType>>,
     bank_name: Option<Option<String>>,
     fingerprint: Option<Option<String>>,
     last4: Option<Option<String>>,
     mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
-    network: Option<OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork>,
+    network: Option<stripe_shared::UsBankAccountNetworksSupported>,
     routing_number: Option<Option<String>>,
 }
 
@@ -182,295 +180,12 @@ const _: () = {
     }
 };
 /// Account holder type: individual or company.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType {
-    Company,
-    Individual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType {
-    pub fn as_str(&self) -> &str {
-        use OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType =
+    stripe_shared::IssuingCardholderType;
 /// Account type: checkings or savings. Defaults to checking if omitted.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType {
-    Checking,
-    Savings,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType {
-    pub fn as_str(&self) -> &str {
-        use OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType::*;
-        match self {
-            Checking => "checking",
-            Savings => "savings",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType::*;
-        match s {
-            "checking" => Ok(Checking),
-            "savings" => Ok(Savings),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType =
+    stripe_shared::PaymentMethodUsBankAccountAccountType;
 /// The network rails used.
 /// See the [docs](https://docs.stripe.com/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
-    Ach,
-    UsDomesticWire,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
-    pub fn as_str(&self) -> &str {
-        use OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork::*;
-        match self {
-            Ach => "ach",
-            UsDomesticWire => "us_domestic_wire",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork::*;
-        match s {
-            "ach" => Ok(Ach),
-            "us_domestic_wire" => Ok(UsDomesticWire),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork =
+    stripe_shared::UsBankAccountNetworksSupported;

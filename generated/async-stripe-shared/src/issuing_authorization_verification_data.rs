@@ -4,16 +4,16 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorizationVerificationData {
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
-    pub address_line1_check: IssuingAuthorizationVerificationDataAddressLine1Check,
+    pub address_line1_check: stripe_shared::IssuingAuthorizationVerificationDataCvcCheck,
     /// Whether the cardholder provided a postal code and if it matched the cardholder’s `billing.address.postal_code`.
-    pub address_postal_code_check: IssuingAuthorizationVerificationDataAddressPostalCodeCheck,
+    pub address_postal_code_check: stripe_shared::IssuingAuthorizationVerificationDataCvcCheck,
     /// The exemption applied to this authorization.
     pub authentication_exemption:
         Option<stripe_shared::IssuingAuthorizationAuthenticationExemption>,
     /// Whether the cardholder provided a CVC and if it matched Stripe’s record.
-    pub cvc_check: IssuingAuthorizationVerificationDataCvcCheck,
+    pub cvc_check: stripe_shared::IssuingAuthorizationVerificationDataCvcCheck,
     /// Whether the cardholder provided an expiry date and if it matched Stripe’s record.
-    pub expiry_check: IssuingAuthorizationVerificationDataExpiryCheck,
+    pub expiry_check: stripe_shared::IssuingAuthorizationVerificationDataCvcCheck,
     /// The postal code submitted as part of the authorization used for postal code verification.
     pub postal_code: Option<String>,
     /// 3D Secure details.
@@ -27,12 +27,12 @@ impl std::fmt::Debug for IssuingAuthorizationVerificationData {
 }
 #[doc(hidden)]
 pub struct IssuingAuthorizationVerificationDataBuilder {
-    address_line1_check: Option<IssuingAuthorizationVerificationDataAddressLine1Check>,
-    address_postal_code_check: Option<IssuingAuthorizationVerificationDataAddressPostalCodeCheck>,
+    address_line1_check: Option<stripe_shared::IssuingAuthorizationVerificationDataCvcCheck>,
+    address_postal_code_check: Option<stripe_shared::IssuingAuthorizationVerificationDataCvcCheck>,
     authentication_exemption:
         Option<Option<stripe_shared::IssuingAuthorizationAuthenticationExemption>>,
-    cvc_check: Option<IssuingAuthorizationVerificationDataCvcCheck>,
-    expiry_check: Option<IssuingAuthorizationVerificationDataExpiryCheck>,
+    cvc_check: Option<stripe_shared::IssuingAuthorizationVerificationDataCvcCheck>,
+    expiry_check: Option<stripe_shared::IssuingAuthorizationVerificationDataCvcCheck>,
     postal_code: Option<Option<String>>,
     three_d_secure: Option<Option<stripe_shared::IssuingAuthorizationThreeDSecure>>,
 }
@@ -179,383 +179,14 @@ const _: () = {
     }
 };
 /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationVerificationDataAddressLine1Check {
-    Match,
-    Mismatch,
-    NotProvided,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationVerificationDataAddressLine1Check {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationVerificationDataAddressLine1Check::*;
-        match self {
-            Match => "match",
-            Mismatch => "mismatch",
-            NotProvided => "not_provided",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationVerificationDataAddressLine1Check {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationVerificationDataAddressLine1Check::*;
-        match s {
-            "match" => Ok(Match),
-            "mismatch" => Ok(Mismatch),
-            "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationVerificationDataAddressLine1Check"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationVerificationDataAddressLine1Check {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationVerificationDataAddressLine1Check {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationVerificationDataAddressLine1Check {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationVerificationDataAddressLine1Check))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingAuthorizationVerificationDataAddressLine1Check {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationVerificationDataAddressLine1Check {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<IssuingAuthorizationVerificationDataAddressLine1Check>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationVerificationDataAddressLine1Check::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationVerificationDataAddressLine1Check);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataAddressLine1Check {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingAuthorizationVerificationDataAddressLine1Check =
+    stripe_shared::IssuingAuthorizationVerificationDataCvcCheck;
 /// Whether the cardholder provided a postal code and if it matched the cardholder’s `billing.address.postal_code`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    Match,
-    Mismatch,
-    NotProvided,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationVerificationDataAddressPostalCodeCheck::*;
-        match self {
-            Match => "match",
-            Mismatch => "mismatch",
-            NotProvided => "not_provided",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationVerificationDataAddressPostalCodeCheck::*;
-        match s {
-            "match" => Ok(Match),
-            "mismatch" => Ok(Mismatch),
-            "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationVerificationDataAddressPostalCodeCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationVerificationDataAddressPostalCodeCheck))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<IssuingAuthorizationVerificationDataAddressPostalCodeCheck>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationVerificationDataAddressPostalCodeCheck::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    IssuingAuthorizationVerificationDataAddressPostalCodeCheck
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingAuthorizationVerificationDataAddressPostalCodeCheck =
+    stripe_shared::IssuingAuthorizationVerificationDataCvcCheck;
 /// Whether the cardholder provided a CVC and if it matched Stripe’s record.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationVerificationDataCvcCheck {
-    Match,
-    Mismatch,
-    NotProvided,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationVerificationDataCvcCheck {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationVerificationDataCvcCheck::*;
-        match self {
-            Match => "match",
-            Mismatch => "mismatch",
-            NotProvided => "not_provided",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationVerificationDataCvcCheck {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationVerificationDataCvcCheck::*;
-        match s {
-            "match" => Ok(Match),
-            "mismatch" => Ok(Mismatch),
-            "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationVerificationDataCvcCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationVerificationDataCvcCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationVerificationDataCvcCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationVerificationDataCvcCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationVerificationDataCvcCheck))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingAuthorizationVerificationDataCvcCheck {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationVerificationDataCvcCheck {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationVerificationDataCvcCheck> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(IssuingAuthorizationVerificationDataCvcCheck::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationVerificationDataCvcCheck);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataCvcCheck {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingAuthorizationVerificationDataCvcCheck =
+    stripe_shared::IssuingAuthorizationVerificationDataCvcCheck;
 /// Whether the cardholder provided an expiry date and if it matched Stripe’s record.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingAuthorizationVerificationDataExpiryCheck {
-    Match,
-    Mismatch,
-    NotProvided,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingAuthorizationVerificationDataExpiryCheck {
-    pub fn as_str(&self) -> &str {
-        use IssuingAuthorizationVerificationDataExpiryCheck::*;
-        match self {
-            Match => "match",
-            Mismatch => "mismatch",
-            NotProvided => "not_provided",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationVerificationDataExpiryCheck {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationVerificationDataExpiryCheck::*;
-        match s {
-            "match" => Ok(Match),
-            "mismatch" => Ok(Mismatch),
-            "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationVerificationDataExpiryCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingAuthorizationVerificationDataExpiryCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingAuthorizationVerificationDataExpiryCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingAuthorizationVerificationDataExpiryCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingAuthorizationVerificationDataExpiryCheck))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingAuthorizationVerificationDataExpiryCheck {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingAuthorizationVerificationDataExpiryCheck {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationVerificationDataExpiryCheck> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(IssuingAuthorizationVerificationDataExpiryCheck::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationVerificationDataExpiryCheck);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataExpiryCheck {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingAuthorizationVerificationDataExpiryCheck =
+    stripe_shared::IssuingAuthorizationVerificationDataCvcCheck;

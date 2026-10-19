@@ -52,7 +52,7 @@ impl StripeRequest for DeleteTerminalReader {
 #[derive(serde::Serialize)]
 struct ListTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    device_type: Option<stripe_terminal::TerminalReaderDeviceType>,
+    device_type: Option<stripe_shared::DeviceType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -66,7 +66,7 @@ struct ListTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_terminal::TerminalReaderStatus>,
+    status: Option<stripe_shared::TerminalReaderStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListTerminalReaderBuilder {
@@ -107,10 +107,7 @@ impl ListTerminalReader {
         Self { inner: ListTerminalReaderBuilder::new() }
     }
     /// Filters readers by device type
-    pub fn device_type(
-        mut self,
-        device_type: impl Into<stripe_terminal::TerminalReaderDeviceType>,
-    ) -> Self {
+    pub fn device_type(mut self, device_type: impl Into<stripe_shared::DeviceType>) -> Self {
         self.inner.device_type = Some(device_type.into());
         self
     }
@@ -150,7 +147,7 @@ impl ListTerminalReader {
         self
     }
     /// A status filter to filter readers to only offline or online readers
-    pub fn status(mut self, status: impl Into<stripe_terminal::TerminalReaderStatus>) -> Self {
+    pub fn status(mut self, status: impl Into<stripe_shared::TerminalReaderStatus>) -> Self {
         self.inner.status = Some(status.into());
         self
     }
@@ -832,7 +829,7 @@ pub struct CollectInputsTerminalReaderInputs {
     pub toggles: Option<Vec<CollectInputsTerminalReaderInputsToggles>>,
     /// The type of input to collect
     #[serde(rename = "type")]
-    pub type_: CollectInputsTerminalReaderInputsType,
+    pub type_: stripe_shared::CollectInputsTerminalReaderInputsType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CollectInputsTerminalReaderInputs {
@@ -843,7 +840,7 @@ impl std::fmt::Debug for CollectInputsTerminalReaderInputs {
 impl CollectInputsTerminalReaderInputs {
     pub fn new(
         custom_text: impl Into<CollectInputsTerminalReaderInputsCustomText>,
-        type_: impl Into<CollectInputsTerminalReaderInputsType>,
+        type_: impl Into<stripe_shared::CollectInputsTerminalReaderInputsType>,
     ) -> Self {
         Self {
             custom_text: custom_text.into(),
@@ -910,7 +907,7 @@ pub struct CollectInputsTerminalReaderInputsSelectionChoices {
     pub id: String,
     /// The style of the button which will be shown for this choice. Can be `primary` or `secondary`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub style: Option<CollectInputsTerminalReaderInputsSelectionChoicesStyle>,
+    pub style: Option<stripe_shared::Style>,
     /// The text which will be shown on the button for this choice
     pub text: String,
 }
@@ -925,79 +922,6 @@ impl CollectInputsTerminalReaderInputsSelectionChoices {
         Self { id: id.into(), style: None, text: text.into() }
     }
 }
-/// The style of the button which will be shown for this choice. Can be `primary` or `secondary`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CollectInputsTerminalReaderInputsSelectionChoicesStyle {
-    Primary,
-    Secondary,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CollectInputsTerminalReaderInputsSelectionChoicesStyle {
-    pub fn as_str(&self) -> &str {
-        use CollectInputsTerminalReaderInputsSelectionChoicesStyle::*;
-        match self {
-            Primary => "primary",
-            Secondary => "secondary",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CollectInputsTerminalReaderInputsSelectionChoicesStyle::*;
-        match s {
-            "primary" => Ok(Primary),
-            "secondary" => Ok(Secondary),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CollectInputsTerminalReaderInputsSelectionChoicesStyle"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CollectInputsTerminalReaderInputsSelectionChoicesStyle))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// List of toggles to be displayed and customization for the toggles
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1005,7 +929,7 @@ impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsSelection
 pub struct CollectInputsTerminalReaderInputsToggles {
     /// The default value of the toggle. Can be `enabled` or `disabled`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_value: Option<CollectInputsTerminalReaderInputsTogglesDefaultValue>,
+    pub default_value: Option<stripe_shared::BalanceSettingsResourcePayoutsStatus>,
     /// The description which will be displayed for the toggle.
     /// Maximum 50 characters.
     /// At least one of title or description must be provided.
@@ -1031,163 +955,6 @@ impl CollectInputsTerminalReaderInputsToggles {
 impl Default for CollectInputsTerminalReaderInputsToggles {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The default value of the toggle. Can be `enabled` or `disabled`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CollectInputsTerminalReaderInputsTogglesDefaultValue {
-    Disabled,
-    Enabled,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CollectInputsTerminalReaderInputsTogglesDefaultValue {
-    pub fn as_str(&self) -> &str {
-        use CollectInputsTerminalReaderInputsTogglesDefaultValue::*;
-        match self {
-            Disabled => "disabled",
-            Enabled => "enabled",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CollectInputsTerminalReaderInputsTogglesDefaultValue {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CollectInputsTerminalReaderInputsTogglesDefaultValue::*;
-        match s {
-            "disabled" => Ok(Disabled),
-            "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CollectInputsTerminalReaderInputsTogglesDefaultValue"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CollectInputsTerminalReaderInputsTogglesDefaultValue {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CollectInputsTerminalReaderInputsTogglesDefaultValue {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CollectInputsTerminalReaderInputsTogglesDefaultValue {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CollectInputsTerminalReaderInputsTogglesDefaultValue))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CollectInputsTerminalReaderInputsTogglesDefaultValue {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsTogglesDefaultValue {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The type of input to collect
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CollectInputsTerminalReaderInputsType {
-    Email,
-    Numeric,
-    Phone,
-    Selection,
-    Signature,
-    Text,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CollectInputsTerminalReaderInputsType {
-    pub fn as_str(&self) -> &str {
-        use CollectInputsTerminalReaderInputsType::*;
-        match self {
-            Email => "email",
-            Numeric => "numeric",
-            Phone => "phone",
-            Selection => "selection",
-            Signature => "signature",
-            Text => "text",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CollectInputsTerminalReaderInputsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CollectInputsTerminalReaderInputsType::*;
-        match s {
-            "email" => Ok(Email),
-            "numeric" => Ok(Numeric),
-            "phone" => Ok(Phone),
-            "selection" => Ok(Selection),
-            "signature" => Ok(Signature),
-            "text" => Ok(Text),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CollectInputsTerminalReaderInputsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CollectInputsTerminalReaderInputsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CollectInputsTerminalReaderInputsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CollectInputsTerminalReaderInputsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CollectInputsTerminalReaderInputsType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CollectInputsTerminalReaderInputsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Initiates an [input collection flow](https://stripe.com/docs/terminal/features/collect-inputs) on a Reader to display input forms and collect information from your customers.
@@ -1291,7 +1058,7 @@ pub struct CollectPaymentMethodTerminalReaderCollectConfig {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allow_redisplay: Option<CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay>,
+    pub allow_redisplay: Option<stripe_shared::CardAllowRedisplay>,
     /// Enables cancel button on transaction screens.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_customer_cancellation: Option<bool>,
@@ -1321,85 +1088,6 @@ impl CollectPaymentMethodTerminalReaderCollectConfig {
 impl Default for CollectPaymentMethodTerminalReaderCollectConfig {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
-/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
-    Always,
-    Limited,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
-    pub fn as_str(&self) -> &str {
-        use CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay::*;
-        match self {
-            Always => "always",
-            Limited => "limited",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay::*;
-        match s {
-            "always" => Ok(Always),
-            "limited" => Ok(Limited),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Initiates a payment flow on a Reader and updates the PaymentIntent with card details before manual confirmation.
@@ -1618,7 +1306,7 @@ pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allow_redisplay: Option<ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay>,
+    pub allow_redisplay: Option<stripe_shared::CardAllowRedisplay>,
     /// Enables cancel button on transaction screens.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_customer_cancellation: Option<bool>,
@@ -1653,85 +1341,6 @@ impl ProcessPaymentIntentTerminalReaderProcessConfig {
 impl Default for ProcessPaymentIntentTerminalReaderProcessConfig {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
-/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
-    Always,
-    Limited,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
-    pub fn as_str(&self) -> &str {
-        use ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay::*;
-        match self {
-            Always => "always",
-            Limited => "limited",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay::*;
-        match s {
-            "always" => Ok(Always),
-            "limited" => Ok(Limited),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Initiates a payment flow on a Reader.
@@ -1808,7 +1417,7 @@ impl StripeRequest for ProcessPaymentIntentTerminalReader {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 struct ProcessSetupIntentTerminalReaderBuilder {
-    allow_redisplay: ProcessSetupIntentTerminalReaderAllowRedisplay,
+    allow_redisplay: stripe_shared::CardAllowRedisplay,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1823,7 +1432,7 @@ impl std::fmt::Debug for ProcessSetupIntentTerminalReaderBuilder {
 }
 impl ProcessSetupIntentTerminalReaderBuilder {
     fn new(
-        allow_redisplay: impl Into<ProcessSetupIntentTerminalReaderAllowRedisplay>,
+        allow_redisplay: impl Into<stripe_shared::CardAllowRedisplay>,
         setup_intent: impl Into<String>,
     ) -> Self {
         Self {
@@ -1832,83 +1441,6 @@ impl ProcessSetupIntentTerminalReaderBuilder {
             process_config: None,
             setup_intent: setup_intent.into(),
         }
-    }
-}
-/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
-/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ProcessSetupIntentTerminalReaderAllowRedisplay {
-    Always,
-    Limited,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ProcessSetupIntentTerminalReaderAllowRedisplay {
-    pub fn as_str(&self) -> &str {
-        use ProcessSetupIntentTerminalReaderAllowRedisplay::*;
-        match self {
-            Always => "always",
-            Limited => "limited",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ProcessSetupIntentTerminalReaderAllowRedisplay {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ProcessSetupIntentTerminalReaderAllowRedisplay::*;
-        match s {
-            "always" => Ok(Always),
-            "limited" => Ok(Limited),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ProcessSetupIntentTerminalReaderAllowRedisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ProcessSetupIntentTerminalReaderAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ProcessSetupIntentTerminalReaderAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ProcessSetupIntentTerminalReaderAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ProcessSetupIntentTerminalReaderAllowRedisplay))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ProcessSetupIntentTerminalReaderAllowRedisplay {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ProcessSetupIntentTerminalReaderAllowRedisplay {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configuration overrides for this setup, such as MOTO and customer cancellation settings.
@@ -1955,7 +1487,7 @@ impl ProcessSetupIntentTerminalReader {
     /// Construct a new `ProcessSetupIntentTerminalReader`.
     pub fn new(
         reader: impl Into<stripe_terminal::TerminalReaderId>,
-        allow_redisplay: impl Into<ProcessSetupIntentTerminalReaderAllowRedisplay>,
+        allow_redisplay: impl Into<stripe_shared::CardAllowRedisplay>,
         setup_intent: impl Into<String>,
     ) -> Self {
         Self {
@@ -2190,7 +1722,7 @@ struct SetReaderDisplayTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(rename = "type")]
-    type_: SetReaderDisplayTerminalReaderType,
+    type_: stripe_shared::SetReaderDisplayTerminalReaderType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for SetReaderDisplayTerminalReaderBuilder {
@@ -2199,7 +1731,7 @@ impl std::fmt::Debug for SetReaderDisplayTerminalReaderBuilder {
     }
 }
 impl SetReaderDisplayTerminalReaderBuilder {
-    fn new(type_: impl Into<SetReaderDisplayTerminalReaderType>) -> Self {
+    fn new(type_: impl Into<stripe_shared::SetReaderDisplayTerminalReaderType>) -> Self {
         Self { cart: None, expand: None, type_: type_.into() }
     }
 }
@@ -2266,75 +1798,6 @@ impl SetReaderDisplayTerminalReaderCartLineItems {
         Self { amount: amount.into(), description: description.into(), quantity: quantity.into() }
     }
 }
-/// Type of information to display. Only `cart` is currently supported.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SetReaderDisplayTerminalReaderType {
-    Cart,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SetReaderDisplayTerminalReaderType {
-    pub fn as_str(&self) -> &str {
-        use SetReaderDisplayTerminalReaderType::*;
-        match self {
-            Cart => "cart",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SetReaderDisplayTerminalReaderType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SetReaderDisplayTerminalReaderType::*;
-        match s {
-            "cart" => Ok(Cart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetReaderDisplayTerminalReaderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SetReaderDisplayTerminalReaderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SetReaderDisplayTerminalReaderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SetReaderDisplayTerminalReaderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SetReaderDisplayTerminalReaderType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for SetReaderDisplayTerminalReaderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SetReaderDisplayTerminalReaderType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Sets the reader display to show [cart details](https://stripe.com/docs/terminal/features/display).
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -2353,7 +1816,7 @@ impl SetReaderDisplayTerminalReader {
     /// Construct a new `SetReaderDisplayTerminalReader`.
     pub fn new(
         reader: impl Into<stripe_terminal::TerminalReaderId>,
-        type_: impl Into<SetReaderDisplayTerminalReaderType>,
+        type_: impl Into<stripe_shared::SetReaderDisplayTerminalReaderType>,
     ) -> Self {
         Self {
             reader: reader.into(),
@@ -2939,3 +2402,32 @@ impl Default for TippingConfig {
         Self::new()
     }
 }
+/// Filters readers by device type
+pub type ListTerminalReaderDeviceType = stripe_shared::DeviceType;
+/// A status filter to filter readers to only offline or online readers
+pub type ListTerminalReaderStatus = stripe_shared::TerminalReaderStatus;
+/// The style of the button which will be shown for this choice. Can be `primary` or `secondary`.
+pub type CollectInputsTerminalReaderInputsSelectionChoicesStyle = stripe_shared::Style;
+/// The default value of the toggle. Can be `enabled` or `disabled`.
+pub type CollectInputsTerminalReaderInputsTogglesDefaultValue =
+    stripe_shared::BalanceSettingsResourcePayoutsStatus;
+/// The type of input to collect
+pub type CollectInputsTerminalReaderInputsType =
+    stripe_shared::CollectInputsTerminalReaderInputsType;
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+pub type CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay =
+    stripe_shared::CardAllowRedisplay;
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+pub type ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay =
+    stripe_shared::CardAllowRedisplay;
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+pub type ProcessSetupIntentTerminalReaderAllowRedisplay = stripe_shared::CardAllowRedisplay;
+/// Type of information to display. Only `cart` is currently supported.
+pub type SetReaderDisplayTerminalReaderType = stripe_shared::SetReaderDisplayTerminalReaderType;
+/// Tipping configuration for this transaction.
+pub type CollectPaymentMethodTerminalReaderCollectConfigTipping = TippingConfig;
+/// Tipping configuration for this transaction.
+pub type ProcessPaymentIntentTerminalReaderProcessConfigTipping = TippingConfig;

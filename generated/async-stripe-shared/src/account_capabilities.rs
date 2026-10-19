@@ -4,137 +4,137 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountCapabilities {
     /// The status of the Canadian pre-authorized debits payments capability of the account, or whether the account can directly process Canadian pre-authorized debits charges.
-    pub acss_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub acss_debit_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Affirm capability of the account, or whether the account can directly process Affirm charges.
-    pub affirm_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub affirm_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Afterpay Clearpay capability of the account, or whether the account can directly process Afterpay Clearpay charges.
-    pub afterpay_clearpay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub afterpay_clearpay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Alma capability of the account, or whether the account can directly process Alma payments.
-    pub alma_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub alma_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the AmazonPay capability of the account, or whether the account can directly process AmazonPay payments.
-    pub amazon_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub amazon_pay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the `app_distribution` capability of the account, or whether the platform can distribute apps to other accounts.
-    pub app_distribution: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub app_distribution: Option<stripe_shared::MandateStatus>,
     /// The status of the BECS Direct Debit (AU) payments capability of the account, or whether the account can directly process BECS Direct Debit (AU) charges.
-    pub au_becs_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub au_becs_debit_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Bacs Direct Debits payments capability of the account, or whether the account can directly process Bacs Direct Debits charges.
-    pub bacs_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub bacs_debit_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Bancontact payments capability of the account, or whether the account can directly process Bancontact charges.
-    pub bancontact_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub bancontact_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the customer_balance payments capability of the account, or whether the account can directly process customer_balance charges.
-    pub bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub bank_transfer_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Billie capability of the account, or whether the account can directly process Billie payments.
-    pub billie_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub billie_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Bizum capability of the account, or whether the account can directly process Bizum payments.
-    pub bizum_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub bizum_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the blik payments capability of the account, or whether the account can directly process blik charges.
-    pub blik_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub blik_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the boleto payments capability of the account, or whether the account can directly process boleto charges.
-    pub boleto_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub boleto_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the card issuing capability of the account, or whether you can use Issuing to distribute funds on cards.
-    pub card_issuing: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub card_issuing: Option<stripe_shared::MandateStatus>,
     /// The status of the card payments capability of the account, or whether the account can directly process credit and debit card charges.
-    pub card_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub card_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Cartes Bancaires payments capability of the account, or whether the account can directly process Cartes Bancaires card charges in EUR currency.
-    pub cartes_bancaires_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub cartes_bancaires_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Cash App Pay capability of the account, or whether the account can directly process Cash App Pay payments.
-    pub cashapp_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub cashapp_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Crypto capability of the account, or whether the account can directly process Crypto payments.
-    pub crypto_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub crypto_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the EPS payments capability of the account, or whether the account can directly process EPS charges.
-    pub eps_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub eps_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the FPX payments capability of the account, or whether the account can directly process FPX charges.
-    pub fpx_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub fpx_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the GB customer_balance payments (GBP currency) capability of the account, or whether the account can directly process GB customer_balance charges.
-    pub gb_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub gb_bank_transfer_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the giropay payments capability of the account, or whether the account can directly process giropay charges.
-    pub giropay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub giropay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the GrabPay payments capability of the account, or whether the account can directly process GrabPay charges.
-    pub grabpay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub grabpay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the iDEAL payments capability of the account, or whether the account can directly process iDEAL charges.
-    pub ideal_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub ideal_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the india_international_payments capability of the account, or whether the account can process international charges (non INR) in India.
-    pub india_international_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub india_international_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the JCB payments capability of the account, or whether the account (Japan only) can directly process JCB credit card charges in JPY currency.
-    pub jcb_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub jcb_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Japanese customer_balance payments (JPY currency) capability of the account, or whether the account can directly process Japanese customer_balance charges.
-    pub jp_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub jp_bank_transfer_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the KakaoPay capability of the account, or whether the account can directly process KakaoPay payments.
-    pub kakao_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub kakao_pay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Klarna payments capability of the account, or whether the account can directly process Klarna charges.
-    pub klarna_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub klarna_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the konbini payments capability of the account, or whether the account can directly process konbini charges.
-    pub konbini_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub konbini_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the KrCard capability of the account, or whether the account can directly process KrCard payments.
-    pub kr_card_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub kr_card_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the legacy payments capability of the account.
-    pub legacy_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub legacy_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the link_payments capability of the account, or whether the account can directly process Link charges.
-    pub link_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub link_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the MB WAY payments capability of the account, or whether the account can directly process MB WAY charges.
-    pub mb_way_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub mb_way_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the MobilePay capability of the account, or whether the account can directly process MobilePay charges.
-    pub mobilepay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub mobilepay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Multibanco payments capability of the account, or whether the account can directly process Multibanco charges.
-    pub multibanco_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub multibanco_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Mexican customer_balance payments (MXN currency) capability of the account, or whether the account can directly process Mexican customer_balance charges.
-    pub mx_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub mx_bank_transfer_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the NaverPay capability of the account, or whether the account can directly process NaverPay payments.
-    pub naver_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub naver_pay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the New Zealand BECS Direct Debit payments capability of the account, or whether the account can directly process New Zealand BECS Direct Debit charges.
-    pub nz_bank_account_becs_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub nz_bank_account_becs_debit_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the OXXO payments capability of the account, or whether the account can directly process OXXO charges.
-    pub oxxo_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub oxxo_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the P24 payments capability of the account, or whether the account can directly process P24 charges.
-    pub p24_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub p24_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the pay_by_bank payments capability of the account, or whether the account can directly process pay_by_bank charges.
-    pub pay_by_bank_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub pay_by_bank_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Payco capability of the account, or whether the account can directly process Payco payments.
-    pub payco_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub payco_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the paynow payments capability of the account, or whether the account can directly process paynow charges.
-    pub paynow_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub paynow_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the PayTo capability of the account, or whether the account can directly process PayTo charges.
-    pub payto_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub payto_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the pix payments capability of the account, or whether the account can directly process pix charges.
-    pub pix_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub pix_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the promptpay payments capability of the account, or whether the account can directly process promptpay charges.
-    pub promptpay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub promptpay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the RevolutPay capability of the account, or whether the account can directly process RevolutPay payments.
-    pub revolut_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub revolut_pay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the SamsungPay capability of the account, or whether the account can directly process SamsungPay payments.
-    pub samsung_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub samsung_pay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Satispay capability of the account, or whether the account can directly process Satispay payments.
-    pub satispay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub satispay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Scalapay capability of the account, or whether the account can directly process Scalapay payments.
-    pub scalapay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub scalapay_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the SEPA customer_balance payments (EUR currency) capability of the account, or whether the account can directly process SEPA customer_balance charges.
-    pub sepa_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub sepa_bank_transfer_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the SEPA Direct Debits payments capability of the account, or whether the account can directly process SEPA Direct Debits charges.
-    pub sepa_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub sepa_debit_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Sofort payments capability of the account, or whether the account can directly process Sofort charges.
-    pub sofort_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub sofort_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Sunbit capability of the account, or whether the account can directly process Sunbit payments.
-    pub sunbit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub sunbit_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Swish capability of the account, or whether the account can directly process Swish payments.
-    pub swish_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub swish_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the tax reporting 1099-K (US) capability of the account.
-    pub tax_reporting_us_1099_k: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub tax_reporting_us_1099_k: Option<stripe_shared::MandateStatus>,
     /// The status of the tax reporting 1099-MISC (US) capability of the account.
-    pub tax_reporting_us_1099_misc: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub tax_reporting_us_1099_misc: Option<stripe_shared::MandateStatus>,
     /// The status of the transfers capability of the account, or whether your platform can transfer funds to the account.
-    pub transfers: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub transfers: Option<stripe_shared::MandateStatus>,
     /// The status of the banking capability, or whether the account can have bank accounts.
-    pub treasury: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub treasury: Option<stripe_shared::MandateStatus>,
     /// The status of the TWINT capability of the account, or whether the account can directly process TWINT charges.
-    pub twint_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub twint_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the upi payments capability of the account, or whether the account can directly process upi charges.
-    pub upi_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub upi_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the US bank account ACH payments capability of the account, or whether the account can directly process US bank account charges.
-    pub us_bank_account_ach_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub us_bank_account_ach_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the US customer_balance payments (USD currency) capability of the account, or whether the account can directly process US customer_balance charges.
-    pub us_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub us_bank_transfer_payments: Option<stripe_shared::MandateStatus>,
     /// The status of the Zip capability of the account, or whether the account can directly process Zip charges.
-    pub zip_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pub zip_payments: Option<stripe_shared::MandateStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for AccountCapabilities {
@@ -144,72 +144,72 @@ impl std::fmt::Debug for AccountCapabilities {
 }
 #[doc(hidden)]
 pub struct AccountCapabilitiesBuilder {
-    acss_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    affirm_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    afterpay_clearpay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    alma_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    amazon_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    app_distribution: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    au_becs_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    bacs_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    bancontact_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    billie_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    bizum_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    blik_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    boleto_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    card_issuing: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    card_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    cartes_bancaires_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    cashapp_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    crypto_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    eps_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    fpx_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    gb_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    giropay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    grabpay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    ideal_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    india_international_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    jcb_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    jp_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    kakao_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    klarna_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    konbini_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    kr_card_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    legacy_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    link_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    mb_way_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    mobilepay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    multibanco_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    mx_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    naver_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    nz_bank_account_becs_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    oxxo_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    p24_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    pay_by_bank_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    payco_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    paynow_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    payto_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    pix_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    promptpay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    revolut_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    samsung_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    satispay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    scalapay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    sepa_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    sepa_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    sofort_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    sunbit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    swish_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    tax_reporting_us_1099_k: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    tax_reporting_us_1099_misc: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    transfers: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    treasury: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    twint_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    upi_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    us_bank_account_ach_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    us_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    zip_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    acss_debit_payments: Option<Option<stripe_shared::MandateStatus>>,
+    affirm_payments: Option<Option<stripe_shared::MandateStatus>>,
+    afterpay_clearpay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    alma_payments: Option<Option<stripe_shared::MandateStatus>>,
+    amazon_pay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    app_distribution: Option<Option<stripe_shared::MandateStatus>>,
+    au_becs_debit_payments: Option<Option<stripe_shared::MandateStatus>>,
+    bacs_debit_payments: Option<Option<stripe_shared::MandateStatus>>,
+    bancontact_payments: Option<Option<stripe_shared::MandateStatus>>,
+    bank_transfer_payments: Option<Option<stripe_shared::MandateStatus>>,
+    billie_payments: Option<Option<stripe_shared::MandateStatus>>,
+    bizum_payments: Option<Option<stripe_shared::MandateStatus>>,
+    blik_payments: Option<Option<stripe_shared::MandateStatus>>,
+    boleto_payments: Option<Option<stripe_shared::MandateStatus>>,
+    card_issuing: Option<Option<stripe_shared::MandateStatus>>,
+    card_payments: Option<Option<stripe_shared::MandateStatus>>,
+    cartes_bancaires_payments: Option<Option<stripe_shared::MandateStatus>>,
+    cashapp_payments: Option<Option<stripe_shared::MandateStatus>>,
+    crypto_payments: Option<Option<stripe_shared::MandateStatus>>,
+    eps_payments: Option<Option<stripe_shared::MandateStatus>>,
+    fpx_payments: Option<Option<stripe_shared::MandateStatus>>,
+    gb_bank_transfer_payments: Option<Option<stripe_shared::MandateStatus>>,
+    giropay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    grabpay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    ideal_payments: Option<Option<stripe_shared::MandateStatus>>,
+    india_international_payments: Option<Option<stripe_shared::MandateStatus>>,
+    jcb_payments: Option<Option<stripe_shared::MandateStatus>>,
+    jp_bank_transfer_payments: Option<Option<stripe_shared::MandateStatus>>,
+    kakao_pay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    klarna_payments: Option<Option<stripe_shared::MandateStatus>>,
+    konbini_payments: Option<Option<stripe_shared::MandateStatus>>,
+    kr_card_payments: Option<Option<stripe_shared::MandateStatus>>,
+    legacy_payments: Option<Option<stripe_shared::MandateStatus>>,
+    link_payments: Option<Option<stripe_shared::MandateStatus>>,
+    mb_way_payments: Option<Option<stripe_shared::MandateStatus>>,
+    mobilepay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    multibanco_payments: Option<Option<stripe_shared::MandateStatus>>,
+    mx_bank_transfer_payments: Option<Option<stripe_shared::MandateStatus>>,
+    naver_pay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    nz_bank_account_becs_debit_payments: Option<Option<stripe_shared::MandateStatus>>,
+    oxxo_payments: Option<Option<stripe_shared::MandateStatus>>,
+    p24_payments: Option<Option<stripe_shared::MandateStatus>>,
+    pay_by_bank_payments: Option<Option<stripe_shared::MandateStatus>>,
+    payco_payments: Option<Option<stripe_shared::MandateStatus>>,
+    paynow_payments: Option<Option<stripe_shared::MandateStatus>>,
+    payto_payments: Option<Option<stripe_shared::MandateStatus>>,
+    pix_payments: Option<Option<stripe_shared::MandateStatus>>,
+    promptpay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    revolut_pay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    samsung_pay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    satispay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    scalapay_payments: Option<Option<stripe_shared::MandateStatus>>,
+    sepa_bank_transfer_payments: Option<Option<stripe_shared::MandateStatus>>,
+    sepa_debit_payments: Option<Option<stripe_shared::MandateStatus>>,
+    sofort_payments: Option<Option<stripe_shared::MandateStatus>>,
+    sunbit_payments: Option<Option<stripe_shared::MandateStatus>>,
+    swish_payments: Option<Option<stripe_shared::MandateStatus>>,
+    tax_reporting_us_1099_k: Option<Option<stripe_shared::MandateStatus>>,
+    tax_reporting_us_1099_misc: Option<Option<stripe_shared::MandateStatus>>,
+    transfers: Option<Option<stripe_shared::MandateStatus>>,
+    treasury: Option<Option<stripe_shared::MandateStatus>>,
+    twint_payments: Option<Option<stripe_shared::MandateStatus>>,
+    upi_payments: Option<Option<stripe_shared::MandateStatus>>,
+    us_bank_account_ach_payments: Option<Option<stripe_shared::MandateStatus>>,
+    us_bank_transfer_payments: Option<Option<stripe_shared::MandateStatus>>,
+    zip_payments: Option<Option<stripe_shared::MandateStatus>>,
 }
 
 #[allow(
@@ -749,89 +749,136 @@ const _: () = {
         }
     }
 };
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum AccountCapabilitiesStatus {
-    Active,
-    Inactive,
-    Pending,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl AccountCapabilitiesStatus {
-    pub fn as_str(&self) -> &str {
-        use AccountCapabilitiesStatus::*;
-        match self {
-            Active => "active",
-            Inactive => "inactive",
-            Pending => "pending",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for AccountCapabilitiesStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountCapabilitiesStatus::*;
-        match s {
-            "active" => Ok(Active),
-            "inactive" => Ok(Inactive),
-            "pending" => Ok(Pending),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AccountCapabilitiesStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for AccountCapabilitiesStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for AccountCapabilitiesStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for AccountCapabilitiesStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(AccountCapabilitiesStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for AccountCapabilitiesStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for AccountCapabilitiesStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<AccountCapabilitiesStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountCapabilitiesStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(AccountCapabilitiesStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for AccountCapabilitiesStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// The status of the Canadian pre-authorized debits payments capability of the account, or whether the account can directly process Canadian pre-authorized debits charges.
+pub type AccountCapabilitiesAcssDebitPayments = stripe_shared::MandateStatus;
+/// The status of the Affirm capability of the account, or whether the account can directly process Affirm charges.
+pub type AccountCapabilitiesAffirmPayments = stripe_shared::MandateStatus;
+/// The status of the Afterpay Clearpay capability of the account, or whether the account can directly process Afterpay Clearpay charges.
+pub type AccountCapabilitiesAfterpayClearpayPayments = stripe_shared::MandateStatus;
+/// The status of the Alma capability of the account, or whether the account can directly process Alma payments.
+pub type AccountCapabilitiesAlmaPayments = stripe_shared::MandateStatus;
+/// The status of the AmazonPay capability of the account, or whether the account can directly process AmazonPay payments.
+pub type AccountCapabilitiesAmazonPayPayments = stripe_shared::MandateStatus;
+/// The status of the `app_distribution` capability of the account, or whether the platform can distribute apps to other accounts.
+pub type AccountCapabilitiesAppDistribution = stripe_shared::MandateStatus;
+/// The status of the BECS Direct Debit (AU) payments capability of the account, or whether the account can directly process BECS Direct Debit (AU) charges.
+pub type AccountCapabilitiesAuBecsDebitPayments = stripe_shared::MandateStatus;
+/// The status of the Bacs Direct Debits payments capability of the account, or whether the account can directly process Bacs Direct Debits charges.
+pub type AccountCapabilitiesBacsDebitPayments = stripe_shared::MandateStatus;
+/// The status of the Bancontact payments capability of the account, or whether the account can directly process Bancontact charges.
+pub type AccountCapabilitiesBancontactPayments = stripe_shared::MandateStatus;
+/// The status of the customer_balance payments capability of the account, or whether the account can directly process customer_balance charges.
+pub type AccountCapabilitiesBankTransferPayments = stripe_shared::MandateStatus;
+/// The status of the Billie capability of the account, or whether the account can directly process Billie payments.
+pub type AccountCapabilitiesBilliePayments = stripe_shared::MandateStatus;
+/// The status of the Bizum capability of the account, or whether the account can directly process Bizum payments.
+pub type AccountCapabilitiesBizumPayments = stripe_shared::MandateStatus;
+/// The status of the blik payments capability of the account, or whether the account can directly process blik charges.
+pub type AccountCapabilitiesBlikPayments = stripe_shared::MandateStatus;
+/// The status of the boleto payments capability of the account, or whether the account can directly process boleto charges.
+pub type AccountCapabilitiesBoletoPayments = stripe_shared::MandateStatus;
+/// The status of the card issuing capability of the account, or whether you can use Issuing to distribute funds on cards.
+pub type AccountCapabilitiesCardIssuing = stripe_shared::MandateStatus;
+/// The status of the card payments capability of the account, or whether the account can directly process credit and debit card charges.
+pub type AccountCapabilitiesCardPayments = stripe_shared::MandateStatus;
+/// The status of the Cartes Bancaires payments capability of the account, or whether the account can directly process Cartes Bancaires card charges in EUR currency.
+pub type AccountCapabilitiesCartesBancairesPayments = stripe_shared::MandateStatus;
+/// The status of the Cash App Pay capability of the account, or whether the account can directly process Cash App Pay payments.
+pub type AccountCapabilitiesCashappPayments = stripe_shared::MandateStatus;
+/// The status of the Crypto capability of the account, or whether the account can directly process Crypto payments.
+pub type AccountCapabilitiesCryptoPayments = stripe_shared::MandateStatus;
+/// The status of the EPS payments capability of the account, or whether the account can directly process EPS charges.
+pub type AccountCapabilitiesEpsPayments = stripe_shared::MandateStatus;
+/// The status of the FPX payments capability of the account, or whether the account can directly process FPX charges.
+pub type AccountCapabilitiesFpxPayments = stripe_shared::MandateStatus;
+/// The status of the GB customer_balance payments (GBP currency) capability of the account, or whether the account can directly process GB customer_balance charges.
+pub type AccountCapabilitiesGbBankTransferPayments = stripe_shared::MandateStatus;
+/// The status of the giropay payments capability of the account, or whether the account can directly process giropay charges.
+pub type AccountCapabilitiesGiropayPayments = stripe_shared::MandateStatus;
+/// The status of the GrabPay payments capability of the account, or whether the account can directly process GrabPay charges.
+pub type AccountCapabilitiesGrabpayPayments = stripe_shared::MandateStatus;
+/// The status of the iDEAL payments capability of the account, or whether the account can directly process iDEAL charges.
+pub type AccountCapabilitiesIdealPayments = stripe_shared::MandateStatus;
+/// The status of the india_international_payments capability of the account, or whether the account can process international charges (non INR) in India.
+pub type AccountCapabilitiesIndiaInternationalPayments = stripe_shared::MandateStatus;
+/// The status of the JCB payments capability of the account, or whether the account (Japan only) can directly process JCB credit card charges in JPY currency.
+pub type AccountCapabilitiesJcbPayments = stripe_shared::MandateStatus;
+/// The status of the Japanese customer_balance payments (JPY currency) capability of the account, or whether the account can directly process Japanese customer_balance charges.
+pub type AccountCapabilitiesJpBankTransferPayments = stripe_shared::MandateStatus;
+/// The status of the KakaoPay capability of the account, or whether the account can directly process KakaoPay payments.
+pub type AccountCapabilitiesKakaoPayPayments = stripe_shared::MandateStatus;
+/// The status of the Klarna payments capability of the account, or whether the account can directly process Klarna charges.
+pub type AccountCapabilitiesKlarnaPayments = stripe_shared::MandateStatus;
+/// The status of the konbini payments capability of the account, or whether the account can directly process konbini charges.
+pub type AccountCapabilitiesKonbiniPayments = stripe_shared::MandateStatus;
+/// The status of the KrCard capability of the account, or whether the account can directly process KrCard payments.
+pub type AccountCapabilitiesKrCardPayments = stripe_shared::MandateStatus;
+/// The status of the legacy payments capability of the account.
+pub type AccountCapabilitiesLegacyPayments = stripe_shared::MandateStatus;
+/// The status of the link_payments capability of the account, or whether the account can directly process Link charges.
+pub type AccountCapabilitiesLinkPayments = stripe_shared::MandateStatus;
+/// The status of the MB WAY payments capability of the account, or whether the account can directly process MB WAY charges.
+pub type AccountCapabilitiesMbWayPayments = stripe_shared::MandateStatus;
+/// The status of the MobilePay capability of the account, or whether the account can directly process MobilePay charges.
+pub type AccountCapabilitiesMobilepayPayments = stripe_shared::MandateStatus;
+/// The status of the Multibanco payments capability of the account, or whether the account can directly process Multibanco charges.
+pub type AccountCapabilitiesMultibancoPayments = stripe_shared::MandateStatus;
+/// The status of the Mexican customer_balance payments (MXN currency) capability of the account, or whether the account can directly process Mexican customer_balance charges.
+pub type AccountCapabilitiesMxBankTransferPayments = stripe_shared::MandateStatus;
+/// The status of the NaverPay capability of the account, or whether the account can directly process NaverPay payments.
+pub type AccountCapabilitiesNaverPayPayments = stripe_shared::MandateStatus;
+/// The status of the New Zealand BECS Direct Debit payments capability of the account, or whether the account can directly process New Zealand BECS Direct Debit charges.
+pub type AccountCapabilitiesNzBankAccountBecsDebitPayments = stripe_shared::MandateStatus;
+/// The status of the OXXO payments capability of the account, or whether the account can directly process OXXO charges.
+pub type AccountCapabilitiesOxxoPayments = stripe_shared::MandateStatus;
+/// The status of the P24 payments capability of the account, or whether the account can directly process P24 charges.
+pub type AccountCapabilitiesP24Payments = stripe_shared::MandateStatus;
+/// The status of the pay_by_bank payments capability of the account, or whether the account can directly process pay_by_bank charges.
+pub type AccountCapabilitiesPayByBankPayments = stripe_shared::MandateStatus;
+/// The status of the Payco capability of the account, or whether the account can directly process Payco payments.
+pub type AccountCapabilitiesPaycoPayments = stripe_shared::MandateStatus;
+/// The status of the paynow payments capability of the account, or whether the account can directly process paynow charges.
+pub type AccountCapabilitiesPaynowPayments = stripe_shared::MandateStatus;
+/// The status of the PayTo capability of the account, or whether the account can directly process PayTo charges.
+pub type AccountCapabilitiesPaytoPayments = stripe_shared::MandateStatus;
+/// The status of the pix payments capability of the account, or whether the account can directly process pix charges.
+pub type AccountCapabilitiesPixPayments = stripe_shared::MandateStatus;
+/// The status of the promptpay payments capability of the account, or whether the account can directly process promptpay charges.
+pub type AccountCapabilitiesPromptpayPayments = stripe_shared::MandateStatus;
+/// The status of the RevolutPay capability of the account, or whether the account can directly process RevolutPay payments.
+pub type AccountCapabilitiesRevolutPayPayments = stripe_shared::MandateStatus;
+/// The status of the SamsungPay capability of the account, or whether the account can directly process SamsungPay payments.
+pub type AccountCapabilitiesSamsungPayPayments = stripe_shared::MandateStatus;
+/// The status of the Satispay capability of the account, or whether the account can directly process Satispay payments.
+pub type AccountCapabilitiesSatispayPayments = stripe_shared::MandateStatus;
+/// The status of the Scalapay capability of the account, or whether the account can directly process Scalapay payments.
+pub type AccountCapabilitiesScalapayPayments = stripe_shared::MandateStatus;
+/// The status of the SEPA customer_balance payments (EUR currency) capability of the account, or whether the account can directly process SEPA customer_balance charges.
+pub type AccountCapabilitiesSepaBankTransferPayments = stripe_shared::MandateStatus;
+/// The status of the SEPA Direct Debits payments capability of the account, or whether the account can directly process SEPA Direct Debits charges.
+pub type AccountCapabilitiesSepaDebitPayments = stripe_shared::MandateStatus;
+/// The status of the Sofort payments capability of the account, or whether the account can directly process Sofort charges.
+pub type AccountCapabilitiesSofortPayments = stripe_shared::MandateStatus;
+/// The status of the Sunbit capability of the account, or whether the account can directly process Sunbit payments.
+pub type AccountCapabilitiesSunbitPayments = stripe_shared::MandateStatus;
+/// The status of the Swish capability of the account, or whether the account can directly process Swish payments.
+pub type AccountCapabilitiesSwishPayments = stripe_shared::MandateStatus;
+/// The status of the tax reporting 1099-K (US) capability of the account.
+pub type AccountCapabilitiesTaxReportingUs1099K = stripe_shared::MandateStatus;
+/// The status of the tax reporting 1099-MISC (US) capability of the account.
+pub type AccountCapabilitiesTaxReportingUs1099Misc = stripe_shared::MandateStatus;
+/// The status of the transfers capability of the account, or whether your platform can transfer funds to the account.
+pub type AccountCapabilitiesTransfers = stripe_shared::MandateStatus;
+/// The status of the banking capability, or whether the account can have bank accounts.
+pub type AccountCapabilitiesTreasury = stripe_shared::MandateStatus;
+/// The status of the TWINT capability of the account, or whether the account can directly process TWINT charges.
+pub type AccountCapabilitiesTwintPayments = stripe_shared::MandateStatus;
+/// The status of the upi payments capability of the account, or whether the account can directly process upi charges.
+pub type AccountCapabilitiesUpiPayments = stripe_shared::MandateStatus;
+/// The status of the US bank account ACH payments capability of the account, or whether the account can directly process US bank account charges.
+pub type AccountCapabilitiesUsBankAccountAchPayments = stripe_shared::MandateStatus;
+/// The status of the US customer_balance payments (USD currency) capability of the account, or whether the account can directly process US customer_balance charges.
+pub type AccountCapabilitiesUsBankTransferPayments = stripe_shared::MandateStatus;
+/// The status of the Zip capability of the account, or whether the account can directly process Zip charges.
+pub type AccountCapabilitiesZipPayments = stripe_shared::MandateStatus;
+pub type AccountCapabilitiesStatus = stripe_shared::MandateStatus;

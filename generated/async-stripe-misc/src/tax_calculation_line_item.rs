@@ -24,7 +24,7 @@ pub struct TaxCalculationLineItem {
     pub reference: String,
     /// Specifies whether the `amount` includes taxes.
     /// If `tax_behavior=inclusive`, then the amount includes taxes.
-    pub tax_behavior: TaxCalculationLineItemTaxBehavior,
+    pub tax_behavior: stripe_shared::TaxBehavior,
     /// Detailed account of taxes relevant to this line item.
     pub tax_breakdown: Option<Vec<stripe_misc::TaxProductResourceLineItemTaxBreakdown>>,
     /// The [tax code](https://docs.stripe.com/tax/tax-categories) ID used for this resource.
@@ -46,7 +46,7 @@ pub struct TaxCalculationLineItemBuilder {
     product: Option<Option<String>>,
     quantity: Option<u64>,
     reference: Option<String>,
-    tax_behavior: Option<TaxCalculationLineItemTaxBehavior>,
+    tax_behavior: Option<stripe_shared::TaxBehavior>,
     tax_breakdown: Option<Option<Vec<stripe_misc::TaxProductResourceLineItemTaxBreakdown>>>,
     tax_code: Option<String>,
 }
@@ -229,95 +229,6 @@ impl serde::Serialize for TaxCalculationLineItem {
         s.end()
     }
 }
-/// Specifies whether the `amount` includes taxes.
-/// If `tax_behavior=inclusive`, then the amount includes taxes.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxCalculationLineItemTaxBehavior {
-    Exclusive,
-    Inclusive,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxCalculationLineItemTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use TaxCalculationLineItemTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxCalculationLineItemTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxCalculationLineItemTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxCalculationLineItemTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxCalculationLineItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxCalculationLineItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxCalculationLineItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxCalculationLineItemTaxBehavior)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxCalculationLineItemTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxCalculationLineItemTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TaxCalculationLineItemTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TaxCalculationLineItemTaxBehavior::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TaxCalculationLineItemTaxBehavior);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxCalculationLineItemTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for TaxCalculationLineItem {
     type Id = stripe_misc::TaxCalculationLineItemId;
     fn id(&self) -> &Self::Id {
@@ -329,3 +240,6 @@ impl stripe_types::Object for TaxCalculationLineItem {
     }
 }
 stripe_types::def_id!(TaxCalculationLineItemId);
+/// Specifies whether the `amount` includes taxes.
+/// If `tax_behavior=inclusive`, then the amount includes taxes.
+pub type TaxCalculationLineItemTaxBehavior = stripe_shared::TaxBehavior;

@@ -7,10 +7,10 @@ pub struct PortalSubscriptionUpdate {
     /// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
     /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
     /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
-    pub billing_cycle_anchor: Option<PortalSubscriptionUpdateBillingCycleAnchor>,
+    pub billing_cycle_anchor: Option<stripe_shared::BillingCycleAnchor>,
     /// The types of subscription updates that are supported for items listed in the `products` attribute.
     /// When empty, subscriptions are not updateable.
-    pub default_allowed_updates: Vec<PortalSubscriptionUpdateDefaultAllowedUpdates>,
+    pub default_allowed_updates: Vec<stripe_shared::DefaultAllowedUpdates>,
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// The list of up to 10 products that support subscription updates.
@@ -18,12 +18,12 @@ pub struct PortalSubscriptionUpdate {
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     /// Defaults to a value of `none` if you don't set it during creation.
-    pub proration_behavior: PortalSubscriptionUpdateProrationBehavior,
+    pub proration_behavior: stripe_shared::ProrationBehavior,
     pub schedule_at_period_end: stripe_billing::PortalResourceScheduleUpdateAtPeriodEnd,
     /// Determines how handle updates to trialing subscriptions.
     /// Valid values are `end_trial` and `continue_trial`.
     /// Defaults to a value of `end_trial` if you don't set it during creation.
-    pub trial_update_behavior: PortalSubscriptionUpdateTrialUpdateBehavior,
+    pub trial_update_behavior: stripe_shared::TrialUpdateBehavior,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PortalSubscriptionUpdate {
@@ -33,13 +33,13 @@ impl std::fmt::Debug for PortalSubscriptionUpdate {
 }
 #[doc(hidden)]
 pub struct PortalSubscriptionUpdateBuilder {
-    billing_cycle_anchor: Option<Option<PortalSubscriptionUpdateBillingCycleAnchor>>,
-    default_allowed_updates: Option<Vec<PortalSubscriptionUpdateDefaultAllowedUpdates>>,
+    billing_cycle_anchor: Option<Option<stripe_shared::BillingCycleAnchor>>,
+    default_allowed_updates: Option<Vec<stripe_shared::DefaultAllowedUpdates>>,
     enabled: Option<bool>,
     products: Option<Option<Vec<stripe_billing::PortalSubscriptionUpdateProduct>>>,
-    proration_behavior: Option<PortalSubscriptionUpdateProrationBehavior>,
+    proration_behavior: Option<stripe_shared::ProrationBehavior>,
     schedule_at_period_end: Option<stripe_billing::PortalResourceScheduleUpdateAtPeriodEnd>,
-    trial_update_behavior: Option<PortalSubscriptionUpdateTrialUpdateBehavior>,
+    trial_update_behavior: Option<stripe_shared::TrialUpdateBehavior>,
 }
 
 #[allow(
@@ -185,373 +185,15 @@ const _: () = {
 /// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
 /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
 /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PortalSubscriptionUpdateBillingCycleAnchor {
-    Now,
-    Unchanged,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PortalSubscriptionUpdateBillingCycleAnchor {
-    pub fn as_str(&self) -> &str {
-        use PortalSubscriptionUpdateBillingCycleAnchor::*;
-        match self {
-            Now => "now",
-            Unchanged => "unchanged",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PortalSubscriptionUpdateBillingCycleAnchor {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PortalSubscriptionUpdateBillingCycleAnchor::*;
-        match s {
-            "now" => Ok(Now),
-            "unchanged" => Ok(Unchanged),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalSubscriptionUpdateBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PortalSubscriptionUpdateBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PortalSubscriptionUpdateBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PortalSubscriptionUpdateBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PortalSubscriptionUpdateBillingCycleAnchor))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PortalSubscriptionUpdateBillingCycleAnchor {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PortalSubscriptionUpdateBillingCycleAnchor {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateBillingCycleAnchor> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PortalSubscriptionUpdateBillingCycleAnchor::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateBillingCycleAnchor);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateBillingCycleAnchor {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PortalSubscriptionUpdateBillingCycleAnchor = stripe_shared::BillingCycleAnchor;
 /// The types of subscription updates that are supported for items listed in the `products` attribute.
 /// When empty, subscriptions are not updateable.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PortalSubscriptionUpdateDefaultAllowedUpdates {
-    Price,
-    PromotionCode,
-    Quantity,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PortalSubscriptionUpdateDefaultAllowedUpdates {
-    pub fn as_str(&self) -> &str {
-        use PortalSubscriptionUpdateDefaultAllowedUpdates::*;
-        match self {
-            Price => "price",
-            PromotionCode => "promotion_code",
-            Quantity => "quantity",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PortalSubscriptionUpdateDefaultAllowedUpdates {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PortalSubscriptionUpdateDefaultAllowedUpdates::*;
-        match s {
-            "price" => Ok(Price),
-            "promotion_code" => Ok(PromotionCode),
-            "quantity" => Ok(Quantity),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalSubscriptionUpdateDefaultAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PortalSubscriptionUpdateDefaultAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PortalSubscriptionUpdateDefaultAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PortalSubscriptionUpdateDefaultAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PortalSubscriptionUpdateDefaultAllowedUpdates))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PortalSubscriptionUpdateDefaultAllowedUpdates {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PortalSubscriptionUpdateDefaultAllowedUpdates {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateDefaultAllowedUpdates> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PortalSubscriptionUpdateDefaultAllowedUpdates::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateDefaultAllowedUpdates);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateDefaultAllowedUpdates {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PortalSubscriptionUpdateDefaultAllowedUpdates = stripe_shared::DefaultAllowedUpdates;
 /// Determines how to handle prorations resulting from subscription updates.
 /// Valid values are `none`, `create_prorations`, and `always_invoice`.
 /// Defaults to a value of `none` if you don't set it during creation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PortalSubscriptionUpdateProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PortalSubscriptionUpdateProrationBehavior {
-    pub fn as_str(&self) -> &str {
-        use PortalSubscriptionUpdateProrationBehavior::*;
-        match self {
-            AlwaysInvoice => "always_invoice",
-            CreateProrations => "create_prorations",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PortalSubscriptionUpdateProrationBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PortalSubscriptionUpdateProrationBehavior::*;
-        match s {
-            "always_invoice" => Ok(AlwaysInvoice),
-            "create_prorations" => Ok(CreateProrations),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalSubscriptionUpdateProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PortalSubscriptionUpdateProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PortalSubscriptionUpdateProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PortalSubscriptionUpdateProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PortalSubscriptionUpdateProrationBehavior))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PortalSubscriptionUpdateProrationBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PortalSubscriptionUpdateProrationBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateProrationBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PortalSubscriptionUpdateProrationBehavior::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateProrationBehavior);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateProrationBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PortalSubscriptionUpdateProrationBehavior = stripe_shared::ProrationBehavior;
 /// Determines how handle updates to trialing subscriptions.
 /// Valid values are `end_trial` and `continue_trial`.
 /// Defaults to a value of `end_trial` if you don't set it during creation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PortalSubscriptionUpdateTrialUpdateBehavior {
-    ContinueTrial,
-    EndTrial,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PortalSubscriptionUpdateTrialUpdateBehavior {
-    pub fn as_str(&self) -> &str {
-        use PortalSubscriptionUpdateTrialUpdateBehavior::*;
-        match self {
-            ContinueTrial => "continue_trial",
-            EndTrial => "end_trial",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PortalSubscriptionUpdateTrialUpdateBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PortalSubscriptionUpdateTrialUpdateBehavior::*;
-        match s {
-            "continue_trial" => Ok(ContinueTrial),
-            "end_trial" => Ok(EndTrial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalSubscriptionUpdateTrialUpdateBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PortalSubscriptionUpdateTrialUpdateBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PortalSubscriptionUpdateTrialUpdateBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PortalSubscriptionUpdateTrialUpdateBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PortalSubscriptionUpdateTrialUpdateBehavior))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PortalSubscriptionUpdateTrialUpdateBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PortalSubscriptionUpdateTrialUpdateBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateTrialUpdateBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PortalSubscriptionUpdateTrialUpdateBehavior::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateTrialUpdateBehavior);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateTrialUpdateBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PortalSubscriptionUpdateTrialUpdateBehavior = stripe_shared::TrialUpdateBehavior;

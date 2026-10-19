@@ -247,7 +247,7 @@ pub struct UpdateInvoiceLineItemPriceData {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<UpdateInvoiceLineItemPriceDataTaxBehavior>,
+    pub tax_behavior: Option<stripe_shared::PriceTaxBehavior>,
     /// A non-negative integer in cents (or local equivalent) representing how much to charge.
     /// One of `unit_amount` or `unit_amount_decimal` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -322,85 +322,6 @@ impl UpdateInvoiceLineItemPriceDataProductData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateInvoiceLineItemPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateInvoiceLineItemPriceDataTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateInvoiceLineItemPriceDataTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateInvoiceLineItemPriceDataTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateInvoiceLineItemPriceDataTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateInvoiceLineItemPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateInvoiceLineItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateInvoiceLineItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateInvoiceLineItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateInvoiceLineItemPriceDataTaxBehavior))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateInvoiceLineItemPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemPriceDataTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The pricing information for the invoice item.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -444,7 +365,7 @@ pub struct UpdateInvoiceLineItemTaxAmounts {
     pub tax_rate_data: UpdateInvoiceLineItemTaxAmountsTaxRateData,
     /// The reasoning behind this tax, for example, if the product is tax exempt.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub taxability_reason: Option<UpdateInvoiceLineItemTaxAmountsTaxabilityReason>,
+    pub taxability_reason: Option<stripe_shared::TaxabilityReason>,
     /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: i64,
 }
@@ -495,7 +416,7 @@ pub struct UpdateInvoiceLineItemTaxAmountsTaxRateData {
     pub jurisdiction: Option<String>,
     /// The level of the jurisdiction that imposes this tax rate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub jurisdiction_level: Option<UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel>,
+    pub jurisdiction_level: Option<stripe_shared::JurisdictionLevel>,
     /// The statutory tax rate percent.
     /// This field accepts decimal values between 0 and 100 inclusive with at most 4 decimal places.
     /// To accommodate fixed-amount taxes, set the percentage to zero.
@@ -507,7 +428,7 @@ pub struct UpdateInvoiceLineItemTaxAmountsTaxRateData {
     pub state: Option<String>,
     /// The high-level tax type, such as `vat` or `sales_tax`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_type: Option<UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType>,
+    pub tax_type: Option<stripe_shared::TaxType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxRateData {
@@ -532,318 +453,6 @@ impl UpdateInvoiceLineItemTaxAmountsTaxRateData {
             state: None,
             tax_type: None,
         }
-    }
-}
-/// The level of the jurisdiction that imposes this tax rate.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
-    City,
-    Country,
-    County,
-    District,
-    Multiple,
-    State,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
-    pub fn as_str(&self) -> &str {
-        use UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel::*;
-        match self {
-            City => "city",
-            Country => "country",
-            County => "county",
-            District => "district",
-            Multiple => "multiple",
-            State => "state",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel::*;
-        match s {
-            "city" => Ok(City),
-            "country" => Ok(Country),
-            "county" => Ok(County),
-            "district" => Ok(District),
-            "multiple" => Ok(Multiple),
-            "state" => Ok(State),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The high-level tax type, such as `vat` or `sales_tax`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
-    AmusementTax,
-    CommunicationsTax,
-    Gst,
-    Hst,
-    Igst,
-    Jct,
-    LeaseTax,
-    MassTransitParkingTax,
-    ParkingTax,
-    Pst,
-    Qst,
-    RetailDeliveryFee,
-    Rst,
-    SalesTax,
-    ServiceTax,
-    Vat,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
-    pub fn as_str(&self) -> &str {
-        use UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType::*;
-        match self {
-            AmusementTax => "amusement_tax",
-            CommunicationsTax => "communications_tax",
-            Gst => "gst",
-            Hst => "hst",
-            Igst => "igst",
-            Jct => "jct",
-            LeaseTax => "lease_tax",
-            MassTransitParkingTax => "mass_transit_parking_tax",
-            ParkingTax => "parking_tax",
-            Pst => "pst",
-            Qst => "qst",
-            RetailDeliveryFee => "retail_delivery_fee",
-            Rst => "rst",
-            SalesTax => "sales_tax",
-            ServiceTax => "service_tax",
-            Vat => "vat",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType::*;
-        match s {
-            "amusement_tax" => Ok(AmusementTax),
-            "communications_tax" => Ok(CommunicationsTax),
-            "gst" => Ok(Gst),
-            "hst" => Ok(Hst),
-            "igst" => Ok(Igst),
-            "jct" => Ok(Jct),
-            "lease_tax" => Ok(LeaseTax),
-            "mass_transit_parking_tax" => Ok(MassTransitParkingTax),
-            "parking_tax" => Ok(ParkingTax),
-            "pst" => Ok(Pst),
-            "qst" => Ok(Qst),
-            "retail_delivery_fee" => Ok(RetailDeliveryFee),
-            "rst" => Ok(Rst),
-            "sales_tax" => Ok(SalesTax),
-            "service_tax" => Ok(ServiceTax),
-            "vat" => Ok(Vat),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The reasoning behind this tax, for example, if the product is tax exempt.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
-    CustomerExempt,
-    NotCollecting,
-    NotSubjectToTax,
-    NotSupported,
-    PortionProductExempt,
-    PortionReducedRated,
-    PortionStandardRated,
-    ProductExempt,
-    ProductExemptHoliday,
-    ProportionallyRated,
-    ReducedRated,
-    ReverseCharge,
-    StandardRated,
-    TaxableBasisReduced,
-    ZeroRated,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
-    pub fn as_str(&self) -> &str {
-        use UpdateInvoiceLineItemTaxAmountsTaxabilityReason::*;
-        match self {
-            CustomerExempt => "customer_exempt",
-            NotCollecting => "not_collecting",
-            NotSubjectToTax => "not_subject_to_tax",
-            NotSupported => "not_supported",
-            PortionProductExempt => "portion_product_exempt",
-            PortionReducedRated => "portion_reduced_rated",
-            PortionStandardRated => "portion_standard_rated",
-            ProductExempt => "product_exempt",
-            ProductExemptHoliday => "product_exempt_holiday",
-            ProportionallyRated => "proportionally_rated",
-            ReducedRated => "reduced_rated",
-            ReverseCharge => "reverse_charge",
-            StandardRated => "standard_rated",
-            TaxableBasisReduced => "taxable_basis_reduced",
-            ZeroRated => "zero_rated",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateInvoiceLineItemTaxAmountsTaxabilityReason::*;
-        match s {
-            "customer_exempt" => Ok(CustomerExempt),
-            "not_collecting" => Ok(NotCollecting),
-            "not_subject_to_tax" => Ok(NotSubjectToTax),
-            "not_supported" => Ok(NotSupported),
-            "portion_product_exempt" => Ok(PortionProductExempt),
-            "portion_reduced_rated" => Ok(PortionReducedRated),
-            "portion_standard_rated" => Ok(PortionStandardRated),
-            "product_exempt" => Ok(ProductExempt),
-            "product_exempt_holiday" => Ok(ProductExemptHoliday),
-            "proportionally_rated" => Ok(ProportionallyRated),
-            "reduced_rated" => Ok(ReducedRated),
-            "reverse_charge" => Ok(ReverseCharge),
-            "standard_rated" => Ok(StandardRated),
-            "taxable_basis_reduced" => Ok(TaxableBasisReduced),
-            "zero_rated" => Ok(ZeroRated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateInvoiceLineItemTaxAmountsTaxabilityReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateInvoiceLineItemTaxAmountsTaxabilityReason))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates an invoice’s line item.
@@ -999,3 +608,16 @@ impl StripeRequest for UpdateInvoiceLineItem {
             .form(&self.inner)
     }
 }
+
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+pub type UpdateInvoiceLineItemPriceDataTaxBehavior = stripe_shared::PriceTaxBehavior;
+/// The level of the jurisdiction that imposes this tax rate.
+pub type UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel =
+    stripe_shared::JurisdictionLevel;
+/// The high-level tax type, such as `vat` or `sales_tax`.
+pub type UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType = stripe_shared::TaxType;
+/// The reasoning behind this tax, for example, if the product is tax exempt.
+pub type UpdateInvoiceLineItemTaxAmountsTaxabilityReason = stripe_shared::TaxabilityReason;

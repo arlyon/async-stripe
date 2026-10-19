@@ -6,7 +6,7 @@ pub struct TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoods {
     pub standard: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsDefaultStandard>,
     /// Type of registration in `country`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType,
+    pub type_: stripe_shared::CreateTaxRegistrationCountryOptionsAeType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoods {
@@ -19,7 +19,7 @@ impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsDefaultInb
 pub struct TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsBuilder {
     standard:
         Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsDefaultStandard>>,
-    type_: Option<TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType>,
+    type_: Option<stripe_shared::CreateTaxRegistrationCountryOptionsAeType>,
 }
 
 #[allow(
@@ -113,101 +113,5 @@ const _: () = {
     }
 };
 /// Type of registration in `country`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType {
-    Standard,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType {
-    pub fn as_str(&self) -> &str {
-        use TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType::*;
-        match self {
-            Standard => "standard",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType::*;
-        match s {
-            "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType =
+    stripe_shared::CreateTaxRegistrationCountryOptionsAeType;

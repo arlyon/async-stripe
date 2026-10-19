@@ -6,8 +6,7 @@
 pub struct TreasuryFinancialAccountsResourceFinancialAddress {
     pub aba: Option<stripe_treasury::TreasuryFinancialAccountsResourceAbaRecord>,
     /// The list of networks that the address supports
-    pub supported_networks:
-        Option<Vec<TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks>>,
+    pub supported_networks: Option<Vec<stripe_shared::UsBankAccountNetworksSupported>>,
     /// The type of financial address
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: TreasuryFinancialAccountsResourceFinancialAddressType,
@@ -21,8 +20,7 @@ impl std::fmt::Debug for TreasuryFinancialAccountsResourceFinancialAddress {
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceFinancialAddressBuilder {
     aba: Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceAbaRecord>>,
-    supported_networks:
-        Option<Option<Vec<TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks>>>,
+    supported_networks: Option<Option<Vec<stripe_shared::UsBankAccountNetworksSupported>>>,
     type_: Option<TreasuryFinancialAccountsResourceFinancialAddressType>,
 }
 
@@ -120,106 +118,6 @@ const _: () = {
         }
     }
 };
-/// The list of networks that the address supports
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
-    Ach,
-    UsDomesticWire,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
-    pub fn as_str(&self) -> &str {
-        use TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks::*;
-        match self {
-            Ach => "ach",
-            UsDomesticWire => "us_domestic_wire",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks::*;
-        match s {
-            "ach" => Ok(Ach),
-            "us_domestic_wire" => Ok(UsDomesticWire),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The type of financial address
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -310,3 +208,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountsResourceFinancial
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The list of networks that the address supports
+pub type TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks =
+    stripe_shared::UsBankAccountNetworksSupported;

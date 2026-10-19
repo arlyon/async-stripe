@@ -14,13 +14,13 @@ pub struct GelatoVerifiedOutputs {
     /// The user's verified id number.
     pub id_number: Option<String>,
     /// The user's verified id number type.
-    pub id_number_type: Option<GelatoVerifiedOutputsIdNumberType>,
+    pub id_number_type: Option<stripe_shared::IdNumberType>,
     /// The user's verified last name.
     pub last_name: Option<String>,
     /// The user's verified phone number
     pub phone: Option<String>,
     /// The user's verified sex.
-    pub sex: Option<GelatoVerifiedOutputsSex>,
+    pub sex: Option<stripe_shared::Sex>,
     /// The user's verified place of birth as it appears in the document.
     pub unparsed_place_of_birth: Option<String>,
     /// The user's verified sex as it appears in the document.
@@ -39,10 +39,10 @@ pub struct GelatoVerifiedOutputsBuilder {
     email: Option<Option<String>>,
     first_name: Option<Option<String>>,
     id_number: Option<Option<String>>,
-    id_number_type: Option<Option<GelatoVerifiedOutputsIdNumberType>>,
+    id_number_type: Option<Option<stripe_shared::IdNumberType>>,
     last_name: Option<Option<String>>,
     phone: Option<Option<String>>,
-    sex: Option<Option<GelatoVerifiedOutputsSex>>,
+    sex: Option<Option<stripe_shared::Sex>>,
     unparsed_place_of_birth: Option<Option<String>>,
     unparsed_sex: Option<Option<String>>,
 }
@@ -207,184 +207,6 @@ const _: () = {
     }
 };
 /// The user's verified id number type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum GelatoVerifiedOutputsIdNumberType {
-    BrCpf,
-    SgNric,
-    UsSsn,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl GelatoVerifiedOutputsIdNumberType {
-    pub fn as_str(&self) -> &str {
-        use GelatoVerifiedOutputsIdNumberType::*;
-        match self {
-            BrCpf => "br_cpf",
-            SgNric => "sg_nric",
-            UsSsn => "us_ssn",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoVerifiedOutputsIdNumberType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoVerifiedOutputsIdNumberType::*;
-        match s {
-            "br_cpf" => Ok(BrCpf),
-            "sg_nric" => Ok(SgNric),
-            "us_ssn" => Ok(UsSsn),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoVerifiedOutputsIdNumberType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for GelatoVerifiedOutputsIdNumberType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for GelatoVerifiedOutputsIdNumberType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for GelatoVerifiedOutputsIdNumberType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(GelatoVerifiedOutputsIdNumberType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for GelatoVerifiedOutputsIdNumberType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for GelatoVerifiedOutputsIdNumberType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<GelatoVerifiedOutputsIdNumberType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(GelatoVerifiedOutputsIdNumberType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(GelatoVerifiedOutputsIdNumberType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for GelatoVerifiedOutputsIdNumberType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type GelatoVerifiedOutputsIdNumberType = stripe_shared::IdNumberType;
 /// The user's verified sex.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum GelatoVerifiedOutputsSex {
-    Redacted,
-    Female,
-    Male,
-    Unknown,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
-    _Unknown(String),
-}
-impl GelatoVerifiedOutputsSex {
-    pub fn as_str(&self) -> &str {
-        use GelatoVerifiedOutputsSex::*;
-        match self {
-            Redacted => "[redacted]",
-            Female => "female",
-            Male => "male",
-            Unknown => "unknown",
-            _Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoVerifiedOutputsSex {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoVerifiedOutputsSex::*;
-        match s {
-            "[redacted]" => Ok(Redacted),
-            "female" => Ok(Female),
-            "male" => Ok(Male),
-            "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoVerifiedOutputsSex");
-                Ok(_Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for GelatoVerifiedOutputsSex {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for GelatoVerifiedOutputsSex {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for GelatoVerifiedOutputsSex {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(GelatoVerifiedOutputsSex)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for GelatoVerifiedOutputsSex {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for GelatoVerifiedOutputsSex {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<GelatoVerifiedOutputsSex> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(GelatoVerifiedOutputsSex::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(GelatoVerifiedOutputsSex);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for GelatoVerifiedOutputsSex {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type GelatoVerifiedOutputsSex = stripe_shared::Sex;

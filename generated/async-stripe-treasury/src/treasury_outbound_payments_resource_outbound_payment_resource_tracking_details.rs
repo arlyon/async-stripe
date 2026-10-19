@@ -6,7 +6,7 @@ pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetail
     pub ach: Option<stripe_treasury::TreasuryOutboundPaymentsResourceAchTrackingDetails>,
     /// The US bank account network used to send funds.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType,
+    pub type_: stripe_shared::UsBankAccountNetworksSupported,
     pub us_domestic_wire:
         Option<stripe_treasury::TreasuryOutboundPaymentsResourceUsDomesticWireTrackingDetails>,
 }
@@ -20,7 +20,7 @@ impl std::fmt::Debug for TreasuryOutboundPaymentsResourceOutboundPaymentResource
 #[doc(hidden)]
 pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsBuilder {
     ach: Option<Option<stripe_treasury::TreasuryOutboundPaymentsResourceAchTrackingDetails>>,
-    type_: Option<TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType>,
+    type_: Option<stripe_shared::UsBankAccountNetworksSupported>,
     us_domestic_wire: Option<
         Option<stripe_treasury::TreasuryOutboundPaymentsResourceUsDomesticWireTrackingDetails>,
     >,
@@ -122,114 +122,5 @@ const _: () = {
     }
 };
 /// The US bank account network used to send funds.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType {
-    Ach,
-    UsDomesticWire,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType {
-    pub fn as_str(&self) -> &str {
-        use TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType::*;
-        match self {
-            Ach => "ach",
-            UsDomesticWire => "us_domestic_wire",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType::*;
-        match s {
-            "ach" => Ok(Ach),
-            "us_domestic_wire" => Ok(UsDomesticWire),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize
-    for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType =
+    stripe_shared::UsBankAccountNetworksSupported;

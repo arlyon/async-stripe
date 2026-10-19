@@ -205,7 +205,7 @@ struct CreateBillingCreditGrantBuilder {
     amount: CreateBillingCreditGrantAmount,
     applicability_config: CreateBillingCreditGrantApplicabilityConfig,
     #[serde(skip_serializing_if = "Option::is_none")]
-    category: Option<stripe_shared::BillingCreditGrantCategory>,
+    category: Option<stripe_shared::Category>,
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -259,7 +259,7 @@ pub struct CreateBillingCreditGrantAmount {
     pub monetary: Option<CreateBillingCreditGrantAmountMonetary>,
     /// The type of this amount. We currently only support `monetary` billing credits.
     #[serde(rename = "type")]
-    pub type_: CreateBillingCreditGrantAmountType,
+    pub type_: stripe_shared::CreateBillingCreditGrantAmountType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingCreditGrantAmount {
@@ -268,7 +268,7 @@ impl std::fmt::Debug for CreateBillingCreditGrantAmount {
     }
 }
 impl CreateBillingCreditGrantAmount {
-    pub fn new(type_: impl Into<CreateBillingCreditGrantAmountType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::CreateBillingCreditGrantAmountType>) -> Self {
         Self { monetary: None, type_: type_.into() }
     }
 }
@@ -291,75 +291,6 @@ impl std::fmt::Debug for CreateBillingCreditGrantAmountMonetary {
 impl CreateBillingCreditGrantAmountMonetary {
     pub fn new(currency: impl Into<stripe_types::Currency>, value: impl Into<i64>) -> Self {
         Self { currency: currency.into(), value: value.into() }
-    }
-}
-/// The type of this amount. We currently only support `monetary` billing credits.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingCreditGrantAmountType {
-    Monetary,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingCreditGrantAmountType {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingCreditGrantAmountType::*;
-        match self {
-            Monetary => "monetary",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingCreditGrantAmountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingCreditGrantAmountType::*;
-        match s {
-            "monetary" => Ok(Monetary),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingCreditGrantAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingCreditGrantAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingCreditGrantAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingCreditGrantAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateBillingCreditGrantAmountType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingCreditGrantAmountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantAmountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configuration specifying what this credit grant applies to.
@@ -391,7 +322,7 @@ pub struct CreateBillingCreditGrantApplicabilityConfigScope {
     /// We currently only support the `metered` price type.
     /// Cannot be used in combination with `prices`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_type: Option<CreateBillingCreditGrantApplicabilityConfigScopePriceType>,
+    pub price_type: Option<stripe_shared::BillingCreditGrantsResourceScopePriceType>,
     /// A list of prices that the credit grant can apply to.
     /// We currently only support the `metered` prices.
     /// Cannot be used in combination with `price_type`.
@@ -413,78 +344,6 @@ impl CreateBillingCreditGrantApplicabilityConfigScope {
 impl Default for CreateBillingCreditGrantApplicabilityConfigScope {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The price type that credit grants can apply to.
-/// We currently only support the `metered` price type.
-/// Cannot be used in combination with `prices`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingCreditGrantApplicabilityConfigScopePriceType {
-    Metered,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingCreditGrantApplicabilityConfigScopePriceType {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingCreditGrantApplicabilityConfigScopePriceType::*;
-        match self {
-            Metered => "metered",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingCreditGrantApplicabilityConfigScopePriceType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingCreditGrantApplicabilityConfigScopePriceType::*;
-        match s {
-            "metered" => Ok(Metered),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingCreditGrantApplicabilityConfigScopePriceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingCreditGrantApplicabilityConfigScopePriceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingCreditGrantApplicabilityConfigScopePriceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingCreditGrantApplicabilityConfigScopePriceType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateBillingCreditGrantApplicabilityConfigScopePriceType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingCreditGrantApplicabilityConfigScopePriceType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantApplicabilityConfigScopePriceType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A list of prices that the credit grant can apply to.
@@ -534,10 +393,7 @@ impl CreateBillingCreditGrant {
         }
     }
     /// The category of this credit grant. It defaults to `paid` if not specified.
-    pub fn category(
-        mut self,
-        category: impl Into<stripe_shared::BillingCreditGrantCategory>,
-    ) -> Self {
+    pub fn category(mut self, category: impl Into<stripe_shared::Category>) -> Self {
         self.inner.category = Some(category.into());
         self
     }
@@ -843,3 +699,13 @@ impl StripeRequest for VoidGrantBillingCreditGrant {
             .form(&self.inner)
     }
 }
+
+/// The type of this amount. We currently only support `monetary` billing credits.
+pub type CreateBillingCreditGrantAmountType = stripe_shared::CreateBillingCreditGrantAmountType;
+/// The price type that credit grants can apply to.
+/// We currently only support the `metered` price type.
+/// Cannot be used in combination with `prices`.
+pub type CreateBillingCreditGrantApplicabilityConfigScopePriceType =
+    stripe_shared::BillingCreditGrantsResourceScopePriceType;
+/// The category of this credit grant. It defaults to `paid` if not specified.
+pub type CreateBillingCreditGrantCategory = stripe_shared::Category;

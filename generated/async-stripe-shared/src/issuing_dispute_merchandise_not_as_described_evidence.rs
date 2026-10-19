@@ -12,7 +12,7 @@ pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
     /// Description of the cardholder's attempt to return the product.
     pub return_description: Option<String>,
     /// Result of cardholder's attempt to return the product.
-    pub return_status: Option<IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus>,
+    pub return_status: Option<stripe_shared::ReturnStatus>,
     /// Date when the product was returned or attempted to be returned.
     pub returned_at: Option<stripe_types::Timestamp>,
 }
@@ -28,7 +28,7 @@ pub struct IssuingDisputeMerchandiseNotAsDescribedEvidenceBuilder {
     explanation: Option<Option<String>>,
     received_at: Option<Option<stripe_types::Timestamp>>,
     return_description: Option<Option<String>>,
-    return_status: Option<Option<IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus>>,
+    return_status: Option<Option<stripe_shared::ReturnStatus>>,
     returned_at: Option<Option<stripe_types::Timestamp>>,
 }
 
@@ -164,98 +164,4 @@ const _: () = {
     }
 };
 /// Result of cardholder's attempt to return the product.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    MerchantRejected,
-    Successful,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    pub fn as_str(&self) -> &str {
-        use IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::*;
-        match self {
-            MerchantRejected => "merchant_rejected",
-            Successful => "successful",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::*;
-        match s {
-            "merchant_rejected" => Ok(MerchantRejected),
-            "successful" => Ok(Successful),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus = stripe_shared::ReturnStatus;

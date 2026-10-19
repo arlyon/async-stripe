@@ -9,7 +9,7 @@ pub struct ReserveRelease {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// Indicates which party created this ReserveRelease.
-    pub created_by: ReserveReleaseCreatedBy,
+    pub created_by: stripe_shared::ReserveHoldCreatedBy,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
@@ -43,7 +43,7 @@ impl std::fmt::Debug for ReserveRelease {
 pub struct ReserveReleaseBuilder {
     amount: Option<i64>,
     created: Option<stripe_types::Timestamp>,
-    created_by: Option<ReserveReleaseCreatedBy>,
+    created_by: Option<stripe_shared::ReserveHoldCreatedBy>,
     currency: Option<stripe_types::Currency>,
     id: Option<stripe_reserve::ReserveReleaseId>,
     livemode: Option<bool>,
@@ -241,90 +241,6 @@ impl serde::Serialize for ReserveRelease {
         s.end()
     }
 }
-/// Indicates which party created this ReserveRelease.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ReserveReleaseCreatedBy {
-    Application,
-    Stripe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ReserveReleaseCreatedBy {
-    pub fn as_str(&self) -> &str {
-        use ReserveReleaseCreatedBy::*;
-        match self {
-            Application => "application",
-            Stripe => "stripe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ReserveReleaseCreatedBy {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ReserveReleaseCreatedBy::*;
-        match s {
-            "application" => Ok(Application),
-            "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReserveReleaseCreatedBy");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ReserveReleaseCreatedBy {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ReserveReleaseCreatedBy {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ReserveReleaseCreatedBy {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ReserveReleaseCreatedBy)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for ReserveReleaseCreatedBy {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ReserveReleaseCreatedBy {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<ReserveReleaseCreatedBy> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReserveReleaseCreatedBy::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(ReserveReleaseCreatedBy);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ReserveReleaseCreatedBy {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The reason for the ReserveRelease, indicating why the funds were released.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -426,3 +342,5 @@ impl stripe_types::Object for ReserveRelease {
     }
 }
 stripe_types::def_id!(ReserveReleaseId);
+/// Indicates which party created this ReserveRelease.
+pub type ReserveReleaseCreatedBy = stripe_shared::ReserveHoldCreatedBy;

@@ -7,7 +7,7 @@ pub struct AccountInvoicesSettings {
     /// Account Tax IDs get added when an invoice is finalized.
     pub default_account_tax_ids: Option<Vec<stripe_types::Expandable<stripe_shared::TaxId>>>,
     /// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
-    pub hosted_payment_method_save: Option<AccountInvoicesSettingsHostedPaymentMethodSave>,
+    pub hosted_payment_method_save: Option<stripe_shared::HostedPaymentMethodSave>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for AccountInvoicesSettings {
@@ -18,7 +18,7 @@ impl std::fmt::Debug for AccountInvoicesSettings {
 #[doc(hidden)]
 pub struct AccountInvoicesSettingsBuilder {
     default_account_tax_ids: Option<Option<Vec<stripe_types::Expandable<stripe_shared::TaxId>>>>,
-    hosted_payment_method_save: Option<Option<AccountInvoicesSettingsHostedPaymentMethodSave>>,
+    hosted_payment_method_save: Option<Option<stripe_shared::HostedPaymentMethodSave>>,
 }
 
 #[allow(
@@ -120,95 +120,4 @@ const _: () = {
     }
 };
 /// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum AccountInvoicesSettingsHostedPaymentMethodSave {
-    Always,
-    Never,
-    Offer,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl AccountInvoicesSettingsHostedPaymentMethodSave {
-    pub fn as_str(&self) -> &str {
-        use AccountInvoicesSettingsHostedPaymentMethodSave::*;
-        match self {
-            Always => "always",
-            Never => "never",
-            Offer => "offer",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for AccountInvoicesSettingsHostedPaymentMethodSave {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountInvoicesSettingsHostedPaymentMethodSave::*;
-        match s {
-            "always" => Ok(Always),
-            "never" => Ok(Never),
-            "offer" => Ok(Offer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountInvoicesSettingsHostedPaymentMethodSave"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for AccountInvoicesSettingsHostedPaymentMethodSave {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for AccountInvoicesSettingsHostedPaymentMethodSave {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for AccountInvoicesSettingsHostedPaymentMethodSave {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(AccountInvoicesSettingsHostedPaymentMethodSave))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for AccountInvoicesSettingsHostedPaymentMethodSave {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for AccountInvoicesSettingsHostedPaymentMethodSave {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<AccountInvoicesSettingsHostedPaymentMethodSave> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(AccountInvoicesSettingsHostedPaymentMethodSave::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(AccountInvoicesSettingsHostedPaymentMethodSave);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for AccountInvoicesSettingsHostedPaymentMethodSave {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type AccountInvoicesSettingsHostedPaymentMethodSave = stripe_shared::HostedPaymentMethodSave;

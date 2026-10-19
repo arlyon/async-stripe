@@ -220,9 +220,9 @@ struct UpdateAccountCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_holder_type: Option<UpdateAccountCardAccountHolderType>,
+    account_holder_type: Option<stripe_shared::IssuingCardholderType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_type: Option<UpdateAccountCardAccountType>,
+    account_type: Option<stripe_shared::UpdateAccountCardAccountType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     address_city: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -276,158 +276,6 @@ impl UpdateAccountCardBuilder {
             metadata: None,
             name: None,
         }
-    }
-}
-/// The type of entity that holds the account. This can be either `individual` or `company`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateAccountCardAccountHolderType {
-    Company,
-    Individual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateAccountCardAccountHolderType {
-    pub fn as_str(&self) -> &str {
-        use UpdateAccountCardAccountHolderType::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountCardAccountHolderType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateAccountCardAccountHolderType::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountCardAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateAccountCardAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateAccountCardAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountCardAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateAccountCardAccountHolderType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateAccountCardAccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateAccountCardAccountHolderType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The bank account type.
-/// This can only be `checking` or `savings` in most countries.
-/// In Japan, this can only be `futsu` or `toza`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateAccountCardAccountType {
-    Checking,
-    Futsu,
-    Savings,
-    Toza,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateAccountCardAccountType {
-    pub fn as_str(&self) -> &str {
-        use UpdateAccountCardAccountType::*;
-        match self {
-            Checking => "checking",
-            Futsu => "futsu",
-            Savings => "savings",
-            Toza => "toza",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountCardAccountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateAccountCardAccountType::*;
-        match s {
-            "checking" => Ok(Checking),
-            "futsu" => Ok(Futsu),
-            "savings" => Ok(Savings),
-            "toza" => Ok(Toza),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountCardAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateAccountCardAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateAccountCardAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountCardAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateAccountCardAccountType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateAccountCardAccountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateAccountCardAccountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
@@ -519,7 +367,7 @@ impl UpdateAccountCard {
     /// The type of entity that holds the account. This can be either `individual` or `company`.
     pub fn account_holder_type(
         mut self,
-        account_holder_type: impl Into<UpdateAccountCardAccountHolderType>,
+        account_holder_type: impl Into<stripe_shared::IssuingCardholderType>,
     ) -> Self {
         self.inner.account_holder_type = Some(account_holder_type.into());
         self
@@ -527,7 +375,10 @@ impl UpdateAccountCard {
     /// The bank account type.
     /// This can only be `checking` or `savings` in most countries.
     /// In Japan, this can only be `futsu` or `toza`.
-    pub fn account_type(mut self, account_type: impl Into<UpdateAccountCardAccountType>) -> Self {
+    pub fn account_type(
+        mut self,
+        account_type: impl Into<stripe_shared::UpdateAccountCardAccountType>,
+    ) -> Self {
         self.inner.account_type = Some(account_type.into());
         self
     }
@@ -641,7 +492,7 @@ struct UpdateCustomerCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_holder_type: Option<UpdateCustomerCardAccountHolderType>,
+    account_holder_type: Option<stripe_shared::IssuingCardholderType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     address_city: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -691,78 +542,6 @@ impl UpdateCustomerCardBuilder {
             name: None,
             owner: None,
         }
-    }
-}
-/// The type of entity that holds the account. This can be either `individual` or `company`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateCustomerCardAccountHolderType {
-    Company,
-    Individual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateCustomerCardAccountHolderType {
-    pub fn as_str(&self) -> &str {
-        use UpdateCustomerCardAccountHolderType::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateCustomerCardAccountHolderType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateCustomerCardAccountHolderType::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCustomerCardAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateCustomerCardAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateCustomerCardAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateCustomerCardAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateCustomerCardAccountHolderType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateCustomerCardAccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateCustomerCardAccountHolderType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -866,7 +645,7 @@ impl UpdateCustomerCard {
     /// The type of entity that holds the account. This can be either `individual` or `company`.
     pub fn account_holder_type(
         mut self,
-        account_holder_type: impl Into<UpdateCustomerCardAccountHolderType>,
+        account_holder_type: impl Into<stripe_shared::IssuingCardholderType>,
     ) -> Self {
         self.inner.account_holder_type = Some(account_holder_type.into());
         self
@@ -1075,3 +854,12 @@ impl std::fmt::Debug for UpdateCustomerCardReturned {
         f.debug_struct("UpdateCustomerCardReturned").finish_non_exhaustive()
     }
 }
+
+/// The type of entity that holds the account. This can be either `individual` or `company`.
+pub type UpdateAccountCardAccountHolderType = stripe_shared::IssuingCardholderType;
+/// The bank account type.
+/// This can only be `checking` or `savings` in most countries.
+/// In Japan, this can only be `futsu` or `toza`.
+pub type UpdateAccountCardAccountType = stripe_shared::UpdateAccountCardAccountType;
+/// The type of entity that holds the account. This can be either `individual` or `company`.
+pub type UpdateCustomerCardAccountHolderType = stripe_shared::IssuingCardholderType;

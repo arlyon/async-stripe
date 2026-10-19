@@ -7,7 +7,7 @@ pub struct BillingCreditGrantsResourceAmount {
     pub monetary: Option<stripe_shared::BillingCreditGrantsResourceMonetaryAmount>,
     /// The type of this amount. We currently only support `monetary` billing credits.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: BillingCreditGrantsResourceAmountType,
+    pub type_: stripe_shared::CreateBillingCreditGrantAmountType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for BillingCreditGrantsResourceAmount {
@@ -18,7 +18,7 @@ impl std::fmt::Debug for BillingCreditGrantsResourceAmount {
 #[doc(hidden)]
 pub struct BillingCreditGrantsResourceAmountBuilder {
     monetary: Option<Option<stripe_shared::BillingCreditGrantsResourceMonetaryAmount>>,
-    type_: Option<BillingCreditGrantsResourceAmountType>,
+    type_: Option<stripe_shared::CreateBillingCreditGrantAmountType>,
 }
 
 #[allow(
@@ -112,87 +112,4 @@ const _: () = {
     }
 };
 /// The type of this amount. We currently only support `monetary` billing credits.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BillingCreditGrantsResourceAmountType {
-    Monetary,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BillingCreditGrantsResourceAmountType {
-    pub fn as_str(&self) -> &str {
-        use BillingCreditGrantsResourceAmountType::*;
-        match self {
-            Monetary => "monetary",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BillingCreditGrantsResourceAmountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BillingCreditGrantsResourceAmountType::*;
-        match s {
-            "monetary" => Ok(Monetary),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingCreditGrantsResourceAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BillingCreditGrantsResourceAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BillingCreditGrantsResourceAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BillingCreditGrantsResourceAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BillingCreditGrantsResourceAmountType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for BillingCreditGrantsResourceAmountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BillingCreditGrantsResourceAmountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<BillingCreditGrantsResourceAmountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BillingCreditGrantsResourceAmountType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(BillingCreditGrantsResourceAmountType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BillingCreditGrantsResourceAmountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type BillingCreditGrantsResourceAmountType = stripe_shared::CreateBillingCreditGrantAmountType;

@@ -11,7 +11,7 @@ pub struct ConfirmationTokensResourcePaymentMethodPreview {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
     /// The field defaults to “unspecified”.
-    pub allow_redisplay: Option<ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay>,
+    pub allow_redisplay: Option<stripe_shared::CardAllowRedisplay>,
     pub alma: Option<stripe_shared::PaymentMethodAlma>,
     pub amazon_pay: Option<stripe_shared::PaymentMethodAmazonPay>,
     pub au_becs_debit: Option<stripe_shared::PaymentMethodAuBecsDebit>,
@@ -69,7 +69,7 @@ pub struct ConfirmationTokensResourcePaymentMethodPreview {
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: ConfirmationTokensResourcePaymentMethodPreviewType,
+    pub type_: stripe_shared::PaymentMethodType,
     pub upi: Option<stripe_shared::PaymentMethodUpi>,
     pub us_bank_account: Option<stripe_shared::PaymentMethodUsBankAccount>,
     pub wechat_pay: Option<stripe_shared::PaymentMethodWechatPay>,
@@ -87,7 +87,7 @@ pub struct ConfirmationTokensResourcePaymentMethodPreviewBuilder {
     affirm: Option<Option<stripe_shared::PaymentMethodAffirm>>,
     afterpay_clearpay: Option<Option<stripe_shared::PaymentMethodAfterpayClearpay>>,
     alipay: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsAlipay>>,
-    allow_redisplay: Option<Option<ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay>>,
+    allow_redisplay: Option<Option<stripe_shared::CardAllowRedisplay>>,
     alma: Option<Option<stripe_shared::PaymentMethodAlma>>,
     amazon_pay: Option<Option<stripe_shared::PaymentMethodAmazonPay>>,
     au_becs_debit: Option<Option<stripe_shared::PaymentMethodAuBecsDebit>>,
@@ -139,7 +139,7 @@ pub struct ConfirmationTokensResourcePaymentMethodPreviewBuilder {
     sunbit: Option<Option<stripe_shared::PaymentMethodSunbit>>,
     swish: Option<Option<stripe_shared::PaymentMethodSwish>>,
     twint: Option<Option<stripe_shared::PaymentMethodTwint>>,
-    type_: Option<ConfirmationTokensResourcePaymentMethodPreviewType>,
+    type_: Option<stripe_shared::PaymentMethodType>,
     upi: Option<Option<stripe_shared::PaymentMethodUpi>>,
     us_bank_account: Option<Option<stripe_shared::PaymentMethodUsBankAccount>>,
     wechat_pay: Option<Option<stripe_shared::PaymentMethodWechatPay>>,
@@ -606,359 +606,9 @@ const _: () = {
 /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
 /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
 /// The field defaults to “unspecified”.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    Always,
-    Limited,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    pub fn as_str(&self) -> &str {
-        use ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay::*;
-        match self {
-            Always => "always",
-            Limited => "limited",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay::*;
-        match s {
-            "always" => Ok(Always),
-            "limited" => Ok(Limited),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay =
+    stripe_shared::CardAllowRedisplay;
 /// The type of the PaymentMethod.
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ConfirmationTokensResourcePaymentMethodPreviewType {
-    AcssDebit,
-    Affirm,
-    AfterpayClearpay,
-    Alipay,
-    Alma,
-    AmazonPay,
-    AuBecsDebit,
-    BacsDebit,
-    Bancontact,
-    Billie,
-    Bizum,
-    Blik,
-    Boleto,
-    Card,
-    CardPresent,
-    Cashapp,
-    Crypto,
-    Custom,
-    CustomerBalance,
-    Eps,
-    Fpx,
-    Giropay,
-    Grabpay,
-    Ideal,
-    InteracPresent,
-    KakaoPay,
-    Klarna,
-    Konbini,
-    KrCard,
-    Link,
-    MbWay,
-    Mobilepay,
-    Multibanco,
-    NaverPay,
-    NzBankAccount,
-    Oxxo,
-    P24,
-    PayByBank,
-    Payco,
-    Paynow,
-    Paypal,
-    Payto,
-    Pix,
-    Promptpay,
-    RevolutPay,
-    SamsungPay,
-    Satispay,
-    Scalapay,
-    SepaDebit,
-    Sofort,
-    Sunbit,
-    Swish,
-    Twint,
-    Upi,
-    UsBankAccount,
-    WechatPay,
-    Zip,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ConfirmationTokensResourcePaymentMethodPreviewType {
-    pub fn as_str(&self) -> &str {
-        use ConfirmationTokensResourcePaymentMethodPreviewType::*;
-        match self {
-            AcssDebit => "acss_debit",
-            Affirm => "affirm",
-            AfterpayClearpay => "afterpay_clearpay",
-            Alipay => "alipay",
-            Alma => "alma",
-            AmazonPay => "amazon_pay",
-            AuBecsDebit => "au_becs_debit",
-            BacsDebit => "bacs_debit",
-            Bancontact => "bancontact",
-            Billie => "billie",
-            Bizum => "bizum",
-            Blik => "blik",
-            Boleto => "boleto",
-            Card => "card",
-            CardPresent => "card_present",
-            Cashapp => "cashapp",
-            Crypto => "crypto",
-            Custom => "custom",
-            CustomerBalance => "customer_balance",
-            Eps => "eps",
-            Fpx => "fpx",
-            Giropay => "giropay",
-            Grabpay => "grabpay",
-            Ideal => "ideal",
-            InteracPresent => "interac_present",
-            KakaoPay => "kakao_pay",
-            Klarna => "klarna",
-            Konbini => "konbini",
-            KrCard => "kr_card",
-            Link => "link",
-            MbWay => "mb_way",
-            Mobilepay => "mobilepay",
-            Multibanco => "multibanco",
-            NaverPay => "naver_pay",
-            NzBankAccount => "nz_bank_account",
-            Oxxo => "oxxo",
-            P24 => "p24",
-            PayByBank => "pay_by_bank",
-            Payco => "payco",
-            Paynow => "paynow",
-            Paypal => "paypal",
-            Payto => "payto",
-            Pix => "pix",
-            Promptpay => "promptpay",
-            RevolutPay => "revolut_pay",
-            SamsungPay => "samsung_pay",
-            Satispay => "satispay",
-            Scalapay => "scalapay",
-            SepaDebit => "sepa_debit",
-            Sofort => "sofort",
-            Sunbit => "sunbit",
-            Swish => "swish",
-            Twint => "twint",
-            Upi => "upi",
-            UsBankAccount => "us_bank_account",
-            WechatPay => "wechat_pay",
-            Zip => "zip",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ConfirmationTokensResourcePaymentMethodPreviewType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ConfirmationTokensResourcePaymentMethodPreviewType::*;
-        match s {
-            "acss_debit" => Ok(AcssDebit),
-            "affirm" => Ok(Affirm),
-            "afterpay_clearpay" => Ok(AfterpayClearpay),
-            "alipay" => Ok(Alipay),
-            "alma" => Ok(Alma),
-            "amazon_pay" => Ok(AmazonPay),
-            "au_becs_debit" => Ok(AuBecsDebit),
-            "bacs_debit" => Ok(BacsDebit),
-            "bancontact" => Ok(Bancontact),
-            "billie" => Ok(Billie),
-            "bizum" => Ok(Bizum),
-            "blik" => Ok(Blik),
-            "boleto" => Ok(Boleto),
-            "card" => Ok(Card),
-            "card_present" => Ok(CardPresent),
-            "cashapp" => Ok(Cashapp),
-            "crypto" => Ok(Crypto),
-            "custom" => Ok(Custom),
-            "customer_balance" => Ok(CustomerBalance),
-            "eps" => Ok(Eps),
-            "fpx" => Ok(Fpx),
-            "giropay" => Ok(Giropay),
-            "grabpay" => Ok(Grabpay),
-            "ideal" => Ok(Ideal),
-            "interac_present" => Ok(InteracPresent),
-            "kakao_pay" => Ok(KakaoPay),
-            "klarna" => Ok(Klarna),
-            "konbini" => Ok(Konbini),
-            "kr_card" => Ok(KrCard),
-            "link" => Ok(Link),
-            "mb_way" => Ok(MbWay),
-            "mobilepay" => Ok(Mobilepay),
-            "multibanco" => Ok(Multibanco),
-            "naver_pay" => Ok(NaverPay),
-            "nz_bank_account" => Ok(NzBankAccount),
-            "oxxo" => Ok(Oxxo),
-            "p24" => Ok(P24),
-            "pay_by_bank" => Ok(PayByBank),
-            "payco" => Ok(Payco),
-            "paynow" => Ok(Paynow),
-            "paypal" => Ok(Paypal),
-            "payto" => Ok(Payto),
-            "pix" => Ok(Pix),
-            "promptpay" => Ok(Promptpay),
-            "revolut_pay" => Ok(RevolutPay),
-            "samsung_pay" => Ok(SamsungPay),
-            "satispay" => Ok(Satispay),
-            "scalapay" => Ok(Scalapay),
-            "sepa_debit" => Ok(SepaDebit),
-            "sofort" => Ok(Sofort),
-            "sunbit" => Ok(Sunbit),
-            "swish" => Ok(Swish),
-            "twint" => Ok(Twint),
-            "upi" => Ok(Upi),
-            "us_bank_account" => Ok(UsBankAccount),
-            "wechat_pay" => Ok(WechatPay),
-            "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ConfirmationTokensResourcePaymentMethodPreviewType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ConfirmationTokensResourcePaymentMethodPreviewType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodPreviewType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodPreviewType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ConfirmationTokensResourcePaymentMethodPreviewType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for ConfirmationTokensResourcePaymentMethodPreviewType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ConfirmationTokensResourcePaymentMethodPreviewType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<ConfirmationTokensResourcePaymentMethodPreviewType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            ConfirmationTokensResourcePaymentMethodPreviewType::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(ConfirmationTokensResourcePaymentMethodPreviewType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ConfirmationTokensResourcePaymentMethodPreviewType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type ConfirmationTokensResourcePaymentMethodPreviewType = stripe_shared::PaymentMethodType;

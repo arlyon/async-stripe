@@ -5,7 +5,7 @@
 pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
     /// The desired country code of the bank account information.
     /// Permitted values include: `DE`, `FR`, `IE`, or `NL`.
-    pub country: InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry,
+    pub country: stripe_shared::PaymentMethodOptionsCustomerBalanceEuBankAccountCountry,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
@@ -16,7 +16,7 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsCustomerBalanceBankTransferE
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferBuilder {
-    country: Option<InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry>,
+    country: Option<stripe_shared::PaymentMethodOptionsCustomerBalanceEuBankAccountCountry>,
 }
 
 #[allow(
@@ -109,128 +109,5 @@ const _: () = {
 };
 /// The desired country code of the bank account information.
 /// Permitted values include: `DE`, `FR`, `IE`, or `NL`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
-    Be,
-    De,
-    Es,
-    Fr,
-    Ie,
-    Nl,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
-    pub fn as_str(&self) -> &str {
-        use InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::*;
-        match self {
-            Be => "BE",
-            De => "DE",
-            Es => "ES",
-            Fr => "FR",
-            Ie => "IE",
-            Nl => "NL",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::*;
-        match s {
-            "BE" => Ok(Be),
-            "DE" => Ok(De),
-            "ES" => Ok(Es),
-            "FR" => Ok(Fr),
-            "IE" => Ok(Ie),
-            "NL" => Ok(Nl),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize
-    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::from_str(
-                s,
-            )
-            .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry =
+    stripe_shared::PaymentMethodOptionsCustomerBalanceEuBankAccountCountry;

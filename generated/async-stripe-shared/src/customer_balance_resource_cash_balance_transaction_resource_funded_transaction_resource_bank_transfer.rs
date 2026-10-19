@@ -11,7 +11,7 @@ pub reference: Option<String>,
         /// The funding method type used to fund the customer balance.
     /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-pub type_: CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType,
+pub type_: stripe_shared::CreateFundingInstructionsCustomerBankTransferType,
 pub us_bank_transfer: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransfer>,
 
 }
@@ -29,7 +29,7 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactio
 gb_bank_transfer: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceGbBankTransfer>>,
 jp_bank_transfer: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransfer>>,
 reference: Option<Option<String>>,
-type_: Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType>,
+type_: Option<stripe_shared::CreateFundingInstructionsCustomerBankTransferType>,
 us_bank_transfer: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransfer>>,
 
 }
@@ -152,95 +152,5 @@ self.us_bank_transfer.take(),
 };
 /// The funding method type used to fund the customer balance.
 /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType
-{
-    EuBankTransfer,
-    GbBankTransfer,
-    JpBankTransfer,
-    MxBankTransfer,
-    UsBankTransfer,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl
-    CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType
-{
-    pub fn as_str(&self) -> &str {
-        use CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::*;
-        match self {
-            EuBankTransfer => "eu_bank_transfer",
-            GbBankTransfer => "gb_bank_transfer",
-            JpBankTransfer => "jp_bank_transfer",
-            MxBankTransfer => "mx_bank_transfer",
-            UsBankTransfer => "us_bank_transfer",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::*;
-        match s {
-    "eu_bank_transfer" => Ok(EuBankTransfer),
-"gb_bank_transfer" => Ok(GbBankTransfer),
-"jp_bank_transfer" => Ok(JpBankTransfer),
-"mx_bank_transfer" => Ok(MxBankTransfer),
-"us_bank_transfer" => Ok(UsBankTransfer),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType"); Ok(Unknown(v.to_owned())) }
-
-        }
-    }
-}
-impl std::fmt::Display for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType =
+    stripe_shared::CreateFundingInstructionsCustomerBankTransferType;

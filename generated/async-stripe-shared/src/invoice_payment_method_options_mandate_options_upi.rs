@@ -8,7 +8,7 @@ pub struct InvoicePaymentMethodOptionsMandateOptionsUpi {
     /// One of `fixed` or `maximum`.
     /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
     /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-    pub amount_type: Option<InvoicePaymentMethodOptionsMandateOptionsUpiAmountType>,
+    pub amount_type: Option<stripe_shared::AmountType>,
     /// A description of the mandate or subscription that is meant to be displayed to the customer.
     pub description: Option<String>,
     /// End date of the mandate or subscription.
@@ -23,7 +23,7 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsMandateOptionsUpi {
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsMandateOptionsUpiBuilder {
     amount: Option<Option<i64>>,
-    amount_type: Option<Option<InvoicePaymentMethodOptionsMandateOptionsUpiAmountType>>,
+    amount_type: Option<Option<stripe_shared::AmountType>>,
     description: Option<Option<String>>,
     end_date: Option<Option<stripe_types::Timestamp>>,
 }
@@ -132,96 +132,4 @@ const _: () = {
 /// One of `fixed` or `maximum`.
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
 /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InvoicePaymentMethodOptionsMandateOptionsUpiAmountType {
-    Fixed,
-    Maximum,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InvoicePaymentMethodOptionsMandateOptionsUpiAmountType {
-    pub fn as_str(&self) -> &str {
-        use InvoicePaymentMethodOptionsMandateOptionsUpiAmountType::*;
-        match self {
-            Fixed => "fixed",
-            Maximum => "maximum",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InvoicePaymentMethodOptionsMandateOptionsUpiAmountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InvoicePaymentMethodOptionsMandateOptionsUpiAmountType::*;
-        match s {
-            "fixed" => Ok(Fixed),
-            "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoicePaymentMethodOptionsMandateOptionsUpiAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InvoicePaymentMethodOptionsMandateOptionsUpiAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InvoicePaymentMethodOptionsMandateOptionsUpiAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InvoicePaymentMethodOptionsMandateOptionsUpiAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(InvoicePaymentMethodOptionsMandateOptionsUpiAmountType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InvoicePaymentMethodOptionsMandateOptionsUpiAmountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for InvoicePaymentMethodOptionsMandateOptionsUpiAmountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InvoicePaymentMethodOptionsMandateOptionsUpiAmountType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InvoicePaymentMethodOptionsMandateOptionsUpiAmountType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(InvoicePaymentMethodOptionsMandateOptionsUpiAmountType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsMandateOptionsUpiAmountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InvoicePaymentMethodOptionsMandateOptionsUpiAmountType = stripe_shared::AmountType;

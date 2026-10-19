@@ -30,7 +30,7 @@ pub struct CheckoutSession {
     pub amount_total: Option<i64>,
     pub automatic_tax: stripe_shared::PaymentPagesCheckoutSessionAutomaticTax,
     /// Describes whether Checkout should collect the customer's billing address. Defaults to `auto`.
-    pub billing_address_collection: Option<stripe_shared::CheckoutSessionBillingAddressCollection>,
+    pub billing_address_collection: Option<stripe_shared::BillingAddressCollection>,
     pub branding_settings: Option<stripe_shared::PaymentPagesCheckoutSessionBrandingSettings>,
     /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
     pub cancel_url: Option<String>,
@@ -71,7 +71,7 @@ pub struct CheckoutSession {
     /// The ID of the account for this Session.
     pub customer_account: Option<String>,
     /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
-    pub customer_creation: Option<CheckoutSessionCustomerCreation>,
+    pub customer_creation: Option<stripe_shared::PaymentLinkCustomerCreation>,
     /// The customer details including the customer's tax exempt status and the customer's tax IDs.
     /// Customer's address details are not present on Sessions in `setup` mode.
     pub customer_details: Option<stripe_shared::PaymentPagesCheckoutSessionCustomerDetails>,
@@ -116,7 +116,7 @@ pub struct CheckoutSession {
     /// The optional items presented to the customer at checkout.
     pub optional_items: Option<Vec<stripe_shared::PaymentPagesCheckoutSessionOptionalItem>>,
     /// Where the user is coming from. This informs the optimizations that are applied to the session.
-    pub origin_context: Option<stripe_shared::CheckoutSessionOriginContext>,
+    pub origin_context: Option<stripe_shared::OriginContext>,
     /// The ID of the PaymentIntent for Checkout Sessions in `payment` mode.
     /// You can't confirm or cancel the PaymentIntent for a Checkout Session.
     /// To cancel, [expire the Checkout Session](https://docs.stripe.com/api/checkout/sessions/expire) instead.
@@ -125,7 +125,7 @@ pub struct CheckoutSession {
     pub payment_link: Option<stripe_types::Expandable<stripe_shared::PaymentLink>>,
     /// Configure whether a Checkout Session should collect a payment method for sessions with mode `payment`.
     /// Defaults to `always`.
-    pub payment_method_collection: Option<CheckoutSessionPaymentMethodCollection>,
+    pub payment_method_collection: Option<stripe_shared::PaymentLinkCustomerCreation>,
     /// Information about the payment method configuration used for this Checkout session if using dynamic payment methods.
     pub payment_method_configuration_details:
         Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>,
@@ -149,7 +149,7 @@ pub struct CheckoutSession {
     /// This parameter applies to `ui_mode: embedded_page`.
     /// Learn more about the [redirect behavior](https://docs.stripe.com/payments/checkout/custom-success-page?payment-ui=embedded-form) of embedded sessions.
     /// Defaults to `always`.
-    pub redirect_on_completion: Option<stripe_shared::CheckoutSessionRedirectOnCompletion>,
+    pub redirect_on_completion: Option<stripe_shared::RedirectOnCompletion>,
     /// Applies to Checkout Sessions with `ui_mode: embedded_page` or `ui_mode: elements`.
     /// The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method's app or site.
     pub return_url: Option<String>,
@@ -173,7 +173,7 @@ pub struct CheckoutSession {
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button. `submit_type` can only be
     /// specified on Checkout Sessions in `payment` mode. If blank or `auto`, `pay` is used.
-    pub submit_type: Option<stripe_shared::CheckoutSessionSubmitType>,
+    pub submit_type: Option<stripe_shared::SubmitType>,
     /// The ID of the [Subscription](https://docs.stripe.com/api/subscriptions) for Checkout Sessions in `subscription` mode.
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
     /// The URL the customer will be directed to after the payment or
@@ -183,7 +183,7 @@ pub struct CheckoutSession {
     /// Tax and discount details for the computed total amount.
     pub total_details: Option<stripe_shared::PaymentPagesCheckoutSessionTotalDetails>,
     /// The UI mode of the Session. Defaults to `hosted_page`.
-    pub ui_mode: Option<stripe_shared::CheckoutSessionUiMode>,
+    pub ui_mode: Option<stripe_shared::UiMode>,
     /// The URL to the Checkout Session.
     /// Applies to Checkout Sessions with `ui_mode: hosted_page`.
     /// Redirect customers to this URL to take them to Checkout.
@@ -208,8 +208,7 @@ pub struct CheckoutSessionBuilder {
     amount_subtotal: Option<Option<i64>>,
     amount_total: Option<Option<i64>>,
     automatic_tax: Option<stripe_shared::PaymentPagesCheckoutSessionAutomaticTax>,
-    billing_address_collection:
-        Option<Option<stripe_shared::CheckoutSessionBillingAddressCollection>>,
+    billing_address_collection: Option<Option<stripe_shared::BillingAddressCollection>>,
     branding_settings: Option<Option<stripe_shared::PaymentPagesCheckoutSessionBrandingSettings>>,
     cancel_url: Option<Option<String>>,
     client_reference_id: Option<Option<String>>,
@@ -226,7 +225,7 @@ pub struct CheckoutSessionBuilder {
     custom_text: Option<stripe_shared::PaymentPagesCheckoutSessionCustomText>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
     customer_account: Option<Option<String>>,
-    customer_creation: Option<Option<CheckoutSessionCustomerCreation>>,
+    customer_creation: Option<Option<stripe_shared::PaymentLinkCustomerCreation>>,
     customer_details: Option<Option<stripe_shared::PaymentPagesCheckoutSessionCustomerDetails>>,
     customer_email: Option<Option<String>>,
     discounts: Option<Option<Vec<stripe_shared::PaymentPagesCheckoutSessionDiscount>>>,
@@ -244,10 +243,10 @@ pub struct CheckoutSessionBuilder {
     mode: Option<stripe_shared::CheckoutSessionMode>,
     name_collection: Option<Option<stripe_shared::PaymentPagesCheckoutSessionNameCollection>>,
     optional_items: Option<Option<Vec<stripe_shared::PaymentPagesCheckoutSessionOptionalItem>>>,
-    origin_context: Option<Option<stripe_shared::CheckoutSessionOriginContext>>,
+    origin_context: Option<Option<stripe_shared::OriginContext>>,
     payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
     payment_link: Option<Option<stripe_types::Expandable<stripe_shared::PaymentLink>>>,
-    payment_method_collection: Option<Option<CheckoutSessionPaymentMethodCollection>>,
+    payment_method_collection: Option<Option<stripe_shared::PaymentLinkCustomerCreation>>,
     payment_method_configuration_details:
         Option<Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>>,
     payment_method_options: Option<Option<stripe_shared::CheckoutSessionPaymentMethodOptions>>,
@@ -258,7 +257,7 @@ pub struct CheckoutSessionBuilder {
         Option<Option<stripe_shared::PaymentPagesCheckoutSessionPhoneNumberCollection>>,
     presentment_details: Option<Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>>,
     recovered_from: Option<Option<String>>,
-    redirect_on_completion: Option<Option<stripe_shared::CheckoutSessionRedirectOnCompletion>>,
+    redirect_on_completion: Option<Option<stripe_shared::RedirectOnCompletion>>,
     return_url: Option<Option<String>>,
     saved_payment_method_options:
         Option<Option<stripe_shared::PaymentPagesCheckoutSessionSavedPaymentMethodOptions>>,
@@ -268,12 +267,12 @@ pub struct CheckoutSessionBuilder {
     shipping_cost: Option<Option<stripe_shared::PaymentPagesCheckoutSessionShippingCost>>,
     shipping_options: Option<Vec<stripe_shared::PaymentPagesCheckoutSessionShippingOption>>,
     status: Option<Option<stripe_shared::CheckoutSessionStatus>>,
-    submit_type: Option<Option<stripe_shared::CheckoutSessionSubmitType>>,
+    submit_type: Option<Option<stripe_shared::SubmitType>>,
     subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
     success_url: Option<Option<String>>,
     tax_id_collection: Option<Option<stripe_shared::PaymentPagesCheckoutSessionTaxIdCollection>>,
     total_details: Option<Option<stripe_shared::PaymentPagesCheckoutSessionTotalDetails>>,
-    ui_mode: Option<Option<stripe_shared::CheckoutSessionUiMode>>,
+    ui_mode: Option<Option<stripe_shared::UiMode>>,
     url: Option<Option<String>>,
     wallet_options: Option<Option<stripe_shared::CheckoutSessionWalletOptions>>,
 }
@@ -887,183 +886,6 @@ impl serde::Serialize for CheckoutSession {
         s.end()
     }
 }
-/// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutSessionCustomerCreation {
-    Always,
-    IfRequired,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutSessionCustomerCreation {
-    pub fn as_str(&self) -> &str {
-        use CheckoutSessionCustomerCreation::*;
-        match self {
-            Always => "always",
-            IfRequired => "if_required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutSessionCustomerCreation {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutSessionCustomerCreation::*;
-        match s {
-            "always" => Ok(Always),
-            "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionCustomerCreation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutSessionCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutSessionCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutSessionCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutSessionCustomerCreation)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutSessionCustomerCreation {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutSessionCustomerCreation {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionCustomerCreation> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CheckoutSessionCustomerCreation::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionCustomerCreation);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutSessionCustomerCreation {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Configure whether a Checkout Session should collect a payment method for sessions with mode `payment`.
-/// Defaults to `always`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutSessionPaymentMethodCollection {
-    Always,
-    IfRequired,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutSessionPaymentMethodCollection {
-    pub fn as_str(&self) -> &str {
-        use CheckoutSessionPaymentMethodCollection::*;
-        match self {
-            Always => "always",
-            IfRequired => "if_required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutSessionPaymentMethodCollection {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutSessionPaymentMethodCollection::*;
-        match s {
-            "always" => Ok(Always),
-            "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionPaymentMethodCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutSessionPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutSessionPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutSessionPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutSessionPaymentMethodCollection)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CheckoutSessionPaymentMethodCollection {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutSessionPaymentMethodCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentMethodCollection> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CheckoutSessionPaymentMethodCollection::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionPaymentMethodCollection);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutSessionPaymentMethodCollection {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The payment status of the Checkout Session, one of `paid`, `unpaid`, or `no_payment_required`.
 /// You can use this value to decide when to fulfill your customer's order.
 #[derive(Clone, Eq, PartialEq)]
@@ -1167,812 +989,29 @@ impl stripe_types::Object for CheckoutSession {
     }
 }
 stripe_types::def_id!(CheckoutSessionId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutSessionBillingAddressCollection {
-    Auto,
-    Required,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutSessionBillingAddressCollection {
-    pub fn as_str(&self) -> &str {
-        use CheckoutSessionBillingAddressCollection::*;
-        match self {
-            Auto => "auto",
-            Required => "required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutSessionBillingAddressCollection {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutSessionBillingAddressCollection::*;
-        match s {
-            "auto" => Ok(Auto),
-            "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionBillingAddressCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutSessionBillingAddressCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutSessionBillingAddressCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutSessionBillingAddressCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutSessionBillingAddressCollection)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CheckoutSessionBillingAddressCollection {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutSessionBillingAddressCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionBillingAddressCollection> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CheckoutSessionBillingAddressCollection::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionBillingAddressCollection);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutSessionBillingAddressCollection {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutSessionLocale {
-    Auto,
-    Bg,
-    Cs,
-    Da,
-    De,
-    El,
-    En,
-    EnMinusGb,
-    Es,
-    EsMinus419,
-    Et,
-    Fi,
-    Fil,
-    Fr,
-    FrMinusCa,
-    Hr,
-    Hu,
-    Id,
-    It,
-    Ja,
-    Ko,
-    Lt,
-    Lv,
-    Ms,
-    Mt,
-    Nb,
-    Nl,
-    Pl,
-    Pt,
-    PtMinusBr,
-    Ro,
-    Ru,
-    Sk,
-    Sl,
-    Sv,
-    Th,
-    Tr,
-    Vi,
-    Zh,
-    ZhMinusHk,
-    ZhMinusTw,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutSessionLocale {
-    pub fn as_str(&self) -> &str {
-        use CheckoutSessionLocale::*;
-        match self {
-            Auto => "auto",
-            Bg => "bg",
-            Cs => "cs",
-            Da => "da",
-            De => "de",
-            El => "el",
-            En => "en",
-            EnMinusGb => "en-GB",
-            Es => "es",
-            EsMinus419 => "es-419",
-            Et => "et",
-            Fi => "fi",
-            Fil => "fil",
-            Fr => "fr",
-            FrMinusCa => "fr-CA",
-            Hr => "hr",
-            Hu => "hu",
-            Id => "id",
-            It => "it",
-            Ja => "ja",
-            Ko => "ko",
-            Lt => "lt",
-            Lv => "lv",
-            Ms => "ms",
-            Mt => "mt",
-            Nb => "nb",
-            Nl => "nl",
-            Pl => "pl",
-            Pt => "pt",
-            PtMinusBr => "pt-BR",
-            Ro => "ro",
-            Ru => "ru",
-            Sk => "sk",
-            Sl => "sl",
-            Sv => "sv",
-            Th => "th",
-            Tr => "tr",
-            Vi => "vi",
-            Zh => "zh",
-            ZhMinusHk => "zh-HK",
-            ZhMinusTw => "zh-TW",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutSessionLocale {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutSessionLocale::*;
-        match s {
-            "auto" => Ok(Auto),
-            "bg" => Ok(Bg),
-            "cs" => Ok(Cs),
-            "da" => Ok(Da),
-            "de" => Ok(De),
-            "el" => Ok(El),
-            "en" => Ok(En),
-            "en-GB" => Ok(EnMinusGb),
-            "es" => Ok(Es),
-            "es-419" => Ok(EsMinus419),
-            "et" => Ok(Et),
-            "fi" => Ok(Fi),
-            "fil" => Ok(Fil),
-            "fr" => Ok(Fr),
-            "fr-CA" => Ok(FrMinusCa),
-            "hr" => Ok(Hr),
-            "hu" => Ok(Hu),
-            "id" => Ok(Id),
-            "it" => Ok(It),
-            "ja" => Ok(Ja),
-            "ko" => Ok(Ko),
-            "lt" => Ok(Lt),
-            "lv" => Ok(Lv),
-            "ms" => Ok(Ms),
-            "mt" => Ok(Mt),
-            "nb" => Ok(Nb),
-            "nl" => Ok(Nl),
-            "pl" => Ok(Pl),
-            "pt" => Ok(Pt),
-            "pt-BR" => Ok(PtMinusBr),
-            "ro" => Ok(Ro),
-            "ru" => Ok(Ru),
-            "sk" => Ok(Sk),
-            "sl" => Ok(Sl),
-            "sv" => Ok(Sv),
-            "th" => Ok(Th),
-            "tr" => Ok(Tr),
-            "vi" => Ok(Vi),
-            "zh" => Ok(Zh),
-            "zh-HK" => Ok(ZhMinusHk),
-            "zh-TW" => Ok(ZhMinusTw),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionLocale");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutSessionLocale {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutSessionLocale {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutSessionLocale {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutSessionLocale)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CheckoutSessionLocale {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutSessionLocale {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionLocale> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CheckoutSessionLocale::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionLocale);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutSessionLocale {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutSessionMode {
-    Payment,
-    Setup,
-    Subscription,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutSessionMode {
-    pub fn as_str(&self) -> &str {
-        use CheckoutSessionMode::*;
-        match self {
-            Payment => "payment",
-            Setup => "setup",
-            Subscription => "subscription",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutSessionMode {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutSessionMode::*;
-        match s {
-            "payment" => Ok(Payment),
-            "setup" => Ok(Setup),
-            "subscription" => Ok(Subscription),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionMode");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutSessionMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutSessionMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutSessionMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutSessionMode)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CheckoutSessionMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutSessionMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CheckoutSessionMode::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionMode);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutSessionMode {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutSessionOriginContext {
-    MobileApp,
-    Web,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutSessionOriginContext {
-    pub fn as_str(&self) -> &str {
-        use CheckoutSessionOriginContext::*;
-        match self {
-            MobileApp => "mobile_app",
-            Web => "web",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutSessionOriginContext {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutSessionOriginContext::*;
-        match s {
-            "mobile_app" => Ok(MobileApp),
-            "web" => Ok(Web),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionOriginContext"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutSessionOriginContext {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutSessionOriginContext {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutSessionOriginContext {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutSessionOriginContext)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CheckoutSessionOriginContext {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutSessionOriginContext {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionOriginContext> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CheckoutSessionOriginContext::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionOriginContext);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutSessionOriginContext {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutSessionRedirectOnCompletion {
-    Always,
-    IfRequired,
-    Never,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutSessionRedirectOnCompletion {
-    pub fn as_str(&self) -> &str {
-        use CheckoutSessionRedirectOnCompletion::*;
-        match self {
-            Always => "always",
-            IfRequired => "if_required",
-            Never => "never",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutSessionRedirectOnCompletion {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutSessionRedirectOnCompletion::*;
-        match s {
-            "always" => Ok(Always),
-            "if_required" => Ok(IfRequired),
-            "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionRedirectOnCompletion"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutSessionRedirectOnCompletion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutSessionRedirectOnCompletion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutSessionRedirectOnCompletion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutSessionRedirectOnCompletion)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CheckoutSessionRedirectOnCompletion {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutSessionRedirectOnCompletion {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionRedirectOnCompletion> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CheckoutSessionRedirectOnCompletion::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionRedirectOnCompletion);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutSessionRedirectOnCompletion {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutSessionStatus {
-    Complete,
-    Expired,
-    Open,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutSessionStatus {
-    pub fn as_str(&self) -> &str {
-        use CheckoutSessionStatus::*;
-        match self {
-            Complete => "complete",
-            Expired => "expired",
-            Open => "open",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutSessionStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutSessionStatus::*;
-        match s {
-            "complete" => Ok(Complete),
-            "expired" => Ok(Expired),
-            "open" => Ok(Open),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutSessionStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutSessionStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutSessionStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutSessionStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CheckoutSessionStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutSessionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CheckoutSessionStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutSessionStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutSessionSubmitType {
-    Auto,
-    Book,
-    Donate,
-    Pay,
-    Subscribe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutSessionSubmitType {
-    pub fn as_str(&self) -> &str {
-        use CheckoutSessionSubmitType::*;
-        match self {
-            Auto => "auto",
-            Book => "book",
-            Donate => "donate",
-            Pay => "pay",
-            Subscribe => "subscribe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutSessionSubmitType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutSessionSubmitType::*;
-        match s {
-            "auto" => Ok(Auto),
-            "book" => Ok(Book),
-            "donate" => Ok(Donate),
-            "pay" => Ok(Pay),
-            "subscribe" => Ok(Subscribe),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionSubmitType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutSessionSubmitType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutSessionSubmitType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutSessionSubmitType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutSessionSubmitType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CheckoutSessionSubmitType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutSessionSubmitType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionSubmitType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CheckoutSessionSubmitType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionSubmitType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutSessionSubmitType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CheckoutSessionUiMode {
-    Elements,
-    EmbeddedPage,
-    Form,
-    HostedPage,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CheckoutSessionUiMode {
-    pub fn as_str(&self) -> &str {
-        use CheckoutSessionUiMode::*;
-        match self {
-            Elements => "elements",
-            EmbeddedPage => "embedded_page",
-            Form => "form",
-            HostedPage => "hosted_page",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CheckoutSessionUiMode {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CheckoutSessionUiMode::*;
-        match s {
-            "elements" => Ok(Elements),
-            "embedded_page" => Ok(EmbeddedPage),
-            "form" => Ok(Form),
-            "hosted_page" => Ok(HostedPage),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionUiMode");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CheckoutSessionUiMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CheckoutSessionUiMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CheckoutSessionUiMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CheckoutSessionUiMode)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CheckoutSessionUiMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CheckoutSessionUiMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CheckoutSessionUiMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CheckoutSessionUiMode::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionUiMode);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CheckoutSessionUiMode {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Describes whether Checkout should collect the customer's billing address. Defaults to `auto`.
+pub type CheckoutSessionBillingAddressCollection = stripe_shared::BillingAddressCollection;
+/// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
+pub type CheckoutSessionCustomerCreation = stripe_shared::PaymentLinkCustomerCreation;
+/// The IETF language tag of the locale Checkout is displayed in.
+/// If blank or `auto`, the browser's locale is used.
+pub type CheckoutSessionLocale = stripe_shared::CheckoutSessionLocale;
+/// The mode of the Checkout Session.
+pub type CheckoutSessionMode = stripe_shared::CheckoutSessionMode;
+/// Where the user is coming from. This informs the optimizations that are applied to the session.
+pub type CheckoutSessionOriginContext = stripe_shared::OriginContext;
+/// Configure whether a Checkout Session should collect a payment method for sessions with mode `payment`.
+/// Defaults to `always`.
+pub type CheckoutSessionPaymentMethodCollection = stripe_shared::PaymentLinkCustomerCreation;
+/// This parameter applies to `ui_mode: embedded_page`.
+/// Learn more about the [redirect behavior](https://docs.stripe.com/payments/checkout/custom-success-page?payment-ui=embedded-form) of embedded sessions.
+/// Defaults to `always`.
+pub type CheckoutSessionRedirectOnCompletion = stripe_shared::RedirectOnCompletion;
+/// The status of the Checkout Session, one of `open`, `complete`, or `expired`.
+pub type CheckoutSessionStatus = stripe_shared::CheckoutSessionStatus;
+/// Describes the type of transaction being performed by Checkout in order to customize
+/// relevant text on the page, such as the submit button. `submit_type` can only be
+/// specified on Checkout Sessions in `payment` mode. If blank or `auto`, `pay` is used.
+pub type CheckoutSessionSubmitType = stripe_shared::SubmitType;
+/// The UI mode of the Session. Defaults to `hosted_page`.
+pub type CheckoutSessionUiMode = stripe_shared::UiMode;

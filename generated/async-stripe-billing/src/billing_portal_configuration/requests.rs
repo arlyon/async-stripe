@@ -323,8 +323,7 @@ impl Default for CreateBillingPortalConfigurationFeatures {
 pub struct CreateBillingPortalConfigurationFeaturesCustomerUpdate {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_updates:
-        Option<Vec<CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates>>,
+    pub allowed_updates: Option<Vec<stripe_shared::AllowedUpdates>>,
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
@@ -340,95 +339,6 @@ impl CreateBillingPortalConfigurationFeaturesCustomerUpdate {
         Self { allowed_updates: None, enabled: enabled.into() }
     }
 }
-/// The types of customer updates that are supported. When empty, customers are not updateable.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    Address,
-    Email,
-    Name,
-    Phone,
-    Shipping,
-    TaxId,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates::*;
-        match self {
-            Address => "address",
-            Email => "email",
-            Name => "name",
-            Phone => "phone",
-            Shipping => "shipping",
-            TaxId => "tax_id",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates::*;
-        match s {
-            "address" => Ok(Address),
-            "email" => Ok(Email),
-            "name" => Ok(Name),
-            "phone" => Ok(Phone),
-            "shipping" => Ok(Shipping),
-            "tax_id" => Ok(TaxId),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Information about canceling subscriptions in the portal.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -442,14 +352,13 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
     pub enabled: bool,
     /// Whether to cancel subscriptions immediately or at the end of the billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode>,
+    pub mode: Option<stripe_shared::PortalSubscriptionCancelMode>,
     /// Whether to create prorations when canceling subscriptions.
     /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
     /// Passing `always_invoice` will result in an error.
     /// No prorations are generated when canceling a subscription at the end of its natural billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior:
-        Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
+    pub proration_behavior: Option<stripe_shared::ProrationBehavior>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
@@ -479,8 +388,7 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellatio
     #[serde(skip_serializing_if = "Option::is_none")]
     pub feedback_options: Option<Vec<String>>,
     /// Which cancellation reasons will be given as options to the customer.
-    pub options:
-        Vec<CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions>,
+    pub options: Vec<stripe_shared::CancellationDetailsFeedback>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug
@@ -496,286 +404,9 @@ impl std::fmt::Debug
 impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     pub fn new(
         enabled: impl Into<bool>,
-        options: impl Into<
-            Vec<
-                CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions,
-            >,
-        >,
+        options: impl Into<Vec<stripe_shared::CancellationDetailsFeedback>>,
     ) -> Self {
         Self { enabled: enabled.into(), feedback_options: None, options: options.into() }
-    }
-}
-/// Which cancellation reasons will be given as options to the customer.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
-    CustomerService,
-    LowQuality,
-    MissingFeatures,
-    Other,
-    SwitchedService,
-    TooComplex,
-    TooExpensive,
-    Unused,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
-        match self {
-            CustomerService => "customer_service",
-            LowQuality => "low_quality",
-            MissingFeatures => "missing_features",
-            Other => "other",
-            SwitchedService => "switched_service",
-            TooComplex => "too_complex",
-            TooExpensive => "too_expensive",
-            Unused => "unused",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
-        match s {
-            "customer_service" => Ok(CustomerService),
-            "low_quality" => Ok(LowQuality),
-            "missing_features" => Ok(MissingFeatures),
-            "other" => Ok(Other),
-            "switched_service" => Ok(SwitchedService),
-            "too_complex" => Ok(TooComplex),
-            "too_expensive" => Ok(TooExpensive),
-            "unused" => Ok(Unused),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Whether to cancel subscriptions immediately or at the end of the billing period.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    AtPeriodEnd,
-    Immediately,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode::*;
-        match self {
-            AtPeriodEnd => "at_period_end",
-            Immediately => "immediately",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode::*;
-        match s {
-            "at_period_end" => Ok(AtPeriodEnd),
-            "immediately" => Ok(Immediately),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Whether to create prorations when canceling subscriptions.
-/// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
-/// Passing `always_invoice` will result in an error.
-/// No prorations are generated when canceling a subscription at the end of its natural billing period.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
-        match self {
-            AlwaysInvoice => "always_invoice",
-            CreateProrations => "create_prorations",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
-        match s {
-            "always_invoice" => Ok(AlwaysInvoice),
-            "create_prorations" => Ok(CreateProrations),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Information about updating subscriptions in the portal.
@@ -788,13 +419,10 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
     /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_cycle_anchor:
-        Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor>,
+    pub billing_cycle_anchor: Option<stripe_shared::BillingCycleAnchor>,
     /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_allowed_updates: Option<
-        Vec<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates>,
-    >,
+    pub default_allowed_updates: Option<Vec<stripe_shared::DefaultAllowedUpdates>>,
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// The list of up to 10 products that support subscription updates.
@@ -803,16 +431,14 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior:
-        Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
+    pub proration_behavior: Option<stripe_shared::ProrationBehavior>,
     /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule_at_period_end:
         Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd>,
     /// The behavior when updating a subscription that is trialing.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_update_behavior:
-        Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior>,
+    pub trial_update_behavior: Option<stripe_shared::TrialUpdateBehavior>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
@@ -834,277 +460,6 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
         }
     }
 }
-/// Determines the value to use for the billing cycle anchor on subscription updates.
-/// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
-/// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
-/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor {
-    Now,
-    Unchanged,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor::*;
-        match self {
-            Now => "now",
-            Unchanged => "unchanged",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor::*;
-        match s {
-            "now" => Ok(Now),
-            "unchanged" => Ok(Unchanged),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
-    Price,
-    PromotionCode,
-    Quantity,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
-        match self {
-            Price => "price",
-            PromotionCode => "promotion_code",
-            Quantity => "quantity",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
-        match s {
-            "price" => Ok(Price),
-            "promotion_code" => Ok(PromotionCode),
-            "quantity" => Ok(Quantity),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Determines how to handle prorations resulting from subscription updates.
-/// Valid values are `none`, `create_prorations`, and `always_invoice`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
-        match self {
-            AlwaysInvoice => "always_invoice",
-            CreateProrations => "create_prorations",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
-        match s {
-            "always_invoice" => Ok(AlwaysInvoice),
-            "create_prorations" => Ok(CreateProrations),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1113,11 +468,7 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtP
     /// List of conditions.
     /// When any condition is true, the update will be scheduled at the end of the current period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<
-        Vec<
-            CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions,
-        >,
-    >,
+    pub conditions: Option<Vec<ScheduleUpdateAtPeriodEndConditionParam>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug
@@ -1138,204 +489,6 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodE
 impl Default for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// List of conditions.
-/// When any condition is true, the update will be scheduled at the end of the current period.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
-    /// The type of condition.
-    #[serde(rename = "type")]
-    pub type_:
-        CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions").finish_non_exhaustive()
-    }
-}
-impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
-    pub fn new(
-        type_: impl Into<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType>,
-    ) -> Self {
-        Self { type_: type_.into() }
-    }
-}
-/// The type of condition.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    DecreasingItemAmount,
-    ShorteningInterval,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType::*;
-        match self {
-            DecreasingItemAmount => "decreasing_item_amount",
-            ShorteningInterval => "shortening_interval",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType::*;
-        match s {
-            "decreasing_item_amount" => Ok(DecreasingItemAmount),
-            "shortening_interval" => Ok(ShorteningInterval),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The behavior when updating a subscription that is trialing.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior {
-    ContinueTrial,
-    EndTrial,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior::*;
-        match self {
-            ContinueTrial => "continue_trial",
-            EndTrial => "end_trial",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior::*;
-        match s {
-            "continue_trial" => Ok(ContinueTrial),
-            "end_trial" => Ok(EndTrial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The hosted login page for this configuration.
@@ -1568,8 +721,7 @@ impl Default for UpdateBillingPortalConfigurationFeatures {
 pub struct UpdateBillingPortalConfigurationFeaturesCustomerUpdate {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_updates:
-        Option<Vec<UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates>>,
+    pub allowed_updates: Option<Vec<stripe_shared::AllowedUpdates>>,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -1591,95 +743,6 @@ impl Default for UpdateBillingPortalConfigurationFeaturesCustomerUpdate {
         Self::new()
     }
 }
-/// The types of customer updates that are supported. When empty, customers are not updateable.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    Address,
-    Email,
-    Name,
-    Phone,
-    Shipping,
-    TaxId,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    pub fn as_str(&self) -> &str {
-        use UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates::*;
-        match self {
-            Address => "address",
-            Email => "email",
-            Name => "name",
-            Phone => "phone",
-            Shipping => "shipping",
-            TaxId => "tax_id",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates::*;
-        match s {
-            "address" => Ok(Address),
-            "email" => Ok(Email),
-            "name" => Ok(Name),
-            "phone" => Ok(Phone),
-            "shipping" => Ok(Shipping),
-            "tax_id" => Ok(TaxId),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Information about canceling subscriptions in the portal.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1694,14 +757,13 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     pub enabled: Option<bool>,
     /// Whether to cancel subscriptions immediately or at the end of the billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode>,
+    pub mode: Option<stripe_shared::PortalSubscriptionCancelMode>,
     /// Whether to create prorations when canceling subscriptions.
     /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
     /// Passing `always_invoice` will result in an error.
     /// No prorations are generated when canceling a subscription at the end of its natural billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior:
-        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
+    pub proration_behavior: Option<stripe_shared::ProrationBehavior>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
@@ -1732,9 +794,7 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellatio
     pub feedback_options: Option<Vec<String>>,
     /// Which cancellation reasons will be given as options to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<
-        Vec<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions>,
-    >,
+    pub options: Option<Vec<stripe_shared::CancellationDetailsFeedback>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug
@@ -1752,279 +812,6 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReaso
         Self { enabled: enabled.into(), feedback_options: None, options: None }
     }
 }
-/// Which cancellation reasons will be given as options to the customer.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
-    CustomerService,
-    LowQuality,
-    MissingFeatures,
-    Other,
-    SwitchedService,
-    TooComplex,
-    TooExpensive,
-    Unused,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
-    pub fn as_str(&self) -> &str {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
-        match self {
-            CustomerService => "customer_service",
-            LowQuality => "low_quality",
-            MissingFeatures => "missing_features",
-            Other => "other",
-            SwitchedService => "switched_service",
-            TooComplex => "too_complex",
-            TooExpensive => "too_expensive",
-            Unused => "unused",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
-        match s {
-            "customer_service" => Ok(CustomerService),
-            "low_quality" => Ok(LowQuality),
-            "missing_features" => Ok(MissingFeatures),
-            "other" => Ok(Other),
-            "switched_service" => Ok(SwitchedService),
-            "too_complex" => Ok(TooComplex),
-            "too_expensive" => Ok(TooExpensive),
-            "unused" => Ok(Unused),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Whether to cancel subscriptions immediately or at the end of the billing period.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    AtPeriodEnd,
-    Immediately,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    pub fn as_str(&self) -> &str {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode::*;
-        match self {
-            AtPeriodEnd => "at_period_end",
-            Immediately => "immediately",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode::*;
-        match s {
-            "at_period_end" => Ok(AtPeriodEnd),
-            "immediately" => Ok(Immediately),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Whether to create prorations when canceling subscriptions.
-/// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
-/// Passing `always_invoice` will result in an error.
-/// No prorations are generated when canceling a subscription at the end of its natural billing period.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
-        match self {
-            AlwaysInvoice => "always_invoice",
-            CreateProrations => "create_prorations",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
-        match s {
-            "always_invoice" => Ok(AlwaysInvoice),
-            "create_prorations" => Ok(CreateProrations),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Information about updating subscriptions in the portal.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -2035,13 +822,10 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
     /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_cycle_anchor:
-        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor>,
+    pub billing_cycle_anchor: Option<stripe_shared::BillingCycleAnchor>,
     /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_allowed_updates: Option<
-        Vec<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates>,
-    >,
+    pub default_allowed_updates: Option<Vec<stripe_shared::DefaultAllowedUpdates>>,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -2051,16 +835,14 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior:
-        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
+    pub proration_behavior: Option<stripe_shared::ProrationBehavior>,
     /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule_at_period_end:
         Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd>,
     /// The behavior when updating a subscription that is trialing.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_update_behavior:
-        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior>,
+    pub trial_update_behavior: Option<stripe_shared::TrialUpdateBehavior>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
@@ -2087,277 +869,6 @@ impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
         Self::new()
     }
 }
-/// Determines the value to use for the billing cycle anchor on subscription updates.
-/// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
-/// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
-/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor {
-    Now,
-    Unchanged,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor {
-    pub fn as_str(&self) -> &str {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor::*;
-        match self {
-            Now => "now",
-            Unchanged => "unchanged",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor::*;
-        match s {
-            "now" => Ok(Now),
-            "unchanged" => Ok(Unchanged),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
-    Price,
-    PromotionCode,
-    Quantity,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
-    pub fn as_str(&self) -> &str {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
-        match self {
-            Price => "price",
-            PromotionCode => "promotion_code",
-            Quantity => "quantity",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
-        match s {
-            "price" => Ok(Price),
-            "promotion_code" => Ok(PromotionCode),
-            "quantity" => Ok(Quantity),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Determines how to handle prorations resulting from subscription updates.
-/// Valid values are `none`, `create_prorations`, and `always_invoice`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
-        match self {
-            AlwaysInvoice => "always_invoice",
-            CreateProrations => "create_prorations",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
-        match s {
-            "always_invoice" => Ok(AlwaysInvoice),
-            "create_prorations" => Ok(CreateProrations),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -2366,11 +877,7 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtP
     /// List of conditions.
     /// When any condition is true, the update will be scheduled at the end of the current period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<
-        Vec<
-            UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions,
-        >,
-    >,
+    pub conditions: Option<Vec<ScheduleUpdateAtPeriodEndConditionParam>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug
@@ -2391,204 +898,6 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodE
 impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// List of conditions.
-/// When any condition is true, the update will be scheduled at the end of the current period.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
-    /// The type of condition.
-    #[serde(rename = "type")]
-    pub type_:
-        UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions").finish_non_exhaustive()
-    }
-}
-impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
-    pub fn new(
-        type_: impl Into<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType>,
-    ) -> Self {
-        Self { type_: type_.into() }
-    }
-}
-/// The type of condition.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    DecreasingItemAmount,
-    ShorteningInterval,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType {
-    pub fn as_str(&self) -> &str {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType::*;
-        match self {
-            DecreasingItemAmount => "decreasing_item_amount",
-            ShorteningInterval => "shortening_interval",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType::*;
-        match s {
-            "decreasing_item_amount" => Ok(DecreasingItemAmount),
-            "shortening_interval" => Ok(ShorteningInterval),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The behavior when updating a subscription that is trialing.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior {
-    ContinueTrial,
-    EndTrial,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior {
-    pub fn as_str(&self) -> &str {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior::*;
-        match self {
-            ContinueTrial => "continue_trial",
-            EndTrial => "end_trial",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior::*;
-        match s {
-            "continue_trial" => Ok(ContinueTrial),
-            "end_trial" => Ok(EndTrial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The hosted login page for this configuration.
@@ -2792,6 +1101,27 @@ impl SubscriptionUpdateProductAdjustableQuantityParam {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+pub struct ScheduleUpdateAtPeriodEndConditionParam {
+    /// The type of condition.
+    #[serde(rename = "type")]
+    pub type_: stripe_shared::PortalResourceScheduleUpdateAtPeriodEndConditionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ScheduleUpdateAtPeriodEndConditionParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ScheduleUpdateAtPeriodEndConditionParam").finish_non_exhaustive()
+    }
+}
+impl ScheduleUpdateAtPeriodEndConditionParam {
+    pub fn new(
+        type_: impl Into<stripe_shared::PortalResourceScheduleUpdateAtPeriodEndConditionType>,
+    ) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SubscriptionUpdateProductParam {
     /// Control whether the quantity of the product can be adjusted.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2812,3 +1142,99 @@ impl SubscriptionUpdateProductParam {
         Self { adjustable_quantity: None, prices: prices.into(), product: product.into() }
     }
 }
+/// The types of customer updates that are supported. When empty, customers are not updateable.
+pub type CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates =
+    stripe_shared::AllowedUpdates;
+/// Which cancellation reasons will be given as options to the customer.
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions =
+    stripe_shared::CancellationDetailsFeedback;
+/// Whether to cancel subscriptions immediately or at the end of the billing period.
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode =
+    stripe_shared::PortalSubscriptionCancelMode;
+/// Whether to create prorations when canceling subscriptions.
+/// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
+/// Passing `always_invoice` will result in an error.
+/// No prorations are generated when canceling a subscription at the end of its natural billing period.
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior =
+    stripe_shared::ProrationBehavior;
+/// Determines the value to use for the billing cycle anchor on subscription updates.
+/// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
+/// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor =
+    stripe_shared::BillingCycleAnchor;
+/// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates =
+    stripe_shared::DefaultAllowedUpdates;
+/// Determines how to handle prorations resulting from subscription updates.
+/// Valid values are `none`, `create_prorations`, and `always_invoice`.
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior =
+    stripe_shared::ProrationBehavior;
+/// The type of condition.
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType =
+    stripe_shared::PortalResourceScheduleUpdateAtPeriodEndConditionType;
+/// The behavior when updating a subscription that is trialing.
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior =
+    stripe_shared::TrialUpdateBehavior;
+/// The types of customer updates that are supported. When empty, customers are not updateable.
+pub type UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates =
+    stripe_shared::AllowedUpdates;
+/// Which cancellation reasons will be given as options to the customer.
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions =
+    stripe_shared::CancellationDetailsFeedback;
+/// Whether to cancel subscriptions immediately or at the end of the billing period.
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode =
+    stripe_shared::PortalSubscriptionCancelMode;
+/// Whether to create prorations when canceling subscriptions.
+/// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
+/// Passing `always_invoice` will result in an error.
+/// No prorations are generated when canceling a subscription at the end of its natural billing period.
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior =
+    stripe_shared::ProrationBehavior;
+/// Determines the value to use for the billing cycle anchor on subscription updates.
+/// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
+/// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor =
+    stripe_shared::BillingCycleAnchor;
+/// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates =
+    stripe_shared::DefaultAllowedUpdates;
+/// Determines how to handle prorations resulting from subscription updates.
+/// Valid values are `none`, `create_prorations`, and `always_invoice`.
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior =
+    stripe_shared::ProrationBehavior;
+/// The type of condition.
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType =
+    stripe_shared::PortalResourceScheduleUpdateAtPeriodEndConditionType;
+/// The behavior when updating a subscription that is trialing.
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior =
+    stripe_shared::TrialUpdateBehavior;
+/// Information about showing the billing history in the portal.
+pub type CreateBillingPortalConfigurationFeaturesInvoiceHistory = InvoiceListParam;
+/// Information about updating payment methods in the portal.
+pub type CreateBillingPortalConfigurationFeaturesPaymentMethodUpdate = PaymentMethodUpdateParam;
+/// Control whether the quantity of the product can be adjusted.
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProductsAdjustableQuantity =
+    SubscriptionUpdateProductAdjustableQuantityParam;
+/// List of conditions.
+/// When any condition is true, the update will be scheduled at the end of the current period.
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions =
+    ScheduleUpdateAtPeriodEndConditionParam;
+/// Information about showing the billing history in the portal.
+pub type UpdateBillingPortalConfigurationFeaturesInvoiceHistory = InvoiceListParam;
+/// Information about updating payment methods in the portal.
+pub type UpdateBillingPortalConfigurationFeaturesPaymentMethodUpdate = PaymentMethodUpdateParam;
+/// Control whether the quantity of the product can be adjusted.
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProductsAdjustableQuantity =
+    SubscriptionUpdateProductAdjustableQuantityParam;
+/// List of conditions.
+/// When any condition is true, the update will be scheduled at the end of the current period.
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions =
+    ScheduleUpdateAtPeriodEndConditionParam;
+/// The list of up to 10 products that support subscription updates.
+pub type CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProducts =
+    SubscriptionUpdateProductParam;
+/// The list of up to 10 products that support subscription updates.
+pub type UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProducts =
+    SubscriptionUpdateProductParam;

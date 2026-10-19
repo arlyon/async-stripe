@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsUsBankAccountMandateOptions {
     /// Mandate collection method
-    pub collection_method: Option<PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>,
+    pub collection_method: Option<stripe_shared::MandateUsBankAccountCollectionMethod>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodOptionsUsBankAccountMandateOptions {
@@ -14,8 +14,7 @@ impl std::fmt::Debug for PaymentMethodOptionsUsBankAccountMandateOptions {
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsUsBankAccountMandateOptionsBuilder {
-    collection_method:
-        Option<Option<PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>>,
+    collection_method: Option<Option<stripe_shared::MandateUsBankAccountCollectionMethod>>,
 }
 
 #[allow(
@@ -107,97 +106,5 @@ const _: () = {
     }
 };
 /// Mandate collection method
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    Paper,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
-        match self {
-            Paper => "paper",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
-        match s {
-            "paper" => Ok(Paper),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod =
+    stripe_shared::MandateUsBankAccountCollectionMethod;

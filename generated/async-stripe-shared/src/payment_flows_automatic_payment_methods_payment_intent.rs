@@ -7,7 +7,7 @@ pub struct PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
     ///
     /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
     /// To [confirm](https://docs.stripe.com/api/payment_intents/confirm) this PaymentIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the payment.
-    pub allow_redirects: Option<PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects>,
+    pub allow_redirects: Option<stripe_shared::MandatePixAmountIncludesIof>,
     /// Automatically calculates compatible payment methods
     pub enabled: bool,
 }
@@ -19,7 +19,7 @@ impl std::fmt::Debug for PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
 }
 #[doc(hidden)]
 pub struct PaymentFlowsAutomaticPaymentMethodsPaymentIntentBuilder {
-    allow_redirects: Option<Option<PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects>>,
+    allow_redirects: Option<Option<stripe_shared::MandatePixAmountIncludesIof>>,
     enabled: Option<bool>,
 }
 
@@ -119,100 +119,5 @@ const _: () = {
 ///
 /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
 /// To [confirm](https://docs.stripe.com/api/payment_intents/confirm) this PaymentIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
-    Always,
-    Never,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
-    pub fn as_str(&self) -> &str {
-        use PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects::*;
-        match self {
-            Always => "always",
-            Never => "never",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects::*;
-        match s {
-            "always" => Ok(Always),
-            "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects =
+    stripe_shared::MandatePixAmountIncludesIof;

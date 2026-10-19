@@ -17,7 +17,7 @@ pub struct PaymentMethodDetailsBancontact {
     pub iban_last4: Option<String>,
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     /// Can be one of `en`, `de`, `fr`, or `nl`
-    pub preferred_language: Option<PaymentMethodDetailsBancontactPreferredLanguage>,
+    pub preferred_language: Option<stripe_shared::PreferredLanguage>,
     /// Owner's verified full name. Values are verified or provided by Bancontact directly
     /// (if supported) at the time of authorization or settlement. They cannot be set or mutated.
     pub verified_name: Option<String>,
@@ -36,7 +36,7 @@ pub struct PaymentMethodDetailsBancontactBuilder {
     generated_sepa_debit: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
     generated_sepa_debit_mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
     iban_last4: Option<Option<String>>,
-    preferred_language: Option<Option<PaymentMethodDetailsBancontactPreferredLanguage>>,
+    preferred_language: Option<Option<stripe_shared::PreferredLanguage>>,
     verified_name: Option<Option<String>>,
 }
 
@@ -185,98 +185,4 @@ const _: () = {
 };
 /// Preferred language of the Bancontact authorization page that the customer is redirected to.
 /// Can be one of `en`, `de`, `fr`, or `nl`
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodDetailsBancontactPreferredLanguage {
-    De,
-    En,
-    Fr,
-    Nl,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodDetailsBancontactPreferredLanguage {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodDetailsBancontactPreferredLanguage::*;
-        match self {
-            De => "de",
-            En => "en",
-            Fr => "fr",
-            Nl => "nl",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodDetailsBancontactPreferredLanguage {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodDetailsBancontactPreferredLanguage::*;
-        match s {
-            "de" => Ok(De),
-            "en" => Ok(En),
-            "fr" => Ok(Fr),
-            "nl" => Ok(Nl),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsBancontactPreferredLanguage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodDetailsBancontactPreferredLanguage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodDetailsBancontactPreferredLanguage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodDetailsBancontactPreferredLanguage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodDetailsBancontactPreferredLanguage))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodDetailsBancontactPreferredLanguage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodDetailsBancontactPreferredLanguage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsBancontactPreferredLanguage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodDetailsBancontactPreferredLanguage::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsBancontactPreferredLanguage);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsBancontactPreferredLanguage {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodDetailsBancontactPreferredLanguage = stripe_shared::PreferredLanguage;

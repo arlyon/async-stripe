@@ -967,3 +967,37 @@ impl PayoutsConfigParam {
         Self { enabled: enabled.into(), features: None }
     }
 }
+/// The list of features enabled in the embedded component.
+pub type CreateAccountSessionComponentsAccountManagementFeatures = AccountFeaturesParam;
+/// The list of features enabled in the embedded component.
+pub type CreateAccountSessionComponentsAccountOnboardingFeatures = AccountFeaturesParam;
+/// Configuration for the [balance report](/connect/supported-embedded-components/financial-reports#balance-report) embedded component.
+pub type CreateAccountSessionComponentsBalanceReport = BaseConfigParam;
+/// The list of features enabled in the embedded component.
+pub type CreateAccountSessionComponentsBalancesFeatures = PayoutsFeaturesParam;
+/// Configuration for the [documents](/connect/supported-embedded-components/documents/) embedded component.
+pub type CreateAccountSessionComponentsDocuments = BaseConfigParam;
+/// The list of features enabled in the embedded component.
+pub type CreateAccountSessionComponentsNotificationBannerFeatures = AccountFeaturesParam;
+/// Configuration for the [payout details](/connect/supported-embedded-components/payout-details/) embedded component.
+pub type CreateAccountSessionComponentsPayoutDetails = BaseConfigParam;
+/// Configuration for the [payout reconciliation report](/connect/supported-embedded-components/financial-reports#payout-reconciliation-report) embedded component.
+pub type CreateAccountSessionComponentsPayoutReconciliationReport = BaseConfigParam;
+/// The list of features enabled in the embedded component.
+pub type CreateAccountSessionComponentsPayoutsFeatures = PayoutsFeaturesParam;
+/// Configuration for the [payouts list](/connect/supported-embedded-components/payouts-list/) embedded component.
+pub type CreateAccountSessionComponentsPayoutsList = BaseConfigParam;
+/// Configuration for the [tax registrations](/connect/supported-embedded-components/tax-registrations/) embedded component.
+pub type CreateAccountSessionComponentsTaxRegistrations = BaseConfigParam;
+/// Configuration for the [tax settings](/connect/supported-embedded-components/tax-settings/) embedded component.
+pub type CreateAccountSessionComponentsTaxSettings = BaseConfigParam;
+/// Configuration for the [account management](/connect/supported-embedded-components/account-management/) embedded component.
+pub type CreateAccountSessionComponentsAccountManagement = AccountConfigParam;
+/// Configuration for the [account onboarding](/connect/supported-embedded-components/account-onboarding/) embedded component.
+pub type CreateAccountSessionComponentsAccountOnboarding = AccountConfigParam;
+/// Configuration for the [balances](/connect/supported-embedded-components/balances/) embedded component.
+pub type CreateAccountSessionComponentsBalances = PayoutsConfigParam;
+/// Configuration for the [notification banner](/connect/supported-embedded-components/notification-banner/) embedded component.
+pub type CreateAccountSessionComponentsNotificationBanner = AccountConfigParam;
+/// Configuration for the [payouts](/connect/supported-embedded-components/payouts/) embedded component.
+pub type CreateAccountSessionComponentsPayouts = PayoutsConfigParam;

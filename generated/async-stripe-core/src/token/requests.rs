@@ -119,7 +119,7 @@ impl CreateTokenBuilder {
 pub struct CreateTokenAccount {
     /// The business type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<CreateTokenAccountBusinessType>,
+    pub business_type: Option<stripe_shared::BusinessType>,
     /// Information about the company or business.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<CreateTokenAccountCompany>,
@@ -145,84 +145,6 @@ impl CreateTokenAccount {
 impl Default for CreateTokenAccount {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The business type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTokenAccountBusinessType {
-    Company,
-    GovernmentEntity,
-    Individual,
-    NonProfit,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTokenAccountBusinessType {
-    pub fn as_str(&self) -> &str {
-        use CreateTokenAccountBusinessType::*;
-        match self {
-            Company => "company",
-            GovernmentEntity => "government_entity",
-            Individual => "individual",
-            NonProfit => "non_profit",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTokenAccountBusinessType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTokenAccountBusinessType::*;
-        match s {
-            "company" => Ok(Company),
-            "government_entity" => Ok(GovernmentEntity),
-            "individual" => Ok(Individual),
-            "non_profit" => Ok(NonProfit),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenAccountBusinessType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTokenAccountBusinessType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTokenAccountBusinessType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTokenAccountBusinessType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTokenAccountBusinessType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTokenAccountBusinessType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTokenAccountBusinessType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Information about the company or business.
@@ -282,7 +204,7 @@ pub struct CreateTokenAccountCompany {
     /// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
     /// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ownership_exemption_reason: Option<CreateTokenAccountCompanyOwnershipExemptionReason>,
+    pub ownership_exemption_reason: Option<stripe_shared::OwnershipExemptionReason>,
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
@@ -303,7 +225,7 @@ pub struct CreateTokenAccountCompany {
     /// See [Business structure](/connect/identity-verification#business-structure) for more details.
     /// Pass an empty string to unset this value.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub structure: Option<CreateTokenAccountCompanyStructure>,
+    pub structure: Option<stripe_shared::Structure>,
     /// The business ID number of the company, as appropriate for the company’s country.
     /// (Examples are an Employer ID Number in the U.S., a Business Number in Canada, or a Company Number in the UK.).
     ///
@@ -607,84 +529,6 @@ impl Default for CreateTokenAccountCompanyOwnershipDeclaration {
         Self::new()
     }
 }
-/// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
-/// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTokenAccountCompanyOwnershipExemptionReason {
-    QualifiedEntityExceedsOwnershipThreshold,
-    QualifiesAsFinancialInstitution,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTokenAccountCompanyOwnershipExemptionReason {
-    pub fn as_str(&self) -> &str {
-        use CreateTokenAccountCompanyOwnershipExemptionReason::*;
-        match self {
-            QualifiedEntityExceedsOwnershipThreshold => {
-                "qualified_entity_exceeds_ownership_threshold"
-            }
-            QualifiesAsFinancialInstitution => "qualifies_as_financial_institution",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTokenAccountCompanyOwnershipExemptionReason {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTokenAccountCompanyOwnershipExemptionReason::*;
-        match s {
-            "qualified_entity_exceeds_ownership_threshold" => {
-                Ok(QualifiedEntityExceedsOwnershipThreshold)
-            }
-            "qualifies_as_financial_institution" => Ok(QualifiesAsFinancialInstitution),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenAccountCompanyOwnershipExemptionReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTokenAccountCompanyOwnershipExemptionReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTokenAccountCompanyOwnershipExemptionReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTokenAccountCompanyOwnershipExemptionReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTokenAccountCompanyOwnershipExemptionReason))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTokenAccountCompanyOwnershipExemptionReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyOwnershipExemptionReason {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The primary location where the business conducts operations.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -777,143 +621,6 @@ impl CreateTokenAccountCompanyRepresentativeDeclaration {
 impl Default for CreateTokenAccountCompanyRepresentativeDeclaration {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The category identifying the legal structure of the company or legal entity.
-/// See [Business structure](/connect/identity-verification#business-structure) for more details.
-/// Pass an empty string to unset this value.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTokenAccountCompanyStructure {
-    FreeZoneEstablishment,
-    FreeZoneLlc,
-    GovernmentInstrumentality,
-    GovernmentalUnit,
-    IncorporatedNonProfit,
-    IncorporatedPartnership,
-    LimitedLiabilityPartnership,
-    Llc,
-    MultiMemberLlc,
-    PrivateCompany,
-    PrivateCorporation,
-    PrivatePartnership,
-    PublicCompany,
-    PublicCorporation,
-    PublicPartnership,
-    RegisteredCharity,
-    SingleMemberLlc,
-    SoleEstablishment,
-    SoleProprietorship,
-    TaxExemptGovernmentInstrumentality,
-    UnincorporatedAssociation,
-    UnincorporatedNonProfit,
-    UnincorporatedPartnership,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTokenAccountCompanyStructure {
-    pub fn as_str(&self) -> &str {
-        use CreateTokenAccountCompanyStructure::*;
-        match self {
-            FreeZoneEstablishment => "free_zone_establishment",
-            FreeZoneLlc => "free_zone_llc",
-            GovernmentInstrumentality => "government_instrumentality",
-            GovernmentalUnit => "governmental_unit",
-            IncorporatedNonProfit => "incorporated_non_profit",
-            IncorporatedPartnership => "incorporated_partnership",
-            LimitedLiabilityPartnership => "limited_liability_partnership",
-            Llc => "llc",
-            MultiMemberLlc => "multi_member_llc",
-            PrivateCompany => "private_company",
-            PrivateCorporation => "private_corporation",
-            PrivatePartnership => "private_partnership",
-            PublicCompany => "public_company",
-            PublicCorporation => "public_corporation",
-            PublicPartnership => "public_partnership",
-            RegisteredCharity => "registered_charity",
-            SingleMemberLlc => "single_member_llc",
-            SoleEstablishment => "sole_establishment",
-            SoleProprietorship => "sole_proprietorship",
-            TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
-            UnincorporatedAssociation => "unincorporated_association",
-            UnincorporatedNonProfit => "unincorporated_non_profit",
-            UnincorporatedPartnership => "unincorporated_partnership",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTokenAccountCompanyStructure {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTokenAccountCompanyStructure::*;
-        match s {
-            "free_zone_establishment" => Ok(FreeZoneEstablishment),
-            "free_zone_llc" => Ok(FreeZoneLlc),
-            "government_instrumentality" => Ok(GovernmentInstrumentality),
-            "governmental_unit" => Ok(GovernmentalUnit),
-            "incorporated_non_profit" => Ok(IncorporatedNonProfit),
-            "incorporated_partnership" => Ok(IncorporatedPartnership),
-            "limited_liability_partnership" => Ok(LimitedLiabilityPartnership),
-            "llc" => Ok(Llc),
-            "multi_member_llc" => Ok(MultiMemberLlc),
-            "private_company" => Ok(PrivateCompany),
-            "private_corporation" => Ok(PrivateCorporation),
-            "private_partnership" => Ok(PrivatePartnership),
-            "public_company" => Ok(PublicCompany),
-            "public_corporation" => Ok(PublicCorporation),
-            "public_partnership" => Ok(PublicPartnership),
-            "registered_charity" => Ok(RegisteredCharity),
-            "single_member_llc" => Ok(SingleMemberLlc),
-            "sole_establishment" => Ok(SoleEstablishment),
-            "sole_proprietorship" => Ok(SoleProprietorship),
-            "tax_exempt_government_instrumentality" => Ok(TaxExemptGovernmentInstrumentality),
-            "unincorporated_association" => Ok(UnincorporatedAssociation),
-            "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
-            "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenAccountCompanyStructure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTokenAccountCompanyStructure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTokenAccountCompanyStructure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTokenAccountCompanyStructure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTokenAccountCompanyStructure)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTokenAccountCompanyStructure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyStructure {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Information on the verification state of the company.
@@ -1039,7 +746,7 @@ pub struct CreateTokenAccountIndividual {
     pub phone: Option<String>,
     /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub political_exposure: Option<CreateTokenAccountIndividualPoliticalExposure>,
+    pub political_exposure: Option<stripe_shared::PoliticalExposure>,
     /// The individual's registered address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registered_address: Option<CreateTokenAccountIndividualRegisteredAddress>,
@@ -1235,79 +942,6 @@ impl Default for CreateTokenAccountIndividualAddressKanji {
         Self::new()
     }
 }
-/// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTokenAccountIndividualPoliticalExposure {
-    Existing,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTokenAccountIndividualPoliticalExposure {
-    pub fn as_str(&self) -> &str {
-        use CreateTokenAccountIndividualPoliticalExposure::*;
-        match self {
-            Existing => "existing",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTokenAccountIndividualPoliticalExposure {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTokenAccountIndividualPoliticalExposure::*;
-        match s {
-            "existing" => Ok(Existing),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenAccountIndividualPoliticalExposure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTokenAccountIndividualPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTokenAccountIndividualPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTokenAccountIndividualPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTokenAccountIndividualPoliticalExposure))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTokenAccountIndividualPoliticalExposure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTokenAccountIndividualPoliticalExposure {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The individual's registered address.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1399,14 +1033,14 @@ pub struct CreateTokenBankAccount {
     /// It can be `company` or `individual`.
     /// This field is required when attaching the bank account to a `Customer` object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<CreateTokenBankAccountAccountHolderType>,
+    pub account_holder_type: Option<stripe_shared::IssuingCardholderType>,
     /// The account number for the bank account, in string form. Must be a checking account.
     pub account_number: String,
     /// The bank account type.
     /// This can only be `checking` or `savings` in most countries.
     /// In Japan, this can only be `futsu` or `toza`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_type: Option<CreateTokenBankAccountAccountType>,
+    pub account_type: Option<stripe_shared::UpdateAccountCardAccountType>,
     /// The country in which the bank account is located.
     pub country: String,
     /// The currency the bank account is in.
@@ -1445,160 +1079,6 @@ impl CreateTokenBankAccount {
             payment_method: None,
             routing_number: None,
         }
-    }
-}
-/// The type of entity that holds the account.
-/// It can be `company` or `individual`.
-/// This field is required when attaching the bank account to a `Customer` object.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTokenBankAccountAccountHolderType {
-    Company,
-    Individual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTokenBankAccountAccountHolderType {
-    pub fn as_str(&self) -> &str {
-        use CreateTokenBankAccountAccountHolderType::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTokenBankAccountAccountHolderType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTokenBankAccountAccountHolderType::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTokenBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTokenBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTokenBankAccountAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTokenBankAccountAccountHolderType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTokenBankAccountAccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTokenBankAccountAccountHolderType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The bank account type.
-/// This can only be `checking` or `savings` in most countries.
-/// In Japan, this can only be `futsu` or `toza`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTokenBankAccountAccountType {
-    Checking,
-    Futsu,
-    Savings,
-    Toza,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTokenBankAccountAccountType {
-    pub fn as_str(&self) -> &str {
-        use CreateTokenBankAccountAccountType::*;
-        match self {
-            Checking => "checking",
-            Futsu => "futsu",
-            Savings => "savings",
-            Toza => "toza",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTokenBankAccountAccountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTokenBankAccountAccountType::*;
-        match s {
-            "checking" => Ok(Checking),
-            "futsu" => Ok(Futsu),
-            "savings" => Ok(Savings),
-            "toza" => Ok(Toza),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenBankAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTokenBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTokenBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTokenBankAccountAccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTokenBankAccountAccountType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTokenBankAccountAccountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTokenBankAccountAccountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The card this token will represent.
@@ -1703,7 +1183,7 @@ pub struct CreateTokenCreditCardSpecsNetworks {
     /// Supports `cartes_bancaires`, `mastercard`, or `visa`.
     /// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred: Option<CreateTokenCreditCardSpecsNetworksPreferred>,
+    pub preferred: Option<stripe_shared::Preferred>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateTokenCreditCardSpecsNetworks {
@@ -1719,84 +1199,6 @@ impl CreateTokenCreditCardSpecsNetworks {
 impl Default for CreateTokenCreditCardSpecsNetworks {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The customer's preferred card network for co-branded cards.
-/// Supports `cartes_bancaires`, `mastercard`, or `visa`.
-/// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTokenCreditCardSpecsNetworksPreferred {
-    CartesBancaires,
-    Mastercard,
-    Visa,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTokenCreditCardSpecsNetworksPreferred {
-    pub fn as_str(&self) -> &str {
-        use CreateTokenCreditCardSpecsNetworksPreferred::*;
-        match self {
-            CartesBancaires => "cartes_bancaires",
-            Mastercard => "mastercard",
-            Visa => "visa",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTokenCreditCardSpecsNetworksPreferred {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTokenCreditCardSpecsNetworksPreferred::*;
-        match s {
-            "cartes_bancaires" => Ok(CartesBancaires),
-            "mastercard" => Ok(Mastercard),
-            "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenCreditCardSpecsNetworksPreferred"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTokenCreditCardSpecsNetworksPreferred {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTokenCreditCardSpecsNetworksPreferred {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTokenCreditCardSpecsNetworksPreferred {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTokenCreditCardSpecsNetworksPreferred))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTokenCreditCardSpecsNetworksPreferred {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTokenCreditCardSpecsNetworksPreferred {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The updated CVC value this token represents.
@@ -1900,7 +1302,7 @@ pub struct CreateTokenPerson {
     pub phone: Option<String>,
     /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub political_exposure: Option<CreateTokenPersonPoliticalExposure>,
+    pub political_exposure: Option<stripe_shared::PoliticalExposure>,
     /// The person's registered address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registered_address: Option<CreateTokenPersonRegisteredAddress>,
@@ -2192,78 +1594,6 @@ impl Default for CreateTokenPersonDocuments {
         Self::new()
     }
 }
-/// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTokenPersonPoliticalExposure {
-    Existing,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTokenPersonPoliticalExposure {
-    pub fn as_str(&self) -> &str {
-        use CreateTokenPersonPoliticalExposure::*;
-        match self {
-            Existing => "existing",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTokenPersonPoliticalExposure {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTokenPersonPoliticalExposure::*;
-        match s {
-            "existing" => Ok(Existing),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenPersonPoliticalExposure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTokenPersonPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTokenPersonPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTokenPersonPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTokenPersonPoliticalExposure)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTokenPersonPoliticalExposure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTokenPersonPoliticalExposure {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The person's registered address.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -2401,7 +1731,7 @@ impl Default for CreateTokenPersonUsCfpbData {
 pub struct CreateTokenPersonUsCfpbDataEthnicityDetails {
     /// The persons ethnicity
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ethnicity: Option<Vec<CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity>>,
+    pub ethnicity: Option<Vec<stripe_shared::Ethnicity>>,
     /// Please specify your origin, when other is selected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ethnicity_other: Option<String>,
@@ -2422,94 +1752,6 @@ impl Default for CreateTokenPersonUsCfpbDataEthnicityDetails {
         Self::new()
     }
 }
-/// The persons ethnicity
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity {
-    Cuban,
-    HispanicOrLatino,
-    Mexican,
-    NotHispanicOrLatino,
-    OtherHispanicOrLatino,
-    PreferNotToAnswer,
-    PuertoRican,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity {
-    pub fn as_str(&self) -> &str {
-        use CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity::*;
-        match self {
-            Cuban => "cuban",
-            HispanicOrLatino => "hispanic_or_latino",
-            Mexican => "mexican",
-            NotHispanicOrLatino => "not_hispanic_or_latino",
-            OtherHispanicOrLatino => "other_hispanic_or_latino",
-            PreferNotToAnswer => "prefer_not_to_answer",
-            PuertoRican => "puerto_rican",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity::*;
-        match s {
-            "cuban" => Ok(Cuban),
-            "hispanic_or_latino" => Ok(HispanicOrLatino),
-            "mexican" => Ok(Mexican),
-            "not_hispanic_or_latino" => Ok(NotHispanicOrLatino),
-            "other_hispanic_or_latino" => Ok(OtherHispanicOrLatino),
-            "prefer_not_to_answer" => Ok(PreferNotToAnswer),
-            "puerto_rican" => Ok(PuertoRican),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The persons race details
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -2517,7 +1759,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenPersonUsCfpbDataEthnicityDetail
 pub struct CreateTokenPersonUsCfpbDataRaceDetails {
     /// The persons race.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub race: Option<Vec<CreateTokenPersonUsCfpbDataRaceDetailsRace>>,
+    pub race: Option<Vec<stripe_shared::Race>>,
     /// Please specify your race, when other is selected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub race_other: Option<String>,
@@ -2536,145 +1778,6 @@ impl CreateTokenPersonUsCfpbDataRaceDetails {
 impl Default for CreateTokenPersonUsCfpbDataRaceDetails {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The persons race.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTokenPersonUsCfpbDataRaceDetailsRace {
-    AfricanAmerican,
-    AmericanIndianOrAlaskaNative,
-    Asian,
-    AsianIndian,
-    BlackOrAfricanAmerican,
-    Chinese,
-    Ethiopian,
-    Filipino,
-    GuamanianOrChamorro,
-    Haitian,
-    Jamaican,
-    Japanese,
-    Korean,
-    NativeHawaiian,
-    NativeHawaiianOrOtherPacificIslander,
-    Nigerian,
-    OtherAsian,
-    OtherBlackOrAfricanAmerican,
-    OtherPacificIslander,
-    PreferNotToAnswer,
-    Samoan,
-    Somali,
-    Vietnamese,
-    White,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTokenPersonUsCfpbDataRaceDetailsRace {
-    pub fn as_str(&self) -> &str {
-        use CreateTokenPersonUsCfpbDataRaceDetailsRace::*;
-        match self {
-            AfricanAmerican => "african_american",
-            AmericanIndianOrAlaskaNative => "american_indian_or_alaska_native",
-            Asian => "asian",
-            AsianIndian => "asian_indian",
-            BlackOrAfricanAmerican => "black_or_african_american",
-            Chinese => "chinese",
-            Ethiopian => "ethiopian",
-            Filipino => "filipino",
-            GuamanianOrChamorro => "guamanian_or_chamorro",
-            Haitian => "haitian",
-            Jamaican => "jamaican",
-            Japanese => "japanese",
-            Korean => "korean",
-            NativeHawaiian => "native_hawaiian",
-            NativeHawaiianOrOtherPacificIslander => "native_hawaiian_or_other_pacific_islander",
-            Nigerian => "nigerian",
-            OtherAsian => "other_asian",
-            OtherBlackOrAfricanAmerican => "other_black_or_african_american",
-            OtherPacificIslander => "other_pacific_islander",
-            PreferNotToAnswer => "prefer_not_to_answer",
-            Samoan => "samoan",
-            Somali => "somali",
-            Vietnamese => "vietnamese",
-            White => "white",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTokenPersonUsCfpbDataRaceDetailsRace {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTokenPersonUsCfpbDataRaceDetailsRace::*;
-        match s {
-            "african_american" => Ok(AfricanAmerican),
-            "american_indian_or_alaska_native" => Ok(AmericanIndianOrAlaskaNative),
-            "asian" => Ok(Asian),
-            "asian_indian" => Ok(AsianIndian),
-            "black_or_african_american" => Ok(BlackOrAfricanAmerican),
-            "chinese" => Ok(Chinese),
-            "ethiopian" => Ok(Ethiopian),
-            "filipino" => Ok(Filipino),
-            "guamanian_or_chamorro" => Ok(GuamanianOrChamorro),
-            "haitian" => Ok(Haitian),
-            "jamaican" => Ok(Jamaican),
-            "japanese" => Ok(Japanese),
-            "korean" => Ok(Korean),
-            "native_hawaiian" => Ok(NativeHawaiian),
-            "native_hawaiian_or_other_pacific_islander" => Ok(NativeHawaiianOrOtherPacificIslander),
-            "nigerian" => Ok(Nigerian),
-            "other_asian" => Ok(OtherAsian),
-            "other_black_or_african_american" => Ok(OtherBlackOrAfricanAmerican),
-            "other_pacific_islander" => Ok(OtherPacificIslander),
-            "prefer_not_to_answer" => Ok(PreferNotToAnswer),
-            "samoan" => Ok(Samoan),
-            "somali" => Ok(Somali),
-            "vietnamese" => Ok(Vietnamese),
-            "white" => Ok(White),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenPersonUsCfpbDataRaceDetailsRace"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTokenPersonUsCfpbDataRaceDetailsRace {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTokenPersonUsCfpbDataRaceDetailsRace {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTokenPersonUsCfpbDataRaceDetailsRace {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTokenPersonUsCfpbDataRaceDetailsRace))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTokenPersonUsCfpbDataRaceDetailsRace {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTokenPersonUsCfpbDataRaceDetailsRace {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The PII this token represents.
@@ -2901,3 +2004,56 @@ impl Default for PersonVerificationSpecs {
         Self::new()
     }
 }
+/// The business type.
+pub type CreateTokenAccountBusinessType = stripe_shared::BusinessType;
+/// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
+/// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
+pub type CreateTokenAccountCompanyOwnershipExemptionReason =
+    stripe_shared::OwnershipExemptionReason;
+/// The category identifying the legal structure of the company or legal entity.
+/// See [Business structure](/connect/identity-verification#business-structure) for more details.
+/// Pass an empty string to unset this value.
+pub type CreateTokenAccountCompanyStructure = stripe_shared::Structure;
+/// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
+pub type CreateTokenAccountIndividualPoliticalExposure = stripe_shared::PoliticalExposure;
+/// The type of entity that holds the account.
+/// It can be `company` or `individual`.
+/// This field is required when attaching the bank account to a `Customer` object.
+pub type CreateTokenBankAccountAccountHolderType = stripe_shared::IssuingCardholderType;
+/// The bank account type.
+/// This can only be `checking` or `savings` in most countries.
+/// In Japan, this can only be `futsu` or `toza`.
+pub type CreateTokenBankAccountAccountType = stripe_shared::UpdateAccountCardAccountType;
+/// The customer's preferred card network for co-branded cards.
+/// Supports `cartes_bancaires`, `mastercard`, or `visa`.
+/// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
+pub type CreateTokenCreditCardSpecsNetworksPreferred = stripe_shared::Preferred;
+/// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
+pub type CreateTokenPersonPoliticalExposure = stripe_shared::PoliticalExposure;
+/// The persons ethnicity
+pub type CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity = stripe_shared::Ethnicity;
+/// The persons race.
+pub type CreateTokenPersonUsCfpbDataRaceDetailsRace = stripe_shared::Race;
+/// The individual's date of birth.
+pub type CreateTokenAccountIndividualDob = DateOfBirthSpecs;
+/// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+pub type CreateTokenAccountIndividualVerificationAdditionalDocument =
+    PersonVerificationDocumentSpecs;
+/// An identifying document, either a passport or local ID card.
+pub type CreateTokenAccountIndividualVerificationDocument = PersonVerificationDocumentSpecs;
+/// The person's date of birth.
+pub type CreateTokenPersonDob = DateOfBirthSpecs;
+/// One or more documents that demonstrate proof that this person is authorized to represent the company.
+pub type CreateTokenPersonDocumentsCompanyAuthorization = DocumentsParam;
+/// One or more documents showing the person's passport page with photo and personal data.
+pub type CreateTokenPersonDocumentsPassport = DocumentsParam;
+/// One or more documents showing the person's visa required for living in the country where they are residing.
+pub type CreateTokenPersonDocumentsVisa = DocumentsParam;
+/// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+pub type CreateTokenPersonVerificationAdditionalDocument = PersonVerificationDocumentSpecs;
+/// An identifying document, either a passport or local ID card.
+pub type CreateTokenPersonVerificationDocument = PersonVerificationDocumentSpecs;
+/// The individual's verification document information.
+pub type CreateTokenAccountIndividualVerification = PersonVerificationSpecs;
+/// The person's verification status.
+pub type CreateTokenPersonVerification = PersonVerificationSpecs;

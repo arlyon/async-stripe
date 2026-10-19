@@ -15,7 +15,7 @@ pub struct AccountCapabilityFutureRequirements {
     /// If not resolved by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.
     pub currently_due: Vec<String>,
     /// This is typed as an enum for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is null because fields in `future_requirements` will never disable the account.
-    pub disabled_reason: Option<AccountCapabilityFutureRequirementsDisabledReason>,
+    pub disabled_reason: Option<stripe_shared::DisabledReason>,
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<stripe_shared::AccountRequirementsError>,
     /// Fields you must collect when all thresholds are reached.
@@ -41,7 +41,7 @@ pub struct AccountCapabilityFutureRequirementsBuilder {
     alternatives: Option<Option<Vec<stripe_shared::AccountRequirementsAlternative>>>,
     current_deadline: Option<Option<stripe_types::Timestamp>>,
     currently_due: Option<Vec<String>>,
-    disabled_reason: Option<Option<AccountCapabilityFutureRequirementsDisabledReason>>,
+    disabled_reason: Option<Option<stripe_shared::DisabledReason>>,
     errors: Option<Vec<stripe_shared::AccountRequirementsError>>,
     eventually_due: Option<Vec<String>>,
     past_due: Option<Vec<String>>,
@@ -188,117 +188,4 @@ const _: () = {
     }
 };
 /// This is typed as an enum for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is null because fields in `future_requirements` will never disable the account.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum AccountCapabilityFutureRequirementsDisabledReason {
-    Other,
-    PausedInactivity,
-    PendingOnboarding,
-    PendingReview,
-    PlatformDisabled,
-    PlatformPaused,
-    RejectedInactivity,
-    RejectedOther,
-    RejectedUnsupportedBusiness,
-    RequirementsFieldsNeeded,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl AccountCapabilityFutureRequirementsDisabledReason {
-    pub fn as_str(&self) -> &str {
-        use AccountCapabilityFutureRequirementsDisabledReason::*;
-        match self {
-            Other => "other",
-            PausedInactivity => "paused.inactivity",
-            PendingOnboarding => "pending.onboarding",
-            PendingReview => "pending.review",
-            PlatformDisabled => "platform_disabled",
-            PlatformPaused => "platform_paused",
-            RejectedInactivity => "rejected.inactivity",
-            RejectedOther => "rejected.other",
-            RejectedUnsupportedBusiness => "rejected.unsupported_business",
-            RequirementsFieldsNeeded => "requirements.fields_needed",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for AccountCapabilityFutureRequirementsDisabledReason {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountCapabilityFutureRequirementsDisabledReason::*;
-        match s {
-            "other" => Ok(Other),
-            "paused.inactivity" => Ok(PausedInactivity),
-            "pending.onboarding" => Ok(PendingOnboarding),
-            "pending.review" => Ok(PendingReview),
-            "platform_disabled" => Ok(PlatformDisabled),
-            "platform_paused" => Ok(PlatformPaused),
-            "rejected.inactivity" => Ok(RejectedInactivity),
-            "rejected.other" => Ok(RejectedOther),
-            "rejected.unsupported_business" => Ok(RejectedUnsupportedBusiness),
-            "requirements.fields_needed" => Ok(RequirementsFieldsNeeded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountCapabilityFutureRequirementsDisabledReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for AccountCapabilityFutureRequirementsDisabledReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for AccountCapabilityFutureRequirementsDisabledReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for AccountCapabilityFutureRequirementsDisabledReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(AccountCapabilityFutureRequirementsDisabledReason))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for AccountCapabilityFutureRequirementsDisabledReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for AccountCapabilityFutureRequirementsDisabledReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<AccountCapabilityFutureRequirementsDisabledReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            AccountCapabilityFutureRequirementsDisabledReason::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(AccountCapabilityFutureRequirementsDisabledReason);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for AccountCapabilityFutureRequirementsDisabledReason {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type AccountCapabilityFutureRequirementsDisabledReason = stripe_shared::DisabledReason;

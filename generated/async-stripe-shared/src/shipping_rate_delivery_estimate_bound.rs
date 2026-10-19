@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ShippingRateDeliveryEstimateBound {
     /// A unit of time.
-    pub unit: ShippingRateDeliveryEstimateBoundUnit,
+    pub unit: stripe_shared::Unit,
     /// Must be greater than 0.
     pub value: i64,
 }
@@ -16,7 +16,7 @@ impl std::fmt::Debug for ShippingRateDeliveryEstimateBound {
 }
 #[doc(hidden)]
 pub struct ShippingRateDeliveryEstimateBoundBuilder {
-    unit: Option<ShippingRateDeliveryEstimateBoundUnit>,
+    unit: Option<stripe_shared::Unit>,
     value: Option<i64>,
 }
 
@@ -111,99 +111,4 @@ const _: () = {
     }
 };
 /// A unit of time.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ShippingRateDeliveryEstimateBoundUnit {
-    BusinessDay,
-    Day,
-    Hour,
-    Month,
-    Week,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ShippingRateDeliveryEstimateBoundUnit {
-    pub fn as_str(&self) -> &str {
-        use ShippingRateDeliveryEstimateBoundUnit::*;
-        match self {
-            BusinessDay => "business_day",
-            Day => "day",
-            Hour => "hour",
-            Month => "month",
-            Week => "week",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ShippingRateDeliveryEstimateBoundUnit {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ShippingRateDeliveryEstimateBoundUnit::*;
-        match s {
-            "business_day" => Ok(BusinessDay),
-            "day" => Ok(Day),
-            "hour" => Ok(Hour),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ShippingRateDeliveryEstimateBoundUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ShippingRateDeliveryEstimateBoundUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ShippingRateDeliveryEstimateBoundUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ShippingRateDeliveryEstimateBoundUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ShippingRateDeliveryEstimateBoundUnit)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for ShippingRateDeliveryEstimateBoundUnit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for ShippingRateDeliveryEstimateBoundUnit {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<ShippingRateDeliveryEstimateBoundUnit> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ShippingRateDeliveryEstimateBoundUnit::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(ShippingRateDeliveryEstimateBoundUnit);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ShippingRateDeliveryEstimateBoundUnit {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type ShippingRateDeliveryEstimateBoundUnit = stripe_shared::Unit;

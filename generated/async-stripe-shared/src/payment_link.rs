@@ -25,7 +25,7 @@ pub struct PaymentLink {
     pub application_fee_percent: Option<f64>,
     pub automatic_tax: stripe_shared::PaymentLinksResourceAutomaticTax,
     /// Configuration for collecting the customer's billing address. Defaults to `auto`.
-    pub billing_address_collection: stripe_shared::PaymentLinkBillingAddressCollection,
+    pub billing_address_collection: stripe_shared::BillingAddressCollection,
     /// When set, provides configuration to gather active consent from customers.
     pub consent_collection: Option<stripe_shared::PaymentLinksResourceConsentCollection>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -37,7 +37,7 @@ pub struct PaymentLink {
     pub custom_fields: Vec<stripe_shared::PaymentLinksResourceCustomFields>,
     pub custom_text: stripe_shared::PaymentLinksResourceCustomText,
     /// Configuration for Customer creation during checkout.
-    pub customer_creation: PaymentLinkCustomerCreation,
+    pub customer_creation: stripe_shared::PaymentLinkCustomerCreation,
     /// Unique identifier for the object.
     pub id: stripe_shared::PaymentLinkId,
     /// The custom message to be displayed to a customer when a payment link is no longer active.
@@ -63,7 +63,7 @@ pub struct PaymentLink {
     /// Indicates the parameters to be passed to PaymentIntent creation during checkout.
     pub payment_intent_data: Option<stripe_shared::PaymentLinksResourcePaymentIntentData>,
     /// Configuration for collecting a payment method during checkout. Defaults to `always`.
-    pub payment_method_collection: PaymentLinkPaymentMethodCollection,
+    pub payment_method_collection: stripe_shared::PaymentLinkCustomerCreation,
     /// Payment-method-specific configuration.
     pub payment_method_options: Option<stripe_shared::PaymentLinksResourcePaymentMethodOptions>,
     /// The list of payment method types that customers can use.
@@ -78,7 +78,7 @@ pub struct PaymentLink {
     /// The shipping rate options applied to the session.
     pub shipping_options: Vec<stripe_shared::PaymentLinksResourceShippingOption>,
     /// Indicates the type of transaction being performed which customizes relevant text on the page, such as the submit button.
-    pub submit_type: stripe_shared::PaymentLinkSubmitType,
+    pub submit_type: stripe_shared::SubmitType,
     /// When creating a subscription, the specified configuration data will be used.
     /// There must be at least one line item with a recurring price to use `subscription_data`.
     pub subscription_data: Option<stripe_shared::PaymentLinksResourceSubscriptionData>,
@@ -103,12 +103,12 @@ pub struct PaymentLinkBuilder {
     application_fee_amount: Option<Option<i64>>,
     application_fee_percent: Option<Option<f64>>,
     automatic_tax: Option<stripe_shared::PaymentLinksResourceAutomaticTax>,
-    billing_address_collection: Option<stripe_shared::PaymentLinkBillingAddressCollection>,
+    billing_address_collection: Option<stripe_shared::BillingAddressCollection>,
     consent_collection: Option<Option<stripe_shared::PaymentLinksResourceConsentCollection>>,
     currency: Option<stripe_types::Currency>,
     custom_fields: Option<Vec<stripe_shared::PaymentLinksResourceCustomFields>>,
     custom_text: Option<stripe_shared::PaymentLinksResourceCustomText>,
-    customer_creation: Option<PaymentLinkCustomerCreation>,
+    customer_creation: Option<stripe_shared::PaymentLinkCustomerCreation>,
     id: Option<stripe_shared::PaymentLinkId>,
     inactive_message: Option<Option<String>>,
     invoice_creation: Option<Option<stripe_shared::PaymentLinksResourceInvoiceCreation>>,
@@ -120,7 +120,7 @@ pub struct PaymentLinkBuilder {
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
     optional_items: Option<Option<Vec<stripe_shared::PaymentLinksResourceOptionalItem>>>,
     payment_intent_data: Option<Option<stripe_shared::PaymentLinksResourcePaymentIntentData>>,
-    payment_method_collection: Option<PaymentLinkPaymentMethodCollection>,
+    payment_method_collection: Option<stripe_shared::PaymentLinkCustomerCreation>,
     payment_method_options: Option<Option<stripe_shared::PaymentLinksResourcePaymentMethodOptions>>,
     payment_method_types: Option<Option<Vec<stripe_shared::PaymentLinkPaymentMethodTypes>>>,
     phone_number_collection: Option<stripe_shared::PaymentLinksResourcePhoneNumberCollection>,
@@ -128,7 +128,7 @@ pub struct PaymentLinkBuilder {
     shipping_address_collection:
         Option<Option<stripe_shared::PaymentLinksResourceShippingAddressCollection>>,
     shipping_options: Option<Vec<stripe_shared::PaymentLinksResourceShippingOption>>,
-    submit_type: Option<stripe_shared::PaymentLinkSubmitType>,
+    submit_type: Option<stripe_shared::SubmitType>,
     subscription_data: Option<Option<stripe_shared::PaymentLinksResourceSubscriptionData>>,
     tax_id_collection: Option<stripe_shared::PaymentLinksResourceTaxIdCollection>,
     transfer_data: Option<Option<stripe_shared::PaymentLinksResourceTransferData>>,
@@ -510,182 +510,6 @@ impl serde::Serialize for PaymentLink {
         s.end()
     }
 }
-/// Configuration for Customer creation during checkout.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentLinkCustomerCreation {
-    Always,
-    IfRequired,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentLinkCustomerCreation {
-    pub fn as_str(&self) -> &str {
-        use PaymentLinkCustomerCreation::*;
-        match self {
-            Always => "always",
-            IfRequired => "if_required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentLinkCustomerCreation {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentLinkCustomerCreation::*;
-        match s {
-            "always" => Ok(Always),
-            "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinkCustomerCreation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentLinkCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentLinkCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentLinkCustomerCreation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentLinkCustomerCreation)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentLinkCustomerCreation {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentLinkCustomerCreation {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentLinkCustomerCreation> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentLinkCustomerCreation::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinkCustomerCreation);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentLinkCustomerCreation {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Configuration for collecting a payment method during checkout. Defaults to `always`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentLinkPaymentMethodCollection {
-    Always,
-    IfRequired,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentLinkPaymentMethodCollection {
-    pub fn as_str(&self) -> &str {
-        use PaymentLinkPaymentMethodCollection::*;
-        match self {
-            Always => "always",
-            IfRequired => "if_required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentLinkPaymentMethodCollection {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentLinkPaymentMethodCollection::*;
-        match s {
-            "always" => Ok(Always),
-            "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinkPaymentMethodCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentLinkPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentLinkPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentLinkPaymentMethodCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentLinkPaymentMethodCollection)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentLinkPaymentMethodCollection {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentLinkPaymentMethodCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentLinkPaymentMethodCollection> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentLinkPaymentMethodCollection::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinkPaymentMethodCollection);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodCollection {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for PaymentLink {
     type Id = stripe_shared::PaymentLinkId;
     fn id(&self) -> &Self::Id {
@@ -697,386 +521,14 @@ impl stripe_types::Object for PaymentLink {
     }
 }
 stripe_types::def_id!(PaymentLinkId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentLinkBillingAddressCollection {
-    Auto,
-    Required,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentLinkBillingAddressCollection {
-    pub fn as_str(&self) -> &str {
-        use PaymentLinkBillingAddressCollection::*;
-        match self {
-            Auto => "auto",
-            Required => "required",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentLinkBillingAddressCollection {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentLinkBillingAddressCollection::*;
-        match s {
-            "auto" => Ok(Auto),
-            "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinkBillingAddressCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentLinkBillingAddressCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentLinkBillingAddressCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentLinkBillingAddressCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentLinkBillingAddressCollection)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PaymentLinkBillingAddressCollection {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentLinkBillingAddressCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentLinkBillingAddressCollection> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentLinkBillingAddressCollection::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinkBillingAddressCollection);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentLinkBillingAddressCollection {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentLinkPaymentMethodTypes {
-    Affirm,
-    AfterpayClearpay,
-    Alipay,
-    Alma,
-    AuBecsDebit,
-    BacsDebit,
-    Bancontact,
-    Billie,
-    Bizum,
-    Blik,
-    Boleto,
-    Card,
-    Cashapp,
-    Eps,
-    Fpx,
-    Giropay,
-    Grabpay,
-    Ideal,
-    Klarna,
-    Konbini,
-    Link,
-    MbWay,
-    Mobilepay,
-    Multibanco,
-    Oxxo,
-    P24,
-    PayByBank,
-    Paynow,
-    Paypal,
-    Payto,
-    Pix,
-    Promptpay,
-    Satispay,
-    SepaDebit,
-    Sofort,
-    Sunbit,
-    Swish,
-    Twint,
-    Upi,
-    UsBankAccount,
-    WechatPay,
-    Zip,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentLinkPaymentMethodTypes {
-    pub fn as_str(&self) -> &str {
-        use PaymentLinkPaymentMethodTypes::*;
-        match self {
-            Affirm => "affirm",
-            AfterpayClearpay => "afterpay_clearpay",
-            Alipay => "alipay",
-            Alma => "alma",
-            AuBecsDebit => "au_becs_debit",
-            BacsDebit => "bacs_debit",
-            Bancontact => "bancontact",
-            Billie => "billie",
-            Bizum => "bizum",
-            Blik => "blik",
-            Boleto => "boleto",
-            Card => "card",
-            Cashapp => "cashapp",
-            Eps => "eps",
-            Fpx => "fpx",
-            Giropay => "giropay",
-            Grabpay => "grabpay",
-            Ideal => "ideal",
-            Klarna => "klarna",
-            Konbini => "konbini",
-            Link => "link",
-            MbWay => "mb_way",
-            Mobilepay => "mobilepay",
-            Multibanco => "multibanco",
-            Oxxo => "oxxo",
-            P24 => "p24",
-            PayByBank => "pay_by_bank",
-            Paynow => "paynow",
-            Paypal => "paypal",
-            Payto => "payto",
-            Pix => "pix",
-            Promptpay => "promptpay",
-            Satispay => "satispay",
-            SepaDebit => "sepa_debit",
-            Sofort => "sofort",
-            Sunbit => "sunbit",
-            Swish => "swish",
-            Twint => "twint",
-            Upi => "upi",
-            UsBankAccount => "us_bank_account",
-            WechatPay => "wechat_pay",
-            Zip => "zip",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentLinkPaymentMethodTypes::*;
-        match s {
-            "affirm" => Ok(Affirm),
-            "afterpay_clearpay" => Ok(AfterpayClearpay),
-            "alipay" => Ok(Alipay),
-            "alma" => Ok(Alma),
-            "au_becs_debit" => Ok(AuBecsDebit),
-            "bacs_debit" => Ok(BacsDebit),
-            "bancontact" => Ok(Bancontact),
-            "billie" => Ok(Billie),
-            "bizum" => Ok(Bizum),
-            "blik" => Ok(Blik),
-            "boleto" => Ok(Boleto),
-            "card" => Ok(Card),
-            "cashapp" => Ok(Cashapp),
-            "eps" => Ok(Eps),
-            "fpx" => Ok(Fpx),
-            "giropay" => Ok(Giropay),
-            "grabpay" => Ok(Grabpay),
-            "ideal" => Ok(Ideal),
-            "klarna" => Ok(Klarna),
-            "konbini" => Ok(Konbini),
-            "link" => Ok(Link),
-            "mb_way" => Ok(MbWay),
-            "mobilepay" => Ok(Mobilepay),
-            "multibanco" => Ok(Multibanco),
-            "oxxo" => Ok(Oxxo),
-            "p24" => Ok(P24),
-            "pay_by_bank" => Ok(PayByBank),
-            "paynow" => Ok(Paynow),
-            "paypal" => Ok(Paypal),
-            "payto" => Ok(Payto),
-            "pix" => Ok(Pix),
-            "promptpay" => Ok(Promptpay),
-            "satispay" => Ok(Satispay),
-            "sepa_debit" => Ok(SepaDebit),
-            "sofort" => Ok(Sofort),
-            "sunbit" => Ok(Sunbit),
-            "swish" => Ok(Swish),
-            "twint" => Ok(Twint),
-            "upi" => Ok(Upi),
-            "us_bank_account" => Ok(UsBankAccount),
-            "wechat_pay" => Ok(WechatPay),
-            "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinkPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentLinkPaymentMethodTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentLinkPaymentMethodTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentLinkPaymentMethodTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentLinkPaymentMethodTypes)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PaymentLinkPaymentMethodTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentLinkPaymentMethodTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentLinkPaymentMethodTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentLinkPaymentMethodTypes::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinkPaymentMethodTypes);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodTypes {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentLinkSubmitType {
-    Auto,
-    Book,
-    Donate,
-    Pay,
-    Subscribe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentLinkSubmitType {
-    pub fn as_str(&self) -> &str {
-        use PaymentLinkSubmitType::*;
-        match self {
-            Auto => "auto",
-            Book => "book",
-            Donate => "donate",
-            Pay => "pay",
-            Subscribe => "subscribe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentLinkSubmitType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentLinkSubmitType::*;
-        match s {
-            "auto" => Ok(Auto),
-            "book" => Ok(Book),
-            "donate" => Ok(Donate),
-            "pay" => Ok(Pay),
-            "subscribe" => Ok(Subscribe),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentLinkSubmitType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentLinkSubmitType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentLinkSubmitType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentLinkSubmitType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentLinkSubmitType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PaymentLinkSubmitType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentLinkSubmitType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentLinkSubmitType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentLinkSubmitType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentLinkSubmitType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentLinkSubmitType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Configuration for collecting the customer's billing address. Defaults to `auto`.
+pub type PaymentLinkBillingAddressCollection = stripe_shared::BillingAddressCollection;
+/// Configuration for Customer creation during checkout.
+pub type PaymentLinkCustomerCreation = stripe_shared::PaymentLinkCustomerCreation;
+/// Configuration for collecting a payment method during checkout. Defaults to `always`.
+pub type PaymentLinkPaymentMethodCollection = stripe_shared::PaymentLinkCustomerCreation;
+/// The list of payment method types that customers can use.
+/// When `null`, Stripe will dynamically show relevant payment methods you've enabled in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
+pub type PaymentLinkPaymentMethodTypes = stripe_shared::PaymentLinkPaymentMethodTypes;
+/// Indicates the type of transaction being performed which customizes relevant text on the page, such as the submit button.
+pub type PaymentLinkSubmitType = stripe_shared::SubmitType;

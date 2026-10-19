@@ -154,8 +154,7 @@ pub struct CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard>,
     /// Describes the type of money movement. Currently only `card` is supported.
-    pub money_movement_type:
-        CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType,
+    pub money_movement_type: stripe_shared::PaymentIntentProcessingType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
@@ -165,11 +164,7 @@ impl std::fmt::Debug for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovement
     }
 }
 impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
-    pub fn new(
-        money_movement_type: impl Into<
-            CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType,
-        >,
-    ) -> Self {
+    pub fn new(money_movement_type: impl Into<stripe_shared::PaymentIntentProcessingType>) -> Self {
         Self { card: None, money_movement_type: money_movement_type.into() }
     }
 }
@@ -180,12 +175,10 @@ impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
 pub struct CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard {
     /// Describes the presence of the customer during the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_presence:
-        Option<CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence>,
+    pub customer_presence: Option<stripe_shared::CreateSetupIntentUsage>,
     /// Describes the type of payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_type:
-        Option<CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType>,
+    pub payment_type: Option<stripe_shared::PaymentType>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard {
@@ -202,270 +195,6 @@ impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard {
 impl Default for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Describes the presence of the customer during the payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence {
-    OffSession,
-    OnSession,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence {
-    pub fn as_str(&self) -> &str {
-        use CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence::*;
-        match self {
-            OffSession => "off_session",
-            OnSession => "on_session",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence::*;
-        match s {
-            "off_session" => Ok(OffSession),
-            "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Describes the type of payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType {
-    OneOff,
-    Recurring,
-    SetupOneOff,
-    SetupRecurring,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType {
-    pub fn as_str(&self) -> &str {
-        use CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType::*;
-        match self {
-            OneOff => "one_off",
-            Recurring => "recurring",
-            SetupOneOff => "setup_one_off",
-            SetupRecurring => "setup_recurring",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType::*;
-        match s {
-            "one_off" => Ok(OneOff),
-            "recurring" => Ok(Recurring),
-            "setup_one_off" => Ok(SetupOneOff),
-            "setup_recurring" => Ok(SetupRecurring),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Describes the type of money movement. Currently only `card` is supported.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType {
-    Card,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType {
-    pub fn as_str(&self) -> &str {
-        use CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType::*;
-        match self {
-            Card => "card",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType::*;
-        match s {
-            "card" => Ok(Card),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Details about the payment method to use for the payment.
@@ -681,3 +410,17 @@ impl Default for Address {
         Self::new()
     }
 }
+/// Describes the presence of the customer during the payment.
+pub type CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence =
+    stripe_shared::CreateSetupIntentUsage;
+/// Describes the type of payment.
+pub type CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType =
+    stripe_shared::PaymentType;
+/// Describes the type of money movement. Currently only `card` is supported.
+pub type CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType =
+    stripe_shared::PaymentIntentProcessingType;
+/// Billing address.
+pub type CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetailsBillingDetailsAddress =
+    Address;
+/// Shipping address.
+pub type CreateRadarPaymentEvaluationPaymentDetailsShippingDetailsAddress = Address;

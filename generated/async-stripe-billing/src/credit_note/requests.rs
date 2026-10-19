@@ -223,12 +223,12 @@ struct PreviewCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     effective_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    email_type: Option<PreviewCreditNoteEmailType>,
+    email_type: Option<stripe_shared::EmailType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     invoice: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    lines: Option<Vec<PreviewCreditNoteLines>>,
+    lines: Option<Vec<CreditNoteLineItemParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     memo: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -236,11 +236,11 @@ struct PreviewCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     out_of_band_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reason: Option<stripe_shared::CreditNoteReason>,
+    reason: Option<stripe_shared::Reason>,
     #[serde(skip_serializing_if = "Option::is_none")]
     refund_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    refunds: Option<Vec<PreviewCreditNoteRefunds>>,
+    refunds: Option<Vec<CreditNoteRefundParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_cost: Option<CreditNoteShippingCost>,
 }
@@ -268,322 +268,6 @@ impl PreviewCreditNoteBuilder {
             refunds: None,
             shipping_cost: None,
         }
-    }
-}
-/// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PreviewCreditNoteEmailType {
-    CreditNote,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PreviewCreditNoteEmailType {
-    pub fn as_str(&self) -> &str {
-        use PreviewCreditNoteEmailType::*;
-        match self {
-            CreditNote => "credit_note",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PreviewCreditNoteEmailType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PreviewCreditNoteEmailType::*;
-        match s {
-            "credit_note" => Ok(CreditNote),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PreviewCreditNoteEmailType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PreviewCreditNoteEmailType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PreviewCreditNoteEmailType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PreviewCreditNoteEmailType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PreviewCreditNoteEmailType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PreviewCreditNoteEmailType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PreviewCreditNoteEmailType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Line items that make up the credit note.
-/// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct PreviewCreditNoteLines {
-    /// The line item amount to credit.
-    /// Only valid when `type` is `invoice_line_item`.
-    /// If invoice is set up with `automatic_tax[enabled]=true`, this amount is tax exclusive.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// The description of the credit note line item. Only valid when the `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    /// The invoice line item to credit. Only valid when the `type` is `invoice_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_line_item: Option<String>,
-    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// The line item quantity to credit.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-    /// A list of up to 20 tax amounts for the credit note line item.
-    /// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<Vec<TaxAmountWithTaxRateParam>>,
-    /// The tax rates which apply to the credit note line item.
-    /// Only valid when the `type` is `custom_line_item` and `tax_amounts` is not used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Vec<String>>,
-    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-    /// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
-    #[serde(rename = "type")]
-    pub type_: PreviewCreditNoteLinesType,
-    /// The integer unit amount in cents (or local equivalent) of the credit note line item.
-    /// This `unit_amount` will be multiplied by the quantity to get the full amount to credit for this line item.
-    /// Only valid when `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PreviewCreditNoteLines {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("PreviewCreditNoteLines").finish_non_exhaustive()
-    }
-}
-impl PreviewCreditNoteLines {
-    pub fn new(type_: impl Into<PreviewCreditNoteLinesType>) -> Self {
-        Self {
-            amount: None,
-            description: None,
-            invoice_line_item: None,
-            metadata: None,
-            quantity: None,
-            tax_amounts: None,
-            tax_rates: None,
-            type_: type_.into(),
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
-    }
-}
-/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-/// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PreviewCreditNoteLinesType {
-    CustomLineItem,
-    InvoiceLineItem,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PreviewCreditNoteLinesType {
-    pub fn as_str(&self) -> &str {
-        use PreviewCreditNoteLinesType::*;
-        match self {
-            CustomLineItem => "custom_line_item",
-            InvoiceLineItem => "invoice_line_item",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PreviewCreditNoteLinesType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PreviewCreditNoteLinesType::*;
-        match s {
-            "custom_line_item" => Ok(CustomLineItem),
-            "invoice_line_item" => Ok(InvoiceLineItem),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PreviewCreditNoteLinesType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PreviewCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PreviewCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PreviewCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PreviewCreditNoteLinesType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PreviewCreditNoteLinesType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PreviewCreditNoteLinesType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Refunds to link to this credit note.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct PreviewCreditNoteRefunds {
-    /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
-    /// Defaults to the entire refund amount.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_refunded: Option<i64>,
-    /// The PaymentRecord refund details to link to this credit note.
-    /// Required when `type` is `payment_record_refund`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_record_refund: Option<PaymentRecordRefundParams>,
-    /// ID of an existing refund to link this credit note to. Required when `type` is `refund`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub refund: Option<String>,
-    /// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<PreviewCreditNoteRefundsType>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PreviewCreditNoteRefunds {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("PreviewCreditNoteRefunds").finish_non_exhaustive()
-    }
-}
-impl PreviewCreditNoteRefunds {
-    pub fn new() -> Self {
-        Self { amount_refunded: None, payment_record_refund: None, refund: None, type_: None }
-    }
-}
-impl Default for PreviewCreditNoteRefunds {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PreviewCreditNoteRefundsType {
-    PaymentRecordRefund,
-    Refund,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PreviewCreditNoteRefundsType {
-    pub fn as_str(&self) -> &str {
-        use PreviewCreditNoteRefundsType::*;
-        match self {
-            PaymentRecordRefund => "payment_record_refund",
-            Refund => "refund",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PreviewCreditNoteRefundsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PreviewCreditNoteRefundsType::*;
-        match s {
-            "payment_record_refund" => Ok(PaymentRecordRefund),
-            "refund" => Ok(Refund),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewCreditNoteRefundsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PreviewCreditNoteRefundsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PreviewCreditNoteRefundsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PreviewCreditNoteRefundsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PreviewCreditNoteRefundsType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PreviewCreditNoteRefundsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PreviewCreditNoteRefundsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Get a preview of a credit note without creating it.
@@ -623,7 +307,7 @@ impl PreviewCreditNote {
         self
     }
     /// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
-    pub fn email_type(mut self, email_type: impl Into<PreviewCreditNoteEmailType>) -> Self {
+    pub fn email_type(mut self, email_type: impl Into<stripe_shared::EmailType>) -> Self {
         self.inner.email_type = Some(email_type.into());
         self
     }
@@ -634,7 +318,7 @@ impl PreviewCreditNote {
     }
     /// Line items that make up the credit note.
     /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-    pub fn lines(mut self, lines: impl Into<Vec<PreviewCreditNoteLines>>) -> Self {
+    pub fn lines(mut self, lines: impl Into<Vec<CreditNoteLineItemParams>>) -> Self {
         self.inner.lines = Some(lines.into());
         self
     }
@@ -660,7 +344,7 @@ impl PreviewCreditNote {
         self
     }
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
-    pub fn reason(mut self, reason: impl Into<stripe_shared::CreditNoteReason>) -> Self {
+    pub fn reason(mut self, reason: impl Into<stripe_shared::Reason>) -> Self {
         self.inner.reason = Some(reason.into());
         self
     }
@@ -671,7 +355,7 @@ impl PreviewCreditNote {
         self
     }
     /// Refunds to link to this credit note.
-    pub fn refunds(mut self, refunds: impl Into<Vec<PreviewCreditNoteRefunds>>) -> Self {
+    pub fn refunds(mut self, refunds: impl Into<Vec<CreditNoteRefundParams>>) -> Self {
         self.inner.refunds = Some(refunds.into());
         self
     }
@@ -718,7 +402,7 @@ struct PreviewLinesCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     effective_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    email_type: Option<PreviewLinesCreditNoteEmailType>,
+    email_type: Option<stripe_shared::EmailType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -727,7 +411,7 @@ struct PreviewLinesCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    lines: Option<Vec<PreviewLinesCreditNoteLines>>,
+    lines: Option<Vec<CreditNoteLineItemParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     memo: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -735,11 +419,11 @@ struct PreviewLinesCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     out_of_band_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reason: Option<stripe_shared::CreditNoteReason>,
+    reason: Option<stripe_shared::Reason>,
     #[serde(skip_serializing_if = "Option::is_none")]
     refund_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    refunds: Option<Vec<PreviewLinesCreditNoteRefunds>>,
+    refunds: Option<Vec<CreditNoteRefundParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_cost: Option<CreditNoteShippingCost>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -772,330 +456,6 @@ impl PreviewLinesCreditNoteBuilder {
             shipping_cost: None,
             starting_after: None,
         }
-    }
-}
-/// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PreviewLinesCreditNoteEmailType {
-    CreditNote,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PreviewLinesCreditNoteEmailType {
-    pub fn as_str(&self) -> &str {
-        use PreviewLinesCreditNoteEmailType::*;
-        match self {
-            CreditNote => "credit_note",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PreviewLinesCreditNoteEmailType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PreviewLinesCreditNoteEmailType::*;
-        match s {
-            "credit_note" => Ok(CreditNote),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewLinesCreditNoteEmailType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PreviewLinesCreditNoteEmailType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PreviewLinesCreditNoteEmailType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PreviewLinesCreditNoteEmailType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PreviewLinesCreditNoteEmailType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PreviewLinesCreditNoteEmailType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteEmailType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Line items that make up the credit note.
-/// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct PreviewLinesCreditNoteLines {
-    /// The line item amount to credit.
-    /// Only valid when `type` is `invoice_line_item`.
-    /// If invoice is set up with `automatic_tax[enabled]=true`, this amount is tax exclusive.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// The description of the credit note line item. Only valid when the `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    /// The invoice line item to credit. Only valid when the `type` is `invoice_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_line_item: Option<String>,
-    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// The line item quantity to credit.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-    /// A list of up to 20 tax amounts for the credit note line item.
-    /// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<Vec<TaxAmountWithTaxRateParam>>,
-    /// The tax rates which apply to the credit note line item.
-    /// Only valid when the `type` is `custom_line_item` and `tax_amounts` is not used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Vec<String>>,
-    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-    /// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
-    #[serde(rename = "type")]
-    pub type_: PreviewLinesCreditNoteLinesType,
-    /// The integer unit amount in cents (or local equivalent) of the credit note line item.
-    /// This `unit_amount` will be multiplied by the quantity to get the full amount to credit for this line item.
-    /// Only valid when `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PreviewLinesCreditNoteLines {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("PreviewLinesCreditNoteLines").finish_non_exhaustive()
-    }
-}
-impl PreviewLinesCreditNoteLines {
-    pub fn new(type_: impl Into<PreviewLinesCreditNoteLinesType>) -> Self {
-        Self {
-            amount: None,
-            description: None,
-            invoice_line_item: None,
-            metadata: None,
-            quantity: None,
-            tax_amounts: None,
-            tax_rates: None,
-            type_: type_.into(),
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
-    }
-}
-/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-/// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PreviewLinesCreditNoteLinesType {
-    CustomLineItem,
-    InvoiceLineItem,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PreviewLinesCreditNoteLinesType {
-    pub fn as_str(&self) -> &str {
-        use PreviewLinesCreditNoteLinesType::*;
-        match self {
-            CustomLineItem => "custom_line_item",
-            InvoiceLineItem => "invoice_line_item",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PreviewLinesCreditNoteLinesType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PreviewLinesCreditNoteLinesType::*;
-        match s {
-            "custom_line_item" => Ok(CustomLineItem),
-            "invoice_line_item" => Ok(InvoiceLineItem),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewLinesCreditNoteLinesType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PreviewLinesCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PreviewLinesCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PreviewLinesCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PreviewLinesCreditNoteLinesType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PreviewLinesCreditNoteLinesType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteLinesType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Refunds to link to this credit note.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct PreviewLinesCreditNoteRefunds {
-    /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
-    /// Defaults to the entire refund amount.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_refunded: Option<i64>,
-    /// The PaymentRecord refund details to link to this credit note.
-    /// Required when `type` is `payment_record_refund`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_record_refund: Option<PaymentRecordRefundParams>,
-    /// ID of an existing refund to link this credit note to. Required when `type` is `refund`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub refund: Option<String>,
-    /// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<PreviewLinesCreditNoteRefundsType>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PreviewLinesCreditNoteRefunds {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("PreviewLinesCreditNoteRefunds").finish_non_exhaustive()
-    }
-}
-impl PreviewLinesCreditNoteRefunds {
-    pub fn new() -> Self {
-        Self { amount_refunded: None, payment_record_refund: None, refund: None, type_: None }
-    }
-}
-impl Default for PreviewLinesCreditNoteRefunds {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PreviewLinesCreditNoteRefundsType {
-    PaymentRecordRefund,
-    Refund,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PreviewLinesCreditNoteRefundsType {
-    pub fn as_str(&self) -> &str {
-        use PreviewLinesCreditNoteRefundsType::*;
-        match self {
-            PaymentRecordRefund => "payment_record_refund",
-            Refund => "refund",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PreviewLinesCreditNoteRefundsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PreviewLinesCreditNoteRefundsType::*;
-        match s {
-            "payment_record_refund" => Ok(PaymentRecordRefund),
-            "refund" => Ok(Refund),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewLinesCreditNoteRefundsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PreviewLinesCreditNoteRefundsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PreviewLinesCreditNoteRefundsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PreviewLinesCreditNoteRefundsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PreviewLinesCreditNoteRefundsType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PreviewLinesCreditNoteRefundsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteRefundsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
@@ -1136,7 +496,7 @@ impl PreviewLinesCreditNote {
         self
     }
     /// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
-    pub fn email_type(mut self, email_type: impl Into<PreviewLinesCreditNoteEmailType>) -> Self {
+    pub fn email_type(mut self, email_type: impl Into<stripe_shared::EmailType>) -> Self {
         self.inner.email_type = Some(email_type.into());
         self
     }
@@ -1160,7 +520,7 @@ impl PreviewLinesCreditNote {
     }
     /// Line items that make up the credit note.
     /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-    pub fn lines(mut self, lines: impl Into<Vec<PreviewLinesCreditNoteLines>>) -> Self {
+    pub fn lines(mut self, lines: impl Into<Vec<CreditNoteLineItemParams>>) -> Self {
         self.inner.lines = Some(lines.into());
         self
     }
@@ -1186,7 +546,7 @@ impl PreviewLinesCreditNote {
         self
     }
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
-    pub fn reason(mut self, reason: impl Into<stripe_shared::CreditNoteReason>) -> Self {
+    pub fn reason(mut self, reason: impl Into<stripe_shared::Reason>) -> Self {
         self.inner.reason = Some(reason.into());
         self
     }
@@ -1197,7 +557,7 @@ impl PreviewLinesCreditNote {
         self
     }
     /// Refunds to link to this credit note.
-    pub fn refunds(mut self, refunds: impl Into<Vec<PreviewLinesCreditNoteRefunds>>) -> Self {
+    pub fn refunds(mut self, refunds: impl Into<Vec<CreditNoteRefundParams>>) -> Self {
         self.inner.refunds = Some(refunds.into());
         self
     }
@@ -1258,12 +618,12 @@ struct CreateCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     effective_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    email_type: Option<CreateCreditNoteEmailType>,
+    email_type: Option<stripe_shared::EmailType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     invoice: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    lines: Option<Vec<CreateCreditNoteLines>>,
+    lines: Option<Vec<CreditNoteLineItemParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     memo: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1271,11 +631,11 @@ struct CreateCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     out_of_band_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reason: Option<stripe_shared::CreditNoteReason>,
+    reason: Option<stripe_shared::Reason>,
     #[serde(skip_serializing_if = "Option::is_none")]
     refund_amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    refunds: Option<Vec<CreateCreditNoteRefunds>>,
+    refunds: Option<Vec<CreditNoteRefundParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_cost: Option<CreditNoteShippingCost>,
 }
@@ -1303,322 +663,6 @@ impl CreateCreditNoteBuilder {
             refunds: None,
             shipping_cost: None,
         }
-    }
-}
-/// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateCreditNoteEmailType {
-    CreditNote,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateCreditNoteEmailType {
-    pub fn as_str(&self) -> &str {
-        use CreateCreditNoteEmailType::*;
-        match self {
-            CreditNote => "credit_note",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCreditNoteEmailType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateCreditNoteEmailType::*;
-        match s {
-            "credit_note" => Ok(CreditNote),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCreditNoteEmailType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateCreditNoteEmailType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateCreditNoteEmailType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateCreditNoteEmailType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateCreditNoteEmailType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateCreditNoteEmailType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateCreditNoteEmailType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Line items that make up the credit note.
-/// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateCreditNoteLines {
-    /// The line item amount to credit.
-    /// Only valid when `type` is `invoice_line_item`.
-    /// If invoice is set up with `automatic_tax[enabled]=true`, this amount is tax exclusive.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// The description of the credit note line item. Only valid when the `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    /// The invoice line item to credit. Only valid when the `type` is `invoice_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_line_item: Option<String>,
-    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// The line item quantity to credit.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-    /// A list of up to 20 tax amounts for the credit note line item.
-    /// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<Vec<TaxAmountWithTaxRateParam>>,
-    /// The tax rates which apply to the credit note line item.
-    /// Only valid when the `type` is `custom_line_item` and `tax_amounts` is not used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Vec<String>>,
-    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-    /// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
-    #[serde(rename = "type")]
-    pub type_: CreateCreditNoteLinesType,
-    /// The integer unit amount in cents (or local equivalent) of the credit note line item.
-    /// This `unit_amount` will be multiplied by the quantity to get the full amount to credit for this line item.
-    /// Only valid when `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateCreditNoteLines {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateCreditNoteLines").finish_non_exhaustive()
-    }
-}
-impl CreateCreditNoteLines {
-    pub fn new(type_: impl Into<CreateCreditNoteLinesType>) -> Self {
-        Self {
-            amount: None,
-            description: None,
-            invoice_line_item: None,
-            metadata: None,
-            quantity: None,
-            tax_amounts: None,
-            tax_rates: None,
-            type_: type_.into(),
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
-    }
-}
-/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-/// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateCreditNoteLinesType {
-    CustomLineItem,
-    InvoiceLineItem,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateCreditNoteLinesType {
-    pub fn as_str(&self) -> &str {
-        use CreateCreditNoteLinesType::*;
-        match self {
-            CustomLineItem => "custom_line_item",
-            InvoiceLineItem => "invoice_line_item",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCreditNoteLinesType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateCreditNoteLinesType::*;
-        match s {
-            "custom_line_item" => Ok(CustomLineItem),
-            "invoice_line_item" => Ok(InvoiceLineItem),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCreditNoteLinesType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateCreditNoteLinesType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateCreditNoteLinesType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateCreditNoteLinesType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Refunds to link to this credit note.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateCreditNoteRefunds {
-    /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
-    /// Defaults to the entire refund amount.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_refunded: Option<i64>,
-    /// The PaymentRecord refund details to link to this credit note.
-    /// Required when `type` is `payment_record_refund`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_record_refund: Option<PaymentRecordRefundParams>,
-    /// ID of an existing refund to link this credit note to. Required when `type` is `refund`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub refund: Option<String>,
-    /// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<CreateCreditNoteRefundsType>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateCreditNoteRefunds {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateCreditNoteRefunds").finish_non_exhaustive()
-    }
-}
-impl CreateCreditNoteRefunds {
-    pub fn new() -> Self {
-        Self { amount_refunded: None, payment_record_refund: None, refund: None, type_: None }
-    }
-}
-impl Default for CreateCreditNoteRefunds {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateCreditNoteRefundsType {
-    PaymentRecordRefund,
-    Refund,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateCreditNoteRefundsType {
-    pub fn as_str(&self) -> &str {
-        use CreateCreditNoteRefundsType::*;
-        match self {
-            PaymentRecordRefund => "payment_record_refund",
-            Refund => "refund",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCreditNoteRefundsType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateCreditNoteRefundsType::*;
-        match s {
-            "payment_record_refund" => Ok(PaymentRecordRefund),
-            "refund" => Ok(Refund),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCreditNoteRefundsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateCreditNoteRefundsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateCreditNoteRefundsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateCreditNoteRefundsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateCreditNoteRefundsType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateCreditNoteRefundsType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateCreditNoteRefundsType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Issue a credit note to adjust the amount of a finalized invoice.
@@ -1677,7 +721,7 @@ impl CreateCreditNote {
         self
     }
     /// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
-    pub fn email_type(mut self, email_type: impl Into<CreateCreditNoteEmailType>) -> Self {
+    pub fn email_type(mut self, email_type: impl Into<stripe_shared::EmailType>) -> Self {
         self.inner.email_type = Some(email_type.into());
         self
     }
@@ -1688,7 +732,7 @@ impl CreateCreditNote {
     }
     /// Line items that make up the credit note.
     /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-    pub fn lines(mut self, lines: impl Into<Vec<CreateCreditNoteLines>>) -> Self {
+    pub fn lines(mut self, lines: impl Into<Vec<CreditNoteLineItemParams>>) -> Self {
         self.inner.lines = Some(lines.into());
         self
     }
@@ -1714,7 +758,7 @@ impl CreateCreditNote {
         self
     }
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
-    pub fn reason(mut self, reason: impl Into<stripe_shared::CreditNoteReason>) -> Self {
+    pub fn reason(mut self, reason: impl Into<stripe_shared::Reason>) -> Self {
         self.inner.reason = Some(reason.into());
         self
     }
@@ -1725,7 +769,7 @@ impl CreateCreditNote {
         self
     }
     /// Refunds to link to this credit note.
-    pub fn refunds(mut self, refunds: impl Into<Vec<CreateCreditNoteRefunds>>) -> Self {
+    pub fn refunds(mut self, refunds: impl Into<Vec<CreditNoteRefundParams>>) -> Self {
         self.inner.refunds = Some(refunds.into());
         self
     }
@@ -1998,3 +1042,176 @@ impl Default for CreditNoteShippingCost {
         Self::new()
     }
 }
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreditNoteLineItemParams {
+    /// The line item amount to credit.
+    /// Only valid when `type` is `invoice_line_item`.
+    /// If invoice is set up with `automatic_tax[enabled]=true`, this amount is tax exclusive.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// The description of the credit note line item. Only valid when the `type` is `custom_line_item`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The invoice line item to credit. Only valid when the `type` is `invoice_line_item`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_line_item: Option<String>,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The line item quantity to credit.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+    /// A list of up to 20 tax amounts for the credit note line item.
+    /// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_amounts: Option<Vec<TaxAmountWithTaxRateParam>>,
+    /// The tax rates which apply to the credit note line item.
+    /// Only valid when the `type` is `custom_line_item` and `tax_amounts` is not used.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Vec<String>>,
+    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
+    /// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
+    #[serde(rename = "type")]
+    pub type_: stripe_shared::CreditNoteLineItemType,
+    /// The integer unit amount in cents (or local equivalent) of the credit note line item.
+    /// This `unit_amount` will be multiplied by the quantity to get the full amount to credit for this line item.
+    /// Only valid when `type` is `custom_line_item`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreditNoteLineItemParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreditNoteLineItemParams").finish_non_exhaustive()
+    }
+}
+impl CreditNoteLineItemParams {
+    pub fn new(type_: impl Into<stripe_shared::CreditNoteLineItemType>) -> Self {
+        Self {
+            amount: None,
+            description: None,
+            invoice_line_item: None,
+            metadata: None,
+            quantity: None,
+            tax_amounts: None,
+            tax_rates: None,
+            type_: type_.into(),
+            unit_amount: None,
+            unit_amount_decimal: None,
+        }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreditNoteRefundParams {
+    /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
+    /// Defaults to the entire refund amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_refunded: Option<i64>,
+    /// The PaymentRecord refund details to link to this credit note.
+    /// Required when `type` is `payment_record_refund`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_record_refund: Option<PaymentRecordRefundParams>,
+    /// ID of an existing refund to link this credit note to. Required when `type` is `refund`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund: Option<String>,
+    /// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<stripe_shared::CreditNoteRefundType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreditNoteRefundParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreditNoteRefundParams").finish_non_exhaustive()
+    }
+}
+impl CreditNoteRefundParams {
+    pub fn new() -> Self {
+        Self { amount_refunded: None, payment_record_refund: None, refund: None, type_: None }
+    }
+}
+impl Default for CreditNoteRefundParams {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
+pub type PreviewCreditNoteEmailType = stripe_shared::EmailType;
+/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
+/// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
+pub type PreviewCreditNoteLinesType = stripe_shared::CreditNoteLineItemType;
+/// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
+pub type PreviewCreditNoteReason = stripe_shared::Reason;
+/// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
+pub type PreviewCreditNoteRefundsType = stripe_shared::CreditNoteRefundType;
+/// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
+pub type PreviewLinesCreditNoteEmailType = stripe_shared::EmailType;
+/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
+/// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
+pub type PreviewLinesCreditNoteLinesType = stripe_shared::CreditNoteLineItemType;
+/// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
+pub type PreviewLinesCreditNoteReason = stripe_shared::Reason;
+/// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
+pub type PreviewLinesCreditNoteRefundsType = stripe_shared::CreditNoteRefundType;
+/// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
+pub type CreateCreditNoteEmailType = stripe_shared::EmailType;
+/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
+/// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
+pub type CreateCreditNoteLinesType = stripe_shared::CreditNoteLineItemType;
+/// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
+pub type CreateCreditNoteReason = stripe_shared::Reason;
+/// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
+pub type CreateCreditNoteRefundsType = stripe_shared::CreditNoteRefundType;
+/// A list of up to 20 tax amounts for the credit note line item.
+/// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
+pub type PreviewCreditNoteLinesTaxAmounts = TaxAmountWithTaxRateParam;
+/// The PaymentRecord refund details to link to this credit note.
+/// Required when `type` is `payment_record_refund`.
+pub type PreviewCreditNoteRefundsPaymentRecordRefund = PaymentRecordRefundParams;
+/// When shipping_cost contains the shipping_rate from the invoice, the shipping_cost is included in the credit note.
+/// One of `amount`, `lines`, or `shipping_cost` must be provided.
+pub type PreviewCreditNoteShippingCost = CreditNoteShippingCost;
+/// A list of up to 20 tax amounts for the credit note line item.
+/// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
+pub type PreviewLinesCreditNoteLinesTaxAmounts = TaxAmountWithTaxRateParam;
+/// The PaymentRecord refund details to link to this credit note.
+/// Required when `type` is `payment_record_refund`.
+pub type PreviewLinesCreditNoteRefundsPaymentRecordRefund = PaymentRecordRefundParams;
+/// When shipping_cost contains the shipping_rate from the invoice, the shipping_cost is included in the credit note.
+/// One of `amount`, `lines`, or `shipping_cost` must be provided.
+pub type PreviewLinesCreditNoteShippingCost = CreditNoteShippingCost;
+/// A list of up to 20 tax amounts for the credit note line item.
+/// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
+pub type CreateCreditNoteLinesTaxAmounts = TaxAmountWithTaxRateParam;
+/// The PaymentRecord refund details to link to this credit note.
+/// Required when `type` is `payment_record_refund`.
+pub type CreateCreditNoteRefundsPaymentRecordRefund = PaymentRecordRefundParams;
+/// When shipping_cost contains the shipping_rate from the invoice, the shipping_cost is included in the credit note.
+/// One of `amount`, `lines`, or `shipping_cost` must be provided.
+pub type CreateCreditNoteShippingCost = CreditNoteShippingCost;
+/// Line items that make up the credit note.
+/// One of `amount`, `lines`, or `shipping_cost` must be provided.
+pub type PreviewCreditNoteLines = CreditNoteLineItemParams;
+/// Refunds to link to this credit note.
+pub type PreviewCreditNoteRefunds = CreditNoteRefundParams;
+/// Line items that make up the credit note.
+/// One of `amount`, `lines`, or `shipping_cost` must be provided.
+pub type PreviewLinesCreditNoteLines = CreditNoteLineItemParams;
+/// Refunds to link to this credit note.
+pub type PreviewLinesCreditNoteRefunds = CreditNoteRefundParams;
+/// Line items that make up the credit note.
+/// One of `amount`, `lines`, or `shipping_cost` must be provided.
+pub type CreateCreditNoteLines = CreditNoteLineItemParams;
+/// Refunds to link to this credit note.
+pub type CreateCreditNoteRefunds = CreditNoteRefundParams;

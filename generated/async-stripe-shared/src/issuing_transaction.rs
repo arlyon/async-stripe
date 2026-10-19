@@ -57,7 +57,7 @@ pub struct IssuingTransaction {
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: stripe_shared::IssuingTransactionType,
     /// The digital wallet used for this transaction. One of `apple_pay`, `google_pay`, or `samsung_pay`.
-    pub wallet: Option<IssuingTransactionWallet>,
+    pub wallet: Option<stripe_shared::IssuingTransactionWallet>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for IssuingTransaction {
@@ -88,7 +88,7 @@ pub struct IssuingTransactionBuilder {
     token: Option<Option<stripe_types::Expandable<stripe_shared::IssuingToken>>>,
     treasury: Option<Option<stripe_shared::IssuingTransactionTreasury>>,
     type_: Option<stripe_shared::IssuingTransactionType>,
-    wallet: Option<Option<IssuingTransactionWallet>>,
+    wallet: Option<Option<stripe_shared::IssuingTransactionWallet>>,
 }
 
 #[allow(
@@ -339,93 +339,6 @@ impl serde::Serialize for IssuingTransaction {
         s.end()
     }
 }
-/// The digital wallet used for this transaction. One of `apple_pay`, `google_pay`, or `samsung_pay`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingTransactionWallet {
-    ApplePay,
-    GooglePay,
-    SamsungPay,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingTransactionWallet {
-    pub fn as_str(&self) -> &str {
-        use IssuingTransactionWallet::*;
-        match self {
-            ApplePay => "apple_pay",
-            GooglePay => "google_pay",
-            SamsungPay => "samsung_pay",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingTransactionWallet {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingTransactionWallet::*;
-        match s {
-            "apple_pay" => Ok(ApplePay),
-            "google_pay" => Ok(GooglePay),
-            "samsung_pay" => Ok(SamsungPay),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTransactionWallet");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingTransactionWallet {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingTransactionWallet {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingTransactionWallet {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingTransactionWallet)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingTransactionWallet {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingTransactionWallet {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingTransactionWallet> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingTransactionWallet::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingTransactionWallet);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingTransactionWallet {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for IssuingTransaction {
     type Id = stripe_shared::IssuingTransactionId;
     fn id(&self) -> &Self::Id {
@@ -437,85 +350,7 @@ impl stripe_types::Object for IssuingTransaction {
     }
 }
 stripe_types::def_id!(IssuingTransactionId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingTransactionType {
-    Capture,
-    Refund,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingTransactionType {
-    pub fn as_str(&self) -> &str {
-        use IssuingTransactionType::*;
-        match self {
-            Capture => "capture",
-            Refund => "refund",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingTransactionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingTransactionType::*;
-        match s {
-            "capture" => Ok(Capture),
-            "refund" => Ok(Refund),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTransactionType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingTransactionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingTransactionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingTransactionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingTransactionType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for IssuingTransactionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingTransactionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingTransactionType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingTransactionType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingTransactionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// The nature of the transaction.
+pub type IssuingTransactionType = stripe_shared::IssuingTransactionType;
+/// The digital wallet used for this transaction. One of `apple_pay`, `google_pay`, or `samsung_pay`.
+pub type IssuingTransactionWallet = stripe_shared::IssuingTransactionWallet;

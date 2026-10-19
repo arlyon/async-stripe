@@ -18,7 +18,7 @@ struct ListIdBillingMeterEventSummaryBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    value_grouping_window: Option<ListIdBillingMeterEventSummaryValueGroupingWindow>,
+    value_grouping_window: Option<stripe_shared::BillingMeterEventTimeWindow>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListIdBillingMeterEventSummaryBuilder {
@@ -42,82 +42,6 @@ impl ListIdBillingMeterEventSummaryBuilder {
             starting_after: None,
             value_grouping_window: None,
         }
-    }
-}
-/// Specifies what granularity to use when generating event summaries.
-/// If not specified, a single event summary would be returned for the specified time range.
-/// For hourly granularity, start and end times must align with hour boundaries (e.g., 00:00, 01:00, ..., 23:00).
-/// For daily granularity, start and end times must align with UTC day boundaries (00:00 UTC).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ListIdBillingMeterEventSummaryValueGroupingWindow {
-    Day,
-    Hour,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ListIdBillingMeterEventSummaryValueGroupingWindow {
-    pub fn as_str(&self) -> &str {
-        use ListIdBillingMeterEventSummaryValueGroupingWindow::*;
-        match self {
-            Day => "day",
-            Hour => "hour",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for ListIdBillingMeterEventSummaryValueGroupingWindow {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ListIdBillingMeterEventSummaryValueGroupingWindow::*;
-        match s {
-            "day" => Ok(Day),
-            "hour" => Ok(Hour),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListIdBillingMeterEventSummaryValueGroupingWindow"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for ListIdBillingMeterEventSummaryValueGroupingWindow {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ListIdBillingMeterEventSummaryValueGroupingWindow {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ListIdBillingMeterEventSummaryValueGroupingWindow {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ListIdBillingMeterEventSummaryValueGroupingWindow))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for ListIdBillingMeterEventSummaryValueGroupingWindow {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ListIdBillingMeterEventSummaryValueGroupingWindow {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Retrieve a list of billing meter event summaries.
@@ -182,7 +106,7 @@ impl ListIdBillingMeterEventSummary {
     /// For daily granularity, start and end times must align with UTC day boundaries (00:00 UTC).
     pub fn value_grouping_window(
         mut self,
-        value_grouping_window: impl Into<ListIdBillingMeterEventSummaryValueGroupingWindow>,
+        value_grouping_window: impl Into<stripe_shared::BillingMeterEventTimeWindow>,
     ) -> Self {
         self.inner.value_grouping_window = Some(value_grouping_window.into());
         self
@@ -228,3 +152,10 @@ impl StripeRequest for ListIdBillingMeterEventSummary {
             .query(&self.inner)
     }
 }
+
+/// Specifies what granularity to use when generating event summaries.
+/// If not specified, a single event summary would be returned for the specified time range.
+/// For hourly granularity, start and end times must align with hour boundaries (e.g., 00:00, 01:00, ..., 23:00).
+/// For daily granularity, start and end times must align with UTC day boundaries (00:00 UTC).
+pub type ListIdBillingMeterEventSummaryValueGroupingWindow =
+    stripe_shared::BillingMeterEventTimeWindow;

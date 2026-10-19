@@ -287,7 +287,7 @@ pub struct CreatePromotionCodePromotion {
     pub coupon: Option<String>,
     /// Specifies the type of promotion.
     #[serde(rename = "type")]
-    pub type_: CreatePromotionCodePromotionType,
+    pub type_: stripe_shared::DiscountSourceType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePromotionCodePromotion {
@@ -296,77 +296,8 @@ impl std::fmt::Debug for CreatePromotionCodePromotion {
     }
 }
 impl CreatePromotionCodePromotion {
-    pub fn new(type_: impl Into<CreatePromotionCodePromotionType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::DiscountSourceType>) -> Self {
         Self { coupon: None, type_: type_.into() }
-    }
-}
-/// Specifies the type of promotion.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePromotionCodePromotionType {
-    Coupon,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePromotionCodePromotionType {
-    pub fn as_str(&self) -> &str {
-        use CreatePromotionCodePromotionType::*;
-        match self {
-            Coupon => "coupon",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreatePromotionCodePromotionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePromotionCodePromotionType::*;
-        match s {
-            "coupon" => Ok(Coupon),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePromotionCodePromotionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreatePromotionCodePromotionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreatePromotionCodePromotionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreatePromotionCodePromotionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreatePromotionCodePromotionType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreatePromotionCodePromotionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreatePromotionCodePromotionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Settings that restrict the redemption of the promotion code.
@@ -670,3 +601,13 @@ impl Default for CurrencyOption {
         Self::new()
     }
 }
+/// Specifies the type of promotion.
+pub type CreatePromotionCodePromotionType = stripe_shared::DiscountSourceType;
+/// Promotion codes defined in each available currency option.
+/// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+/// Each currency must be different from the `minimum_amount_currency` set on the promotion code.
+pub type CreatePromotionCodeRestrictionsCurrencyOptions = CurrencyOption;
+/// Promotion codes defined in each available currency option.
+/// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+/// Each currency must be different from the `minimum_amount_currency` set on the promotion code.
+pub type UpdatePromotionCodeRestrictionsCurrencyOptions = CurrencyOption;

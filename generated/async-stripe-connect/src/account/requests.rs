@@ -566,7 +566,7 @@ struct CreateAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     business_profile: Option<CreateAccountBusinessProfile>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    business_type: Option<stripe_shared::AccountBusinessType>,
+    business_type: Option<stripe_shared::BusinessType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     capabilities: Option<CreateAccountCapabilities>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -648,7 +648,7 @@ pub struct CreateAccountBusinessProfile {
     /// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minority_owned_business_designation:
-        Option<Vec<CreateAccountBusinessProfileMinorityOwnedBusinessDesignation>>,
+        Option<Vec<stripe_shared::MinorityOwnedBusinessDesignation>>,
     /// An estimate of the monthly revenue of the business. Only accepted for accounts in Brazil and India.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub monthly_estimated_revenue: Option<MonthlyEstimatedRevenueSpecs>,
@@ -702,88 +702,6 @@ impl CreateAccountBusinessProfile {
 impl Default for CreateAccountBusinessProfile {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    LgbtqiOwnedBusiness,
-    MinorityOwnedBusiness,
-    NoneOfTheseApply,
-    PreferNotToAnswer,
-    WomenOwnedBusiness,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountBusinessProfileMinorityOwnedBusinessDesignation::*;
-        match self {
-            LgbtqiOwnedBusiness => "lgbtqi_owned_business",
-            MinorityOwnedBusiness => "minority_owned_business",
-            NoneOfTheseApply => "none_of_these_apply",
-            PreferNotToAnswer => "prefer_not_to_answer",
-            WomenOwnedBusiness => "women_owned_business",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountBusinessProfileMinorityOwnedBusinessDesignation::*;
-        match s {
-            "lgbtqi_owned_business" => Ok(LgbtqiOwnedBusiness),
-            "minority_owned_business" => Ok(MinorityOwnedBusiness),
-            "none_of_these_apply" => Ok(NoneOfTheseApply),
-            "prefer_not_to_answer" => Ok(PreferNotToAnswer),
-            "women_owned_business" => Ok(WomenOwnedBusiness),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountBusinessProfileMinorityOwnedBusinessDesignation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountBusinessProfileMinorityOwnedBusinessDesignation))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A publicly available mailing address for sending support issues to.
@@ -2961,7 +2879,7 @@ pub struct CreateAccountCompany {
     /// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
     /// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ownership_exemption_reason: Option<CreateAccountCompanyOwnershipExemptionReason>,
+    pub ownership_exemption_reason: Option<stripe_shared::OwnershipExemptionReason>,
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
@@ -2982,7 +2900,7 @@ pub struct CreateAccountCompany {
     /// See [Business structure](/connect/identity-verification#business-structure) for more details.
     /// Pass an empty string to unset this value.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub structure: Option<CreateAccountCompanyStructure>,
+    pub structure: Option<stripe_shared::Structure>,
     /// The business ID number of the company, as appropriate for the company’s country.
     /// (Examples are an Employer ID Number in the U.S., a Business Number in Canada, or a Company Number in the UK.).
     ///
@@ -3223,84 +3141,6 @@ impl Default for CreateAccountCompanyAdministrativeAddress {
         Self::new()
     }
 }
-/// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
-/// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountCompanyOwnershipExemptionReason {
-    QualifiedEntityExceedsOwnershipThreshold,
-    QualifiesAsFinancialInstitution,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountCompanyOwnershipExemptionReason {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountCompanyOwnershipExemptionReason::*;
-        match self {
-            QualifiedEntityExceedsOwnershipThreshold => {
-                "qualified_entity_exceeds_ownership_threshold"
-            }
-            QualifiesAsFinancialInstitution => "qualifies_as_financial_institution",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountCompanyOwnershipExemptionReason {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountCompanyOwnershipExemptionReason::*;
-        match s {
-            "qualified_entity_exceeds_ownership_threshold" => {
-                Ok(QualifiedEntityExceedsOwnershipThreshold)
-            }
-            "qualifies_as_financial_institution" => Ok(QualifiesAsFinancialInstitution),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountCompanyOwnershipExemptionReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountCompanyOwnershipExemptionReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountCompanyOwnershipExemptionReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountCompanyOwnershipExemptionReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountCompanyOwnershipExemptionReason))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountCompanyOwnershipExemptionReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountCompanyOwnershipExemptionReason {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The primary location where the business conducts operations.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -3341,143 +3181,6 @@ impl Default for CreateAccountCompanyPrincipalPlaceOfBusiness {
         Self::new()
     }
 }
-/// The category identifying the legal structure of the company or legal entity.
-/// See [Business structure](/connect/identity-verification#business-structure) for more details.
-/// Pass an empty string to unset this value.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountCompanyStructure {
-    FreeZoneEstablishment,
-    FreeZoneLlc,
-    GovernmentInstrumentality,
-    GovernmentalUnit,
-    IncorporatedNonProfit,
-    IncorporatedPartnership,
-    LimitedLiabilityPartnership,
-    Llc,
-    MultiMemberLlc,
-    PrivateCompany,
-    PrivateCorporation,
-    PrivatePartnership,
-    PublicCompany,
-    PublicCorporation,
-    PublicPartnership,
-    RegisteredCharity,
-    SingleMemberLlc,
-    SoleEstablishment,
-    SoleProprietorship,
-    TaxExemptGovernmentInstrumentality,
-    UnincorporatedAssociation,
-    UnincorporatedNonProfit,
-    UnincorporatedPartnership,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountCompanyStructure {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountCompanyStructure::*;
-        match self {
-            FreeZoneEstablishment => "free_zone_establishment",
-            FreeZoneLlc => "free_zone_llc",
-            GovernmentInstrumentality => "government_instrumentality",
-            GovernmentalUnit => "governmental_unit",
-            IncorporatedNonProfit => "incorporated_non_profit",
-            IncorporatedPartnership => "incorporated_partnership",
-            LimitedLiabilityPartnership => "limited_liability_partnership",
-            Llc => "llc",
-            MultiMemberLlc => "multi_member_llc",
-            PrivateCompany => "private_company",
-            PrivateCorporation => "private_corporation",
-            PrivatePartnership => "private_partnership",
-            PublicCompany => "public_company",
-            PublicCorporation => "public_corporation",
-            PublicPartnership => "public_partnership",
-            RegisteredCharity => "registered_charity",
-            SingleMemberLlc => "single_member_llc",
-            SoleEstablishment => "sole_establishment",
-            SoleProprietorship => "sole_proprietorship",
-            TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
-            UnincorporatedAssociation => "unincorporated_association",
-            UnincorporatedNonProfit => "unincorporated_non_profit",
-            UnincorporatedPartnership => "unincorporated_partnership",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountCompanyStructure {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountCompanyStructure::*;
-        match s {
-            "free_zone_establishment" => Ok(FreeZoneEstablishment),
-            "free_zone_llc" => Ok(FreeZoneLlc),
-            "government_instrumentality" => Ok(GovernmentInstrumentality),
-            "governmental_unit" => Ok(GovernmentalUnit),
-            "incorporated_non_profit" => Ok(IncorporatedNonProfit),
-            "incorporated_partnership" => Ok(IncorporatedPartnership),
-            "limited_liability_partnership" => Ok(LimitedLiabilityPartnership),
-            "llc" => Ok(Llc),
-            "multi_member_llc" => Ok(MultiMemberLlc),
-            "private_company" => Ok(PrivateCompany),
-            "private_corporation" => Ok(PrivateCorporation),
-            "private_partnership" => Ok(PrivatePartnership),
-            "public_company" => Ok(PublicCompany),
-            "public_corporation" => Ok(PublicCorporation),
-            "public_partnership" => Ok(PublicPartnership),
-            "registered_charity" => Ok(RegisteredCharity),
-            "single_member_llc" => Ok(SingleMemberLlc),
-            "sole_establishment" => Ok(SoleEstablishment),
-            "sole_proprietorship" => Ok(SoleProprietorship),
-            "tax_exempt_government_instrumentality" => Ok(TaxExemptGovernmentInstrumentality),
-            "unincorporated_association" => Ok(UnincorporatedAssociation),
-            "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
-            "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountCompanyStructure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountCompanyStructure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountCompanyStructure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountCompanyStructure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountCompanyStructure)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountCompanyStructure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountCompanyStructure {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// A hash of configuration describing the account controller's attributes.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -3492,7 +3195,7 @@ pub struct CreateAccountController {
     /// A value indicating responsibility for collecting updated information when requirements on the account are due or change.
     /// Defaults to `stripe`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requirement_collection: Option<CreateAccountControllerRequirementCollection>,
+    pub requirement_collection: Option<stripe_shared::ReserveHoldCreatedBy>,
     /// A hash of configuration for Stripe-hosted dashboards.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stripe_dashboard: Option<CreateAccountControllerStripeDashboard>,
@@ -3522,7 +3225,7 @@ pub struct CreateAccountControllerFees {
     /// Defaults to `account`.
     /// Learn more about [fee behavior on connected accounts](https://docs.stripe.com/connect/direct-charges-fee-payer-behavior).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payer: Option<CreateAccountControllerFeesPayer>,
+    pub payer: Option<stripe_shared::CreateAccountControllerFeesPayer>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAccountControllerFees {
@@ -3540,80 +3243,6 @@ impl Default for CreateAccountControllerFees {
         Self::new()
     }
 }
-/// A value indicating the responsible payer of Stripe fees on this account.
-/// Defaults to `account`.
-/// Learn more about [fee behavior on connected accounts](https://docs.stripe.com/connect/direct-charges-fee-payer-behavior).
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountControllerFeesPayer {
-    Account,
-    Application,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountControllerFeesPayer {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountControllerFeesPayer::*;
-        match self {
-            Account => "account",
-            Application => "application",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountControllerFeesPayer {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountControllerFeesPayer::*;
-        match s {
-            "account" => Ok(Account),
-            "application" => Ok(Application),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountControllerFeesPayer"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountControllerFeesPayer {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountControllerFeesPayer {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountControllerFeesPayer {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountControllerFeesPayer)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountControllerFeesPayer {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountControllerFeesPayer {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// A hash of configuration for products that have negative balance liability, and whether Stripe or a Connect application is responsible for them.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -3622,7 +3251,7 @@ pub struct CreateAccountControllerLosses {
     /// A value indicating who is liable when this account can't pay back negative balances resulting from payments.
     /// Defaults to `stripe`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payments: Option<CreateAccountControllerLossesPayments>,
+    pub payments: Option<stripe_shared::ReserveHoldCreatedBy>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAccountControllerLosses {
@@ -3640,153 +3269,6 @@ impl Default for CreateAccountControllerLosses {
         Self::new()
     }
 }
-/// A value indicating who is liable when this account can't pay back negative balances resulting from payments.
-/// Defaults to `stripe`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountControllerLossesPayments {
-    Application,
-    Stripe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountControllerLossesPayments {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountControllerLossesPayments::*;
-        match self {
-            Application => "application",
-            Stripe => "stripe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountControllerLossesPayments {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountControllerLossesPayments::*;
-        match s {
-            "application" => Ok(Application),
-            "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountControllerLossesPayments"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountControllerLossesPayments {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountControllerLossesPayments {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountControllerLossesPayments {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountControllerLossesPayments)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountControllerLossesPayments {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountControllerLossesPayments {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// A value indicating responsibility for collecting updated information when requirements on the account are due or change.
-/// Defaults to `stripe`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountControllerRequirementCollection {
-    Application,
-    Stripe,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountControllerRequirementCollection {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountControllerRequirementCollection::*;
-        match self {
-            Application => "application",
-            Stripe => "stripe",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountControllerRequirementCollection {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountControllerRequirementCollection::*;
-        match s {
-            "application" => Ok(Application),
-            "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountControllerRequirementCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountControllerRequirementCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountControllerRequirementCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountControllerRequirementCollection {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountControllerRequirementCollection))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountControllerRequirementCollection {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountControllerRequirementCollection {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// A hash of configuration for Stripe-hosted dashboards.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -3796,7 +3278,7 @@ pub struct CreateAccountControllerStripeDashboard {
     /// Defaults to `full`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<CreateAccountControllerStripeDashboardType>,
+    pub type_: Option<stripe_shared::Type>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAccountControllerStripeDashboard {
@@ -3812,83 +3294,6 @@ impl CreateAccountControllerStripeDashboard {
 impl Default for CreateAccountControllerStripeDashboard {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Whether this account should have access to the full Stripe Dashboard (`full`), to the Express Dashboard (`express`), or to no Stripe-hosted dashboard (`none`).
-/// Defaults to `full`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountControllerStripeDashboardType {
-    Express,
-    Full,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountControllerStripeDashboardType {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountControllerStripeDashboardType::*;
-        match self {
-            Express => "express",
-            Full => "full",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountControllerStripeDashboardType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountControllerStripeDashboardType::*;
-        match s {
-            "express" => Ok(Express),
-            "full" => Ok(Full),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountControllerStripeDashboardType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountControllerStripeDashboardType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountControllerStripeDashboardType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountControllerStripeDashboardType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountControllerStripeDashboardType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountControllerStripeDashboardType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountControllerStripeDashboardType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
@@ -4017,7 +3422,7 @@ pub struct CreateAccountIndividual {
     pub phone: Option<String>,
     /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub political_exposure: Option<CreateAccountIndividualPoliticalExposure>,
+    pub political_exposure: Option<stripe_shared::PoliticalExposure>,
     /// The individual's registered address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registered_address: Option<CreateAccountIndividualRegisteredAddress>,
@@ -4213,78 +3618,6 @@ impl Default for CreateAccountIndividualAddressKanji {
         Self::new()
     }
 }
-/// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountIndividualPoliticalExposure {
-    Existing,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountIndividualPoliticalExposure {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountIndividualPoliticalExposure::*;
-        match self {
-            Existing => "existing",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountIndividualPoliticalExposure {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountIndividualPoliticalExposure::*;
-        match s {
-            "existing" => Ok(Existing),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountIndividualPoliticalExposure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountIndividualPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountIndividualPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountIndividualPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountIndividualPoliticalExposure)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountIndividualPoliticalExposure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountIndividualPoliticalExposure {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The individual's registered address.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -4387,7 +3720,7 @@ impl Default for CreateAccountSettings {
 pub struct CreateAccountSettingsInvoices {
     /// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_payment_method_save: Option<CreateAccountSettingsInvoicesHostedPaymentMethodSave>,
+    pub hosted_payment_method_save: Option<stripe_shared::HostedPaymentMethodSave>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAccountSettingsInvoices {
@@ -4403,82 +3736,6 @@ impl CreateAccountSettingsInvoices {
 impl Default for CreateAccountSettingsInvoices {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountSettingsInvoicesHostedPaymentMethodSave {
-    Always,
-    Never,
-    Offer,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountSettingsInvoicesHostedPaymentMethodSave {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountSettingsInvoicesHostedPaymentMethodSave::*;
-        match self {
-            Always => "always",
-            Never => "never",
-            Offer => "offer",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountSettingsInvoicesHostedPaymentMethodSave {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountSettingsInvoicesHostedPaymentMethodSave::*;
-        match s {
-            "always" => Ok(Always),
-            "never" => Ok(Never),
-            "offer" => Ok(Offer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountSettingsInvoicesHostedPaymentMethodSave"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountSettingsInvoicesHostedPaymentMethodSave {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountSettingsInvoicesHostedPaymentMethodSave {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountSettingsInvoicesHostedPaymentMethodSave {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountSettingsInvoicesHostedPaymentMethodSave))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountSettingsInvoicesHostedPaymentMethodSave {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountSettingsInvoicesHostedPaymentMethodSave {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Settings specific to the account's payouts.
@@ -4532,7 +3789,7 @@ pub struct CreateAccountSettingsPayoutsSchedule {
     /// One of: `daily`, `manual`, `weekly`, or `monthly`.
     /// Default is `daily`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<CreateAccountSettingsPayoutsScheduleInterval>,
+    pub interval: Option<stripe_shared::Interval>,
     /// The day of the month when available funds are paid out, specified as a number between 1--31.
     /// Payouts nominally scheduled between the 29th and 31st of the month are instead sent on the last day of a shorter month.
     /// Required and applicable only if `interval` is `monthly`.
@@ -4546,11 +3803,11 @@ pub struct CreateAccountSettingsPayoutsSchedule {
     /// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
     /// Required and applicable only if `interval` is `weekly`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub weekly_anchor: Option<CreateAccountSettingsPayoutsScheduleWeeklyAnchor>,
+    pub weekly_anchor: Option<stripe_shared::WeeklyAnchor>,
     /// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
     /// Required and applicable only if `interval` is `weekly`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub weekly_payout_days: Option<Vec<CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays>>,
+    pub weekly_payout_days: Option<Vec<stripe_shared::WeeklyPayoutDays>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAccountSettingsPayoutsSchedule {
@@ -4593,259 +3850,6 @@ pub enum CreateAccountSettingsPayoutsScheduleDelayDays {
 impl std::fmt::Debug for CreateAccountSettingsPayoutsScheduleDelayDays {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.debug_struct("CreateAccountSettingsPayoutsScheduleDelayDays").finish_non_exhaustive()
-    }
-}
-/// How frequently available funds are paid out.
-/// One of: `daily`, `manual`, `weekly`, or `monthly`.
-/// Default is `daily`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountSettingsPayoutsScheduleInterval {
-    Daily,
-    Manual,
-    Monthly,
-    Weekly,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountSettingsPayoutsScheduleInterval {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountSettingsPayoutsScheduleInterval::*;
-        match self {
-            Daily => "daily",
-            Manual => "manual",
-            Monthly => "monthly",
-            Weekly => "weekly",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountSettingsPayoutsScheduleInterval::*;
-        match s {
-            "daily" => Ok(Daily),
-            "manual" => Ok(Manual),
-            "monthly" => Ok(Monthly),
-            "weekly" => Ok(Weekly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountSettingsPayoutsScheduleInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountSettingsPayoutsScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountSettingsPayoutsScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountSettingsPayoutsScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountSettingsPayoutsScheduleInterval))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountSettingsPayoutsScheduleInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPayoutsScheduleInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
-/// Required and applicable only if `interval` is `weekly`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    Friday,
-    Monday,
-    Saturday,
-    Sunday,
-    Thursday,
-    Tuesday,
-    Wednesday,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountSettingsPayoutsScheduleWeeklyAnchor::*;
-        match self {
-            Friday => "friday",
-            Monday => "monday",
-            Saturday => "saturday",
-            Sunday => "sunday",
-            Thursday => "thursday",
-            Tuesday => "tuesday",
-            Wednesday => "wednesday",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountSettingsPayoutsScheduleWeeklyAnchor::*;
-        match s {
-            "friday" => Ok(Friday),
-            "monday" => Ok(Monday),
-            "saturday" => Ok(Saturday),
-            "sunday" => Ok(Sunday),
-            "thursday" => Ok(Thursday),
-            "tuesday" => Ok(Tuesday),
-            "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountSettingsPayoutsScheduleWeeklyAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountSettingsPayoutsScheduleWeeklyAnchor))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
-/// Required and applicable only if `interval` is `weekly`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    Friday,
-    Monday,
-    Thursday,
-    Tuesday,
-    Wednesday,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    pub fn as_str(&self) -> &str {
-        use CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays::*;
-        match self {
-            Friday => "friday",
-            Monday => "monday",
-            Thursday => "thursday",
-            Tuesday => "tuesday",
-            Wednesday => "wednesday",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays::*;
-        match s {
-            "friday" => Ok(Friday),
-            "monday" => Ok(Monday),
-            "thursday" => Ok(Thursday),
-            "tuesday" => Ok(Tuesday),
-            "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The `type` parameter is deprecated.
@@ -4959,10 +3963,7 @@ impl CreateAccount {
     }
     /// The business type.
     /// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
-    pub fn business_type(
-        mut self,
-        business_type: impl Into<stripe_shared::AccountBusinessType>,
-    ) -> Self {
+    pub fn business_type(mut self, business_type: impl Into<stripe_shared::BusinessType>) -> Self {
         self.inner.business_type = Some(business_type.into());
         self
     }
@@ -5113,7 +4114,7 @@ struct UpdateAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     business_profile: Option<UpdateAccountBusinessProfile>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    business_type: Option<stripe_shared::AccountBusinessType>,
+    business_type: Option<stripe_shared::BusinessType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     capabilities: Option<UpdateAccountCapabilities>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5185,7 +4186,7 @@ pub struct UpdateAccountBusinessProfile {
     /// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minority_owned_business_designation:
-        Option<Vec<UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation>>,
+        Option<Vec<stripe_shared::MinorityOwnedBusinessDesignation>>,
     /// An estimate of the monthly revenue of the business. Only accepted for accounts in Brazil and India.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub monthly_estimated_revenue: Option<MonthlyEstimatedRevenueSpecs>,
@@ -5239,88 +4240,6 @@ impl UpdateAccountBusinessProfile {
 impl Default for UpdateAccountBusinessProfile {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    LgbtqiOwnedBusiness,
-    MinorityOwnedBusiness,
-    NoneOfTheseApply,
-    PreferNotToAnswer,
-    WomenOwnedBusiness,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    pub fn as_str(&self) -> &str {
-        use UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation::*;
-        match self {
-            LgbtqiOwnedBusiness => "lgbtqi_owned_business",
-            MinorityOwnedBusiness => "minority_owned_business",
-            NoneOfTheseApply => "none_of_these_apply",
-            PreferNotToAnswer => "prefer_not_to_answer",
-            WomenOwnedBusiness => "women_owned_business",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation::*;
-        match s {
-            "lgbtqi_owned_business" => Ok(LgbtqiOwnedBusiness),
-            "minority_owned_business" => Ok(MinorityOwnedBusiness),
-            "none_of_these_apply" => Ok(NoneOfTheseApply),
-            "prefer_not_to_answer" => Ok(PreferNotToAnswer),
-            "women_owned_business" => Ok(WomenOwnedBusiness),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A publicly available mailing address for sending support issues to.
@@ -7498,7 +6417,7 @@ pub struct UpdateAccountCompany {
     /// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
     /// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ownership_exemption_reason: Option<UpdateAccountCompanyOwnershipExemptionReason>,
+    pub ownership_exemption_reason: Option<stripe_shared::OwnershipExemptionReason>,
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
@@ -7518,7 +6437,7 @@ pub struct UpdateAccountCompany {
     /// See [Business structure](/connect/identity-verification#business-structure) for more details.
     /// Pass an empty string to unset this value.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub structure: Option<UpdateAccountCompanyStructure>,
+    pub structure: Option<stripe_shared::Structure>,
     /// The business ID number of the company, as appropriate for the company’s country.
     /// (Examples are an Employer ID Number in the U.S., a Business Number in Canada, or a Company Number in the UK.).
     ///
@@ -7759,84 +6678,6 @@ impl Default for UpdateAccountCompanyAdministrativeAddress {
         Self::new()
     }
 }
-/// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
-/// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateAccountCompanyOwnershipExemptionReason {
-    QualifiedEntityExceedsOwnershipThreshold,
-    QualifiesAsFinancialInstitution,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateAccountCompanyOwnershipExemptionReason {
-    pub fn as_str(&self) -> &str {
-        use UpdateAccountCompanyOwnershipExemptionReason::*;
-        match self {
-            QualifiedEntityExceedsOwnershipThreshold => {
-                "qualified_entity_exceeds_ownership_threshold"
-            }
-            QualifiesAsFinancialInstitution => "qualifies_as_financial_institution",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountCompanyOwnershipExemptionReason {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateAccountCompanyOwnershipExemptionReason::*;
-        match s {
-            "qualified_entity_exceeds_ownership_threshold" => {
-                Ok(QualifiedEntityExceedsOwnershipThreshold)
-            }
-            "qualifies_as_financial_institution" => Ok(QualifiesAsFinancialInstitution),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountCompanyOwnershipExemptionReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateAccountCompanyOwnershipExemptionReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateAccountCompanyOwnershipExemptionReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountCompanyOwnershipExemptionReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateAccountCompanyOwnershipExemptionReason))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateAccountCompanyOwnershipExemptionReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateAccountCompanyOwnershipExemptionReason {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The primary location where the business conducts operations.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -7875,143 +6716,6 @@ impl UpdateAccountCompanyPrincipalPlaceOfBusiness {
 impl Default for UpdateAccountCompanyPrincipalPlaceOfBusiness {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The category identifying the legal structure of the company or legal entity.
-/// See [Business structure](/connect/identity-verification#business-structure) for more details.
-/// Pass an empty string to unset this value.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateAccountCompanyStructure {
-    FreeZoneEstablishment,
-    FreeZoneLlc,
-    GovernmentInstrumentality,
-    GovernmentalUnit,
-    IncorporatedNonProfit,
-    IncorporatedPartnership,
-    LimitedLiabilityPartnership,
-    Llc,
-    MultiMemberLlc,
-    PrivateCompany,
-    PrivateCorporation,
-    PrivatePartnership,
-    PublicCompany,
-    PublicCorporation,
-    PublicPartnership,
-    RegisteredCharity,
-    SingleMemberLlc,
-    SoleEstablishment,
-    SoleProprietorship,
-    TaxExemptGovernmentInstrumentality,
-    UnincorporatedAssociation,
-    UnincorporatedNonProfit,
-    UnincorporatedPartnership,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateAccountCompanyStructure {
-    pub fn as_str(&self) -> &str {
-        use UpdateAccountCompanyStructure::*;
-        match self {
-            FreeZoneEstablishment => "free_zone_establishment",
-            FreeZoneLlc => "free_zone_llc",
-            GovernmentInstrumentality => "government_instrumentality",
-            GovernmentalUnit => "governmental_unit",
-            IncorporatedNonProfit => "incorporated_non_profit",
-            IncorporatedPartnership => "incorporated_partnership",
-            LimitedLiabilityPartnership => "limited_liability_partnership",
-            Llc => "llc",
-            MultiMemberLlc => "multi_member_llc",
-            PrivateCompany => "private_company",
-            PrivateCorporation => "private_corporation",
-            PrivatePartnership => "private_partnership",
-            PublicCompany => "public_company",
-            PublicCorporation => "public_corporation",
-            PublicPartnership => "public_partnership",
-            RegisteredCharity => "registered_charity",
-            SingleMemberLlc => "single_member_llc",
-            SoleEstablishment => "sole_establishment",
-            SoleProprietorship => "sole_proprietorship",
-            TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
-            UnincorporatedAssociation => "unincorporated_association",
-            UnincorporatedNonProfit => "unincorporated_non_profit",
-            UnincorporatedPartnership => "unincorporated_partnership",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountCompanyStructure {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateAccountCompanyStructure::*;
-        match s {
-            "free_zone_establishment" => Ok(FreeZoneEstablishment),
-            "free_zone_llc" => Ok(FreeZoneLlc),
-            "government_instrumentality" => Ok(GovernmentInstrumentality),
-            "governmental_unit" => Ok(GovernmentalUnit),
-            "incorporated_non_profit" => Ok(IncorporatedNonProfit),
-            "incorporated_partnership" => Ok(IncorporatedPartnership),
-            "limited_liability_partnership" => Ok(LimitedLiabilityPartnership),
-            "llc" => Ok(Llc),
-            "multi_member_llc" => Ok(MultiMemberLlc),
-            "private_company" => Ok(PrivateCompany),
-            "private_corporation" => Ok(PrivateCorporation),
-            "private_partnership" => Ok(PrivatePartnership),
-            "public_company" => Ok(PublicCompany),
-            "public_corporation" => Ok(PublicCorporation),
-            "public_partnership" => Ok(PublicPartnership),
-            "registered_charity" => Ok(RegisteredCharity),
-            "single_member_llc" => Ok(SingleMemberLlc),
-            "sole_establishment" => Ok(SoleEstablishment),
-            "sole_proprietorship" => Ok(SoleProprietorship),
-            "tax_exempt_government_instrumentality" => Ok(TaxExemptGovernmentInstrumentality),
-            "unincorporated_association" => Ok(UnincorporatedAssociation),
-            "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
-            "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountCompanyStructure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateAccountCompanyStructure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateAccountCompanyStructure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountCompanyStructure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateAccountCompanyStructure)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateAccountCompanyStructure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateAccountCompanyStructure {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
@@ -8144,7 +6848,7 @@ pub struct UpdateAccountIndividual {
     pub phone: Option<String>,
     /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub political_exposure: Option<UpdateAccountIndividualPoliticalExposure>,
+    pub political_exposure: Option<stripe_shared::PoliticalExposure>,
     /// The individual's registered address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registered_address: Option<UpdateAccountIndividualRegisteredAddress>,
@@ -8340,78 +7044,6 @@ impl Default for UpdateAccountIndividualAddressKanji {
         Self::new()
     }
 }
-/// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateAccountIndividualPoliticalExposure {
-    Existing,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateAccountIndividualPoliticalExposure {
-    pub fn as_str(&self) -> &str {
-        use UpdateAccountIndividualPoliticalExposure::*;
-        match self {
-            Existing => "existing",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountIndividualPoliticalExposure {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateAccountIndividualPoliticalExposure::*;
-        match s {
-            "existing" => Ok(Existing),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountIndividualPoliticalExposure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateAccountIndividualPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateAccountIndividualPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountIndividualPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateAccountIndividualPoliticalExposure)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateAccountIndividualPoliticalExposure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateAccountIndividualPoliticalExposure {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The individual's registered address.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -8522,7 +7154,7 @@ pub struct UpdateAccountSettingsInvoices {
     pub default_account_tax_ids: Option<Vec<String>>,
     /// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_payment_method_save: Option<UpdateAccountSettingsInvoicesHostedPaymentMethodSave>,
+    pub hosted_payment_method_save: Option<stripe_shared::HostedPaymentMethodSave>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateAccountSettingsInvoices {
@@ -8538,82 +7170,6 @@ impl UpdateAccountSettingsInvoices {
 impl Default for UpdateAccountSettingsInvoices {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateAccountSettingsInvoicesHostedPaymentMethodSave {
-    Always,
-    Never,
-    Offer,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateAccountSettingsInvoicesHostedPaymentMethodSave {
-    pub fn as_str(&self) -> &str {
-        use UpdateAccountSettingsInvoicesHostedPaymentMethodSave::*;
-        match self {
-            Always => "always",
-            Never => "never",
-            Offer => "offer",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountSettingsInvoicesHostedPaymentMethodSave {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateAccountSettingsInvoicesHostedPaymentMethodSave::*;
-        match s {
-            "always" => Ok(Always),
-            "never" => Ok(Never),
-            "offer" => Ok(Offer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountSettingsInvoicesHostedPaymentMethodSave"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateAccountSettingsInvoicesHostedPaymentMethodSave {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateAccountSettingsInvoicesHostedPaymentMethodSave {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountSettingsInvoicesHostedPaymentMethodSave {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateAccountSettingsInvoicesHostedPaymentMethodSave))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateAccountSettingsInvoicesHostedPaymentMethodSave {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsInvoicesHostedPaymentMethodSave {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Settings specific to the account's payouts.
@@ -8667,7 +7223,7 @@ pub struct UpdateAccountSettingsPayoutsSchedule {
     /// One of: `daily`, `manual`, `weekly`, or `monthly`.
     /// Default is `daily`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<UpdateAccountSettingsPayoutsScheduleInterval>,
+    pub interval: Option<stripe_shared::Interval>,
     /// The day of the month when available funds are paid out, specified as a number between 1--31.
     /// Payouts nominally scheduled between the 29th and 31st of the month are instead sent on the last day of a shorter month.
     /// Required and applicable only if `interval` is `monthly`.
@@ -8681,11 +7237,11 @@ pub struct UpdateAccountSettingsPayoutsSchedule {
     /// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
     /// Required and applicable only if `interval` is `weekly`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub weekly_anchor: Option<UpdateAccountSettingsPayoutsScheduleWeeklyAnchor>,
+    pub weekly_anchor: Option<stripe_shared::WeeklyAnchor>,
     /// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
     /// Required and applicable only if `interval` is `weekly`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub weekly_payout_days: Option<Vec<UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays>>,
+    pub weekly_payout_days: Option<Vec<stripe_shared::WeeklyPayoutDays>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateAccountSettingsPayoutsSchedule {
@@ -8728,259 +7284,6 @@ pub enum UpdateAccountSettingsPayoutsScheduleDelayDays {
 impl std::fmt::Debug for UpdateAccountSettingsPayoutsScheduleDelayDays {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.debug_struct("UpdateAccountSettingsPayoutsScheduleDelayDays").finish_non_exhaustive()
-    }
-}
-/// How frequently available funds are paid out.
-/// One of: `daily`, `manual`, `weekly`, or `monthly`.
-/// Default is `daily`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateAccountSettingsPayoutsScheduleInterval {
-    Daily,
-    Manual,
-    Monthly,
-    Weekly,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateAccountSettingsPayoutsScheduleInterval {
-    pub fn as_str(&self) -> &str {
-        use UpdateAccountSettingsPayoutsScheduleInterval::*;
-        match self {
-            Daily => "daily",
-            Manual => "manual",
-            Monthly => "monthly",
-            Weekly => "weekly",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateAccountSettingsPayoutsScheduleInterval::*;
-        match s {
-            "daily" => Ok(Daily),
-            "manual" => Ok(Manual),
-            "monthly" => Ok(Monthly),
-            "weekly" => Ok(Weekly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountSettingsPayoutsScheduleInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateAccountSettingsPayoutsScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateAccountSettingsPayoutsScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountSettingsPayoutsScheduleInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateAccountSettingsPayoutsScheduleInterval))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateAccountSettingsPayoutsScheduleInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPayoutsScheduleInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
-/// Required and applicable only if `interval` is `weekly`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    Friday,
-    Monday,
-    Saturday,
-    Sunday,
-    Thursday,
-    Tuesday,
-    Wednesday,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    pub fn as_str(&self) -> &str {
-        use UpdateAccountSettingsPayoutsScheduleWeeklyAnchor::*;
-        match self {
-            Friday => "friday",
-            Monday => "monday",
-            Saturday => "saturday",
-            Sunday => "sunday",
-            Thursday => "thursday",
-            Tuesday => "tuesday",
-            Wednesday => "wednesday",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateAccountSettingsPayoutsScheduleWeeklyAnchor::*;
-        match s {
-            "friday" => Ok(Friday),
-            "monday" => Ok(Monday),
-            "saturday" => Ok(Saturday),
-            "sunday" => Ok(Sunday),
-            "thursday" => Ok(Thursday),
-            "tuesday" => Ok(Tuesday),
-            "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountSettingsPayoutsScheduleWeeklyAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateAccountSettingsPayoutsScheduleWeeklyAnchor))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
-/// Required and applicable only if `interval` is `weekly`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    Friday,
-    Monday,
-    Thursday,
-    Tuesday,
-    Wednesday,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    pub fn as_str(&self) -> &str {
-        use UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays::*;
-        match self {
-            Friday => "friday",
-            Monday => "monday",
-            Thursday => "thursday",
-            Tuesday => "tuesday",
-            Wednesday => "wednesday",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays::*;
-        match s {
-            "friday" => Ok(Friday),
-            "monday" => Ok(Monday),
-            "thursday" => Ok(Thursday),
-            "tuesday" => Ok(Tuesday),
-            "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Settings specific to SEPA Direct Debit payments.
@@ -9056,10 +7359,7 @@ impl UpdateAccount {
     }
     /// The business type.
     /// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
-    pub fn business_type(
-        mut self,
-        business_type: impl Into<stripe_shared::AccountBusinessType>,
-    ) -> Self {
+    pub fn business_type(mut self, business_type: impl Into<stripe_shared::BusinessType>) -> Self {
         self.inner.business_type = Some(business_type.into());
         self
     }
@@ -10128,3 +8428,213 @@ impl Default for TreasurySettingsSpecs {
         Self::new()
     }
 }
+/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
+pub type CreateAccountBusinessProfileMinorityOwnedBusinessDesignation =
+    stripe_shared::MinorityOwnedBusinessDesignation;
+/// The business type.
+/// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+pub type CreateAccountBusinessType = stripe_shared::BusinessType;
+/// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
+/// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
+pub type CreateAccountCompanyOwnershipExemptionReason = stripe_shared::OwnershipExemptionReason;
+/// The category identifying the legal structure of the company or legal entity.
+/// See [Business structure](/connect/identity-verification#business-structure) for more details.
+/// Pass an empty string to unset this value.
+pub type CreateAccountCompanyStructure = stripe_shared::Structure;
+/// A value indicating the responsible payer of Stripe fees on this account.
+/// Defaults to `account`.
+/// Learn more about [fee behavior on connected accounts](https://docs.stripe.com/connect/direct-charges-fee-payer-behavior).
+pub type CreateAccountControllerFeesPayer = stripe_shared::CreateAccountControllerFeesPayer;
+/// A value indicating who is liable when this account can't pay back negative balances resulting from payments.
+/// Defaults to `stripe`.
+pub type CreateAccountControllerLossesPayments = stripe_shared::ReserveHoldCreatedBy;
+/// A value indicating responsibility for collecting updated information when requirements on the account are due or change.
+/// Defaults to `stripe`.
+pub type CreateAccountControllerRequirementCollection = stripe_shared::ReserveHoldCreatedBy;
+/// Whether this account should have access to the full Stripe Dashboard (`full`), to the Express Dashboard (`express`), or to no Stripe-hosted dashboard (`none`).
+/// Defaults to `full`.
+pub type CreateAccountControllerStripeDashboardType = stripe_shared::Type;
+/// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
+pub type CreateAccountIndividualPoliticalExposure = stripe_shared::PoliticalExposure;
+/// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
+pub type CreateAccountSettingsInvoicesHostedPaymentMethodSave =
+    stripe_shared::HostedPaymentMethodSave;
+/// How frequently available funds are paid out.
+/// One of: `daily`, `manual`, `weekly`, or `monthly`.
+/// Default is `daily`.
+pub type CreateAccountSettingsPayoutsScheduleInterval = stripe_shared::Interval;
+/// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
+/// Required and applicable only if `interval` is `weekly`.
+pub type CreateAccountSettingsPayoutsScheduleWeeklyAnchor = stripe_shared::WeeklyAnchor;
+/// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
+/// Required and applicable only if `interval` is `weekly`.
+pub type CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays = stripe_shared::WeeklyPayoutDays;
+/// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
+pub type UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation =
+    stripe_shared::MinorityOwnedBusinessDesignation;
+/// The business type.
+/// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+pub type UpdateAccountBusinessType = stripe_shared::BusinessType;
+/// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
+/// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
+pub type UpdateAccountCompanyOwnershipExemptionReason = stripe_shared::OwnershipExemptionReason;
+/// The category identifying the legal structure of the company or legal entity.
+/// See [Business structure](/connect/identity-verification#business-structure) for more details.
+/// Pass an empty string to unset this value.
+pub type UpdateAccountCompanyStructure = stripe_shared::Structure;
+/// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
+pub type UpdateAccountIndividualPoliticalExposure = stripe_shared::PoliticalExposure;
+/// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
+pub type UpdateAccountSettingsInvoicesHostedPaymentMethodSave =
+    stripe_shared::HostedPaymentMethodSave;
+/// How frequently available funds are paid out.
+/// One of: `daily`, `manual`, `weekly`, or `monthly`.
+/// Default is `daily`.
+pub type UpdateAccountSettingsPayoutsScheduleInterval = stripe_shared::Interval;
+/// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
+/// Required and applicable only if `interval` is `weekly`.
+pub type UpdateAccountSettingsPayoutsScheduleWeeklyAnchor = stripe_shared::WeeklyAnchor;
+/// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
+/// Required and applicable only if `interval` is `weekly`.
+pub type UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays = stripe_shared::WeeklyPayoutDays;
+/// The applicant's gross annual revenue for its preceding fiscal year.
+pub type CreateAccountBusinessProfileAnnualRevenue = AnnualRevenueSpecs;
+/// An estimate of the monthly revenue of the business. Only accepted for accounts in Brazil and India.
+pub type CreateAccountBusinessProfileMonthlyEstimatedRevenue = MonthlyEstimatedRevenueSpecs;
+/// This hash is used to attest that the directors information provided to Stripe is both current and correct.
+pub type CreateAccountCompanyDirectorshipDeclaration = CompanyDirectorshipDeclaration;
+/// This hash is used to attest that the beneficial owner information provided to Stripe is both current and correct.
+pub type CreateAccountCompanyOwnershipDeclaration = CompanyOwnershipDeclaration;
+/// When the business was incorporated or registered.
+pub type CreateAccountCompanyRegistrationDate = RegistrationDateSpecs;
+/// This hash is used to attest that the representative is authorized to act as the representative of their legal entity.
+pub type CreateAccountCompanyRepresentativeDeclaration = CompanyRepresentativeDeclaration;
+/// A document verifying the business.
+pub type CreateAccountCompanyVerificationDocument = VerificationDocumentSpecs;
+/// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
+/// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a check.
+pub type CreateAccountDocumentsBankAccountOwnershipVerification = DocumentsParam;
+/// One or more documents that demonstrate proof of a company's license to operate.
+pub type CreateAccountDocumentsCompanyLicense = DocumentsParam;
+/// One or more documents showing the company's governing document (for example, a memorandum of association, constitution, or articles of association).
+pub type CreateAccountDocumentsCompanyMemorandumOfAssociation = DocumentsParam;
+/// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
+pub type CreateAccountDocumentsCompanyMinisterialDecree = DocumentsParam;
+/// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
+pub type CreateAccountDocumentsCompanyRegistrationVerification = DocumentsParam;
+/// One or more documents that demonstrate proof of a company's tax ID.
+pub type CreateAccountDocumentsCompanyTaxIdVerification = DocumentsParam;
+/// One or more documents that demonstrate proof of address.
+pub type CreateAccountDocumentsProofOfAddress = DocumentsParam;
+/// Information regarding the person signing the document if applicable.
+pub type CreateAccountDocumentsProofOfUltimateBeneficialOwnershipSigner = SignerNameParam;
+/// A hash of account group type to tokens. These are account groups this account should be added to.
+pub type CreateAccountGroups = AccountGroupsSpecs;
+/// The individual's date of birth.
+pub type CreateAccountIndividualDob = DateOfBirthSpecs;
+/// Describes the person’s relationship to the account.
+pub type CreateAccountIndividualRelationship = IndividualRelationshipSpecs;
+/// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+pub type CreateAccountIndividualVerificationAdditionalDocument = PersonVerificationDocumentSpecs;
+/// An identifying document, either a passport or local ID card.
+pub type CreateAccountIndividualVerificationDocument = PersonVerificationDocumentSpecs;
+/// Settings specific to Bacs Direct Debit.
+pub type CreateAccountSettingsBacsDebitPayments = BacsDebitPaymentsSpecs;
+/// Settings used to apply the account's branding to email receipts, invoices, Checkout, and other products.
+pub type CreateAccountSettingsBranding = BrandingSettingsSpecs;
+/// Details on the account's acceptance of the [Stripe Issuing Terms and Disclosures](/issuing/connect/tos_acceptance).
+pub type CreateAccountSettingsCardIssuingTosAcceptance = SettingsTermsOfServiceSpecs;
+/// Automatically declines certain charge types regardless of whether the card issuer accepted or declined the charge.
+pub type CreateAccountSettingsCardPaymentsDeclineOn = DeclineChargeOnSpecs;
+/// Settings that apply across payment methods for charging on the account.
+pub type CreateAccountSettingsPayments = PaymentsSettingsSpecs;
+/// Details on the account's acceptance of the Stripe Treasury Services Agreement.
+pub type CreateAccountSettingsTreasuryTosAcceptance = SettingsTermsOfServiceSpecs;
+/// Details on the account's acceptance of the [Stripe Services Agreement](/connect/updating-accounts#tos-acceptance).
+/// This property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+/// This property defaults to a `full` service agreement when empty.
+pub type CreateAccountTosAcceptance = TosAcceptanceSpecs;
+/// The applicant's gross annual revenue for its preceding fiscal year.
+pub type UpdateAccountBusinessProfileAnnualRevenue = AnnualRevenueSpecs;
+/// An estimate of the monthly revenue of the business. Only accepted for accounts in Brazil and India.
+pub type UpdateAccountBusinessProfileMonthlyEstimatedRevenue = MonthlyEstimatedRevenueSpecs;
+/// This hash is used to attest that the directors information provided to Stripe is both current and correct.
+pub type UpdateAccountCompanyDirectorshipDeclaration = CompanyDirectorshipDeclaration;
+/// This hash is used to attest that the beneficial owner information provided to Stripe is both current and correct.
+pub type UpdateAccountCompanyOwnershipDeclaration = CompanyOwnershipDeclaration;
+pub type UpdateAccountCompanyRegistrationDate = RegistrationDateSpecs;
+/// This hash is used to attest that the representative is authorized to act as the representative of their legal entity.
+pub type UpdateAccountCompanyRepresentativeDeclaration = CompanyRepresentativeDeclaration;
+/// A document verifying the business.
+pub type UpdateAccountCompanyVerificationDocument = VerificationDocumentSpecs;
+/// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
+/// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a check.
+pub type UpdateAccountDocumentsBankAccountOwnershipVerification = DocumentsParam;
+/// One or more documents that demonstrate proof of a company's license to operate.
+pub type UpdateAccountDocumentsCompanyLicense = DocumentsParam;
+/// One or more documents showing the company's governing document (for example, a memorandum of association, constitution, or articles of association).
+pub type UpdateAccountDocumentsCompanyMemorandumOfAssociation = DocumentsParam;
+/// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
+pub type UpdateAccountDocumentsCompanyMinisterialDecree = DocumentsParam;
+/// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
+pub type UpdateAccountDocumentsCompanyRegistrationVerification = DocumentsParam;
+/// One or more documents that demonstrate proof of a company's tax ID.
+pub type UpdateAccountDocumentsCompanyTaxIdVerification = DocumentsParam;
+/// One or more documents that demonstrate proof of address.
+pub type UpdateAccountDocumentsProofOfAddress = DocumentsParam;
+/// Information regarding the person signing the document if applicable.
+pub type UpdateAccountDocumentsProofOfRegistrationSigner = SignerNameParam;
+/// Information regarding the person signing the document if applicable.
+pub type UpdateAccountDocumentsProofOfUltimateBeneficialOwnershipSigner = SignerNameParam;
+/// A hash of account group type to tokens. These are account groups this account should be added to.
+pub type UpdateAccountGroups = AccountGroupsSpecs;
+/// The individual's date of birth.
+pub type UpdateAccountIndividualDob = DateOfBirthSpecs;
+/// Describes the person’s relationship to the account.
+pub type UpdateAccountIndividualRelationship = IndividualRelationshipSpecs;
+/// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+pub type UpdateAccountIndividualVerificationAdditionalDocument = PersonVerificationDocumentSpecs;
+/// An identifying document, either a passport or local ID card.
+pub type UpdateAccountIndividualVerificationDocument = PersonVerificationDocumentSpecs;
+/// Settings specific to Bacs Direct Debit payments.
+pub type UpdateAccountSettingsBacsDebitPayments = BacsDebitPaymentsSpecs;
+/// Settings used to apply the account's branding to email receipts, invoices, Checkout, and other products.
+pub type UpdateAccountSettingsBranding = BrandingSettingsSpecs;
+/// Details on the account's acceptance of the [Stripe Issuing Terms and Disclosures](/issuing/connect/tos_acceptance).
+pub type UpdateAccountSettingsCardIssuingTosAcceptance = SettingsTermsOfServiceSpecs;
+/// Automatically declines certain charge types regardless of whether the card issuer accepted or declined the charge.
+pub type UpdateAccountSettingsCardPaymentsDeclineOn = DeclineChargeOnSpecs;
+/// Settings that apply across payment methods for charging on the account.
+pub type UpdateAccountSettingsPayments = PaymentsSettingsSpecs;
+/// Details on the account's acceptance of the Stripe Treasury Services Agreement.
+pub type UpdateAccountSettingsTreasuryTosAcceptance = SettingsTermsOfServiceSpecs;
+/// Details on the account's acceptance of the [Stripe Services Agreement](/connect/updating-accounts#tos-acceptance).
+/// This property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
+/// This property defaults to a `full` service agreement when empty.
+pub type UpdateAccountTosAcceptance = TosAcceptanceSpecs;
+/// Information on the verification state of the company.
+pub type CreateAccountCompanyVerification = VerificationSpecs;
+/// One or more documents that demonstrate proof of ultimate beneficial ownership.
+pub type CreateAccountDocumentsProofOfUltimateBeneficialOwnership = SignerParam;
+/// The individual's verification document information.
+pub type CreateAccountIndividualVerification = PersonVerificationSpecs;
+/// Settings specific to the account's use of the Card Issuing product.
+pub type CreateAccountSettingsCardIssuing = CardIssuingSettingsSpecs;
+/// Settings specific to card charging on the account.
+pub type CreateAccountSettingsCardPayments = CardPaymentsSettingsSpecs;
+/// Settings specific to the account's Treasury FinancialAccounts.
+pub type CreateAccountSettingsTreasury = TreasurySettingsSpecs;
+/// Information on the verification state of the company.
+pub type UpdateAccountCompanyVerification = VerificationSpecs;
+/// One or more documents showing the company’s proof of registration with the national business registry.
+pub type UpdateAccountDocumentsProofOfRegistration = SignerParam;
+/// One or more documents that demonstrate proof of ultimate beneficial ownership.
+pub type UpdateAccountDocumentsProofOfUltimateBeneficialOwnership = SignerParam;
+/// The individual's verification document information.
+pub type UpdateAccountIndividualVerification = PersonVerificationSpecs;
+/// Settings specific to the account's use of the Card Issuing product.
+pub type UpdateAccountSettingsCardIssuing = CardIssuingSettingsSpecs;
+/// Settings specific to card charging on the account.
+pub type UpdateAccountSettingsCardPayments = CardPaymentsSettingsSpecs;
+/// Settings specific to the account's Treasury FinancialAccounts.
+pub type UpdateAccountSettingsTreasury = TreasurySettingsSpecs;

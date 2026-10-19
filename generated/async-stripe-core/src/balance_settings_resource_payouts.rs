@@ -21,7 +21,7 @@ pub struct BalanceSettingsResourcePayouts {
     /// If not set, this defaults to the platform's bank descriptor as set in the Dashboard.
     pub statement_descriptor: Option<String>,
     /// Whether the funds in this account can be paid out.
-    pub status: BalanceSettingsResourcePayoutsStatus,
+    pub status: stripe_shared::BalanceSettingsResourcePayoutsStatus,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for BalanceSettingsResourcePayouts {
@@ -42,7 +42,7 @@ pub struct BalanceSettingsResourcePayoutsBuilder {
     minimum_balance_by_currency: Option<Option<std::collections::HashMap<String, i64>>>,
     schedule: Option<Option<stripe_core::BalanceSettingsResourcePayoutSchedule>>,
     statement_descriptor: Option<Option<String>>,
-    status: Option<BalanceSettingsResourcePayoutsStatus>,
+    status: Option<stripe_shared::BalanceSettingsResourcePayoutsStatus>,
 }
 
 #[allow(
@@ -175,90 +175,4 @@ const _: () = {
     }
 };
 /// Whether the funds in this account can be paid out.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum BalanceSettingsResourcePayoutsStatus {
-    Disabled,
-    Enabled,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl BalanceSettingsResourcePayoutsStatus {
-    pub fn as_str(&self) -> &str {
-        use BalanceSettingsResourcePayoutsStatus::*;
-        match self {
-            Disabled => "disabled",
-            Enabled => "enabled",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for BalanceSettingsResourcePayoutsStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BalanceSettingsResourcePayoutsStatus::*;
-        match s {
-            "disabled" => Ok(Disabled),
-            "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BalanceSettingsResourcePayoutsStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for BalanceSettingsResourcePayoutsStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for BalanceSettingsResourcePayoutsStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BalanceSettingsResourcePayoutsStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(BalanceSettingsResourcePayoutsStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for BalanceSettingsResourcePayoutsStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for BalanceSettingsResourcePayoutsStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<BalanceSettingsResourcePayoutsStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BalanceSettingsResourcePayoutsStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(BalanceSettingsResourcePayoutsStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for BalanceSettingsResourcePayoutsStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type BalanceSettingsResourcePayoutsStatus = stripe_shared::BalanceSettingsResourcePayoutsStatus;

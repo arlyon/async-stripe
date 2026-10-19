@@ -23,7 +23,7 @@ pub struct Coupon {
     >,
     /// One of `forever`, `once`, or `repeating`.
     /// Describes how long a customer who applies this coupon will get the discount.
-    pub duration: stripe_shared::CouponDuration,
+    pub duration: stripe_shared::Duration,
     /// If `duration` is `repeating`, the number of months the coupon applies.
     /// Null if coupon `duration` is `forever` or `once`.
     pub duration_in_months: Option<i64>,
@@ -66,7 +66,7 @@ pub struct CouponBuilder {
             std::collections::HashMap<stripe_types::Currency, stripe_shared::CouponCurrencyOption>,
         >,
     >,
-    duration: Option<stripe_shared::CouponDuration>,
+    duration: Option<stripe_shared::Duration>,
     duration_in_months: Option<Option<i64>>,
     id: Option<stripe_shared::CouponId>,
     livemode: Option<bool>,
@@ -300,88 +300,6 @@ impl stripe_types::Object for Coupon {
     }
 }
 stripe_types::def_id!(CouponId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CouponDuration {
-    Forever,
-    Once,
-    Repeating,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CouponDuration {
-    pub fn as_str(&self) -> &str {
-        use CouponDuration::*;
-        match self {
-            Forever => "forever",
-            Once => "once",
-            Repeating => "repeating",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CouponDuration {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CouponDuration::*;
-        match s {
-            "forever" => Ok(Forever),
-            "once" => Ok(Once),
-            "repeating" => Ok(Repeating),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CouponDuration");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CouponDuration {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CouponDuration {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CouponDuration {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CouponDuration)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CouponDuration {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CouponDuration {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CouponDuration> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CouponDuration::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CouponDuration);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CouponDuration {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// One of `forever`, `once`, or `repeating`.
+/// Describes how long a customer who applies this coupon will get the discount.
+pub type CouponDuration = stripe_shared::Duration;

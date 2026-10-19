@@ -23,14 +23,14 @@ pub struct TreasuryTransaction {
     /// Details of the flow that created the Transaction.
     pub flow_details: Option<stripe_treasury::TreasuryTransactionsResourceFlowDetails>,
     /// Type of the flow that created the Transaction.
-    pub flow_type: TreasuryTransactionFlowType,
+    pub flow_type: stripe_shared::TreasuryTransactionFlowType,
     /// Unique identifier for the object.
     pub id: stripe_treasury::TreasuryTransactionId,
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Status of the Transaction.
-    pub status: stripe_treasury::TreasuryTransactionStatus,
+    pub status: stripe_shared::TreasuryTransactionStatus,
     pub status_transitions:
         stripe_treasury::TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions,
 }
@@ -51,10 +51,10 @@ pub struct TreasuryTransactionBuilder {
     financial_account: Option<String>,
     flow: Option<Option<String>>,
     flow_details: Option<Option<stripe_treasury::TreasuryTransactionsResourceFlowDetails>>,
-    flow_type: Option<TreasuryTransactionFlowType>,
+    flow_type: Option<stripe_shared::TreasuryTransactionFlowType>,
     id: Option<stripe_treasury::TreasuryTransactionId>,
     livemode: Option<bool>,
-    status: Option<stripe_treasury::TreasuryTransactionStatus>,
+    status: Option<stripe_shared::TreasuryTransactionStatus>,
     status_transitions: Option<
         stripe_treasury::TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions,
     >,
@@ -259,115 +259,6 @@ impl serde::Serialize for TreasuryTransaction {
         s.end()
     }
 }
-/// Type of the flow that created the Transaction.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryTransactionFlowType {
-    CreditReversal,
-    DebitReversal,
-    InboundTransfer,
-    IssuingAuthorization,
-    Other,
-    OutboundPayment,
-    OutboundTransfer,
-    ReceivedCredit,
-    ReceivedDebit,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryTransactionFlowType {
-    pub fn as_str(&self) -> &str {
-        use TreasuryTransactionFlowType::*;
-        match self {
-            CreditReversal => "credit_reversal",
-            DebitReversal => "debit_reversal",
-            InboundTransfer => "inbound_transfer",
-            IssuingAuthorization => "issuing_authorization",
-            Other => "other",
-            OutboundPayment => "outbound_payment",
-            OutboundTransfer => "outbound_transfer",
-            ReceivedCredit => "received_credit",
-            ReceivedDebit => "received_debit",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryTransactionFlowType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryTransactionFlowType::*;
-        match s {
-            "credit_reversal" => Ok(CreditReversal),
-            "debit_reversal" => Ok(DebitReversal),
-            "inbound_transfer" => Ok(InboundTransfer),
-            "issuing_authorization" => Ok(IssuingAuthorization),
-            "other" => Ok(Other),
-            "outbound_payment" => Ok(OutboundPayment),
-            "outbound_transfer" => Ok(OutboundTransfer),
-            "received_credit" => Ok(ReceivedCredit),
-            "received_debit" => Ok(ReceivedDebit),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryTransactionFlowType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryTransactionFlowType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryTransactionFlowType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryTransactionFlowType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TreasuryTransactionFlowType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TreasuryTransactionFlowType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryTransactionFlowType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TreasuryTransactionFlowType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TreasuryTransactionFlowType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TreasuryTransactionFlowType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TreasuryTransactionFlowType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for TreasuryTransaction {
     type Id = stripe_treasury::TreasuryTransactionId;
     fn id(&self) -> &Self::Id {
@@ -379,88 +270,7 @@ impl stripe_types::Object for TreasuryTransaction {
     }
 }
 stripe_types::def_id!(TreasuryTransactionId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryTransactionStatus {
-    Open,
-    Posted,
-    Void,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryTransactionStatus {
-    pub fn as_str(&self) -> &str {
-        use TreasuryTransactionStatus::*;
-        match self {
-            Open => "open",
-            Posted => "posted",
-            Void => "void",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryTransactionStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryTransactionStatus::*;
-        match s {
-            "open" => Ok(Open),
-            "posted" => Ok(Posted),
-            "void" => Ok(Void),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TreasuryTransactionStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryTransactionStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryTransactionStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryTransactionStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TreasuryTransactionStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for TreasuryTransactionStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryTransactionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TreasuryTransactionStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TreasuryTransactionStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TreasuryTransactionStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TreasuryTransactionStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Type of the flow that created the Transaction.
+pub type TreasuryTransactionFlowType = stripe_shared::TreasuryTransactionFlowType;
+/// Status of the Transaction.
+pub type TreasuryTransactionStatus = stripe_shared::TreasuryTransactionStatus;

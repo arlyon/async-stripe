@@ -6,7 +6,7 @@ pub struct IssuingCardApplePay {
     /// Apple Pay Eligibility
     pub eligible: bool,
     /// Reason the card is ineligible for Apple Pay
-    pub ineligible_reason: Option<IssuingCardApplePayIneligibleReason>,
+    pub ineligible_reason: Option<stripe_shared::IneligibleReason>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for IssuingCardApplePay {
@@ -17,7 +17,7 @@ impl std::fmt::Debug for IssuingCardApplePay {
 #[doc(hidden)]
 pub struct IssuingCardApplePayBuilder {
     eligible: Option<bool>,
-    ineligible_reason: Option<Option<IssuingCardApplePayIneligibleReason>>,
+    ineligible_reason: Option<Option<stripe_shared::IneligibleReason>>,
 }
 
 #[allow(
@@ -113,93 +113,4 @@ const _: () = {
     }
 };
 /// Reason the card is ineligible for Apple Pay
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingCardApplePayIneligibleReason {
-    MissingAgreement,
-    MissingCardholderContact,
-    UnsupportedRegion,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingCardApplePayIneligibleReason {
-    pub fn as_str(&self) -> &str {
-        use IssuingCardApplePayIneligibleReason::*;
-        match self {
-            MissingAgreement => "missing_agreement",
-            MissingCardholderContact => "missing_cardholder_contact",
-            UnsupportedRegion => "unsupported_region",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingCardApplePayIneligibleReason {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingCardApplePayIneligibleReason::*;
-        match s {
-            "missing_agreement" => Ok(MissingAgreement),
-            "missing_cardholder_contact" => Ok(MissingCardholderContact),
-            "unsupported_region" => Ok(UnsupportedRegion),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardApplePayIneligibleReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingCardApplePayIneligibleReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingCardApplePayIneligibleReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingCardApplePayIneligibleReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingCardApplePayIneligibleReason)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingCardApplePayIneligibleReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingCardApplePayIneligibleReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingCardApplePayIneligibleReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingCardApplePayIneligibleReason::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingCardApplePayIneligibleReason);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingCardApplePayIneligibleReason {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingCardApplePayIneligibleReason = stripe_shared::IneligibleReason;

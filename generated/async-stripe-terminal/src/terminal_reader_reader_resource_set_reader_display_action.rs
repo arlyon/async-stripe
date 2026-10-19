@@ -8,7 +8,7 @@ pub struct TerminalReaderReaderResourceSetReaderDisplayAction {
     pub cart: Option<stripe_terminal::TerminalReaderReaderResourceCart>,
     /// Type of information to be displayed by the reader. Only `cart` is currently supported.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: TerminalReaderReaderResourceSetReaderDisplayActionType,
+    pub type_: stripe_shared::SetReaderDisplayTerminalReaderType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TerminalReaderReaderResourceSetReaderDisplayAction {
@@ -19,7 +19,7 @@ impl std::fmt::Debug for TerminalReaderReaderResourceSetReaderDisplayAction {
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceSetReaderDisplayActionBuilder {
     cart: Option<Option<stripe_terminal::TerminalReaderReaderResourceCart>>,
-    type_: Option<TerminalReaderReaderResourceSetReaderDisplayActionType>,
+    type_: Option<stripe_shared::SetReaderDisplayTerminalReaderType>,
 }
 
 #[allow(
@@ -113,93 +113,5 @@ const _: () = {
     }
 };
 /// Type of information to be displayed by the reader. Only `cart` is currently supported.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TerminalReaderReaderResourceSetReaderDisplayActionType {
-    Cart,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TerminalReaderReaderResourceSetReaderDisplayActionType {
-    pub fn as_str(&self) -> &str {
-        use TerminalReaderReaderResourceSetReaderDisplayActionType::*;
-        match self {
-            Cart => "cart",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TerminalReaderReaderResourceSetReaderDisplayActionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TerminalReaderReaderResourceSetReaderDisplayActionType::*;
-        match s {
-            "cart" => Ok(Cart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourceSetReaderDisplayActionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TerminalReaderReaderResourceSetReaderDisplayActionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TerminalReaderReaderResourceSetReaderDisplayActionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TerminalReaderReaderResourceSetReaderDisplayActionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TerminalReaderReaderResourceSetReaderDisplayActionType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TerminalReaderReaderResourceSetReaderDisplayActionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TerminalReaderReaderResourceSetReaderDisplayActionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TerminalReaderReaderResourceSetReaderDisplayActionType>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TerminalReaderReaderResourceSetReaderDisplayActionType::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TerminalReaderReaderResourceSetReaderDisplayActionType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceSetReaderDisplayActionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TerminalReaderReaderResourceSetReaderDisplayActionType =
+    stripe_shared::SetReaderDisplayTerminalReaderType;

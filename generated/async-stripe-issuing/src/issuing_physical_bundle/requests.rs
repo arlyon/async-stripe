@@ -206,3 +206,8 @@ impl StripeRequest for RetrieveIssuingPhysicalBundle {
         .query(&self.inner)
     }
 }
+
+/// Only return physical bundles with the given status.
+pub type ListIssuingPhysicalBundleStatus = stripe_shared::IssuingPhysicalBundleStatus;
+/// Only return physical bundles with the given type.
+pub type ListIssuingPhysicalBundleType = stripe_shared::IssuingPhysicalBundleType;

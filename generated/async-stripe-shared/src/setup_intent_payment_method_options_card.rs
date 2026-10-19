@@ -8,12 +8,12 @@ pub struct SetupIntentPaymentMethodOptionsCard {
     /// Selected network to process this SetupIntent on.
     /// Depends on the available networks of the card attached to the setup intent.
     /// Can be only set confirm-time.
-    pub network: Option<SetupIntentPaymentMethodOptionsCardNetwork>,
+    pub network: Option<stripe_shared::SetupIntentPaymentMethodOptionsCardNetwork>,
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
     /// If not provided, this value defaults to `automatic`.
     /// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
-    pub request_three_d_secure: Option<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+    pub request_three_d_secure: Option<stripe_shared::RequestThreeDSecure>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for SetupIntentPaymentMethodOptionsCard {
@@ -25,8 +25,8 @@ impl std::fmt::Debug for SetupIntentPaymentMethodOptionsCard {
 pub struct SetupIntentPaymentMethodOptionsCardBuilder {
     mandate_options:
         Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsCardMandateOptions>>,
-    network: Option<Option<SetupIntentPaymentMethodOptionsCardNetwork>>,
-    request_three_d_secure: Option<Option<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure>>,
+    network: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsCardNetwork>>,
+    request_three_d_secure: Option<Option<stripe_shared::RequestThreeDSecure>>,
 }
 
 #[allow(
@@ -134,226 +134,11 @@ const _: () = {
 /// Selected network to process this SetupIntent on.
 /// Depends on the available networks of the card attached to the setup intent.
 /// Can be only set confirm-time.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SetupIntentPaymentMethodOptionsCardNetwork {
-    Amex,
-    CartesBancaires,
-    Diners,
-    Discover,
-    EftposAu,
-    Girocard,
-    Interac,
-    Jcb,
-    Link,
-    Mastercard,
-    Unionpay,
-    Unknown,
-    Visa,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
-    _Unknown(String),
-}
-impl SetupIntentPaymentMethodOptionsCardNetwork {
-    pub fn as_str(&self) -> &str {
-        use SetupIntentPaymentMethodOptionsCardNetwork::*;
-        match self {
-            Amex => "amex",
-            CartesBancaires => "cartes_bancaires",
-            Diners => "diners",
-            Discover => "discover",
-            EftposAu => "eftpos_au",
-            Girocard => "girocard",
-            Interac => "interac",
-            Jcb => "jcb",
-            Link => "link",
-            Mastercard => "mastercard",
-            Unionpay => "unionpay",
-            Unknown => "unknown",
-            Visa => "visa",
-            _Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardNetwork {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SetupIntentPaymentMethodOptionsCardNetwork::*;
-        match s {
-            "amex" => Ok(Amex),
-            "cartes_bancaires" => Ok(CartesBancaires),
-            "diners" => Ok(Diners),
-            "discover" => Ok(Discover),
-            "eftpos_au" => Ok(EftposAu),
-            "girocard" => Ok(Girocard),
-            "interac" => Ok(Interac),
-            "jcb" => Ok(Jcb),
-            "link" => Ok(Link),
-            "mastercard" => Ok(Mastercard),
-            "unionpay" => Ok(Unionpay),
-            "unknown" => Ok(Unknown),
-            "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsCardNetwork"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SetupIntentPaymentMethodOptionsCardNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SetupIntentPaymentMethodOptionsCardNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SetupIntentPaymentMethodOptionsCardNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SetupIntentPaymentMethodOptionsCardNetwork))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SetupIntentPaymentMethodOptionsCardNetwork {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SetupIntentPaymentMethodOptionsCardNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<SetupIntentPaymentMethodOptionsCardNetwork> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(SetupIntentPaymentMethodOptionsCardNetwork::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(SetupIntentPaymentMethodOptionsCardNetwork);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardNetwork {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SetupIntentPaymentMethodOptionsCardNetwork =
+    stripe_shared::SetupIntentPaymentMethodOptionsCardNetwork;
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// If not provided, this value defaults to `automatic`.
 /// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    Any,
-    Automatic,
-    Challenge,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    pub fn as_str(&self) -> &str {
-        use SetupIntentPaymentMethodOptionsCardRequestThreeDSecure::*;
-        match self {
-            Any => "any",
-            Automatic => "automatic",
-            Challenge => "challenge",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SetupIntentPaymentMethodOptionsCardRequestThreeDSecure::*;
-        match s {
-            "any" => Ok(Any),
-            "automatic" => Ok(Automatic),
-            "challenge" => Ok(Challenge),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsCardRequestThreeDSecure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(SetupIntentPaymentMethodOptionsCardRequestThreeDSecure))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            SetupIntentPaymentMethodOptionsCardRequestThreeDSecure::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(SetupIntentPaymentMethodOptionsCardRequestThreeDSecure);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type SetupIntentPaymentMethodOptionsCardRequestThreeDSecure =
+    stripe_shared::RequestThreeDSecure;

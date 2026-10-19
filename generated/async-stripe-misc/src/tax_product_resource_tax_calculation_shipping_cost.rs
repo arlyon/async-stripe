@@ -13,7 +13,7 @@ pub struct TaxProductResourceTaxCalculationShippingCost {
     pub shipping_rate: Option<String>,
     /// Specifies whether the `amount` includes taxes.
     /// If `tax_behavior=inclusive`, then the amount includes taxes.
-    pub tax_behavior: TaxProductResourceTaxCalculationShippingCostTaxBehavior,
+    pub tax_behavior: stripe_shared::TaxBehavior,
     /// Detailed account of taxes relevant to shipping cost.
     pub tax_breakdown: Option<Vec<stripe_misc::TaxProductResourceLineItemTaxBreakdown>>,
     /// The [tax code](https://docs.stripe.com/tax/tax-categories) ID used for shipping.
@@ -30,7 +30,7 @@ pub struct TaxProductResourceTaxCalculationShippingCostBuilder {
     amount: Option<i64>,
     amount_tax: Option<i64>,
     shipping_rate: Option<Option<String>>,
-    tax_behavior: Option<TaxProductResourceTaxCalculationShippingCostTaxBehavior>,
+    tax_behavior: Option<stripe_shared::TaxBehavior>,
     tax_breakdown: Option<Option<Vec<stripe_misc::TaxProductResourceLineItemTaxBreakdown>>>,
     tax_code: Option<String>,
 }
@@ -164,96 +164,4 @@ const _: () = {
 };
 /// Specifies whether the `amount` includes taxes.
 /// If `tax_behavior=inclusive`, then the amount includes taxes.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxProductResourceTaxCalculationShippingCostTaxBehavior {
-    Exclusive,
-    Inclusive,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxProductResourceTaxCalculationShippingCostTaxBehavior {
-    pub fn as_str(&self) -> &str {
-        use TaxProductResourceTaxCalculationShippingCostTaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductResourceTaxCalculationShippingCostTaxBehavior {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductResourceTaxCalculationShippingCostTaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceTaxCalculationShippingCostTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxProductResourceTaxCalculationShippingCostTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxProductResourceTaxCalculationShippingCostTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxProductResourceTaxCalculationShippingCostTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxProductResourceTaxCalculationShippingCostTaxBehavior))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxProductResourceTaxCalculationShippingCostTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxProductResourceTaxCalculationShippingCostTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<TaxProductResourceTaxCalculationShippingCostTaxBehavior>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TaxProductResourceTaxCalculationShippingCostTaxBehavior::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceTaxCalculationShippingCostTaxBehavior);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxCalculationShippingCostTaxBehavior {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TaxProductResourceTaxCalculationShippingCostTaxBehavior = stripe_shared::TaxBehavior;

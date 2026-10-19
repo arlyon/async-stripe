@@ -1137,3 +1137,11 @@ impl OptionalFieldsShipping {
         }
     }
 }
+/// Shipping address.
+pub type CreateChargeShippingAddress = OptionalFieldsAddress;
+/// Shipping address.
+pub type UpdateChargeShippingAddress = OptionalFieldsAddress;
+/// Shipping information for the charge. Helps prevent fraud on charges for physical goods.
+pub type CreateChargeShipping = OptionalFieldsShipping;
+/// Shipping information for the charge. Helps prevent fraud on charges for physical goods.
+pub type UpdateChargeShipping = OptionalFieldsShipping;

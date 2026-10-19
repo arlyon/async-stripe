@@ -725,10 +725,10 @@ impl RejectIssuingPersonalizationDesignBuilder {
 pub struct RejectIssuingPersonalizationDesignRejectionReasons {
     /// The reason(s) the card logo was rejected.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_logo: Option<Vec<RejectIssuingPersonalizationDesignRejectionReasonsCardLogo>>,
+    pub card_logo: Option<Vec<stripe_shared::CardLogo>>,
     /// The reason(s) the carrier text was rejected.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub carrier_text: Option<Vec<RejectIssuingPersonalizationDesignRejectionReasonsCarrierText>>,
+    pub carrier_text: Option<Vec<stripe_shared::CarrierText>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for RejectIssuingPersonalizationDesignRejectionReasons {
@@ -744,187 +744,6 @@ impl RejectIssuingPersonalizationDesignRejectionReasons {
 impl Default for RejectIssuingPersonalizationDesignRejectionReasons {
     fn default() -> Self {
         Self::new()
-    }
-}
-/// The reason(s) the card logo was rejected.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
-    GeographicLocation,
-    Inappropriate,
-    NetworkName,
-    NonBinaryImage,
-    NonFiatCurrency,
-    Other,
-    OtherEntity,
-    PromotionalMaterial,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
-    pub fn as_str(&self) -> &str {
-        use RejectIssuingPersonalizationDesignRejectionReasonsCardLogo::*;
-        match self {
-            GeographicLocation => "geographic_location",
-            Inappropriate => "inappropriate",
-            NetworkName => "network_name",
-            NonBinaryImage => "non_binary_image",
-            NonFiatCurrency => "non_fiat_currency",
-            Other => "other",
-            OtherEntity => "other_entity",
-            PromotionalMaterial => "promotional_material",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use RejectIssuingPersonalizationDesignRejectionReasonsCardLogo::*;
-        match s {
-            "geographic_location" => Ok(GeographicLocation),
-            "inappropriate" => Ok(Inappropriate),
-            "network_name" => Ok(NetworkName),
-            "non_binary_image" => Ok(NonBinaryImage),
-            "non_fiat_currency" => Ok(NonFiatCurrency),
-            "other" => Ok(Other),
-            "other_entity" => Ok(OtherEntity),
-            "promotional_material" => Ok(PromotionalMaterial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "RejectIssuingPersonalizationDesignRejectionReasonsCardLogo"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(RejectIssuingPersonalizationDesignRejectionReasonsCardLogo))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The reason(s) the carrier text was rejected.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum RejectIssuingPersonalizationDesignRejectionReasonsCarrierText {
-    GeographicLocation,
-    Inappropriate,
-    NetworkName,
-    NonFiatCurrency,
-    Other,
-    OtherEntity,
-    PromotionalMaterial,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl RejectIssuingPersonalizationDesignRejectionReasonsCarrierText {
-    pub fn as_str(&self) -> &str {
-        use RejectIssuingPersonalizationDesignRejectionReasonsCarrierText::*;
-        match self {
-            GeographicLocation => "geographic_location",
-            Inappropriate => "inappropriate",
-            NetworkName => "network_name",
-            NonFiatCurrency => "non_fiat_currency",
-            Other => "other",
-            OtherEntity => "other_entity",
-            PromotionalMaterial => "promotional_material",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for RejectIssuingPersonalizationDesignRejectionReasonsCarrierText {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use RejectIssuingPersonalizationDesignRejectionReasonsCarrierText::*;
-        match s {
-            "geographic_location" => Ok(GeographicLocation),
-            "inappropriate" => Ok(Inappropriate),
-            "network_name" => Ok(NetworkName),
-            "non_fiat_currency" => Ok(NonFiatCurrency),
-            "other" => Ok(Other),
-            "other_entity" => Ok(OtherEntity),
-            "promotional_material" => Ok(PromotionalMaterial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "RejectIssuingPersonalizationDesignRejectionReasonsCarrierText"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for RejectIssuingPersonalizationDesignRejectionReasonsCarrierText {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for RejectIssuingPersonalizationDesignRejectionReasonsCarrierText {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for RejectIssuingPersonalizationDesignRejectionReasonsCarrierText {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(RejectIssuingPersonalizationDesignRejectionReasonsCarrierText))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for RejectIssuingPersonalizationDesignRejectionReasonsCarrierText {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for RejectIssuingPersonalizationDesignRejectionReasonsCarrierText
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates the `status` of the specified testmode personalization design object to `rejected`.
@@ -1043,3 +862,17 @@ impl PreferencesParam {
         Self { is_default: is_default.into() }
     }
 }
+/// Only return personalization designs with the given status.
+pub type ListIssuingPersonalizationDesignStatus = stripe_shared::IssuingPersonalizationDesignStatus;
+/// The reason(s) the card logo was rejected.
+pub type RejectIssuingPersonalizationDesignRejectionReasonsCardLogo = stripe_shared::CardLogo;
+/// The reason(s) the carrier text was rejected.
+pub type RejectIssuingPersonalizationDesignRejectionReasonsCarrierText = stripe_shared::CarrierText;
+/// Hash containing carrier text, for use with physical bundles that support carrier text.
+pub type CreateIssuingPersonalizationDesignCarrierText = CarrierTextParam;
+/// Information on whether this personalization design is used to create cards when one is not specified.
+pub type CreateIssuingPersonalizationDesignPreferences = PreferencesParam;
+/// Hash containing carrier text, for use with physical bundles that support carrier text.
+pub type UpdateIssuingPersonalizationDesignCarrierText = CarrierTextParam;
+/// Information on whether this personalization design is used to create cards when one is not specified.
+pub type UpdateIssuingPersonalizationDesignPreferences = PreferencesParam;

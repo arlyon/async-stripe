@@ -4,9 +4,9 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoSessionMatchingOptions {
     /// Strictness of the DOB matching policy to apply.
-    pub dob: Option<GelatoSessionMatchingOptionsDob>,
+    pub dob: Option<stripe_shared::GelatoSessionMatchingOptionsDob>,
     /// Strictness of the name matching policy to apply.
-    pub name: Option<GelatoSessionMatchingOptionsName>,
+    pub name: Option<stripe_shared::GelatoSessionMatchingOptionsDob>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for GelatoSessionMatchingOptions {
@@ -16,8 +16,8 @@ impl std::fmt::Debug for GelatoSessionMatchingOptions {
 }
 #[doc(hidden)]
 pub struct GelatoSessionMatchingOptionsBuilder {
-    dob: Option<Option<GelatoSessionMatchingOptionsDob>>,
-    name: Option<Option<GelatoSessionMatchingOptionsName>>,
+    dob: Option<Option<stripe_shared::GelatoSessionMatchingOptionsDob>>,
+    name: Option<Option<stripe_shared::GelatoSessionMatchingOptionsDob>>,
 }
 
 #[allow(
@@ -111,178 +111,6 @@ const _: () = {
     }
 };
 /// Strictness of the DOB matching policy to apply.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum GelatoSessionMatchingOptionsDob {
-    None,
-    Similar,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl GelatoSessionMatchingOptionsDob {
-    pub fn as_str(&self) -> &str {
-        use GelatoSessionMatchingOptionsDob::*;
-        match self {
-            None => "none",
-            Similar => "similar",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoSessionMatchingOptionsDob {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoSessionMatchingOptionsDob::*;
-        match s {
-            "none" => Ok(None),
-            "similar" => Ok(Similar),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoSessionMatchingOptionsDob"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for GelatoSessionMatchingOptionsDob {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for GelatoSessionMatchingOptionsDob {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for GelatoSessionMatchingOptionsDob {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(GelatoSessionMatchingOptionsDob)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for GelatoSessionMatchingOptionsDob {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for GelatoSessionMatchingOptionsDob {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<GelatoSessionMatchingOptionsDob> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(GelatoSessionMatchingOptionsDob::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(GelatoSessionMatchingOptionsDob);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for GelatoSessionMatchingOptionsDob {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type GelatoSessionMatchingOptionsDob = stripe_shared::GelatoSessionMatchingOptionsDob;
 /// Strictness of the name matching policy to apply.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum GelatoSessionMatchingOptionsName {
-    None,
-    Similar,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl GelatoSessionMatchingOptionsName {
-    pub fn as_str(&self) -> &str {
-        use GelatoSessionMatchingOptionsName::*;
-        match self {
-            None => "none",
-            Similar => "similar",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoSessionMatchingOptionsName {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoSessionMatchingOptionsName::*;
-        match s {
-            "none" => Ok(None),
-            "similar" => Ok(Similar),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoSessionMatchingOptionsName"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for GelatoSessionMatchingOptionsName {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for GelatoSessionMatchingOptionsName {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for GelatoSessionMatchingOptionsName {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(GelatoSessionMatchingOptionsName)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for GelatoSessionMatchingOptionsName {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for GelatoSessionMatchingOptionsName {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<GelatoSessionMatchingOptionsName> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(GelatoSessionMatchingOptionsName::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(GelatoSessionMatchingOptionsName);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for GelatoSessionMatchingOptionsName {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type GelatoSessionMatchingOptionsName = stripe_shared::GelatoSessionMatchingOptionsDob;

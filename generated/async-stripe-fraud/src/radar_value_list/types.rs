@@ -17,7 +17,7 @@ pub struct RadarValueList {
     pub id: stripe_fraud::RadarValueListId,
     /// The type of items in the value list.
     /// One of `card_fingerprint`, `card_bin`, `crypto_fingerprint`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, `customer_id`, `account`, `sepa_debit_fingerprint`, or `us_bank_account_fingerprint`.
-    pub item_type: stripe_fraud::RadarValueListItemType,
+    pub item_type: stripe_shared::ItemType,
     /// List of items contained within this value list.
     pub list_items: stripe_types::List<stripe_fraud::RadarValueListItem>,
     /// If the object exists in live mode, the value is `true`.
@@ -41,7 +41,7 @@ pub struct RadarValueListBuilder {
     created: Option<stripe_types::Timestamp>,
     created_by: Option<String>,
     id: Option<stripe_fraud::RadarValueListId>,
-    item_type: Option<stripe_fraud::RadarValueListItemType>,
+    item_type: Option<stripe_shared::ItemType>,
     list_items: Option<stripe_types::List<stripe_fraud::RadarValueListItem>>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
@@ -223,115 +223,6 @@ impl stripe_types::Object for RadarValueList {
     }
 }
 stripe_types::def_id!(RadarValueListId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum RadarValueListItemType {
-    Account,
-    CardBin,
-    CardFingerprint,
-    CaseSensitiveString,
-    Country,
-    CryptoFingerprint,
-    CustomerId,
-    Email,
-    IpAddress,
-    SepaDebitFingerprint,
-    String,
-    UsBankAccountFingerprint,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl RadarValueListItemType {
-    pub fn as_str(&self) -> &str {
-        use RadarValueListItemType::*;
-        match self {
-            Account => "account",
-            CardBin => "card_bin",
-            CardFingerprint => "card_fingerprint",
-            CaseSensitiveString => "case_sensitive_string",
-            Country => "country",
-            CryptoFingerprint => "crypto_fingerprint",
-            CustomerId => "customer_id",
-            Email => "email",
-            IpAddress => "ip_address",
-            SepaDebitFingerprint => "sepa_debit_fingerprint",
-            String => "string",
-            UsBankAccountFingerprint => "us_bank_account_fingerprint",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for RadarValueListItemType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use RadarValueListItemType::*;
-        match s {
-            "account" => Ok(Account),
-            "card_bin" => Ok(CardBin),
-            "card_fingerprint" => Ok(CardFingerprint),
-            "case_sensitive_string" => Ok(CaseSensitiveString),
-            "country" => Ok(Country),
-            "crypto_fingerprint" => Ok(CryptoFingerprint),
-            "customer_id" => Ok(CustomerId),
-            "email" => Ok(Email),
-            "ip_address" => Ok(IpAddress),
-            "sepa_debit_fingerprint" => Ok(SepaDebitFingerprint),
-            "string" => Ok(String),
-            "us_bank_account_fingerprint" => Ok(UsBankAccountFingerprint),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RadarValueListItemType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for RadarValueListItemType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for RadarValueListItemType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for RadarValueListItemType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(RadarValueListItemType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for RadarValueListItemType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for RadarValueListItemType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<RadarValueListItemType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RadarValueListItemType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(RadarValueListItemType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for RadarValueListItemType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// The type of items in the value list.
+/// One of `card_fingerprint`, `card_bin`, `crypto_fingerprint`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, `customer_id`, `account`, `sepa_debit_fingerprint`, or `us_bank_account_fingerprint`.
+pub type RadarValueListItemType = stripe_shared::ItemType;

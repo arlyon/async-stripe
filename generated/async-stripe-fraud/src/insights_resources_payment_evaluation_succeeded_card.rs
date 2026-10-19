@@ -5,12 +5,12 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationSucceededCard {
     /// Result of the address line 1 check.
-    pub address_line1_check: InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check,
+    pub address_line1_check: stripe_shared::InsightsResourcesPaymentEvaluationRejectedCardCvcCheck,
     /// Indicates whether the cardholder provided a postal code and if it matched the cardholder’s billing address.
     pub address_postal_code_check:
-        InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck,
+        stripe_shared::InsightsResourcesPaymentEvaluationRejectedCardCvcCheck,
     /// Result of the CVC check.
-    pub cvc_check: InsightsResourcesPaymentEvaluationSucceededCardCvcCheck,
+    pub cvc_check: stripe_shared::InsightsResourcesPaymentEvaluationRejectedCardCvcCheck,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCard {
@@ -20,10 +20,11 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCard {
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationSucceededCardBuilder {
-    address_line1_check: Option<InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check>,
+    address_line1_check:
+        Option<stripe_shared::InsightsResourcesPaymentEvaluationRejectedCardCvcCheck>,
     address_postal_code_check:
-        Option<InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck>,
-    cvc_check: Option<InsightsResourcesPaymentEvaluationSucceededCardCvcCheck>,
+        Option<stripe_shared::InsightsResourcesPaymentEvaluationRejectedCardCvcCheck>,
+    cvc_check: Option<stripe_shared::InsightsResourcesPaymentEvaluationRejectedCardCvcCheck>,
 }
 
 #[allow(
@@ -127,314 +128,11 @@ const _: () = {
     }
 };
 /// Result of the address line 1 check.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
-    Fail,
-    Pass,
-    Unavailable,
-    Unchecked,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
-    pub fn as_str(&self) -> &str {
-        use InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check::*;
-        match self {
-            Fail => "fail",
-            Pass => "pass",
-            Unavailable => "unavailable",
-            Unchecked => "unchecked",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check::*;
-        match s {
-            "fail" => Ok(Fail),
-            "pass" => Ok(Pass),
-            "unavailable" => Ok(Unavailable),
-            "unchecked" => Ok(Unchecked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check =
+    stripe_shared::InsightsResourcesPaymentEvaluationRejectedCardCvcCheck;
 /// Indicates whether the cardholder provided a postal code and if it matched the cardholder’s billing address.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck {
-    Fail,
-    Pass,
-    Unavailable,
-    Unchecked,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck {
-    pub fn as_str(&self) -> &str {
-        use InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck::*;
-        match self {
-            Fail => "fail",
-            Pass => "pass",
-            Unavailable => "unavailable",
-            Unchecked => "unchecked",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck::*;
-        match s {
-            "fail" => Ok(Fail),
-            "pass" => Ok(Pass),
-            "unavailable" => Ok(Unavailable),
-            "unchecked" => Ok(Unchecked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck =
+    stripe_shared::InsightsResourcesPaymentEvaluationRejectedCardCvcCheck;
 /// Result of the CVC check.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
-    Fail,
-    Pass,
-    Unavailable,
-    Unchecked,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
-    pub fn as_str(&self) -> &str {
-        use InsightsResourcesPaymentEvaluationSucceededCardCvcCheck::*;
-        match self {
-            Fail => "fail",
-            Pass => "pass",
-            Unavailable => "unavailable",
-            Unchecked => "unchecked",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InsightsResourcesPaymentEvaluationSucceededCardCvcCheck::*;
-        match s {
-            "fail" => Ok(Fail),
-            "pass" => Ok(Pass),
-            "unavailable" => Ok(Unavailable),
-            "unchecked" => Ok(Unchecked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationSucceededCardCvcCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationSucceededCardCvcCheck))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<InsightsResourcesPaymentEvaluationSucceededCardCvcCheck>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            InsightsResourcesPaymentEvaluationSucceededCardCvcCheck::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(InsightsResourcesPaymentEvaluationSucceededCardCvcCheck);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type InsightsResourcesPaymentEvaluationSucceededCardCvcCheck =
+    stripe_shared::InsightsResourcesPaymentEvaluationRejectedCardCvcCheck;

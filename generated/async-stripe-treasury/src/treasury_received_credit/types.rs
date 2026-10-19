@@ -34,7 +34,7 @@ pub reversal_details: Option<stripe_treasury::TreasuryReceivedCreditsResourceRev
         /// Status of the ReceivedCredit.
     /// ReceivedCredits are created either `succeeded` (approved) or `failed` (declined).
     /// If a ReceivedCredit is declined, the failure reason can be found in the `failure_code` field.
-pub status: stripe_treasury::TreasuryReceivedCreditStatus,
+pub status: stripe_shared::TreasuryReceivedDebitStatus,
     /// The Transaction associated with this object.
 pub transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 
@@ -60,7 +60,7 @@ linked_flows: Option<stripe_treasury::TreasuryReceivedCreditsResourceLinkedFlows
 livemode: Option<bool>,
 network: Option<TreasuryReceivedCreditNetwork>,
 reversal_details: Option<Option<stripe_treasury::TreasuryReceivedCreditsResourceReversalDetails>>,
-status: Option<stripe_treasury::TreasuryReceivedCreditStatus>,
+status: Option<stripe_shared::TreasuryReceivedDebitStatus>,
 transaction: Option<Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>>,
 
 }
@@ -482,89 +482,7 @@ impl stripe_types::Object for TreasuryReceivedCredit {
     }
 }
 stripe_types::def_id!(TreasuryReceivedCreditId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TreasuryReceivedCreditStatus {
-    Failed,
-    Succeeded,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TreasuryReceivedCreditStatus {
-    pub fn as_str(&self) -> &str {
-        use TreasuryReceivedCreditStatus::*;
-        match self {
-            Failed => "failed",
-            Succeeded => "succeeded",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryReceivedCreditStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryReceivedCreditStatus::*;
-        match s {
-            "failed" => Ok(Failed),
-            "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryReceivedCreditStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TreasuryReceivedCreditStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TreasuryReceivedCreditStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TreasuryReceivedCreditStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TreasuryReceivedCreditStatus)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for TreasuryReceivedCreditStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TreasuryReceivedCreditStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TreasuryReceivedCreditStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TreasuryReceivedCreditStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TreasuryReceivedCreditStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TreasuryReceivedCreditStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Status of the ReceivedCredit.
+/// ReceivedCredits are created either `succeeded` (approved) or `failed` (declined).
+/// If a ReceivedCredit is declined, the failure reason can be found in the `failure_code` field.
+pub type TreasuryReceivedCreditStatus = stripe_shared::TreasuryReceivedDebitStatus;

@@ -9,7 +9,7 @@ pub struct GelatoEmailReport {
     /// Details on the verification error. Present when status is `unverified`.
     pub error: Option<stripe_misc::GelatoEmailReportError>,
     /// Status of this `email` check.
-    pub status: GelatoEmailReportStatus,
+    pub status: stripe_shared::GelatoEmailReportStatus,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for GelatoEmailReport {
@@ -21,7 +21,7 @@ impl std::fmt::Debug for GelatoEmailReport {
 pub struct GelatoEmailReportBuilder {
     email: Option<Option<String>>,
     error: Option<Option<stripe_misc::GelatoEmailReportError>>,
-    status: Option<GelatoEmailReportStatus>,
+    status: Option<stripe_shared::GelatoEmailReportStatus>,
 }
 
 #[allow(
@@ -119,86 +119,4 @@ const _: () = {
     }
 };
 /// Status of this `email` check.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum GelatoEmailReportStatus {
-    Unverified,
-    Verified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl GelatoEmailReportStatus {
-    pub fn as_str(&self) -> &str {
-        use GelatoEmailReportStatus::*;
-        match self {
-            Unverified => "unverified",
-            Verified => "verified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoEmailReportStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoEmailReportStatus::*;
-        match s {
-            "unverified" => Ok(Unverified),
-            "verified" => Ok(Verified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoEmailReportStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for GelatoEmailReportStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for GelatoEmailReportStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for GelatoEmailReportStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(GelatoEmailReportStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for GelatoEmailReportStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for GelatoEmailReportStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<GelatoEmailReportStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(GelatoEmailReportStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(GelatoEmailReportStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for GelatoEmailReportStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type GelatoEmailReportStatus = stripe_shared::GelatoEmailReportStatus;

@@ -365,7 +365,7 @@ struct CreateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     verifone_v660p: Option<CreateTerminalConfigurationVerifoneV660p>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    wifi: Option<CreateTerminalConfigurationWifi>,
+    wifi: Option<Wifi>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateTerminalConfigurationBuilder {
@@ -595,117 +595,6 @@ impl Default for CreateTerminalConfigurationVerifoneV660p {
         Self::new()
     }
 }
-/// Configurations for connecting to a WiFi network.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CreateTerminalConfigurationWifi {
-    /// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enterprise_eap_peap: Option<EnterprisePeapConfig>,
-    /// Credentials for a WPA-Enterprise WiFi network using the EAP-TLS authentication method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enterprise_eap_tls: Option<EnterpriseTlsConfig>,
-    /// Credentials for a WPA-Personal WiFi network.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub personal_psk: Option<PersonalPskConfig>,
-    /// Security type of the WiFi network.
-    /// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
-    #[serde(rename = "type")]
-    pub type_: CreateTerminalConfigurationWifiType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTerminalConfigurationWifi {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateTerminalConfigurationWifi").finish_non_exhaustive()
-    }
-}
-impl CreateTerminalConfigurationWifi {
-    pub fn new(type_: impl Into<CreateTerminalConfigurationWifiType>) -> Self {
-        Self {
-            enterprise_eap_peap: None,
-            enterprise_eap_tls: None,
-            personal_psk: None,
-            type_: type_.into(),
-        }
-    }
-}
-/// Security type of the WiFi network.
-/// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateTerminalConfigurationWifiType {
-    EnterpriseEapPeap,
-    EnterpriseEapTls,
-    PersonalPsk,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateTerminalConfigurationWifiType {
-    pub fn as_str(&self) -> &str {
-        use CreateTerminalConfigurationWifiType::*;
-        match self {
-            EnterpriseEapPeap => "enterprise_eap_peap",
-            EnterpriseEapTls => "enterprise_eap_tls",
-            PersonalPsk => "personal_psk",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTerminalConfigurationWifiType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateTerminalConfigurationWifiType::*;
-        match s {
-            "enterprise_eap_peap" => Ok(EnterpriseEapPeap),
-            "enterprise_eap_tls" => Ok(EnterpriseEapTls),
-            "personal_psk" => Ok(PersonalPsk),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTerminalConfigurationWifiType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateTerminalConfigurationWifiType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateTerminalConfigurationWifiType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateTerminalConfigurationWifiType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateTerminalConfigurationWifiType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateTerminalConfigurationWifiType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateTerminalConfigurationWifiType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Creates a new `Configuration` object.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -824,7 +713,7 @@ impl CreateTerminalConfiguration {
         self
     }
     /// Configurations for connecting to a WiFi network.
-    pub fn wifi(mut self, wifi: impl Into<CreateTerminalConfigurationWifi>) -> Self {
+    pub fn wifi(mut self, wifi: impl Into<Wifi>) -> Self {
         self.inner.wifi = Some(wifi.into());
         self
     }
@@ -894,7 +783,7 @@ struct UpdateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     verifone_v660p: Option<UpdateTerminalConfigurationVerifoneV660p>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    wifi: Option<UpdateTerminalConfigurationWifi>,
+    wifi: Option<Wifi>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateTerminalConfigurationBuilder {
@@ -1124,117 +1013,6 @@ impl Default for UpdateTerminalConfigurationVerifoneV660p {
         Self::new()
     }
 }
-/// Configurations for connecting to a WiFi network.
-#[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct UpdateTerminalConfigurationWifi {
-    /// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enterprise_eap_peap: Option<EnterprisePeapConfig>,
-    /// Credentials for a WPA-Enterprise WiFi network using the EAP-TLS authentication method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enterprise_eap_tls: Option<EnterpriseTlsConfig>,
-    /// Credentials for a WPA-Personal WiFi network.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub personal_psk: Option<PersonalPskConfig>,
-    /// Security type of the WiFi network.
-    /// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
-    #[serde(rename = "type")]
-    pub type_: UpdateTerminalConfigurationWifiType,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateTerminalConfigurationWifi {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateTerminalConfigurationWifi").finish_non_exhaustive()
-    }
-}
-impl UpdateTerminalConfigurationWifi {
-    pub fn new(type_: impl Into<UpdateTerminalConfigurationWifiType>) -> Self {
-        Self {
-            enterprise_eap_peap: None,
-            enterprise_eap_tls: None,
-            personal_psk: None,
-            type_: type_.into(),
-        }
-    }
-}
-/// Security type of the WiFi network.
-/// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdateTerminalConfigurationWifiType {
-    EnterpriseEapPeap,
-    EnterpriseEapTls,
-    PersonalPsk,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdateTerminalConfigurationWifiType {
-    pub fn as_str(&self) -> &str {
-        use UpdateTerminalConfigurationWifiType::*;
-        match self {
-            EnterpriseEapPeap => "enterprise_eap_peap",
-            EnterpriseEapTls => "enterprise_eap_tls",
-            PersonalPsk => "personal_psk",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateTerminalConfigurationWifiType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateTerminalConfigurationWifiType::*;
-        match s {
-            "enterprise_eap_peap" => Ok(EnterpriseEapPeap),
-            "enterprise_eap_tls" => Ok(EnterpriseEapTls),
-            "personal_psk" => Ok(PersonalPsk),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateTerminalConfigurationWifiType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for UpdateTerminalConfigurationWifiType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateTerminalConfigurationWifiType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateTerminalConfigurationWifiType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateTerminalConfigurationWifiType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for UpdateTerminalConfigurationWifiType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateTerminalConfigurationWifiType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Updates a new `Configuration` object.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1357,7 +1135,7 @@ impl UpdateTerminalConfiguration {
         self
     }
     /// Configurations for connecting to a WiFi network.
-    pub fn wifi(mut self, wifi: impl Into<UpdateTerminalConfigurationWifi>) -> Self {
+    pub fn wifi(mut self, wifi: impl Into<Wifi>) -> Self {
         self.inner.wifi = Some(wifi.into());
         self
     }
@@ -1789,3 +1567,163 @@ impl Default for Tipping {
         Self::new()
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct Wifi {
+    /// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enterprise_eap_peap: Option<EnterprisePeapConfig>,
+    /// Credentials for a WPA-Enterprise WiFi network using the EAP-TLS authentication method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enterprise_eap_tls: Option<EnterpriseTlsConfig>,
+    /// Credentials for a WPA-Personal WiFi network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub personal_psk: Option<PersonalPskConfig>,
+    /// Security type of the WiFi network.
+    /// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
+    #[serde(rename = "type")]
+    pub type_: stripe_shared::CreateTerminalConfigurationWifiType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Wifi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Wifi").finish_non_exhaustive()
+    }
+}
+impl Wifi {
+    pub fn new(type_: impl Into<stripe_shared::CreateTerminalConfigurationWifiType>) -> Self {
+        Self {
+            enterprise_eap_peap: None,
+            enterprise_eap_tls: None,
+            personal_psk: None,
+            type_: type_.into(),
+        }
+    }
+}
+/// Security type of the WiFi network.
+/// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
+pub type CreateTerminalConfigurationWifiType = stripe_shared::CreateTerminalConfigurationWifiType;
+/// Security type of the WiFi network.
+/// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
+pub type UpdateTerminalConfigurationWifiType = stripe_shared::CreateTerminalConfigurationWifiType;
+/// An object containing device type specific settings for BBPOS WisePOS E readers.
+pub type CreateTerminalConfigurationBbposWiseposE = BbposWisePose;
+/// Configuration for cellular connectivity.
+pub type CreateTerminalConfigurationCellular = Cellular;
+/// Configurations for collecting transactions offline.
+pub type CreateTerminalConfigurationOffline = Offline;
+/// Reboot time settings for readers. that support customized reboot time configuration.
+pub type CreateTerminalConfigurationRebootWindow = RebootWindow;
+/// Tipping configuration for AED
+pub type CreateTerminalConfigurationTippingAed = CurrencySpecificConfig;
+/// Tipping configuration for AUD
+pub type CreateTerminalConfigurationTippingAud = CurrencySpecificConfig;
+/// Tipping configuration for CAD
+pub type CreateTerminalConfigurationTippingCad = CurrencySpecificConfig;
+/// Tipping configuration for CHF
+pub type CreateTerminalConfigurationTippingChf = CurrencySpecificConfig;
+/// Tipping configuration for CZK
+pub type CreateTerminalConfigurationTippingCzk = CurrencySpecificConfig;
+/// Tipping configuration for DKK
+pub type CreateTerminalConfigurationTippingDkk = CurrencySpecificConfig;
+/// Tipping configuration for EUR
+pub type CreateTerminalConfigurationTippingEur = CurrencySpecificConfig;
+/// Tipping configuration for GBP
+pub type CreateTerminalConfigurationTippingGbp = CurrencySpecificConfig;
+/// Tipping configuration for GIP
+pub type CreateTerminalConfigurationTippingGip = CurrencySpecificConfig;
+/// Tipping configuration for HKD
+pub type CreateTerminalConfigurationTippingHkd = CurrencySpecificConfig;
+/// Tipping configuration for HUF
+pub type CreateTerminalConfigurationTippingHuf = CurrencySpecificConfig;
+/// Tipping configuration for JPY
+pub type CreateTerminalConfigurationTippingJpy = CurrencySpecificConfig;
+/// Tipping configuration for MXN
+pub type CreateTerminalConfigurationTippingMxn = CurrencySpecificConfig;
+/// Tipping configuration for MYR
+pub type CreateTerminalConfigurationTippingMyr = CurrencySpecificConfig;
+/// Tipping configuration for NOK
+pub type CreateTerminalConfigurationTippingNok = CurrencySpecificConfig;
+/// Tipping configuration for NZD
+pub type CreateTerminalConfigurationTippingNzd = CurrencySpecificConfig;
+/// Tipping configuration for PLN
+pub type CreateTerminalConfigurationTippingPln = CurrencySpecificConfig;
+/// Tipping configuration for RON
+pub type CreateTerminalConfigurationTippingRon = CurrencySpecificConfig;
+/// Tipping configuration for SEK
+pub type CreateTerminalConfigurationTippingSek = CurrencySpecificConfig;
+/// Tipping configuration for SGD
+pub type CreateTerminalConfigurationTippingSgd = CurrencySpecificConfig;
+/// Tipping configuration for USD
+pub type CreateTerminalConfigurationTippingUsd = CurrencySpecificConfig;
+/// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
+pub type CreateTerminalConfigurationWifiEnterpriseEapPeap = EnterprisePeapConfig;
+/// Credentials for a WPA-Enterprise WiFi network using the EAP-TLS authentication method.
+pub type CreateTerminalConfigurationWifiEnterpriseEapTls = EnterpriseTlsConfig;
+/// Credentials for a WPA-Personal WiFi network.
+pub type CreateTerminalConfigurationWifiPersonalPsk = PersonalPskConfig;
+/// An object containing device type specific settings for BBPOS WisePOS E readers.
+pub type UpdateTerminalConfigurationBbposWiseposE = BbposWisePose;
+/// Configuration for cellular connectivity.
+pub type UpdateTerminalConfigurationCellular = Cellular;
+/// Configurations for collecting transactions offline.
+pub type UpdateTerminalConfigurationOffline = Offline;
+/// Reboot time settings for readers. that support customized reboot time configuration.
+pub type UpdateTerminalConfigurationRebootWindow = RebootWindow;
+/// Tipping configuration for AED
+pub type UpdateTerminalConfigurationTippingAed = CurrencySpecificConfig;
+/// Tipping configuration for AUD
+pub type UpdateTerminalConfigurationTippingAud = CurrencySpecificConfig;
+/// Tipping configuration for CAD
+pub type UpdateTerminalConfigurationTippingCad = CurrencySpecificConfig;
+/// Tipping configuration for CHF
+pub type UpdateTerminalConfigurationTippingChf = CurrencySpecificConfig;
+/// Tipping configuration for CZK
+pub type UpdateTerminalConfigurationTippingCzk = CurrencySpecificConfig;
+/// Tipping configuration for DKK
+pub type UpdateTerminalConfigurationTippingDkk = CurrencySpecificConfig;
+/// Tipping configuration for EUR
+pub type UpdateTerminalConfigurationTippingEur = CurrencySpecificConfig;
+/// Tipping configuration for GBP
+pub type UpdateTerminalConfigurationTippingGbp = CurrencySpecificConfig;
+/// Tipping configuration for GIP
+pub type UpdateTerminalConfigurationTippingGip = CurrencySpecificConfig;
+/// Tipping configuration for HKD
+pub type UpdateTerminalConfigurationTippingHkd = CurrencySpecificConfig;
+/// Tipping configuration for HUF
+pub type UpdateTerminalConfigurationTippingHuf = CurrencySpecificConfig;
+/// Tipping configuration for JPY
+pub type UpdateTerminalConfigurationTippingJpy = CurrencySpecificConfig;
+/// Tipping configuration for MXN
+pub type UpdateTerminalConfigurationTippingMxn = CurrencySpecificConfig;
+/// Tipping configuration for MYR
+pub type UpdateTerminalConfigurationTippingMyr = CurrencySpecificConfig;
+/// Tipping configuration for NOK
+pub type UpdateTerminalConfigurationTippingNok = CurrencySpecificConfig;
+/// Tipping configuration for NZD
+pub type UpdateTerminalConfigurationTippingNzd = CurrencySpecificConfig;
+/// Tipping configuration for PLN
+pub type UpdateTerminalConfigurationTippingPln = CurrencySpecificConfig;
+/// Tipping configuration for RON
+pub type UpdateTerminalConfigurationTippingRon = CurrencySpecificConfig;
+/// Tipping configuration for SEK
+pub type UpdateTerminalConfigurationTippingSek = CurrencySpecificConfig;
+/// Tipping configuration for SGD
+pub type UpdateTerminalConfigurationTippingSgd = CurrencySpecificConfig;
+/// Tipping configuration for USD
+pub type UpdateTerminalConfigurationTippingUsd = CurrencySpecificConfig;
+/// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
+pub type UpdateTerminalConfigurationWifiEnterpriseEapPeap = EnterprisePeapConfig;
+/// Credentials for a WPA-Enterprise WiFi network using the EAP-TLS authentication method.
+pub type UpdateTerminalConfigurationWifiEnterpriseEapTls = EnterpriseTlsConfig;
+/// Credentials for a WPA-Personal WiFi network.
+pub type UpdateTerminalConfigurationWifiPersonalPsk = PersonalPskConfig;
+/// Tipping configurations for readers that support on-reader tips.
+pub type CreateTerminalConfigurationTipping = Tipping;
+/// Configurations for connecting to a WiFi network.
+pub type CreateTerminalConfigurationWifi = Wifi;
+/// Tipping configurations for readers that support on-reader tips.
+pub type UpdateTerminalConfigurationTipping = Tipping;
+/// Configurations for connecting to a WiFi network.
+pub type UpdateTerminalConfigurationWifi = Wifi;

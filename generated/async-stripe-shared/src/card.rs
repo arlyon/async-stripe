@@ -29,10 +29,10 @@ pub struct Card {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
     /// The field defaults to “unspecified”.
-    pub allow_redisplay: Option<CardAllowRedisplay>,
+    pub allow_redisplay: Option<stripe_shared::CardAllowRedisplay>,
     /// A set of available payout methods for this card.
     /// Only values from this set should be passed as the `method` when creating a payout.
-    pub available_payout_methods: Option<Vec<CardAvailablePayoutMethods>>,
+    pub available_payout_methods: Option<Vec<stripe_shared::CreatePayoutMethod>>,
     /// Card brand.
     /// Can be `American Express`, `Cartes Bancaires`, `Diners Club`, `Discover`, `Eftpos Australia`, `Girocard`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
     pub brand: String,
@@ -90,7 +90,7 @@ pub struct Card {
     pub name: Option<String>,
     pub networks: Option<stripe_shared::TokenCardNetworks>,
     /// Status of a card based on the card issuer.
-    pub regulated_status: Option<CardRegulatedStatus>,
+    pub regulated_status: Option<stripe_shared::RegulatedStatus>,
     /// For external accounts that are cards, possible values are `new` and `errored`.
     /// If a payout fails, the status is set to `errored` and [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) are stopped until account details are updated.
     pub status: Option<String>,
@@ -115,8 +115,8 @@ pub struct CardBuilder {
     address_state: Option<Option<String>>,
     address_zip: Option<Option<String>>,
     address_zip_check: Option<Option<String>>,
-    allow_redisplay: Option<Option<CardAllowRedisplay>>,
-    available_payout_methods: Option<Option<Vec<CardAvailablePayoutMethods>>>,
+    allow_redisplay: Option<Option<stripe_shared::CardAllowRedisplay>>,
+    available_payout_methods: Option<Option<Vec<stripe_shared::CreatePayoutMethod>>>,
     brand: Option<String>,
     country: Option<Option<String>>,
     currency: Option<Option<stripe_types::Currency>>,
@@ -136,7 +136,7 @@ pub struct CardBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     name: Option<Option<String>>,
     networks: Option<Option<stripe_shared::TokenCardNetworks>>,
-    regulated_status: Option<Option<CardRegulatedStatus>>,
+    regulated_status: Option<Option<stripe_shared::RegulatedStatus>>,
     status: Option<Option<String>>,
     tokenization_method: Option<Option<String>>,
 }
@@ -474,264 +474,6 @@ impl serde::Serialize for Card {
         s.end()
     }
 }
-/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
-/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
-/// The field defaults to “unspecified”.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CardAllowRedisplay {
-    Always,
-    Limited,
-    Unspecified,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CardAllowRedisplay {
-    pub fn as_str(&self) -> &str {
-        use CardAllowRedisplay::*;
-        match self {
-            Always => "always",
-            Limited => "limited",
-            Unspecified => "unspecified",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CardAllowRedisplay {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CardAllowRedisplay::*;
-        match s {
-            "always" => Ok(Always),
-            "limited" => Ok(Limited),
-            "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CardAllowRedisplay");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CardAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CardAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CardAllowRedisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CardAllowRedisplay)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CardAllowRedisplay {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CardAllowRedisplay {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CardAllowRedisplay> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardAllowRedisplay::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CardAllowRedisplay);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CardAllowRedisplay {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// A set of available payout methods for this card.
-/// Only values from this set should be passed as the `method` when creating a payout.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CardAvailablePayoutMethods {
-    Instant,
-    Standard,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CardAvailablePayoutMethods {
-    pub fn as_str(&self) -> &str {
-        use CardAvailablePayoutMethods::*;
-        match self {
-            Instant => "instant",
-            Standard => "standard",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CardAvailablePayoutMethods {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CardAvailablePayoutMethods::*;
-        match s {
-            "instant" => Ok(Instant),
-            "standard" => Ok(Standard),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CardAvailablePayoutMethods");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CardAvailablePayoutMethods {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CardAvailablePayoutMethods {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CardAvailablePayoutMethods {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CardAvailablePayoutMethods)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CardAvailablePayoutMethods {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CardAvailablePayoutMethods {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CardAvailablePayoutMethods> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardAvailablePayoutMethods::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CardAvailablePayoutMethods);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CardAvailablePayoutMethods {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Status of a card based on the card issuer.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CardRegulatedStatus {
-    Regulated,
-    Unregulated,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CardRegulatedStatus {
-    pub fn as_str(&self) -> &str {
-        use CardRegulatedStatus::*;
-        match self {
-            Regulated => "regulated",
-            Unregulated => "unregulated",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CardRegulatedStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CardRegulatedStatus::*;
-        match s {
-            "regulated" => Ok(Regulated),
-            "unregulated" => Ok(Unregulated),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CardRegulatedStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CardRegulatedStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CardRegulatedStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CardRegulatedStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CardRegulatedStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for CardRegulatedStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CardRegulatedStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CardRegulatedStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardRegulatedStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CardRegulatedStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CardRegulatedStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 impl stripe_types::Object for Card {
     type Id = stripe_shared::CardId;
     fn id(&self) -> &Self::Id {
@@ -743,3 +485,12 @@ impl stripe_types::Object for Card {
     }
 }
 stripe_types::def_id!(CardId);
+/// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+/// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+/// The field defaults to “unspecified”.
+pub type CardAllowRedisplay = stripe_shared::CardAllowRedisplay;
+/// A set of available payout methods for this card.
+/// Only values from this set should be passed as the `method` when creating a payout.
+pub type CardAvailablePayoutMethods = stripe_shared::CreatePayoutMethod;
+/// Status of a card based on the card issuer.
+pub type CardRegulatedStatus = stripe_shared::RegulatedStatus;

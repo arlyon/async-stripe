@@ -6,15 +6,15 @@ pub struct PaymentMethodOptionsMandateOptionsPix {
     /// Amount to be charged for future payments.
     pub amount: Option<i64>,
     /// Determines if the amount includes the IOF tax.
-    pub amount_includes_iof: Option<PaymentMethodOptionsMandateOptionsPixAmountIncludesIof>,
+    pub amount_includes_iof: Option<stripe_shared::MandatePixAmountIncludesIof>,
     /// Type of amount.
-    pub amount_type: Option<PaymentMethodOptionsMandateOptionsPixAmountType>,
+    pub amount_type: Option<stripe_shared::AmountType>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     pub currency: Option<stripe_types::Currency>,
     /// Date when the mandate expires and no further payments will be charged, in `YYYY-MM-DD`.
     pub end_date: Option<String>,
     /// Schedule at which the future payments will be charged.
-    pub payment_schedule: Option<PaymentMethodOptionsMandateOptionsPixPaymentSchedule>,
+    pub payment_schedule: Option<stripe_shared::MandatePixPaymentSchedule>,
     /// Subscription name displayed to buyers in their bank app.
     pub reference: Option<String>,
     /// Start date of the mandate, in `YYYY-MM-DD`.
@@ -29,11 +29,11 @@ impl std::fmt::Debug for PaymentMethodOptionsMandateOptionsPix {
 #[doc(hidden)]
 pub struct PaymentMethodOptionsMandateOptionsPixBuilder {
     amount: Option<Option<i64>>,
-    amount_includes_iof: Option<Option<PaymentMethodOptionsMandateOptionsPixAmountIncludesIof>>,
-    amount_type: Option<Option<PaymentMethodOptionsMandateOptionsPixAmountType>>,
+    amount_includes_iof: Option<Option<stripe_shared::MandatePixAmountIncludesIof>>,
+    amount_type: Option<Option<stripe_shared::AmountType>>,
     currency: Option<Option<stripe_types::Currency>>,
     end_date: Option<Option<String>>,
-    payment_schedule: Option<Option<PaymentMethodOptionsMandateOptionsPixPaymentSchedule>>,
+    payment_schedule: Option<Option<stripe_shared::MandatePixPaymentSchedule>>,
     reference: Option<Option<String>>,
     start_date: Option<Option<String>>,
 }
@@ -178,286 +178,10 @@ const _: () = {
     }
 };
 /// Determines if the amount includes the IOF tax.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
-    Always,
-    Never,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodOptionsMandateOptionsPixAmountIncludesIof::*;
-        match self {
-            Always => "always",
-            Never => "never",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodOptionsMandateOptionsPixAmountIncludesIof::*;
-        match s {
-            "always" => Ok(Always),
-            "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsMandateOptionsPixAmountIncludesIof"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodOptionsMandateOptionsPixAmountIncludesIof))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<PaymentMethodOptionsMandateOptionsPixAmountIncludesIof>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsMandateOptionsPixAmountIncludesIof::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsMandateOptionsPixAmountIncludesIof);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodOptionsMandateOptionsPixAmountIncludesIof =
+    stripe_shared::MandatePixAmountIncludesIof;
 /// Type of amount.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodOptionsMandateOptionsPixAmountType {
-    Fixed,
-    Maximum,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodOptionsMandateOptionsPixAmountType {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodOptionsMandateOptionsPixAmountType::*;
-        match self {
-            Fixed => "fixed",
-            Maximum => "maximum",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodOptionsMandateOptionsPixAmountType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodOptionsMandateOptionsPixAmountType::*;
-        match s {
-            "fixed" => Ok(Fixed),
-            "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsMandateOptionsPixAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodOptionsMandateOptionsPixAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodOptionsMandateOptionsPixAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodOptionsMandateOptionsPixAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodOptionsMandateOptionsPixAmountType))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodOptionsMandateOptionsPixAmountType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodOptionsMandateOptionsPixAmountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsMandateOptionsPixAmountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodOptionsMandateOptionsPixAmountType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsMandateOptionsPixAmountType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsMandateOptionsPixAmountType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodOptionsMandateOptionsPixAmountType = stripe_shared::AmountType;
 /// Schedule at which the future payments will be charged.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
-    Halfyearly,
-    Monthly,
-    Quarterly,
-    Weekly,
-    Yearly,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
-    pub fn as_str(&self) -> &str {
-        use PaymentMethodOptionsMandateOptionsPixPaymentSchedule::*;
-        match self {
-            Halfyearly => "halfyearly",
-            Monthly => "monthly",
-            Quarterly => "quarterly",
-            Weekly => "weekly",
-            Yearly => "yearly",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodOptionsMandateOptionsPixPaymentSchedule::*;
-        match s {
-            "halfyearly" => Ok(Halfyearly),
-            "monthly" => Ok(Monthly),
-            "quarterly" => Ok(Quarterly),
-            "weekly" => Ok(Weekly),
-            "yearly" => Ok(Yearly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsMandateOptionsPixPaymentSchedule"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodOptionsMandateOptionsPixPaymentSchedule))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsMandateOptionsPixPaymentSchedule> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsMandateOptionsPixPaymentSchedule::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsMandateOptionsPixPaymentSchedule);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type PaymentMethodOptionsMandateOptionsPixPaymentSchedule =
+    stripe_shared::MandatePixPaymentSchedule;

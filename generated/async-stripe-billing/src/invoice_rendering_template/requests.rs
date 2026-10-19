@@ -15,7 +15,7 @@ struct ListInvoiceRenderingTemplateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<stripe_billing::InvoiceRenderingTemplateStatus>,
+    status: Option<stripe_shared::InvoiceRenderingTemplateStatus>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ListInvoiceRenderingTemplateBuilder {
@@ -73,7 +73,7 @@ impl ListInvoiceRenderingTemplate {
     }
     pub fn status(
         mut self,
-        status: impl Into<stripe_billing::InvoiceRenderingTemplateStatus>,
+        status: impl Into<stripe_shared::InvoiceRenderingTemplateStatus>,
     ) -> Self {
         self.inner.status = Some(status.into());
         self
@@ -343,3 +343,5 @@ impl StripeRequest for UnarchiveInvoiceRenderingTemplate {
         .form(&self.inner)
     }
 }
+
+pub type ListInvoiceRenderingTemplateStatus = stripe_shared::InvoiceRenderingTemplateStatus;

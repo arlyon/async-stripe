@@ -16,8 +16,7 @@ pub struct DisputeVisaCompellingEvidence3DisputedTransaction {
     /// The IP address that the customer used when making the purchase.
     pub customer_purchase_ip: Option<String>,
     /// Categorization of disputed payment.
-    pub merchandise_or_services:
-        Option<DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices>,
+    pub merchandise_or_services: Option<stripe_shared::MerchandiseOrServices>,
     /// A description of the product or service that was sold.
     pub product_description: Option<String>,
     /// The address to which a physical product was shipped.
@@ -37,8 +36,7 @@ pub struct DisputeVisaCompellingEvidence3DisputedTransactionBuilder {
     customer_device_id: Option<Option<String>>,
     customer_email_address: Option<Option<String>>,
     customer_purchase_ip: Option<Option<String>>,
-    merchandise_or_services:
-        Option<Option<DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices>>,
+    merchandise_or_services: Option<Option<stripe_shared::MerchandiseOrServices>>,
     product_description: Option<Option<String>>,
     shipping_address: Option<Option<stripe_shared::DisputeTransactionShippingAddress>>,
 }
@@ -191,104 +189,5 @@ const _: () = {
     }
 };
 /// Categorization of disputed payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    Merchandise,
-    Services,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    pub fn as_str(&self) -> &str {
-        use DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::*;
-        match self {
-            Merchandise => "merchandise",
-            Services => "services",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::*;
-        match s {
-            "merchandise" => Ok(Merchandise),
-            "services" => Ok(Services),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices =
+    stripe_shared::MerchandiseOrServices;

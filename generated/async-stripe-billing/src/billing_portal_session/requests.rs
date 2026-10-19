@@ -17,7 +17,7 @@ struct CreateBillingPortalSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     flow_data: Option<CreateBillingPortalSessionFlowData>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    locale: Option<stripe_billing::BillingPortalSessionLocale>,
+    locale: Option<stripe_shared::Locale>,
     #[serde(skip_serializing_if = "Option::is_none")]
     on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -64,7 +64,7 @@ pub struct CreateBillingPortalSessionFlowData {
         Option<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm>,
     /// Type of flow that the customer will go through.
     #[serde(rename = "type")]
-    pub type_: CreateBillingPortalSessionFlowDataType,
+    pub type_: stripe_shared::PortalFlowsFlowType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingPortalSessionFlowData {
@@ -73,7 +73,7 @@ impl std::fmt::Debug for CreateBillingPortalSessionFlowData {
     }
 }
 impl CreateBillingPortalSessionFlowData {
-    pub fn new(type_: impl Into<CreateBillingPortalSessionFlowDataType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::PortalFlowsFlowType>) -> Self {
         Self {
             after_completion: None,
             subscription_cancel: None,
@@ -97,7 +97,7 @@ pub struct CreateBillingPortalSessionFlowDataAfterCompletion {
     pub redirect: Option<CreateBillingPortalSessionFlowDataAfterCompletionRedirect>,
     /// The specified behavior after the flow is completed.
     #[serde(rename = "type")]
-    pub type_: CreateBillingPortalSessionFlowDataAfterCompletionType,
+    pub type_: stripe_shared::PortalFlowsFlowAfterCompletionType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingPortalSessionFlowDataAfterCompletion {
@@ -106,7 +106,7 @@ impl std::fmt::Debug for CreateBillingPortalSessionFlowDataAfterCompletion {
     }
 }
 impl CreateBillingPortalSessionFlowDataAfterCompletion {
-    pub fn new(type_: impl Into<CreateBillingPortalSessionFlowDataAfterCompletionType>) -> Self {
+    pub fn new(type_: impl Into<stripe_shared::PortalFlowsFlowAfterCompletionType>) -> Self {
         Self { hosted_confirmation: None, redirect: None, type_: type_.into() }
     }
 }
@@ -156,82 +156,6 @@ impl CreateBillingPortalSessionFlowDataAfterCompletionRedirect {
         Self { return_url: return_url.into() }
     }
 }
-/// The specified behavior after the flow is completed.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalSessionFlowDataAfterCompletionType {
-    HostedConfirmation,
-    PortalHomepage,
-    Redirect,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalSessionFlowDataAfterCompletionType {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalSessionFlowDataAfterCompletionType::*;
-        match self {
-            HostedConfirmation => "hosted_confirmation",
-            PortalHomepage => "portal_homepage",
-            Redirect => "redirect",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingPortalSessionFlowDataAfterCompletionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalSessionFlowDataAfterCompletionType::*;
-        match s {
-            "hosted_confirmation" => Ok(HostedConfirmation),
-            "portal_homepage" => Ok(PortalHomepage),
-            "redirect" => Ok(Redirect),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalSessionFlowDataAfterCompletionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingPortalSessionFlowDataAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingPortalSessionFlowDataAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingPortalSessionFlowDataAfterCompletionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateBillingPortalSessionFlowDataAfterCompletionType))
-            .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingPortalSessionFlowDataAfterCompletionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionFlowDataAfterCompletionType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Configuration when `flow_data.type=subscription_cancel`.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -264,7 +188,7 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
     pub coupon_offer: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer,
     /// Type of retention strategy to use with the customer.
     #[serde(rename = "type")]
-    pub type_: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType,
+    pub type_: stripe_shared::PortalFlowsRetentionType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
@@ -278,7 +202,7 @@ impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
         coupon_offer: impl Into<
             CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer,
         >,
-        type_: impl Into<CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType>,
+        type_: impl Into<stripe_shared::PortalFlowsRetentionType>,
     ) -> Self {
         Self { coupon_offer: coupon_offer.into(), type_: type_.into() }
     }
@@ -301,80 +225,6 @@ impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionCancelRet
 impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer {
     pub fn new(coupon: impl Into<String>) -> Self {
         Self { coupon: coupon.into() }
-    }
-}
-/// Type of retention strategy to use with the customer.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
-    CouponOffer,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType::*;
-        match self {
-            CouponOffer => "coupon_offer",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType::*;
-        match s {
-            "coupon_offer" => Ok(CouponOffer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType
-        ))
-        .finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configuration when `flow_data.type=subscription_update`.
@@ -484,87 +334,6 @@ impl CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
         Self { id: id.into(), price: None, quantity: None }
     }
 }
-/// Type of flow that the customer will go through.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateBillingPortalSessionFlowDataType {
-    CustomerUpdate,
-    PaymentMethodUpdate,
-    SubscriptionCancel,
-    SubscriptionUpdate,
-    SubscriptionUpdateConfirm,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateBillingPortalSessionFlowDataType {
-    pub fn as_str(&self) -> &str {
-        use CreateBillingPortalSessionFlowDataType::*;
-        match self {
-            CustomerUpdate => "customer_update",
-            PaymentMethodUpdate => "payment_method_update",
-            SubscriptionCancel => "subscription_cancel",
-            SubscriptionUpdate => "subscription_update",
-            SubscriptionUpdateConfirm => "subscription_update_confirm",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateBillingPortalSessionFlowDataType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateBillingPortalSessionFlowDataType::*;
-        match s {
-            "customer_update" => Ok(CustomerUpdate),
-            "payment_method_update" => Ok(PaymentMethodUpdate),
-            "subscription_cancel" => Ok(SubscriptionCancel),
-            "subscription_update" => Ok(SubscriptionUpdate),
-            "subscription_update_confirm" => Ok(SubscriptionUpdateConfirm),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalSessionFlowDataType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateBillingPortalSessionFlowDataType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateBillingPortalSessionFlowDataType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateBillingPortalSessionFlowDataType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateBillingPortalSessionFlowDataType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateBillingPortalSessionFlowDataType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionFlowDataType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Creates a session of the customer portal.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -612,7 +381,7 @@ impl CreateBillingPortalSession {
     }
     /// The IETF language tag of the locale customer portal is displayed in.
     /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
-    pub fn locale(mut self, locale: impl Into<stripe_billing::BillingPortalSessionLocale>) -> Self {
+    pub fn locale(mut self, locale: impl Into<stripe_shared::Locale>) -> Self {
         self.inner.locale = Some(locale.into());
         self
     }
@@ -660,3 +429,15 @@ impl StripeRequest for CreateBillingPortalSession {
         RequestBuilder::new(StripeMethod::Post, "/billing_portal/sessions").form(&self.inner)
     }
 }
+
+/// The specified behavior after the flow is completed.
+pub type CreateBillingPortalSessionFlowDataAfterCompletionType =
+    stripe_shared::PortalFlowsFlowAfterCompletionType;
+/// Type of retention strategy to use with the customer.
+pub type CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType =
+    stripe_shared::PortalFlowsRetentionType;
+/// Type of flow that the customer will go through.
+pub type CreateBillingPortalSessionFlowDataType = stripe_shared::PortalFlowsFlowType;
+/// The IETF language tag of the locale customer portal is displayed in.
+/// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
+pub type CreateBillingPortalSessionLocale = stripe_shared::Locale;

@@ -26,7 +26,7 @@ pub struct IssuingCardShipping {
     /// The default value for standard shipping service is false and for express and priority services is true.
     pub require_signature: Option<bool>,
     /// Shipment service, such as `standard` or `express`.
-    pub service: IssuingCardShippingService,
+    pub service: stripe_shared::Service,
     /// The delivery status of the card.
     pub status: Option<IssuingCardShippingStatus>,
     /// A tracking number for a card shipment.
@@ -35,7 +35,7 @@ pub struct IssuingCardShipping {
     pub tracking_url: Option<String>,
     /// Packaging options.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
-    pub type_: IssuingCardShippingType,
+    pub type_: stripe_shared::IssuingCardShippingType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for IssuingCardShipping {
@@ -54,11 +54,11 @@ pub struct IssuingCardShippingBuilder {
     name: Option<String>,
     phone_number: Option<Option<String>>,
     require_signature: Option<Option<bool>>,
-    service: Option<IssuingCardShippingService>,
+    service: Option<stripe_shared::Service>,
     status: Option<Option<IssuingCardShippingStatus>>,
     tracking_number: Option<Option<String>>,
     tracking_url: Option<Option<String>>,
-    type_: Option<IssuingCardShippingType>,
+    type_: Option<stripe_shared::IssuingCardShippingType>,
 }
 
 #[allow(
@@ -329,93 +329,6 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingCarrier {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Shipment service, such as `standard` or `express`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingCardShippingService {
-    Express,
-    Priority,
-    Standard,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingCardShippingService {
-    pub fn as_str(&self) -> &str {
-        use IssuingCardShippingService::*;
-        match self {
-            Express => "express",
-            Priority => "priority",
-            Standard => "standard",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingCardShippingService {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingCardShippingService::*;
-        match s {
-            "express" => Ok(Express),
-            "priority" => Ok(Priority),
-            "standard" => Ok(Standard),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardShippingService");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingCardShippingService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingCardShippingService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingCardShippingService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingCardShippingService)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingCardShippingService {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingCardShippingService {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingCardShippingService> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingCardShippingService::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingService);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingCardShippingService {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The delivery status of the card.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -515,87 +428,7 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingStatus {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Shipment service, such as `standard` or `express`.
+pub type IssuingCardShippingService = stripe_shared::Service;
 /// Packaging options.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum IssuingCardShippingType {
-    Bulk,
-    Individual,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl IssuingCardShippingType {
-    pub fn as_str(&self) -> &str {
-        use IssuingCardShippingType::*;
-        match self {
-            Bulk => "bulk",
-            Individual => "individual",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingCardShippingType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingCardShippingType::*;
-        match s {
-            "bulk" => Ok(Bulk),
-            "individual" => Ok(Individual),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardShippingType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for IssuingCardShippingType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for IssuingCardShippingType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for IssuingCardShippingType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(IssuingCardShippingType)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for IssuingCardShippingType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for IssuingCardShippingType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<IssuingCardShippingType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IssuingCardShippingType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for IssuingCardShippingType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type IssuingCardShippingType = stripe_shared::IssuingCardShippingType;

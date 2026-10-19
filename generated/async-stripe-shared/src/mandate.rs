@@ -19,7 +19,7 @@ pub struct Mandate {
     pub payment_method_details: stripe_shared::MandatePaymentMethodDetails,
     pub single_use: Option<stripe_shared::MandateSingleUse>,
     /// The mandate status indicates whether or not you can use it to initiate a payment.
-    pub status: MandateStatus,
+    pub status: stripe_shared::MandateStatus,
     /// The type of the mandate.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: MandateType,
@@ -40,7 +40,7 @@ pub struct MandateBuilder {
     payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
     payment_method_details: Option<stripe_shared::MandatePaymentMethodDetails>,
     single_use: Option<Option<stripe_shared::MandateSingleUse>>,
-    status: Option<MandateStatus>,
+    status: Option<stripe_shared::MandateStatus>,
     type_: Option<MandateType>,
 }
 
@@ -214,93 +214,6 @@ impl serde::Serialize for Mandate {
         s.end()
     }
 }
-/// The mandate status indicates whether or not you can use it to initiate a payment.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum MandateStatus {
-    Active,
-    Inactive,
-    Pending,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl MandateStatus {
-    pub fn as_str(&self) -> &str {
-        use MandateStatus::*;
-        match self {
-            Active => "active",
-            Inactive => "inactive",
-            Pending => "pending",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for MandateStatus {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use MandateStatus::*;
-        match s {
-            "active" => Ok(Active),
-            "inactive" => Ok(Inactive),
-            "pending" => Ok(Pending),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandateStatus");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for MandateStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for MandateStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for MandateStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(MandateStatus)).finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for MandateStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for MandateStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<MandateStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(MandateStatus::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(MandateStatus);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for MandateStatus {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// The type of the mandate.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -396,3 +309,5 @@ impl stripe_types::Object for Mandate {
     }
 }
 stripe_types::def_id!(MandateId);
+/// The mandate status indicates whether or not you can use it to initiate a payment.
+pub type MandateStatus = stripe_shared::MandateStatus;

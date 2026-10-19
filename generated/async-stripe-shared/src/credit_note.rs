@@ -58,7 +58,7 @@ pub struct CreditNote {
     /// The pretax credit amounts (ex: discount, credit grants, etc) for all line items.
     pub pretax_credit_amounts: Vec<stripe_shared::CreditNotesPretaxCreditAmount>,
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
-    pub reason: Option<stripe_shared::CreditNoteReason>,
+    pub reason: Option<stripe_shared::Reason>,
     /// Refunds related to this credit note.
     pub refunds: Vec<stripe_shared::CreditNoteRefund>,
     /// The details of the cost of shipping, including the ShippingRate applied to the invoice.
@@ -115,7 +115,7 @@ pub struct CreditNoteBuilder {
     post_payment_amount: Option<i64>,
     pre_payment_amount: Option<i64>,
     pretax_credit_amounts: Option<Vec<stripe_shared::CreditNotesPretaxCreditAmount>>,
-    reason: Option<Option<stripe_shared::CreditNoteReason>>,
+    reason: Option<Option<stripe_shared::Reason>>,
     refunds: Option<Vec<stripe_shared::CreditNoteRefund>>,
     shipping_cost: Option<Option<stripe_shared::InvoicesResourceShippingCost>>,
     status: Option<CreditNoteStatus>,
@@ -653,91 +653,5 @@ impl stripe_types::Object for CreditNote {
     }
 }
 stripe_types::def_id!(CreditNoteId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreditNoteReason {
-    Duplicate,
-    Fraudulent,
-    OrderChange,
-    ProductUnsatisfactory,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreditNoteReason {
-    pub fn as_str(&self) -> &str {
-        use CreditNoteReason::*;
-        match self {
-            Duplicate => "duplicate",
-            Fraudulent => "fraudulent",
-            OrderChange => "order_change",
-            ProductUnsatisfactory => "product_unsatisfactory",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreditNoteReason {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreditNoteReason::*;
-        match s {
-            "duplicate" => Ok(Duplicate),
-            "fraudulent" => Ok(Fraudulent),
-            "order_change" => Ok(OrderChange),
-            "product_unsatisfactory" => Ok(ProductUnsatisfactory),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteReason");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreditNoteReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreditNoteReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreditNoteReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreditNoteReason)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreditNoteReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for CreditNoteReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<CreditNoteReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CreditNoteReason::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(CreditNoteReason);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreditNoteReason {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
+pub type CreditNoteReason = stripe_shared::Reason;

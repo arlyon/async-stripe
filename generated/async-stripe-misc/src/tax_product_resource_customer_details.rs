@@ -6,13 +6,13 @@ pub struct TaxProductResourceCustomerDetails {
     /// The customer's postal address (for example, home or business location).
     pub address: Option<stripe_misc::TaxProductResourcePostalAddress>,
     /// The type of customer address provided.
-    pub address_source: Option<TaxProductResourceCustomerDetailsAddressSource>,
+    pub address_source: Option<stripe_shared::AddressSource>,
     /// The customer's IP address (IPv4 or IPv6).
     pub ip_address: Option<String>,
     /// The customer's tax IDs (for example, EU VAT numbers).
     pub tax_ids: Vec<stripe_misc::TaxProductResourceCustomerDetailsResourceTaxId>,
     /// The taxability override used for taxation.
-    pub taxability_override: TaxProductResourceCustomerDetailsTaxabilityOverride,
+    pub taxability_override: stripe_shared::TaxabilityOverride,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TaxProductResourceCustomerDetails {
@@ -23,10 +23,10 @@ impl std::fmt::Debug for TaxProductResourceCustomerDetails {
 #[doc(hidden)]
 pub struct TaxProductResourceCustomerDetailsBuilder {
     address: Option<Option<stripe_misc::TaxProductResourcePostalAddress>>,
-    address_source: Option<Option<TaxProductResourceCustomerDetailsAddressSource>>,
+    address_source: Option<Option<stripe_shared::AddressSource>>,
     ip_address: Option<Option<String>>,
     tax_ids: Option<Vec<stripe_misc::TaxProductResourceCustomerDetailsResourceTaxId>>,
-    taxability_override: Option<TaxProductResourceCustomerDetailsTaxabilityOverride>,
+    taxability_override: Option<stripe_shared::TaxabilityOverride>,
 }
 
 #[allow(
@@ -145,186 +145,6 @@ const _: () = {
     }
 };
 /// The type of customer address provided.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxProductResourceCustomerDetailsAddressSource {
-    Billing,
-    Shipping,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxProductResourceCustomerDetailsAddressSource {
-    pub fn as_str(&self) -> &str {
-        use TaxProductResourceCustomerDetailsAddressSource::*;
-        match self {
-            Billing => "billing",
-            Shipping => "shipping",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductResourceCustomerDetailsAddressSource {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductResourceCustomerDetailsAddressSource::*;
-        match s {
-            "billing" => Ok(Billing),
-            "shipping" => Ok(Shipping),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceCustomerDetailsAddressSource"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxProductResourceCustomerDetailsAddressSource {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxProductResourceCustomerDetailsAddressSource {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxProductResourceCustomerDetailsAddressSource {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxProductResourceCustomerDetailsAddressSource))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxProductResourceCustomerDetailsAddressSource {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxProductResourceCustomerDetailsAddressSource {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsAddressSource> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(TaxProductResourceCustomerDetailsAddressSource::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceCustomerDetailsAddressSource);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxProductResourceCustomerDetailsAddressSource {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TaxProductResourceCustomerDetailsAddressSource = stripe_shared::AddressSource;
 /// The taxability override used for taxation.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum TaxProductResourceCustomerDetailsTaxabilityOverride {
-    CustomerExempt,
-    None,
-    ReverseCharge,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl TaxProductResourceCustomerDetailsTaxabilityOverride {
-    pub fn as_str(&self) -> &str {
-        use TaxProductResourceCustomerDetailsTaxabilityOverride::*;
-        match self {
-            CustomerExempt => "customer_exempt",
-            None => "none",
-            ReverseCharge => "reverse_charge",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductResourceCustomerDetailsTaxabilityOverride {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductResourceCustomerDetailsTaxabilityOverride::*;
-        match s {
-            "customer_exempt" => Ok(CustomerExempt),
-            "none" => Ok(None),
-            "reverse_charge" => Ok(ReverseCharge),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceCustomerDetailsTaxabilityOverride"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for TaxProductResourceCustomerDetailsTaxabilityOverride {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for TaxProductResourceCustomerDetailsTaxabilityOverride {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for TaxProductResourceCustomerDetailsTaxabilityOverride {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(TaxProductResourceCustomerDetailsTaxabilityOverride))
-            .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for TaxProductResourceCustomerDetailsTaxabilityOverride {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for TaxProductResourceCustomerDetailsTaxabilityOverride {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsTaxabilityOverride> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            TaxProductResourceCustomerDetailsTaxabilityOverride::from_str(s).expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceCustomerDetailsTaxabilityOverride);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for TaxProductResourceCustomerDetailsTaxabilityOverride {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+pub type TaxProductResourceCustomerDetailsTaxabilityOverride = stripe_shared::TaxabilityOverride;

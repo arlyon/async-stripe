@@ -27,7 +27,7 @@ pub struct Plan {
     /// Either `per_unit` or `tiered`.
     /// `per_unit` indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`).
     /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-    pub billing_scheme: stripe_shared::PlanBillingScheme,
+    pub billing_scheme: stripe_shared::BillingScheme,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -59,7 +59,7 @@ pub struct Plan {
     /// Defines if the tiering price should be `graduated` or `volume` based.
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
     /// In `graduated` tiering, pricing can change as the quantity grows.
-    pub tiers_mode: Option<stripe_shared::PlanTiersMode>,
+    pub tiers_mode: Option<stripe_shared::TiersMode>,
     /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     /// Cannot be combined with `tiers`.
     pub transform_usage: Option<stripe_shared::TransformUsage>,
@@ -70,7 +70,7 @@ pub struct Plan {
     /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
     /// `metered` aggregates the total usage based on usage records.
     /// Defaults to `licensed`.
-    pub usage_type: stripe_shared::PlanUsageType,
+    pub usage_type: stripe_shared::UsageType,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for Plan {
@@ -83,7 +83,7 @@ pub struct PlanBuilder {
     active: Option<bool>,
     amount: Option<Option<i64>>,
     amount_decimal: Option<Option<String>>,
-    billing_scheme: Option<stripe_shared::PlanBillingScheme>,
+    billing_scheme: Option<stripe_shared::BillingScheme>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     id: Option<stripe_shared::PlanId>,
@@ -95,10 +95,10 @@ pub struct PlanBuilder {
     nickname: Option<Option<String>>,
     product: Option<Option<stripe_types::Expandable<stripe_shared::Product>>>,
     tiers: Option<Option<Vec<stripe_shared::PlanTier>>>,
-    tiers_mode: Option<Option<stripe_shared::PlanTiersMode>>,
+    tiers_mode: Option<Option<stripe_shared::TiersMode>>,
     transform_usage: Option<Option<stripe_shared::TransformUsage>>,
     trial_period_days: Option<Option<u32>>,
-    usage_type: Option<stripe_shared::PlanUsageType>,
+    usage_type: Option<stripe_shared::UsageType>,
 }
 
 #[allow(
@@ -343,337 +343,20 @@ impl stripe_types::Object for Plan {
     }
 }
 stripe_types::def_id!(PlanId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PlanBillingScheme {
-    PerUnit,
-    Tiered,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PlanBillingScheme {
-    pub fn as_str(&self) -> &str {
-        use PlanBillingScheme::*;
-        match self {
-            PerUnit => "per_unit",
-            Tiered => "tiered",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PlanBillingScheme {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PlanBillingScheme::*;
-        match s {
-            "per_unit" => Ok(PerUnit),
-            "tiered" => Ok(Tiered),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanBillingScheme");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PlanBillingScheme {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PlanBillingScheme {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PlanBillingScheme {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PlanBillingScheme)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PlanBillingScheme {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PlanBillingScheme {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PlanBillingScheme> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanBillingScheme::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PlanBillingScheme);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PlanInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PlanInterval {
-    pub fn as_str(&self) -> &str {
-        use PlanInterval::*;
-        match self {
-            Day => "day",
-            Month => "month",
-            Week => "week",
-            Year => "year",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PlanInterval {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PlanInterval::*;
-        match s {
-            "day" => Ok(Day),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            "year" => Ok(Year),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanInterval");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PlanInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PlanInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PlanInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PlanInterval)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PlanInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PlanInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PlanInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanInterval::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PlanInterval);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PlanInterval {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PlanTiersMode {
-    Graduated,
-    Volume,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PlanTiersMode {
-    pub fn as_str(&self) -> &str {
-        use PlanTiersMode::*;
-        match self {
-            Graduated => "graduated",
-            Volume => "volume",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PlanTiersMode {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PlanTiersMode::*;
-        match s {
-            "graduated" => Ok(Graduated),
-            "volume" => Ok(Volume),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanTiersMode");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PlanTiersMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PlanTiersMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PlanTiersMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PlanTiersMode)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PlanTiersMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PlanTiersMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PlanTiersMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanTiersMode::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PlanTiersMode);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PlanTiersMode {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PlanUsageType {
-    Licensed,
-    Metered,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PlanUsageType {
-    pub fn as_str(&self) -> &str {
-        use PlanUsageType::*;
-        match self {
-            Licensed => "licensed",
-            Metered => "metered",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PlanUsageType {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PlanUsageType::*;
-        match s {
-            "licensed" => Ok(Licensed),
-            "metered" => Ok(Metered),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanUsageType");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PlanUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PlanUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PlanUsageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PlanUsageType)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PlanUsageType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PlanUsageType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PlanUsageType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanUsageType::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PlanUsageType);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PlanUsageType {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Describes how to compute the price per period.
+/// Either `per_unit` or `tiered`.
+/// `per_unit` indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`).
+/// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
+pub type PlanBillingScheme = stripe_shared::BillingScheme;
+/// The frequency at which a subscription is billed. One of `day`, `week`, `month` or `year`.
+pub type PlanInterval = stripe_shared::PlanInterval;
+/// Defines if the tiering price should be `graduated` or `volume` based.
+/// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
+/// In `graduated` tiering, pricing can change as the quantity grows.
+pub type PlanTiersMode = stripe_shared::TiersMode;
+/// Configures how the quantity per period should be determined.
+/// Can be either `metered` or `licensed`.
+/// `licensed` automatically bills the `quantity` set when adding it to a subscription.
+/// `metered` aggregates the total usage based on usage records.
+/// Defaults to `licensed`.
+pub type PlanUsageType = stripe_shared::UsageType;

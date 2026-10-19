@@ -67,7 +67,7 @@ pub struct Person {
     /// The person's phone number.
     pub phone: Option<String>,
     /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-    pub political_exposure: Option<stripe_shared::PersonPoliticalExposure>,
+    pub political_exposure: Option<stripe_shared::PoliticalExposure>,
     pub registered_address: Option<stripe_shared::Address>,
     pub relationship: Option<stripe_shared::PersonRelationship>,
     /// Information about the requirements for this person, including what information needs to be collected, and by when.
@@ -110,7 +110,7 @@ pub struct PersonBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     nationality: Option<Option<String>>,
     phone: Option<Option<String>>,
-    political_exposure: Option<Option<stripe_shared::PersonPoliticalExposure>>,
+    political_exposure: Option<Option<stripe_shared::PoliticalExposure>>,
     registered_address: Option<Option<stripe_shared::Address>>,
     relationship: Option<Option<stripe_shared::PersonRelationship>>,
     requirements: Option<Option<stripe_shared::PersonRequirements>>,
@@ -453,85 +453,5 @@ impl stripe_types::Object for Person {
     }
 }
 stripe_types::def_id!(PersonId);
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PersonPoliticalExposure {
-    Existing,
-    None,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PersonPoliticalExposure {
-    pub fn as_str(&self) -> &str {
-        use PersonPoliticalExposure::*;
-        match self {
-            Existing => "existing",
-            None => "none",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PersonPoliticalExposure {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PersonPoliticalExposure::*;
-        match s {
-            "existing" => Ok(Existing),
-            "none" => Ok(None),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PersonPoliticalExposure");
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PersonPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PersonPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PersonPoliticalExposure {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PersonPoliticalExposure)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for PersonPoliticalExposure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize for PersonPoliticalExposure {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor for crate::Place<PersonPoliticalExposure> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PersonPoliticalExposure::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(PersonPoliticalExposure);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PersonPoliticalExposure {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
+/// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
+pub type PersonPoliticalExposure = stripe_shared::PoliticalExposure;
