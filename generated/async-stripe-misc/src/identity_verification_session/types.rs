@@ -275,39 +275,7 @@ const _: () = {
 
     impl FromValueOpt for IdentityVerificationSession {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IdentityVerificationSessionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last_error" => b.last_error = FromValueOpt::from_value(v),
-                    "last_verification_report" => {
-                        b.last_verification_report = FromValueOpt::from_value(v)
-                    }
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "options" => b.options = FromValueOpt::from_value(v),
-                    "provided_details" => b.provided_details = FromValueOpt::from_value(v),
-                    "redaction" => b.redaction = FromValueOpt::from_value(v),
-                    "related_customer" => b.related_customer = FromValueOpt::from_value(v),
-                    "related_customer_account" => {
-                        b.related_customer_account = FromValueOpt::from_value(v)
-                    }
-                    "related_person" => b.related_person = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    "verification_flow" => b.verification_flow = FromValueOpt::from_value(v),
-                    "verified_outputs" => b.verified_outputs = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

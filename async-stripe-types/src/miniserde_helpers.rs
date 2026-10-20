@@ -209,6 +209,55 @@ impl<V: FromValueOpt> FromValueOpt for HashMap<Currency, V> {
     }
 }
 
+/// Replay an already parsed `Value` into a streaming `Visitor`.
+///
+/// Lets types build `FromValueOpt` on top of their `miniserde::Deserialize` impl instead of a
+/// second, generated field-by-field parser. Not generic, so it is compiled once. Fails for arrays
+/// and objects nested deeper than `MAX_DEPTH`, so the recursion cannot overflow the stack.
+pub fn visit_value(value: Value, visitor: &mut dyn Visitor) -> miniserde::Result<()> {
+    visit_value_at(value, visitor, 0)
+}
+
+fn visit_value_at(value: Value, visitor: &mut dyn Visitor, depth: usize) -> miniserde::Result<()> {
+    if matches!(value, Value::Array(_) | Value::Object(_)) && depth >= MAX_DEPTH {
+        return Err(miniserde::Error);
+    }
+    match value {
+        Value::Null => visitor.null(),
+        Value::Bool(b) => visitor.boolean(b),
+        Value::Number(Number::U64(n)) => visitor.nonnegative(n),
+        Value::Number(Number::I64(n)) => match u64::try_from(n) {
+            Ok(n) => visitor.nonnegative(n),
+            Err(_) => visitor.negative(n),
+        },
+        Value::Number(Number::F64(n)) => visitor.float(n),
+        Value::String(s) => visitor.string(&s),
+        Value::Array(items) => {
+            let mut seq = visitor.seq()?;
+            for item in items {
+                visit_value_at(item, seq.element()?, depth + 1)?;
+            }
+            seq.finish()
+        }
+        Value::Object(obj) => {
+            let mut map = visitor.map()?;
+            for (k, v) in obj {
+                visit_value_at(v, map.key(&k)?, depth + 1)?;
+            }
+            map.finish()
+        }
+    }
+}
+
+/// `FromValueOpt::from_value` for any type that implements `miniserde::Deserialize`.
+pub fn from_value_via_deserialize<T: Deserialize>(value: Value) -> Option<T> {
+    let mut out = None;
+    match visit_value(value, T::begin(&mut out)) {
+        Ok(()) => out,
+        Err(_) => None,
+    }
+}
+
 pub fn extract_object_discr(value: Value) -> Option<(String, Object)> {
     let Value::Object(obj) = value else { return None };
     let obj_name = obj.get("object")?;
@@ -247,8 +296,13 @@ macro_rules! impl_from_val_with_from_str {
 
 impl_from_val_with_from_str!(Currency);
 
+/// Nesting limit of `visit_value`, the same as the default recursion limit of serde_json.
+const MAX_DEPTH: usize = 128;
+
 #[cfg(test)]
 mod tests {
+    use miniserde::json;
+
     use super::*;
 
     #[test]
@@ -281,5 +335,49 @@ mod tests {
             assert_eq!(i64::from_value(Value::Number(Number::U64(value))), Some(value as i64));
         }
         assert_eq!(i64::from_value(Value::Number(Number::I64(i64::MIN))), Some(i64::MIN));
+    }
+
+    type Nested = HashMap<String, Vec<Option<i64>>>;
+
+    #[test]
+    fn from_value_matches_streaming_deserialize() {
+        let raw = r#"{"a": [1, -2, null], "b": [], "c": [9223372036854775807]}"#;
+        let streamed: Nested = json::from_str(raw).unwrap();
+        let replayed: Nested = from_value_via_deserialize(json::from_str(raw).unwrap()).unwrap();
+        assert_eq!(replayed, streamed);
+    }
+
+    #[test]
+    fn from_value_rejects_deep_nesting() {
+        fn nested(depth: usize) -> Value {
+            let mut value = Value::Null;
+            for _ in 0..depth {
+                value = Value::Array(std::iter::once(value).collect());
+            }
+            value
+        }
+        assert!(from_value_via_deserialize::<Value>(nested(MAX_DEPTH)).is_some());
+        assert!(from_value_via_deserialize::<Value>(nested(MAX_DEPTH + 1)).is_none());
+        assert!(from_value_via_deserialize::<Value>(nested(100_000)).is_none());
+    }
+
+    #[test]
+    fn from_value_accepts_nonnegative_i64_for_unsigned() {
+        let replayed: Option<u64> = from_value_via_deserialize(Value::Number(Number::I64(5)));
+        assert_eq!(replayed, Some(5));
+    }
+
+    #[test]
+    fn from_value_rejects_mismatched_types() {
+        let wrong_scalar: Option<i64> = from_value_via_deserialize(Value::String("1".into()));
+        assert_eq!(wrong_scalar, None);
+
+        let wrong_element: Option<Nested> =
+            from_value_via_deserialize(json::from_str(r#"{"a": ["x"]}"#).unwrap());
+        assert_eq!(wrong_element, None);
+
+        let negative_for_unsigned: Option<u64> =
+            from_value_via_deserialize(Value::Number(Number::I64(-1)));
+        assert_eq!(negative_for_unsigned, None);
     }
 }

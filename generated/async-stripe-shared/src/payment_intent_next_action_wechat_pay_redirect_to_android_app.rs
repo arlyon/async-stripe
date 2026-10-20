@@ -142,24 +142,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentIntentNextActionWechatPayRedirectToAndroidApp {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "app_id" => b.app_id = FromValueOpt::from_value(v),
-                    "nonce_str" => b.nonce_str = FromValueOpt::from_value(v),
-                    "package" => b.package = FromValueOpt::from_value(v),
-                    "partner_id" => b.partner_id = FromValueOpt::from_value(v),
-                    "prepay_id" => b.prepay_id = FromValueOpt::from_value(v),
-                    "sign" => b.sign = FromValueOpt::from_value(v),
-                    "timestamp" => b.timestamp = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

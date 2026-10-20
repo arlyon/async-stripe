@@ -176,30 +176,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingDisputeCanceledEvidence {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeCanceledEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "additional_documentation" => {
-                        b.additional_documentation = FromValueOpt::from_value(v)
-                    }
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "cancellation_policy_provided" => {
-                        b.cancellation_policy_provided = FromValueOpt::from_value(v)
-                    }
-                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
-                    "expected_at" => b.expected_at = FromValueOpt::from_value(v),
-                    "explanation" => b.explanation = FromValueOpt::from_value(v),
-                    "product_description" => b.product_description = FromValueOpt::from_value(v),
-                    "product_type" => b.product_type = FromValueOpt::from_value(v),
-                    "return_status" => b.return_status = FromValueOpt::from_value(v),
-                    "returned_at" => b.returned_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -373,55 +373,7 @@ const _: () = {
 
     impl FromValueOpt for CreditNote {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CreditNoteBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_shipping" => b.amount_shipping = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "customer_balance_transaction" => {
-                        b.customer_balance_transaction = FromValueOpt::from_value(v)
-                    }
-                    "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
-                    "discount_amounts" => b.discount_amounts = FromValueOpt::from_value(v),
-                    "effective_at" => b.effective_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "lines" => b.lines = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "memo" => b.memo = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "number" => b.number = FromValueOpt::from_value(v),
-                    "out_of_band_amount" => b.out_of_band_amount = FromValueOpt::from_value(v),
-                    "pdf" => b.pdf = FromValueOpt::from_value(v),
-                    "post_payment_amount" => b.post_payment_amount = FromValueOpt::from_value(v),
-                    "pre_payment_amount" => b.pre_payment_amount = FromValueOpt::from_value(v),
-                    "pretax_credit_amounts" => {
-                        b.pretax_credit_amounts = FromValueOpt::from_value(v)
-                    }
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "refunds" => b.refunds = FromValueOpt::from_value(v),
-                    "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "subtotal" => b.subtotal = FromValueOpt::from_value(v),
-                    "subtotal_excluding_tax" => {
-                        b.subtotal_excluding_tax = FromValueOpt::from_value(v)
-                    }
-                    "total" => b.total = FromValueOpt::from_value(v),
-                    "total_excluding_tax" => b.total_excluding_tax = FromValueOpt::from_value(v),
-                    "total_taxes" => b.total_taxes = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "voided_at" => b.voided_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

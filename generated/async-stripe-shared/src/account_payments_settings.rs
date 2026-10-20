@@ -145,29 +145,7 @@ const _: () = {
 
     impl FromValueOpt for AccountPaymentsSettings {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountPaymentsSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "statement_descriptor_kana" => {
-                        b.statement_descriptor_kana = FromValueOpt::from_value(v)
-                    }
-                    "statement_descriptor_kanji" => {
-                        b.statement_descriptor_kanji = FromValueOpt::from_value(v)
-                    }
-                    "statement_descriptor_prefix_kana" => {
-                        b.statement_descriptor_prefix_kana = FromValueOpt::from_value(v)
-                    }
-                    "statement_descriptor_prefix_kanji" => {
-                        b.statement_descriptor_prefix_kanji = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

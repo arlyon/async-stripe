@@ -146,24 +146,7 @@ const _: () = {
 
     impl FromValueOpt for ThreeDSecureDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ThreeDSecureDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "authentication_flow" => b.authentication_flow = FromValueOpt::from_value(v),
-                    "electronic_commerce_indicator" => {
-                        b.electronic_commerce_indicator = FromValueOpt::from_value(v)
-                    }
-                    "result" => b.result = FromValueOpt::from_value(v),
-                    "result_reason" => b.result_reason = FromValueOpt::from_value(v),
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    "version" => b.version = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

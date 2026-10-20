@@ -123,24 +123,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentPagesCheckoutSessionSavedPaymentMethodOptions {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                PaymentPagesCheckoutSessionSavedPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allow_redisplay_filters" => {
-                        b.allow_redisplay_filters = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_remove" => {
-                        b.payment_method_remove = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_save" => b.payment_method_save = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

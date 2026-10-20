@@ -92,19 +92,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingCardholderCardIssuing {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardholderCardIssuingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "user_terms_acceptance" => {
-                        b.user_terms_acceptance = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

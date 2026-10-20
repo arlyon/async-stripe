@@ -110,20 +110,7 @@ const _: () = {
 
     impl FromValueOpt for LineItemsTaxAmount {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = LineItemsTaxAmountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "rate" => b.rate = FromValueOpt::from_value(v),
-                    "taxability_reason" => b.taxability_reason = FromValueOpt::from_value(v),
-                    "taxable_amount" => b.taxable_amount = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -109,20 +109,7 @@ const _: () = {
 
     impl FromValueOpt for SourceRedirectFlow {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceRedirectFlowBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "failure_reason" => b.failure_reason = FromValueOpt::from_value(v),
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

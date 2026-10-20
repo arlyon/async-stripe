@@ -101,19 +101,7 @@ const _: () = {
 
     impl FromValueOpt for ClimateRemovalsProductsPrice {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ClimateRemovalsProductsPriceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_fees" => b.amount_fees = FromValueOpt::from_value(v),
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -90,17 +90,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentMethodUsBankAccountStatusDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodUsBankAccountStatusDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "blocked" => b.blocked = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

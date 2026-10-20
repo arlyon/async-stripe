@@ -106,19 +106,7 @@ const _: () = {
 
     impl FromValueOpt for TerminalConfigurationConfigurationResourceCurrencySpecificConfig {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalConfigurationConfigurationResourceCurrencySpecificConfigBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "fixed_amounts" => b.fixed_amounts = FromValueOpt::from_value(v),
-                    "percentages" => b.percentages = FromValueOpt::from_value(v),
-                    "smart_tip_threshold" => b.smart_tip_threshold = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

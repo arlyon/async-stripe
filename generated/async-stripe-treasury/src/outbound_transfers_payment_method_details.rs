@@ -121,20 +121,7 @@ const _: () = {
 
     impl FromValueOpt for OutboundTransfersPaymentMethodDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = OutboundTransfersPaymentMethodDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_details" => b.billing_details = FromValueOpt::from_value(v),
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -114,21 +114,7 @@ const _: () = {
 
     impl FromValueOpt for GelatoVerificationSessionOptions {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = GelatoVerificationSessionOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "document" => b.document = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "id_number" => b.id_number = FromValueOpt::from_value(v),
-                    "matching" => b.matching = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

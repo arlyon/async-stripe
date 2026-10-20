@@ -164,24 +164,7 @@ const _: () = {
 
     impl FromValueOpt for SourceOwner {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceOwnerBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "verified_address" => b.verified_address = FromValueOpt::from_value(v),
-                    "verified_email" => b.verified_email = FromValueOpt::from_value(v),
-                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-                    "verified_phone" => b.verified_phone = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

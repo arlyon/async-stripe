@@ -141,23 +141,7 @@ const _: () = {
 
     impl FromValueOpt for SourceTypeSepaDebit {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeSepaDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
-                    "branch_code" => b.branch_code = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "mandate_reference" => b.mandate_reference = FromValueOpt::from_value(v),
-                    "mandate_url" => b.mandate_url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

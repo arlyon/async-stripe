@@ -196,28 +196,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingDispute {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_transactions" => b.balance_transactions = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "evidence" => b.evidence = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "loss_reason" => b.loss_reason = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "transaction" => b.transaction = FromValueOpt::from_value(v),
-                    "treasury" => b.treasury = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

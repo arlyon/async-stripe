@@ -400,54 +400,7 @@ const _: () = {
 
     impl FromValueOpt for Source {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ach_credit_transfer" => b.ach_credit_transfer = FromValueOpt::from_value(v),
-                    "ach_debit" => b.ach_debit = FromValueOpt::from_value(v),
-                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
-                    "alipay" => b.alipay = FromValueOpt::from_value(v),
-                    "allow_redisplay" => b.allow_redisplay = FromValueOpt::from_value(v),
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "au_becs_debit" => b.au_becs_debit = FromValueOpt::from_value(v),
-                    "bancontact" => b.bancontact = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "card_present" => b.card_present = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "code_verification" => b.code_verification = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "eps" => b.eps = FromValueOpt::from_value(v),
-                    "flow" => b.flow = FromValueOpt::from_value(v),
-                    "giropay" => b.giropay = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "ideal" => b.ideal = FromValueOpt::from_value(v),
-                    "klarna" => b.klarna = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "multibanco" => b.multibanco = FromValueOpt::from_value(v),
-                    "owner" => b.owner = FromValueOpt::from_value(v),
-                    "p24" => b.p24 = FromValueOpt::from_value(v),
-                    "receiver" => b.receiver = FromValueOpt::from_value(v),
-                    "redirect" => b.redirect = FromValueOpt::from_value(v),
-                    "sepa_credit_transfer" => b.sepa_credit_transfer = FromValueOpt::from_value(v),
-                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
-                    "sofort" => b.sofort = FromValueOpt::from_value(v),
-                    "source_order" => b.source_order = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "usage" => b.usage = FromValueOpt::from_value(v),
-                    "wechat" => b.wechat = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

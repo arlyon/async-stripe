@@ -199,29 +199,7 @@ const _: () = {
 
     impl FromValueOpt for CheckoutSessionItem {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutSessionItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "adjustable_quantity" => b.adjustable_quantity = FromValueOpt::from_value(v),
-                    "amount_discount" => b.amount_discount = FromValueOpt::from_value(v),
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "price" => b.price = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "taxes" => b.taxes = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

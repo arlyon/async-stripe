@@ -152,25 +152,7 @@ const _: () = {
 
     impl FromValueOpt for BalanceSettingsResourcePayouts {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BalanceSettingsResourcePayoutsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "automatic_transfer_rules_by_currency" => {
-                        b.automatic_transfer_rules_by_currency = FromValueOpt::from_value(v)
-                    }
-                    "minimum_balance_by_currency" => {
-                        b.minimum_balance_by_currency = FromValueOpt::from_value(v)
-                    }
-                    "schedule" => b.schedule = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

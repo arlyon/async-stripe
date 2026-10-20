@@ -116,20 +116,7 @@ const _: () = {
 
     impl FromValueOpt for TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitions {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "failed_at" => b.failed_at = FromValueOpt::from_value(v),
-                    "posted_at" => b.posted_at = FromValueOpt::from_value(v),
-                    "returned_at" => b.returned_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

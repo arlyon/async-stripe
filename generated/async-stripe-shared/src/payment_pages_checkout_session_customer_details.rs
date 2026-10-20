@@ -159,24 +159,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentPagesCheckoutSessionCustomerDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionCustomerDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "business_name" => b.business_name = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "individual_name" => b.individual_name = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "tax_exempt" => b.tax_exempt = FromValueOpt::from_value(v),
-                    "tax_ids" => b.tax_ids = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

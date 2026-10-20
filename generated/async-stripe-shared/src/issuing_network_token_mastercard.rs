@@ -125,20 +125,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingNetworkTokenMastercard {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingNetworkTokenMastercardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_reference_id" => b.card_reference_id = FromValueOpt::from_value(v),
-                    "token_reference_id" => b.token_reference_id = FromValueOpt::from_value(v),
-                    "token_requestor_id" => b.token_requestor_id = FromValueOpt::from_value(v),
-                    "token_requestor_name" => b.token_requestor_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -101,19 +101,7 @@ const _: () = {
 
     impl FromValueOpt for SubscriptionsResourceBillingSchedules {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionsResourceBillingSchedulesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "applies_to" => b.applies_to = FromValueOpt::from_value(v),
-                    "bill_until" => b.bill_until = FromValueOpt::from_value(v),
-                    "key" => b.key = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

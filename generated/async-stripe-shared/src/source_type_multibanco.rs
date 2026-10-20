@@ -176,40 +176,7 @@ const _: () = {
 
     impl FromValueOpt for SourceTypeMultibanco {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeMultibancoBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "entity" => b.entity = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "refund_account_holder_address_city" => {
-                        b.refund_account_holder_address_city = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_address_country" => {
-                        b.refund_account_holder_address_country = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_address_line1" => {
-                        b.refund_account_holder_address_line1 = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_address_line2" => {
-                        b.refund_account_holder_address_line2 = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_address_postal_code" => {
-                        b.refund_account_holder_address_postal_code = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_address_state" => {
-                        b.refund_account_holder_address_state = FromValueOpt::from_value(v)
-                    }
-                    "refund_account_holder_name" => {
-                        b.refund_account_holder_name = FromValueOpt::from_value(v)
-                    }
-                    "refund_iban" => b.refund_iban = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

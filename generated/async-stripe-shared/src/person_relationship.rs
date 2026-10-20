@@ -160,24 +160,7 @@ const _: () = {
 
     impl FromValueOpt for PersonRelationship {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PersonRelationshipBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "authorizer" => b.authorizer = FromValueOpt::from_value(v),
-                    "director" => b.director = FromValueOpt::from_value(v),
-                    "executive" => b.executive = FromValueOpt::from_value(v),
-                    "legal_guardian" => b.legal_guardian = FromValueOpt::from_value(v),
-                    "owner" => b.owner = FromValueOpt::from_value(v),
-                    "percent_ownership" => b.percent_ownership = FromValueOpt::from_value(v),
-                    "representative" => b.representative = FromValueOpt::from_value(v),
-                    "title" => b.title = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

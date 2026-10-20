@@ -118,23 +118,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingAuthorizationNetworkData {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationNetworkDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "acquiring_institution_id" => {
-                        b.acquiring_institution_id = FromValueOpt::from_value(v)
-                    }
-                    "system_trace_audit_number" => {
-                        b.system_trace_audit_number = FromValueOpt::from_value(v)
-                    }
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

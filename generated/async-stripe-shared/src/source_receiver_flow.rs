@@ -151,26 +151,7 @@ const _: () = {
 
     impl FromValueOpt for SourceReceiverFlow {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceReceiverFlowBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "amount_charged" => b.amount_charged = FromValueOpt::from_value(v),
-                    "amount_received" => b.amount_received = FromValueOpt::from_value(v),
-                    "amount_returned" => b.amount_returned = FromValueOpt::from_value(v),
-                    "refund_attributes_method" => {
-                        b.refund_attributes_method = FromValueOpt::from_value(v)
-                    }
-                    "refund_attributes_status" => {
-                        b.refund_attributes_status = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

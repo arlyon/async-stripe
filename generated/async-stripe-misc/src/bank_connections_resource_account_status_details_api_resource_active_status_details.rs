@@ -109,21 +109,7 @@ const _: () = {
 
     impl FromValueOpt for BankConnectionsResourceAccountStatusDetailsApiResourceActiveStatusDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BankConnectionsResourceAccountStatusDetailsApiResourceActiveStatusDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "action" => b.action = FromValueOpt::from_value(v),
-                    "cause" => b.cause = FromValueOpt::from_value(v),
-                    "expected_deactivation_date" => {
-                        b.expected_deactivation_date = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

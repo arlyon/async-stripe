@@ -202,29 +202,7 @@ const _: () = {
 
     impl FromValueOpt for Review {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReviewBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_zip" => b.billing_zip = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "closed_reason" => b.closed_reason = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "ip_address_location" => b.ip_address_location = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "open" => b.open = FromValueOpt::from_value(v),
-                    "opened_reason" => b.opened_reason = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "session" => b.session = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

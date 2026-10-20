@@ -192,28 +192,7 @@ const _: () = {
 
     impl FromValueOpt for ReservePlan {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReservePlanBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "created_by" => b.created_by = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "disabled_at" => b.disabled_at = FromValueOpt::from_value(v),
-                    "fixed_release" => b.fixed_release = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "percent" => b.percent = FromValueOpt::from_value(v),
-                    "rolling_release" => b.rolling_release = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -152,25 +152,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentLinksResourcePaymentIntentData {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentLinksResourcePaymentIntentDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "statement_descriptor_suffix" => {
-                        b.statement_descriptor_suffix = FromValueOpt::from_value(v)
-                    }
-                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

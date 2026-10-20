@@ -157,29 +157,7 @@ const _: () = {
 
     impl FromValueOpt for InsightsResourcesPaymentEvaluationEvent {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InsightsResourcesPaymentEvaluationEventBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "dispute_opened" => b.dispute_opened = FromValueOpt::from_value(v),
-                    "early_fraud_warning_received" => {
-                        b.early_fraud_warning_received = FromValueOpt::from_value(v)
-                    }
-                    "occurred_at" => b.occurred_at = FromValueOpt::from_value(v),
-                    "refunded" => b.refunded = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "user_intervention_raised" => {
-                        b.user_intervention_raised = FromValueOpt::from_value(v)
-                    }
-                    "user_intervention_resolved" => {
-                        b.user_intervention_resolved = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

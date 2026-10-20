@@ -146,25 +146,7 @@ const _: () = {
 
     impl FromValueOpt for CustomerSessionResourceComponents {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerSessionResourceComponentsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active_entitlements" => b.active_entitlements = FromValueOpt::from_value(v),
-                    "buy_button" => b.buy_button = FromValueOpt::from_value(v),
-                    "customer_portal" => b.customer_portal = FromValueOpt::from_value(v),
-                    "customer_sheet" => b.customer_sheet = FromValueOpt::from_value(v),
-                    "mobile_payment_element" => {
-                        b.mobile_payment_element = FromValueOpt::from_value(v)
-                    }
-                    "payment_element" => b.payment_element = FromValueOpt::from_value(v),
-                    "pricing_table" => b.pricing_table = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

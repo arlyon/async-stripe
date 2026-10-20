@@ -234,32 +234,7 @@ const _: () = {
 
     impl FromValueOpt for Coupon {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CouponBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_off" => b.amount_off = FromValueOpt::from_value(v),
-                    "applies_to" => b.applies_to = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "currency_options" => b.currency_options = FromValueOpt::from_value(v),
-                    "duration" => b.duration = FromValueOpt::from_value(v),
-                    "duration_in_months" => b.duration_in_months = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "max_redemptions" => b.max_redemptions = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "percent_off" => b.percent_off = FromValueOpt::from_value(v),
-                    "redeem_by" => b.redeem_by = FromValueOpt::from_value(v),
-                    "times_redeemed" => b.times_redeemed = FromValueOpt::from_value(v),
-                    "valid" => b.valid = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

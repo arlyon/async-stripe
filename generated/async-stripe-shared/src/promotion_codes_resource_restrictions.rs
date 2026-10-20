@@ -137,24 +137,7 @@ const _: () = {
 
     impl FromValueOpt for PromotionCodesResourceRestrictions {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PromotionCodesResourceRestrictionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "currency_options" => b.currency_options = FromValueOpt::from_value(v),
-                    "first_time_transaction" => {
-                        b.first_time_transaction = FromValueOpt::from_value(v)
-                    }
-                    "minimum_amount" => b.minimum_amount = FromValueOpt::from_value(v),
-                    "minimum_amount_currency" => {
-                        b.minimum_amount_currency = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

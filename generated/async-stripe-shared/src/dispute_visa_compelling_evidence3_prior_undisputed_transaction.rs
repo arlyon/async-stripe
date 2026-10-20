@@ -163,29 +163,7 @@ const _: () = {
 
     impl FromValueOpt for DisputeVisaCompellingEvidence3PriorUndisputedTransaction {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                DisputeVisaCompellingEvidence3PriorUndisputedTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "customer_account_id" => b.customer_account_id = FromValueOpt::from_value(v),
-                    "customer_device_fingerprint" => {
-                        b.customer_device_fingerprint = FromValueOpt::from_value(v)
-                    }
-                    "customer_device_id" => b.customer_device_id = FromValueOpt::from_value(v),
-                    "customer_email_address" => {
-                        b.customer_email_address = FromValueOpt::from_value(v)
-                    }
-                    "customer_purchase_ip" => b.customer_purchase_ip = FromValueOpt::from_value(v),
-                    "product_description" => b.product_description = FromValueOpt::from_value(v),
-                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

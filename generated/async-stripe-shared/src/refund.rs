@@ -301,44 +301,7 @@ const _: () = {
 
     impl FromValueOpt for Refund {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = RefundBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "destination_details" => b.destination_details = FromValueOpt::from_value(v),
-                    "failure_balance_transaction" => {
-                        b.failure_balance_transaction = FromValueOpt::from_value(v)
-                    }
-                    "failure_reason" => b.failure_reason = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "instructions_email" => b.instructions_email = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "next_action" => b.next_action = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "pending_reason" => b.pending_reason = FromValueOpt::from_value(v),
-                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "receipt_number" => b.receipt_number = FromValueOpt::from_value(v),
-                    "source_transfer_reversal" => {
-                        b.source_transfer_reversal = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "transfer_reversal" => b.transfer_reversal = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -105,19 +105,7 @@ const _: () = {
 
     impl FromValueOpt for InsightsResourcesPaymentEvaluationSignalV2 {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InsightsResourcesPaymentEvaluationSignalV2Builder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "evaluated_at" => b.evaluated_at = FromValueOpt::from_value(v),
-                    "risk_level" => b.risk_level = FromValueOpt::from_value(v),
-                    "score" => b.score = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

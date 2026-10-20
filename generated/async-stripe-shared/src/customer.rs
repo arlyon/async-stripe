@@ -358,50 +358,7 @@ const _: () = {
 
     impl FromValueOpt for Customer {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "balance" => b.balance = FromValueOpt::from_value(v),
-                    "business_name" => b.business_name = FromValueOpt::from_value(v),
-                    "cash_balance" => b.cash_balance = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "default_source" => b.default_source = FromValueOpt::from_value(v),
-                    "delinquent" => b.delinquent = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discount" => b.discount = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "individual_name" => b.individual_name = FromValueOpt::from_value(v),
-                    "invoice_credit_balance" => {
-                        b.invoice_credit_balance = FromValueOpt::from_value(v)
-                    }
-                    "invoice_prefix" => b.invoice_prefix = FromValueOpt::from_value(v),
-                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "next_invoice_sequence" => {
-                        b.next_invoice_sequence = FromValueOpt::from_value(v)
-                    }
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    "sources" => b.sources = FromValueOpt::from_value(v),
-                    "subscriptions" => b.subscriptions = FromValueOpt::from_value(v),
-                    "tax" => b.tax = FromValueOpt::from_value(v),
-                    "tax_exempt" => b.tax_exempt = FromValueOpt::from_value(v),
-                    "tax_ids" => b.tax_ids = FromValueOpt::from_value(v),
-                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

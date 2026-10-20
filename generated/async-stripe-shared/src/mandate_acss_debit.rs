@@ -125,20 +125,7 @@ const _: () = {
 
     impl FromValueOpt for MandateAcssDebit {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandateAcssDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "default_for" => b.default_for = FromValueOpt::from_value(v),
-                    "interval_description" => b.interval_description = FromValueOpt::from_value(v),
-                    "payment_schedule" => b.payment_schedule = FromValueOpt::from_value(v),
-                    "transaction_type" => b.transaction_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

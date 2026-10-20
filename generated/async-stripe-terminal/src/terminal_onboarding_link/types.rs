@@ -112,20 +112,7 @@ const _: () = {
 
     impl FromValueOpt for TerminalOnboardingLink {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalOnboardingLinkBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "link_options" => b.link_options = FromValueOpt::from_value(v),
-                    "link_type" => b.link_type = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "redirect_url" => b.redirect_url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

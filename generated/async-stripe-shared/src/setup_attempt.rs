@@ -224,33 +224,7 @@ const _: () = {
 
     impl FromValueOpt for SetupAttempt {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupAttemptBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "attach_to_self" => b.attach_to_self = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "flow_directions" => b.flow_directions = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "setup_error" => b.setup_error = FromValueOpt::from_value(v),
-                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "usage" => b.usage = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

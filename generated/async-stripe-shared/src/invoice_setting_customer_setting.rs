@@ -119,22 +119,7 @@ const _: () = {
 
     impl FromValueOpt for InvoiceSettingCustomerSetting {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoiceSettingCustomerSettingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
-                    "default_payment_method" => {
-                        b.default_payment_method = FromValueOpt::from_value(v)
-                    }
-                    "footer" => b.footer = FromValueOpt::from_value(v),
-                    "rendering_options" => b.rendering_options = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

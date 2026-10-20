@@ -134,23 +134,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingDisputeServiceNotAsDescribedEvidence {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeServiceNotAsDescribedEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "additional_documentation" => {
-                        b.additional_documentation = FromValueOpt::from_value(v)
-                    }
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
-                    "explanation" => b.explanation = FromValueOpt::from_value(v),
-                    "received_at" => b.received_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

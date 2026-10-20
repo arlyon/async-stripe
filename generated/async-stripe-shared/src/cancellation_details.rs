@@ -113,20 +113,7 @@ const _: () = {
 
     impl FromValueOpt for CancellationDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CancellationDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "comment" => b.comment = FromValueOpt::from_value(v),
-                    "feedback" => b.feedback = FromValueOpt::from_value(v),
-                    "feedback_option" => b.feedback_option = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

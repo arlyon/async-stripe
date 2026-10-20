@@ -251,38 +251,7 @@ const _: () = {
 
     impl FromValueOpt for Topup {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TopupBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "expected_availability_date" => {
-                        b.expected_availability_date = FromValueOpt::from_value(v)
-                    }
-                    "failure_code" => b.failure_code = FromValueOpt::from_value(v),
-                    "failure_message" => b.failure_message = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "initiated_by" => b.initiated_by = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

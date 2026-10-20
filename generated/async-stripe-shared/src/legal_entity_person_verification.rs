@@ -129,21 +129,7 @@ const _: () = {
 
     impl FromValueOpt for LegalEntityPersonVerification {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = LegalEntityPersonVerificationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "additional_document" => b.additional_document = FromValueOpt::from_value(v),
-                    "details" => b.details = FromValueOpt::from_value(v),
-                    "details_code" => b.details_code = FromValueOpt::from_value(v),
-                    "document" => b.document = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

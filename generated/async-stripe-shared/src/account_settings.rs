@@ -162,26 +162,7 @@ const _: () = {
 
     impl FromValueOpt for AccountSettings {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bacs_debit_payments" => b.bacs_debit_payments = FromValueOpt::from_value(v),
-                    "branding" => b.branding = FromValueOpt::from_value(v),
-                    "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
-                    "card_payments" => b.card_payments = FromValueOpt::from_value(v),
-                    "dashboard" => b.dashboard = FromValueOpt::from_value(v),
-                    "invoices" => b.invoices = FromValueOpt::from_value(v),
-                    "payments" => b.payments = FromValueOpt::from_value(v),
-                    "payouts" => b.payouts = FromValueOpt::from_value(v),
-                    "sepa_debit_payments" => b.sepa_debit_payments = FromValueOpt::from_value(v),
-                    "treasury" => b.treasury = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

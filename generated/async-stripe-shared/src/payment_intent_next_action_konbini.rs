@@ -100,19 +100,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentIntentNextActionKonbini {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentNextActionKonbiniBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "hosted_voucher_url" => b.hosted_voucher_url = FromValueOpt::from_value(v),
-                    "stores" => b.stores = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

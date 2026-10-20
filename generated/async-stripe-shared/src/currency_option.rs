@@ -139,21 +139,7 @@ const _: () = {
 
     impl FromValueOpt for CurrencyOption {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CurrencyOptionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "custom_unit_amount" => b.custom_unit_amount = FromValueOpt::from_value(v),
-                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
-                    "tiers" => b.tiers = FromValueOpt::from_value(v),
-                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
-                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

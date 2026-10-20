@@ -113,20 +113,7 @@ self.subscription_reference.take(),
 
     impl FromValueOpt for PaymentFlowsPrivatePaymentMethodsKlarnaPaymentIntentAmountDetailsLineItemPaymentMethodOptions {
     fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        let mut b = PaymentFlowsPrivatePaymentMethodsKlarnaPaymentIntentAmountDetailsLineItemPaymentMethodOptionsBuilder::deser_default();
-        for (k, v) in obj {
-            match k.as_str() {
-            "image_url" => b.image_url = FromValueOpt::from_value(v),
-            "product_url" => b.product_url = FromValueOpt::from_value(v),
-            "reference" => b.reference = FromValueOpt::from_value(v),
-            "subscription_reference" => b.subscription_reference = FromValueOpt::from_value(v),
-                _ => {}
-            }
-        }
-        b.take_out()
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
     }
 }
 };

@@ -120,21 +120,7 @@ const _: () = {
 
     impl FromValueOpt for BillingDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "tax_id" => b.tax_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

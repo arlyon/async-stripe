@@ -298,52 +298,7 @@ const _: () = {
 
     impl FromValueOpt for LegalEntityCompany {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = LegalEntityCompanyBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_kana" => b.address_kana = FromValueOpt::from_value(v),
-                    "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
-                    "administrative_address" => {
-                        b.administrative_address = FromValueOpt::from_value(v)
-                    }
-                    "directors_provided" => b.directors_provided = FromValueOpt::from_value(v),
-                    "directorship_declaration" => {
-                        b.directorship_declaration = FromValueOpt::from_value(v)
-                    }
-                    "executives_provided" => b.executives_provided = FromValueOpt::from_value(v),
-                    "export_license_id" => b.export_license_id = FromValueOpt::from_value(v),
-                    "export_purpose_code" => b.export_purpose_code = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "name_kana" => b.name_kana = FromValueOpt::from_value(v),
-                    "name_kanji" => b.name_kanji = FromValueOpt::from_value(v),
-                    "owners_provided" => b.owners_provided = FromValueOpt::from_value(v),
-                    "ownership_declaration" => {
-                        b.ownership_declaration = FromValueOpt::from_value(v)
-                    }
-                    "ownership_exemption_reason" => {
-                        b.ownership_exemption_reason = FromValueOpt::from_value(v)
-                    }
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "principal_place_of_business" => {
-                        b.principal_place_of_business = FromValueOpt::from_value(v)
-                    }
-                    "registration_date" => b.registration_date = FromValueOpt::from_value(v),
-                    "representative_declaration" => {
-                        b.representative_declaration = FromValueOpt::from_value(v)
-                    }
-                    "structure" => b.structure = FromValueOpt::from_value(v),
-                    "tax_id_provided" => b.tax_id_provided = FromValueOpt::from_value(v),
-                    "tax_id_registrar" => b.tax_id_registrar = FromValueOpt::from_value(v),
-                    "vat_id_provided" => b.vat_id_provided = FromValueOpt::from_value(v),
-                    "verification" => b.verification = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

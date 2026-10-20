@@ -103,21 +103,7 @@ const _: () = {
 
     impl FromValueOpt for BalanceSettingsResourceAutomaticTransferRule {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BalanceSettingsResourceAutomaticTransferRuleBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "payout_method" => b.payout_method = FromValueOpt::from_value(v),
-                    "transfer_up_to_amount" => {
-                        b.transfer_up_to_amount = FromValueOpt::from_value(v)
-                    }
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -113,20 +113,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentIntentNextActionKonbiniStores {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentNextActionKonbiniStoresBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "familymart" => b.familymart = FromValueOpt::from_value(v),
-                    "lawson" => b.lawson = FromValueOpt::from_value(v),
-                    "ministop" => b.ministop = FromValueOpt::from_value(v),
-                    "seicomart" => b.seicomart = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

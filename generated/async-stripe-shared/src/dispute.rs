@@ -238,37 +238,7 @@ const _: () = {
 
     impl FromValueOpt for Dispute {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_transactions" => b.balance_transactions = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "enhanced_eligibility_types" => {
-                        b.enhanced_eligibility_types = FromValueOpt::from_value(v)
-                    }
-                    "evidence" => b.evidence = FromValueOpt::from_value(v),
-                    "evidence_details" => b.evidence_details = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "is_charge_refundable" => b.is_charge_refundable = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "network_reason_code" => b.network_reason_code = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

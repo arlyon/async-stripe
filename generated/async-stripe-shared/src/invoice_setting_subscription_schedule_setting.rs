@@ -141,22 +141,7 @@ const _: () = {
 
     impl FromValueOpt for InvoiceSettingSubscriptionScheduleSetting {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoiceSettingSubscriptionScheduleSettingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_tax_ids" => b.account_tax_ids = FromValueOpt::from_value(v),
-                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
-                    "days_until_due" => b.days_until_due = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "footer" => b.footer = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

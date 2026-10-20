@@ -113,20 +113,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingPersonalizationDesignCarrierText {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingPersonalizationDesignCarrierTextBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "footer_body" => b.footer_body = FromValueOpt::from_value(v),
-                    "footer_title" => b.footer_title = FromValueOpt::from_value(v),
-                    "header_body" => b.header_body = FromValueOpt::from_value(v),
-                    "header_title" => b.header_title = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

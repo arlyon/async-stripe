@@ -164,24 +164,7 @@ const _: () = {
 
     impl FromValueOpt for SubscriptionsResourcePendingUpdate {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionsResourcePendingUpdateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
-                    "discount" => b.discount = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "subscription_items" => b.subscription_items = FromValueOpt::from_value(v),
-                    "trial_end" => b.trial_end = FromValueOpt::from_value(v),
-                    "trial_from_plan" => b.trial_from_plan = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

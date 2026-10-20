@@ -280,38 +280,7 @@ const _: () = {
 
     impl FromValueOpt for Account {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "business_profile" => b.business_profile = FromValueOpt::from_value(v),
-                    "business_type" => b.business_type = FromValueOpt::from_value(v),
-                    "capabilities" => b.capabilities = FromValueOpt::from_value(v),
-                    "charges_enabled" => b.charges_enabled = FromValueOpt::from_value(v),
-                    "company" => b.company = FromValueOpt::from_value(v),
-                    "controller" => b.controller = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "default_currency" => b.default_currency = FromValueOpt::from_value(v),
-                    "details_submitted" => b.details_submitted = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "external_accounts" => b.external_accounts = FromValueOpt::from_value(v),
-                    "future_requirements" => b.future_requirements = FromValueOpt::from_value(v),
-                    "groups" => b.groups = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "individual" => b.individual = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "payouts_enabled" => b.payouts_enabled = FromValueOpt::from_value(v),
-                    "requirements" => b.requirements = FromValueOpt::from_value(v),
-                    "settings" => b.settings = FromValueOpt::from_value(v),
-                    "tos_acceptance" => b.tos_acceptance = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

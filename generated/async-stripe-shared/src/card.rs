@@ -383,51 +383,7 @@ const _: () = {
 
     impl FromValueOpt for Card {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account" => b.account = FromValueOpt::from_value(v),
-                    "address_city" => b.address_city = FromValueOpt::from_value(v),
-                    "address_country" => b.address_country = FromValueOpt::from_value(v),
-                    "address_line1" => b.address_line1 = FromValueOpt::from_value(v),
-                    "address_line1_check" => b.address_line1_check = FromValueOpt::from_value(v),
-                    "address_line2" => b.address_line2 = FromValueOpt::from_value(v),
-                    "address_state" => b.address_state = FromValueOpt::from_value(v),
-                    "address_zip" => b.address_zip = FromValueOpt::from_value(v),
-                    "address_zip_check" => b.address_zip_check = FromValueOpt::from_value(v),
-                    "allow_redisplay" => b.allow_redisplay = FromValueOpt::from_value(v),
-                    "available_payout_methods" => {
-                        b.available_payout_methods = FromValueOpt::from_value(v)
-                    }
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
-                    "default_for_currency" => b.default_for_currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "dynamic_last4" => b.dynamic_last4 = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "networks" => b.networks = FromValueOpt::from_value(v),
-                    "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "tokenization_method" => b.tokenization_method = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -133,22 +133,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingTransactionPurchaseDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionPurchaseDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "fleet" => b.fleet = FromValueOpt::from_value(v),
-                    "flight" => b.flight = FromValueOpt::from_value(v),
-                    "fuel" => b.fuel = FromValueOpt::from_value(v),
-                    "lodging" => b.lodging = FromValueOpt::from_value(v),
-                    "receipt" => b.receipt = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

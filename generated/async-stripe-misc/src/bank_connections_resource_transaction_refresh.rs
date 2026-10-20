@@ -117,22 +117,7 @@ const _: () = {
 
     impl FromValueOpt for BankConnectionsResourceTransactionRefresh {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BankConnectionsResourceTransactionRefreshBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last_attempted_at" => b.last_attempted_at = FromValueOpt::from_value(v),
-                    "next_refresh_available_at" => {
-                        b.next_refresh_available_at = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

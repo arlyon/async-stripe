@@ -232,35 +232,7 @@ const _: () = {
 
     impl FromValueOpt for TreasuryFinancialAccount {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryFinancialAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active_features" => b.active_features = FromValueOpt::from_value(v),
-                    "balance" => b.balance = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "features" => b.features = FromValueOpt::from_value(v),
-                    "financial_addresses" => b.financial_addresses = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "is_default" => b.is_default = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "nickname" => b.nickname = FromValueOpt::from_value(v),
-                    "pending_features" => b.pending_features = FromValueOpt::from_value(v),
-                    "platform_restrictions" => {
-                        b.platform_restrictions = FromValueOpt::from_value(v)
-                    }
-                    "restricted_features" => b.restricted_features = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_details" => b.status_details = FromValueOpt::from_value(v),
-                    "supported_currencies" => b.supported_currencies = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

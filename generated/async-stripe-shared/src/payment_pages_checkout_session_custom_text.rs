@@ -123,22 +123,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentPagesCheckoutSessionCustomText {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionCustomTextBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "after_submit" => b.after_submit = FromValueOpt::from_value(v),
-                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-                    "submit" => b.submit = FromValueOpt::from_value(v),
-                    "terms_of_service_acceptance" => {
-                        b.terms_of_service_acceptance = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

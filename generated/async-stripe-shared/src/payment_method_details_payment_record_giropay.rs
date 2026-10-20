@@ -116,20 +116,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentMethodDetailsPaymentRecordGiropay {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsPaymentRecordGiropayBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "bic" => b.bic = FromValueOpt::from_value(v),
-                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

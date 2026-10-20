@@ -272,38 +272,7 @@ const _: () = {
 
     impl FromValueOpt for FinancialConnectionsAccount {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FinancialConnectionsAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder" => b.account_holder = FromValueOpt::from_value(v),
-                    "account_numbers" => b.account_numbers = FromValueOpt::from_value(v),
-                    "balance" => b.balance = FromValueOpt::from_value(v),
-                    "balance_refresh" => b.balance_refresh = FromValueOpt::from_value(v),
-                    "category" => b.category = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "institution_name" => b.institution_name = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "ownership" => b.ownership = FromValueOpt::from_value(v),
-                    "ownership_refresh" => b.ownership_refresh = FromValueOpt::from_value(v),
-                    "permissions" => b.permissions = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_details" => b.status_details = FromValueOpt::from_value(v),
-                    "subcategory" => b.subcategory = FromValueOpt::from_value(v),
-                    "subscriptions" => b.subscriptions = FromValueOpt::from_value(v),
-                    "supported_payment_method_types" => {
-                        b.supported_payment_method_types = FromValueOpt::from_value(v)
-                    }
-                    "transaction_refresh" => b.transaction_refresh = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

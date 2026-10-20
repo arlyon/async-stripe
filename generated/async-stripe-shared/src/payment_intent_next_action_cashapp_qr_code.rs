@@ -101,19 +101,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentIntentNextActionCashappQrCode {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentNextActionCashappQrCodeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "image_url_png" => b.image_url_png = FromValueOpt::from_value(v),
-                    "image_url_svg" => b.image_url_svg = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

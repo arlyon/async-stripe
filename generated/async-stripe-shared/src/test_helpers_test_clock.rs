@@ -160,24 +160,7 @@ const _: () = {
 
     impl FromValueOpt for TestHelpersTestClock {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TestHelpersTestClockBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "deletes_after" => b.deletes_after = FromValueOpt::from_value(v),
-                    "frozen_time" => b.frozen_time = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_details" => b.status_details = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

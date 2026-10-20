@@ -114,20 +114,7 @@ const _: () = {
 
     impl FromValueOpt for CustomerTax {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerTaxBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "location" => b.location = FromValueOpt::from_value(v),
-                    "provider" => b.provider = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

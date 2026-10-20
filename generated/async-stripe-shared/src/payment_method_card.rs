@@ -238,33 +238,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentMethodCard {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "checks" => b.checks = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "display_brand" => b.display_brand = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "generated_from" => b.generated_from = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "networks" => b.networks = FromValueOpt::from_value(v),
-                    "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
-                    "three_d_secure_usage" => b.three_d_secure_usage = FromValueOpt::from_value(v),
-                    "wallet" => b.wallet = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

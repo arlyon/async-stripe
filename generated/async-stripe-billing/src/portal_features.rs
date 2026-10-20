@@ -127,23 +127,7 @@ const _: () = {
 
     impl FromValueOpt for PortalFeatures {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PortalFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "customer_update" => b.customer_update = FromValueOpt::from_value(v),
-                    "invoice_history" => b.invoice_history = FromValueOpt::from_value(v),
-                    "payment_method_update" => {
-                        b.payment_method_update = FromValueOpt::from_value(v)
-                    }
-                    "subscription_cancel" => b.subscription_cancel = FromValueOpt::from_value(v),
-                    "subscription_update" => b.subscription_update = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

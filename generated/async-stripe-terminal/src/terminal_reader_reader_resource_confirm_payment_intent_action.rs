@@ -99,19 +99,7 @@ const _: () = {
 
     impl FromValueOpt for TerminalReaderReaderResourceConfirmPaymentIntentAction {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                TerminalReaderReaderResourceConfirmPaymentIntentActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "confirm_config" => b.confirm_config = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

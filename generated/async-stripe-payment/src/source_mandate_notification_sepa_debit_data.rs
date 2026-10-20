@@ -105,19 +105,7 @@ const _: () = {
 
     impl FromValueOpt for SourceMandateNotificationSepaDebitData {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceMandateNotificationSepaDebitDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "creditor_identifier" => b.creditor_identifier = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "mandate_reference" => b.mandate_reference = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

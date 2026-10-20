@@ -98,21 +98,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentIntentNextActionUpiHandleRedirectOrDisplayQrCode {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                PaymentIntentNextActionUpiHandleRedirectOrDisplayQrCodeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "hosted_instructions_url" => {
-                        b.hosted_instructions_url = FromValueOpt::from_value(v)
-                    }
-                    "qr_code" => b.qr_code = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

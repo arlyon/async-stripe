@@ -162,27 +162,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentMethodDetailsCardWallet {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsCardWalletBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amex_express_checkout" => {
-                        b.amex_express_checkout = FromValueOpt::from_value(v)
-                    }
-                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
-                    "dynamic_last4" => b.dynamic_last4 = FromValueOpt::from_value(v),
-                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
-                    "link" => b.link = FromValueOpt::from_value(v),
-                    "masterpass" => b.masterpass = FromValueOpt::from_value(v),
-                    "samsung_pay" => b.samsung_pay = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "visa_checkout" => b.visa_checkout = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

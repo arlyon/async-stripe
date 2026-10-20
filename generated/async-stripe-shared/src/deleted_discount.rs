@@ -189,28 +189,7 @@ const _: () = {
 
     impl FromValueOpt for DeletedDiscount {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DeletedDiscountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "checkout_session" => b.checkout_session = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "deleted" => b.deleted = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "invoice_item" => b.invoice_item = FromValueOpt::from_value(v),
-                    "promotion_code" => b.promotion_code = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "start" => b.start = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -242,37 +242,7 @@ const _: () = {
 
     impl FromValueOpt for MandatePaymentMethodDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandatePaymentMethodDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
-                    "amazon_pay" => b.amazon_pay = FromValueOpt::from_value(v),
-                    "au_becs_debit" => b.au_becs_debit = FromValueOpt::from_value(v),
-                    "bacs_debit" => b.bacs_debit = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "cashapp" => b.cashapp = FromValueOpt::from_value(v),
-                    "kakao_pay" => b.kakao_pay = FromValueOpt::from_value(v),
-                    "klarna" => b.klarna = FromValueOpt::from_value(v),
-                    "kr_card" => b.kr_card = FromValueOpt::from_value(v),
-                    "link" => b.link = FromValueOpt::from_value(v),
-                    "naver_pay" => b.naver_pay = FromValueOpt::from_value(v),
-                    "nz_bank_account" => b.nz_bank_account = FromValueOpt::from_value(v),
-                    "paypal" => b.paypal = FromValueOpt::from_value(v),
-                    "payto" => b.payto = FromValueOpt::from_value(v),
-                    "pix" => b.pix = FromValueOpt::from_value(v),
-                    "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),
-                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
-                    "twint" => b.twint = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "upi" => b.upi = FromValueOpt::from_value(v),
-                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

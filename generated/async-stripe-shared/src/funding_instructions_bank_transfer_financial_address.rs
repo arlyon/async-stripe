@@ -145,24 +145,7 @@ const _: () = {
 
     impl FromValueOpt for FundingInstructionsBankTransferFinancialAddress {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FundingInstructionsBankTransferFinancialAddressBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "aba" => b.aba = FromValueOpt::from_value(v),
-                    "iban" => b.iban = FromValueOpt::from_value(v),
-                    "sort_code" => b.sort_code = FromValueOpt::from_value(v),
-                    "spei" => b.spei = FromValueOpt::from_value(v),
-                    "supported_networks" => b.supported_networks = FromValueOpt::from_value(v),
-                    "swift" => b.swift = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "zengin" => b.zengin = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

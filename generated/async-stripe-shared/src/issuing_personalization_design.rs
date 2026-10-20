@@ -193,28 +193,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingPersonalizationDesign {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingPersonalizationDesignBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_logo" => b.card_logo = FromValueOpt::from_value(v),
-                    "carrier_text" => b.carrier_text = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "physical_bundle" => b.physical_bundle = FromValueOpt::from_value(v),
-                    "preferences" => b.preferences = FromValueOpt::from_value(v),
-                    "rejection_reasons" => b.rejection_reasons = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

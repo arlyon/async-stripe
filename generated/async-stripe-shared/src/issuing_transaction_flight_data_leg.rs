@@ -140,24 +140,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingTransactionFlightDataLeg {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionFlightDataLegBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "arrival_airport_code" => b.arrival_airport_code = FromValueOpt::from_value(v),
-                    "carrier" => b.carrier = FromValueOpt::from_value(v),
-                    "departure_airport_code" => {
-                        b.departure_airport_code = FromValueOpt::from_value(v)
-                    }
-                    "flight_number" => b.flight_number = FromValueOpt::from_value(v),
-                    "service_class" => b.service_class = FromValueOpt::from_value(v),
-                    "stopover_allowed" => b.stopover_allowed = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

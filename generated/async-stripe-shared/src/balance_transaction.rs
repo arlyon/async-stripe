@@ -228,31 +228,7 @@ const _: () = {
 
     impl FromValueOpt for BalanceTransaction {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BalanceTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "available_on" => b.available_on = FromValueOpt::from_value(v),
-                    "balance_type" => b.balance_type = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "exchange_rate" => b.exchange_rate = FromValueOpt::from_value(v),
-                    "fee" => b.fee = FromValueOpt::from_value(v),
-                    "fee_details" => b.fee_details = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "net" => b.net = FromValueOpt::from_value(v),
-                    "reporting_category" => b.reporting_category = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

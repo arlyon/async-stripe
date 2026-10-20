@@ -232,41 +232,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentIntentPaymentMethodOptionsCard {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentPaymentMethodOptionsCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
-                    "installments" => b.installments = FromValueOpt::from_value(v),
-                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "request_extended_authorization" => {
-                        b.request_extended_authorization = FromValueOpt::from_value(v)
-                    }
-                    "request_incremental_authorization" => {
-                        b.request_incremental_authorization = FromValueOpt::from_value(v)
-                    }
-                    "request_multicapture" => b.request_multicapture = FromValueOpt::from_value(v),
-                    "request_overcapture" => b.request_overcapture = FromValueOpt::from_value(v),
-                    "request_three_d_secure" => {
-                        b.request_three_d_secure = FromValueOpt::from_value(v)
-                    }
-                    "require_cvc_recollection" => {
-                        b.require_cvc_recollection = FromValueOpt::from_value(v)
-                    }
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    "statement_descriptor_suffix_kana" => {
-                        b.statement_descriptor_suffix_kana = FromValueOpt::from_value(v)
-                    }
-                    "statement_descriptor_suffix_kanji" => {
-                        b.statement_descriptor_suffix_kanji = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

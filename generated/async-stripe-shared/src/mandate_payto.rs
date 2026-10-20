@@ -152,23 +152,7 @@ const _: () = {
 
     impl FromValueOpt for MandatePayto {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandatePaytoBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_type" => b.amount_type = FromValueOpt::from_value(v),
-                    "end_date" => b.end_date = FromValueOpt::from_value(v),
-                    "payment_schedule" => b.payment_schedule = FromValueOpt::from_value(v),
-                    "payments_per_period" => b.payments_per_period = FromValueOpt::from_value(v),
-                    "purpose" => b.purpose = FromValueOpt::from_value(v),
-                    "start_date" => b.start_date = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

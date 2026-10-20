@@ -184,34 +184,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingCardAuthorizationControls {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardAuthorizationControlsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allowed_card_presences" => {
-                        b.allowed_card_presences = FromValueOpt::from_value(v)
-                    }
-                    "allowed_categories" => b.allowed_categories = FromValueOpt::from_value(v),
-                    "allowed_merchant_countries" => {
-                        b.allowed_merchant_countries = FromValueOpt::from_value(v)
-                    }
-                    "blocked_card_presences" => {
-                        b.blocked_card_presences = FromValueOpt::from_value(v)
-                    }
-                    "blocked_categories" => b.blocked_categories = FromValueOpt::from_value(v),
-                    "blocked_merchant_countries" => {
-                        b.blocked_merchant_countries = FromValueOpt::from_value(v)
-                    }
-                    "spending_limits" => b.spending_limits = FromValueOpt::from_value(v),
-                    "spending_limits_currency" => {
-                        b.spending_limits_currency = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -337,66 +337,7 @@ const _: () = {
 
     impl FromValueOpt for DisputeEvidence {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "access_activity_log" => b.access_activity_log = FromValueOpt::from_value(v),
-                    "billing_address" => b.billing_address = FromValueOpt::from_value(v),
-                    "cancellation_policy" => b.cancellation_policy = FromValueOpt::from_value(v),
-                    "cancellation_policy_disclosure" => {
-                        b.cancellation_policy_disclosure = FromValueOpt::from_value(v)
-                    }
-                    "cancellation_rebuttal" => {
-                        b.cancellation_rebuttal = FromValueOpt::from_value(v)
-                    }
-                    "customer_communication" => {
-                        b.customer_communication = FromValueOpt::from_value(v)
-                    }
-                    "customer_email_address" => {
-                        b.customer_email_address = FromValueOpt::from_value(v)
-                    }
-                    "customer_name" => b.customer_name = FromValueOpt::from_value(v),
-                    "customer_purchase_ip" => b.customer_purchase_ip = FromValueOpt::from_value(v),
-                    "customer_signature" => b.customer_signature = FromValueOpt::from_value(v),
-                    "duplicate_charge_documentation" => {
-                        b.duplicate_charge_documentation = FromValueOpt::from_value(v)
-                    }
-                    "duplicate_charge_explanation" => {
-                        b.duplicate_charge_explanation = FromValueOpt::from_value(v)
-                    }
-                    "duplicate_charge_id" => b.duplicate_charge_id = FromValueOpt::from_value(v),
-                    "enhanced_evidence" => b.enhanced_evidence = FromValueOpt::from_value(v),
-                    "product_description" => b.product_description = FromValueOpt::from_value(v),
-                    "receipt" => b.receipt = FromValueOpt::from_value(v),
-                    "refund_policy" => b.refund_policy = FromValueOpt::from_value(v),
-                    "refund_policy_disclosure" => {
-                        b.refund_policy_disclosure = FromValueOpt::from_value(v)
-                    }
-                    "refund_refusal_explanation" => {
-                        b.refund_refusal_explanation = FromValueOpt::from_value(v)
-                    }
-                    "service_date" => b.service_date = FromValueOpt::from_value(v),
-                    "service_documentation" => {
-                        b.service_documentation = FromValueOpt::from_value(v)
-                    }
-                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-                    "shipping_carrier" => b.shipping_carrier = FromValueOpt::from_value(v),
-                    "shipping_date" => b.shipping_date = FromValueOpt::from_value(v),
-                    "shipping_documentation" => {
-                        b.shipping_documentation = FromValueOpt::from_value(v)
-                    }
-                    "shipping_tracking_number" => {
-                        b.shipping_tracking_number = FromValueOpt::from_value(v)
-                    }
-                    "uncategorized_file" => b.uncategorized_file = FromValueOpt::from_value(v),
-                    "uncategorized_text" => b.uncategorized_text = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

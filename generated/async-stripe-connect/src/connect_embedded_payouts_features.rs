@@ -144,25 +144,7 @@ const _: () = {
 
     impl FromValueOpt for ConnectEmbeddedPayoutsFeatures {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ConnectEmbeddedPayoutsFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "disable_stripe_user_authentication" => {
-                        b.disable_stripe_user_authentication = FromValueOpt::from_value(v)
-                    }
-                    "edit_payout_schedule" => b.edit_payout_schedule = FromValueOpt::from_value(v),
-                    "external_account_collection" => {
-                        b.external_account_collection = FromValueOpt::from_value(v)
-                    }
-                    "instant_payouts" => b.instant_payouts = FromValueOpt::from_value(v),
-                    "standard_payouts" => b.standard_payouts = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

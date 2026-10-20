@@ -138,22 +138,7 @@ const _: () = {
 
     impl FromValueOpt for BillingMeterEvent {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingMeterEventBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "event_name" => b.event_name = FromValueOpt::from_value(v),
-                    "identifier" => b.identifier = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "payload" => b.payload = FromValueOpt::from_value(v),
-                    "timestamp" => b.timestamp = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

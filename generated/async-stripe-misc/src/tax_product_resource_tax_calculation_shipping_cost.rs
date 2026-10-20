@@ -143,22 +143,7 @@ const _: () = {
 
     impl FromValueOpt for TaxProductResourceTaxCalculationShippingCost {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxProductResourceTaxCalculationShippingCostBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
-                    "shipping_rate" => b.shipping_rate = FromValueOpt::from_value(v),
-                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
-                    "tax_breakdown" => b.tax_breakdown = FromValueOpt::from_value(v),
-                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

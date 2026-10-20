@@ -154,23 +154,7 @@ const _: () = {
 
     impl FromValueOpt for TreasuryFinancialAccountFeatures {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryFinancialAccountFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
-                    "deposit_insurance" => b.deposit_insurance = FromValueOpt::from_value(v),
-                    "financial_addresses" => b.financial_addresses = FromValueOpt::from_value(v),
-                    "inbound_transfers" => b.inbound_transfers = FromValueOpt::from_value(v),
-                    "intra_stripe_flows" => b.intra_stripe_flows = FromValueOpt::from_value(v),
-                    "outbound_payments" => b.outbound_payments = FromValueOpt::from_value(v),
-                    "outbound_transfers" => b.outbound_transfers = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

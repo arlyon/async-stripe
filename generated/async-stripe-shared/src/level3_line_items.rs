@@ -134,22 +134,7 @@ const _: () = {
 
     impl FromValueOpt for Level3LineItems {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = Level3LineItemsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
-                    "product_code" => b.product_code = FromValueOpt::from_value(v),
-                    "product_description" => b.product_description = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "tax_amount" => b.tax_amount = FromValueOpt::from_value(v),
-                    "unit_cost" => b.unit_cost = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -255,46 +255,7 @@ const _: () = {
 
     impl FromValueOpt for ConnectEmbeddedAccountSessionCreateComponents {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ConnectEmbeddedAccountSessionCreateComponentsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_management" => b.account_management = FromValueOpt::from_value(v),
-                    "account_onboarding" => b.account_onboarding = FromValueOpt::from_value(v),
-                    "balance_report" => b.balance_report = FromValueOpt::from_value(v),
-                    "balances" => b.balances = FromValueOpt::from_value(v),
-                    "disputes_list" => b.disputes_list = FromValueOpt::from_value(v),
-                    "documents" => b.documents = FromValueOpt::from_value(v),
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "financial_account_transactions" => {
-                        b.financial_account_transactions = FromValueOpt::from_value(v)
-                    }
-                    "instant_payouts_promotion" => {
-                        b.instant_payouts_promotion = FromValueOpt::from_value(v)
-                    }
-                    "issuing_card" => b.issuing_card = FromValueOpt::from_value(v),
-                    "issuing_cards_list" => b.issuing_cards_list = FromValueOpt::from_value(v),
-                    "notification_banner" => b.notification_banner = FromValueOpt::from_value(v),
-                    "payment_details" => b.payment_details = FromValueOpt::from_value(v),
-                    "payment_disputes" => b.payment_disputes = FromValueOpt::from_value(v),
-                    "payment_method_settings" => {
-                        b.payment_method_settings = FromValueOpt::from_value(v)
-                    }
-                    "payments" => b.payments = FromValueOpt::from_value(v),
-                    "payout_details" => b.payout_details = FromValueOpt::from_value(v),
-                    "payout_reconciliation_report" => {
-                        b.payout_reconciliation_report = FromValueOpt::from_value(v)
-                    }
-                    "payouts" => b.payouts = FromValueOpt::from_value(v),
-                    "payouts_list" => b.payouts_list = FromValueOpt::from_value(v),
-                    "tax_registrations" => b.tax_registrations = FromValueOpt::from_value(v),
-                    "tax_settings" => b.tax_settings = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

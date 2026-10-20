@@ -140,24 +140,7 @@ const _: () = {
 
     impl FromValueOpt for TreasuryReceivedDebitsResourceLinkedFlows {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryReceivedDebitsResourceLinkedFlowsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "debit_reversal" => b.debit_reversal = FromValueOpt::from_value(v),
-                    "inbound_transfer" => b.inbound_transfer = FromValueOpt::from_value(v),
-                    "issuing_authorization" => {
-                        b.issuing_authorization = FromValueOpt::from_value(v)
-                    }
-                    "issuing_transaction" => b.issuing_transaction = FromValueOpt::from_value(v),
-                    "payout" => b.payout = FromValueOpt::from_value(v),
-                    "topup" => b.topup = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -183,27 +183,7 @@ const _: () = {
 
     impl FromValueOpt for SourceMandateNotification {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceMandateNotificationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "bacs_debit" => b.bacs_debit = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

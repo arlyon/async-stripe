@@ -129,21 +129,7 @@ const _: () = {
 
     impl FromValueOpt for PlanTier {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PlanTierBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "flat_amount" => b.flat_amount = FromValueOpt::from_value(v),
-                    "flat_amount_decimal" => b.flat_amount_decimal = FromValueOpt::from_value(v),
-                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
-                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
-                    "up_to" => b.up_to = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -169,28 +169,7 @@ const _: () = {
 
     impl FromValueOpt for Mandate {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "customer_acceptance" => b.customer_acceptance = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "multi_use" => b.multi_use = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "single_use" => b.single_use = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

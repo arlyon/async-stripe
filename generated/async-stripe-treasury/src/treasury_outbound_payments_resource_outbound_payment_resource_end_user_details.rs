@@ -100,18 +100,7 @@ const _: () = {
 
     impl FromValueOpt for TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "present" => b.present = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

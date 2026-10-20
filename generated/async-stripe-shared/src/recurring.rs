@@ -128,21 +128,7 @@ const _: () = {
 
     impl FromValueOpt for Recurring {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = RecurringBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "interval" => b.interval = FromValueOpt::from_value(v),
-                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
-                    "meter" => b.meter = FromValueOpt::from_value(v),
-                    "trial_period_days" => b.trial_period_days = FromValueOpt::from_value(v),
-                    "usage_type" => b.usage_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -119,20 +119,7 @@ const _: () = {
 
     impl FromValueOpt for BankConnectionsResourceAccountNumberDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BankConnectionsResourceAccountNumberDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expected_expiry_date" => b.expected_expiry_date = FromValueOpt::from_value(v),
-                    "identifier_type" => b.identifier_type = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "supported_networks" => b.supported_networks = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

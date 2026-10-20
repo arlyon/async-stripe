@@ -164,31 +164,7 @@ const _: () = {
 
     impl FromValueOpt for CountrySpec {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CountrySpecBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "default_currency" => b.default_currency = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "supported_bank_account_currencies" => {
-                        b.supported_bank_account_currencies = FromValueOpt::from_value(v)
-                    }
-                    "supported_payment_currencies" => {
-                        b.supported_payment_currencies = FromValueOpt::from_value(v)
-                    }
-                    "supported_payment_methods" => {
-                        b.supported_payment_methods = FromValueOpt::from_value(v)
-                    }
-                    "supported_transfer_countries" => {
-                        b.supported_transfer_countries = FromValueOpt::from_value(v)
-                    }
-                    "verification_fields" => b.verification_fields = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

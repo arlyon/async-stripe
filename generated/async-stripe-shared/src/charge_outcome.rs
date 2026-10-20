@@ -187,26 +187,7 @@ const _: () = {
 
     impl FromValueOpt for ChargeOutcome {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ChargeOutcomeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "advice_code" => b.advice_code = FromValueOpt::from_value(v),
-                    "network_advice_code" => b.network_advice_code = FromValueOpt::from_value(v),
-                    "network_decline_code" => b.network_decline_code = FromValueOpt::from_value(v),
-                    "network_status" => b.network_status = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "risk_level" => b.risk_level = FromValueOpt::from_value(v),
-                    "risk_score" => b.risk_score = FromValueOpt::from_value(v),
-                    "rule" => b.rule = FromValueOpt::from_value(v),
-                    "seller_message" => b.seller_message = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

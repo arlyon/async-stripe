@@ -209,32 +209,7 @@ const _: () = {
 
     impl FromValueOpt for ApplicationFee {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ApplicationFeeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account" => b.account = FromValueOpt::from_value(v),
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_refunded" => b.amount_refunded = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "fee_source" => b.fee_source = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "originating_transaction" => {
-                        b.originating_transaction = FromValueOpt::from_value(v)
-                    }
-                    "refunded" => b.refunded = FromValueOpt::from_value(v),
-                    "refunds" => b.refunds = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

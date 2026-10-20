@@ -91,17 +91,7 @@ const _: () = {
 
     impl FromValueOpt for GelatoSessionPhoneOptions {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = GelatoSessionPhoneOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "require_verification" => b.require_verification = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

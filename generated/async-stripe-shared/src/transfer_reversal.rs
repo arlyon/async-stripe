@@ -183,27 +183,7 @@ const _: () = {
 
     impl FromValueOpt for TransferReversal {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TransferReversalBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "destination_payment_refund" => {
-                        b.destination_payment_refund = FromValueOpt::from_value(v)
-                    }
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "source_refund" => b.source_refund = FromValueOpt::from_value(v),
-                    "transfer" => b.transfer = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

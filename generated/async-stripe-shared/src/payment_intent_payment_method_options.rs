@@ -494,72 +494,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentIntentPaymentMethodOptions {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
-                    "affirm" => b.affirm = FromValueOpt::from_value(v),
-                    "afterpay_clearpay" => b.afterpay_clearpay = FromValueOpt::from_value(v),
-                    "alipay" => b.alipay = FromValueOpt::from_value(v),
-                    "alma" => b.alma = FromValueOpt::from_value(v),
-                    "amazon_pay" => b.amazon_pay = FromValueOpt::from_value(v),
-                    "au_becs_debit" => b.au_becs_debit = FromValueOpt::from_value(v),
-                    "bacs_debit" => b.bacs_debit = FromValueOpt::from_value(v),
-                    "bancontact" => b.bancontact = FromValueOpt::from_value(v),
-                    "billie" => b.billie = FromValueOpt::from_value(v),
-                    "bizum" => b.bizum = FromValueOpt::from_value(v),
-                    "blik" => b.blik = FromValueOpt::from_value(v),
-                    "boleto" => b.boleto = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "card_present" => b.card_present = FromValueOpt::from_value(v),
-                    "cashapp" => b.cashapp = FromValueOpt::from_value(v),
-                    "crypto" => b.crypto = FromValueOpt::from_value(v),
-                    "customer_balance" => b.customer_balance = FromValueOpt::from_value(v),
-                    "eps" => b.eps = FromValueOpt::from_value(v),
-                    "fpx" => b.fpx = FromValueOpt::from_value(v),
-                    "giropay" => b.giropay = FromValueOpt::from_value(v),
-                    "grabpay" => b.grabpay = FromValueOpt::from_value(v),
-                    "ideal" => b.ideal = FromValueOpt::from_value(v),
-                    "interac_present" => b.interac_present = FromValueOpt::from_value(v),
-                    "kakao_pay" => b.kakao_pay = FromValueOpt::from_value(v),
-                    "klarna" => b.klarna = FromValueOpt::from_value(v),
-                    "konbini" => b.konbini = FromValueOpt::from_value(v),
-                    "kr_card" => b.kr_card = FromValueOpt::from_value(v),
-                    "link" => b.link = FromValueOpt::from_value(v),
-                    "mb_way" => b.mb_way = FromValueOpt::from_value(v),
-                    "mobilepay" => b.mobilepay = FromValueOpt::from_value(v),
-                    "multibanco" => b.multibanco = FromValueOpt::from_value(v),
-                    "naver_pay" => b.naver_pay = FromValueOpt::from_value(v),
-                    "nz_bank_account" => b.nz_bank_account = FromValueOpt::from_value(v),
-                    "oxxo" => b.oxxo = FromValueOpt::from_value(v),
-                    "p24" => b.p24 = FromValueOpt::from_value(v),
-                    "pay_by_bank" => b.pay_by_bank = FromValueOpt::from_value(v),
-                    "payco" => b.payco = FromValueOpt::from_value(v),
-                    "paynow" => b.paynow = FromValueOpt::from_value(v),
-                    "paypal" => b.paypal = FromValueOpt::from_value(v),
-                    "payto" => b.payto = FromValueOpt::from_value(v),
-                    "pix" => b.pix = FromValueOpt::from_value(v),
-                    "promptpay" => b.promptpay = FromValueOpt::from_value(v),
-                    "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),
-                    "samsung_pay" => b.samsung_pay = FromValueOpt::from_value(v),
-                    "satispay" => b.satispay = FromValueOpt::from_value(v),
-                    "scalapay" => b.scalapay = FromValueOpt::from_value(v),
-                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
-                    "sofort" => b.sofort = FromValueOpt::from_value(v),
-                    "sunbit" => b.sunbit = FromValueOpt::from_value(v),
-                    "swish" => b.swish = FromValueOpt::from_value(v),
-                    "twint" => b.twint = FromValueOpt::from_value(v),
-                    "upi" => b.upi = FromValueOpt::from_value(v),
-                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-                    "wechat_pay" => b.wechat_pay = FromValueOpt::from_value(v),
-                    "zip" => b.zip = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

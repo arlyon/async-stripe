@@ -139,25 +139,7 @@ const _: () = {
 
     impl FromValueOpt for ConnectEmbeddedDisputesListFeatures {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ConnectEmbeddedDisputesListFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "capture_payments" => b.capture_payments = FromValueOpt::from_value(v),
-                    "destination_on_behalf_of_charge_management" => {
-                        b.destination_on_behalf_of_charge_management = FromValueOpt::from_value(v)
-                    }
-                    "dispute_management" => b.dispute_management = FromValueOpt::from_value(v),
-                    "refund_management" => b.refund_management = FromValueOpt::from_value(v),
-                    "smart_disputes_management" => {
-                        b.smart_disputes_management = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

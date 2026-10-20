@@ -110,22 +110,7 @@ const _: () = {
 
     impl FromValueOpt for InvoicesResourceStatusTransitions {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoicesResourceStatusTransitionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "finalized_at" => b.finalized_at = FromValueOpt::from_value(v),
-                    "marked_uncollectible_at" => {
-                        b.marked_uncollectible_at = FromValueOpt::from_value(v)
-                    }
-                    "paid_at" => b.paid_at = FromValueOpt::from_value(v),
-                    "voided_at" => b.voided_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

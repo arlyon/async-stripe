@@ -223,31 +223,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingCardholder {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardholderBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing" => b.billing = FromValueOpt::from_value(v),
-                    "company" => b.company = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "individual" => b.individual = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone_number" => b.phone_number = FromValueOpt::from_value(v),
-                    "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
-                    "requirements" => b.requirements = FromValueOpt::from_value(v),
-                    "spending_controls" => b.spending_controls = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -143,24 +143,7 @@ const _: () = {
 
     impl FromValueOpt for AccountUnificationAccountController {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountUnificationAccountControllerBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "fees" => b.fees = FromValueOpt::from_value(v),
-                    "is_controller" => b.is_controller = FromValueOpt::from_value(v),
-                    "losses" => b.losses = FromValueOpt::from_value(v),
-                    "requirement_collection" => {
-                        b.requirement_collection = FromValueOpt::from_value(v)
-                    }
-                    "stripe_dashboard" => b.stripe_dashboard = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

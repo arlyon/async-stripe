@@ -99,20 +99,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingTransactionFleetTaxData {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionFleetTaxDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "local_amount_decimal" => b.local_amount_decimal = FromValueOpt::from_value(v),
-                    "national_amount_decimal" => {
-                        b.national_amount_decimal = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

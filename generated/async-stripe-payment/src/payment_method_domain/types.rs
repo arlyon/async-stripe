@@ -181,27 +181,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentMethodDomain {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDomainBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amazon_pay" => b.amazon_pay = FromValueOpt::from_value(v),
-                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "domain_name" => b.domain_name = FromValueOpt::from_value(v),
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "klarna" => b.klarna = FromValueOpt::from_value(v),
-                    "link" => b.link = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "paypal" => b.paypal = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -110,19 +110,7 @@ self.sender_name.take(),
 
     impl FromValueOpt for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransfer {
     fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        let mut b = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransferBuilder::deser_default();
-        for (k, v) in obj {
-            match k.as_str() {
-            "sender_bank" => b.sender_bank = FromValueOpt::from_value(v),
-            "sender_branch" => b.sender_branch = FromValueOpt::from_value(v),
-            "sender_name" => b.sender_name = FromValueOpt::from_value(v),
-                _ => {}
-            }
-        }
-        b.take_out()
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
     }
 }
 };

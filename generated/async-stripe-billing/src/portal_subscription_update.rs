@@ -155,29 +155,7 @@ const _: () = {
 
     impl FromValueOpt for PortalSubscriptionUpdate {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PortalSubscriptionUpdateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
-                    "default_allowed_updates" => {
-                        b.default_allowed_updates = FromValueOpt::from_value(v)
-                    }
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    "products" => b.products = FromValueOpt::from_value(v),
-                    "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
-                    "schedule_at_period_end" => {
-                        b.schedule_at_period_end = FromValueOpt::from_value(v)
-                    }
-                    "trial_update_behavior" => {
-                        b.trial_update_behavior = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -126,22 +126,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingTransactionFleetData {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionFleetDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "cardholder_prompt_data" => {
-                        b.cardholder_prompt_data = FromValueOpt::from_value(v)
-                    }
-                    "purchase_type" => b.purchase_type = FromValueOpt::from_value(v),
-                    "reported_breakdown" => b.reported_breakdown = FromValueOpt::from_value(v),
-                    "service_type" => b.service_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

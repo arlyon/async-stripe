@@ -218,32 +218,7 @@ const _: () = {
 
     impl FromValueOpt for ApiErrors {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ApiErrorsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "advice_code" => b.advice_code = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "code" => b.code = FromValueOpt::from_value(v),
-                    "decline_code" => b.decline_code = FromValueOpt::from_value(v),
-                    "doc_url" => b.doc_url = FromValueOpt::from_value(v),
-                    "message" => b.message = FromValueOpt::from_value(v),
-                    "network_advice_code" => b.network_advice_code = FromValueOpt::from_value(v),
-                    "network_decline_code" => b.network_decline_code = FromValueOpt::from_value(v),
-                    "param" => b.param = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_type" => b.payment_method_type = FromValueOpt::from_value(v),
-                    "request_log_url" => b.request_log_url = FromValueOpt::from_value(v),
-                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

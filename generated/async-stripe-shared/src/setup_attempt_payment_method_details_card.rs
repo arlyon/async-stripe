@@ -222,31 +222,7 @@ const _: () = {
 
     impl FromValueOpt for SetupAttemptPaymentMethodDetailsCard {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupAttemptPaymentMethodDetailsCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "checks" => b.checks = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "moto" => b.moto = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
-                    "wallet" => b.wallet = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

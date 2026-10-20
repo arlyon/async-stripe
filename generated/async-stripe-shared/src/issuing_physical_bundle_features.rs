@@ -101,19 +101,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingPhysicalBundleFeatures {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingPhysicalBundleFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_logo" => b.card_logo = FromValueOpt::from_value(v),
-                    "carrier_text" => b.carrier_text = FromValueOpt::from_value(v),
-                    "second_line" => b.second_line = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

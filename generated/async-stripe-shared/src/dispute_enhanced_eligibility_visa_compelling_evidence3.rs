@@ -97,18 +97,7 @@ const _: () = {
 
     impl FromValueOpt for DisputeEnhancedEligibilityVisaCompellingEvidence3 {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeEnhancedEligibilityVisaCompellingEvidence3Builder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "required_actions" => b.required_actions = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

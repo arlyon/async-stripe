@@ -101,20 +101,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentIntentNextActionCardAwaitNotification {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentNextActionCardAwaitNotificationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "charge_attempt_at" => b.charge_attempt_at = FromValueOpt::from_value(v),
-                    "customer_approval_required" => {
-                        b.customer_approval_required = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

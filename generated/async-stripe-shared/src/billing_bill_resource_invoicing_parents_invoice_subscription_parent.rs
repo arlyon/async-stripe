@@ -110,23 +110,7 @@ const _: () = {
 
     impl FromValueOpt for BillingBillResourceInvoicingParentsInvoiceSubscriptionParent {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                BillingBillResourceInvoicingParentsInvoiceSubscriptionParentBuilder::deser_default(
-                );
-            for (k, v) in obj {
-                match k.as_str() {
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "subscription_proration_date" => {
-                        b.subscription_proration_date = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

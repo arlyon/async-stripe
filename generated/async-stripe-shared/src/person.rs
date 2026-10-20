@@ -353,51 +353,7 @@ const _: () = {
 
     impl FromValueOpt for Person {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PersonBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account" => b.account = FromValueOpt::from_value(v),
-                    "additional_tos_acceptances" => {
-                        b.additional_tos_acceptances = FromValueOpt::from_value(v)
-                    }
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_kana" => b.address_kana = FromValueOpt::from_value(v),
-                    "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "dob" => b.dob = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "first_name" => b.first_name = FromValueOpt::from_value(v),
-                    "first_name_kana" => b.first_name_kana = FromValueOpt::from_value(v),
-                    "first_name_kanji" => b.first_name_kanji = FromValueOpt::from_value(v),
-                    "full_name_aliases" => b.full_name_aliases = FromValueOpt::from_value(v),
-                    "future_requirements" => b.future_requirements = FromValueOpt::from_value(v),
-                    "gender" => b.gender = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "id_number_provided" => b.id_number_provided = FromValueOpt::from_value(v),
-                    "id_number_secondary_provided" => {
-                        b.id_number_secondary_provided = FromValueOpt::from_value(v)
-                    }
-                    "last_name" => b.last_name = FromValueOpt::from_value(v),
-                    "last_name_kana" => b.last_name_kana = FromValueOpt::from_value(v),
-                    "last_name_kanji" => b.last_name_kanji = FromValueOpt::from_value(v),
-                    "maiden_name" => b.maiden_name = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "nationality" => b.nationality = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "political_exposure" => b.political_exposure = FromValueOpt::from_value(v),
-                    "registered_address" => b.registered_address = FromValueOpt::from_value(v),
-                    "relationship" => b.relationship = FromValueOpt::from_value(v),
-                    "requirements" => b.requirements = FromValueOpt::from_value(v),
-                    "ssn_last_4_provided" => b.ssn_last_4_provided = FromValueOpt::from_value(v),
-                    "us_cfpb_data" => b.us_cfpb_data = FromValueOpt::from_value(v),
-                    "verification" => b.verification = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

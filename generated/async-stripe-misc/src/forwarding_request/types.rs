@@ -191,26 +191,7 @@ const _: () = {
 
     impl FromValueOpt for ForwardingRequest {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ForwardingRequestBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "replacements" => b.replacements = FromValueOpt::from_value(v),
-                    "request_context" => b.request_context = FromValueOpt::from_value(v),
-                    "request_details" => b.request_details = FromValueOpt::from_value(v),
-                    "response_details" => b.response_details = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

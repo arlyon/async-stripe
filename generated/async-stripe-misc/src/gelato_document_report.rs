@@ -214,33 +214,7 @@ const _: () = {
 
     impl FromValueOpt for GelatoDocumentReport {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = GelatoDocumentReportBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "dob" => b.dob = FromValueOpt::from_value(v),
-                    "error" => b.error = FromValueOpt::from_value(v),
-                    "expiration_date" => b.expiration_date = FromValueOpt::from_value(v),
-                    "files" => b.files = FromValueOpt::from_value(v),
-                    "first_name" => b.first_name = FromValueOpt::from_value(v),
-                    "issued_date" => b.issued_date = FromValueOpt::from_value(v),
-                    "issuing_country" => b.issuing_country = FromValueOpt::from_value(v),
-                    "last_name" => b.last_name = FromValueOpt::from_value(v),
-                    "number" => b.number = FromValueOpt::from_value(v),
-                    "sex" => b.sex = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "unparsed_place_of_birth" => {
-                        b.unparsed_place_of_birth = FromValueOpt::from_value(v)
-                    }
-                    "unparsed_sex" => b.unparsed_sex = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

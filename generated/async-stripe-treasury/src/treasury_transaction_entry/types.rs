@@ -190,28 +190,7 @@ const _: () = {
 
     impl FromValueOpt for TreasuryTransactionEntry {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryTransactionEntryBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "balance_impact" => b.balance_impact = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "effective_at" => b.effective_at = FromValueOpt::from_value(v),
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "flow" => b.flow = FromValueOpt::from_value(v),
-                    "flow_details" => b.flow_details = FromValueOpt::from_value(v),
-                    "flow_type" => b.flow_type = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "transaction" => b.transaction = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

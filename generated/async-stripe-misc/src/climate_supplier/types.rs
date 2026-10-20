@@ -133,22 +133,7 @@ const _: () = {
 
     impl FromValueOpt for ClimateSupplier {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ClimateSupplierBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "info_url" => b.info_url = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "locations" => b.locations = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "removal_pathway" => b.removal_pathway = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

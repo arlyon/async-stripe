@@ -126,21 +126,7 @@ const _: () = {
 
     impl FromValueOpt for ClimateRemovalsOrderDeliveries {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ClimateRemovalsOrderDeliveriesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "delivered_at" => b.delivered_at = FromValueOpt::from_value(v),
-                    "location" => b.location = FromValueOpt::from_value(v),
-                    "metric_tons" => b.metric_tons = FromValueOpt::from_value(v),
-                    "registry_url" => b.registry_url = FromValueOpt::from_value(v),
-                    "supplier" => b.supplier = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

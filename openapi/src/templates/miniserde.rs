@@ -198,7 +198,6 @@ fn miniserde_struct_inner(
 ) -> String {
     let mut key_inner = String::new();
     let mut builder_new_inner = String::new();
-    let mut from_obj_inner = String::new();
 
     let mut take_out_left = String::new();
     let mut take_out_right = String::new();
@@ -210,11 +209,6 @@ fn miniserde_struct_inner(
             key_inner,
             r#"
             "{wire_name}" => Deserialize::begin(&mut self.{f_name}),"#
-        );
-        let _ = write!(
-            from_obj_inner,
-            r#"
-            "{wire_name}" => b.{f_name} = FromValueOpt::from_value(v),"#
         );
         let is_copy = field.rust_type.is_copy(components);
 
@@ -292,16 +286,7 @@ fn miniserde_struct_inner(
 
     impl FromValueOpt for {ident} {{
         fn from_value(v: Value) -> Option<Self> {{
-            let Value::Object(obj) = v else {{
-                return None;
-            }};
-            let mut b = {builder_name}::deser_default();
-            for (k, v) in obj {{
-                match k.as_str() {{{from_obj_inner}
-                    _ => {{}}
-                }}
-            }}
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }}
     }}
     "#

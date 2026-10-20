@@ -222,39 +222,7 @@ const _: () = {
 
     impl FromValueOpt for CustomerCashBalanceTransaction {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerCashBalanceTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "adjusted_for_overdraft" => {
-                        b.adjusted_for_overdraft = FromValueOpt::from_value(v)
-                    }
-                    "applied_to_payment" => b.applied_to_payment = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "ending_balance" => b.ending_balance = FromValueOpt::from_value(v),
-                    "funded" => b.funded = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "net_amount" => b.net_amount = FromValueOpt::from_value(v),
-                    "refunded_from_payment" => {
-                        b.refunded_from_payment = FromValueOpt::from_value(v)
-                    }
-                    "transferred_to_balance" => {
-                        b.transferred_to_balance = FromValueOpt::from_value(v)
-                    }
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "unapplied_from_payment" => {
-                        b.unapplied_from_payment = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

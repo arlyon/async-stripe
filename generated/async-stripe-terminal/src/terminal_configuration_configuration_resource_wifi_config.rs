@@ -128,21 +128,7 @@ const _: () = {
 
     impl FromValueOpt for TerminalConfigurationConfigurationResourceWifiConfig {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                TerminalConfigurationConfigurationResourceWifiConfigBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "enterprise_eap_peap" => b.enterprise_eap_peap = FromValueOpt::from_value(v),
-                    "enterprise_eap_tls" => b.enterprise_eap_tls = FromValueOpt::from_value(v),
-                    "personal_psk" => b.personal_psk = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

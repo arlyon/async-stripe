@@ -160,26 +160,7 @@ const _: () = {
 
     impl FromValueOpt for TaxProductRegistrationsResourceCountryOptionsUnitedStates {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                TaxProductRegistrationsResourceCountryOptionsUnitedStatesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "local_amusement_tax" => b.local_amusement_tax = FromValueOpt::from_value(v),
-                    "local_lease_tax" => b.local_lease_tax = FromValueOpt::from_value(v),
-                    "mass_transit_parking_tax" => {
-                        b.mass_transit_parking_tax = FromValueOpt::from_value(v)
-                    }
-                    "parking_tax" => b.parking_tax = FromValueOpt::from_value(v),
-                    "state" => b.state = FromValueOpt::from_value(v),
-                    "state_sales_tax" => b.state_sales_tax = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

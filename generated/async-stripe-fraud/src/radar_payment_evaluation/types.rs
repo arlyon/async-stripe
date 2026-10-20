@@ -186,29 +186,7 @@ const _: () = {
 
     impl FromValueOpt for RadarPaymentEvaluation {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = RadarPaymentEvaluationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "client_device_metadata_details" => {
-                        b.client_device_metadata_details = FromValueOpt::from_value(v)
-                    }
-                    "created_at" => b.created_at = FromValueOpt::from_value(v),
-                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
-                    "events" => b.events = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "outcome" => b.outcome = FromValueOpt::from_value(v),
-                    "payment_details" => b.payment_details = FromValueOpt::from_value(v),
-                    "recommended_action" => b.recommended_action = FromValueOpt::from_value(v),
-                    "signals" => b.signals = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

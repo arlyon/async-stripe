@@ -190,27 +190,7 @@ const _: () = {
 
     impl FromValueOpt for ShippingRate {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ShippingRateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "delivery_estimate" => b.delivery_estimate = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "fixed_amount" => b.fixed_amount = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
-                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -165,31 +165,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingDisputeEvidence {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "canceled" => b.canceled = FromValueOpt::from_value(v),
-                    "duplicate" => b.duplicate = FromValueOpt::from_value(v),
-                    "fraudulent" => b.fraudulent = FromValueOpt::from_value(v),
-                    "merchandise_not_as_described" => {
-                        b.merchandise_not_as_described = FromValueOpt::from_value(v)
-                    }
-                    "no_valid_authorization" => {
-                        b.no_valid_authorization = FromValueOpt::from_value(v)
-                    }
-                    "not_received" => b.not_received = FromValueOpt::from_value(v),
-                    "other" => b.other = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "service_not_as_described" => {
-                        b.service_not_as_described = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

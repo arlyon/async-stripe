@@ -314,44 +314,7 @@ const _: () = {
 
     impl FromValueOpt for IssuingCard {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
-                    "cardholder" => b.cardholder = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "cvc" => b.cvc = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "latest_fraud_warning" => b.latest_fraud_warning = FromValueOpt::from_value(v),
-                    "lifecycle_controls" => b.lifecycle_controls = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "number" => b.number = FromValueOpt::from_value(v),
-                    "personalization_design" => {
-                        b.personalization_design = FromValueOpt::from_value(v)
-                    }
-                    "replaced_by" => b.replaced_by = FromValueOpt::from_value(v),
-                    "replacement_for" => b.replacement_for = FromValueOpt::from_value(v),
-                    "replacement_reason" => b.replacement_reason = FromValueOpt::from_value(v),
-                    "second_line" => b.second_line = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    "spending_controls" => b.spending_controls = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "wallets" => b.wallets = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -98,18 +98,7 @@ const _: () = {
 
     impl FromValueOpt for MandatePaypal {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandatePaypalBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_agreement_id" => b.billing_agreement_id = FromValueOpt::from_value(v),
-                    "payer_id" => b.payer_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

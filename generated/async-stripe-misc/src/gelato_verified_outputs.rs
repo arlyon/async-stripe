@@ -180,29 +180,7 @@ const _: () = {
 
     impl FromValueOpt for GelatoVerifiedOutputs {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = GelatoVerifiedOutputsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "dob" => b.dob = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "first_name" => b.first_name = FromValueOpt::from_value(v),
-                    "id_number" => b.id_number = FromValueOpt::from_value(v),
-                    "id_number_type" => b.id_number_type = FromValueOpt::from_value(v),
-                    "last_name" => b.last_name = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "sex" => b.sex = FromValueOpt::from_value(v),
-                    "unparsed_place_of_birth" => {
-                        b.unparsed_place_of_birth = FromValueOpt::from_value(v)
-                    }
-                    "unparsed_sex" => b.unparsed_sex = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

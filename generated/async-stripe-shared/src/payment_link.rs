@@ -399,68 +399,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentLink {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentLinkBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "after_completion" => b.after_completion = FromValueOpt::from_value(v),
-                    "allow_promotion_codes" => {
-                        b.allow_promotion_codes = FromValueOpt::from_value(v)
-                    }
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee_amount" => {
-                        b.application_fee_amount = FromValueOpt::from_value(v)
-                    }
-                    "application_fee_percent" => {
-                        b.application_fee_percent = FromValueOpt::from_value(v)
-                    }
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "billing_address_collection" => {
-                        b.billing_address_collection = FromValueOpt::from_value(v)
-                    }
-                    "consent_collection" => b.consent_collection = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
-                    "custom_text" => b.custom_text = FromValueOpt::from_value(v),
-                    "customer_creation" => b.customer_creation = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "inactive_message" => b.inactive_message = FromValueOpt::from_value(v),
-                    "invoice_creation" => b.invoice_creation = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "managed_payments" => b.managed_payments = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name_collection" => b.name_collection = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "optional_items" => b.optional_items = FromValueOpt::from_value(v),
-                    "payment_intent_data" => b.payment_intent_data = FromValueOpt::from_value(v),
-                    "payment_method_collection" => {
-                        b.payment_method_collection = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
-                    "phone_number_collection" => {
-                        b.phone_number_collection = FromValueOpt::from_value(v)
-                    }
-                    "restrictions" => b.restrictions = FromValueOpt::from_value(v),
-                    "shipping_address_collection" => {
-                        b.shipping_address_collection = FromValueOpt::from_value(v)
-                    }
-                    "shipping_options" => b.shipping_options = FromValueOpt::from_value(v),
-                    "submit_type" => b.submit_type = FromValueOpt::from_value(v),
-                    "subscription_data" => b.subscription_data = FromValueOpt::from_value(v),
-                    "tax_id_collection" => b.tax_id_collection = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

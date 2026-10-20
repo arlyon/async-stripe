@@ -95,18 +95,7 @@ const _: () = {
 
     impl FromValueOpt for SubscriptionScheduleCurrentPhase {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionScheduleCurrentPhaseBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "end_date" => b.end_date = FromValueOpt::from_value(v),
-                    "start_date" => b.start_date = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

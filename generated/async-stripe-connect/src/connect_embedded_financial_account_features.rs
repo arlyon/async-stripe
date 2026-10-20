@@ -133,24 +133,7 @@ const _: () = {
 
     impl FromValueOpt for ConnectEmbeddedFinancialAccountFeatures {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ConnectEmbeddedFinancialAccountFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "disable_stripe_user_authentication" => {
-                        b.disable_stripe_user_authentication = FromValueOpt::from_value(v)
-                    }
-                    "external_account_collection" => {
-                        b.external_account_collection = FromValueOpt::from_value(v)
-                    }
-                    "send_money" => b.send_money = FromValueOpt::from_value(v),
-                    "transfer_balance" => b.transfer_balance = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

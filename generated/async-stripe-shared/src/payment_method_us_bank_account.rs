@@ -167,27 +167,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentMethodUsBankAccount {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodUsBankAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
-                    "account_type" => b.account_type = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "financial_connections_account" => {
-                        b.financial_connections_account = FromValueOpt::from_value(v)
-                    }
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "networks" => b.networks = FromValueOpt::from_value(v),
-                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-                    "status_details" => b.status_details = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

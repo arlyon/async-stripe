@@ -108,21 +108,7 @@ const _: () = {
 
     impl FromValueOpt for SetupIntentNextActionVerifyWithMicrodeposits {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupIntentNextActionVerifyWithMicrodepositsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "arrival_date" => b.arrival_date = FromValueOpt::from_value(v),
-                    "hosted_verification_url" => {
-                        b.hosted_verification_url = FromValueOpt::from_value(v)
-                    }
-                    "microdeposit_type" => b.microdeposit_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -196,34 +196,7 @@ const _: () = {
 
     impl FromValueOpt for AccountBusinessProfile {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountBusinessProfileBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "annual_revenue" => b.annual_revenue = FromValueOpt::from_value(v),
-                    "estimated_worker_count" => {
-                        b.estimated_worker_count = FromValueOpt::from_value(v)
-                    }
-                    "mcc" => b.mcc = FromValueOpt::from_value(v),
-                    "minority_owned_business_designation" => {
-                        b.minority_owned_business_designation = FromValueOpt::from_value(v)
-                    }
-                    "monthly_estimated_revenue" => {
-                        b.monthly_estimated_revenue = FromValueOpt::from_value(v)
-                    }
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "product_description" => b.product_description = FromValueOpt::from_value(v),
-                    "support_address" => b.support_address = FromValueOpt::from_value(v),
-                    "support_email" => b.support_email = FromValueOpt::from_value(v),
-                    "support_phone" => b.support_phone = FromValueOpt::from_value(v),
-                    "support_url" => b.support_url = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

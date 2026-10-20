@@ -149,23 +149,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentMethodDetailsPaymentRecordNzBankAccount {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsPaymentRecordNzBankAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder_name" => b.account_holder_name = FromValueOpt::from_value(v),
-                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "branch_code" => b.branch_code = FromValueOpt::from_value(v),
-                    "expected_debit_date" => b.expected_debit_date = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "suffix" => b.suffix = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

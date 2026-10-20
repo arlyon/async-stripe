@@ -190,28 +190,7 @@ const _: () = {
 
     impl FromValueOpt for BillingMeter {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingMeterBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer_mapping" => b.customer_mapping = FromValueOpt::from_value(v),
-                    "default_aggregation" => b.default_aggregation = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "event_name" => b.event_name = FromValueOpt::from_value(v),
-                    "event_time_window" => b.event_time_window = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    "updated" => b.updated = FromValueOpt::from_value(v),
-                    "value_settings" => b.value_settings = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

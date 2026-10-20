@@ -97,18 +97,7 @@ const _: () = {
 
     impl FromValueOpt for ChargeFraudDetails {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ChargeFraudDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "stripe_report" => b.stripe_report = FromValueOpt::from_value(v),
-                    "user_report" => b.user_report = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

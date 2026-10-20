@@ -218,31 +218,7 @@ const _: () = {
 
     impl FromValueOpt for ReserveHold {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReserveHoldBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_releasable" => b.amount_releasable = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "created_by" => b.created_by = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "is_releasable" => b.is_releasable = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "release_details" => b.release_details = FromValueOpt::from_value(v),
-                    "release_schedule" => b.release_schedule = FromValueOpt::from_value(v),
-                    "reserve_plan" => b.reserve_plan = FromValueOpt::from_value(v),
-                    "source_charge" => b.source_charge = FromValueOpt::from_value(v),
-                    "source_type" => b.source_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

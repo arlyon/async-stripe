@@ -529,75 +529,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentIntent {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allowed_payment_method_types" => {
-                        b.allowed_payment_method_types = FromValueOpt::from_value(v)
-                    }
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_capturable" => b.amount_capturable = FromValueOpt::from_value(v),
-                    "amount_details" => b.amount_details = FromValueOpt::from_value(v),
-                    "amount_received" => b.amount_received = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee_amount" => {
-                        b.application_fee_amount = FromValueOpt::from_value(v)
-                    }
-                    "automatic_payment_methods" => {
-                        b.automatic_payment_methods = FromValueOpt::from_value(v)
-                    }
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
-                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "confirmation_method" => b.confirmation_method = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "excluded_payment_method_types" => {
-                        b.excluded_payment_method_types = FromValueOpt::from_value(v)
-                    }
-                    "hooks" => b.hooks = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last_payment_error" => b.last_payment_error = FromValueOpt::from_value(v),
-                    "latest_charge" => b.latest_charge = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "managed_payments" => b.managed_payments = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "next_action" => b.next_action = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "payment_details" => b.payment_details = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_configuration_details" => {
-                        b.payment_method_configuration_details = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
-                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
-                    "processing" => b.processing = FromValueOpt::from_value(v),
-                    "receipt_email" => b.receipt_email = FromValueOpt::from_value(v),
-                    "review" => b.review = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "statement_descriptor_suffix" => {
-                        b.statement_descriptor_suffix = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -385,57 +385,7 @@ const _: () = {
 
     impl FromValueOpt for Quote {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = QuoteBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee_amount" => {
-                        b.application_fee_amount = FromValueOpt::from_value(v)
-                    }
-                    "application_fee_percent" => {
-                        b.application_fee_percent = FromValueOpt::from_value(v)
-                    }
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "collection_method" => b.collection_method = FromValueOpt::from_value(v),
-                    "computed" => b.computed = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "default_tax_rates" => b.default_tax_rates = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "footer" => b.footer = FromValueOpt::from_value(v),
-                    "from_quote" => b.from_quote = FromValueOpt::from_value(v),
-                    "header" => b.header = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "number" => b.number = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "subscription_data" => b.subscription_data = FromValueOpt::from_value(v),
-                    "subscription_schedule" => {
-                        b.subscription_schedule = FromValueOpt::from_value(v)
-                    }
-                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-                    "total_details" => b.total_details = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

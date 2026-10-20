@@ -128,22 +128,7 @@ const _: () = {
 
     impl FromValueOpt for SourceTypeAchDebit {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeAchDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

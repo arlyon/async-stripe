@@ -201,29 +201,7 @@ const _: () = {
 
     impl FromValueOpt for SubscriptionItem {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billed_until" => b.billed_until = FromValueOpt::from_value(v),
-                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "current_period_end" => b.current_period_end = FromValueOpt::from_value(v),
-                    "current_period_start" => b.current_period_start = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "plan" => b.plan = FromValueOpt::from_value(v),
-                    "price" => b.price = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

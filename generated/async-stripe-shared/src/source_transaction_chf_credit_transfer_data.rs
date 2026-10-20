@@ -132,23 +132,7 @@ const _: () = {
 
     impl FromValueOpt for SourceTransactionChfCreditTransferData {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTransactionChfCreditTransferDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "sender_address_country" => {
-                        b.sender_address_country = FromValueOpt::from_value(v)
-                    }
-                    "sender_address_line1" => b.sender_address_line1 = FromValueOpt::from_value(v),
-                    "sender_iban" => b.sender_iban = FromValueOpt::from_value(v),
-                    "sender_name" => b.sender_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

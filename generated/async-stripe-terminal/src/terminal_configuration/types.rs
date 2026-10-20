@@ -257,34 +257,7 @@ const _: () = {
 
     impl FromValueOpt for TerminalConfiguration {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalConfigurationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bbpos_wisepad3" => b.bbpos_wisepad3 = FromValueOpt::from_value(v),
-                    "bbpos_wisepos_e" => b.bbpos_wisepos_e = FromValueOpt::from_value(v),
-                    "cellular" => b.cellular = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "is_account_default" => b.is_account_default = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "offline" => b.offline = FromValueOpt::from_value(v),
-                    "reboot_window" => b.reboot_window = FromValueOpt::from_value(v),
-                    "stripe_s700" => b.stripe_s700 = FromValueOpt::from_value(v),
-                    "stripe_s710" => b.stripe_s710 = FromValueOpt::from_value(v),
-                    "tipping" => b.tipping = FromValueOpt::from_value(v),
-                    "verifone_m425" => b.verifone_m425 = FromValueOpt::from_value(v),
-                    "verifone_p400" => b.verifone_p400 = FromValueOpt::from_value(v),
-                    "verifone_p630" => b.verifone_p630 = FromValueOpt::from_value(v),
-                    "verifone_ux700" => b.verifone_ux700 = FromValueOpt::from_value(v),
-                    "verifone_v660p" => b.verifone_v660p = FromValueOpt::from_value(v),
-                    "wifi" => b.wifi = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

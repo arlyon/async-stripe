@@ -502,73 +502,7 @@ const _: () = {
 
     impl FromValueOpt for Charge {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ChargeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_captured" => b.amount_captured = FromValueOpt::from_value(v),
-                    "amount_refunded" => b.amount_refunded = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee" => b.application_fee = FromValueOpt::from_value(v),
-                    "application_fee_amount" => {
-                        b.application_fee_amount = FromValueOpt::from_value(v)
-                    }
-                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "billing_details" => b.billing_details = FromValueOpt::from_value(v),
-                    "calculated_statement_descriptor" => {
-                        b.calculated_statement_descriptor = FromValueOpt::from_value(v)
-                    }
-                    "captured" => b.captured = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "disputed" => b.disputed = FromValueOpt::from_value(v),
-                    "failure_balance_transaction" => {
-                        b.failure_balance_transaction = FromValueOpt::from_value(v)
-                    }
-                    "failure_code" => b.failure_code = FromValueOpt::from_value(v),
-                    "failure_message" => b.failure_message = FromValueOpt::from_value(v),
-                    "fraud_details" => b.fraud_details = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "level3" => b.level3 = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "outcome" => b.outcome = FromValueOpt::from_value(v),
-                    "paid" => b.paid = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
-                    "radar_options" => b.radar_options = FromValueOpt::from_value(v),
-                    "receipt_email" => b.receipt_email = FromValueOpt::from_value(v),
-                    "receipt_number" => b.receipt_number = FromValueOpt::from_value(v),
-                    "receipt_url" => b.receipt_url = FromValueOpt::from_value(v),
-                    "refunded" => b.refunded = FromValueOpt::from_value(v),
-                    "refunds" => b.refunds = FromValueOpt::from_value(v),
-                    "review" => b.review = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "source_transfer" => b.source_transfer = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "statement_descriptor_suffix" => {
-                        b.statement_descriptor_suffix = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "transfer" => b.transfer = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

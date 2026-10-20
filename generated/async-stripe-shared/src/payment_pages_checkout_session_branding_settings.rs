@@ -149,23 +149,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentPagesCheckoutSessionBrandingSettings {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionBrandingSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "background_color" => b.background_color = FromValueOpt::from_value(v),
-                    "border_style" => b.border_style = FromValueOpt::from_value(v),
-                    "button_color" => b.button_color = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "font_family" => b.font_family = FromValueOpt::from_value(v),
-                    "icon" => b.icon = FromValueOpt::from_value(v),
-                    "logo" => b.logo = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

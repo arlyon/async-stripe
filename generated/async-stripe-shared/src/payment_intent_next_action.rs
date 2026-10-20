@@ -301,70 +301,7 @@ const _: () = {
 
     impl FromValueOpt for PaymentIntentNextAction {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentNextActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "alipay_handle_redirect" => {
-                        b.alipay_handle_redirect = FromValueOpt::from_value(v)
-                    }
-                    "blik_authorize" => b.blik_authorize = FromValueOpt::from_value(v),
-                    "boleto_display_details" => {
-                        b.boleto_display_details = FromValueOpt::from_value(v)
-                    }
-                    "card_await_notification" => {
-                        b.card_await_notification = FromValueOpt::from_value(v)
-                    }
-                    "cashapp_handle_redirect_or_display_qr_code" => {
-                        b.cashapp_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "display_bank_transfer_instructions" => {
-                        b.display_bank_transfer_instructions = FromValueOpt::from_value(v)
-                    }
-                    "klarna_display_qr_code" => {
-                        b.klarna_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "konbini_display_details" => {
-                        b.konbini_display_details = FromValueOpt::from_value(v)
-                    }
-                    "multibanco_display_details" => {
-                        b.multibanco_display_details = FromValueOpt::from_value(v)
-                    }
-                    "oxxo_display_details" => b.oxxo_display_details = FromValueOpt::from_value(v),
-                    "paynow_display_qr_code" => {
-                        b.paynow_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "pix_display_qr_code" => b.pix_display_qr_code = FromValueOpt::from_value(v),
-                    "promptpay_display_qr_code" => {
-                        b.promptpay_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "redirect_to_url" => b.redirect_to_url = FromValueOpt::from_value(v),
-                    "swish_handle_redirect_or_display_qr_code" => {
-                        b.swish_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "upi_handle_redirect_or_display_qr_code" => {
-                        b.upi_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "use_stripe_sdk" => b.use_stripe_sdk = FromValueOpt::from_value(v),
-                    "verify_with_microdeposits" => {
-                        b.verify_with_microdeposits = FromValueOpt::from_value(v)
-                    }
-                    "wechat_pay_display_qr_code" => {
-                        b.wechat_pay_display_qr_code = FromValueOpt::from_value(v)
-                    }
-                    "wechat_pay_redirect_to_android_app" => {
-                        b.wechat_pay_redirect_to_android_app = FromValueOpt::from_value(v)
-                    }
-                    "wechat_pay_redirect_to_ios_app" => {
-                        b.wechat_pay_redirect_to_ios_app = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -530,73 +530,7 @@ const _: () = {
 
     impl FromValueOpt for Subscription {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "application_fee_percent" => {
-                        b.application_fee_percent = FromValueOpt::from_value(v)
-                    }
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
-                    "billing_cycle_anchor_config" => {
-                        b.billing_cycle_anchor_config = FromValueOpt::from_value(v)
-                    }
-                    "billing_mode" => b.billing_mode = FromValueOpt::from_value(v),
-                    "billing_schedules" => b.billing_schedules = FromValueOpt::from_value(v),
-                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
-                    "cancel_at" => b.cancel_at = FromValueOpt::from_value(v),
-                    "cancel_at_period_end" => b.cancel_at_period_end = FromValueOpt::from_value(v),
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "cancellation_details" => b.cancellation_details = FromValueOpt::from_value(v),
-                    "collection_method" => b.collection_method = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "days_until_due" => b.days_until_due = FromValueOpt::from_value(v),
-                    "default_payment_method" => {
-                        b.default_payment_method = FromValueOpt::from_value(v)
-                    }
-                    "default_source" => b.default_source = FromValueOpt::from_value(v),
-                    "default_tax_rates" => b.default_tax_rates = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "ended_at" => b.ended_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
-                    "items" => b.items = FromValueOpt::from_value(v),
-                    "latest_invoice" => b.latest_invoice = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "managed_payments" => b.managed_payments = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "next_pending_invoice_item_invoice" => {
-                        b.next_pending_invoice_item_invoice = FromValueOpt::from_value(v)
-                    }
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "pause_collection" => b.pause_collection = FromValueOpt::from_value(v),
-                    "payment_settings" => b.payment_settings = FromValueOpt::from_value(v),
-                    "pending_invoice_item_interval" => {
-                        b.pending_invoice_item_interval = FromValueOpt::from_value(v)
-                    }
-                    "pending_setup_intent" => b.pending_setup_intent = FromValueOpt::from_value(v),
-                    "pending_update" => b.pending_update = FromValueOpt::from_value(v),
-                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
-                    "schedule" => b.schedule = FromValueOpt::from_value(v),
-                    "start_date" => b.start_date = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    "trial_end" => b.trial_end = FromValueOpt::from_value(v),
-                    "trial_settings" => b.trial_settings = FromValueOpt::from_value(v),
-                    "trial_start" => b.trial_start = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

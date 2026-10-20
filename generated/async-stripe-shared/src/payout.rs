@@ -325,48 +325,7 @@ const _: () = {
 
     impl FromValueOpt for Payout {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PayoutBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "application_fee" => b.application_fee = FromValueOpt::from_value(v),
-                    "application_fee_amount" => {
-                        b.application_fee_amount = FromValueOpt::from_value(v)
-                    }
-                    "arrival_date" => b.arrival_date = FromValueOpt::from_value(v),
-                    "automatic" => b.automatic = FromValueOpt::from_value(v),
-                    "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "destination" => b.destination = FromValueOpt::from_value(v),
-                    "failure_balance_transaction" => {
-                        b.failure_balance_transaction = FromValueOpt::from_value(v)
-                    }
-                    "failure_code" => b.failure_code = FromValueOpt::from_value(v),
-                    "failure_message" => b.failure_message = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "method" => b.method = FromValueOpt::from_value(v),
-                    "original_payout" => b.original_payout = FromValueOpt::from_value(v),
-                    "payout_method" => b.payout_method = FromValueOpt::from_value(v),
-                    "reconciliation_status" => {
-                        b.reconciliation_status = FromValueOpt::from_value(v)
-                    }
-                    "reversed_by" => b.reversed_by = FromValueOpt::from_value(v),
-                    "source_type" => b.source_type = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "trace_id" => b.trace_id = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

@@ -207,35 +207,7 @@ const _: () = {
 
     impl FromValueOpt for TerminalReaderReaderResourceReaderAction {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalReaderReaderResourceReaderActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "api_error" => b.api_error = FromValueOpt::from_value(v),
-                    "collect_inputs" => b.collect_inputs = FromValueOpt::from_value(v),
-                    "collect_payment_method" => {
-                        b.collect_payment_method = FromValueOpt::from_value(v)
-                    }
-                    "confirm_payment_intent" => {
-                        b.confirm_payment_intent = FromValueOpt::from_value(v)
-                    }
-                    "failure_code" => b.failure_code = FromValueOpt::from_value(v),
-                    "failure_message" => b.failure_message = FromValueOpt::from_value(v),
-                    "print_content" => b.print_content = FromValueOpt::from_value(v),
-                    "process_payment_intent" => {
-                        b.process_payment_intent = FromValueOpt::from_value(v)
-                    }
-                    "process_setup_intent" => b.process_setup_intent = FromValueOpt::from_value(v),
-                    "refund_payment" => b.refund_payment = FromValueOpt::from_value(v),
-                    "set_reader_display" => b.set_reader_display = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

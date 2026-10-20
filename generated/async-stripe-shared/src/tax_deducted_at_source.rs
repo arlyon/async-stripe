@@ -122,22 +122,7 @@ const _: () = {
 
     impl FromValueOpt for TaxDeductedAtSource {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxDeductedAtSourceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "period_end" => b.period_end = FromValueOpt::from_value(v),
-                    "period_start" => b.period_start = FromValueOpt::from_value(v),
-                    "tax_deduction_account_number" => {
-                        b.tax_deduction_account_number = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

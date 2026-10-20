@@ -120,21 +120,7 @@ const _: () = {
 
     impl FromValueOpt for BankConnectionsResourceBalance {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BankConnectionsResourceBalanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "as_of" => b.as_of = FromValueOpt::from_value(v),
-                    "cash" => b.cash = FromValueOpt::from_value(v),
-                    "credit" => b.credit = FromValueOpt::from_value(v),
-                    "current" => b.current = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

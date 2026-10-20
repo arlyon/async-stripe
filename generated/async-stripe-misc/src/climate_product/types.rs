@@ -165,28 +165,7 @@ const _: () = {
 
     impl FromValueOpt for ClimateProduct {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ClimateProductBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "current_prices_per_metric_ton" => {
-                        b.current_prices_per_metric_ton = FromValueOpt::from_value(v)
-                    }
-                    "delivery_year" => b.delivery_year = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metric_tons_available" => {
-                        b.metric_tons_available = FromValueOpt::from_value(v)
-                    }
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "suppliers" => b.suppliers = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };

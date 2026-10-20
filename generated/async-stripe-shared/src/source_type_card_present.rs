@@ -286,56 +286,7 @@ const _: () = {
 
     impl FromValueOpt for SourceTypeCardPresent {
         fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeCardPresentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "application_cryptogram" => {
-                        b.application_cryptogram = FromValueOpt::from_value(v)
-                    }
-                    "application_preferred_name" => {
-                        b.application_preferred_name = FromValueOpt::from_value(v)
-                    }
-                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
-                    "authorization_response_code" => {
-                        b.authorization_response_code = FromValueOpt::from_value(v)
-                    }
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "cvm_type" => b.cvm_type = FromValueOpt::from_value(v),
-                    "data_type" => b.data_type = FromValueOpt::from_value(v),
-                    "dedicated_file_name" => b.dedicated_file_name = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "emv_auth_data" => b.emv_auth_data = FromValueOpt::from_value(v),
-                    "evidence_customer_signature" => {
-                        b.evidence_customer_signature = FromValueOpt::from_value(v)
-                    }
-                    "evidence_transaction_certificate" => {
-                        b.evidence_transaction_certificate = FromValueOpt::from_value(v)
-                    }
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "pos_device_id" => b.pos_device_id = FromValueOpt::from_value(v),
-                    "pos_entry_mode" => b.pos_entry_mode = FromValueOpt::from_value(v),
-                    "read_method" => b.read_method = FromValueOpt::from_value(v),
-                    "reader" => b.reader = FromValueOpt::from_value(v),
-                    "terminal_verification_results" => {
-                        b.terminal_verification_results = FromValueOpt::from_value(v)
-                    }
-                    "transaction_status_information" => {
-                        b.transaction_status_information = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
+            stripe_types::miniserde_helpers::from_value_via_deserialize(v)
         }
     }
 };
