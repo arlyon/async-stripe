@@ -27,9 +27,9 @@ impl std::fmt::Debug for PaymentMethodOptionsAfterpayClearpay {
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsAfterpayClearpayBuilder {
-    capture_method: Option<Option<PaymentMethodOptionsAfterpayClearpayCaptureMethod>>,
+    capture_method: Option<PaymentMethodOptionsAfterpayClearpayCaptureMethod>,
     reference: Option<Option<String>>,
-    setup_future_usage: Option<Option<PaymentMethodOptionsAfterpayClearpaySetupFutureUsage>>,
+    setup_future_usage: Option<PaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
 }
 
 #[allow(
@@ -72,23 +72,23 @@ const _: () = {
         type Out = PaymentMethodOptionsAfterpayClearpay;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
+                "capture_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.capture_method)
+                }
                 "reference" => Deserialize::begin(&mut self.reference),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                capture_method: Some(None),
-                reference: Some(None),
-                setup_future_usage: Some(None),
-            }
+            Self { capture_method: None, reference: Some(None), setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(capture_method), Some(reference), Some(setup_future_usage)) =
+            let (capture_method, Some(reference), setup_future_usage) =
                 (self.capture_method.take(), self.reference.take(), self.setup_future_usage.take())
             else {
                 return None;

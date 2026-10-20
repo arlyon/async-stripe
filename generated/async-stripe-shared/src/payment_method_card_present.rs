@@ -70,11 +70,11 @@ pub struct PaymentMethodCardPresentBuilder {
     iin: Option<Option<String>>,
     issuer: Option<Option<String>>,
     last4: Option<Option<String>>,
-    networks: Option<Option<stripe_shared::PaymentMethodCardPresentNetworks>>,
-    offline: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>>,
+    networks: Option<stripe_shared::PaymentMethodCardPresentNetworks>,
+    offline: Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>,
     preferred_locales: Option<Option<Vec<String>>>,
-    read_method: Option<Option<PaymentMethodCardPresentReadMethod>>,
-    wallet: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>>,
+    read_method: Option<PaymentMethodCardPresentReadMethod>,
+    wallet: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>,
 }
 
 #[allow(
@@ -129,11 +129,13 @@ const _: () = {
                 "iin" => Deserialize::begin(&mut self.iin),
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
-                "networks" => Deserialize::begin(&mut self.networks),
-                "offline" => Deserialize::begin(&mut self.offline),
+                "networks" => stripe_types::miniserde_helpers::begin_nullable(&mut self.networks),
+                "offline" => stripe_types::miniserde_helpers::begin_nullable(&mut self.offline),
                 "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
-                "read_method" => Deserialize::begin(&mut self.read_method),
-                "wallet" => Deserialize::begin(&mut self.wallet),
+                "read_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.read_method)
+                }
+                "wallet" => stripe_types::miniserde_helpers::begin_nullable(&mut self.wallet),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -152,11 +154,11 @@ const _: () = {
                 iin: Some(None),
                 issuer: Some(None),
                 last4: Some(None),
-                networks: Some(None),
-                offline: Some(None),
+                networks: None,
+                offline: None,
                 preferred_locales: Some(None),
-                read_method: Some(None),
-                wallet: Some(None),
+                read_method: None,
+                wallet: None,
             }
         }
 
@@ -174,11 +176,11 @@ const _: () = {
                 Some(iin),
                 Some(issuer),
                 Some(last4),
-                Some(networks),
-                Some(offline),
+                networks,
+                offline,
                 Some(preferred_locales),
-                Some(read_method),
-                Some(wallet),
+                read_method,
+                wallet,
             ) = (
                 self.brand.take(),
                 self.brand_product.take(),

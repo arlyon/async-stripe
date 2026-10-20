@@ -29,11 +29,11 @@ impl std::fmt::Debug for TaxProductResourceTaxRateDetails {
 #[doc(hidden)]
 pub struct TaxProductResourceTaxRateDetailsBuilder {
     country: Option<Option<String>>,
-    flat_amount: Option<Option<stripe_shared::TaxRateFlatAmount>>,
+    flat_amount: Option<stripe_shared::TaxRateFlatAmount>,
     percentage_decimal: Option<String>,
-    rate_type: Option<Option<TaxProductResourceTaxRateDetailsRateType>>,
+    rate_type: Option<TaxProductResourceTaxRateDetailsRateType>,
     state: Option<Option<String>>,
-    tax_type: Option<Option<TaxProductResourceTaxRateDetailsTaxType>>,
+    tax_type: Option<TaxProductResourceTaxRateDetailsTaxType>,
 }
 
 #[allow(
@@ -77,11 +77,13 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "country" => Deserialize::begin(&mut self.country),
-                "flat_amount" => Deserialize::begin(&mut self.flat_amount),
+                "flat_amount" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.flat_amount)
+                }
                 "percentage_decimal" => Deserialize::begin(&mut self.percentage_decimal),
-                "rate_type" => Deserialize::begin(&mut self.rate_type),
+                "rate_type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.rate_type),
                 "state" => Deserialize::begin(&mut self.state),
-                "tax_type" => Deserialize::begin(&mut self.tax_type),
+                "tax_type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_type),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -89,22 +91,22 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 country: Some(None),
-                flat_amount: Some(None),
+                flat_amount: None,
                 percentage_decimal: None,
-                rate_type: Some(None),
+                rate_type: None,
                 state: Some(None),
-                tax_type: Some(None),
+                tax_type: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(country),
-                Some(flat_amount),
+                flat_amount,
                 Some(percentage_decimal),
-                Some(rate_type),
+                rate_type,
                 Some(state),
-                Some(tax_type),
+                tax_type,
             ) = (
                 self.country.take(),
                 self.flat_amount.take(),

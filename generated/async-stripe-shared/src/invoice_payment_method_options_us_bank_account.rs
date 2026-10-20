@@ -17,8 +17,8 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsUsBankAccount {
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsUsBankAccountBuilder {
     financial_connections:
-        Option<Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions>>,
-    verification_method: Option<Option<InvoicePaymentMethodOptionsUsBankAccountVerificationMethod>>,
+        Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions>,
+    verification_method: Option<InvoicePaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 
 #[allow(
@@ -61,18 +61,22 @@ const _: () = {
         type Out = InvoicePaymentMethodOptionsUsBankAccount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "financial_connections" => Deserialize::begin(&mut self.financial_connections),
-                "verification_method" => Deserialize::begin(&mut self.verification_method),
+                "financial_connections" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.financial_connections)
+                }
+                "verification_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verification_method)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { financial_connections: Some(None), verification_method: Some(None) }
+            Self { financial_connections: None, verification_method: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(financial_connections), Some(verification_method)) =
+            let (financial_connections, verification_method) =
                 (self.financial_connections.take(), self.verification_method.take())
             else {
                 return None;

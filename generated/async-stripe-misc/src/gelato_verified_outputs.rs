@@ -34,15 +34,15 @@ impl std::fmt::Debug for GelatoVerifiedOutputs {
 }
 #[doc(hidden)]
 pub struct GelatoVerifiedOutputsBuilder {
-    address: Option<Option<stripe_shared::Address>>,
-    dob: Option<Option<stripe_misc::GelatoDataVerifiedOutputsDate>>,
+    address: Option<stripe_shared::Address>,
+    dob: Option<stripe_misc::GelatoDataVerifiedOutputsDate>,
     email: Option<Option<String>>,
     first_name: Option<Option<String>>,
     id_number: Option<Option<String>>,
-    id_number_type: Option<Option<GelatoVerifiedOutputsIdNumberType>>,
+    id_number_type: Option<GelatoVerifiedOutputsIdNumberType>,
     last_name: Option<Option<String>>,
     phone: Option<Option<String>>,
-    sex: Option<Option<GelatoVerifiedOutputsSex>>,
+    sex: Option<GelatoVerifiedOutputsSex>,
     unparsed_place_of_birth: Option<Option<String>>,
     unparsed_sex: Option<Option<String>>,
 }
@@ -87,15 +87,17 @@ const _: () = {
         type Out = GelatoVerifiedOutputs;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
-                "dob" => Deserialize::begin(&mut self.dob),
+                "address" => stripe_types::miniserde_helpers::begin_nullable(&mut self.address),
+                "dob" => stripe_types::miniserde_helpers::begin_nullable(&mut self.dob),
                 "email" => Deserialize::begin(&mut self.email),
                 "first_name" => Deserialize::begin(&mut self.first_name),
                 "id_number" => Deserialize::begin(&mut self.id_number),
-                "id_number_type" => Deserialize::begin(&mut self.id_number_type),
+                "id_number_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.id_number_type)
+                }
                 "last_name" => Deserialize::begin(&mut self.last_name),
                 "phone" => Deserialize::begin(&mut self.phone),
-                "sex" => Deserialize::begin(&mut self.sex),
+                "sex" => stripe_types::miniserde_helpers::begin_nullable(&mut self.sex),
                 "unparsed_place_of_birth" => Deserialize::begin(&mut self.unparsed_place_of_birth),
                 "unparsed_sex" => Deserialize::begin(&mut self.unparsed_sex),
                 _ => <dyn Visitor>::ignore(),
@@ -104,15 +106,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Some(None),
-                dob: Some(None),
+                address: None,
+                dob: None,
                 email: Some(None),
                 first_name: Some(None),
                 id_number: Some(None),
-                id_number_type: Some(None),
+                id_number_type: None,
                 last_name: Some(None),
                 phone: Some(None),
-                sex: Some(None),
+                sex: None,
                 unparsed_place_of_birth: Some(None),
                 unparsed_sex: Some(None),
             }
@@ -120,15 +122,15 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(address),
-                Some(dob),
+                address,
+                dob,
                 Some(email),
                 Some(first_name),
                 Some(id_number),
-                Some(id_number_type),
+                id_number_type,
                 Some(last_name),
                 Some(phone),
-                Some(sex),
+                sex,
                 Some(unparsed_place_of_birth),
                 Some(unparsed_sex),
             ) = (

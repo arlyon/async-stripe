@@ -27,16 +27,15 @@ impl std::fmt::Debug for PaymentMethodDetailsCardWallet {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCardWalletBuilder {
-    amex_express_checkout:
-        Option<Option<stripe_shared::PaymentMethodDetailsCardWalletAmexExpressCheckout>>,
-    apple_pay: Option<Option<stripe_shared::PaymentMethodDetailsCardWalletApplePay>>,
+    amex_express_checkout: Option<stripe_shared::PaymentMethodDetailsCardWalletAmexExpressCheckout>,
+    apple_pay: Option<stripe_shared::PaymentMethodDetailsCardWalletApplePay>,
     dynamic_last4: Option<Option<String>>,
-    google_pay: Option<Option<stripe_shared::PaymentMethodDetailsCardWalletGooglePay>>,
-    link: Option<Option<stripe_shared::PaymentMethodDetailsCardWalletLink>>,
-    masterpass: Option<Option<stripe_shared::PaymentMethodDetailsCardWalletMasterpass>>,
-    samsung_pay: Option<Option<stripe_shared::PaymentMethodDetailsCardWalletSamsungPay>>,
+    google_pay: Option<stripe_shared::PaymentMethodDetailsCardWalletGooglePay>,
+    link: Option<stripe_shared::PaymentMethodDetailsCardWalletLink>,
+    masterpass: Option<stripe_shared::PaymentMethodDetailsCardWalletMasterpass>,
+    samsung_pay: Option<stripe_shared::PaymentMethodDetailsCardWalletSamsungPay>,
     type_: Option<PaymentMethodDetailsCardWalletType>,
-    visa_checkout: Option<Option<stripe_shared::PaymentMethodDetailsCardWalletVisaCheckout>>,
+    visa_checkout: Option<stripe_shared::PaymentMethodDetailsCardWalletVisaCheckout>,
 }
 
 #[allow(
@@ -79,44 +78,54 @@ const _: () = {
         type Out = PaymentMethodDetailsCardWallet;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amex_express_checkout" => Deserialize::begin(&mut self.amex_express_checkout),
-                "apple_pay" => Deserialize::begin(&mut self.apple_pay),
+                "amex_express_checkout" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amex_express_checkout)
+                }
+                "apple_pay" => stripe_types::miniserde_helpers::begin_nullable(&mut self.apple_pay),
                 "dynamic_last4" => Deserialize::begin(&mut self.dynamic_last4),
-                "google_pay" => Deserialize::begin(&mut self.google_pay),
-                "link" => Deserialize::begin(&mut self.link),
-                "masterpass" => Deserialize::begin(&mut self.masterpass),
-                "samsung_pay" => Deserialize::begin(&mut self.samsung_pay),
+                "google_pay" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.google_pay)
+                }
+                "link" => stripe_types::miniserde_helpers::begin_nullable(&mut self.link),
+                "masterpass" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.masterpass)
+                }
+                "samsung_pay" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.samsung_pay)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
-                "visa_checkout" => Deserialize::begin(&mut self.visa_checkout),
+                "visa_checkout" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.visa_checkout)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                amex_express_checkout: Some(None),
-                apple_pay: Some(None),
+                amex_express_checkout: None,
+                apple_pay: None,
                 dynamic_last4: Some(None),
-                google_pay: Some(None),
-                link: Some(None),
-                masterpass: Some(None),
-                samsung_pay: Some(None),
+                google_pay: None,
+                link: None,
+                masterpass: None,
+                samsung_pay: None,
                 type_: None,
-                visa_checkout: Some(None),
+                visa_checkout: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(amex_express_checkout),
-                Some(apple_pay),
+                amex_express_checkout,
+                apple_pay,
                 Some(dynamic_last4),
-                Some(google_pay),
-                Some(link),
-                Some(masterpass),
-                Some(samsung_pay),
+                google_pay,
+                link,
+                masterpass,
+                samsung_pay,
                 Some(type_),
-                Some(visa_checkout),
+                visa_checkout,
             ) = (
                 self.amex_express_checkout,
                 self.apple_pay,

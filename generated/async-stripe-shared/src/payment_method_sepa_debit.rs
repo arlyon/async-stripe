@@ -29,7 +29,7 @@ pub struct PaymentMethodSepaDebitBuilder {
     branch_code: Option<Option<String>>,
     country: Option<Option<String>>,
     fingerprint: Option<Option<String>>,
-    generated_from: Option<Option<stripe_shared::SepaDebitGeneratedFrom>>,
+    generated_from: Option<stripe_shared::SepaDebitGeneratedFrom>,
     last4: Option<Option<String>>,
 }
 
@@ -77,7 +77,9 @@ const _: () = {
                 "branch_code" => Deserialize::begin(&mut self.branch_code),
                 "country" => Deserialize::begin(&mut self.country),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "generated_from" => Deserialize::begin(&mut self.generated_from),
+                "generated_from" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.generated_from)
+                }
                 "last4" => Deserialize::begin(&mut self.last4),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -89,7 +91,7 @@ const _: () = {
                 branch_code: Some(None),
                 country: Some(None),
                 fingerprint: Some(None),
-                generated_from: Some(None),
+                generated_from: None,
                 last4: Some(None),
             }
         }
@@ -100,7 +102,7 @@ const _: () = {
                 Some(branch_code),
                 Some(country),
                 Some(fingerprint),
-                Some(generated_from),
+                generated_from,
                 Some(last4),
             ) = (
                 self.bank_code.take(),

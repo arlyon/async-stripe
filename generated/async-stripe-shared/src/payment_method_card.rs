@@ -57,7 +57,7 @@ impl std::fmt::Debug for PaymentMethodCard {
 #[doc(hidden)]
 pub struct PaymentMethodCardBuilder {
     brand: Option<String>,
-    checks: Option<Option<stripe_shared::PaymentMethodCardChecks>>,
+    checks: Option<stripe_shared::PaymentMethodCardChecks>,
     country: Option<Option<String>>,
     description: Option<Option<String>>,
     display_brand: Option<Option<String>>,
@@ -65,14 +65,14 @@ pub struct PaymentMethodCardBuilder {
     exp_year: Option<i64>,
     fingerprint: Option<Option<String>>,
     funding: Option<String>,
-    generated_from: Option<Option<stripe_shared::PaymentMethodCardGeneratedCard>>,
+    generated_from: Option<stripe_shared::PaymentMethodCardGeneratedCard>,
     iin: Option<Option<String>>,
     issuer: Option<Option<String>>,
     last4: Option<String>,
-    networks: Option<Option<stripe_shared::Networks>>,
-    regulated_status: Option<Option<PaymentMethodCardRegulatedStatus>>,
-    three_d_secure_usage: Option<Option<stripe_shared::ThreeDSecureUsage>>,
-    wallet: Option<Option<stripe_shared::PaymentMethodCardWallet>>,
+    networks: Option<stripe_shared::Networks>,
+    regulated_status: Option<PaymentMethodCardRegulatedStatus>,
+    three_d_secure_usage: Option<stripe_shared::ThreeDSecureUsage>,
+    wallet: Option<stripe_shared::PaymentMethodCardWallet>,
 }
 
 #[allow(
@@ -116,7 +116,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "brand" => Deserialize::begin(&mut self.brand),
-                "checks" => Deserialize::begin(&mut self.checks),
+                "checks" => stripe_types::miniserde_helpers::begin_nullable(&mut self.checks),
                 "country" => Deserialize::begin(&mut self.country),
                 "description" => Deserialize::begin(&mut self.description),
                 "display_brand" => Deserialize::begin(&mut self.display_brand),
@@ -124,14 +124,20 @@ const _: () = {
                 "exp_year" => Deserialize::begin(&mut self.exp_year),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 "funding" => Deserialize::begin(&mut self.funding),
-                "generated_from" => Deserialize::begin(&mut self.generated_from),
+                "generated_from" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.generated_from)
+                }
                 "iin" => Deserialize::begin(&mut self.iin),
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
-                "networks" => Deserialize::begin(&mut self.networks),
-                "regulated_status" => Deserialize::begin(&mut self.regulated_status),
-                "three_d_secure_usage" => Deserialize::begin(&mut self.three_d_secure_usage),
-                "wallet" => Deserialize::begin(&mut self.wallet),
+                "networks" => stripe_types::miniserde_helpers::begin_nullable(&mut self.networks),
+                "regulated_status" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.regulated_status)
+                }
+                "three_d_secure_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.three_d_secure_usage)
+                }
+                "wallet" => stripe_types::miniserde_helpers::begin_nullable(&mut self.wallet),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -139,7 +145,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 brand: None,
-                checks: Some(None),
+                checks: None,
                 country: Some(None),
                 description: Some(None),
                 display_brand: Some(None),
@@ -147,21 +153,21 @@ const _: () = {
                 exp_year: None,
                 fingerprint: Some(None),
                 funding: None,
-                generated_from: Some(None),
+                generated_from: None,
                 iin: Some(None),
                 issuer: Some(None),
                 last4: None,
-                networks: Some(None),
-                regulated_status: Some(None),
-                three_d_secure_usage: Some(None),
-                wallet: Some(None),
+                networks: None,
+                regulated_status: None,
+                three_d_secure_usage: None,
+                wallet: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(brand),
-                Some(checks),
+                checks,
                 Some(country),
                 Some(description),
                 Some(display_brand),
@@ -169,14 +175,14 @@ const _: () = {
                 Some(exp_year),
                 Some(fingerprint),
                 Some(funding),
-                Some(generated_from),
+                generated_from,
                 Some(iin),
                 Some(issuer),
                 Some(last4),
-                Some(networks),
-                Some(regulated_status),
-                Some(three_d_secure_usage),
-                Some(wallet),
+                networks,
+                regulated_status,
+                three_d_secure_usage,
+                wallet,
             ) = (
                 self.brand.take(),
                 self.checks.take(),

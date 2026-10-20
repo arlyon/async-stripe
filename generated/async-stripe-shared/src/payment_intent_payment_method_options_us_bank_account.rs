@@ -33,15 +33,12 @@ impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccount {
 }
 #[doc(hidden)]
 pub struct PaymentIntentPaymentMethodOptionsUsBankAccountBuilder {
-    financial_connections: Option<Option<stripe_shared::LinkedAccountOptionsCommon>>,
-    mandate_options: Option<Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>>,
-    setup_future_usage:
-        Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage>>,
+    financial_connections: Option<stripe_shared::LinkedAccountOptionsCommon>,
+    mandate_options: Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>,
+    setup_future_usage: Option<PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage>,
     target_date: Option<Option<String>>,
-    transaction_purpose:
-        Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose>>,
-    verification_method:
-        Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>>,
+    transaction_purpose: Option<PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose>,
+    verification_method: Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 
 #[allow(
@@ -84,35 +81,45 @@ const _: () = {
         type Out = PaymentIntentPaymentMethodOptionsUsBankAccount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "financial_connections" => Deserialize::begin(&mut self.financial_connections),
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "financial_connections" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.financial_connections)
+                }
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 "target_date" => Deserialize::begin(&mut self.target_date),
-                "transaction_purpose" => Deserialize::begin(&mut self.transaction_purpose),
-                "verification_method" => Deserialize::begin(&mut self.verification_method),
+                "transaction_purpose" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transaction_purpose)
+                }
+                "verification_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verification_method)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                financial_connections: Some(None),
-                mandate_options: Some(None),
-                setup_future_usage: Some(None),
+                financial_connections: None,
+                mandate_options: None,
+                setup_future_usage: None,
                 target_date: Some(None),
-                transaction_purpose: Some(None),
-                verification_method: Some(None),
+                transaction_purpose: None,
+                verification_method: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(financial_connections),
-                Some(mandate_options),
-                Some(setup_future_usage),
+                financial_connections,
+                mandate_options,
+                setup_future_usage,
                 Some(target_date),
-                Some(transaction_purpose),
-                Some(verification_method),
+                transaction_purpose,
+                verification_method,
             ) = (
                 self.financial_connections.take(),
                 self.mandate_options.take(),

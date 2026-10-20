@@ -28,7 +28,7 @@ pub struct TaxProductResourceLineItemTaxBreakdownBuilder {
     amount: Option<i64>,
     jurisdiction: Option<stripe_misc::TaxProductResourceJurisdiction>,
     sourcing: Option<TaxProductResourceLineItemTaxBreakdownSourcing>,
-    tax_rate_details: Option<Option<stripe_misc::TaxProductResourceLineItemTaxRateDetails>>,
+    tax_rate_details: Option<stripe_misc::TaxProductResourceLineItemTaxRateDetails>,
     taxability_reason: Option<TaxProductResourceLineItemTaxBreakdownTaxabilityReason>,
     taxable_amount: Option<i64>,
 }
@@ -76,7 +76,9 @@ const _: () = {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "jurisdiction" => Deserialize::begin(&mut self.jurisdiction),
                 "sourcing" => Deserialize::begin(&mut self.sourcing),
-                "tax_rate_details" => Deserialize::begin(&mut self.tax_rate_details),
+                "tax_rate_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_rate_details)
+                }
                 "taxability_reason" => Deserialize::begin(&mut self.taxability_reason),
                 "taxable_amount" => Deserialize::begin(&mut self.taxable_amount),
                 _ => <dyn Visitor>::ignore(),
@@ -88,7 +90,7 @@ const _: () = {
                 amount: None,
                 jurisdiction: None,
                 sourcing: None,
-                tax_rate_details: Some(None),
+                tax_rate_details: None,
                 taxability_reason: None,
                 taxable_amount: None,
             }
@@ -99,7 +101,7 @@ const _: () = {
                 Some(amount),
                 Some(jurisdiction),
                 Some(sourcing),
-                Some(tax_rate_details),
+                tax_rate_details,
                 Some(taxability_reason),
                 Some(taxable_amount),
             ) = (

@@ -22,7 +22,7 @@ impl std::fmt::Debug for IssuingDisputeServiceNotAsDescribedEvidence {
 }
 #[doc(hidden)]
 pub struct IssuingDisputeServiceNotAsDescribedEvidenceBuilder {
-    additional_documentation: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    additional_documentation: Option<stripe_types::Expandable<stripe_shared::File>>,
     canceled_at: Option<Option<stripe_types::Timestamp>>,
     cancellation_reason: Option<Option<String>>,
     explanation: Option<Option<String>>,
@@ -69,9 +69,9 @@ const _: () = {
         type Out = IssuingDisputeServiceNotAsDescribedEvidence;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "additional_documentation" => {
-                    Deserialize::begin(&mut self.additional_documentation)
-                }
+                "additional_documentation" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.additional_documentation,
+                ),
                 "canceled_at" => Deserialize::begin(&mut self.canceled_at),
                 "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
                 "explanation" => Deserialize::begin(&mut self.explanation),
@@ -82,7 +82,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                additional_documentation: Some(None),
+                additional_documentation: None,
                 canceled_at: Some(None),
                 cancellation_reason: Some(None),
                 explanation: Some(None),
@@ -92,7 +92,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(additional_documentation),
+                additional_documentation,
                 Some(canceled_at),
                 Some(cancellation_reason),
                 Some(explanation),

@@ -30,15 +30,15 @@ impl std::fmt::Debug for TerminalReaderReaderResourceInput {
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceInputBuilder {
-    custom_text: Option<Option<stripe_terminal::TerminalReaderReaderResourceCustomText>>,
-    email: Option<Option<stripe_terminal::TerminalReaderReaderResourceEmail>>,
-    numeric: Option<Option<stripe_terminal::TerminalReaderReaderResourceNumeric>>,
-    phone: Option<Option<stripe_terminal::TerminalReaderReaderResourcePhone>>,
+    custom_text: Option<stripe_terminal::TerminalReaderReaderResourceCustomText>,
+    email: Option<stripe_terminal::TerminalReaderReaderResourceEmail>,
+    numeric: Option<stripe_terminal::TerminalReaderReaderResourceNumeric>,
+    phone: Option<stripe_terminal::TerminalReaderReaderResourcePhone>,
     required: Option<Option<bool>>,
-    selection: Option<Option<stripe_terminal::TerminalReaderReaderResourceSelection>>,
-    signature: Option<Option<stripe_terminal::TerminalReaderReaderResourceSignature>>,
+    selection: Option<stripe_terminal::TerminalReaderReaderResourceSelection>,
+    signature: Option<stripe_terminal::TerminalReaderReaderResourceSignature>,
     skipped: Option<Option<bool>>,
-    text: Option<Option<stripe_terminal::TerminalReaderReaderResourceText>>,
+    text: Option<stripe_terminal::TerminalReaderReaderResourceText>,
     toggles: Option<Option<Vec<stripe_terminal::TerminalReaderReaderResourceToggle>>>,
     type_: Option<TerminalReaderReaderResourceInputType>,
 }
@@ -83,15 +83,17 @@ const _: () = {
         type Out = TerminalReaderReaderResourceInput;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "custom_text" => Deserialize::begin(&mut self.custom_text),
-                "email" => Deserialize::begin(&mut self.email),
-                "numeric" => Deserialize::begin(&mut self.numeric),
-                "phone" => Deserialize::begin(&mut self.phone),
+                "custom_text" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.custom_text)
+                }
+                "email" => stripe_types::miniserde_helpers::begin_nullable(&mut self.email),
+                "numeric" => stripe_types::miniserde_helpers::begin_nullable(&mut self.numeric),
+                "phone" => stripe_types::miniserde_helpers::begin_nullable(&mut self.phone),
                 "required" => Deserialize::begin(&mut self.required),
-                "selection" => Deserialize::begin(&mut self.selection),
-                "signature" => Deserialize::begin(&mut self.signature),
+                "selection" => stripe_types::miniserde_helpers::begin_nullable(&mut self.selection),
+                "signature" => stripe_types::miniserde_helpers::begin_nullable(&mut self.signature),
                 "skipped" => Deserialize::begin(&mut self.skipped),
-                "text" => Deserialize::begin(&mut self.text),
+                "text" => stripe_types::miniserde_helpers::begin_nullable(&mut self.text),
                 "toggles" => Deserialize::begin(&mut self.toggles),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -100,15 +102,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                custom_text: Some(None),
-                email: Some(None),
-                numeric: Some(None),
-                phone: Some(None),
+                custom_text: None,
+                email: None,
+                numeric: None,
+                phone: None,
                 required: Some(None),
-                selection: Some(None),
-                signature: Some(None),
+                selection: None,
+                signature: None,
                 skipped: Some(None),
-                text: Some(None),
+                text: None,
                 toggles: Some(None),
                 type_: None,
             }
@@ -116,15 +118,15 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(custom_text),
-                Some(email),
-                Some(numeric),
-                Some(phone),
+                custom_text,
+                email,
+                numeric,
+                phone,
                 Some(required),
-                Some(selection),
-                Some(signature),
+                selection,
+                signature,
                 Some(skipped),
-                Some(text),
+                text,
                 Some(toggles),
                 Some(type_),
             ) = (

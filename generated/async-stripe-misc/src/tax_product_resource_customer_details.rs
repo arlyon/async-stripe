@@ -22,8 +22,8 @@ impl std::fmt::Debug for TaxProductResourceCustomerDetails {
 }
 #[doc(hidden)]
 pub struct TaxProductResourceCustomerDetailsBuilder {
-    address: Option<Option<stripe_misc::TaxProductResourcePostalAddress>>,
-    address_source: Option<Option<TaxProductResourceCustomerDetailsAddressSource>>,
+    address: Option<stripe_misc::TaxProductResourcePostalAddress>,
+    address_source: Option<TaxProductResourceCustomerDetailsAddressSource>,
     ip_address: Option<Option<String>>,
     tax_ids: Option<Vec<stripe_misc::TaxProductResourceCustomerDetailsResourceTaxId>>,
     taxability_override: Option<TaxProductResourceCustomerDetailsTaxabilityOverride>,
@@ -69,8 +69,10 @@ const _: () = {
         type Out = TaxProductResourceCustomerDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
-                "address_source" => Deserialize::begin(&mut self.address_source),
+                "address" => stripe_types::miniserde_helpers::begin_nullable(&mut self.address),
+                "address_source" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.address_source)
+                }
                 "ip_address" => Deserialize::begin(&mut self.ip_address),
                 "tax_ids" => Deserialize::begin(&mut self.tax_ids),
                 "taxability_override" => Deserialize::begin(&mut self.taxability_override),
@@ -80,8 +82,8 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Some(None),
-                address_source: Some(None),
+                address: None,
+                address_source: None,
                 ip_address: Some(None),
                 tax_ids: None,
                 taxability_override: None,
@@ -90,8 +92,8 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(address),
-                Some(address_source),
+                address,
+                address_source,
                 Some(ip_address),
                 Some(tax_ids),
                 Some(taxability_override),

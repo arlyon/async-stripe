@@ -17,7 +17,7 @@ impl std::fmt::Debug for QuotesResourceSubscriptionDataBillingMode {
 }
 #[doc(hidden)]
 pub struct QuotesResourceSubscriptionDataBillingModeBuilder {
-    flexible: Option<Option<stripe_shared::SubscriptionsResourceBillingModeFlexible>>,
+    flexible: Option<stripe_shared::SubscriptionsResourceBillingModeFlexible>,
     type_: Option<QuotesResourceSubscriptionDataBillingModeType>,
 }
 
@@ -61,18 +61,18 @@ const _: () = {
         type Out = QuotesResourceSubscriptionDataBillingMode;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "flexible" => Deserialize::begin(&mut self.flexible),
+                "flexible" => stripe_types::miniserde_helpers::begin_nullable(&mut self.flexible),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { flexible: Some(None), type_: None }
+            Self { flexible: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(flexible), Some(type_)) = (self.flexible.take(), self.type_.take()) else {
+            let (flexible, Some(type_)) = (self.flexible.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { flexible, type_ })

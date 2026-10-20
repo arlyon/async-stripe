@@ -54,18 +54,18 @@ impl std::fmt::Debug for IssuingCardholder {
 #[doc(hidden)]
 pub struct IssuingCardholderBuilder {
     billing: Option<stripe_shared::IssuingCardholderAddress>,
-    company: Option<Option<stripe_shared::IssuingCardholderCompany>>,
+    company: Option<stripe_shared::IssuingCardholderCompany>,
     created: Option<stripe_types::Timestamp>,
     email: Option<Option<String>>,
     id: Option<stripe_shared::IssuingCardholderId>,
-    individual: Option<Option<stripe_shared::IssuingCardholderIndividual>>,
+    individual: Option<stripe_shared::IssuingCardholderIndividual>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     name: Option<String>,
     phone_number: Option<Option<String>>,
     preferred_locales: Option<Option<Vec<stripe_shared::IssuingCardholderPreferredLocales>>>,
     requirements: Option<stripe_shared::IssuingCardholderRequirements>,
-    spending_controls: Option<Option<stripe_shared::IssuingCardholderAuthorizationControls>>,
+    spending_controls: Option<stripe_shared::IssuingCardholderAuthorizationControls>,
     status: Option<stripe_shared::IssuingCardholderStatus>,
     type_: Option<stripe_shared::IssuingCardholderType>,
 }
@@ -111,18 +111,22 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "billing" => Deserialize::begin(&mut self.billing),
-                "company" => Deserialize::begin(&mut self.company),
+                "company" => stripe_types::miniserde_helpers::begin_nullable(&mut self.company),
                 "created" => Deserialize::begin(&mut self.created),
                 "email" => Deserialize::begin(&mut self.email),
                 "id" => Deserialize::begin(&mut self.id),
-                "individual" => Deserialize::begin(&mut self.individual),
+                "individual" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.individual)
+                }
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "name" => Deserialize::begin(&mut self.name),
                 "phone_number" => Deserialize::begin(&mut self.phone_number),
                 "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
                 "requirements" => Deserialize::begin(&mut self.requirements),
-                "spending_controls" => Deserialize::begin(&mut self.spending_controls),
+                "spending_controls" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.spending_controls)
+                }
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -132,18 +136,18 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 billing: None,
-                company: Some(None),
+                company: None,
                 created: None,
                 email: Some(None),
                 id: None,
-                individual: Some(None),
+                individual: None,
                 livemode: None,
                 metadata: None,
                 name: None,
                 phone_number: Some(None),
                 preferred_locales: Some(None),
                 requirements: None,
-                spending_controls: Some(None),
+                spending_controls: None,
                 status: None,
                 type_: None,
             }
@@ -152,18 +156,18 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(billing),
-                Some(company),
+                company,
                 Some(created),
                 Some(email),
                 Some(id),
-                Some(individual),
+                individual,
                 Some(livemode),
                 Some(metadata),
                 Some(name),
                 Some(phone_number),
                 Some(preferred_locales),
                 Some(requirements),
-                Some(spending_controls),
+                spending_controls,
                 Some(status),
                 Some(type_),
             ) = (

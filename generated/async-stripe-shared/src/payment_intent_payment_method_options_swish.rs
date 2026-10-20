@@ -24,7 +24,7 @@ impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsSwish {
 #[doc(hidden)]
 pub struct PaymentIntentPaymentMethodOptionsSwishBuilder {
     reference: Option<Option<String>>,
-    setup_future_usage: Option<Option<PaymentIntentPaymentMethodOptionsSwishSetupFutureUsage>>,
+    setup_future_usage: Option<PaymentIntentPaymentMethodOptionsSwishSetupFutureUsage>,
 }
 
 #[allow(
@@ -68,17 +68,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "reference" => Deserialize::begin(&mut self.reference),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { reference: Some(None), setup_future_usage: Some(None) }
+            Self { reference: Some(None), setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(reference), Some(setup_future_usage)) =
+            let (Some(reference), setup_future_usage) =
                 (self.reference.take(), self.setup_future_usage.take())
             else {
                 return None;

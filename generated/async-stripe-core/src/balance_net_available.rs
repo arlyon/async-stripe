@@ -19,7 +19,7 @@ impl std::fmt::Debug for BalanceNetAvailable {
 pub struct BalanceNetAvailableBuilder {
     amount: Option<i64>,
     destination: Option<String>,
-    source_types: Option<Option<stripe_core::BalanceAmountBySourceType>>,
+    source_types: Option<stripe_core::BalanceAmountBySourceType>,
 }
 
 #[allow(
@@ -64,17 +64,19 @@ const _: () = {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "destination" => Deserialize::begin(&mut self.destination),
-                "source_types" => Deserialize::begin(&mut self.source_types),
+                "source_types" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.source_types)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { amount: None, destination: None, source_types: Some(None) }
+            Self { amount: None, destination: None, source_types: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(destination), Some(source_types)) =
+            let (Some(amount), Some(destination), source_types) =
                 (self.amount, self.destination.take(), self.source_types)
             else {
                 return None;

@@ -64,8 +64,7 @@ impl std::fmt::Debug for Topup {
 #[doc(hidden)]
 pub struct TopupBuilder {
     amount: Option<i64>,
-    balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     description: Option<Option<String>>,
@@ -73,12 +72,12 @@ pub struct TopupBuilder {
     failure_code: Option<Option<String>>,
     failure_message: Option<Option<String>>,
     id: Option<stripe_shared::TopupId>,
-    initiated_by: Option<Option<TopupInitiatedBy>>,
+    initiated_by: Option<TopupInitiatedBy>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
-    payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
-    payment_method_options: Option<Option<stripe_shared::TopupResourcePaymentMethodOptions>>,
-    source: Option<Option<stripe_shared::Source>>,
+    payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
+    payment_method_options: Option<stripe_shared::TopupResourcePaymentMethodOptions>,
+    source: Option<stripe_shared::Source>,
     statement_descriptor: Option<Option<String>>,
     status: Option<TopupStatus>,
     transfer_group: Option<Option<String>>,
@@ -122,7 +121,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "balance_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.balance_transaction)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "description" => Deserialize::begin(&mut self.description),
@@ -132,12 +133,18 @@ const _: () = {
                 "failure_code" => Deserialize::begin(&mut self.failure_code),
                 "failure_message" => Deserialize::begin(&mut self.failure_message),
                 "id" => Deserialize::begin(&mut self.id),
-                "initiated_by" => Deserialize::begin(&mut self.initiated_by),
+                "initiated_by" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.initiated_by)
+                }
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
-                "source" => Deserialize::begin(&mut self.source),
+                "payment_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_method)
+                }
+                "payment_method_options" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_options,
+                ),
+                "source" => stripe_types::miniserde_helpers::begin_nullable(&mut self.source),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
                 "transfer_group" => Deserialize::begin(&mut self.transfer_group),
@@ -148,7 +155,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: None,
-                balance_transaction: Some(None),
+                balance_transaction: None,
                 created: None,
                 currency: None,
                 description: Some(None),
@@ -156,12 +163,12 @@ const _: () = {
                 failure_code: Some(None),
                 failure_message: Some(None),
                 id: None,
-                initiated_by: Some(None),
+                initiated_by: None,
                 livemode: None,
                 metadata: None,
-                payment_method: Some(None),
-                payment_method_options: Some(None),
-                source: Some(None),
+                payment_method: None,
+                payment_method_options: None,
+                source: None,
                 statement_descriptor: Some(None),
                 status: None,
                 transfer_group: Some(None),
@@ -171,7 +178,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(balance_transaction),
+                balance_transaction,
                 Some(created),
                 Some(currency),
                 Some(description),
@@ -179,12 +186,12 @@ const _: () = {
                 Some(failure_code),
                 Some(failure_message),
                 Some(id),
-                Some(initiated_by),
+                initiated_by,
                 Some(livemode),
                 Some(metadata),
-                Some(payment_method),
-                Some(payment_method_options),
-                Some(source),
+                payment_method,
+                payment_method_options,
+                source,
                 Some(statement_descriptor),
                 Some(status),
                 Some(transfer_group),

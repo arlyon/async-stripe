@@ -71,23 +71,23 @@ impl std::fmt::Debug for SubscriptionSchedulePhaseConfiguration {
 pub struct SubscriptionSchedulePhaseConfigurationBuilder {
     add_invoice_items: Option<Vec<stripe_shared::SubscriptionScheduleAddInvoiceItem>>,
     application_fee_percent: Option<Option<f64>>,
-    automatic_tax: Option<Option<stripe_shared::SchedulesPhaseAutomaticTax>>,
-    billing_cycle_anchor: Option<Option<SubscriptionSchedulePhaseConfigurationBillingCycleAnchor>>,
-    billing_thresholds: Option<Option<stripe_shared::SubscriptionBillingThresholds>>,
-    collection_method: Option<Option<SubscriptionSchedulePhaseConfigurationCollectionMethod>>,
+    automatic_tax: Option<stripe_shared::SchedulesPhaseAutomaticTax>,
+    billing_cycle_anchor: Option<SubscriptionSchedulePhaseConfigurationBillingCycleAnchor>,
+    billing_thresholds: Option<stripe_shared::SubscriptionBillingThresholds>,
+    collection_method: Option<SubscriptionSchedulePhaseConfigurationCollectionMethod>,
     currency: Option<stripe_types::Currency>,
-    default_payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
+    default_payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
     default_tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
     description: Option<Option<String>>,
     discounts: Option<Vec<stripe_shared::StackableDiscountWithDiscountSettingsAndDiscountEnd>>,
     end_date: Option<stripe_types::Timestamp>,
-    invoice_settings: Option<Option<stripe_shared::InvoiceSettingSubscriptionSchedulePhaseSetting>>,
+    invoice_settings: Option<stripe_shared::InvoiceSettingSubscriptionSchedulePhaseSetting>,
     items: Option<Vec<stripe_shared::SubscriptionScheduleConfigurationItem>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     proration_behavior: Option<SubscriptionSchedulePhaseConfigurationProrationBehavior>,
     start_date: Option<stripe_types::Timestamp>,
-    transfer_data: Option<Option<stripe_shared::SubscriptionTransferData>>,
+    transfer_data: Option<stripe_shared::SubscriptionTransferData>,
     trial: Option<Option<bool>>,
     trial_end: Option<Option<stripe_types::Timestamp>>,
 }
@@ -134,23 +134,39 @@ const _: () = {
             Ok(match k {
                 "add_invoice_items" => Deserialize::begin(&mut self.add_invoice_items),
                 "application_fee_percent" => Deserialize::begin(&mut self.application_fee_percent),
-                "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
-                "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
-                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
-                "collection_method" => Deserialize::begin(&mut self.collection_method),
+                "automatic_tax" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.automatic_tax)
+                }
+                "billing_cycle_anchor" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.billing_cycle_anchor)
+                }
+                "billing_thresholds" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.billing_thresholds)
+                }
+                "collection_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.collection_method)
+                }
                 "currency" => Deserialize::begin(&mut self.currency),
-                "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
+                "default_payment_method" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.default_payment_method,
+                ),
                 "default_tax_rates" => Deserialize::begin(&mut self.default_tax_rates),
                 "description" => Deserialize::begin(&mut self.description),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "end_date" => Deserialize::begin(&mut self.end_date),
-                "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
+                "invoice_settings" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.invoice_settings)
+                }
                 "items" => Deserialize::begin(&mut self.items),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
+                "on_behalf_of" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.on_behalf_of)
+                }
                 "proration_behavior" => Deserialize::begin(&mut self.proration_behavior),
                 "start_date" => Deserialize::begin(&mut self.start_date),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
+                "transfer_data" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transfer_data)
+                }
                 "trial" => Deserialize::begin(&mut self.trial),
                 "trial_end" => Deserialize::begin(&mut self.trial_end),
                 _ => <dyn Visitor>::ignore(),
@@ -161,23 +177,23 @@ const _: () = {
             Self {
                 add_invoice_items: None,
                 application_fee_percent: Some(None),
-                automatic_tax: Some(None),
-                billing_cycle_anchor: Some(None),
-                billing_thresholds: Some(None),
-                collection_method: Some(None),
+                automatic_tax: None,
+                billing_cycle_anchor: None,
+                billing_thresholds: None,
+                collection_method: None,
                 currency: None,
-                default_payment_method: Some(None),
+                default_payment_method: None,
                 default_tax_rates: Some(None),
                 description: Some(None),
                 discounts: None,
                 end_date: None,
-                invoice_settings: Some(None),
+                invoice_settings: None,
                 items: None,
                 metadata: Some(None),
-                on_behalf_of: Some(None),
+                on_behalf_of: None,
                 proration_behavior: None,
                 start_date: None,
-                transfer_data: Some(None),
+                transfer_data: None,
                 trial: Some(None),
                 trial_end: Some(None),
             }
@@ -187,23 +203,23 @@ const _: () = {
             let (
                 Some(add_invoice_items),
                 Some(application_fee_percent),
-                Some(automatic_tax),
-                Some(billing_cycle_anchor),
-                Some(billing_thresholds),
-                Some(collection_method),
+                automatic_tax,
+                billing_cycle_anchor,
+                billing_thresholds,
+                collection_method,
                 Some(currency),
-                Some(default_payment_method),
+                default_payment_method,
                 Some(default_tax_rates),
                 Some(description),
                 Some(discounts),
                 Some(end_date),
-                Some(invoice_settings),
+                invoice_settings,
                 Some(items),
                 Some(metadata),
-                Some(on_behalf_of),
+                on_behalf_of,
                 Some(proration_behavior),
                 Some(start_date),
-                Some(transfer_data),
+                transfer_data,
                 Some(trial),
                 Some(trial_end),
             ) = (

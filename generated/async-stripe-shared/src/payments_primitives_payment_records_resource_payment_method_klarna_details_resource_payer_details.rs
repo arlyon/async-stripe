@@ -17,7 +17,7 @@ impl std::fmt::Debug
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodKlarnaDetailsResourcePayerDetailsBuilder {
-    address: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodKlarnaDetailsResourcePayerDetailsResourcePayerDetailsAddress>>,
+    address: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodKlarnaDetailsResourcePayerDetailsResourcePayerDetailsAddress>,
 
 }
 
@@ -67,18 +67,18 @@ const _: () = {
     type Out = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodKlarnaDetailsResourcePayerDetails;
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
-            "address" => Deserialize::begin(&mut self.address),
+            "address" => stripe_types::miniserde_helpers::begin_nullable(&mut self.address),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self { address: Some(None),
+        Self { address: None,
  }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(address),
+        let (address,
 ) = (self.address.take(),
 ) else {
             return None;

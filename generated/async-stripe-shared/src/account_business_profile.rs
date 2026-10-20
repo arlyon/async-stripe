@@ -39,15 +39,15 @@ impl std::fmt::Debug for AccountBusinessProfile {
 }
 #[doc(hidden)]
 pub struct AccountBusinessProfileBuilder {
-    annual_revenue: Option<Option<stripe_shared::AccountAnnualRevenue>>,
+    annual_revenue: Option<stripe_shared::AccountAnnualRevenue>,
     estimated_worker_count: Option<Option<u64>>,
     mcc: Option<Option<String>>,
     minority_owned_business_designation:
         Option<Option<Vec<AccountBusinessProfileMinorityOwnedBusinessDesignation>>>,
-    monthly_estimated_revenue: Option<Option<stripe_shared::AccountMonthlyEstimatedRevenue>>,
+    monthly_estimated_revenue: Option<stripe_shared::AccountMonthlyEstimatedRevenue>,
     name: Option<Option<String>>,
     product_description: Option<Option<String>>,
-    support_address: Option<Option<stripe_shared::Address>>,
+    support_address: Option<stripe_shared::Address>,
     support_email: Option<Option<String>>,
     support_phone: Option<Option<String>>,
     support_url: Option<Option<String>>,
@@ -94,18 +94,22 @@ const _: () = {
         type Out = AccountBusinessProfile;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "annual_revenue" => Deserialize::begin(&mut self.annual_revenue),
+                "annual_revenue" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.annual_revenue)
+                }
                 "estimated_worker_count" => Deserialize::begin(&mut self.estimated_worker_count),
                 "mcc" => Deserialize::begin(&mut self.mcc),
                 "minority_owned_business_designation" => {
                     Deserialize::begin(&mut self.minority_owned_business_designation)
                 }
-                "monthly_estimated_revenue" => {
-                    Deserialize::begin(&mut self.monthly_estimated_revenue)
-                }
+                "monthly_estimated_revenue" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.monthly_estimated_revenue,
+                ),
                 "name" => Deserialize::begin(&mut self.name),
                 "product_description" => Deserialize::begin(&mut self.product_description),
-                "support_address" => Deserialize::begin(&mut self.support_address),
+                "support_address" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.support_address)
+                }
                 "support_email" => Deserialize::begin(&mut self.support_email),
                 "support_phone" => Deserialize::begin(&mut self.support_phone),
                 "support_url" => Deserialize::begin(&mut self.support_url),
@@ -116,14 +120,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                annual_revenue: Some(None),
+                annual_revenue: None,
                 estimated_worker_count: Some(None),
                 mcc: Some(None),
                 minority_owned_business_designation: Some(None),
-                monthly_estimated_revenue: Some(None),
+                monthly_estimated_revenue: None,
                 name: Some(None),
                 product_description: Some(None),
-                support_address: Some(None),
+                support_address: None,
                 support_email: Some(None),
                 support_phone: Some(None),
                 support_url: Some(None),
@@ -133,14 +137,14 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(annual_revenue),
+                annual_revenue,
                 Some(estimated_worker_count),
                 Some(mcc),
                 Some(minority_owned_business_designation),
-                Some(monthly_estimated_revenue),
+                monthly_estimated_revenue,
                 Some(name),
                 Some(product_description),
-                Some(support_address),
+                support_address,
                 Some(support_email),
                 Some(support_phone),
                 Some(support_url),

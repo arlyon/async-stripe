@@ -17,7 +17,7 @@ impl std::fmt::Debug for BillingCreditGrantsResourceAmount {
 }
 #[doc(hidden)]
 pub struct BillingCreditGrantsResourceAmountBuilder {
-    monetary: Option<Option<stripe_shared::BillingCreditGrantsResourceMonetaryAmount>>,
+    monetary: Option<stripe_shared::BillingCreditGrantsResourceMonetaryAmount>,
     type_: Option<BillingCreditGrantsResourceAmountType>,
 }
 
@@ -61,18 +61,18 @@ const _: () = {
         type Out = BillingCreditGrantsResourceAmount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "monetary" => Deserialize::begin(&mut self.monetary),
+                "monetary" => stripe_types::miniserde_helpers::begin_nullable(&mut self.monetary),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { monetary: Some(None), type_: None }
+            Self { monetary: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(monetary), Some(type_)) = (self.monetary.take(), self.type_.take()) else {
+            let (monetary, Some(type_)) = (self.monetary.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { monetary, type_ })

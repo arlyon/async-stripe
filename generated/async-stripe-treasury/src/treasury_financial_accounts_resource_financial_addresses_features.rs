@@ -15,7 +15,7 @@ impl std::fmt::Debug for TreasuryFinancialAccountsResourceFinancialAddressesFeat
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceFinancialAddressesFeaturesBuilder {
-    aba: Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceAbaToggleSettings>>,
+    aba: Option<stripe_treasury::TreasuryFinancialAccountsResourceAbaToggleSettings>,
 }
 
 #[allow(
@@ -58,17 +58,17 @@ const _: () = {
         type Out = TreasuryFinancialAccountsResourceFinancialAddressesFeatures;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "aba" => Deserialize::begin(&mut self.aba),
+                "aba" => stripe_types::miniserde_helpers::begin_nullable(&mut self.aba),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { aba: Some(None) }
+            Self { aba: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(aba),) = (self.aba.take(),) else {
+            let (aba,) = (self.aba.take(),) else {
                 return None;
             };
             Some(Self::Out { aba })

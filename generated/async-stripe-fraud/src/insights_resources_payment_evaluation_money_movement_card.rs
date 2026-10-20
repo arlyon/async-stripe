@@ -19,9 +19,8 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCard {
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationMoneyMovementCardBuilder {
-    customer_presence:
-        Option<Option<InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence>>,
-    payment_type: Option<Option<InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType>>,
+    customer_presence: Option<InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence>,
+    payment_type: Option<InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType>,
 }
 
 #[allow(
@@ -65,18 +64,22 @@ const _: () = {
         type Out = InsightsResourcesPaymentEvaluationMoneyMovementCard;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "customer_presence" => Deserialize::begin(&mut self.customer_presence),
-                "payment_type" => Deserialize::begin(&mut self.payment_type),
+                "customer_presence" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.customer_presence)
+                }
+                "payment_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_type)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { customer_presence: Some(None), payment_type: Some(None) }
+            Self { customer_presence: None, payment_type: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer_presence), Some(payment_type)) =
+            let (customer_presence, payment_type) =
                 (self.customer_presence.take(), self.payment_type.take())
             else {
                 return None;

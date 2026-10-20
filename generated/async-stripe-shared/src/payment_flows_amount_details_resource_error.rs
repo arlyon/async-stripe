@@ -16,7 +16,7 @@ impl std::fmt::Debug for PaymentFlowsAmountDetailsResourceError {
 }
 #[doc(hidden)]
 pub struct PaymentFlowsAmountDetailsResourceErrorBuilder {
-    code: Option<Option<PaymentFlowsAmountDetailsResourceErrorCode>>,
+    code: Option<PaymentFlowsAmountDetailsResourceErrorCode>,
     message: Option<Option<String>>,
 }
 
@@ -60,18 +60,18 @@ const _: () = {
         type Out = PaymentFlowsAmountDetailsResourceError;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "code" => Deserialize::begin(&mut self.code),
+                "code" => stripe_types::miniserde_helpers::begin_nullable(&mut self.code),
                 "message" => Deserialize::begin(&mut self.message),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { code: Some(None), message: Some(None) }
+            Self { code: None, message: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(code), Some(message)) = (self.code.take(), self.message.take()) else {
+            let (code, Some(message)) = (self.code.take(), self.message.take()) else {
                 return None;
             };
             Some(Self::Out { code, message })

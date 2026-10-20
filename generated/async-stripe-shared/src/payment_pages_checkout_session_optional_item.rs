@@ -17,7 +17,7 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionOptionalItem {
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionOptionalItemBuilder {
     adjustable_quantity:
-        Option<Option<stripe_shared::PaymentPagesCheckoutSessionOptionalItemAdjustableQuantity>>,
+        Option<stripe_shared::PaymentPagesCheckoutSessionOptionalItemAdjustableQuantity>,
     price: Option<String>,
     quantity: Option<u64>,
 }
@@ -62,7 +62,9 @@ const _: () = {
         type Out = PaymentPagesCheckoutSessionOptionalItem;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "adjustable_quantity" => Deserialize::begin(&mut self.adjustable_quantity),
+                "adjustable_quantity" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.adjustable_quantity)
+                }
                 "price" => Deserialize::begin(&mut self.price),
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 _ => <dyn Visitor>::ignore(),
@@ -70,11 +72,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { adjustable_quantity: Some(None), price: None, quantity: None }
+            Self { adjustable_quantity: None, price: None, quantity: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(adjustable_quantity), Some(price), Some(quantity)) =
+            let (adjustable_quantity, Some(price), Some(quantity)) =
                 (self.adjustable_quantity, self.price.take(), self.quantity)
             else {
                 return None;

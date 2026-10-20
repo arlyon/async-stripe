@@ -93,10 +93,10 @@ pub struct PlanBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     meter: Option<Option<String>>,
     nickname: Option<Option<String>>,
-    product: Option<Option<stripe_types::Expandable<stripe_shared::Product>>>,
+    product: Option<stripe_types::Expandable<stripe_shared::Product>>,
     tiers: Option<Option<Vec<stripe_shared::PlanTier>>>,
-    tiers_mode: Option<Option<stripe_shared::PlanTiersMode>>,
-    transform_usage: Option<Option<stripe_shared::TransformUsage>>,
+    tiers_mode: Option<stripe_shared::PlanTiersMode>,
+    transform_usage: Option<stripe_shared::TransformUsage>,
     trial_period_days: Option<Option<u32>>,
     usage_type: Option<stripe_shared::PlanUsageType>,
 }
@@ -151,10 +151,14 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "meter" => Deserialize::begin(&mut self.meter),
                 "nickname" => Deserialize::begin(&mut self.nickname),
-                "product" => Deserialize::begin(&mut self.product),
+                "product" => stripe_types::miniserde_helpers::begin_nullable(&mut self.product),
                 "tiers" => Deserialize::begin(&mut self.tiers),
-                "tiers_mode" => Deserialize::begin(&mut self.tiers_mode),
-                "transform_usage" => Deserialize::begin(&mut self.transform_usage),
+                "tiers_mode" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tiers_mode)
+                }
+                "transform_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transform_usage)
+                }
                 "trial_period_days" => Deserialize::begin(&mut self.trial_period_days),
                 "usage_type" => Deserialize::begin(&mut self.usage_type),
                 _ => <dyn Visitor>::ignore(),
@@ -176,10 +180,10 @@ const _: () = {
                 metadata: Some(None),
                 meter: Some(None),
                 nickname: Some(None),
-                product: Some(None),
+                product: None,
                 tiers: Some(None),
-                tiers_mode: Some(None),
-                transform_usage: Some(None),
+                tiers_mode: None,
+                transform_usage: None,
                 trial_period_days: Some(None),
                 usage_type: None,
             }
@@ -200,10 +204,10 @@ const _: () = {
                 Some(metadata),
                 Some(meter),
                 Some(nickname),
-                Some(product),
+                product,
                 Some(tiers),
-                Some(tiers_mode),
-                Some(transform_usage),
+                tiers_mode,
+                transform_usage,
                 Some(trial_period_days),
                 Some(usage_type),
             ) = (

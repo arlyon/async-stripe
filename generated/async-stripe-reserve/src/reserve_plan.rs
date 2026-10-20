@@ -44,12 +44,12 @@ pub struct ReservePlanBuilder {
     created_by: Option<ReservePlanCreatedBy>,
     currency: Option<Option<stripe_types::Currency>>,
     disabled_at: Option<Option<stripe_types::Timestamp>>,
-    fixed_release: Option<Option<stripe_reserve::ReservesReservePlansResourcesFixedRelease>>,
+    fixed_release: Option<stripe_reserve::ReservesReservePlansResourcesFixedRelease>,
     id: Option<stripe_reserve::ReservePlanId>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     percent: Option<i64>,
-    rolling_release: Option<Option<stripe_reserve::ReservesReservePlansResourcesRollingRelease>>,
+    rolling_release: Option<stripe_reserve::ReservesReservePlansResourcesRollingRelease>,
     status: Option<ReservePlanStatus>,
     type_: Option<ReservePlanType>,
 }
@@ -98,12 +98,16 @@ const _: () = {
                 "created_by" => Deserialize::begin(&mut self.created_by),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "disabled_at" => Deserialize::begin(&mut self.disabled_at),
-                "fixed_release" => Deserialize::begin(&mut self.fixed_release),
+                "fixed_release" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.fixed_release)
+                }
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "percent" => Deserialize::begin(&mut self.percent),
-                "rolling_release" => Deserialize::begin(&mut self.rolling_release),
+                "rolling_release" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.rolling_release)
+                }
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -116,12 +120,12 @@ const _: () = {
                 created_by: None,
                 currency: Some(None),
                 disabled_at: Some(None),
-                fixed_release: Some(None),
+                fixed_release: None,
                 id: None,
                 livemode: None,
                 metadata: Some(None),
                 percent: None,
-                rolling_release: Some(None),
+                rolling_release: None,
                 status: None,
                 type_: None,
             }
@@ -133,12 +137,12 @@ const _: () = {
                 Some(created_by),
                 Some(currency),
                 Some(disabled_at),
-                Some(fixed_release),
+                fixed_release,
                 Some(id),
                 Some(livemode),
                 Some(metadata),
                 Some(percent),
-                Some(rolling_release),
+                rolling_release,
                 Some(status),
                 Some(type_),
             ) = (

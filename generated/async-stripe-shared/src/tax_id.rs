@@ -42,14 +42,14 @@ impl std::fmt::Debug for TaxId {
 pub struct TaxIdBuilder {
     country: Option<Option<String>>,
     created: Option<stripe_types::Timestamp>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     id: Option<stripe_shared::TaxIdId>,
     livemode: Option<bool>,
-    owner: Option<Option<stripe_shared::TaxIDsOwner>>,
+    owner: Option<stripe_shared::TaxIDsOwner>,
     type_: Option<TaxIdType>,
     value: Option<String>,
-    verification: Option<Option<stripe_shared::TaxIdVerification>>,
+    verification: Option<stripe_shared::TaxIdVerification>,
 }
 
 #[allow(
@@ -91,14 +91,16 @@ const _: () = {
             Ok(match k {
                 "country" => Deserialize::begin(&mut self.country),
                 "created" => Deserialize::begin(&mut self.created),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "owner" => Deserialize::begin(&mut self.owner),
+                "owner" => stripe_types::miniserde_helpers::begin_nullable(&mut self.owner),
                 "type" => Deserialize::begin(&mut self.type_),
                 "value" => Deserialize::begin(&mut self.value),
-                "verification" => Deserialize::begin(&mut self.verification),
+                "verification" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verification)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -107,14 +109,14 @@ const _: () = {
             Self {
                 country: Some(None),
                 created: None,
-                customer: Some(None),
+                customer: None,
                 customer_account: Some(None),
                 id: None,
                 livemode: None,
-                owner: Some(None),
+                owner: None,
                 type_: None,
                 value: None,
-                verification: Some(None),
+                verification: None,
             }
         }
 
@@ -122,14 +124,14 @@ const _: () = {
             let (
                 Some(country),
                 Some(created),
-                Some(customer),
+                customer,
                 Some(customer_account),
                 Some(id),
                 Some(livemode),
-                Some(owner),
+                owner,
                 Some(type_),
                 Some(value),
-                Some(verification),
+                verification,
             ) = (
                 self.country.take(),
                 self.created,

@@ -45,10 +45,10 @@ pub struct IssuingTokenBuilder {
     last4: Option<Option<String>>,
     livemode: Option<bool>,
     network: Option<IssuingTokenNetwork>,
-    network_data: Option<Option<stripe_shared::IssuingNetworkTokenNetworkData>>,
+    network_data: Option<stripe_shared::IssuingNetworkTokenNetworkData>,
     network_updated_at: Option<stripe_types::Timestamp>,
     status: Option<stripe_shared::IssuingTokenStatus>,
-    wallet_provider: Option<Option<IssuingTokenWalletProvider>>,
+    wallet_provider: Option<IssuingTokenWalletProvider>,
 }
 
 #[allow(
@@ -98,10 +98,14 @@ const _: () = {
                 "last4" => Deserialize::begin(&mut self.last4),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "network" => Deserialize::begin(&mut self.network),
-                "network_data" => Deserialize::begin(&mut self.network_data),
+                "network_data" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.network_data)
+                }
                 "network_updated_at" => Deserialize::begin(&mut self.network_updated_at),
                 "status" => Deserialize::begin(&mut self.status),
-                "wallet_provider" => Deserialize::begin(&mut self.wallet_provider),
+                "wallet_provider" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.wallet_provider)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -115,10 +119,10 @@ const _: () = {
                 last4: Some(None),
                 livemode: None,
                 network: None,
-                network_data: Some(None),
+                network_data: None,
                 network_updated_at: None,
                 status: None,
-                wallet_provider: Some(None),
+                wallet_provider: None,
             }
         }
 
@@ -131,10 +135,10 @@ const _: () = {
                 Some(last4),
                 Some(livemode),
                 Some(network),
-                Some(network_data),
+                network_data,
                 Some(network_updated_at),
                 Some(status),
-                Some(wallet_provider),
+                wallet_provider,
             ) = (
                 self.card.take(),
                 self.created,

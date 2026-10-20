@@ -87,18 +87,18 @@ impl std::fmt::Debug for Person {
 #[doc(hidden)]
 pub struct PersonBuilder {
     account: Option<Option<String>>,
-    additional_tos_acceptances: Option<Option<stripe_shared::PersonAdditionalTosAcceptances>>,
-    address: Option<Option<stripe_shared::Address>>,
-    address_kana: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
-    address_kanji: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
+    additional_tos_acceptances: Option<stripe_shared::PersonAdditionalTosAcceptances>,
+    address: Option<stripe_shared::Address>,
+    address_kana: Option<stripe_shared::LegalEntityJapanAddress>,
+    address_kanji: Option<stripe_shared::LegalEntityJapanAddress>,
     created: Option<stripe_types::Timestamp>,
-    dob: Option<Option<stripe_shared::LegalEntityDob>>,
+    dob: Option<stripe_shared::LegalEntityDob>,
     email: Option<Option<String>>,
     first_name: Option<Option<String>>,
     first_name_kana: Option<Option<String>>,
     first_name_kanji: Option<Option<String>>,
     full_name_aliases: Option<Option<Vec<String>>>,
-    future_requirements: Option<Option<stripe_shared::PersonFutureRequirements>>,
+    future_requirements: Option<stripe_shared::PersonFutureRequirements>,
     gender: Option<Option<String>>,
     id: Option<stripe_shared::PersonId>,
     id_number_provided: Option<Option<bool>>,
@@ -110,13 +110,13 @@ pub struct PersonBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     nationality: Option<Option<String>>,
     phone: Option<Option<String>>,
-    political_exposure: Option<Option<stripe_shared::PersonPoliticalExposure>>,
-    registered_address: Option<Option<stripe_shared::Address>>,
-    relationship: Option<Option<stripe_shared::PersonRelationship>>,
-    requirements: Option<Option<stripe_shared::PersonRequirements>>,
+    political_exposure: Option<stripe_shared::PersonPoliticalExposure>,
+    registered_address: Option<stripe_shared::Address>,
+    relationship: Option<stripe_shared::PersonRelationship>,
+    requirements: Option<stripe_shared::PersonRequirements>,
     ssn_last_4_provided: Option<Option<bool>>,
-    us_cfpb_data: Option<Option<stripe_shared::PersonUsCfpbData>>,
-    verification: Option<Option<stripe_shared::LegalEntityPersonVerification>>,
+    us_cfpb_data: Option<stripe_shared::PersonUsCfpbData>,
+    verification: Option<stripe_shared::LegalEntityPersonVerification>,
 }
 
 #[allow(
@@ -157,20 +157,26 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "account" => Deserialize::begin(&mut self.account),
-                "additional_tos_acceptances" => {
-                    Deserialize::begin(&mut self.additional_tos_acceptances)
+                "additional_tos_acceptances" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.additional_tos_acceptances,
+                ),
+                "address" => stripe_types::miniserde_helpers::begin_nullable(&mut self.address),
+                "address_kana" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.address_kana)
                 }
-                "address" => Deserialize::begin(&mut self.address),
-                "address_kana" => Deserialize::begin(&mut self.address_kana),
-                "address_kanji" => Deserialize::begin(&mut self.address_kanji),
+                "address_kanji" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.address_kanji)
+                }
                 "created" => Deserialize::begin(&mut self.created),
-                "dob" => Deserialize::begin(&mut self.dob),
+                "dob" => stripe_types::miniserde_helpers::begin_nullable(&mut self.dob),
                 "email" => Deserialize::begin(&mut self.email),
                 "first_name" => Deserialize::begin(&mut self.first_name),
                 "first_name_kana" => Deserialize::begin(&mut self.first_name_kana),
                 "first_name_kanji" => Deserialize::begin(&mut self.first_name_kanji),
                 "full_name_aliases" => Deserialize::begin(&mut self.full_name_aliases),
-                "future_requirements" => Deserialize::begin(&mut self.future_requirements),
+                "future_requirements" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.future_requirements)
+                }
                 "gender" => Deserialize::begin(&mut self.gender),
                 "id" => Deserialize::begin(&mut self.id),
                 "id_number_provided" => Deserialize::begin(&mut self.id_number_provided),
@@ -184,13 +190,25 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "nationality" => Deserialize::begin(&mut self.nationality),
                 "phone" => Deserialize::begin(&mut self.phone),
-                "political_exposure" => Deserialize::begin(&mut self.political_exposure),
-                "registered_address" => Deserialize::begin(&mut self.registered_address),
-                "relationship" => Deserialize::begin(&mut self.relationship),
-                "requirements" => Deserialize::begin(&mut self.requirements),
+                "political_exposure" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.political_exposure)
+                }
+                "registered_address" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.registered_address)
+                }
+                "relationship" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.relationship)
+                }
+                "requirements" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.requirements)
+                }
                 "ssn_last_4_provided" => Deserialize::begin(&mut self.ssn_last_4_provided),
-                "us_cfpb_data" => Deserialize::begin(&mut self.us_cfpb_data),
-                "verification" => Deserialize::begin(&mut self.verification),
+                "us_cfpb_data" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.us_cfpb_data)
+                }
+                "verification" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verification)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -198,18 +216,18 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 account: Some(None),
-                additional_tos_acceptances: Some(None),
-                address: Some(None),
-                address_kana: Some(None),
-                address_kanji: Some(None),
+                additional_tos_acceptances: None,
+                address: None,
+                address_kana: None,
+                address_kanji: None,
                 created: None,
-                dob: Some(None),
+                dob: None,
                 email: Some(None),
                 first_name: Some(None),
                 first_name_kana: Some(None),
                 first_name_kanji: Some(None),
                 full_name_aliases: Some(None),
-                future_requirements: Some(None),
+                future_requirements: None,
                 gender: Some(None),
                 id: None,
                 id_number_provided: Some(None),
@@ -221,31 +239,31 @@ const _: () = {
                 metadata: Some(None),
                 nationality: Some(None),
                 phone: Some(None),
-                political_exposure: Some(None),
-                registered_address: Some(None),
-                relationship: Some(None),
-                requirements: Some(None),
+                political_exposure: None,
+                registered_address: None,
+                relationship: None,
+                requirements: None,
                 ssn_last_4_provided: Some(None),
-                us_cfpb_data: Some(None),
-                verification: Some(None),
+                us_cfpb_data: None,
+                verification: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(account),
-                Some(additional_tos_acceptances),
-                Some(address),
-                Some(address_kana),
-                Some(address_kanji),
+                additional_tos_acceptances,
+                address,
+                address_kana,
+                address_kanji,
                 Some(created),
-                Some(dob),
+                dob,
                 Some(email),
                 Some(first_name),
                 Some(first_name_kana),
                 Some(first_name_kanji),
                 Some(full_name_aliases),
-                Some(future_requirements),
+                future_requirements,
                 Some(gender),
                 Some(id),
                 Some(id_number_provided),
@@ -257,13 +275,13 @@ const _: () = {
                 Some(metadata),
                 Some(nationality),
                 Some(phone),
-                Some(political_exposure),
-                Some(registered_address),
-                Some(relationship),
-                Some(requirements),
+                political_exposure,
+                registered_address,
+                relationship,
+                requirements,
                 Some(ssn_last_4_provided),
-                Some(us_cfpb_data),
-                Some(verification),
+                us_cfpb_data,
+                verification,
             ) = (
                 self.account.take(),
                 self.additional_tos_acceptances.take(),

@@ -20,7 +20,7 @@ impl std::fmt::Debug for GelatoEmailReport {
 #[doc(hidden)]
 pub struct GelatoEmailReportBuilder {
     email: Option<Option<String>>,
-    error: Option<Option<stripe_misc::GelatoEmailReportError>>,
+    error: Option<stripe_misc::GelatoEmailReportError>,
     status: Option<GelatoEmailReportStatus>,
 }
 
@@ -65,18 +65,18 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "email" => Deserialize::begin(&mut self.email),
-                "error" => Deserialize::begin(&mut self.error),
+                "error" => stripe_types::miniserde_helpers::begin_nullable(&mut self.error),
                 "status" => Deserialize::begin(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { email: Some(None), error: Some(None), status: None }
+            Self { email: Some(None), error: None, status: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(email), Some(error), Some(status)) =
+            let (Some(email), error, Some(status)) =
                 (self.email.take(), self.error.take(), self.status.take())
             else {
                 return None;

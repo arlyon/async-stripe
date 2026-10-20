@@ -25,10 +25,10 @@ impl std::fmt::Debug for IssuingDisputeDuplicateEvidence {
 }
 #[doc(hidden)]
 pub struct IssuingDisputeDuplicateEvidenceBuilder {
-    additional_documentation: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
-    card_statement: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
-    cash_receipt: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
-    check_image: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    additional_documentation: Option<stripe_types::Expandable<stripe_shared::File>>,
+    card_statement: Option<stripe_types::Expandable<stripe_shared::File>>,
+    cash_receipt: Option<stripe_types::Expandable<stripe_shared::File>>,
+    check_image: Option<stripe_types::Expandable<stripe_shared::File>>,
     explanation: Option<Option<String>>,
     original_transaction: Option<Option<String>>,
 }
@@ -73,12 +73,18 @@ const _: () = {
         type Out = IssuingDisputeDuplicateEvidence;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "additional_documentation" => {
-                    Deserialize::begin(&mut self.additional_documentation)
+                "additional_documentation" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.additional_documentation,
+                ),
+                "card_statement" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.card_statement)
                 }
-                "card_statement" => Deserialize::begin(&mut self.card_statement),
-                "cash_receipt" => Deserialize::begin(&mut self.cash_receipt),
-                "check_image" => Deserialize::begin(&mut self.check_image),
+                "cash_receipt" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.cash_receipt)
+                }
+                "check_image" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.check_image)
+                }
                 "explanation" => Deserialize::begin(&mut self.explanation),
                 "original_transaction" => Deserialize::begin(&mut self.original_transaction),
                 _ => <dyn Visitor>::ignore(),
@@ -87,10 +93,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                additional_documentation: Some(None),
-                card_statement: Some(None),
-                cash_receipt: Some(None),
-                check_image: Some(None),
+                additional_documentation: None,
+                card_statement: None,
+                cash_receipt: None,
+                check_image: None,
                 explanation: Some(None),
                 original_transaction: Some(None),
             }
@@ -98,10 +104,10 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(additional_documentation),
-                Some(card_statement),
-                Some(cash_receipt),
-                Some(check_image),
+                additional_documentation,
+                card_statement,
+                cash_receipt,
+                check_image,
                 Some(explanation),
                 Some(original_transaction),
             ) = (

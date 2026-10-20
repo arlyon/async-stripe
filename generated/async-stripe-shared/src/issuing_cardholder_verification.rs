@@ -14,7 +14,7 @@ impl std::fmt::Debug for IssuingCardholderVerification {
 }
 #[doc(hidden)]
 pub struct IssuingCardholderVerificationBuilder {
-    document: Option<Option<stripe_shared::IssuingCardholderIdDocument>>,
+    document: Option<stripe_shared::IssuingCardholderIdDocument>,
 }
 
 #[allow(
@@ -57,17 +57,17 @@ const _: () = {
         type Out = IssuingCardholderVerification;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "document" => Deserialize::begin(&mut self.document),
+                "document" => stripe_types::miniserde_helpers::begin_nullable(&mut self.document),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { document: Some(None) }
+            Self { document: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(document),) = (self.document.take(),) else {
+            let (document,) = (self.document.take(),) else {
                 return None;
             };
             Some(Self::Out { document })

@@ -37,10 +37,10 @@ pub struct InsightsResourcesPaymentEvaluationPaymentDetailsBuilder {
     currency: Option<stripe_types::Currency>,
     description: Option<Option<String>>,
     money_movement_details:
-        Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationMoneyMovementDetails>>,
+        Option<stripe_fraud::InsightsResourcesPaymentEvaluationMoneyMovementDetails>,
     payment_method_details:
-        Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationPaymentMethodDetails>>,
-    shipping_details: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationShipping>>,
+        Option<stripe_fraud::InsightsResourcesPaymentEvaluationPaymentMethodDetails>,
+    shipping_details: Option<stripe_fraud::InsightsResourcesPaymentEvaluationShipping>,
     statement_descriptor: Option<Option<String>>,
 }
 
@@ -87,9 +87,15 @@ const _: () = {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "description" => Deserialize::begin(&mut self.description),
-                "money_movement_details" => Deserialize::begin(&mut self.money_movement_details),
-                "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
-                "shipping_details" => Deserialize::begin(&mut self.shipping_details),
+                "money_movement_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.money_movement_details,
+                ),
+                "payment_method_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_details,
+                ),
+                "shipping_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_details)
+                }
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -100,9 +106,9 @@ const _: () = {
                 amount: None,
                 currency: None,
                 description: Some(None),
-                money_movement_details: Some(None),
-                payment_method_details: Some(None),
-                shipping_details: Some(None),
+                money_movement_details: None,
+                payment_method_details: None,
+                shipping_details: None,
                 statement_descriptor: Some(None),
             }
         }
@@ -112,9 +118,9 @@ const _: () = {
                 Some(amount),
                 Some(currency),
                 Some(description),
-                Some(money_movement_details),
-                Some(payment_method_details),
-                Some(shipping_details),
+                money_movement_details,
+                payment_method_details,
+                shipping_details,
                 Some(statement_descriptor),
             ) = (
                 self.amount,

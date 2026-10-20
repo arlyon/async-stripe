@@ -14,7 +14,7 @@ impl std::fmt::Debug for PaymentMethodDetailsMobilepay {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsMobilepayBuilder {
-    card: Option<Option<stripe_shared::InternalCard>>,
+    card: Option<stripe_shared::InternalCard>,
 }
 
 #[allow(
@@ -57,17 +57,17 @@ const _: () = {
         type Out = PaymentMethodDetailsMobilepay;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card" => Deserialize::begin(&mut self.card),
+                "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { card: Some(None) }
+            Self { card: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card),) = (self.card.take(),) else {
+            let (card,) = (self.card.take(),) else {
                 return None;
             };
             Some(Self::Out { card })

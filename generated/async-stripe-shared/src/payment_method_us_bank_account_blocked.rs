@@ -16,8 +16,8 @@ impl std::fmt::Debug for PaymentMethodUsBankAccountBlocked {
 }
 #[doc(hidden)]
 pub struct PaymentMethodUsBankAccountBlockedBuilder {
-    network_code: Option<Option<PaymentMethodUsBankAccountBlockedNetworkCode>>,
-    reason: Option<Option<PaymentMethodUsBankAccountBlockedReason>>,
+    network_code: Option<PaymentMethodUsBankAccountBlockedNetworkCode>,
+    reason: Option<PaymentMethodUsBankAccountBlockedReason>,
 }
 
 #[allow(
@@ -60,19 +60,20 @@ const _: () = {
         type Out = PaymentMethodUsBankAccountBlocked;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "network_code" => Deserialize::begin(&mut self.network_code),
-                "reason" => Deserialize::begin(&mut self.reason),
+                "network_code" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.network_code)
+                }
+                "reason" => stripe_types::miniserde_helpers::begin_nullable(&mut self.reason),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { network_code: Some(None), reason: Some(None) }
+            Self { network_code: None, reason: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(network_code), Some(reason)) = (self.network_code.take(), self.reason.take())
-            else {
+            let (network_code, reason) = (self.network_code.take(), self.reason.take()) else {
                 return None;
             };
             Some(Self::Out { network_code, reason })

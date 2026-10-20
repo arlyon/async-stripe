@@ -63,9 +63,9 @@ pub struct PaymentMethodInteracPresentBuilder {
     iin: Option<Option<String>>,
     issuer: Option<Option<String>>,
     last4: Option<Option<String>>,
-    networks: Option<Option<stripe_shared::PaymentMethodCardPresentNetworks>>,
+    networks: Option<stripe_shared::PaymentMethodCardPresentNetworks>,
     preferred_locales: Option<Option<Vec<String>>>,
-    read_method: Option<Option<PaymentMethodInteracPresentReadMethod>>,
+    read_method: Option<PaymentMethodInteracPresentReadMethod>,
 }
 
 #[allow(
@@ -119,9 +119,11 @@ const _: () = {
                 "iin" => Deserialize::begin(&mut self.iin),
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
-                "networks" => Deserialize::begin(&mut self.networks),
+                "networks" => stripe_types::miniserde_helpers::begin_nullable(&mut self.networks),
                 "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
-                "read_method" => Deserialize::begin(&mut self.read_method),
+                "read_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.read_method)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -139,9 +141,9 @@ const _: () = {
                 iin: Some(None),
                 issuer: Some(None),
                 last4: Some(None),
-                networks: Some(None),
+                networks: None,
                 preferred_locales: Some(None),
-                read_method: Some(None),
+                read_method: None,
             }
         }
 
@@ -158,9 +160,9 @@ const _: () = {
                 Some(iin),
                 Some(issuer),
                 Some(last4),
-                Some(networks),
+                networks,
                 Some(preferred_locales),
-                Some(read_method),
+                read_method,
             ) = (
                 self.brand.take(),
                 self.cardholder_name.take(),

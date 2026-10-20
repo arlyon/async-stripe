@@ -32,15 +32,15 @@ impl std::fmt::Debug for IssuingDisputeCanceledEvidence {
 }
 #[doc(hidden)]
 pub struct IssuingDisputeCanceledEvidenceBuilder {
-    additional_documentation: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    additional_documentation: Option<stripe_types::Expandable<stripe_shared::File>>,
     canceled_at: Option<Option<stripe_types::Timestamp>>,
     cancellation_policy_provided: Option<Option<bool>>,
     cancellation_reason: Option<Option<String>>,
     expected_at: Option<Option<stripe_types::Timestamp>>,
     explanation: Option<Option<String>>,
     product_description: Option<Option<String>>,
-    product_type: Option<Option<IssuingDisputeCanceledEvidenceProductType>>,
-    return_status: Option<Option<IssuingDisputeCanceledEvidenceReturnStatus>>,
+    product_type: Option<IssuingDisputeCanceledEvidenceProductType>,
+    return_status: Option<IssuingDisputeCanceledEvidenceReturnStatus>,
     returned_at: Option<Option<stripe_types::Timestamp>>,
 }
 
@@ -84,9 +84,9 @@ const _: () = {
         type Out = IssuingDisputeCanceledEvidence;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "additional_documentation" => {
-                    Deserialize::begin(&mut self.additional_documentation)
-                }
+                "additional_documentation" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.additional_documentation,
+                ),
                 "canceled_at" => Deserialize::begin(&mut self.canceled_at),
                 "cancellation_policy_provided" => {
                     Deserialize::begin(&mut self.cancellation_policy_provided)
@@ -95,8 +95,12 @@ const _: () = {
                 "expected_at" => Deserialize::begin(&mut self.expected_at),
                 "explanation" => Deserialize::begin(&mut self.explanation),
                 "product_description" => Deserialize::begin(&mut self.product_description),
-                "product_type" => Deserialize::begin(&mut self.product_type),
-                "return_status" => Deserialize::begin(&mut self.return_status),
+                "product_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.product_type)
+                }
+                "return_status" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.return_status)
+                }
                 "returned_at" => Deserialize::begin(&mut self.returned_at),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -104,30 +108,30 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                additional_documentation: Some(None),
+                additional_documentation: None,
                 canceled_at: Some(None),
                 cancellation_policy_provided: Some(None),
                 cancellation_reason: Some(None),
                 expected_at: Some(None),
                 explanation: Some(None),
                 product_description: Some(None),
-                product_type: Some(None),
-                return_status: Some(None),
+                product_type: None,
+                return_status: None,
                 returned_at: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(additional_documentation),
+                additional_documentation,
                 Some(canceled_at),
                 Some(cancellation_policy_provided),
                 Some(cancellation_reason),
                 Some(expected_at),
                 Some(explanation),
                 Some(product_description),
-                Some(product_type),
-                Some(return_status),
+                product_type,
+                return_status,
                 Some(returned_at),
             ) = (
                 self.additional_documentation.take(),

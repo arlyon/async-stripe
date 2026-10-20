@@ -16,8 +16,8 @@ impl std::fmt::Debug for ShippingRateDeliveryEstimate {
 }
 #[doc(hidden)]
 pub struct ShippingRateDeliveryEstimateBuilder {
-    maximum: Option<Option<stripe_shared::ShippingRateDeliveryEstimateBound>>,
-    minimum: Option<Option<stripe_shared::ShippingRateDeliveryEstimateBound>>,
+    maximum: Option<stripe_shared::ShippingRateDeliveryEstimateBound>,
+    minimum: Option<stripe_shared::ShippingRateDeliveryEstimateBound>,
 }
 
 #[allow(
@@ -60,18 +60,18 @@ const _: () = {
         type Out = ShippingRateDeliveryEstimate;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "maximum" => Deserialize::begin(&mut self.maximum),
-                "minimum" => Deserialize::begin(&mut self.minimum),
+                "maximum" => stripe_types::miniserde_helpers::begin_nullable(&mut self.maximum),
+                "minimum" => stripe_types::miniserde_helpers::begin_nullable(&mut self.minimum),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { maximum: Some(None), minimum: Some(None) }
+            Self { maximum: None, minimum: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(maximum), Some(minimum)) = (self.maximum.take(), self.minimum.take()) else {
+            let (maximum, minimum) = (self.maximum.take(), self.minimum.take()) else {
                 return None;
             };
             Some(Self::Out { maximum, minimum })

@@ -20,7 +20,7 @@ impl std::fmt::Debug for IssuingCardFraudWarning {
 #[doc(hidden)]
 pub struct IssuingCardFraudWarningBuilder {
     started_at: Option<Option<stripe_types::Timestamp>>,
-    type_: Option<Option<IssuingCardFraudWarningType>>,
+    type_: Option<IssuingCardFraudWarningType>,
 }
 
 #[allow(
@@ -64,17 +64,17 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "started_at" => Deserialize::begin(&mut self.started_at),
-                "type" => Deserialize::begin(&mut self.type_),
+                "type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { started_at: Some(None), type_: Some(None) }
+            Self { started_at: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(started_at), Some(type_)) = (self.started_at, self.type_.take()) else {
+            let (Some(started_at), type_) = (self.started_at, self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { started_at, type_ })

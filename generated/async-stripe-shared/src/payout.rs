@@ -89,32 +89,31 @@ impl std::fmt::Debug for Payout {
 #[doc(hidden)]
 pub struct PayoutBuilder {
     amount: Option<i64>,
-    application_fee: Option<Option<stripe_types::Expandable<stripe_shared::ApplicationFee>>>,
+    application_fee: Option<stripe_types::Expandable<stripe_shared::ApplicationFee>>,
     application_fee_amount: Option<Option<i64>>,
     arrival_date: Option<stripe_types::Timestamp>,
     automatic: Option<bool>,
-    balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     description: Option<Option<String>>,
-    destination: Option<Option<stripe_types::Expandable<stripe_shared::ExternalAccount>>>,
+    destination: Option<stripe_types::Expandable<stripe_shared::ExternalAccount>>,
     failure_balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+        Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     failure_code: Option<Option<String>>,
     failure_message: Option<Option<String>>,
     id: Option<stripe_shared::PayoutId>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     method: Option<String>,
-    original_payout: Option<Option<stripe_types::Expandable<stripe_shared::Payout>>>,
+    original_payout: Option<stripe_types::Expandable<stripe_shared::Payout>>,
     payout_method: Option<Option<String>>,
     reconciliation_status: Option<PayoutReconciliationStatus>,
-    reversed_by: Option<Option<stripe_types::Expandable<stripe_shared::Payout>>>,
+    reversed_by: Option<stripe_types::Expandable<stripe_shared::Payout>>,
     source_type: Option<String>,
     statement_descriptor: Option<Option<String>>,
     status: Option<String>,
-    trace_id: Option<Option<stripe_shared::PayoutsTraceId>>,
+    trace_id: Option<stripe_shared::PayoutsTraceId>,
     type_: Option<PayoutType>,
 }
 
@@ -156,32 +155,42 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "application_fee" => Deserialize::begin(&mut self.application_fee),
+                "application_fee" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.application_fee)
+                }
                 "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
                 "arrival_date" => Deserialize::begin(&mut self.arrival_date),
                 "automatic" => Deserialize::begin(&mut self.automatic),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "balance_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.balance_transaction)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "description" => Deserialize::begin(&mut self.description),
-                "destination" => Deserialize::begin(&mut self.destination),
-                "failure_balance_transaction" => {
-                    Deserialize::begin(&mut self.failure_balance_transaction)
+                "destination" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.destination)
                 }
+                "failure_balance_transaction" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.failure_balance_transaction,
+                ),
                 "failure_code" => Deserialize::begin(&mut self.failure_code),
                 "failure_message" => Deserialize::begin(&mut self.failure_message),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "method" => Deserialize::begin(&mut self.method),
-                "original_payout" => Deserialize::begin(&mut self.original_payout),
+                "original_payout" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.original_payout)
+                }
                 "payout_method" => Deserialize::begin(&mut self.payout_method),
                 "reconciliation_status" => Deserialize::begin(&mut self.reconciliation_status),
-                "reversed_by" => Deserialize::begin(&mut self.reversed_by),
+                "reversed_by" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.reversed_by)
+                }
                 "source_type" => Deserialize::begin(&mut self.source_type),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
-                "trace_id" => Deserialize::begin(&mut self.trace_id),
+                "trace_id" => stripe_types::miniserde_helpers::begin_nullable(&mut self.trace_id),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -190,30 +199,30 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: None,
-                application_fee: Some(None),
+                application_fee: None,
                 application_fee_amount: Some(None),
                 arrival_date: None,
                 automatic: None,
-                balance_transaction: Some(None),
+                balance_transaction: None,
                 created: None,
                 currency: None,
                 description: Some(None),
-                destination: Some(None),
-                failure_balance_transaction: Some(None),
+                destination: None,
+                failure_balance_transaction: None,
                 failure_code: Some(None),
                 failure_message: Some(None),
                 id: None,
                 livemode: None,
                 metadata: Some(None),
                 method: None,
-                original_payout: Some(None),
+                original_payout: None,
                 payout_method: Some(None),
                 reconciliation_status: None,
-                reversed_by: Some(None),
+                reversed_by: None,
                 source_type: None,
                 statement_descriptor: Some(None),
                 status: None,
-                trace_id: Some(None),
+                trace_id: None,
                 type_: None,
             }
         }
@@ -221,30 +230,30 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(application_fee),
+                application_fee,
                 Some(application_fee_amount),
                 Some(arrival_date),
                 Some(automatic),
-                Some(balance_transaction),
+                balance_transaction,
                 Some(created),
                 Some(currency),
                 Some(description),
-                Some(destination),
-                Some(failure_balance_transaction),
+                destination,
+                failure_balance_transaction,
                 Some(failure_code),
                 Some(failure_message),
                 Some(id),
                 Some(livemode),
                 Some(metadata),
                 Some(method),
-                Some(original_payout),
+                original_payout,
                 Some(payout_method),
                 Some(reconciliation_status),
-                Some(reversed_by),
+                reversed_by,
                 Some(source_type),
                 Some(statement_descriptor),
                 Some(status),
-                Some(trace_id),
+                trace_id,
                 Some(type_),
             ) = (
                 self.amount,

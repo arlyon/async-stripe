@@ -30,7 +30,7 @@ pub struct TransferDataBuilder {
     description: Option<Option<String>>,
     destination: Option<stripe_types::Expandable<stripe_shared::Account>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    payment_data: Option<Option<stripe_shared::PaymentData>>,
+    payment_data: Option<stripe_shared::PaymentData>,
 }
 
 #[allow(
@@ -77,7 +77,9 @@ const _: () = {
                 "description" => Deserialize::begin(&mut self.description),
                 "destination" => Deserialize::begin(&mut self.destination),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "payment_data" => Deserialize::begin(&mut self.payment_data),
+                "payment_data" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_data)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -88,25 +90,18 @@ const _: () = {
                 description: Some(None),
                 destination: None,
                 metadata: Some(None),
-                payment_data: Some(None),
+                payment_data: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(description),
-                Some(destination),
-                Some(metadata),
-                Some(payment_data),
-            ) = (
+            let (Some(amount), Some(description), Some(destination), Some(metadata), payment_data) = (
                 self.amount,
                 self.description.take(),
                 self.destination.take(),
                 self.metadata.take(),
                 self.payment_data.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { amount, description, destination, metadata, payment_data })

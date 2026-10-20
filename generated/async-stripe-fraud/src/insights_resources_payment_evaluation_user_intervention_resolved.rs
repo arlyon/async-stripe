@@ -19,7 +19,7 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationUserInterventionResol
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationUserInterventionResolvedBuilder {
     key: Option<String>,
-    outcome: Option<Option<InsightsResourcesPaymentEvaluationUserInterventionResolvedOutcome>>,
+    outcome: Option<InsightsResourcesPaymentEvaluationUserInterventionResolvedOutcome>,
 }
 
 #[allow(
@@ -65,17 +65,17 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "key" => Deserialize::begin(&mut self.key),
-                "outcome" => Deserialize::begin(&mut self.outcome),
+                "outcome" => stripe_types::miniserde_helpers::begin_nullable(&mut self.outcome),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { key: None, outcome: Some(None) }
+            Self { key: None, outcome: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(key), Some(outcome)) = (self.key.take(), self.outcome.take()) else {
+            let (Some(key), outcome) = (self.key.take(), self.outcome.take()) else {
                 return None;
             };
             Some(Self::Out { key, outcome })

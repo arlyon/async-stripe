@@ -22,10 +22,8 @@ impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDe
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder {
     code: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode>,
-    resolution:
-        Option<Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution>>,
-    restriction:
-        Option<Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>>,
+    resolution: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution>,
+    restriction: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>,
 }
 
 #[allow(
@@ -69,18 +67,22 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "code" => Deserialize::begin(&mut self.code),
-                "resolution" => Deserialize::begin(&mut self.resolution),
-                "restriction" => Deserialize::begin(&mut self.restriction),
+                "resolution" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.resolution)
+                }
+                "restriction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.restriction)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { code: None, resolution: Some(None), restriction: Some(None) }
+            Self { code: None, resolution: None, restriction: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(code), Some(resolution), Some(restriction)) =
+            let (Some(code), resolution, restriction) =
                 (self.code.take(), self.resolution.take(), self.restriction.take())
             else {
                 return None;

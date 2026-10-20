@@ -16,7 +16,7 @@ impl std::fmt::Debug for ThresholdsResourceUsageAlertFilter {
 }
 #[doc(hidden)]
 pub struct ThresholdsResourceUsageAlertFilterBuilder {
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     type_: Option<ThresholdsResourceUsageAlertFilterType>,
 }
 
@@ -60,18 +60,18 @@ const _: () = {
         type Out = ThresholdsResourceUsageAlertFilter;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { customer: Some(None), type_: None }
+            Self { customer: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer), Some(type_)) = (self.customer.take(), self.type_.take()) else {
+            let (customer, Some(type_)) = (self.customer.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { customer, type_ })

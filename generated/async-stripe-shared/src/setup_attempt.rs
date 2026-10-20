@@ -54,15 +54,15 @@ impl std::fmt::Debug for SetupAttempt {
 }
 #[doc(hidden)]
 pub struct SetupAttemptBuilder {
-    application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
+    application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     attach_to_self: Option<Option<bool>>,
     created: Option<stripe_types::Timestamp>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     flow_directions: Option<Option<Vec<SetupAttemptFlowDirections>>>,
     id: Option<stripe_shared::SetupAttemptId>,
     livemode: Option<bool>,
-    on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
     payment_method_details: Option<stripe_shared::SetupAttemptPaymentMethodDetails>,
     setup_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
@@ -111,15 +111,19 @@ const _: () = {
         type Out = SetupAttempt;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "application" => Deserialize::begin(&mut self.application),
+                "application" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.application)
+                }
                 "attach_to_self" => Deserialize::begin(&mut self.attach_to_self),
                 "created" => Deserialize::begin(&mut self.created),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "flow_directions" => Deserialize::begin(&mut self.flow_directions),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
+                "on_behalf_of" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.on_behalf_of)
+                }
                 "payment_method" => Deserialize::begin(&mut self.payment_method),
                 "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
                 "setup_error" => Deserialize::begin(&mut self.setup_error),
@@ -132,15 +136,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                application: Some(None),
+                application: None,
                 attach_to_self: Some(None),
                 created: None,
-                customer: Some(None),
+                customer: None,
                 customer_account: Some(None),
                 flow_directions: Some(None),
                 id: None,
                 livemode: None,
-                on_behalf_of: Some(None),
+                on_behalf_of: None,
                 payment_method: None,
                 payment_method_details: None,
                 setup_error: Some(None),
@@ -152,15 +156,15 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(application),
+                application,
                 Some(attach_to_self),
                 Some(created),
-                Some(customer),
+                customer,
                 Some(customer_account),
                 Some(flow_directions),
                 Some(id),
                 Some(livemode),
-                Some(on_behalf_of),
+                on_behalf_of,
                 Some(payment_method),
                 Some(payment_method_details),
                 Some(setup_error),

@@ -29,8 +29,8 @@ impl std::fmt::Debug for CurrencyOption {
 }
 #[doc(hidden)]
 pub struct CurrencyOptionBuilder {
-    custom_unit_amount: Option<Option<stripe_shared::CustomUnitAmount>>,
-    tax_behavior: Option<Option<CurrencyOptionTaxBehavior>>,
+    custom_unit_amount: Option<stripe_shared::CustomUnitAmount>,
+    tax_behavior: Option<CurrencyOptionTaxBehavior>,
     tiers: Option<Option<Vec<stripe_shared::PriceTier>>>,
     unit_amount: Option<Option<i64>>,
     unit_amount_decimal: Option<Option<String>>,
@@ -76,8 +76,12 @@ const _: () = {
         type Out = CurrencyOption;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "custom_unit_amount" => Deserialize::begin(&mut self.custom_unit_amount),
-                "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
+                "custom_unit_amount" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.custom_unit_amount)
+                }
+                "tax_behavior" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_behavior)
+                }
                 "tiers" => Deserialize::begin(&mut self.tiers),
                 "unit_amount" => Deserialize::begin(&mut self.unit_amount),
                 "unit_amount_decimal" => Deserialize::begin(&mut self.unit_amount_decimal),
@@ -87,8 +91,8 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                custom_unit_amount: Some(None),
-                tax_behavior: Some(None),
+                custom_unit_amount: None,
+                tax_behavior: None,
                 tiers: Some(None),
                 unit_amount: Some(None),
                 unit_amount_decimal: Some(None),
@@ -97,8 +101,8 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(custom_unit_amount),
-                Some(tax_behavior),
+                custom_unit_amount,
+                tax_behavior,
                 Some(tiers),
                 Some(unit_amount),
                 Some(unit_amount_decimal),

@@ -44,7 +44,7 @@ pub struct TreasuryTransactionEntryBuilder {
     effective_at: Option<stripe_types::Timestamp>,
     financial_account: Option<String>,
     flow: Option<Option<String>>,
-    flow_details: Option<Option<stripe_treasury::TreasuryTransactionsResourceFlowDetails>>,
+    flow_details: Option<stripe_treasury::TreasuryTransactionsResourceFlowDetails>,
     flow_type: Option<TreasuryTransactionEntryFlowType>,
     id: Option<stripe_treasury::TreasuryTransactionEntryId>,
     livemode: Option<bool>,
@@ -98,7 +98,9 @@ const _: () = {
                 "effective_at" => Deserialize::begin(&mut self.effective_at),
                 "financial_account" => Deserialize::begin(&mut self.financial_account),
                 "flow" => Deserialize::begin(&mut self.flow),
-                "flow_details" => Deserialize::begin(&mut self.flow_details),
+                "flow_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.flow_details)
+                }
                 "flow_type" => Deserialize::begin(&mut self.flow_type),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
@@ -116,7 +118,7 @@ const _: () = {
                 effective_at: None,
                 financial_account: None,
                 flow: Some(None),
-                flow_details: Some(None),
+                flow_details: None,
                 flow_type: None,
                 id: None,
                 livemode: None,
@@ -133,7 +135,7 @@ const _: () = {
                 Some(effective_at),
                 Some(financial_account),
                 Some(flow),
-                Some(flow_details),
+                flow_details,
                 Some(flow_type),
                 Some(id),
                 Some(livemode),

@@ -49,7 +49,7 @@ pub struct ReportingReportRunBuilder {
     livemode: Option<bool>,
     parameters: Option<stripe_misc::FinancialReportingFinanceReportRunRunParameters>,
     report_type: Option<String>,
-    result: Option<Option<stripe_shared::File>>,
+    result: Option<stripe_shared::File>,
     status: Option<String>,
     succeeded_at: Option<Option<stripe_types::Timestamp>>,
 }
@@ -100,7 +100,7 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "parameters" => Deserialize::begin(&mut self.parameters),
                 "report_type" => Deserialize::begin(&mut self.report_type),
-                "result" => Deserialize::begin(&mut self.result),
+                "result" => stripe_types::miniserde_helpers::begin_nullable(&mut self.result),
                 "status" => Deserialize::begin(&mut self.status),
                 "succeeded_at" => Deserialize::begin(&mut self.succeeded_at),
                 _ => <dyn Visitor>::ignore(),
@@ -115,7 +115,7 @@ const _: () = {
                 livemode: None,
                 parameters: None,
                 report_type: None,
-                result: Some(None),
+                result: None,
                 status: None,
                 succeeded_at: Some(None),
             }
@@ -129,7 +129,7 @@ const _: () = {
                 Some(livemode),
                 Some(parameters),
                 Some(report_type),
-                Some(result),
+                result,
                 Some(status),
                 Some(succeeded_at),
             ) = (

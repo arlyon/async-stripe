@@ -19,8 +19,8 @@ impl std::fmt::Debug for IssuingCardShippingAddressValidation {
 #[doc(hidden)]
 pub struct IssuingCardShippingAddressValidationBuilder {
     mode: Option<IssuingCardShippingAddressValidationMode>,
-    normalized_address: Option<Option<stripe_shared::Address>>,
-    result: Option<Option<IssuingCardShippingAddressValidationResult>>,
+    normalized_address: Option<stripe_shared::Address>,
+    result: Option<IssuingCardShippingAddressValidationResult>,
 }
 
 #[allow(
@@ -64,18 +64,20 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "mode" => Deserialize::begin(&mut self.mode),
-                "normalized_address" => Deserialize::begin(&mut self.normalized_address),
-                "result" => Deserialize::begin(&mut self.result),
+                "normalized_address" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.normalized_address)
+                }
+                "result" => stripe_types::miniserde_helpers::begin_nullable(&mut self.result),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { mode: None, normalized_address: Some(None), result: Some(None) }
+            Self { mode: None, normalized_address: None, result: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mode), Some(normalized_address), Some(result)) =
+            let (Some(mode), normalized_address, result) =
                 (self.mode.take(), self.normalized_address.take(), self.result.take())
             else {
                 return None;

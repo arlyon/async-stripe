@@ -51,11 +51,11 @@ pub struct IssuingDisputeBuilder {
     evidence: Option<stripe_shared::IssuingDisputeEvidence>,
     id: Option<stripe_shared::IssuingDisputeId>,
     livemode: Option<bool>,
-    loss_reason: Option<Option<IssuingDisputeLossReason>>,
+    loss_reason: Option<IssuingDisputeLossReason>,
     metadata: Option<std::collections::HashMap<String, String>>,
     status: Option<stripe_shared::IssuingDisputeStatus>,
     transaction: Option<stripe_types::Expandable<stripe_shared::IssuingTransaction>>,
-    treasury: Option<Option<stripe_shared::IssuingDisputeTreasury>>,
+    treasury: Option<stripe_shared::IssuingDisputeTreasury>,
 }
 
 #[allow(
@@ -105,11 +105,13 @@ const _: () = {
                 "evidence" => Deserialize::begin(&mut self.evidence),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "loss_reason" => Deserialize::begin(&mut self.loss_reason),
+                "loss_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.loss_reason)
+                }
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "status" => Deserialize::begin(&mut self.status),
                 "transaction" => Deserialize::begin(&mut self.transaction),
-                "treasury" => Deserialize::begin(&mut self.treasury),
+                "treasury" => stripe_types::miniserde_helpers::begin_nullable(&mut self.treasury),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -123,11 +125,11 @@ const _: () = {
                 evidence: None,
                 id: None,
                 livemode: None,
-                loss_reason: Some(None),
+                loss_reason: None,
                 metadata: None,
                 status: None,
                 transaction: None,
-                treasury: Some(None),
+                treasury: None,
             }
         }
 
@@ -140,11 +142,11 @@ const _: () = {
                 Some(evidence),
                 Some(id),
                 Some(livemode),
-                Some(loss_reason),
+                loss_reason,
                 Some(metadata),
                 Some(status),
                 Some(transaction),
-                Some(treasury),
+                treasury,
             ) = (
                 self.amount,
                 self.balance_transactions.take(),

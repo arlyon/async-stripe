@@ -48,7 +48,7 @@ payment_method_redisplay: Option<CustomerSessionResourceComponentsResourcePaymen
 payment_method_redisplay_limit: Option<Option<i64>>,
 payment_method_remove: Option<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove>,
 payment_method_save: Option<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave>,
-payment_method_save_usage: Option<Option<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage>>,
+payment_method_save_usage: Option<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage>,
 
 }
 
@@ -104,9 +104,9 @@ const _: () = {
                 }
                 "payment_method_remove" => Deserialize::begin(&mut self.payment_method_remove),
                 "payment_method_save" => Deserialize::begin(&mut self.payment_method_save),
-                "payment_method_save_usage" => {
-                    Deserialize::begin(&mut self.payment_method_save_usage)
-                }
+                "payment_method_save_usage" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_save_usage,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -118,7 +118,7 @@ const _: () = {
                 payment_method_redisplay_limit: Some(None),
                 payment_method_remove: None,
                 payment_method_save: None,
-                payment_method_save_usage: Some(None),
+                payment_method_save_usage: None,
             }
         }
 
@@ -129,7 +129,7 @@ const _: () = {
                 Some(payment_method_redisplay_limit),
                 Some(payment_method_remove),
                 Some(payment_method_save),
-                Some(payment_method_save_usage),
+                payment_method_save_usage,
             ) = (
                 self.payment_method_allow_redisplay_filters.take(),
                 self.payment_method_redisplay.take(),

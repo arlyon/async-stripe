@@ -30,8 +30,8 @@ impl std::fmt::Debug for BankConnectionsResourceBalance {
 #[doc(hidden)]
 pub struct BankConnectionsResourceBalanceBuilder {
     as_of: Option<stripe_types::Timestamp>,
-    cash: Option<Option<stripe_misc::BankConnectionsResourceBalanceApiResourceCashBalance>>,
-    credit: Option<Option<stripe_misc::BankConnectionsResourceBalanceApiResourceCreditBalance>>,
+    cash: Option<stripe_misc::BankConnectionsResourceBalanceApiResourceCashBalance>,
+    credit: Option<stripe_misc::BankConnectionsResourceBalanceApiResourceCreditBalance>,
     current: Option<std::collections::HashMap<String, i64>>,
     type_: Option<BankConnectionsResourceBalanceType>,
 }
@@ -77,8 +77,8 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "as_of" => Deserialize::begin(&mut self.as_of),
-                "cash" => Deserialize::begin(&mut self.cash),
-                "credit" => Deserialize::begin(&mut self.credit),
+                "cash" => stripe_types::miniserde_helpers::begin_nullable(&mut self.cash),
+                "credit" => stripe_types::miniserde_helpers::begin_nullable(&mut self.credit),
                 "current" => Deserialize::begin(&mut self.current),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -86,11 +86,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { as_of: None, cash: Some(None), credit: Some(None), current: None, type_: None }
+            Self { as_of: None, cash: None, credit: None, current: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(as_of), Some(cash), Some(credit), Some(current), Some(type_)) = (
+            let (Some(as_of), cash, credit, Some(current), Some(type_)) = (
                 self.as_of,
                 self.cash.take(),
                 self.credit.take(),

@@ -27,19 +27,16 @@ impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsUnitedStat
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsUnitedStatesBuilder {
-    local_amusement_tax: Option<
+    local_amusement_tax:
         Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsLocalAmusementTax>,
-    >,
     local_lease_tax:
-        Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsLocalLeaseTax>>,
-    mass_transit_parking_tax: Option<
+        Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsLocalLeaseTax>,
+    mass_transit_parking_tax:
         Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsMassTransitParkingTax>,
-    >,
-    parking_tax:
-        Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsParkingTax>>,
+    parking_tax: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsParkingTax>,
     state: Option<String>,
     state_sales_tax:
-        Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsStateSalesTax>>,
+        Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsStateSalesTax>,
     type_: Option<TaxProductRegistrationsResourceCountryOptionsUnitedStatesType>,
 }
 
@@ -85,14 +82,22 @@ const _: () = {
         type Out = TaxProductRegistrationsResourceCountryOptionsUnitedStates;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "local_amusement_tax" => Deserialize::begin(&mut self.local_amusement_tax),
-                "local_lease_tax" => Deserialize::begin(&mut self.local_lease_tax),
-                "mass_transit_parking_tax" => {
-                    Deserialize::begin(&mut self.mass_transit_parking_tax)
+                "local_amusement_tax" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.local_amusement_tax)
                 }
-                "parking_tax" => Deserialize::begin(&mut self.parking_tax),
+                "local_lease_tax" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.local_lease_tax)
+                }
+                "mass_transit_parking_tax" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.mass_transit_parking_tax,
+                ),
+                "parking_tax" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.parking_tax)
+                }
                 "state" => Deserialize::begin(&mut self.state),
-                "state_sales_tax" => Deserialize::begin(&mut self.state_sales_tax),
+                "state_sales_tax" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.state_sales_tax)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -100,24 +105,24 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                local_amusement_tax: Some(None),
-                local_lease_tax: Some(None),
-                mass_transit_parking_tax: Some(None),
-                parking_tax: Some(None),
+                local_amusement_tax: None,
+                local_lease_tax: None,
+                mass_transit_parking_tax: None,
+                parking_tax: None,
                 state: None,
-                state_sales_tax: Some(None),
+                state_sales_tax: None,
                 type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(local_amusement_tax),
-                Some(local_lease_tax),
-                Some(mass_transit_parking_tax),
-                Some(parking_tax),
+                local_amusement_tax,
+                local_lease_tax,
+                mass_transit_parking_tax,
+                parking_tax,
                 Some(state),
-                Some(state_sales_tax),
+                state_sales_tax,
                 Some(type_),
             ) = (
                 self.local_amusement_tax.take(),

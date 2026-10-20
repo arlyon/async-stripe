@@ -26,16 +26,16 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationEvent {
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationEventBuilder {
-    dispute_opened: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationDisputeOpened>>,
+    dispute_opened: Option<stripe_fraud::InsightsResourcesPaymentEvaluationDisputeOpened>,
     early_fraud_warning_received:
-        Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationEarlyFraudWarningReceived>>,
+        Option<stripe_fraud::InsightsResourcesPaymentEvaluationEarlyFraudWarningReceived>,
     occurred_at: Option<stripe_types::Timestamp>,
-    refunded: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationRefunded>>,
+    refunded: Option<stripe_fraud::InsightsResourcesPaymentEvaluationRefunded>,
     type_: Option<InsightsResourcesPaymentEvaluationEventType>,
     user_intervention_raised:
-        Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationUserInterventionRaised>>,
+        Option<stripe_fraud::InsightsResourcesPaymentEvaluationUserInterventionRaised>,
     user_intervention_resolved:
-        Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationUserInterventionResolved>>,
+        Option<stripe_fraud::InsightsResourcesPaymentEvaluationUserInterventionResolved>,
 }
 
 #[allow(
@@ -78,44 +78,46 @@ const _: () = {
         type Out = InsightsResourcesPaymentEvaluationEvent;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "dispute_opened" => Deserialize::begin(&mut self.dispute_opened),
-                "early_fraud_warning_received" => {
-                    Deserialize::begin(&mut self.early_fraud_warning_received)
+                "dispute_opened" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.dispute_opened)
                 }
+                "early_fraud_warning_received" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.early_fraud_warning_received,
+                ),
                 "occurred_at" => Deserialize::begin(&mut self.occurred_at),
-                "refunded" => Deserialize::begin(&mut self.refunded),
+                "refunded" => stripe_types::miniserde_helpers::begin_nullable(&mut self.refunded),
                 "type" => Deserialize::begin(&mut self.type_),
-                "user_intervention_raised" => {
-                    Deserialize::begin(&mut self.user_intervention_raised)
-                }
-                "user_intervention_resolved" => {
-                    Deserialize::begin(&mut self.user_intervention_resolved)
-                }
+                "user_intervention_raised" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.user_intervention_raised,
+                ),
+                "user_intervention_resolved" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.user_intervention_resolved,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                dispute_opened: Some(None),
-                early_fraud_warning_received: Some(None),
+                dispute_opened: None,
+                early_fraud_warning_received: None,
                 occurred_at: None,
-                refunded: Some(None),
+                refunded: None,
                 type_: None,
-                user_intervention_raised: Some(None),
-                user_intervention_resolved: Some(None),
+                user_intervention_raised: None,
+                user_intervention_resolved: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(dispute_opened),
-                Some(early_fraud_warning_received),
+                dispute_opened,
+                early_fraud_warning_received,
                 Some(occurred_at),
-                Some(refunded),
+                refunded,
                 Some(type_),
-                Some(user_intervention_raised),
-                Some(user_intervention_resolved),
+                user_intervention_raised,
+                user_intervention_resolved,
             ) = (
                 self.dispute_opened.take(),
                 self.early_fraud_warning_received.take(),

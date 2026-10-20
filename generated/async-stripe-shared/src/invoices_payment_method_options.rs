@@ -34,17 +34,17 @@ impl std::fmt::Debug for InvoicesPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct InvoicesPaymentMethodOptionsBuilder {
-    acss_debit: Option<Option<stripe_shared::InvoicePaymentMethodOptionsAcssDebit>>,
-    bancontact: Option<Option<stripe_shared::InvoicePaymentMethodOptionsBancontact>>,
-    billie: Option<Option<stripe_shared::InvoicePaymentMethodOptionsBillie>>,
-    card: Option<Option<stripe_shared::InvoicePaymentMethodOptionsCard>>,
-    customer_balance: Option<Option<stripe_shared::InvoicePaymentMethodOptionsCustomerBalance>>,
-    konbini: Option<Option<stripe_shared::InvoicePaymentMethodOptionsKonbini>>,
-    payto: Option<Option<stripe_shared::InvoicePaymentMethodOptionsPayto>>,
-    pix: Option<Option<stripe_shared::InvoicePaymentMethodOptionsPix>>,
-    sepa_debit: Option<Option<stripe_shared::InvoicePaymentMethodOptionsSepaDebit>>,
-    upi: Option<Option<stripe_shared::InvoicePaymentMethodOptionsUpi>>,
-    us_bank_account: Option<Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccount>>,
+    acss_debit: Option<stripe_shared::InvoicePaymentMethodOptionsAcssDebit>,
+    bancontact: Option<stripe_shared::InvoicePaymentMethodOptionsBancontact>,
+    billie: Option<stripe_shared::InvoicePaymentMethodOptionsBillie>,
+    card: Option<stripe_shared::InvoicePaymentMethodOptionsCard>,
+    customer_balance: Option<stripe_shared::InvoicePaymentMethodOptionsCustomerBalance>,
+    konbini: Option<stripe_shared::InvoicePaymentMethodOptionsKonbini>,
+    payto: Option<stripe_shared::InvoicePaymentMethodOptionsPayto>,
+    pix: Option<stripe_shared::InvoicePaymentMethodOptionsPix>,
+    sepa_debit: Option<stripe_shared::InvoicePaymentMethodOptionsSepaDebit>,
+    upi: Option<stripe_shared::InvoicePaymentMethodOptionsUpi>,
+    us_bank_account: Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccount>,
 }
 
 #[allow(
@@ -87,50 +87,60 @@ const _: () = {
         type Out = InvoicesPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "acss_debit" => Deserialize::begin(&mut self.acss_debit),
-                "bancontact" => Deserialize::begin(&mut self.bancontact),
-                "billie" => Deserialize::begin(&mut self.billie),
-                "card" => Deserialize::begin(&mut self.card),
-                "customer_balance" => Deserialize::begin(&mut self.customer_balance),
-                "konbini" => Deserialize::begin(&mut self.konbini),
-                "payto" => Deserialize::begin(&mut self.payto),
-                "pix" => Deserialize::begin(&mut self.pix),
-                "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
-                "upi" => Deserialize::begin(&mut self.upi),
-                "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
+                "acss_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.acss_debit)
+                }
+                "bancontact" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bancontact)
+                }
+                "billie" => stripe_types::miniserde_helpers::begin_nullable(&mut self.billie),
+                "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
+                "customer_balance" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.customer_balance)
+                }
+                "konbini" => stripe_types::miniserde_helpers::begin_nullable(&mut self.konbini),
+                "payto" => stripe_types::miniserde_helpers::begin_nullable(&mut self.payto),
+                "pix" => stripe_types::miniserde_helpers::begin_nullable(&mut self.pix),
+                "sepa_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.sepa_debit)
+                }
+                "upi" => stripe_types::miniserde_helpers::begin_nullable(&mut self.upi),
+                "us_bank_account" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.us_bank_account)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                acss_debit: Some(None),
-                bancontact: Some(None),
-                billie: Some(None),
-                card: Some(None),
-                customer_balance: Some(None),
-                konbini: Some(None),
-                payto: Some(None),
-                pix: Some(None),
-                sepa_debit: Some(None),
-                upi: Some(None),
-                us_bank_account: Some(None),
+                acss_debit: None,
+                bancontact: None,
+                billie: None,
+                card: None,
+                customer_balance: None,
+                konbini: None,
+                payto: None,
+                pix: None,
+                sepa_debit: None,
+                upi: None,
+                us_bank_account: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(acss_debit),
-                Some(bancontact),
-                Some(billie),
-                Some(card),
-                Some(customer_balance),
-                Some(konbini),
-                Some(payto),
-                Some(pix),
-                Some(sepa_debit),
-                Some(upi),
-                Some(us_bank_account),
+                acss_debit,
+                bancontact,
+                billie,
+                card,
+                customer_balance,
+                konbini,
+                payto,
+                pix,
+                sepa_debit,
+                upi,
+                us_bank_account,
             ) = (
                 self.acss_debit.take(),
                 self.bancontact.take(),

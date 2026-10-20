@@ -25,7 +25,7 @@ impl std::fmt::Debug for AccountCardPaymentsSettings {
 }
 #[doc(hidden)]
 pub struct AccountCardPaymentsSettingsBuilder {
-    decline_on: Option<Option<stripe_shared::AccountDeclineChargeOn>>,
+    decline_on: Option<stripe_shared::AccountDeclineChargeOn>,
     statement_descriptor_prefix: Option<Option<String>>,
     statement_descriptor_prefix_kana: Option<Option<String>>,
     statement_descriptor_prefix_kanji: Option<Option<String>>,
@@ -71,7 +71,9 @@ const _: () = {
         type Out = AccountCardPaymentsSettings;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "decline_on" => Deserialize::begin(&mut self.decline_on),
+                "decline_on" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.decline_on)
+                }
                 "statement_descriptor_prefix" => {
                     Deserialize::begin(&mut self.statement_descriptor_prefix)
                 }
@@ -87,7 +89,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                decline_on: Some(None),
+                decline_on: None,
                 statement_descriptor_prefix: Some(None),
                 statement_descriptor_prefix_kana: Some(None),
                 statement_descriptor_prefix_kanji: Some(None),
@@ -96,7 +98,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(decline_on),
+                decline_on,
                 Some(statement_descriptor_prefix),
                 Some(statement_descriptor_prefix_kana),
                 Some(statement_descriptor_prefix_kanji),

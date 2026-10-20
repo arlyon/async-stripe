@@ -49,8 +49,8 @@ impl std::fmt::Debug for Token {
 }
 #[doc(hidden)]
 pub struct TokenBuilder {
-    bank_account: Option<Option<stripe_shared::BankAccount>>,
-    card: Option<Option<stripe_shared::Card>>,
+    bank_account: Option<stripe_shared::BankAccount>,
+    card: Option<stripe_shared::Card>,
     client_ip: Option<Option<String>>,
     created: Option<stripe_types::Timestamp>,
     id: Option<stripe_shared::TokenId>,
@@ -96,8 +96,10 @@ const _: () = {
         type Out = Token;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_account" => Deserialize::begin(&mut self.bank_account),
-                "card" => Deserialize::begin(&mut self.card),
+                "bank_account" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bank_account)
+                }
+                "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
                 "client_ip" => Deserialize::begin(&mut self.client_ip),
                 "created" => Deserialize::begin(&mut self.created),
                 "id" => Deserialize::begin(&mut self.id),
@@ -110,8 +112,8 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                bank_account: Some(None),
-                card: Some(None),
+                bank_account: None,
+                card: None,
                 client_ip: Some(None),
                 created: None,
                 id: None,
@@ -123,8 +125,8 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(bank_account),
-                Some(card),
+                bank_account,
+                card,
                 Some(client_ip),
                 Some(created),
                 Some(id),

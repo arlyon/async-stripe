@@ -24,10 +24,10 @@ impl std::fmt::Debug for MandatePix {
 }
 #[doc(hidden)]
 pub struct MandatePixBuilder {
-    amount_includes_iof: Option<Option<MandatePixAmountIncludesIof>>,
-    amount_type: Option<Option<MandatePixAmountType>>,
+    amount_includes_iof: Option<MandatePixAmountIncludesIof>,
+    amount_type: Option<MandatePixAmountType>,
     end_date: Option<Option<String>>,
-    payment_schedule: Option<Option<MandatePixPaymentSchedule>>,
+    payment_schedule: Option<MandatePixPaymentSchedule>,
     reference: Option<Option<String>>,
     start_date: Option<Option<String>>,
 }
@@ -72,10 +72,16 @@ const _: () = {
         type Out = MandatePix;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_includes_iof" => Deserialize::begin(&mut self.amount_includes_iof),
-                "amount_type" => Deserialize::begin(&mut self.amount_type),
+                "amount_includes_iof" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_includes_iof)
+                }
+                "amount_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_type)
+                }
                 "end_date" => Deserialize::begin(&mut self.end_date),
-                "payment_schedule" => Deserialize::begin(&mut self.payment_schedule),
+                "payment_schedule" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_schedule)
+                }
                 "reference" => Deserialize::begin(&mut self.reference),
                 "start_date" => Deserialize::begin(&mut self.start_date),
                 _ => <dyn Visitor>::ignore(),
@@ -84,10 +90,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount_includes_iof: Some(None),
-                amount_type: Some(None),
+                amount_includes_iof: None,
+                amount_type: None,
                 end_date: Some(None),
-                payment_schedule: Some(None),
+                payment_schedule: None,
                 reference: Some(None),
                 start_date: Some(None),
             }
@@ -95,10 +101,10 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(amount_includes_iof),
-                Some(amount_type),
+                amount_includes_iof,
+                amount_type,
                 Some(end_date),
-                Some(payment_schedule),
+                payment_schedule,
                 Some(reference),
                 Some(start_date),
             ) = (

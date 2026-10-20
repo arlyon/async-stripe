@@ -45,7 +45,7 @@ impl std::fmt::Debug for TerminalReader {
 }
 #[doc(hidden)]
 pub struct TerminalReaderBuilder {
-    action: Option<Option<stripe_terminal::TerminalReaderReaderResourceReaderAction>>,
+    action: Option<stripe_terminal::TerminalReaderReaderResourceReaderAction>,
     device_sw_version: Option<Option<String>>,
     device_type: Option<stripe_terminal::TerminalReaderDeviceType>,
     id: Option<stripe_terminal::TerminalReaderId>,
@@ -53,10 +53,10 @@ pub struct TerminalReaderBuilder {
     label: Option<String>,
     last_seen_at: Option<Option<stripe_types::Timestamp>>,
     livemode: Option<bool>,
-    location: Option<Option<stripe_types::Expandable<stripe_terminal::TerminalLocation>>>,
+    location: Option<stripe_types::Expandable<stripe_terminal::TerminalLocation>>,
     metadata: Option<std::collections::HashMap<String, String>>,
     serial_number: Option<String>,
-    status: Option<Option<stripe_terminal::TerminalReaderStatus>>,
+    status: Option<stripe_terminal::TerminalReaderStatus>,
 }
 
 #[allow(
@@ -99,7 +99,7 @@ const _: () = {
         type Out = TerminalReader;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "action" => Deserialize::begin(&mut self.action),
+                "action" => stripe_types::miniserde_helpers::begin_nullable(&mut self.action),
                 "device_sw_version" => Deserialize::begin(&mut self.device_sw_version),
                 "device_type" => Deserialize::begin(&mut self.device_type),
                 "id" => Deserialize::begin(&mut self.id),
@@ -107,17 +107,17 @@ const _: () = {
                 "label" => Deserialize::begin(&mut self.label),
                 "last_seen_at" => Deserialize::begin(&mut self.last_seen_at),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "location" => Deserialize::begin(&mut self.location),
+                "location" => stripe_types::miniserde_helpers::begin_nullable(&mut self.location),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "serial_number" => Deserialize::begin(&mut self.serial_number),
-                "status" => Deserialize::begin(&mut self.status),
+                "status" => stripe_types::miniserde_helpers::begin_nullable(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                action: Some(None),
+                action: None,
                 device_sw_version: Some(None),
                 device_type: None,
                 id: None,
@@ -125,16 +125,16 @@ const _: () = {
                 label: None,
                 last_seen_at: Some(None),
                 livemode: None,
-                location: Some(None),
+                location: None,
                 metadata: None,
                 serial_number: None,
-                status: Some(None),
+                status: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(action),
+                action,
                 Some(device_sw_version),
                 Some(device_type),
                 Some(id),
@@ -142,10 +142,10 @@ const _: () = {
                 Some(label),
                 Some(last_seen_at),
                 Some(livemode),
-                Some(location),
+                location,
                 Some(metadata),
                 Some(serial_number),
-                Some(status),
+                status,
             ) = (
                 self.action.take(),
                 self.device_sw_version.take(),

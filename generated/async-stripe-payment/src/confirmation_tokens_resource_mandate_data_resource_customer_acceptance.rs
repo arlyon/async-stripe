@@ -20,7 +20,7 @@ impl std::fmt::Debug for ConfirmationTokensResourceMandateDataResourceCustomerAc
 }
 #[doc(hidden)]
 pub struct ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceBuilder {
-    online: Option<Option<stripe_payment::ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnline>>,
+    online: Option<stripe_payment::ConfirmationTokensResourceMandateDataResourceCustomerAcceptanceResourceOnline>,
 type_: Option<String>,
 
 }
@@ -65,18 +65,18 @@ const _: () = {
         type Out = ConfirmationTokensResourceMandateDataResourceCustomerAcceptance;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "online" => Deserialize::begin(&mut self.online),
+                "online" => stripe_types::miniserde_helpers::begin_nullable(&mut self.online),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { online: Some(None), type_: None }
+            Self { online: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(online), Some(type_)) = (self.online.take(), self.type_.take()) else {
+            let (online, Some(type_)) = (self.online.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { online, type_ })

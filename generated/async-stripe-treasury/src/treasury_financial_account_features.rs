@@ -25,20 +25,14 @@ impl std::fmt::Debug for TreasuryFinancialAccountFeatures {
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountFeaturesBuilder {
-    card_issuing: Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>>,
-    deposit_insurance:
-        Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>>,
-    financial_addresses: Option<
+    card_issuing: Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>,
+    deposit_insurance: Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>,
+    financial_addresses:
         Option<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAddressesFeatures>,
-    >,
-    inbound_transfers:
-        Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceInboundTransfers>>,
-    intra_stripe_flows:
-        Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>>,
-    outbound_payments:
-        Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceOutboundPayments>>,
-    outbound_transfers:
-        Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceOutboundTransfers>>,
+    inbound_transfers: Option<stripe_treasury::TreasuryFinancialAccountsResourceInboundTransfers>,
+    intra_stripe_flows: Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>,
+    outbound_payments: Option<stripe_treasury::TreasuryFinancialAccountsResourceOutboundPayments>,
+    outbound_transfers: Option<stripe_treasury::TreasuryFinancialAccountsResourceOutboundTransfers>,
 }
 
 #[allow(
@@ -81,38 +75,52 @@ const _: () = {
         type Out = TreasuryFinancialAccountFeatures;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card_issuing" => Deserialize::begin(&mut self.card_issuing),
-                "deposit_insurance" => Deserialize::begin(&mut self.deposit_insurance),
-                "financial_addresses" => Deserialize::begin(&mut self.financial_addresses),
-                "inbound_transfers" => Deserialize::begin(&mut self.inbound_transfers),
-                "intra_stripe_flows" => Deserialize::begin(&mut self.intra_stripe_flows),
-                "outbound_payments" => Deserialize::begin(&mut self.outbound_payments),
-                "outbound_transfers" => Deserialize::begin(&mut self.outbound_transfers),
+                "card_issuing" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.card_issuing)
+                }
+                "deposit_insurance" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.deposit_insurance)
+                }
+                "financial_addresses" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.financial_addresses)
+                }
+                "inbound_transfers" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.inbound_transfers)
+                }
+                "intra_stripe_flows" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.intra_stripe_flows)
+                }
+                "outbound_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.outbound_payments)
+                }
+                "outbound_transfers" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.outbound_transfers)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                card_issuing: Some(None),
-                deposit_insurance: Some(None),
-                financial_addresses: Some(None),
-                inbound_transfers: Some(None),
-                intra_stripe_flows: Some(None),
-                outbound_payments: Some(None),
-                outbound_transfers: Some(None),
+                card_issuing: None,
+                deposit_insurance: None,
+                financial_addresses: None,
+                inbound_transfers: None,
+                intra_stripe_flows: None,
+                outbound_payments: None,
+                outbound_transfers: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(card_issuing),
-                Some(deposit_insurance),
-                Some(financial_addresses),
-                Some(inbound_transfers),
-                Some(intra_stripe_flows),
-                Some(outbound_payments),
-                Some(outbound_transfers),
+                card_issuing,
+                deposit_insurance,
+                financial_addresses,
+                inbound_transfers,
+                intra_stripe_flows,
+                outbound_payments,
+                outbound_transfers,
             ) = (
                 self.card_issuing.take(),
                 self.deposit_insurance.take(),

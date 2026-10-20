@@ -30,11 +30,11 @@ impl std::fmt::Debug for CheckoutAcssDebitPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutAcssDebitPaymentMethodOptionsBuilder {
-    currency: Option<Option<CheckoutAcssDebitPaymentMethodOptionsCurrency>>,
-    mandate_options: Option<Option<stripe_shared::CheckoutAcssDebitMandateOptions>>,
-    setup_future_usage: Option<Option<CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage>>,
+    currency: Option<CheckoutAcssDebitPaymentMethodOptionsCurrency>,
+    mandate_options: Option<stripe_shared::CheckoutAcssDebitMandateOptions>,
+    setup_future_usage: Option<CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage>,
     target_date: Option<Option<String>>,
-    verification_method: Option<Option<CheckoutAcssDebitPaymentMethodOptionsVerificationMethod>>,
+    verification_method: Option<CheckoutAcssDebitPaymentMethodOptionsVerificationMethod>,
 }
 
 #[allow(
@@ -77,32 +77,38 @@ const _: () = {
         type Out = CheckoutAcssDebitPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "currency" => Deserialize::begin(&mut self.currency),
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "currency" => stripe_types::miniserde_helpers::begin_nullable(&mut self.currency),
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 "target_date" => Deserialize::begin(&mut self.target_date),
-                "verification_method" => Deserialize::begin(&mut self.verification_method),
+                "verification_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verification_method)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                currency: Some(None),
-                mandate_options: Some(None),
-                setup_future_usage: Some(None),
+                currency: None,
+                mandate_options: None,
+                setup_future_usage: None,
                 target_date: Some(None),
-                verification_method: Some(None),
+                verification_method: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(currency),
-                Some(mandate_options),
-                Some(setup_future_usage),
+                currency,
+                mandate_options,
+                setup_future_usage,
                 Some(target_date),
-                Some(verification_method),
+                verification_method,
             ) = (
                 self.currency.take(),
                 self.mandate_options.take(),

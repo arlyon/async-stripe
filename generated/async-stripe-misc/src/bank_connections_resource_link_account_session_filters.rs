@@ -28,7 +28,7 @@ pub struct BankConnectionsResourceLinkAccountSessionFiltersBuilder {
     countries: Option<Option<Vec<String>>>,
     country: Option<Option<String>>,
     require_payment_method_support:
-        Option<Option<BankConnectionsResourceLinkAccountSessionFiltersRequirePaymentMethodSupport>>,
+        Option<BankConnectionsResourceLinkAccountSessionFiltersRequirePaymentMethodSupport>,
 }
 
 #[allow(
@@ -75,7 +75,9 @@ const _: () = {
                 "countries" => Deserialize::begin(&mut self.countries),
                 "country" => Deserialize::begin(&mut self.country),
                 "require_payment_method_support" => {
-                    Deserialize::begin(&mut self.require_payment_method_support)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.require_payment_method_support,
+                    )
                 }
                 _ => <dyn Visitor>::ignore(),
             })
@@ -86,7 +88,7 @@ const _: () = {
                 account_subcategories: Some(None),
                 countries: Some(None),
                 country: Some(None),
-                require_payment_method_support: Some(None),
+                require_payment_method_support: None,
             }
         }
 
@@ -95,7 +97,7 @@ const _: () = {
                 Some(account_subcategories),
                 Some(countries),
                 Some(country),
-                Some(require_payment_method_support),
+                require_payment_method_support,
             ) = (
                 self.account_subcategories.take(),
                 self.countries.take(),

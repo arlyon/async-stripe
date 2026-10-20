@@ -22,7 +22,7 @@ impl std::fmt::Debug for BalanceSettingsResourcePayoutSchedule {
 }
 #[doc(hidden)]
 pub struct BalanceSettingsResourcePayoutScheduleBuilder {
-    interval: Option<Option<BalanceSettingsResourcePayoutScheduleInterval>>,
+    interval: Option<BalanceSettingsResourcePayoutScheduleInterval>,
     monthly_payout_days: Option<Option<Vec<u32>>>,
     weekly_payout_days: Option<Option<Vec<BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays>>>,
 }
@@ -67,7 +67,7 @@ const _: () = {
         type Out = BalanceSettingsResourcePayoutSchedule;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "interval" => Deserialize::begin(&mut self.interval),
+                "interval" => stripe_types::miniserde_helpers::begin_nullable(&mut self.interval),
                 "monthly_payout_days" => Deserialize::begin(&mut self.monthly_payout_days),
                 "weekly_payout_days" => Deserialize::begin(&mut self.weekly_payout_days),
                 _ => <dyn Visitor>::ignore(),
@@ -75,15 +75,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                interval: Some(None),
-                monthly_payout_days: Some(None),
-                weekly_payout_days: Some(None),
-            }
+            Self { interval: None, monthly_payout_days: Some(None), weekly_payout_days: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(interval), Some(monthly_payout_days), Some(weekly_payout_days)) = (
+            let (interval, Some(monthly_payout_days), Some(weekly_payout_days)) = (
                 self.interval.take(),
                 self.monthly_payout_days.take(),
                 self.weekly_payout_days.take(),

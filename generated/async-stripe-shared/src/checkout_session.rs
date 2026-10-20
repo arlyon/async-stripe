@@ -202,80 +202,77 @@ impl std::fmt::Debug for CheckoutSession {
 }
 #[doc(hidden)]
 pub struct CheckoutSessionBuilder {
-    adaptive_pricing: Option<Option<stripe_shared::PaymentPagesCheckoutSessionAdaptivePricing>>,
-    after_expiration: Option<Option<stripe_shared::PaymentPagesCheckoutSessionAfterExpiration>>,
+    adaptive_pricing: Option<stripe_shared::PaymentPagesCheckoutSessionAdaptivePricing>,
+    after_expiration: Option<stripe_shared::PaymentPagesCheckoutSessionAfterExpiration>,
     allow_promotion_codes: Option<Option<bool>>,
     amount_subtotal: Option<Option<i64>>,
     amount_total: Option<Option<i64>>,
     automatic_tax: Option<stripe_shared::PaymentPagesCheckoutSessionAutomaticTax>,
-    billing_address_collection:
-        Option<Option<stripe_shared::CheckoutSessionBillingAddressCollection>>,
-    branding_settings: Option<Option<stripe_shared::PaymentPagesCheckoutSessionBrandingSettings>>,
+    billing_address_collection: Option<stripe_shared::CheckoutSessionBillingAddressCollection>,
+    branding_settings: Option<stripe_shared::PaymentPagesCheckoutSessionBrandingSettings>,
     cancel_url: Option<Option<String>>,
     client_reference_id: Option<Option<String>>,
     client_secret: Option<Option<String>>,
-    collected_information:
-        Option<Option<stripe_shared::PaymentPagesCheckoutSessionCollectedInformation>>,
-    consent: Option<Option<stripe_shared::PaymentPagesCheckoutSessionConsent>>,
-    consent_collection: Option<Option<stripe_shared::PaymentPagesCheckoutSessionConsentCollection>>,
+    collected_information: Option<stripe_shared::PaymentPagesCheckoutSessionCollectedInformation>,
+    consent: Option<stripe_shared::PaymentPagesCheckoutSessionConsent>,
+    consent_collection: Option<stripe_shared::PaymentPagesCheckoutSessionConsentCollection>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<Option<stripe_types::Currency>>,
-    currency_conversion:
-        Option<Option<stripe_shared::PaymentPagesCheckoutSessionCurrencyConversion>>,
+    currency_conversion: Option<stripe_shared::PaymentPagesCheckoutSessionCurrencyConversion>,
     custom_fields: Option<Vec<stripe_shared::PaymentPagesCheckoutSessionCustomFields>>,
     custom_text: Option<stripe_shared::PaymentPagesCheckoutSessionCustomText>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
-    customer_creation: Option<Option<CheckoutSessionCustomerCreation>>,
-    customer_details: Option<Option<stripe_shared::PaymentPagesCheckoutSessionCustomerDetails>>,
+    customer_creation: Option<CheckoutSessionCustomerCreation>,
+    customer_details: Option<stripe_shared::PaymentPagesCheckoutSessionCustomerDetails>,
     customer_email: Option<Option<String>>,
     discounts: Option<Option<Vec<stripe_shared::PaymentPagesCheckoutSessionDiscount>>>,
     excluded_payment_method_types: Option<Option<Vec<String>>>,
     expires_at: Option<stripe_types::Timestamp>,
     id: Option<stripe_shared::CheckoutSessionId>,
     integration_identifier: Option<Option<String>>,
-    invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
-    invoice_creation: Option<Option<stripe_shared::PaymentPagesCheckoutSessionInvoiceCreation>>,
+    invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
+    invoice_creation: Option<stripe_shared::PaymentPagesCheckoutSessionInvoiceCreation>,
     line_items: Option<Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>>,
     livemode: Option<bool>,
-    locale: Option<Option<stripe_shared::CheckoutSessionLocale>>,
-    managed_payments: Option<Option<stripe_shared::PaymentPagesCheckoutSessionManagedPayments>>,
+    locale: Option<stripe_shared::CheckoutSessionLocale>,
+    managed_payments: Option<stripe_shared::PaymentPagesCheckoutSessionManagedPayments>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     mode: Option<stripe_shared::CheckoutSessionMode>,
-    name_collection: Option<Option<stripe_shared::PaymentPagesCheckoutSessionNameCollection>>,
+    name_collection: Option<stripe_shared::PaymentPagesCheckoutSessionNameCollection>,
     optional_items: Option<Option<Vec<stripe_shared::PaymentPagesCheckoutSessionOptionalItem>>>,
-    origin_context: Option<Option<stripe_shared::CheckoutSessionOriginContext>>,
-    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
-    payment_link: Option<Option<stripe_types::Expandable<stripe_shared::PaymentLink>>>,
-    payment_method_collection: Option<Option<CheckoutSessionPaymentMethodCollection>>,
+    origin_context: Option<stripe_shared::CheckoutSessionOriginContext>,
+    payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
+    payment_link: Option<stripe_types::Expandable<stripe_shared::PaymentLink>>,
+    payment_method_collection: Option<CheckoutSessionPaymentMethodCollection>,
     payment_method_configuration_details:
-        Option<Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>>,
-    payment_method_options: Option<Option<stripe_shared::CheckoutSessionPaymentMethodOptions>>,
+        Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>,
+    payment_method_options: Option<stripe_shared::CheckoutSessionPaymentMethodOptions>,
     payment_method_types: Option<Vec<String>>,
     payment_status: Option<CheckoutSessionPaymentStatus>,
-    permissions: Option<Option<stripe_shared::PaymentPagesCheckoutSessionPermissions>>,
+    permissions: Option<stripe_shared::PaymentPagesCheckoutSessionPermissions>,
     phone_number_collection:
-        Option<Option<stripe_shared::PaymentPagesCheckoutSessionPhoneNumberCollection>>,
-    presentment_details: Option<Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>>,
+        Option<stripe_shared::PaymentPagesCheckoutSessionPhoneNumberCollection>,
+    presentment_details: Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>,
     recovered_from: Option<Option<String>>,
-    redirect_on_completion: Option<Option<stripe_shared::CheckoutSessionRedirectOnCompletion>>,
+    redirect_on_completion: Option<stripe_shared::CheckoutSessionRedirectOnCompletion>,
     return_url: Option<Option<String>>,
     saved_payment_method_options:
-        Option<Option<stripe_shared::PaymentPagesCheckoutSessionSavedPaymentMethodOptions>>,
-    setup_intent: Option<Option<stripe_types::Expandable<stripe_shared::SetupIntent>>>,
+        Option<stripe_shared::PaymentPagesCheckoutSessionSavedPaymentMethodOptions>,
+    setup_intent: Option<stripe_types::Expandable<stripe_shared::SetupIntent>>,
     shipping_address_collection:
-        Option<Option<stripe_shared::PaymentPagesCheckoutSessionShippingAddressCollection>>,
-    shipping_cost: Option<Option<stripe_shared::PaymentPagesCheckoutSessionShippingCost>>,
+        Option<stripe_shared::PaymentPagesCheckoutSessionShippingAddressCollection>,
+    shipping_cost: Option<stripe_shared::PaymentPagesCheckoutSessionShippingCost>,
     shipping_options: Option<Vec<stripe_shared::PaymentPagesCheckoutSessionShippingOption>>,
-    status: Option<Option<stripe_shared::CheckoutSessionStatus>>,
-    submit_type: Option<Option<stripe_shared::CheckoutSessionSubmitType>>,
-    subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
+    status: Option<stripe_shared::CheckoutSessionStatus>,
+    submit_type: Option<stripe_shared::CheckoutSessionSubmitType>,
+    subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
     success_url: Option<Option<String>>,
-    tax_id_collection: Option<Option<stripe_shared::PaymentPagesCheckoutSessionTaxIdCollection>>,
-    total_details: Option<Option<stripe_shared::PaymentPagesCheckoutSessionTotalDetails>>,
-    ui_mode: Option<Option<stripe_shared::CheckoutSessionUiMode>>,
+    tax_id_collection: Option<stripe_shared::PaymentPagesCheckoutSessionTaxIdCollection>,
+    total_details: Option<stripe_shared::PaymentPagesCheckoutSessionTotalDetails>,
+    ui_mode: Option<stripe_shared::CheckoutSessionUiMode>,
     url: Option<Option<String>>,
-    wallet_options: Option<Option<stripe_shared::CheckoutSessionWalletOptions>>,
+    wallet_options: Option<stripe_shared::CheckoutSessionWalletOptions>,
 }
 
 #[allow(
@@ -318,31 +315,47 @@ const _: () = {
         type Out = CheckoutSession;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "adaptive_pricing" => Deserialize::begin(&mut self.adaptive_pricing),
-                "after_expiration" => Deserialize::begin(&mut self.after_expiration),
+                "adaptive_pricing" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.adaptive_pricing)
+                }
+                "after_expiration" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.after_expiration)
+                }
                 "allow_promotion_codes" => Deserialize::begin(&mut self.allow_promotion_codes),
                 "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
                 "amount_total" => Deserialize::begin(&mut self.amount_total),
                 "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
-                "billing_address_collection" => {
-                    Deserialize::begin(&mut self.billing_address_collection)
+                "billing_address_collection" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.billing_address_collection,
+                ),
+                "branding_settings" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.branding_settings)
                 }
-                "branding_settings" => Deserialize::begin(&mut self.branding_settings),
                 "cancel_url" => Deserialize::begin(&mut self.cancel_url),
                 "client_reference_id" => Deserialize::begin(&mut self.client_reference_id),
                 "client_secret" => Deserialize::begin(&mut self.client_secret),
-                "collected_information" => Deserialize::begin(&mut self.collected_information),
-                "consent" => Deserialize::begin(&mut self.consent),
-                "consent_collection" => Deserialize::begin(&mut self.consent_collection),
+                "collected_information" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.collected_information)
+                }
+                "consent" => stripe_types::miniserde_helpers::begin_nullable(&mut self.consent),
+                "consent_collection" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.consent_collection)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
-                "currency_conversion" => Deserialize::begin(&mut self.currency_conversion),
+                "currency_conversion" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.currency_conversion)
+                }
                 "custom_fields" => Deserialize::begin(&mut self.custom_fields),
                 "custom_text" => Deserialize::begin(&mut self.custom_text),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
-                "customer_creation" => Deserialize::begin(&mut self.customer_creation),
-                "customer_details" => Deserialize::begin(&mut self.customer_details),
+                "customer_creation" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.customer_creation)
+                }
+                "customer_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.customer_details)
+                }
                 "customer_email" => Deserialize::begin(&mut self.customer_email),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "excluded_payment_method_types" => {
@@ -351,197 +364,235 @@ const _: () = {
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "id" => Deserialize::begin(&mut self.id),
                 "integration_identifier" => Deserialize::begin(&mut self.integration_identifier),
-                "invoice" => Deserialize::begin(&mut self.invoice),
-                "invoice_creation" => Deserialize::begin(&mut self.invoice_creation),
+                "invoice" => stripe_types::miniserde_helpers::begin_nullable(&mut self.invoice),
+                "invoice_creation" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.invoice_creation)
+                }
                 "line_items" => Deserialize::begin(&mut self.line_items),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "locale" => Deserialize::begin(&mut self.locale),
-                "managed_payments" => Deserialize::begin(&mut self.managed_payments),
+                "locale" => stripe_types::miniserde_helpers::begin_nullable(&mut self.locale),
+                "managed_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.managed_payments)
+                }
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "mode" => Deserialize::begin(&mut self.mode),
-                "name_collection" => Deserialize::begin(&mut self.name_collection),
+                "name_collection" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.name_collection)
+                }
                 "optional_items" => Deserialize::begin(&mut self.optional_items),
-                "origin_context" => Deserialize::begin(&mut self.origin_context),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_link" => Deserialize::begin(&mut self.payment_link),
-                "payment_method_collection" => {
-                    Deserialize::begin(&mut self.payment_method_collection)
+                "origin_context" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.origin_context)
                 }
+                "payment_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_intent)
+                }
+                "payment_link" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_link)
+                }
+                "payment_method_collection" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_collection,
+                ),
                 "payment_method_configuration_details" => {
-                    Deserialize::begin(&mut self.payment_method_configuration_details)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.payment_method_configuration_details,
+                    )
                 }
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
+                "payment_method_options" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_options,
+                ),
                 "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
                 "payment_status" => Deserialize::begin(&mut self.payment_status),
-                "permissions" => Deserialize::begin(&mut self.permissions),
-                "phone_number_collection" => Deserialize::begin(&mut self.phone_number_collection),
-                "presentment_details" => Deserialize::begin(&mut self.presentment_details),
+                "permissions" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.permissions)
+                }
+                "phone_number_collection" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.phone_number_collection,
+                ),
+                "presentment_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.presentment_details)
+                }
                 "recovered_from" => Deserialize::begin(&mut self.recovered_from),
-                "redirect_on_completion" => Deserialize::begin(&mut self.redirect_on_completion),
+                "redirect_on_completion" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.redirect_on_completion,
+                ),
                 "return_url" => Deserialize::begin(&mut self.return_url),
-                "saved_payment_method_options" => {
-                    Deserialize::begin(&mut self.saved_payment_method_options)
+                "saved_payment_method_options" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.saved_payment_method_options,
+                ),
+                "setup_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_intent)
                 }
-                "setup_intent" => Deserialize::begin(&mut self.setup_intent),
-                "shipping_address_collection" => {
-                    Deserialize::begin(&mut self.shipping_address_collection)
+                "shipping_address_collection" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.shipping_address_collection,
+                ),
+                "shipping_cost" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_cost)
                 }
-                "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
                 "shipping_options" => Deserialize::begin(&mut self.shipping_options),
-                "status" => Deserialize::begin(&mut self.status),
-                "submit_type" => Deserialize::begin(&mut self.submit_type),
-                "subscription" => Deserialize::begin(&mut self.subscription),
+                "status" => stripe_types::miniserde_helpers::begin_nullable(&mut self.status),
+                "submit_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.submit_type)
+                }
+                "subscription" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.subscription)
+                }
                 "success_url" => Deserialize::begin(&mut self.success_url),
-                "tax_id_collection" => Deserialize::begin(&mut self.tax_id_collection),
-                "total_details" => Deserialize::begin(&mut self.total_details),
-                "ui_mode" => Deserialize::begin(&mut self.ui_mode),
+                "tax_id_collection" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_id_collection)
+                }
+                "total_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.total_details)
+                }
+                "ui_mode" => stripe_types::miniserde_helpers::begin_nullable(&mut self.ui_mode),
                 "url" => Deserialize::begin(&mut self.url),
-                "wallet_options" => Deserialize::begin(&mut self.wallet_options),
+                "wallet_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.wallet_options)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                adaptive_pricing: Some(None),
-                after_expiration: Some(None),
+                adaptive_pricing: None,
+                after_expiration: None,
                 allow_promotion_codes: Some(None),
                 amount_subtotal: Some(None),
                 amount_total: Some(None),
                 automatic_tax: None,
-                billing_address_collection: Some(None),
-                branding_settings: Some(None),
+                billing_address_collection: None,
+                branding_settings: None,
                 cancel_url: Some(None),
                 client_reference_id: Some(None),
                 client_secret: Some(None),
-                collected_information: Some(None),
-                consent: Some(None),
-                consent_collection: Some(None),
+                collected_information: None,
+                consent: None,
+                consent_collection: None,
                 created: None,
                 currency: Some(None),
-                currency_conversion: Some(None),
+                currency_conversion: None,
                 custom_fields: None,
                 custom_text: None,
-                customer: Some(None),
+                customer: None,
                 customer_account: Some(None),
-                customer_creation: Some(None),
-                customer_details: Some(None),
+                customer_creation: None,
+                customer_details: None,
                 customer_email: Some(None),
                 discounts: Some(None),
                 excluded_payment_method_types: Some(None),
                 expires_at: None,
                 id: None,
                 integration_identifier: Some(None),
-                invoice: Some(None),
-                invoice_creation: Some(None),
+                invoice: None,
+                invoice_creation: None,
                 line_items: Some(None),
                 livemode: None,
-                locale: Some(None),
-                managed_payments: Some(None),
+                locale: None,
+                managed_payments: None,
                 metadata: Some(None),
                 mode: None,
-                name_collection: Some(None),
+                name_collection: None,
                 optional_items: Some(None),
-                origin_context: Some(None),
-                payment_intent: Some(None),
-                payment_link: Some(None),
-                payment_method_collection: Some(None),
-                payment_method_configuration_details: Some(None),
-                payment_method_options: Some(None),
+                origin_context: None,
+                payment_intent: None,
+                payment_link: None,
+                payment_method_collection: None,
+                payment_method_configuration_details: None,
+                payment_method_options: None,
                 payment_method_types: None,
                 payment_status: None,
-                permissions: Some(None),
-                phone_number_collection: Some(None),
-                presentment_details: Some(None),
+                permissions: None,
+                phone_number_collection: None,
+                presentment_details: None,
                 recovered_from: Some(None),
-                redirect_on_completion: Some(None),
+                redirect_on_completion: None,
                 return_url: Some(None),
-                saved_payment_method_options: Some(None),
-                setup_intent: Some(None),
-                shipping_address_collection: Some(None),
-                shipping_cost: Some(None),
+                saved_payment_method_options: None,
+                setup_intent: None,
+                shipping_address_collection: None,
+                shipping_cost: None,
                 shipping_options: None,
-                status: Some(None),
-                submit_type: Some(None),
-                subscription: Some(None),
+                status: None,
+                submit_type: None,
+                subscription: None,
                 success_url: Some(None),
-                tax_id_collection: Some(None),
-                total_details: Some(None),
-                ui_mode: Some(None),
+                tax_id_collection: None,
+                total_details: None,
+                ui_mode: None,
                 url: Some(None),
-                wallet_options: Some(None),
+                wallet_options: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(adaptive_pricing),
-                Some(after_expiration),
+                adaptive_pricing,
+                after_expiration,
                 Some(allow_promotion_codes),
                 Some(amount_subtotal),
                 Some(amount_total),
                 Some(automatic_tax),
-                Some(billing_address_collection),
-                Some(branding_settings),
+                billing_address_collection,
+                branding_settings,
                 Some(cancel_url),
                 Some(client_reference_id),
                 Some(client_secret),
-                Some(collected_information),
-                Some(consent),
-                Some(consent_collection),
+                collected_information,
+                consent,
+                consent_collection,
                 Some(created),
                 Some(currency),
-                Some(currency_conversion),
+                currency_conversion,
                 Some(custom_fields),
                 Some(custom_text),
-                Some(customer),
+                customer,
                 Some(customer_account),
-                Some(customer_creation),
-                Some(customer_details),
+                customer_creation,
+                customer_details,
                 Some(customer_email),
                 Some(discounts),
                 Some(excluded_payment_method_types),
                 Some(expires_at),
                 Some(id),
                 Some(integration_identifier),
-                Some(invoice),
-                Some(invoice_creation),
+                invoice,
+                invoice_creation,
                 Some(line_items),
                 Some(livemode),
-                Some(locale),
-                Some(managed_payments),
+                locale,
+                managed_payments,
                 Some(metadata),
                 Some(mode),
-                Some(name_collection),
+                name_collection,
                 Some(optional_items),
-                Some(origin_context),
-                Some(payment_intent),
-                Some(payment_link),
-                Some(payment_method_collection),
-                Some(payment_method_configuration_details),
-                Some(payment_method_options),
+                origin_context,
+                payment_intent,
+                payment_link,
+                payment_method_collection,
+                payment_method_configuration_details,
+                payment_method_options,
                 Some(payment_method_types),
                 Some(payment_status),
-                Some(permissions),
-                Some(phone_number_collection),
-                Some(presentment_details),
+                permissions,
+                phone_number_collection,
+                presentment_details,
                 Some(recovered_from),
-                Some(redirect_on_completion),
+                redirect_on_completion,
                 Some(return_url),
-                Some(saved_payment_method_options),
-                Some(setup_intent),
-                Some(shipping_address_collection),
-                Some(shipping_cost),
+                saved_payment_method_options,
+                setup_intent,
+                shipping_address_collection,
+                shipping_cost,
                 Some(shipping_options),
-                Some(status),
-                Some(submit_type),
-                Some(subscription),
+                status,
+                submit_type,
+                subscription,
                 Some(success_url),
-                Some(tax_id_collection),
-                Some(total_details),
-                Some(ui_mode),
+                tax_id_collection,
+                total_details,
+                ui_mode,
                 Some(url),
-                Some(wallet_options),
+                wallet_options,
             ) = (
                 self.adaptive_pricing,
                 self.after_expiration.take(),

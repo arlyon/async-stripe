@@ -15,7 +15,7 @@ impl std::fmt::Debug for IssuingCardholderCardIssuing {
 }
 #[doc(hidden)]
 pub struct IssuingCardholderCardIssuingBuilder {
-    user_terms_acceptance: Option<Option<stripe_shared::IssuingCardholderUserTermsAcceptance>>,
+    user_terms_acceptance: Option<stripe_shared::IssuingCardholderUserTermsAcceptance>,
 }
 
 #[allow(
@@ -58,17 +58,19 @@ const _: () = {
         type Out = IssuingCardholderCardIssuing;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "user_terms_acceptance" => Deserialize::begin(&mut self.user_terms_acceptance),
+                "user_terms_acceptance" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.user_terms_acceptance)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { user_terms_acceptance: Some(None) }
+            Self { user_terms_acceptance: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(user_terms_acceptance),) = (self.user_terms_acceptance.take(),) else {
+            let (user_terms_acceptance,) = (self.user_terms_acceptance.take(),) else {
                 return None;
             };
             Some(Self::Out { user_terms_acceptance })

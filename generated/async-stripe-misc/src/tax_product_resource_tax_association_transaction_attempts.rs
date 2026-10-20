@@ -21,12 +21,10 @@ impl std::fmt::Debug for TaxProductResourceTaxAssociationTransactionAttempts {
 }
 #[doc(hidden)]
 pub struct TaxProductResourceTaxAssociationTransactionAttemptsBuilder {
-    committed: Option<
+    committed:
         Option<stripe_misc::TaxProductResourceTaxAssociationTransactionAttemptsResourceCommitted>,
-    >,
-    errored: Option<
+    errored:
         Option<stripe_misc::TaxProductResourceTaxAssociationTransactionAttemptsResourceErrored>,
-    >,
     source: Option<String>,
     status: Option<String>,
 }
@@ -72,8 +70,8 @@ const _: () = {
         type Out = TaxProductResourceTaxAssociationTransactionAttempts;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "committed" => Deserialize::begin(&mut self.committed),
-                "errored" => Deserialize::begin(&mut self.errored),
+                "committed" => stripe_types::miniserde_helpers::begin_nullable(&mut self.committed),
+                "errored" => stripe_types::miniserde_helpers::begin_nullable(&mut self.errored),
                 "source" => Deserialize::begin(&mut self.source),
                 "status" => Deserialize::begin(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
@@ -81,11 +79,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { committed: Some(None), errored: Some(None), source: None, status: None }
+            Self { committed: None, errored: None, source: None, status: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(committed), Some(errored), Some(source), Some(status)) = (
+            let (committed, errored, Some(source), Some(status)) = (
                 self.committed.take(),
                 self.errored.take(),
                 self.source.take(),

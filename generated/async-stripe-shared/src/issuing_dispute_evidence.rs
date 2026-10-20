@@ -24,18 +24,16 @@ impl std::fmt::Debug for IssuingDisputeEvidence {
 }
 #[doc(hidden)]
 pub struct IssuingDisputeEvidenceBuilder {
-    canceled: Option<Option<stripe_shared::IssuingDisputeCanceledEvidence>>,
-    duplicate: Option<Option<stripe_shared::IssuingDisputeDuplicateEvidence>>,
-    fraudulent: Option<Option<stripe_shared::IssuingDisputeFraudulentEvidence>>,
+    canceled: Option<stripe_shared::IssuingDisputeCanceledEvidence>,
+    duplicate: Option<stripe_shared::IssuingDisputeDuplicateEvidence>,
+    fraudulent: Option<stripe_shared::IssuingDisputeFraudulentEvidence>,
     merchandise_not_as_described:
-        Option<Option<stripe_shared::IssuingDisputeMerchandiseNotAsDescribedEvidence>>,
-    no_valid_authorization:
-        Option<Option<stripe_shared::IssuingDisputeNoValidAuthorizationEvidence>>,
-    not_received: Option<Option<stripe_shared::IssuingDisputeNotReceivedEvidence>>,
-    other: Option<Option<stripe_shared::IssuingDisputeOtherEvidence>>,
+        Option<stripe_shared::IssuingDisputeMerchandiseNotAsDescribedEvidence>,
+    no_valid_authorization: Option<stripe_shared::IssuingDisputeNoValidAuthorizationEvidence>,
+    not_received: Option<stripe_shared::IssuingDisputeNotReceivedEvidence>,
+    other: Option<stripe_shared::IssuingDisputeOtherEvidence>,
     reason: Option<IssuingDisputeEvidenceReason>,
-    service_not_as_described:
-        Option<Option<stripe_shared::IssuingDisputeServiceNotAsDescribedEvidence>>,
+    service_not_as_described: Option<stripe_shared::IssuingDisputeServiceNotAsDescribedEvidence>,
 }
 
 #[allow(
@@ -78,48 +76,54 @@ const _: () = {
         type Out = IssuingDisputeEvidence;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "canceled" => Deserialize::begin(&mut self.canceled),
-                "duplicate" => Deserialize::begin(&mut self.duplicate),
-                "fraudulent" => Deserialize::begin(&mut self.fraudulent),
-                "merchandise_not_as_described" => {
-                    Deserialize::begin(&mut self.merchandise_not_as_described)
+                "canceled" => stripe_types::miniserde_helpers::begin_nullable(&mut self.canceled),
+                "duplicate" => stripe_types::miniserde_helpers::begin_nullable(&mut self.duplicate),
+                "fraudulent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.fraudulent)
                 }
-                "no_valid_authorization" => Deserialize::begin(&mut self.no_valid_authorization),
-                "not_received" => Deserialize::begin(&mut self.not_received),
-                "other" => Deserialize::begin(&mut self.other),
+                "merchandise_not_as_described" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.merchandise_not_as_described,
+                ),
+                "no_valid_authorization" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.no_valid_authorization,
+                ),
+                "not_received" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.not_received)
+                }
+                "other" => stripe_types::miniserde_helpers::begin_nullable(&mut self.other),
                 "reason" => Deserialize::begin(&mut self.reason),
-                "service_not_as_described" => {
-                    Deserialize::begin(&mut self.service_not_as_described)
-                }
+                "service_not_as_described" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.service_not_as_described,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                canceled: Some(None),
-                duplicate: Some(None),
-                fraudulent: Some(None),
-                merchandise_not_as_described: Some(None),
-                no_valid_authorization: Some(None),
-                not_received: Some(None),
-                other: Some(None),
+                canceled: None,
+                duplicate: None,
+                fraudulent: None,
+                merchandise_not_as_described: None,
+                no_valid_authorization: None,
+                not_received: None,
+                other: None,
                 reason: None,
-                service_not_as_described: Some(None),
+                service_not_as_described: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(canceled),
-                Some(duplicate),
-                Some(fraudulent),
-                Some(merchandise_not_as_described),
-                Some(no_valid_authorization),
-                Some(not_received),
-                Some(other),
+                canceled,
+                duplicate,
+                fraudulent,
+                merchandise_not_as_described,
+                no_valid_authorization,
+                not_received,
+                other,
                 Some(reason),
-                Some(service_not_as_described),
+                service_not_as_described,
             ) = (
                 self.canceled.take(),
                 self.duplicate.take(),

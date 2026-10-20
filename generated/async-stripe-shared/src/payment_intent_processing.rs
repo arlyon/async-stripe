@@ -16,7 +16,7 @@ impl std::fmt::Debug for PaymentIntentProcessing {
 }
 #[doc(hidden)]
 pub struct PaymentIntentProcessingBuilder {
-    card: Option<Option<stripe_shared::PaymentIntentCardProcessing>>,
+    card: Option<stripe_shared::PaymentIntentCardProcessing>,
     type_: Option<PaymentIntentProcessingType>,
 }
 
@@ -60,18 +60,18 @@ const _: () = {
         type Out = PaymentIntentProcessing;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card" => Deserialize::begin(&mut self.card),
+                "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { card: Some(None), type_: None }
+            Self { card: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card), Some(type_)) = (self.card, self.type_.take()) else {
+            let (card, Some(type_)) = (self.card, self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { card, type_ })

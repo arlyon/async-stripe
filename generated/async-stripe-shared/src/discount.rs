@@ -45,13 +45,13 @@ impl std::fmt::Debug for Discount {
 #[doc(hidden)]
 pub struct DiscountBuilder {
     checkout_session: Option<Option<String>>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     end: Option<Option<stripe_types::Timestamp>>,
     id: Option<stripe_shared::DiscountId>,
     invoice: Option<Option<String>>,
     invoice_item: Option<Option<String>>,
-    promotion_code: Option<Option<stripe_types::Expandable<stripe_shared::PromotionCode>>>,
+    promotion_code: Option<stripe_types::Expandable<stripe_shared::PromotionCode>>,
     source: Option<stripe_shared::DiscountSource>,
     start: Option<stripe_types::Timestamp>,
     subscription: Option<Option<String>>,
@@ -96,13 +96,15 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "checkout_session" => Deserialize::begin(&mut self.checkout_session),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "end" => Deserialize::begin(&mut self.end),
                 "id" => Deserialize::begin(&mut self.id),
                 "invoice" => Deserialize::begin(&mut self.invoice),
                 "invoice_item" => Deserialize::begin(&mut self.invoice_item),
-                "promotion_code" => Deserialize::begin(&mut self.promotion_code),
+                "promotion_code" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.promotion_code)
+                }
                 "source" => Deserialize::begin(&mut self.source),
                 "start" => Deserialize::begin(&mut self.start),
                 "subscription" => Deserialize::begin(&mut self.subscription),
@@ -114,13 +116,13 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 checkout_session: Some(None),
-                customer: Some(None),
+                customer: None,
                 customer_account: Some(None),
                 end: Some(None),
                 id: None,
                 invoice: Some(None),
                 invoice_item: Some(None),
-                promotion_code: Some(None),
+                promotion_code: None,
                 source: None,
                 start: None,
                 subscription: Some(None),
@@ -131,13 +133,13 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(checkout_session),
-                Some(customer),
+                customer,
                 Some(customer_account),
                 Some(end),
                 Some(id),
                 Some(invoice),
                 Some(invoice_item),
-                Some(promotion_code),
+                promotion_code,
                 Some(source),
                 Some(start),
                 Some(subscription),

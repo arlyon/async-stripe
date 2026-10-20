@@ -13,7 +13,7 @@ impl std::fmt::Debug for CheckoutSessionWalletOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutSessionWalletOptionsBuilder {
-    link: Option<Option<stripe_shared::CheckoutLinkWalletOptions>>,
+    link: Option<stripe_shared::CheckoutLinkWalletOptions>,
 }
 
 #[allow(
@@ -56,17 +56,17 @@ const _: () = {
         type Out = CheckoutSessionWalletOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "link" => Deserialize::begin(&mut self.link),
+                "link" => stripe_types::miniserde_helpers::begin_nullable(&mut self.link),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { link: Some(None) }
+            Self { link: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(link),) = (self.link.take(),) else {
+            let (link,) = (self.link.take(),) else {
                 return None;
             };
             Some(Self::Out { link })

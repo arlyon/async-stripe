@@ -21,10 +21,9 @@ impl std::fmt::Debug for IssuingTransactionFleetData {
 }
 #[doc(hidden)]
 pub struct IssuingTransactionFleetDataBuilder {
-    cardholder_prompt_data:
-        Option<Option<stripe_shared::IssuingTransactionFleetCardholderPromptData>>,
+    cardholder_prompt_data: Option<stripe_shared::IssuingTransactionFleetCardholderPromptData>,
     purchase_type: Option<Option<String>>,
-    reported_breakdown: Option<Option<stripe_shared::IssuingTransactionFleetReportedBreakdown>>,
+    reported_breakdown: Option<stripe_shared::IssuingTransactionFleetReportedBreakdown>,
     service_type: Option<Option<String>>,
 }
 
@@ -68,9 +67,13 @@ const _: () = {
         type Out = IssuingTransactionFleetData;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "cardholder_prompt_data" => Deserialize::begin(&mut self.cardholder_prompt_data),
+                "cardholder_prompt_data" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.cardholder_prompt_data,
+                ),
                 "purchase_type" => Deserialize::begin(&mut self.purchase_type),
-                "reported_breakdown" => Deserialize::begin(&mut self.reported_breakdown),
+                "reported_breakdown" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.reported_breakdown)
+                }
                 "service_type" => Deserialize::begin(&mut self.service_type),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -78,18 +81,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                cardholder_prompt_data: Some(None),
+                cardholder_prompt_data: None,
                 purchase_type: Some(None),
-                reported_breakdown: Some(None),
+                reported_breakdown: None,
                 service_type: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(cardholder_prompt_data),
+                cardholder_prompt_data,
                 Some(purchase_type),
-                Some(reported_breakdown),
+                reported_breakdown,
                 Some(service_type),
             ) = (
                 self.cardholder_prompt_data.take(),

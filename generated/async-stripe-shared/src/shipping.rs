@@ -22,7 +22,7 @@ impl std::fmt::Debug for Shipping {
 }
 #[doc(hidden)]
 pub struct ShippingBuilder {
-    address: Option<Option<stripe_shared::Address>>,
+    address: Option<stripe_shared::Address>,
     carrier: Option<Option<String>>,
     name: Option<Option<String>>,
     phone: Option<Option<String>>,
@@ -66,7 +66,7 @@ const _: () = {
         type Out = Shipping;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
+                "address" => stripe_types::miniserde_helpers::begin_nullable(&mut self.address),
                 "carrier" => Deserialize::begin(&mut self.carrier),
                 "name" => Deserialize::begin(&mut self.name),
                 "phone" => Deserialize::begin(&mut self.phone),
@@ -77,7 +77,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Some(None),
+                address: None,
                 carrier: Some(None),
                 name: Some(None),
                 phone: Some(None),
@@ -86,7 +86,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(address), Some(carrier), Some(name), Some(phone), Some(tracking_number)) = (
+            let (address, Some(carrier), Some(name), Some(phone), Some(tracking_number)) = (
                 self.address.take(),
                 self.carrier.take(),
                 self.name.take(),

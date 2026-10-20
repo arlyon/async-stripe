@@ -60,8 +60,8 @@ pub struct ReserveHoldBuilder {
     release_details:
         Option<Option<Vec<stripe_reserve::ReservesReserveHoldsResourcesReleaseDetail>>>,
     release_schedule: Option<stripe_reserve::ReservesReserveHoldsResourcesReleaseSchedule>,
-    reserve_plan: Option<Option<stripe_types::Expandable<stripe_reserve::ReservePlan>>>,
-    source_charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
+    reserve_plan: Option<stripe_types::Expandable<stripe_reserve::ReservePlan>>,
+    source_charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     source_type: Option<ReserveHoldSourceType>,
 }
 
@@ -117,8 +117,12 @@ const _: () = {
                 "reason" => Deserialize::begin(&mut self.reason),
                 "release_details" => Deserialize::begin(&mut self.release_details),
                 "release_schedule" => Deserialize::begin(&mut self.release_schedule),
-                "reserve_plan" => Deserialize::begin(&mut self.reserve_plan),
-                "source_charge" => Deserialize::begin(&mut self.source_charge),
+                "reserve_plan" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.reserve_plan)
+                }
+                "source_charge" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.source_charge)
+                }
                 "source_type" => Deserialize::begin(&mut self.source_type),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -138,8 +142,8 @@ const _: () = {
                 reason: None,
                 release_details: Some(None),
                 release_schedule: None,
-                reserve_plan: Some(None),
-                source_charge: Some(None),
+                reserve_plan: None,
+                source_charge: None,
                 source_type: None,
             }
         }
@@ -158,8 +162,8 @@ const _: () = {
                 Some(reason),
                 Some(release_details),
                 Some(release_schedule),
-                Some(reserve_plan),
-                Some(source_charge),
+                reserve_plan,
+                source_charge,
                 Some(source_type),
             ) = (
                 self.amount,

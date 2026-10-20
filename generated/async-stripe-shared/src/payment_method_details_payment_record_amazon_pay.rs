@@ -16,7 +16,7 @@ impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordAmazonPay {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsPaymentRecordAmazonPayBuilder {
-    funding: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodAmazonPayDetailsResourceFunding>>,
+    funding: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodAmazonPayDetailsResourceFunding>,
 transaction_id: Option<Option<String>>,
 
 }
@@ -61,19 +61,18 @@ const _: () = {
         type Out = PaymentMethodDetailsPaymentRecordAmazonPay;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "funding" => Deserialize::begin(&mut self.funding),
+                "funding" => stripe_types::miniserde_helpers::begin_nullable(&mut self.funding),
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { funding: Some(None), transaction_id: Some(None) }
+            Self { funding: None, transaction_id: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(funding), Some(transaction_id)) =
-                (self.funding.take(), self.transaction_id.take())
+            let (funding, Some(transaction_id)) = (self.funding.take(), self.transaction_id.take())
             else {
                 return None;
             };

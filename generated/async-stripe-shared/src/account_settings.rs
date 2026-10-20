@@ -22,16 +22,16 @@ impl std::fmt::Debug for AccountSettings {
 }
 #[doc(hidden)]
 pub struct AccountSettingsBuilder {
-    bacs_debit_payments: Option<Option<stripe_shared::AccountBacsDebitPaymentsSettings>>,
+    bacs_debit_payments: Option<stripe_shared::AccountBacsDebitPaymentsSettings>,
     branding: Option<stripe_shared::AccountBrandingSettings>,
-    card_issuing: Option<Option<stripe_shared::AccountCardIssuingSettings>>,
+    card_issuing: Option<stripe_shared::AccountCardIssuingSettings>,
     card_payments: Option<stripe_shared::AccountCardPaymentsSettings>,
     dashboard: Option<stripe_shared::AccountDashboardSettings>,
-    invoices: Option<Option<stripe_shared::AccountInvoicesSettings>>,
+    invoices: Option<stripe_shared::AccountInvoicesSettings>,
     payments: Option<stripe_shared::AccountPaymentsSettings>,
-    payouts: Option<Option<stripe_shared::AccountPayoutSettings>>,
-    sepa_debit_payments: Option<Option<stripe_shared::AccountSepaDebitPaymentsSettings>>,
-    treasury: Option<Option<stripe_shared::AccountTreasurySettings>>,
+    payouts: Option<stripe_shared::AccountPayoutSettings>,
+    sepa_debit_payments: Option<stripe_shared::AccountSepaDebitPaymentsSettings>,
+    treasury: Option<stripe_shared::AccountTreasurySettings>,
 }
 
 #[allow(
@@ -74,47 +74,53 @@ const _: () = {
         type Out = AccountSettings;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bacs_debit_payments" => Deserialize::begin(&mut self.bacs_debit_payments),
+                "bacs_debit_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bacs_debit_payments)
+                }
                 "branding" => Deserialize::begin(&mut self.branding),
-                "card_issuing" => Deserialize::begin(&mut self.card_issuing),
+                "card_issuing" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.card_issuing)
+                }
                 "card_payments" => Deserialize::begin(&mut self.card_payments),
                 "dashboard" => Deserialize::begin(&mut self.dashboard),
-                "invoices" => Deserialize::begin(&mut self.invoices),
+                "invoices" => stripe_types::miniserde_helpers::begin_nullable(&mut self.invoices),
                 "payments" => Deserialize::begin(&mut self.payments),
-                "payouts" => Deserialize::begin(&mut self.payouts),
-                "sepa_debit_payments" => Deserialize::begin(&mut self.sepa_debit_payments),
-                "treasury" => Deserialize::begin(&mut self.treasury),
+                "payouts" => stripe_types::miniserde_helpers::begin_nullable(&mut self.payouts),
+                "sepa_debit_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.sepa_debit_payments)
+                }
+                "treasury" => stripe_types::miniserde_helpers::begin_nullable(&mut self.treasury),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                bacs_debit_payments: Some(None),
+                bacs_debit_payments: None,
                 branding: None,
-                card_issuing: Some(None),
+                card_issuing: None,
                 card_payments: None,
                 dashboard: None,
-                invoices: Some(None),
+                invoices: None,
                 payments: None,
-                payouts: Some(None),
-                sepa_debit_payments: Some(None),
-                treasury: Some(None),
+                payouts: None,
+                sepa_debit_payments: None,
+                treasury: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(bacs_debit_payments),
+                bacs_debit_payments,
                 Some(branding),
-                Some(card_issuing),
+                card_issuing,
                 Some(card_payments),
                 Some(dashboard),
-                Some(invoices),
+                invoices,
                 Some(payments),
-                Some(payouts),
-                Some(sepa_debit_payments),
-                Some(treasury),
+                payouts,
+                sepa_debit_payments,
+                treasury,
             ) = (
                 self.bacs_debit_payments.take(),
                 self.branding.take(),

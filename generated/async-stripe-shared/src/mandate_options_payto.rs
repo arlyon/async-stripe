@@ -31,11 +31,11 @@ impl std::fmt::Debug for MandateOptionsPayto {
 #[doc(hidden)]
 pub struct MandateOptionsPaytoBuilder {
     amount: Option<Option<i64>>,
-    amount_type: Option<Option<MandateOptionsPaytoAmountType>>,
+    amount_type: Option<MandateOptionsPaytoAmountType>,
     end_date: Option<Option<String>>,
-    payment_schedule: Option<Option<MandateOptionsPaytoPaymentSchedule>>,
+    payment_schedule: Option<MandateOptionsPaytoPaymentSchedule>,
     payments_per_period: Option<Option<i64>>,
-    purpose: Option<Option<MandateOptionsPaytoPurpose>>,
+    purpose: Option<MandateOptionsPaytoPurpose>,
     start_date: Option<Option<String>>,
 }
 
@@ -80,11 +80,15 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "amount_type" => Deserialize::begin(&mut self.amount_type),
+                "amount_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_type)
+                }
                 "end_date" => Deserialize::begin(&mut self.end_date),
-                "payment_schedule" => Deserialize::begin(&mut self.payment_schedule),
+                "payment_schedule" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_schedule)
+                }
                 "payments_per_period" => Deserialize::begin(&mut self.payments_per_period),
-                "purpose" => Deserialize::begin(&mut self.purpose),
+                "purpose" => stripe_types::miniserde_helpers::begin_nullable(&mut self.purpose),
                 "start_date" => Deserialize::begin(&mut self.start_date),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -93,11 +97,11 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: Some(None),
-                amount_type: Some(None),
+                amount_type: None,
                 end_date: Some(None),
-                payment_schedule: Some(None),
+                payment_schedule: None,
                 payments_per_period: Some(None),
-                purpose: Some(None),
+                purpose: None,
                 start_date: Some(None),
             }
         }
@@ -105,11 +109,11 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(amount_type),
+                amount_type,
                 Some(end_date),
-                Some(payment_schedule),
+                payment_schedule,
                 Some(payments_per_period),
-                Some(purpose),
+                purpose,
                 Some(start_date),
             ) = (
                 self.amount,

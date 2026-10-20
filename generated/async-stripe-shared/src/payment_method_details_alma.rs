@@ -16,9 +16,8 @@ impl std::fmt::Debug for PaymentMethodDetailsAlma {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsAlmaBuilder {
-    installments: Option<
+    installments:
         Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsAlmaDetailsResourceInstallments>,
-    >,
     transaction_id: Option<Option<String>>,
 }
 
@@ -62,18 +61,20 @@ const _: () = {
         type Out = PaymentMethodDetailsAlma;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "installments" => Deserialize::begin(&mut self.installments),
+                "installments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.installments)
+                }
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { installments: Some(None), transaction_id: Some(None) }
+            Self { installments: None, transaction_id: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(installments), Some(transaction_id)) =
+            let (installments, Some(transaction_id)) =
                 (self.installments, self.transaction_id.take())
             else {
                 return None;

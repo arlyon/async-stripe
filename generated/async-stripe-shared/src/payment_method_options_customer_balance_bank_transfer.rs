@@ -22,11 +22,10 @@ impl std::fmt::Debug for PaymentMethodOptionsCustomerBalanceBankTransfer {
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsCustomerBalanceBankTransferBuilder {
-    eu_bank_transfer:
-        Option<Option<stripe_shared::PaymentMethodOptionsCustomerBalanceEuBankAccount>>,
+    eu_bank_transfer: Option<stripe_shared::PaymentMethodOptionsCustomerBalanceEuBankAccount>,
     requested_address_types:
         Option<Option<Vec<PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>>,
-    type_: Option<Option<PaymentMethodOptionsCustomerBalanceBankTransferType>>,
+    type_: Option<PaymentMethodOptionsCustomerBalanceBankTransferType>,
 }
 
 #[allow(
@@ -69,23 +68,21 @@ const _: () = {
         type Out = PaymentMethodOptionsCustomerBalanceBankTransfer;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "eu_bank_transfer" => Deserialize::begin(&mut self.eu_bank_transfer),
+                "eu_bank_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.eu_bank_transfer)
+                }
                 "requested_address_types" => Deserialize::begin(&mut self.requested_address_types),
-                "type" => Deserialize::begin(&mut self.type_),
+                "type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                eu_bank_transfer: Some(None),
-                requested_address_types: Some(None),
-                type_: Some(None),
-            }
+            Self { eu_bank_transfer: None, requested_address_types: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(eu_bank_transfer), Some(requested_address_types), Some(type_)) = (
+            let (eu_bank_transfer, Some(requested_address_types), type_) = (
                 self.eu_bank_transfer.take(),
                 self.requested_address_types.take(),
                 self.type_.take(),

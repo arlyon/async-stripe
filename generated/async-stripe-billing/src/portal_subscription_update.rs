@@ -33,7 +33,7 @@ impl std::fmt::Debug for PortalSubscriptionUpdate {
 }
 #[doc(hidden)]
 pub struct PortalSubscriptionUpdateBuilder {
-    billing_cycle_anchor: Option<Option<PortalSubscriptionUpdateBillingCycleAnchor>>,
+    billing_cycle_anchor: Option<PortalSubscriptionUpdateBillingCycleAnchor>,
     default_allowed_updates: Option<Vec<PortalSubscriptionUpdateDefaultAllowedUpdates>>,
     enabled: Option<bool>,
     products: Option<Option<Vec<stripe_billing::PortalSubscriptionUpdateProduct>>>,
@@ -82,7 +82,9 @@ const _: () = {
         type Out = PortalSubscriptionUpdate;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
+                "billing_cycle_anchor" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.billing_cycle_anchor)
+                }
                 "default_allowed_updates" => Deserialize::begin(&mut self.default_allowed_updates),
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "products" => Deserialize::begin(&mut self.products),
@@ -95,7 +97,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                billing_cycle_anchor: Some(None),
+                billing_cycle_anchor: None,
                 default_allowed_updates: None,
                 enabled: None,
                 products: Some(None),
@@ -107,7 +109,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(billing_cycle_anchor),
+                billing_cycle_anchor,
                 Some(default_allowed_updates),
                 Some(enabled),
                 Some(products),

@@ -24,9 +24,9 @@ impl std::fmt::Debug
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksBuilder {
-    address_line1_check: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressLine1Check>>,
-address_postal_code_check: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressPostalCodeCheck>>,
-cvc_check: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksCvcCheck>>,
+    address_line1_check: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressLine1Check>,
+address_postal_code_check: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressPostalCodeCheck>,
+cvc_check: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksCvcCheck>,
 
 }
 
@@ -79,25 +79,23 @@ const _: () = {
         type Out = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecks;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address_line1_check" => Deserialize::begin(&mut self.address_line1_check),
-                "address_postal_code_check" => {
-                    Deserialize::begin(&mut self.address_postal_code_check)
+                "address_line1_check" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.address_line1_check)
                 }
-                "cvc_check" => Deserialize::begin(&mut self.cvc_check),
+                "address_postal_code_check" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.address_postal_code_check,
+                ),
+                "cvc_check" => stripe_types::miniserde_helpers::begin_nullable(&mut self.cvc_check),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                address_line1_check: Some(None),
-                address_postal_code_check: Some(None),
-                cvc_check: Some(None),
-            }
+            Self { address_line1_check: None, address_postal_code_check: None, cvc_check: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(address_line1_check), Some(address_postal_code_check), Some(cvc_check)) = (
+            let (address_line1_check, address_postal_code_check, cvc_check) = (
                 self.address_line1_check.take(),
                 self.address_postal_code_check.take(),
                 self.cvc_check.take(),

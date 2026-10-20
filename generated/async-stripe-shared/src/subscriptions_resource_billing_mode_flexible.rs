@@ -14,7 +14,7 @@ impl std::fmt::Debug for SubscriptionsResourceBillingModeFlexible {
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourceBillingModeFlexibleBuilder {
-    proration_discounts: Option<Option<SubscriptionsResourceBillingModeFlexibleProrationDiscounts>>,
+    proration_discounts: Option<SubscriptionsResourceBillingModeFlexibleProrationDiscounts>,
 }
 
 #[allow(
@@ -57,17 +57,19 @@ const _: () = {
         type Out = SubscriptionsResourceBillingModeFlexible;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "proration_discounts" => Deserialize::begin(&mut self.proration_discounts),
+                "proration_discounts" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.proration_discounts)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { proration_discounts: Some(None) }
+            Self { proration_discounts: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(proration_discounts),) = (self.proration_discounts.take(),) else {
+            let (proration_discounts,) = (self.proration_discounts.take(),) else {
                 return None;
             };
             Some(Self::Out { proration_discounts })

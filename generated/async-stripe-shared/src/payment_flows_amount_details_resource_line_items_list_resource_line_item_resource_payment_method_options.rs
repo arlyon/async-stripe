@@ -19,10 +19,10 @@ impl std::fmt::Debug
 }
 #[doc(hidden)]
 pub struct PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptionsBuilder {
-    card: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPaymentIntentAmountDetailsLineItemPaymentMethodOptions>>,
-card_present: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentAmountDetailsLineItemPaymentMethodOptions>>,
-klarna: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsKlarnaPaymentIntentAmountDetailsLineItemPaymentMethodOptions>>,
-paypal: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptions>>,
+    card: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPaymentIntentAmountDetailsLineItemPaymentMethodOptions>,
+card_present: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentAmountDetailsLineItemPaymentMethodOptions>,
+klarna: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsKlarnaPaymentIntentAmountDetailsLineItemPaymentMethodOptions>,
+paypal: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptions>,
 
 }
 
@@ -66,27 +66,27 @@ const _: () = {
     type Out = PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptions;
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
-            "card" => Deserialize::begin(&mut self.card),
-            "card_present" => Deserialize::begin(&mut self.card_present),
-            "klarna" => Deserialize::begin(&mut self.klarna),
-            "paypal" => Deserialize::begin(&mut self.paypal),
+            "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
+            "card_present" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card_present),
+            "klarna" => stripe_types::miniserde_helpers::begin_nullable(&mut self.klarna),
+            "paypal" => stripe_types::miniserde_helpers::begin_nullable(&mut self.paypal),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self { card: Some(None),
-card_present: Some(None),
-klarna: Some(None),
-paypal: Some(None),
+        Self { card: None,
+card_present: None,
+klarna: None,
+paypal: None,
  }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(card),
-Some(card_present),
-Some(klarna),
-Some(paypal),
+        let (card,
+card_present,
+klarna,
+paypal,
 ) = (self.card.take(),
 self.card_present.take(),
 self.klarna.take(),

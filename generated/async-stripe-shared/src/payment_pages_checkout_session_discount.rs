@@ -16,8 +16,8 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionDiscount {
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionDiscountBuilder {
-    coupon: Option<Option<stripe_types::Expandable<stripe_shared::Coupon>>>,
-    promotion_code: Option<Option<stripe_types::Expandable<stripe_shared::PromotionCode>>>,
+    coupon: Option<stripe_types::Expandable<stripe_shared::Coupon>>,
+    promotion_code: Option<stripe_types::Expandable<stripe_shared::PromotionCode>>,
 }
 
 #[allow(
@@ -60,20 +60,20 @@ const _: () = {
         type Out = PaymentPagesCheckoutSessionDiscount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "coupon" => Deserialize::begin(&mut self.coupon),
-                "promotion_code" => Deserialize::begin(&mut self.promotion_code),
+                "coupon" => stripe_types::miniserde_helpers::begin_nullable(&mut self.coupon),
+                "promotion_code" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.promotion_code)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { coupon: Some(None), promotion_code: Some(None) }
+            Self { coupon: None, promotion_code: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(coupon), Some(promotion_code)) =
-                (self.coupon.take(), self.promotion_code.take())
-            else {
+            let (coupon, promotion_code) = (self.coupon.take(), self.promotion_code.take()) else {
                 return None;
             };
             Some(Self::Out { coupon, promotion_code })

@@ -15,7 +15,7 @@ impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResource
 }
 #[doc(hidden)]
 pub struct PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreBuilder {
-    chain: Option<Option<PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain>>,
+    chain: Option<PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain>,
 }
 
 #[allow(
@@ -58,17 +58,17 @@ const _: () = {
         type Out = PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "chain" => Deserialize::begin(&mut self.chain),
+                "chain" => stripe_types::miniserde_helpers::begin_nullable(&mut self.chain),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { chain: Some(None) }
+            Self { chain: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(chain),) = (self.chain.take(),) else {
+            let (chain,) = (self.chain.take(),) else {
                 return None;
             };
             Some(Self::Out { chain })

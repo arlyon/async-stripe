@@ -40,7 +40,7 @@ pub struct AccountRequirementsBuilder {
     alternatives: Option<Option<Vec<stripe_shared::AccountRequirementsAlternative>>>,
     current_deadline: Option<Option<stripe_types::Timestamp>>,
     currently_due: Option<Option<Vec<String>>>,
-    disabled_reason: Option<Option<AccountRequirementsDisabledReason>>,
+    disabled_reason: Option<AccountRequirementsDisabledReason>,
     errors: Option<Option<Vec<stripe_shared::AccountRequirementsError>>>,
     eventually_due: Option<Option<Vec<String>>>,
     past_due: Option<Option<Vec<String>>>,
@@ -90,7 +90,9 @@ const _: () = {
                 "alternatives" => Deserialize::begin(&mut self.alternatives),
                 "current_deadline" => Deserialize::begin(&mut self.current_deadline),
                 "currently_due" => Deserialize::begin(&mut self.currently_due),
-                "disabled_reason" => Deserialize::begin(&mut self.disabled_reason),
+                "disabled_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.disabled_reason)
+                }
                 "errors" => Deserialize::begin(&mut self.errors),
                 "eventually_due" => Deserialize::begin(&mut self.eventually_due),
                 "past_due" => Deserialize::begin(&mut self.past_due),
@@ -104,7 +106,7 @@ const _: () = {
                 alternatives: Some(None),
                 current_deadline: Some(None),
                 currently_due: Some(None),
-                disabled_reason: Some(None),
+                disabled_reason: None,
                 errors: Some(None),
                 eventually_due: Some(None),
                 past_due: Some(None),
@@ -117,7 +119,7 @@ const _: () = {
                 Some(alternatives),
                 Some(current_deadline),
                 Some(currently_due),
-                Some(disabled_reason),
+                disabled_reason,
                 Some(errors),
                 Some(eventually_due),
                 Some(past_due),

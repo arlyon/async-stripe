@@ -18,8 +18,8 @@ impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsEurope {
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsEuropeBuilder {
-    igic: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsIgic>>,
-    standard: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsEuStandard>>,
+    igic: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsIgic>,
+    standard: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsEuStandard>,
     type_: Option<TaxProductRegistrationsResourceCountryOptionsEuropeType>,
 }
 
@@ -64,19 +64,19 @@ const _: () = {
         type Out = TaxProductRegistrationsResourceCountryOptionsEurope;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "igic" => Deserialize::begin(&mut self.igic),
-                "standard" => Deserialize::begin(&mut self.standard),
+                "igic" => stripe_types::miniserde_helpers::begin_nullable(&mut self.igic),
+                "standard" => stripe_types::miniserde_helpers::begin_nullable(&mut self.standard),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { igic: Some(None), standard: Some(None), type_: None }
+            Self { igic: None, standard: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(igic), Some(standard), Some(type_)) =
+            let (igic, standard, Some(type_)) =
                 (self.igic.take(), self.standard.take(), self.type_.take())
             else {
                 return None;

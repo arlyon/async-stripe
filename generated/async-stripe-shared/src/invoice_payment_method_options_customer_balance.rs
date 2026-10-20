@@ -17,9 +17,8 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsCustomerBalance {
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsCustomerBalanceBuilder {
-    bank_transfer:
-        Option<Option<stripe_shared::InvoicePaymentMethodOptionsCustomerBalanceBankTransfer>>,
-    funding_type: Option<Option<InvoicePaymentMethodOptionsCustomerBalanceFundingType>>,
+    bank_transfer: Option<stripe_shared::InvoicePaymentMethodOptionsCustomerBalanceBankTransfer>,
+    funding_type: Option<InvoicePaymentMethodOptionsCustomerBalanceFundingType>,
 }
 
 #[allow(
@@ -62,18 +61,22 @@ const _: () = {
         type Out = InvoicePaymentMethodOptionsCustomerBalance;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_transfer" => Deserialize::begin(&mut self.bank_transfer),
-                "funding_type" => Deserialize::begin(&mut self.funding_type),
+                "bank_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bank_transfer)
+                }
+                "funding_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.funding_type)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { bank_transfer: Some(None), funding_type: Some(None) }
+            Self { bank_transfer: None, funding_type: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank_transfer), Some(funding_type)) =
+            let (bank_transfer, funding_type) =
                 (self.bank_transfer.take(), self.funding_type.take())
             else {
                 return None;

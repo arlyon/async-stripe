@@ -39,8 +39,8 @@ impl std::fmt::Debug for ScheduledQueryRun {
 pub struct ScheduledQueryRunBuilder {
     created: Option<stripe_types::Timestamp>,
     data_load_time: Option<stripe_types::Timestamp>,
-    error: Option<Option<stripe_misc::SigmaScheduledQueryRunError>>,
-    file: Option<Option<stripe_shared::File>>,
+    error: Option<stripe_misc::SigmaScheduledQueryRunError>,
+    file: Option<stripe_shared::File>,
     id: Option<stripe_misc::ScheduledQueryRunId>,
     livemode: Option<bool>,
     result_available_until: Option<stripe_types::Timestamp>,
@@ -91,8 +91,8 @@ const _: () = {
             Ok(match k {
                 "created" => Deserialize::begin(&mut self.created),
                 "data_load_time" => Deserialize::begin(&mut self.data_load_time),
-                "error" => Deserialize::begin(&mut self.error),
-                "file" => Deserialize::begin(&mut self.file),
+                "error" => stripe_types::miniserde_helpers::begin_nullable(&mut self.error),
+                "file" => stripe_types::miniserde_helpers::begin_nullable(&mut self.file),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "result_available_until" => Deserialize::begin(&mut self.result_available_until),
@@ -107,8 +107,8 @@ const _: () = {
             Self {
                 created: None,
                 data_load_time: None,
-                error: Some(None),
-                file: Some(None),
+                error: None,
+                file: None,
                 id: None,
                 livemode: None,
                 result_available_until: None,
@@ -122,8 +122,8 @@ const _: () = {
             let (
                 Some(created),
                 Some(data_load_time),
-                Some(error),
-                Some(file),
+                error,
+                file,
                 Some(id),
                 Some(livemode),
                 Some(result_available_until),

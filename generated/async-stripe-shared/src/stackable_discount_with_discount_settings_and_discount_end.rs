@@ -19,9 +19,9 @@ impl std::fmt::Debug for StackableDiscountWithDiscountSettingsAndDiscountEnd {
 }
 #[doc(hidden)]
 pub struct StackableDiscountWithDiscountSettingsAndDiscountEndBuilder {
-    coupon: Option<Option<stripe_types::Expandable<stripe_shared::Coupon>>>,
-    discount: Option<Option<stripe_types::Expandable<stripe_shared::Discount>>>,
-    promotion_code: Option<Option<stripe_types::Expandable<stripe_shared::PromotionCode>>>,
+    coupon: Option<stripe_types::Expandable<stripe_shared::Coupon>>,
+    discount: Option<stripe_types::Expandable<stripe_shared::Discount>>,
+    promotion_code: Option<stripe_types::Expandable<stripe_shared::PromotionCode>>,
 }
 
 #[allow(
@@ -65,19 +65,21 @@ const _: () = {
         type Out = StackableDiscountWithDiscountSettingsAndDiscountEnd;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "coupon" => Deserialize::begin(&mut self.coupon),
-                "discount" => Deserialize::begin(&mut self.discount),
-                "promotion_code" => Deserialize::begin(&mut self.promotion_code),
+                "coupon" => stripe_types::miniserde_helpers::begin_nullable(&mut self.coupon),
+                "discount" => stripe_types::miniserde_helpers::begin_nullable(&mut self.discount),
+                "promotion_code" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.promotion_code)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { coupon: Some(None), discount: Some(None), promotion_code: Some(None) }
+            Self { coupon: None, discount: None, promotion_code: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(coupon), Some(discount), Some(promotion_code)) =
+            let (coupon, discount, promotion_code) =
                 (self.coupon.take(), self.discount.take(), self.promotion_code.take())
             else {
                 return None;

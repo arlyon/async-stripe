@@ -18,8 +18,7 @@ impl std::fmt::Debug for PaymentMethodDomainResourcePaymentMethodStatus {
 #[doc(hidden)]
 pub struct PaymentMethodDomainResourcePaymentMethodStatusBuilder {
     status: Option<PaymentMethodDomainResourcePaymentMethodStatusStatus>,
-    status_details:
-        Option<Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatusDetails>>,
+    status_details: Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatusDetails>,
 }
 
 #[allow(
@@ -63,18 +62,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "status" => Deserialize::begin(&mut self.status),
-                "status_details" => Deserialize::begin(&mut self.status_details),
+                "status_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.status_details)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { status: None, status_details: Some(None) }
+            Self { status: None, status_details: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(status), Some(status_details)) =
-                (self.status.take(), self.status_details.take())
+            let (Some(status), status_details) = (self.status.take(), self.status_details.take())
             else {
                 return None;
             };

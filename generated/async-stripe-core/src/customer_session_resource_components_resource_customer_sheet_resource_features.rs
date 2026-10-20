@@ -26,7 +26,7 @@ impl std::fmt::Debug for CustomerSessionResourceComponentsResourceCustomerSheetR
 #[doc(hidden)]
 pub struct CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesBuilder {
     payment_method_allow_redisplay_filters: Option<Option<Vec<CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters>>>,
-payment_method_remove: Option<Option<CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove>>,
+payment_method_remove: Option<CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove>,
 
 }
 
@@ -73,20 +73,19 @@ const _: () = {
                 "payment_method_allow_redisplay_filters" => {
                     Deserialize::begin(&mut self.payment_method_allow_redisplay_filters)
                 }
-                "payment_method_remove" => Deserialize::begin(&mut self.payment_method_remove),
+                "payment_method_remove" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_method_remove)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                payment_method_allow_redisplay_filters: Some(None),
-                payment_method_remove: Some(None),
-            }
+            Self { payment_method_allow_redisplay_filters: Some(None), payment_method_remove: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payment_method_allow_redisplay_filters), Some(payment_method_remove)) = (
+            let (Some(payment_method_allow_redisplay_filters), payment_method_remove) = (
                 self.payment_method_allow_redisplay_filters.take(),
                 self.payment_method_remove.take(),
             ) else {

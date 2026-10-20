@@ -77,6 +77,68 @@ fn deserialize_customer_with_card() {
 }
 
 #[test]
+fn deserialize_null_for_optional_generated_fields() {
+    let mut example = mock_customer_with_card();
+    example["default_source"] = Value::Null;
+    example["tax_exempt"] = Value::Null;
+    let result: Customer = from_str(&example.to_string()).expect("deserialization failed");
+    assert!(result.discount.is_none());
+    assert!(result.default_source.is_none());
+    assert!(result.tax_exempt.is_none());
+}
+
+#[test]
+fn deserialize_null_for_required_generated_fields_fails() {
+    let mut file = mock_file();
+    file["purpose"] = Value::Null;
+    assert!(from_str::<File>(&file.to_string()).is_err());
+
+    let link = json!({
+      "created": FILE_CREATED,
+      "expired": false,
+      "expires_at": null,
+      "file": null,
+      "id": "link_123",
+      "livemode": false,
+      "metadata": {},
+      "object": "file_link",
+      "url": null
+    });
+    assert!(from_str::<FileLink>(&link.to_string()).is_err());
+    let mut link = link;
+    link["file"] = json!("file_123");
+    assert!(from_str::<FileLink>(&link.to_string()).is_ok());
+}
+
+#[test]
+fn deserialize_null_inside_generated_values_fails() {
+    let mut example = mock_customer_with_card();
+    example["discount"] = json!({
+      "id": "di_123",
+      "object": "discount",
+      "source": null,
+      "start": 1542631579
+    });
+    assert!(from_str::<Customer>(&example.to_string()).is_err());
+
+    let mut example = mock_customer_with_card();
+    example["invoice_settings"] = json!({
+      "custom_fields": [null],
+      "default_payment_method": null,
+      "footer": null,
+      "rendering_options": null
+    });
+    assert!(from_str::<Customer>(&example.to_string()).is_err());
+}
+
+#[test]
+fn deserialize_invalid_error_body_fails() {
+    for body in [r#"{"error":null}"#, r#"{"error":{"type":null}}"#, r#"{"error":{}}"#] {
+        assert!(from_str::<stripe_shared::Error>(body).is_err(), "{body}");
+    }
+}
+
+#[test]
 fn deserialize_customer_with_source() {
     let example = json!({
       "id": "cus_5678",

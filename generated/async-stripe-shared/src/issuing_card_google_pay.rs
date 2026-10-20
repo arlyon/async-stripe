@@ -17,7 +17,7 @@ impl std::fmt::Debug for IssuingCardGooglePay {
 #[doc(hidden)]
 pub struct IssuingCardGooglePayBuilder {
     eligible: Option<bool>,
-    ineligible_reason: Option<Option<IssuingCardGooglePayIneligibleReason>>,
+    ineligible_reason: Option<IssuingCardGooglePayIneligibleReason>,
 }
 
 #[allow(
@@ -61,17 +61,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "eligible" => Deserialize::begin(&mut self.eligible),
-                "ineligible_reason" => Deserialize::begin(&mut self.ineligible_reason),
+                "ineligible_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.ineligible_reason)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { eligible: None, ineligible_reason: Some(None) }
+            Self { eligible: None, ineligible_reason: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(eligible), Some(ineligible_reason)) =
+            let (Some(eligible), ineligible_reason) =
                 (self.eligible, self.ineligible_reason.take())
             else {
                 return None;

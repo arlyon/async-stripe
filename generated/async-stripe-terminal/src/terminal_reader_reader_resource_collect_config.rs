@@ -20,7 +20,7 @@ impl std::fmt::Debug for TerminalReaderReaderResourceCollectConfig {
 pub struct TerminalReaderReaderResourceCollectConfigBuilder {
     enable_customer_cancellation: Option<Option<bool>>,
     skip_tipping: Option<Option<bool>>,
-    tipping: Option<Option<stripe_terminal::TerminalReaderReaderResourceTippingConfig>>,
+    tipping: Option<stripe_terminal::TerminalReaderReaderResourceTippingConfig>,
 }
 
 #[allow(
@@ -67,7 +67,7 @@ const _: () = {
                     Deserialize::begin(&mut self.enable_customer_cancellation)
                 }
                 "skip_tipping" => Deserialize::begin(&mut self.skip_tipping),
-                "tipping" => Deserialize::begin(&mut self.tipping),
+                "tipping" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tipping),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -76,12 +76,12 @@ const _: () = {
             Self {
                 enable_customer_cancellation: Some(None),
                 skip_tipping: Some(None),
-                tipping: Some(None),
+                tipping: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enable_customer_cancellation), Some(skip_tipping), Some(tipping)) =
+            let (Some(enable_customer_cancellation), Some(skip_tipping), tipping) =
                 (self.enable_customer_cancellation, self.skip_tipping, self.tipping)
             else {
                 return None;

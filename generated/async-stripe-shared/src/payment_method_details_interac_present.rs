@@ -85,9 +85,9 @@ pub struct PaymentMethodDetailsInteracPresentBuilder {
     network: Option<Option<String>>,
     network_transaction_id: Option<Option<String>>,
     preferred_locales: Option<Option<Vec<String>>>,
-    read_method: Option<Option<PaymentMethodDetailsInteracPresentReadMethod>>,
+    read_method: Option<PaymentMethodDetailsInteracPresentReadMethod>,
     reader: Option<Option<String>>,
-    receipt: Option<Option<stripe_shared::PaymentMethodDetailsInteracPresentReceipt>>,
+    receipt: Option<stripe_shared::PaymentMethodDetailsInteracPresentReceipt>,
 }
 
 #[allow(
@@ -147,9 +147,11 @@ const _: () = {
                 "network" => Deserialize::begin(&mut self.network),
                 "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
                 "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
-                "read_method" => Deserialize::begin(&mut self.read_method),
+                "read_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.read_method)
+                }
                 "reader" => Deserialize::begin(&mut self.reader),
-                "receipt" => Deserialize::begin(&mut self.receipt),
+                "receipt" => stripe_types::miniserde_helpers::begin_nullable(&mut self.receipt),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -173,9 +175,9 @@ const _: () = {
                 network: Some(None),
                 network_transaction_id: Some(None),
                 preferred_locales: Some(None),
-                read_method: Some(None),
+                read_method: None,
                 reader: Some(None),
-                receipt: Some(None),
+                receipt: None,
             }
         }
 
@@ -198,9 +200,9 @@ const _: () = {
                 Some(network),
                 Some(network_transaction_id),
                 Some(preferred_locales),
-                Some(read_method),
+                read_method,
                 Some(reader),
-                Some(receipt),
+                receipt,
             ) = (
                 self.brand.take(),
                 self.cardholder_name.take(),

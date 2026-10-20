@@ -68,27 +68,26 @@ impl std::fmt::Debug for IssuingTransaction {
 #[doc(hidden)]
 pub struct IssuingTransactionBuilder {
     amount: Option<i64>,
-    amount_details: Option<Option<stripe_shared::IssuingTransactionAmountDetails>>,
-    authorization: Option<Option<stripe_types::Expandable<stripe_shared::IssuingAuthorization>>>,
-    balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    amount_details: Option<stripe_shared::IssuingTransactionAmountDetails>,
+    authorization: Option<stripe_types::Expandable<stripe_shared::IssuingAuthorization>>,
+    balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     card: Option<stripe_types::Expandable<stripe_shared::IssuingCard>>,
-    cardholder: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCardholder>>>,
+    cardholder: Option<stripe_types::Expandable<stripe_shared::IssuingCardholder>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
-    dispute: Option<Option<stripe_types::Expandable<stripe_shared::IssuingDispute>>>,
+    dispute: Option<stripe_types::Expandable<stripe_shared::IssuingDispute>>,
     id: Option<stripe_shared::IssuingTransactionId>,
     livemode: Option<bool>,
     merchant_amount: Option<i64>,
     merchant_currency: Option<stripe_types::Currency>,
     merchant_data: Option<stripe_shared::IssuingAuthorizationMerchantData>,
     metadata: Option<std::collections::HashMap<String, String>>,
-    network_data: Option<Option<stripe_shared::IssuingTransactionNetworkData>>,
-    purchase_details: Option<Option<stripe_shared::IssuingTransactionPurchaseDetails>>,
-    token: Option<Option<stripe_types::Expandable<stripe_shared::IssuingToken>>>,
-    treasury: Option<Option<stripe_shared::IssuingTransactionTreasury>>,
+    network_data: Option<stripe_shared::IssuingTransactionNetworkData>,
+    purchase_details: Option<stripe_shared::IssuingTransactionPurchaseDetails>,
+    token: Option<stripe_types::Expandable<stripe_shared::IssuingToken>>,
+    treasury: Option<stripe_shared::IssuingTransactionTreasury>,
     type_: Option<stripe_shared::IssuingTransactionType>,
-    wallet: Option<Option<IssuingTransactionWallet>>,
+    wallet: Option<IssuingTransactionWallet>,
 }
 
 #[allow(
@@ -132,26 +131,38 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "amount_details" => Deserialize::begin(&mut self.amount_details),
-                "authorization" => Deserialize::begin(&mut self.authorization),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "amount_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_details)
+                }
+                "authorization" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.authorization)
+                }
+                "balance_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.balance_transaction)
+                }
                 "card" => Deserialize::begin(&mut self.card),
-                "cardholder" => Deserialize::begin(&mut self.cardholder),
+                "cardholder" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.cardholder)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
-                "dispute" => Deserialize::begin(&mut self.dispute),
+                "dispute" => stripe_types::miniserde_helpers::begin_nullable(&mut self.dispute),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "merchant_amount" => Deserialize::begin(&mut self.merchant_amount),
                 "merchant_currency" => Deserialize::begin(&mut self.merchant_currency),
                 "merchant_data" => Deserialize::begin(&mut self.merchant_data),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "network_data" => Deserialize::begin(&mut self.network_data),
-                "purchase_details" => Deserialize::begin(&mut self.purchase_details),
-                "token" => Deserialize::begin(&mut self.token),
-                "treasury" => Deserialize::begin(&mut self.treasury),
+                "network_data" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.network_data)
+                }
+                "purchase_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.purchase_details)
+                }
+                "token" => stripe_types::miniserde_helpers::begin_nullable(&mut self.token),
+                "treasury" => stripe_types::miniserde_helpers::begin_nullable(&mut self.treasury),
                 "type" => Deserialize::begin(&mut self.type_),
-                "wallet" => Deserialize::begin(&mut self.wallet),
+                "wallet" => stripe_types::miniserde_helpers::begin_nullable(&mut self.wallet),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -159,52 +170,52 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: None,
-                amount_details: Some(None),
-                authorization: Some(None),
-                balance_transaction: Some(None),
+                amount_details: None,
+                authorization: None,
+                balance_transaction: None,
                 card: None,
-                cardholder: Some(None),
+                cardholder: None,
                 created: None,
                 currency: None,
-                dispute: Some(None),
+                dispute: None,
                 id: None,
                 livemode: None,
                 merchant_amount: None,
                 merchant_currency: None,
                 merchant_data: None,
                 metadata: None,
-                network_data: Some(None),
-                purchase_details: Some(None),
-                token: Some(None),
-                treasury: Some(None),
+                network_data: None,
+                purchase_details: None,
+                token: None,
+                treasury: None,
                 type_: None,
-                wallet: Some(None),
+                wallet: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(amount_details),
-                Some(authorization),
-                Some(balance_transaction),
+                amount_details,
+                authorization,
+                balance_transaction,
                 Some(card),
-                Some(cardholder),
+                cardholder,
                 Some(created),
                 Some(currency),
-                Some(dispute),
+                dispute,
                 Some(id),
                 Some(livemode),
                 Some(merchant_amount),
                 Some(merchant_currency),
                 Some(merchant_data),
                 Some(metadata),
-                Some(network_data),
-                Some(purchase_details),
-                Some(token),
-                Some(treasury),
+                network_data,
+                purchase_details,
+                token,
+                treasury,
                 Some(type_),
-                Some(wallet),
+                wallet,
             ) = (
                 self.amount,
                 self.amount_details,

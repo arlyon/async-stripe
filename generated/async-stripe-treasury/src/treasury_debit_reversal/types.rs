@@ -50,15 +50,14 @@ pub struct TreasuryDebitReversalBuilder {
     financial_account: Option<Option<String>>,
     hosted_regulatory_receipt_url: Option<Option<String>>,
     id: Option<stripe_treasury::TreasuryDebitReversalId>,
-    linked_flows:
-        Option<Option<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversalLinkedFlows>>,
+    linked_flows: Option<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversalLinkedFlows>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     network: Option<TreasuryDebitReversalNetwork>,
     received_debit: Option<String>,
     status: Option<TreasuryDebitReversalStatus>,
     status_transitions: Option<stripe_treasury::TreasuryReceivedDebitsResourceStatusTransitions>,
-    transaction: Option<Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>>,
+    transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 }
 
 #[allow(
@@ -109,14 +108,18 @@ const _: () = {
                     Deserialize::begin(&mut self.hosted_regulatory_receipt_url)
                 }
                 "id" => Deserialize::begin(&mut self.id),
-                "linked_flows" => Deserialize::begin(&mut self.linked_flows),
+                "linked_flows" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.linked_flows)
+                }
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "network" => Deserialize::begin(&mut self.network),
                 "received_debit" => Deserialize::begin(&mut self.received_debit),
                 "status" => Deserialize::begin(&mut self.status),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-                "transaction" => Deserialize::begin(&mut self.transaction),
+                "transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transaction)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -129,14 +132,14 @@ const _: () = {
                 financial_account: Some(None),
                 hosted_regulatory_receipt_url: Some(None),
                 id: None,
-                linked_flows: Some(None),
+                linked_flows: None,
                 livemode: None,
                 metadata: None,
                 network: None,
                 received_debit: None,
                 status: None,
                 status_transitions: None,
-                transaction: Some(None),
+                transaction: None,
             }
         }
 
@@ -148,14 +151,14 @@ const _: () = {
                 Some(financial_account),
                 Some(hosted_regulatory_receipt_url),
                 Some(id),
-                Some(linked_flows),
+                linked_flows,
                 Some(livemode),
                 Some(metadata),
                 Some(network),
                 Some(received_debit),
                 Some(status),
                 Some(status_transitions),
-                Some(transaction),
+                transaction,
             ) = (
                 self.amount,
                 self.created,

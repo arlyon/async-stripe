@@ -25,11 +25,11 @@ impl std::fmt::Debug for AutomaticTax {
 }
 #[doc(hidden)]
 pub struct AutomaticTaxBuilder {
-    disabled_reason: Option<Option<AutomaticTaxDisabledReason>>,
+    disabled_reason: Option<AutomaticTaxDisabledReason>,
     enabled: Option<bool>,
-    liability: Option<Option<stripe_shared::ConnectAccountReference>>,
+    liability: Option<stripe_shared::ConnectAccountReference>,
     provider: Option<Option<String>>,
-    status: Option<Option<AutomaticTaxStatus>>,
+    status: Option<AutomaticTaxStatus>,
 }
 
 #[allow(
@@ -72,40 +72,35 @@ const _: () = {
         type Out = AutomaticTax;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "disabled_reason" => Deserialize::begin(&mut self.disabled_reason),
+                "disabled_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.disabled_reason)
+                }
                 "enabled" => Deserialize::begin(&mut self.enabled),
-                "liability" => Deserialize::begin(&mut self.liability),
+                "liability" => stripe_types::miniserde_helpers::begin_nullable(&mut self.liability),
                 "provider" => Deserialize::begin(&mut self.provider),
-                "status" => Deserialize::begin(&mut self.status),
+                "status" => stripe_types::miniserde_helpers::begin_nullable(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                disabled_reason: Some(None),
+                disabled_reason: None,
                 enabled: None,
-                liability: Some(None),
+                liability: None,
                 provider: Some(None),
-                status: Some(None),
+                status: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(disabled_reason),
-                Some(enabled),
-                Some(liability),
-                Some(provider),
-                Some(status),
-            ) = (
+            let (disabled_reason, Some(enabled), liability, Some(provider), status) = (
                 self.disabled_reason.take(),
                 self.enabled,
                 self.liability.take(),
                 self.provider.take(),
                 self.status.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { disabled_reason, enabled, liability, provider, status })

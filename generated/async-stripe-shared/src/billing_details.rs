@@ -23,7 +23,7 @@ impl std::fmt::Debug for BillingDetails {
 }
 #[doc(hidden)]
 pub struct BillingDetailsBuilder {
-    address: Option<Option<stripe_shared::Address>>,
+    address: Option<stripe_shared::Address>,
     email: Option<Option<String>>,
     name: Option<Option<String>>,
     phone: Option<Option<String>>,
@@ -70,7 +70,7 @@ const _: () = {
         type Out = BillingDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
+                "address" => stripe_types::miniserde_helpers::begin_nullable(&mut self.address),
                 "email" => Deserialize::begin(&mut self.email),
                 "name" => Deserialize::begin(&mut self.name),
                 "phone" => Deserialize::begin(&mut self.phone),
@@ -81,7 +81,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Some(None),
+                address: None,
                 email: Some(None),
                 name: Some(None),
                 phone: Some(None),
@@ -90,7 +90,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(address), Some(email), Some(name), Some(phone), Some(tax_id)) = (
+            let (address, Some(email), Some(name), Some(phone), Some(tax_id)) = (
                 self.address.take(),
                 self.email.take(),
                 self.name.take(),

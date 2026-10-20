@@ -22,8 +22,8 @@ impl std::fmt::Debug for CheckoutUpiPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutUpiPaymentMethodOptionsBuilder {
-    mandate_options: Option<Option<stripe_shared::MandateOptionsUpi>>,
-    setup_future_usage: Option<Option<CheckoutUpiPaymentMethodOptionsSetupFutureUsage>>,
+    mandate_options: Option<stripe_shared::MandateOptionsUpi>,
+    setup_future_usage: Option<CheckoutUpiPaymentMethodOptionsSetupFutureUsage>,
 }
 
 #[allow(
@@ -66,18 +66,22 @@ const _: () = {
         type Out = CheckoutUpiPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { mandate_options: Some(None), setup_future_usage: Some(None) }
+            Self { mandate_options: None, setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options), Some(setup_future_usage)) =
+            let (mandate_options, setup_future_usage) =
                 (self.mandate_options.take(), self.setup_future_usage.take())
             else {
                 return None;

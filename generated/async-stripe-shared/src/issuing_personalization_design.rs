@@ -41,8 +41,8 @@ impl std::fmt::Debug for IssuingPersonalizationDesign {
 }
 #[doc(hidden)]
 pub struct IssuingPersonalizationDesignBuilder {
-    card_logo: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
-    carrier_text: Option<Option<stripe_shared::IssuingPersonalizationDesignCarrierText>>,
+    card_logo: Option<stripe_types::Expandable<stripe_shared::File>>,
+    carrier_text: Option<stripe_shared::IssuingPersonalizationDesignCarrierText>,
     created: Option<stripe_types::Timestamp>,
     id: Option<stripe_shared::IssuingPersonalizationDesignId>,
     livemode: Option<bool>,
@@ -95,8 +95,10 @@ const _: () = {
         type Out = IssuingPersonalizationDesign;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card_logo" => Deserialize::begin(&mut self.card_logo),
-                "carrier_text" => Deserialize::begin(&mut self.carrier_text),
+                "card_logo" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card_logo),
+                "carrier_text" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.carrier_text)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
@@ -113,8 +115,8 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                card_logo: Some(None),
-                carrier_text: Some(None),
+                card_logo: None,
+                carrier_text: None,
                 created: None,
                 id: None,
                 livemode: None,
@@ -130,8 +132,8 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(card_logo),
-                Some(carrier_text),
+                card_logo,
+                carrier_text,
                 Some(created),
                 Some(id),
                 Some(livemode),

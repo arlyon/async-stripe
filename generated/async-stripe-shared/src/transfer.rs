@@ -64,19 +64,18 @@ impl std::fmt::Debug for Transfer {
 pub struct TransferBuilder {
     amount: Option<i64>,
     amount_reversed: Option<i64>,
-    balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     description: Option<Option<String>>,
-    destination: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
-    destination_payment: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
+    destination: Option<stripe_types::Expandable<stripe_shared::Account>>,
+    destination_payment: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     id: Option<stripe_shared::TransferId>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     reversals: Option<stripe_types::List<stripe_shared::TransferReversal>>,
     reversed: Option<bool>,
-    source_transaction: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
+    source_transaction: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     source_type: Option<Option<String>>,
     transfer_group: Option<Option<String>>,
 }
@@ -120,18 +119,26 @@ const _: () = {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "amount_reversed" => Deserialize::begin(&mut self.amount_reversed),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "balance_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.balance_transaction)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "description" => Deserialize::begin(&mut self.description),
-                "destination" => Deserialize::begin(&mut self.destination),
-                "destination_payment" => Deserialize::begin(&mut self.destination_payment),
+                "destination" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.destination)
+                }
+                "destination_payment" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.destination_payment)
+                }
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "reversals" => Deserialize::begin(&mut self.reversals),
                 "reversed" => Deserialize::begin(&mut self.reversed),
-                "source_transaction" => Deserialize::begin(&mut self.source_transaction),
+                "source_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.source_transaction)
+                }
                 "source_type" => Deserialize::begin(&mut self.source_type),
                 "transfer_group" => Deserialize::begin(&mut self.transfer_group),
                 _ => <dyn Visitor>::ignore(),
@@ -142,18 +149,18 @@ const _: () = {
             Self {
                 amount: None,
                 amount_reversed: None,
-                balance_transaction: Some(None),
+                balance_transaction: None,
                 created: None,
                 currency: None,
                 description: Some(None),
-                destination: Some(None),
-                destination_payment: Some(None),
+                destination: None,
+                destination_payment: None,
                 id: None,
                 livemode: None,
                 metadata: None,
                 reversals: None,
                 reversed: None,
-                source_transaction: Some(None),
+                source_transaction: None,
                 source_type: Some(None),
                 transfer_group: Some(None),
             }
@@ -163,18 +170,18 @@ const _: () = {
             let (
                 Some(amount),
                 Some(amount_reversed),
-                Some(balance_transaction),
+                balance_transaction,
                 Some(created),
                 Some(currency),
                 Some(description),
-                Some(destination),
-                Some(destination_payment),
+                destination,
+                destination_payment,
                 Some(id),
                 Some(livemode),
                 Some(metadata),
                 Some(reversals),
                 Some(reversed),
-                Some(source_transaction),
+                source_transaction,
                 Some(source_type),
                 Some(transfer_group),
             ) = (

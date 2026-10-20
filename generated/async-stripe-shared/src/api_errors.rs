@@ -47,19 +47,19 @@ impl std::fmt::Debug for ApiErrors {
 pub struct ApiErrorsBuilder {
     advice_code: Option<Option<String>>,
     charge: Option<Option<String>>,
-    code: Option<Option<ApiErrorsCode>>,
+    code: Option<ApiErrorsCode>,
     decline_code: Option<Option<String>>,
     doc_url: Option<Option<String>>,
     message: Option<Option<String>>,
     network_advice_code: Option<Option<String>>,
     network_decline_code: Option<Option<String>>,
     param: Option<Option<String>>,
-    payment_intent: Option<Option<stripe_shared::PaymentIntent>>,
-    payment_method: Option<Option<stripe_shared::PaymentMethod>>,
+    payment_intent: Option<stripe_shared::PaymentIntent>,
+    payment_method: Option<stripe_shared::PaymentMethod>,
     payment_method_type: Option<Option<String>>,
     request_log_url: Option<Option<String>>,
-    setup_intent: Option<Option<stripe_shared::SetupIntent>>,
-    source: Option<Option<stripe_shared::PaymentSource>>,
+    setup_intent: Option<stripe_shared::SetupIntent>,
+    source: Option<stripe_shared::PaymentSource>,
     type_: Option<ApiErrorsType>,
 }
 
@@ -102,19 +102,25 @@ const _: () = {
             Ok(match k {
                 "advice_code" => Deserialize::begin(&mut self.advice_code),
                 "charge" => Deserialize::begin(&mut self.charge),
-                "code" => Deserialize::begin(&mut self.code),
+                "code" => stripe_types::miniserde_helpers::begin_nullable(&mut self.code),
                 "decline_code" => Deserialize::begin(&mut self.decline_code),
                 "doc_url" => Deserialize::begin(&mut self.doc_url),
                 "message" => Deserialize::begin(&mut self.message),
                 "network_advice_code" => Deserialize::begin(&mut self.network_advice_code),
                 "network_decline_code" => Deserialize::begin(&mut self.network_decline_code),
                 "param" => Deserialize::begin(&mut self.param),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
+                "payment_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_intent)
+                }
+                "payment_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_method)
+                }
                 "payment_method_type" => Deserialize::begin(&mut self.payment_method_type),
                 "request_log_url" => Deserialize::begin(&mut self.request_log_url),
-                "setup_intent" => Deserialize::begin(&mut self.setup_intent),
-                "source" => Deserialize::begin(&mut self.source),
+                "setup_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_intent)
+                }
+                "source" => stripe_types::miniserde_helpers::begin_nullable(&mut self.source),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -124,19 +130,19 @@ const _: () = {
             Self {
                 advice_code: Some(None),
                 charge: Some(None),
-                code: Some(None),
+                code: None,
                 decline_code: Some(None),
                 doc_url: Some(None),
                 message: Some(None),
                 network_advice_code: Some(None),
                 network_decline_code: Some(None),
                 param: Some(None),
-                payment_intent: Some(None),
-                payment_method: Some(None),
+                payment_intent: None,
+                payment_method: None,
                 payment_method_type: Some(None),
                 request_log_url: Some(None),
-                setup_intent: Some(None),
-                source: Some(None),
+                setup_intent: None,
+                source: None,
                 type_: None,
             }
         }
@@ -145,19 +151,19 @@ const _: () = {
             let (
                 Some(advice_code),
                 Some(charge),
-                Some(code),
+                code,
                 Some(decline_code),
                 Some(doc_url),
                 Some(message),
                 Some(network_advice_code),
                 Some(network_decline_code),
                 Some(param),
-                Some(payment_intent),
-                Some(payment_method),
+                payment_intent,
+                payment_method,
                 Some(payment_method_type),
                 Some(request_log_url),
-                Some(setup_intent),
-                Some(source),
+                setup_intent,
+                source,
                 Some(type_),
             ) = (
                 self.advice_code.take(),

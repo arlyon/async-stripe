@@ -16,7 +16,7 @@ impl std::fmt::Debug for IssuingDisputeNoValidAuthorizationEvidence {
 }
 #[doc(hidden)]
 pub struct IssuingDisputeNoValidAuthorizationEvidenceBuilder {
-    additional_documentation: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    additional_documentation: Option<stripe_types::Expandable<stripe_shared::File>>,
     explanation: Option<Option<String>>,
 }
 
@@ -60,20 +60,20 @@ const _: () = {
         type Out = IssuingDisputeNoValidAuthorizationEvidence;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "additional_documentation" => {
-                    Deserialize::begin(&mut self.additional_documentation)
-                }
+                "additional_documentation" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.additional_documentation,
+                ),
                 "explanation" => Deserialize::begin(&mut self.explanation),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { additional_documentation: Some(None), explanation: Some(None) }
+            Self { additional_documentation: None, explanation: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(additional_documentation), Some(explanation)) =
+            let (additional_documentation, Some(explanation)) =
                 (self.additional_documentation.take(), self.explanation.take())
             else {
                 return None;

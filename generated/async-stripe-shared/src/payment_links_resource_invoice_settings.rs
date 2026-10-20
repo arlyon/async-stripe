@@ -32,9 +32,9 @@ pub struct PaymentLinksResourceInvoiceSettingsBuilder {
     custom_fields: Option<Option<Vec<stripe_shared::InvoiceSettingCustomField>>>,
     description: Option<Option<String>>,
     footer: Option<Option<String>>,
-    issuer: Option<Option<stripe_shared::ConnectAccountReference>>,
+    issuer: Option<stripe_shared::ConnectAccountReference>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    rendering_options: Option<Option<stripe_shared::InvoiceSettingCheckoutRenderingOptions>>,
+    rendering_options: Option<stripe_shared::InvoiceSettingCheckoutRenderingOptions>,
 }
 
 #[allow(
@@ -81,9 +81,11 @@ const _: () = {
                 "custom_fields" => Deserialize::begin(&mut self.custom_fields),
                 "description" => Deserialize::begin(&mut self.description),
                 "footer" => Deserialize::begin(&mut self.footer),
-                "issuer" => Deserialize::begin(&mut self.issuer),
+                "issuer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.issuer),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "rendering_options" => Deserialize::begin(&mut self.rendering_options),
+                "rendering_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.rendering_options)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -94,9 +96,9 @@ const _: () = {
                 custom_fields: Some(None),
                 description: Some(None),
                 footer: Some(None),
-                issuer: Some(None),
+                issuer: None,
                 metadata: Some(None),
-                rendering_options: Some(None),
+                rendering_options: None,
             }
         }
 
@@ -106,9 +108,9 @@ const _: () = {
                 Some(custom_fields),
                 Some(description),
                 Some(footer),
-                Some(issuer),
+                issuer,
                 Some(metadata),
-                Some(rendering_options),
+                rendering_options,
             ) = (
                 self.account_tax_ids.take(),
                 self.custom_fields.take(),

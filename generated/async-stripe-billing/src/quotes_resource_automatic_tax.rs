@@ -23,9 +23,9 @@ impl std::fmt::Debug for QuotesResourceAutomaticTax {
 #[doc(hidden)]
 pub struct QuotesResourceAutomaticTaxBuilder {
     enabled: Option<bool>,
-    liability: Option<Option<stripe_shared::ConnectAccountReference>>,
+    liability: Option<stripe_shared::ConnectAccountReference>,
     provider: Option<Option<String>>,
-    status: Option<Option<QuotesResourceAutomaticTaxStatus>>,
+    status: Option<QuotesResourceAutomaticTaxStatus>,
 }
 
 #[allow(
@@ -69,19 +69,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "enabled" => Deserialize::begin(&mut self.enabled),
-                "liability" => Deserialize::begin(&mut self.liability),
+                "liability" => stripe_types::miniserde_helpers::begin_nullable(&mut self.liability),
                 "provider" => Deserialize::begin(&mut self.provider),
-                "status" => Deserialize::begin(&mut self.status),
+                "status" => stripe_types::miniserde_helpers::begin_nullable(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { enabled: None, liability: Some(None), provider: Some(None), status: Some(None) }
+            Self { enabled: None, liability: None, provider: Some(None), status: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(liability), Some(provider), Some(status)) =
+            let (Some(enabled), liability, Some(provider), status) =
                 (self.enabled, self.liability.take(), self.provider.take(), self.status.take())
             else {
                 return None;

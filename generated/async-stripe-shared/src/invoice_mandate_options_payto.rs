@@ -20,8 +20,8 @@ impl std::fmt::Debug for InvoiceMandateOptionsPayto {
 #[doc(hidden)]
 pub struct InvoiceMandateOptionsPaytoBuilder {
     amount: Option<Option<i64>>,
-    amount_type: Option<Option<InvoiceMandateOptionsPaytoAmountType>>,
-    purpose: Option<Option<InvoiceMandateOptionsPaytoPurpose>>,
+    amount_type: Option<InvoiceMandateOptionsPaytoAmountType>,
+    purpose: Option<InvoiceMandateOptionsPaytoPurpose>,
 }
 
 #[allow(
@@ -65,18 +65,20 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "amount_type" => Deserialize::begin(&mut self.amount_type),
-                "purpose" => Deserialize::begin(&mut self.purpose),
+                "amount_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_type)
+                }
+                "purpose" => stripe_types::miniserde_helpers::begin_nullable(&mut self.purpose),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { amount: Some(None), amount_type: Some(None), purpose: Some(None) }
+            Self { amount: Some(None), amount_type: None, purpose: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(amount_type), Some(purpose)) =
+            let (Some(amount), amount_type, purpose) =
                 (self.amount, self.amount_type.take(), self.purpose.take())
             else {
                 return None;

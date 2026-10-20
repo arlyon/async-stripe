@@ -33,17 +33,16 @@ impl std::fmt::Debug for SetupIntentNextAction {
 }
 #[doc(hidden)]
 pub struct SetupIntentNextActionBuilder {
-    blik_authorize: Option<Option<stripe_shared::PaymentIntentNextActionBlikAuthorize>>,
+    blik_authorize: Option<stripe_shared::PaymentIntentNextActionBlikAuthorize>,
     cashapp_handle_redirect_or_display_qr_code:
-        Option<Option<stripe_shared::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>>,
-    pix_display_qr_code: Option<Option<stripe_shared::SetupIntentNextActionPixDisplayQrCode>>,
-    redirect_to_url: Option<Option<stripe_shared::SetupIntentNextActionRedirectToUrl>>,
+        Option<stripe_shared::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
+    pix_display_qr_code: Option<stripe_shared::SetupIntentNextActionPixDisplayQrCode>,
+    redirect_to_url: Option<stripe_shared::SetupIntentNextActionRedirectToUrl>,
     type_: Option<String>,
     upi_handle_redirect_or_display_qr_code:
-        Option<Option<stripe_shared::PaymentIntentNextActionUpiHandleRedirectOrDisplayQrCode>>,
+        Option<stripe_shared::PaymentIntentNextActionUpiHandleRedirectOrDisplayQrCode>,
     use_stripe_sdk: Option<Option<miniserde::json::Value>>,
-    verify_with_microdeposits:
-        Option<Option<stripe_shared::SetupIntentNextActionVerifyWithMicrodeposits>>,
+    verify_with_microdeposits: Option<stripe_shared::SetupIntentNextActionVerifyWithMicrodeposits>,
 }
 
 #[allow(
@@ -86,47 +85,57 @@ const _: () = {
         type Out = SetupIntentNextAction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "blik_authorize" => Deserialize::begin(&mut self.blik_authorize),
-                "cashapp_handle_redirect_or_display_qr_code" => {
-                    Deserialize::begin(&mut self.cashapp_handle_redirect_or_display_qr_code)
+                "blik_authorize" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.blik_authorize)
                 }
-                "pix_display_qr_code" => Deserialize::begin(&mut self.pix_display_qr_code),
-                "redirect_to_url" => Deserialize::begin(&mut self.redirect_to_url),
+                "cashapp_handle_redirect_or_display_qr_code" => {
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.cashapp_handle_redirect_or_display_qr_code,
+                    )
+                }
+                "pix_display_qr_code" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.pix_display_qr_code)
+                }
+                "redirect_to_url" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.redirect_to_url)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 "upi_handle_redirect_or_display_qr_code" => {
-                    Deserialize::begin(&mut self.upi_handle_redirect_or_display_qr_code)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.upi_handle_redirect_or_display_qr_code,
+                    )
                 }
                 "use_stripe_sdk" => Deserialize::begin(&mut self.use_stripe_sdk),
-                "verify_with_microdeposits" => {
-                    Deserialize::begin(&mut self.verify_with_microdeposits)
-                }
+                "verify_with_microdeposits" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.verify_with_microdeposits,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                blik_authorize: Some(None),
-                cashapp_handle_redirect_or_display_qr_code: Some(None),
-                pix_display_qr_code: Some(None),
-                redirect_to_url: Some(None),
+                blik_authorize: None,
+                cashapp_handle_redirect_or_display_qr_code: None,
+                pix_display_qr_code: None,
+                redirect_to_url: None,
                 type_: None,
-                upi_handle_redirect_or_display_qr_code: Some(None),
+                upi_handle_redirect_or_display_qr_code: None,
                 use_stripe_sdk: Some(None),
-                verify_with_microdeposits: Some(None),
+                verify_with_microdeposits: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(blik_authorize),
-                Some(cashapp_handle_redirect_or_display_qr_code),
-                Some(pix_display_qr_code),
-                Some(redirect_to_url),
+                blik_authorize,
+                cashapp_handle_redirect_or_display_qr_code,
+                pix_display_qr_code,
+                redirect_to_url,
                 Some(type_),
-                Some(upi_handle_redirect_or_display_qr_code),
+                upi_handle_redirect_or_display_qr_code,
                 Some(use_stripe_sdk),
-                Some(verify_with_microdeposits),
+                verify_with_microdeposits,
             ) = (
                 self.blik_authorize,
                 self.cashapp_handle_redirect_or_display_qr_code.take(),

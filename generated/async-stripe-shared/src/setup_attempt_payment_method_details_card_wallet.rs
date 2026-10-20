@@ -19,8 +19,8 @@ impl std::fmt::Debug for SetupAttemptPaymentMethodDetailsCardWallet {
 }
 #[doc(hidden)]
 pub struct SetupAttemptPaymentMethodDetailsCardWalletBuilder {
-    apple_pay: Option<Option<stripe_shared::PaymentMethodDetailsCardWalletApplePay>>,
-    google_pay: Option<Option<stripe_shared::PaymentMethodDetailsCardWalletGooglePay>>,
+    apple_pay: Option<stripe_shared::PaymentMethodDetailsCardWalletApplePay>,
+    google_pay: Option<stripe_shared::PaymentMethodDetailsCardWalletGooglePay>,
     type_: Option<SetupAttemptPaymentMethodDetailsCardWalletType>,
 }
 
@@ -64,19 +64,21 @@ const _: () = {
         type Out = SetupAttemptPaymentMethodDetailsCardWallet;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "apple_pay" => Deserialize::begin(&mut self.apple_pay),
-                "google_pay" => Deserialize::begin(&mut self.google_pay),
+                "apple_pay" => stripe_types::miniserde_helpers::begin_nullable(&mut self.apple_pay),
+                "google_pay" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.google_pay)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { apple_pay: Some(None), google_pay: Some(None), type_: None }
+            Self { apple_pay: None, google_pay: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(apple_pay), Some(google_pay), Some(type_)) =
+            let (apple_pay, google_pay, Some(type_)) =
                 (self.apple_pay, self.google_pay, self.type_.take())
             else {
                 return None;

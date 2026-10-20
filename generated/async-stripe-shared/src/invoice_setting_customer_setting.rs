@@ -21,9 +21,9 @@ impl std::fmt::Debug for InvoiceSettingCustomerSetting {
 #[doc(hidden)]
 pub struct InvoiceSettingCustomerSettingBuilder {
     custom_fields: Option<Option<Vec<stripe_shared::InvoiceSettingCustomField>>>,
-    default_payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
+    default_payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
     footer: Option<Option<String>>,
-    rendering_options: Option<Option<stripe_shared::InvoiceSettingCustomerRenderingOptions>>,
+    rendering_options: Option<stripe_shared::InvoiceSettingCustomerRenderingOptions>,
 }
 
 #[allow(
@@ -67,9 +67,13 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "custom_fields" => Deserialize::begin(&mut self.custom_fields),
-                "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
+                "default_payment_method" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.default_payment_method,
+                ),
                 "footer" => Deserialize::begin(&mut self.footer),
-                "rendering_options" => Deserialize::begin(&mut self.rendering_options),
+                "rendering_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.rendering_options)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -77,25 +81,19 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 custom_fields: Some(None),
-                default_payment_method: Some(None),
+                default_payment_method: None,
                 footer: Some(None),
-                rendering_options: Some(None),
+                rendering_options: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(custom_fields),
-                Some(default_payment_method),
-                Some(footer),
-                Some(rendering_options),
-            ) = (
+            let (Some(custom_fields), default_payment_method, Some(footer), rendering_options) = (
                 self.custom_fields.take(),
                 self.default_payment_method.take(),
                 self.footer.take(),
                 self.rendering_options.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { custom_fields, default_payment_method, footer, rendering_options })

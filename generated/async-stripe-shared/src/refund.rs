@@ -74,32 +74,30 @@ impl std::fmt::Debug for Refund {
 #[doc(hidden)]
 pub struct RefundBuilder {
     amount: Option<i64>,
-    balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
-    charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
+    balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
+    charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     description: Option<Option<String>>,
-    destination_details: Option<Option<stripe_shared::RefundDestinationDetails>>,
+    destination_details: Option<stripe_shared::RefundDestinationDetails>,
     failure_balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+        Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     failure_reason: Option<Option<String>>,
     id: Option<stripe_shared::RefundId>,
     instructions_email: Option<Option<String>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    next_action: Option<Option<stripe_shared::RefundNextAction>>,
-    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
-    payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
-    pending_reason: Option<Option<RefundPendingReason>>,
-    presentment_details: Option<Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>>,
-    reason: Option<Option<RefundReason>>,
+    next_action: Option<stripe_shared::RefundNextAction>,
+    payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
+    payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
+    pending_reason: Option<RefundPendingReason>,
+    presentment_details: Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>,
+    reason: Option<RefundReason>,
     receipt_number: Option<Option<String>>,
-    source_transfer_reversal:
-        Option<Option<stripe_types::Expandable<stripe_shared::TransferReversal>>>,
+    source_transfer_reversal: Option<stripe_types::Expandable<stripe_shared::TransferReversal>>,
     status: Option<Option<String>>,
-    transfer_reversal: Option<Option<stripe_types::Expandable<stripe_shared::TransferReversal>>>,
+    transfer_reversal: Option<stripe_types::Expandable<stripe_shared::TransferReversal>>,
 }
 
 #[allow(
@@ -140,33 +138,49 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
-                "charge" => Deserialize::begin(&mut self.charge),
+                "balance_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.balance_transaction)
+                }
+                "charge" => stripe_types::miniserde_helpers::begin_nullable(&mut self.charge),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "description" => Deserialize::begin(&mut self.description),
-                "destination_details" => Deserialize::begin(&mut self.destination_details),
-                "failure_balance_transaction" => {
-                    Deserialize::begin(&mut self.failure_balance_transaction)
+                "destination_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.destination_details)
                 }
+                "failure_balance_transaction" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.failure_balance_transaction,
+                ),
                 "failure_reason" => Deserialize::begin(&mut self.failure_reason),
                 "id" => Deserialize::begin(&mut self.id),
                 "instructions_email" => Deserialize::begin(&mut self.instructions_email),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "next_action" => Deserialize::begin(&mut self.next_action),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
-                "pending_reason" => Deserialize::begin(&mut self.pending_reason),
-                "presentment_details" => Deserialize::begin(&mut self.presentment_details),
-                "reason" => Deserialize::begin(&mut self.reason),
-                "receipt_number" => Deserialize::begin(&mut self.receipt_number),
-                "source_transfer_reversal" => {
-                    Deserialize::begin(&mut self.source_transfer_reversal)
+                "next_action" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.next_action)
                 }
+                "payment_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_intent)
+                }
+                "payment_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_method)
+                }
+                "pending_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.pending_reason)
+                }
+                "presentment_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.presentment_details)
+                }
+                "reason" => stripe_types::miniserde_helpers::begin_nullable(&mut self.reason),
+                "receipt_number" => Deserialize::begin(&mut self.receipt_number),
+                "source_transfer_reversal" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.source_transfer_reversal,
+                ),
                 "status" => Deserialize::begin(&mut self.status),
-                "transfer_reversal" => Deserialize::begin(&mut self.transfer_reversal),
+                "transfer_reversal" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transfer_reversal)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -174,58 +188,58 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: None,
-                balance_transaction: Some(None),
-                charge: Some(None),
+                balance_transaction: None,
+                charge: None,
                 created: None,
                 currency: None,
-                customer: Some(None),
+                customer: None,
                 customer_account: Some(None),
                 description: Some(None),
-                destination_details: Some(None),
-                failure_balance_transaction: Some(None),
+                destination_details: None,
+                failure_balance_transaction: None,
                 failure_reason: Some(None),
                 id: None,
                 instructions_email: Some(None),
                 metadata: Some(None),
-                next_action: Some(None),
-                payment_intent: Some(None),
-                payment_method: Some(None),
-                pending_reason: Some(None),
-                presentment_details: Some(None),
-                reason: Some(None),
+                next_action: None,
+                payment_intent: None,
+                payment_method: None,
+                pending_reason: None,
+                presentment_details: None,
+                reason: None,
                 receipt_number: Some(None),
-                source_transfer_reversal: Some(None),
+                source_transfer_reversal: None,
                 status: Some(None),
-                transfer_reversal: Some(None),
+                transfer_reversal: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(balance_transaction),
-                Some(charge),
+                balance_transaction,
+                charge,
                 Some(created),
                 Some(currency),
-                Some(customer),
+                customer,
                 Some(customer_account),
                 Some(description),
-                Some(destination_details),
-                Some(failure_balance_transaction),
+                destination_details,
+                failure_balance_transaction,
                 Some(failure_reason),
                 Some(id),
                 Some(instructions_email),
                 Some(metadata),
-                Some(next_action),
-                Some(payment_intent),
-                Some(payment_method),
-                Some(pending_reason),
-                Some(presentment_details),
-                Some(reason),
+                next_action,
+                payment_intent,
+                payment_method,
+                pending_reason,
+                presentment_details,
+                reason,
                 Some(receipt_number),
-                Some(source_transfer_reversal),
+                source_transfer_reversal,
                 Some(status),
-                Some(transfer_reversal),
+                transfer_reversal,
             ) = (
                 self.amount,
                 self.balance_transaction.take(),

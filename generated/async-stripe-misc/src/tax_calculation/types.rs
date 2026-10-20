@@ -56,8 +56,8 @@ pub struct TaxCalculationBuilder {
     id: Option<Option<stripe_misc::TaxCalculationId>>,
     line_items: Option<Option<stripe_types::List<stripe_misc::TaxCalculationLineItem>>>,
     livemode: Option<bool>,
-    ship_from_details: Option<Option<stripe_misc::TaxProductResourceShipFromDetails>>,
-    shipping_cost: Option<Option<stripe_misc::TaxProductResourceTaxCalculationShippingCost>>,
+    ship_from_details: Option<stripe_misc::TaxProductResourceShipFromDetails>,
+    shipping_cost: Option<stripe_misc::TaxProductResourceTaxCalculationShippingCost>,
     tax_amount_exclusive: Option<i64>,
     tax_amount_inclusive: Option<i64>,
     tax_breakdown: Option<Vec<stripe_misc::TaxProductResourceTaxBreakdown>>,
@@ -112,8 +112,12 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "line_items" => Deserialize::begin(&mut self.line_items),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "ship_from_details" => Deserialize::begin(&mut self.ship_from_details),
-                "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
+                "ship_from_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.ship_from_details)
+                }
+                "shipping_cost" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_cost)
+                }
                 "tax_amount_exclusive" => Deserialize::begin(&mut self.tax_amount_exclusive),
                 "tax_amount_inclusive" => Deserialize::begin(&mut self.tax_amount_inclusive),
                 "tax_breakdown" => Deserialize::begin(&mut self.tax_breakdown),
@@ -132,8 +136,8 @@ const _: () = {
                 id: Some(None),
                 line_items: Some(None),
                 livemode: None,
-                ship_from_details: Some(None),
-                shipping_cost: Some(None),
+                ship_from_details: None,
+                shipping_cost: None,
                 tax_amount_exclusive: None,
                 tax_amount_inclusive: None,
                 tax_breakdown: None,
@@ -151,8 +155,8 @@ const _: () = {
                 Some(id),
                 Some(line_items),
                 Some(livemode),
-                Some(ship_from_details),
-                Some(shipping_cost),
+                ship_from_details,
+                shipping_cost,
                 Some(tax_amount_exclusive),
                 Some(tax_amount_inclusive),
                 Some(tax_breakdown),

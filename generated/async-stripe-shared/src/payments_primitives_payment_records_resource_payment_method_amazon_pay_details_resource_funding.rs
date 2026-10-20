@@ -22,8 +22,8 @@ impl std::fmt::Debug
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodAmazonPayDetailsResourceFundingBuilder {
-    card: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodAmazonPayDetailsResourceFundingResourceFundingCard>>,
-type_: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodAmazonPayDetailsResourceFundingType>>,
+    card: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodAmazonPayDetailsResourceFundingResourceFundingCard>,
+type_: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodAmazonPayDetailsResourceFundingType>,
 
 }
 
@@ -73,21 +73,21 @@ const _: () = {
     type Out = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodAmazonPayDetailsResourceFunding;
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
-            "card" => Deserialize::begin(&mut self.card),
-            "type" => Deserialize::begin(&mut self.type_),
+            "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
+            "type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.type_),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self { card: Some(None),
-type_: Some(None),
+        Self { card: None,
+type_: None,
  }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(card),
-Some(type_),
+        let (card,
+type_,
 ) = (self.card.take(),
 self.type_.take(),
 ) else {

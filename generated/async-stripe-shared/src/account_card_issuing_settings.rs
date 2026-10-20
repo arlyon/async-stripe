@@ -13,7 +13,7 @@ impl std::fmt::Debug for AccountCardIssuingSettings {
 }
 #[doc(hidden)]
 pub struct AccountCardIssuingSettingsBuilder {
-    tos_acceptance: Option<Option<stripe_shared::CardIssuingAccountTermsOfService>>,
+    tos_acceptance: Option<stripe_shared::CardIssuingAccountTermsOfService>,
 }
 
 #[allow(
@@ -56,17 +56,19 @@ const _: () = {
         type Out = AccountCardIssuingSettings;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "tos_acceptance" => Deserialize::begin(&mut self.tos_acceptance),
+                "tos_acceptance" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tos_acceptance)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { tos_acceptance: Some(None) }
+            Self { tos_acceptance: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(tos_acceptance),) = (self.tos_acceptance.take(),) else {
+            let (tos_acceptance,) = (self.tos_acceptance.take(),) else {
                 return None;
             };
             Some(Self::Out { tos_acceptance })

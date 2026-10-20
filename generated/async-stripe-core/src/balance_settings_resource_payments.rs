@@ -20,7 +20,7 @@ impl std::fmt::Debug for BalanceSettingsResourcePayments {
 #[doc(hidden)]
 pub struct BalanceSettingsResourcePaymentsBuilder {
     debit_negative_balances: Option<Option<bool>>,
-    payouts: Option<Option<stripe_core::BalanceSettingsResourcePayouts>>,
+    payouts: Option<stripe_core::BalanceSettingsResourcePayouts>,
     settlement_timing: Option<stripe_core::BalanceSettingsResourceSettlementTiming>,
 }
 
@@ -65,22 +65,18 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "debit_negative_balances" => Deserialize::begin(&mut self.debit_negative_balances),
-                "payouts" => Deserialize::begin(&mut self.payouts),
+                "payouts" => stripe_types::miniserde_helpers::begin_nullable(&mut self.payouts),
                 "settlement_timing" => Deserialize::begin(&mut self.settlement_timing),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                debit_negative_balances: Some(None),
-                payouts: Some(None),
-                settlement_timing: None,
-            }
+            Self { debit_negative_balances: Some(None), payouts: None, settlement_timing: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(debit_negative_balances), Some(payouts), Some(settlement_timing)) =
+            let (Some(debit_negative_balances), payouts, Some(settlement_timing)) =
                 (self.debit_negative_balances, self.payouts.take(), self.settlement_timing.take())
             else {
                 return None;

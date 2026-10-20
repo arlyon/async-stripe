@@ -122,14 +122,14 @@ impl std::fmt::Debug for SetupIntent {
 pub struct SetupIntentBuilder {
     allowed_payment_method_types:
         Option<Option<Vec<stripe_shared::SetupIntentAllowedPaymentMethodTypes>>>,
-    application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
+    application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     attach_to_self: Option<Option<bool>>,
     automatic_payment_methods:
-        Option<Option<stripe_shared::PaymentFlowsAutomaticPaymentMethodsSetupIntent>>,
-    cancellation_reason: Option<Option<stripe_shared::SetupIntentCancellationReason>>,
+        Option<stripe_shared::PaymentFlowsAutomaticPaymentMethodsSetupIntent>,
+    cancellation_reason: Option<stripe_shared::SetupIntentCancellationReason>,
     client_secret: Option<Option<String>>,
     created: Option<stripe_types::Timestamp>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     description: Option<Option<String>>,
     excluded_payment_method_types:
@@ -137,19 +137,19 @@ pub struct SetupIntentBuilder {
     flow_directions: Option<Option<Vec<stripe_shared::SetupIntentFlowDirections>>>,
     id: Option<stripe_shared::SetupIntentId>,
     last_setup_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
-    latest_attempt: Option<Option<stripe_types::Expandable<stripe_shared::SetupAttempt>>>,
+    latest_attempt: Option<stripe_types::Expandable<stripe_shared::SetupAttempt>>,
     livemode: Option<bool>,
-    managed_payments: Option<Option<stripe_shared::SmorResourceManagedPayments>>,
-    mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
+    managed_payments: Option<stripe_shared::SmorResourceManagedPayments>,
+    mandate: Option<stripe_types::Expandable<stripe_shared::Mandate>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    next_action: Option<Option<stripe_shared::SetupIntentNextAction>>,
-    on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
-    payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
+    next_action: Option<stripe_shared::SetupIntentNextAction>,
+    on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
+    payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
     payment_method_configuration_details:
-        Option<Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>>,
-    payment_method_options: Option<Option<stripe_shared::SetupIntentPaymentMethodOptions>>,
+        Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>,
+    payment_method_options: Option<stripe_shared::SetupIntentPaymentMethodOptions>,
     payment_method_types: Option<Vec<String>>,
-    single_use_mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
+    single_use_mandate: Option<stripe_types::Expandable<stripe_shared::Mandate>>,
     status: Option<SetupIntentStatus>,
     usage: Option<String>,
 }
@@ -197,15 +197,19 @@ const _: () = {
                 "allowed_payment_method_types" => {
                     Deserialize::begin(&mut self.allowed_payment_method_types)
                 }
-                "application" => Deserialize::begin(&mut self.application),
-                "attach_to_self" => Deserialize::begin(&mut self.attach_to_self),
-                "automatic_payment_methods" => {
-                    Deserialize::begin(&mut self.automatic_payment_methods)
+                "application" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.application)
                 }
-                "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
+                "attach_to_self" => Deserialize::begin(&mut self.attach_to_self),
+                "automatic_payment_methods" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.automatic_payment_methods,
+                ),
+                "cancellation_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.cancellation_reason)
+                }
                 "client_secret" => Deserialize::begin(&mut self.client_secret),
                 "created" => Deserialize::begin(&mut self.created),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "description" => Deserialize::begin(&mut self.description),
                 "excluded_payment_method_types" => {
@@ -214,20 +218,36 @@ const _: () = {
                 "flow_directions" => Deserialize::begin(&mut self.flow_directions),
                 "id" => Deserialize::begin(&mut self.id),
                 "last_setup_error" => Deserialize::begin(&mut self.last_setup_error),
-                "latest_attempt" => Deserialize::begin(&mut self.latest_attempt),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "managed_payments" => Deserialize::begin(&mut self.managed_payments),
-                "mandate" => Deserialize::begin(&mut self.mandate),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "next_action" => Deserialize::begin(&mut self.next_action),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
-                "payment_method_configuration_details" => {
-                    Deserialize::begin(&mut self.payment_method_configuration_details)
+                "latest_attempt" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.latest_attempt)
                 }
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "managed_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.managed_payments)
+                }
+                "mandate" => stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "next_action" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.next_action)
+                }
+                "on_behalf_of" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.on_behalf_of)
+                }
+                "payment_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_method)
+                }
+                "payment_method_configuration_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.payment_method_configuration_details,
+                    )
+                }
+                "payment_method_options" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_options,
+                ),
                 "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
-                "single_use_mandate" => Deserialize::begin(&mut self.single_use_mandate),
+                "single_use_mandate" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.single_use_mandate)
+                }
                 "status" => Deserialize::begin(&mut self.status),
                 "usage" => Deserialize::begin(&mut self.usage),
                 _ => <dyn Visitor>::ignore(),
@@ -237,31 +257,31 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 allowed_payment_method_types: Some(None),
-                application: Some(None),
+                application: None,
                 attach_to_self: Some(None),
-                automatic_payment_methods: Some(None),
-                cancellation_reason: Some(None),
+                automatic_payment_methods: None,
+                cancellation_reason: None,
                 client_secret: Some(None),
                 created: None,
-                customer: Some(None),
+                customer: None,
                 customer_account: Some(None),
                 description: Some(None),
                 excluded_payment_method_types: Some(None),
                 flow_directions: Some(None),
                 id: None,
                 last_setup_error: Some(None),
-                latest_attempt: Some(None),
+                latest_attempt: None,
                 livemode: None,
-                managed_payments: Some(None),
-                mandate: Some(None),
+                managed_payments: None,
+                mandate: None,
                 metadata: Some(None),
-                next_action: Some(None),
-                on_behalf_of: Some(None),
-                payment_method: Some(None),
-                payment_method_configuration_details: Some(None),
-                payment_method_options: Some(None),
+                next_action: None,
+                on_behalf_of: None,
+                payment_method: None,
+                payment_method_configuration_details: None,
+                payment_method_options: None,
                 payment_method_types: None,
-                single_use_mandate: Some(None),
+                single_use_mandate: None,
                 status: None,
                 usage: None,
             }
@@ -270,31 +290,31 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(allowed_payment_method_types),
-                Some(application),
+                application,
                 Some(attach_to_self),
-                Some(automatic_payment_methods),
-                Some(cancellation_reason),
+                automatic_payment_methods,
+                cancellation_reason,
                 Some(client_secret),
                 Some(created),
-                Some(customer),
+                customer,
                 Some(customer_account),
                 Some(description),
                 Some(excluded_payment_method_types),
                 Some(flow_directions),
                 Some(id),
                 Some(last_setup_error),
-                Some(latest_attempt),
+                latest_attempt,
                 Some(livemode),
-                Some(managed_payments),
-                Some(mandate),
+                managed_payments,
+                mandate,
                 Some(metadata),
-                Some(next_action),
-                Some(on_behalf_of),
-                Some(payment_method),
-                Some(payment_method_configuration_details),
-                Some(payment_method_options),
+                next_action,
+                on_behalf_of,
+                payment_method,
+                payment_method_configuration_details,
+                payment_method_options,
                 Some(payment_method_types),
-                Some(single_use_mandate),
+                single_use_mandate,
                 Some(status),
                 Some(usage),
             ) = (

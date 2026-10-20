@@ -14,7 +14,7 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionAfterExpiration {
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionAfterExpirationBuilder {
-    recovery: Option<Option<stripe_shared::PaymentPagesCheckoutSessionAfterExpirationRecovery>>,
+    recovery: Option<stripe_shared::PaymentPagesCheckoutSessionAfterExpirationRecovery>,
 }
 
 #[allow(
@@ -57,17 +57,17 @@ const _: () = {
         type Out = PaymentPagesCheckoutSessionAfterExpiration;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "recovery" => Deserialize::begin(&mut self.recovery),
+                "recovery" => stripe_types::miniserde_helpers::begin_nullable(&mut self.recovery),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { recovery: Some(None) }
+            Self { recovery: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(recovery),) = (self.recovery.take(),) else {
+            let (recovery,) = (self.recovery.take(),) else {
                 return None;
             };
             Some(Self::Out { recovery })

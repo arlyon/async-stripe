@@ -14,7 +14,7 @@ impl std::fmt::Debug for TreasuryFinancialAccountsResourceInboundTransfers {
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceInboundTransfersBuilder {
-    ach: Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceInboundAchToggleSettings>>,
+    ach: Option<stripe_treasury::TreasuryFinancialAccountsResourceInboundAchToggleSettings>,
 }
 
 #[allow(
@@ -57,17 +57,17 @@ const _: () = {
         type Out = TreasuryFinancialAccountsResourceInboundTransfers;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "ach" => Deserialize::begin(&mut self.ach),
+                "ach" => stripe_types::miniserde_helpers::begin_nullable(&mut self.ach),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { ach: Some(None) }
+            Self { ach: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(ach),) = (self.ach.take(),) else {
+            let (ach,) = (self.ach.take(),) else {
                 return None;
             };
             Some(Self::Out { ach })

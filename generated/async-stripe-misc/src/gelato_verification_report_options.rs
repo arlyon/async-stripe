@@ -14,8 +14,8 @@ impl std::fmt::Debug for GelatoVerificationReportOptions {
 }
 #[doc(hidden)]
 pub struct GelatoVerificationReportOptionsBuilder {
-    document: Option<Option<stripe_misc::GelatoReportDocumentOptions>>,
-    id_number: Option<Option<stripe_misc::GelatoReportIdNumberOptions>>,
+    document: Option<stripe_misc::GelatoReportDocumentOptions>,
+    id_number: Option<stripe_misc::GelatoReportIdNumberOptions>,
 }
 
 #[allow(
@@ -58,18 +58,18 @@ const _: () = {
         type Out = GelatoVerificationReportOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "document" => Deserialize::begin(&mut self.document),
-                "id_number" => Deserialize::begin(&mut self.id_number),
+                "document" => stripe_types::miniserde_helpers::begin_nullable(&mut self.document),
+                "id_number" => stripe_types::miniserde_helpers::begin_nullable(&mut self.id_number),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { document: Some(None), id_number: Some(None) }
+            Self { document: None, id_number: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(document), Some(id_number)) = (self.document.take(), self.id_number) else {
+            let (document, id_number) = (self.document.take(), self.id_number) else {
                 return None;
             };
             Some(Self::Out { document, id_number })

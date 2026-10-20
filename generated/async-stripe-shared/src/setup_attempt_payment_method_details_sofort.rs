@@ -33,10 +33,10 @@ pub struct SetupAttemptPaymentMethodDetailsSofortBuilder {
     bank_code: Option<Option<String>>,
     bank_name: Option<Option<String>>,
     bic: Option<Option<String>>,
-    generated_sepa_debit: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
-    generated_sepa_debit_mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
+    generated_sepa_debit: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
+    generated_sepa_debit_mandate: Option<stripe_types::Expandable<stripe_shared::Mandate>>,
     iban_last4: Option<Option<String>>,
-    preferred_language: Option<Option<SetupAttemptPaymentMethodDetailsSofortPreferredLanguage>>,
+    preferred_language: Option<SetupAttemptPaymentMethodDetailsSofortPreferredLanguage>,
     verified_name: Option<Option<String>>,
 }
 
@@ -83,12 +83,16 @@ const _: () = {
                 "bank_code" => Deserialize::begin(&mut self.bank_code),
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "bic" => Deserialize::begin(&mut self.bic),
-                "generated_sepa_debit" => Deserialize::begin(&mut self.generated_sepa_debit),
-                "generated_sepa_debit_mandate" => {
-                    Deserialize::begin(&mut self.generated_sepa_debit_mandate)
+                "generated_sepa_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.generated_sepa_debit)
                 }
+                "generated_sepa_debit_mandate" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.generated_sepa_debit_mandate,
+                ),
                 "iban_last4" => Deserialize::begin(&mut self.iban_last4),
-                "preferred_language" => Deserialize::begin(&mut self.preferred_language),
+                "preferred_language" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.preferred_language)
+                }
                 "verified_name" => Deserialize::begin(&mut self.verified_name),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -99,10 +103,10 @@ const _: () = {
                 bank_code: Some(None),
                 bank_name: Some(None),
                 bic: Some(None),
-                generated_sepa_debit: Some(None),
-                generated_sepa_debit_mandate: Some(None),
+                generated_sepa_debit: None,
+                generated_sepa_debit_mandate: None,
                 iban_last4: Some(None),
-                preferred_language: Some(None),
+                preferred_language: None,
                 verified_name: Some(None),
             }
         }
@@ -112,10 +116,10 @@ const _: () = {
                 Some(bank_code),
                 Some(bank_name),
                 Some(bic),
-                Some(generated_sepa_debit),
-                Some(generated_sepa_debit_mandate),
+                generated_sepa_debit,
+                generated_sepa_debit_mandate,
                 Some(iban_last4),
-                Some(preferred_language),
+                preferred_language,
                 Some(verified_name),
             ) = (
                 self.bank_code.take(),

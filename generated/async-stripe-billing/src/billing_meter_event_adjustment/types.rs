@@ -26,7 +26,7 @@ impl std::fmt::Debug for BillingMeterEventAdjustment {
 }
 #[doc(hidden)]
 pub struct BillingMeterEventAdjustmentBuilder {
-    cancel: Option<Option<stripe_billing::BillingMeterResourceBillingMeterEventAdjustmentCancel>>,
+    cancel: Option<stripe_billing::BillingMeterResourceBillingMeterEventAdjustmentCancel>,
     event_name: Option<String>,
     livemode: Option<bool>,
     status: Option<BillingMeterEventAdjustmentStatus>,
@@ -73,7 +73,7 @@ const _: () = {
         type Out = BillingMeterEventAdjustment;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "cancel" => Deserialize::begin(&mut self.cancel),
+                "cancel" => stripe_types::miniserde_helpers::begin_nullable(&mut self.cancel),
                 "event_name" => Deserialize::begin(&mut self.event_name),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "status" => Deserialize::begin(&mut self.status),
@@ -83,11 +83,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { cancel: Some(None), event_name: None, livemode: None, status: None, type_: None }
+            Self { cancel: None, event_name: None, livemode: None, status: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(cancel), Some(event_name), Some(livemode), Some(status), Some(type_)) = (
+            let (cancel, Some(event_name), Some(livemode), Some(status), Some(type_)) = (
                 self.cancel.take(),
                 self.event_name.take(),
                 self.livemode,

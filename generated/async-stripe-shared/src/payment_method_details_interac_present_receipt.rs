@@ -36,7 +36,7 @@ impl std::fmt::Debug for PaymentMethodDetailsInteracPresentReceipt {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsInteracPresentReceiptBuilder {
-    account_type: Option<Option<PaymentMethodDetailsInteracPresentReceiptAccountType>>,
+    account_type: Option<PaymentMethodDetailsInteracPresentReceiptAccountType>,
     application_cryptogram: Option<Option<String>>,
     application_preferred_name: Option<Option<String>>,
     authorization_code: Option<Option<String>>,
@@ -87,7 +87,9 @@ const _: () = {
         type Out = PaymentMethodDetailsInteracPresentReceipt;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_type" => Deserialize::begin(&mut self.account_type),
+                "account_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.account_type)
+                }
                 "application_cryptogram" => Deserialize::begin(&mut self.application_cryptogram),
                 "application_preferred_name" => {
                     Deserialize::begin(&mut self.application_preferred_name)
@@ -112,7 +114,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account_type: Some(None),
+                account_type: None,
                 application_cryptogram: Some(None),
                 application_preferred_name: Some(None),
                 authorization_code: Some(None),
@@ -126,7 +128,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(account_type),
+                account_type,
                 Some(application_cryptogram),
                 Some(application_preferred_name),
                 Some(authorization_code),

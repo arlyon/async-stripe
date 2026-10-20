@@ -21,9 +21,7 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationUserInterventionRaise
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationUserInterventionRaisedBuilder {
-    custom: Option<
-        Option<stripe_fraud::InsightsResourcesPaymentEvaluationUserInterventionRaisedCustom>,
-    >,
+    custom: Option<stripe_fraud::InsightsResourcesPaymentEvaluationUserInterventionRaisedCustom>,
     key: Option<String>,
     type_: Option<InsightsResourcesPaymentEvaluationUserInterventionRaisedType>,
 }
@@ -69,7 +67,7 @@ const _: () = {
         type Out = InsightsResourcesPaymentEvaluationUserInterventionRaised;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "custom" => Deserialize::begin(&mut self.custom),
+                "custom" => stripe_types::miniserde_helpers::begin_nullable(&mut self.custom),
                 "key" => Deserialize::begin(&mut self.key),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -77,11 +75,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { custom: Some(None), key: None, type_: None }
+            Self { custom: None, key: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(custom), Some(key), Some(type_)) =
+            let (custom, Some(key), Some(type_)) =
                 (self.custom.take(), self.key.take(), self.type_.take())
             else {
                 return None;

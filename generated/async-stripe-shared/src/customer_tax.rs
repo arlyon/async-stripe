@@ -23,7 +23,7 @@ impl std::fmt::Debug for CustomerTax {
 pub struct CustomerTaxBuilder {
     automatic_tax: Option<CustomerTaxAutomaticTax>,
     ip_address: Option<Option<String>>,
-    location: Option<Option<stripe_shared::CustomerTaxLocation>>,
+    location: Option<stripe_shared::CustomerTaxLocation>,
     provider: Option<CustomerTaxProvider>,
 }
 
@@ -69,23 +69,18 @@ const _: () = {
             Ok(match k {
                 "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
                 "ip_address" => Deserialize::begin(&mut self.ip_address),
-                "location" => Deserialize::begin(&mut self.location),
+                "location" => stripe_types::miniserde_helpers::begin_nullable(&mut self.location),
                 "provider" => Deserialize::begin(&mut self.provider),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                automatic_tax: None,
-                ip_address: Some(None),
-                location: Some(None),
-                provider: None,
-            }
+            Self { automatic_tax: None, ip_address: Some(None), location: None, provider: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(automatic_tax), Some(ip_address), Some(location), Some(provider)) = (
+            let (Some(automatic_tax), Some(ip_address), location, Some(provider)) = (
                 self.automatic_tax.take(),
                 self.ip_address.take(),
                 self.location.take(),

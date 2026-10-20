@@ -23,9 +23,9 @@ impl std::fmt::Debug for InvoicesPaymentsInvoicePaymentAssociatedPayment {
 }
 #[doc(hidden)]
 pub struct InvoicesPaymentsInvoicePaymentAssociatedPaymentBuilder {
-    charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
-    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
-    payment_record: Option<Option<stripe_types::Expandable<stripe_shared::PaymentRecord>>>,
+    charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
+    payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
+    payment_record: Option<stripe_types::Expandable<stripe_shared::PaymentRecord>>,
     type_: Option<InvoicesPaymentsInvoicePaymentAssociatedPaymentType>,
 }
 
@@ -69,25 +69,24 @@ const _: () = {
         type Out = InvoicesPaymentsInvoicePaymentAssociatedPayment;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "charge" => Deserialize::begin(&mut self.charge),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_record" => Deserialize::begin(&mut self.payment_record),
+                "charge" => stripe_types::miniserde_helpers::begin_nullable(&mut self.charge),
+                "payment_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_intent)
+                }
+                "payment_record" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_record)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                charge: Some(None),
-                payment_intent: Some(None),
-                payment_record: Some(None),
-                type_: None,
-            }
+            Self { charge: None, payment_intent: None, payment_record: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(charge), Some(payment_intent), Some(payment_record), Some(type_)) = (
+            let (charge, payment_intent, payment_record, Some(type_)) = (
                 self.charge.take(),
                 self.payment_intent.take(),
                 self.payment_record.take(),

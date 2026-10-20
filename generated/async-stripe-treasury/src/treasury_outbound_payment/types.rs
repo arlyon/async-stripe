@@ -80,11 +80,9 @@ pub struct TreasuryOutboundPaymentBuilder {
     description: Option<Option<String>>,
     destination_payment_method: Option<Option<String>>,
     destination_payment_method_details:
-        Option<Option<stripe_treasury::OutboundPaymentsPaymentMethodDetails>>,
+        Option<stripe_treasury::OutboundPaymentsPaymentMethodDetails>,
     end_user_details: Option<
-        Option<
-            stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails,
-        >,
+        stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails,
     >,
     expected_arrival_date: Option<stripe_types::Timestamp>,
     financial_account: Option<String>,
@@ -92,17 +90,14 @@ pub struct TreasuryOutboundPaymentBuilder {
     id: Option<stripe_treasury::TreasuryOutboundPaymentId>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
-    returned_details:
-        Option<Option<stripe_treasury::TreasuryOutboundPaymentsResourceReturnedStatus>>,
+    returned_details: Option<stripe_treasury::TreasuryOutboundPaymentsResourceReturnedStatus>,
     statement_descriptor: Option<String>,
     status: Option<stripe_treasury::TreasuryOutboundPaymentStatus>,
     status_transitions: Option<
         stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitions,
     >,
     tracking_details: Option<
-        Option<
-            stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetails,
-        >,
+        stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetails,
     >,
     transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 }
@@ -157,9 +152,13 @@ const _: () = {
                     Deserialize::begin(&mut self.destination_payment_method)
                 }
                 "destination_payment_method_details" => {
-                    Deserialize::begin(&mut self.destination_payment_method_details)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.destination_payment_method_details,
+                    )
                 }
-                "end_user_details" => Deserialize::begin(&mut self.end_user_details),
+                "end_user_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.end_user_details)
+                }
                 "expected_arrival_date" => Deserialize::begin(&mut self.expected_arrival_date),
                 "financial_account" => Deserialize::begin(&mut self.financial_account),
                 "hosted_regulatory_receipt_url" => {
@@ -168,11 +167,15 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "returned_details" => Deserialize::begin(&mut self.returned_details),
+                "returned_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.returned_details)
+                }
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-                "tracking_details" => Deserialize::begin(&mut self.tracking_details),
+                "tracking_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tracking_details)
+                }
                 "transaction" => Deserialize::begin(&mut self.transaction),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -187,19 +190,19 @@ const _: () = {
                 customer: Some(None),
                 description: Some(None),
                 destination_payment_method: Some(None),
-                destination_payment_method_details: Some(None),
-                end_user_details: Some(None),
+                destination_payment_method_details: None,
+                end_user_details: None,
                 expected_arrival_date: None,
                 financial_account: None,
                 hosted_regulatory_receipt_url: Some(None),
                 id: None,
                 livemode: None,
                 metadata: None,
-                returned_details: Some(None),
+                returned_details: None,
                 statement_descriptor: None,
                 status: None,
                 status_transitions: None,
-                tracking_details: Some(None),
+                tracking_details: None,
                 transaction: None,
             }
         }
@@ -213,19 +216,19 @@ const _: () = {
                 Some(customer),
                 Some(description),
                 Some(destination_payment_method),
-                Some(destination_payment_method_details),
-                Some(end_user_details),
+                destination_payment_method_details,
+                end_user_details,
                 Some(expected_arrival_date),
                 Some(financial_account),
                 Some(hosted_regulatory_receipt_url),
                 Some(id),
                 Some(livemode),
                 Some(metadata),
-                Some(returned_details),
+                returned_details,
                 Some(statement_descriptor),
                 Some(status),
                 Some(status_transitions),
-                Some(tracking_details),
+                tracking_details,
                 Some(transaction),
             ) = (
                 self.amount,

@@ -51,21 +51,21 @@ impl std::fmt::Debug for CustomerCashBalanceTransaction {
 }
 #[doc(hidden)]
 pub struct CustomerCashBalanceTransactionBuilder {
-    adjusted_for_overdraft: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft>>,
-applied_to_payment: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransaction>>,
+    adjusted_for_overdraft: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft>,
+applied_to_payment: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransaction>,
 created: Option<stripe_types::Timestamp>,
 currency: Option<stripe_types::Currency>,
 customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
 customer_account: Option<Option<String>>,
 ending_balance: Option<i64>,
-funded: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransaction>>,
+funded: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransaction>,
 id: Option<stripe_shared::CustomerCashBalanceTransactionId>,
 livemode: Option<bool>,
 net_amount: Option<i64>,
-refunded_from_payment: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction>>,
-transferred_to_balance: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceTransferredToBalance>>,
+refunded_from_payment: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction>,
+transferred_to_balance: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceTransferredToBalance>,
 type_: Option<CustomerCashBalanceTransactionType>,
-unapplied_from_payment: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction>>,
+unapplied_from_payment: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction>,
 
 }
 
@@ -109,62 +109,72 @@ const _: () = {
         type Out = CustomerCashBalanceTransaction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "adjusted_for_overdraft" => Deserialize::begin(&mut self.adjusted_for_overdraft),
-                "applied_to_payment" => Deserialize::begin(&mut self.applied_to_payment),
+                "adjusted_for_overdraft" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.adjusted_for_overdraft,
+                ),
+                "applied_to_payment" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.applied_to_payment)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "customer" => Deserialize::begin(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "ending_balance" => Deserialize::begin(&mut self.ending_balance),
-                "funded" => Deserialize::begin(&mut self.funded),
+                "funded" => stripe_types::miniserde_helpers::begin_nullable(&mut self.funded),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "net_amount" => Deserialize::begin(&mut self.net_amount),
-                "refunded_from_payment" => Deserialize::begin(&mut self.refunded_from_payment),
-                "transferred_to_balance" => Deserialize::begin(&mut self.transferred_to_balance),
+                "refunded_from_payment" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.refunded_from_payment)
+                }
+                "transferred_to_balance" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.transferred_to_balance,
+                ),
                 "type" => Deserialize::begin(&mut self.type_),
-                "unapplied_from_payment" => Deserialize::begin(&mut self.unapplied_from_payment),
+                "unapplied_from_payment" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.unapplied_from_payment,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                adjusted_for_overdraft: Some(None),
-                applied_to_payment: Some(None),
+                adjusted_for_overdraft: None,
+                applied_to_payment: None,
                 created: None,
                 currency: None,
                 customer: None,
                 customer_account: Some(None),
                 ending_balance: None,
-                funded: Some(None),
+                funded: None,
                 id: None,
                 livemode: None,
                 net_amount: None,
-                refunded_from_payment: Some(None),
-                transferred_to_balance: Some(None),
+                refunded_from_payment: None,
+                transferred_to_balance: None,
                 type_: None,
-                unapplied_from_payment: Some(None),
+                unapplied_from_payment: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(adjusted_for_overdraft),
-                Some(applied_to_payment),
+                adjusted_for_overdraft,
+                applied_to_payment,
                 Some(created),
                 Some(currency),
                 Some(customer),
                 Some(customer_account),
                 Some(ending_balance),
-                Some(funded),
+                funded,
                 Some(id),
                 Some(livemode),
                 Some(net_amount),
-                Some(refunded_from_payment),
-                Some(transferred_to_balance),
+                refunded_from_payment,
+                transferred_to_balance,
                 Some(type_),
-                Some(unapplied_from_payment),
+                unapplied_from_payment,
             ) = (
                 self.adjusted_for_overdraft.take(),
                 self.applied_to_payment.take(),

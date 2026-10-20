@@ -22,11 +22,9 @@ impl std::fmt::Debug for SubscriptionPaymentMethodOptionsMandateOptionsPix {
 #[doc(hidden)]
 pub struct SubscriptionPaymentMethodOptionsMandateOptionsPixBuilder {
     amount: Option<Option<i64>>,
-    amount_includes_iof:
-        Option<Option<SubscriptionPaymentMethodOptionsMandateOptionsPixAmountIncludesIof>>,
+    amount_includes_iof: Option<SubscriptionPaymentMethodOptionsMandateOptionsPixAmountIncludesIof>,
     end_date: Option<Option<String>>,
-    payment_schedule:
-        Option<Option<SubscriptionPaymentMethodOptionsMandateOptionsPixPaymentSchedule>>,
+    payment_schedule: Option<SubscriptionPaymentMethodOptionsMandateOptionsPixPaymentSchedule>,
 }
 
 #[allow(
@@ -70,9 +68,13 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "amount_includes_iof" => Deserialize::begin(&mut self.amount_includes_iof),
+                "amount_includes_iof" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_includes_iof)
+                }
                 "end_date" => Deserialize::begin(&mut self.end_date),
-                "payment_schedule" => Deserialize::begin(&mut self.payment_schedule),
+                "payment_schedule" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_schedule)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -80,14 +82,14 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: Some(None),
-                amount_includes_iof: Some(None),
+                amount_includes_iof: None,
                 end_date: Some(None),
-                payment_schedule: Some(None),
+                payment_schedule: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(amount_includes_iof), Some(end_date), Some(payment_schedule)) = (
+            let (Some(amount), amount_includes_iof, Some(end_date), payment_schedule) = (
                 self.amount,
                 self.amount_includes_iof.take(),
                 self.end_date.take(),

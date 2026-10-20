@@ -23,7 +23,7 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsMandateOptionsUpi {
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsMandateOptionsUpiBuilder {
     amount: Option<Option<i64>>,
-    amount_type: Option<Option<InvoicePaymentMethodOptionsMandateOptionsUpiAmountType>>,
+    amount_type: Option<InvoicePaymentMethodOptionsMandateOptionsUpiAmountType>,
     description: Option<Option<String>>,
     end_date: Option<Option<stripe_types::Timestamp>>,
 }
@@ -69,7 +69,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "amount_type" => Deserialize::begin(&mut self.amount_type),
+                "amount_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_type)
+                }
                 "description" => Deserialize::begin(&mut self.description),
                 "end_date" => Deserialize::begin(&mut self.end_date),
                 _ => <dyn Visitor>::ignore(),
@@ -79,14 +81,14 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: Some(None),
-                amount_type: Some(None),
+                amount_type: None,
                 description: Some(None),
                 end_date: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(amount_type), Some(description), Some(end_date)) =
+            let (Some(amount), amount_type, Some(description), Some(end_date)) =
                 (self.amount, self.amount_type.take(), self.description.take(), self.end_date)
             else {
                 return None;

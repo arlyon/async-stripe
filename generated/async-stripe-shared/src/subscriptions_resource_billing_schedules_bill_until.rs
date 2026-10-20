@@ -23,7 +23,7 @@ impl std::fmt::Debug for SubscriptionsResourceBillingSchedulesBillUntil {
 #[doc(hidden)]
 pub struct SubscriptionsResourceBillingSchedulesBillUntilBuilder {
     computed_timestamp: Option<stripe_types::Timestamp>,
-    duration: Option<Option<stripe_shared::SubscriptionsResourceBillingSchedulesBillUntilDuration>>,
+    duration: Option<stripe_shared::SubscriptionsResourceBillingSchedulesBillUntilDuration>,
     timestamp: Option<Option<stripe_types::Timestamp>>,
     type_: Option<SubscriptionsResourceBillingSchedulesBillUntilType>,
 }
@@ -69,7 +69,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "computed_timestamp" => Deserialize::begin(&mut self.computed_timestamp),
-                "duration" => Deserialize::begin(&mut self.duration),
+                "duration" => stripe_types::miniserde_helpers::begin_nullable(&mut self.duration),
                 "timestamp" => Deserialize::begin(&mut self.timestamp),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -77,16 +77,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                computed_timestamp: None,
-                duration: Some(None),
-                timestamp: Some(None),
-                type_: None,
-            }
+            Self { computed_timestamp: None, duration: None, timestamp: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(computed_timestamp), Some(duration), Some(timestamp), Some(type_)) =
+            let (Some(computed_timestamp), duration, Some(timestamp), Some(type_)) =
                 (self.computed_timestamp, self.duration.take(), self.timestamp, self.type_.take())
             else {
                 return None;

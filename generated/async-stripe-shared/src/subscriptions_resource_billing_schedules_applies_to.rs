@@ -18,7 +18,7 @@ impl std::fmt::Debug for SubscriptionsResourceBillingSchedulesAppliesTo {
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourceBillingSchedulesAppliesToBuilder {
-    price: Option<Option<stripe_types::Expandable<stripe_shared::Price>>>,
+    price: Option<stripe_types::Expandable<stripe_shared::Price>>,
     type_: Option<SubscriptionsResourceBillingSchedulesAppliesToType>,
 }
 
@@ -62,18 +62,18 @@ const _: () = {
         type Out = SubscriptionsResourceBillingSchedulesAppliesTo;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "price" => Deserialize::begin(&mut self.price),
+                "price" => stripe_types::miniserde_helpers::begin_nullable(&mut self.price),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { price: Some(None), type_: None }
+            Self { price: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(price), Some(type_)) = (self.price.take(), self.type_.take()) else {
+            let (price, Some(type_)) = (self.price.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { price, type_ })

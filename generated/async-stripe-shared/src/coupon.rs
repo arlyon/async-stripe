@@ -58,7 +58,7 @@ impl std::fmt::Debug for Coupon {
 #[doc(hidden)]
 pub struct CouponBuilder {
     amount_off: Option<Option<i64>>,
-    applies_to: Option<Option<stripe_shared::CouponAppliesTo>>,
+    applies_to: Option<stripe_shared::CouponAppliesTo>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<Option<stripe_types::Currency>>,
     currency_options: Option<
@@ -117,7 +117,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount_off" => Deserialize::begin(&mut self.amount_off),
-                "applies_to" => Deserialize::begin(&mut self.applies_to),
+                "applies_to" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.applies_to)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "currency_options" => Deserialize::begin(&mut self.currency_options),
@@ -139,7 +141,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount_off: Some(None),
-                applies_to: Some(None),
+                applies_to: None,
                 created: None,
                 currency: Some(None),
                 currency_options: Some(None),
@@ -160,7 +162,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount_off),
-                Some(applies_to),
+                applies_to,
                 Some(created),
                 Some(currency),
                 Some(currency_options),

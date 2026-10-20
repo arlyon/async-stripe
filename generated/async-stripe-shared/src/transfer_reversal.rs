@@ -47,14 +47,13 @@ impl std::fmt::Debug for TransferReversal {
 #[doc(hidden)]
 pub struct TransferReversalBuilder {
     amount: Option<i64>,
-    balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
-    destination_payment_refund: Option<Option<stripe_types::Expandable<stripe_shared::Refund>>>,
+    destination_payment_refund: Option<stripe_types::Expandable<stripe_shared::Refund>>,
     id: Option<stripe_shared::TransferReversalId>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    source_refund: Option<Option<stripe_types::Expandable<stripe_shared::Refund>>>,
+    source_refund: Option<stripe_types::Expandable<stripe_shared::Refund>>,
     transfer: Option<stripe_types::Expandable<stripe_shared::Transfer>>,
 }
 
@@ -99,15 +98,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "balance_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.balance_transaction)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
-                "destination_payment_refund" => {
-                    Deserialize::begin(&mut self.destination_payment_refund)
-                }
+                "destination_payment_refund" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.destination_payment_refund,
+                ),
                 "id" => Deserialize::begin(&mut self.id),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "source_refund" => Deserialize::begin(&mut self.source_refund),
+                "source_refund" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.source_refund)
+                }
                 "transfer" => Deserialize::begin(&mut self.transfer),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -116,13 +119,13 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: None,
-                balance_transaction: Some(None),
+                balance_transaction: None,
                 created: None,
                 currency: None,
-                destination_payment_refund: Some(None),
+                destination_payment_refund: None,
                 id: None,
                 metadata: Some(None),
-                source_refund: Some(None),
+                source_refund: None,
                 transfer: None,
             }
         }
@@ -130,13 +133,13 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(balance_transaction),
+                balance_transaction,
                 Some(created),
                 Some(currency),
-                Some(destination_payment_refund),
+                destination_payment_refund,
                 Some(id),
                 Some(metadata),
-                Some(source_refund),
+                source_refund,
                 Some(transfer),
             ) = (
                 self.amount,

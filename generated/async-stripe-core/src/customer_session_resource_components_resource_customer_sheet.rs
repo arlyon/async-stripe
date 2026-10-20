@@ -20,9 +20,8 @@ impl std::fmt::Debug for CustomerSessionResourceComponentsResourceCustomerSheet 
 #[doc(hidden)]
 pub struct CustomerSessionResourceComponentsResourceCustomerSheetBuilder {
     enabled: Option<bool>,
-    features: Option<
+    features:
         Option<stripe_core::CustomerSessionResourceComponentsResourceCustomerSheetResourceFeatures>,
-    >,
 }
 
 #[allow(
@@ -67,17 +66,17 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "enabled" => Deserialize::begin(&mut self.enabled),
-                "features" => Deserialize::begin(&mut self.features),
+                "features" => stripe_types::miniserde_helpers::begin_nullable(&mut self.features),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { enabled: None, features: Some(None) }
+            Self { enabled: None, features: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(features)) = (self.enabled, self.features.take()) else {
+            let (Some(enabled), features) = (self.enabled, self.features.take()) else {
                 return None;
             };
             Some(Self::Out { enabled, features })

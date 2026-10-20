@@ -37,7 +37,7 @@ impl std::fmt::Debug for SubscriptionsResourcePendingUpdate {
 #[doc(hidden)]
 pub struct SubscriptionsResourcePendingUpdateBuilder {
     billing_cycle_anchor: Option<Option<stripe_types::Timestamp>>,
-    discount: Option<Option<stripe_shared::Discount>>,
+    discount: Option<stripe_shared::Discount>,
     discounts: Option<Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>>,
     expires_at: Option<stripe_types::Timestamp>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
@@ -87,7 +87,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
-                "discount" => Deserialize::begin(&mut self.discount),
+                "discount" => stripe_types::miniserde_helpers::begin_nullable(&mut self.discount),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "metadata" => Deserialize::begin(&mut self.metadata),
@@ -101,7 +101,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 billing_cycle_anchor: Some(None),
-                discount: Some(None),
+                discount: None,
                 discounts: Some(None),
                 expires_at: None,
                 metadata: Some(None),
@@ -114,7 +114,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(billing_cycle_anchor),
-                Some(discount),
+                discount,
                 Some(discounts),
                 Some(expires_at),
                 Some(metadata),

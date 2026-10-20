@@ -25,7 +25,7 @@ impl std::fmt::Debug for PaymentMethodDetailsKlarna {
 #[doc(hidden)]
 pub struct PaymentMethodDetailsKlarnaBuilder {
     location: Option<Option<String>>,
-    payer_details: Option<Option<stripe_shared::KlarnaPayerDetails>>,
+    payer_details: Option<stripe_shared::KlarnaPayerDetails>,
     payment_method_category: Option<Option<String>>,
     preferred_locale: Option<Option<String>>,
     reader: Option<Option<String>>,
@@ -72,7 +72,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "location" => Deserialize::begin(&mut self.location),
-                "payer_details" => Deserialize::begin(&mut self.payer_details),
+                "payer_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payer_details)
+                }
                 "payment_method_category" => Deserialize::begin(&mut self.payment_method_category),
                 "preferred_locale" => Deserialize::begin(&mut self.preferred_locale),
                 "reader" => Deserialize::begin(&mut self.reader),
@@ -83,7 +85,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 location: Some(None),
-                payer_details: Some(None),
+                payer_details: None,
                 payment_method_category: Some(None),
                 preferred_locale: Some(None),
                 reader: Some(None),
@@ -93,7 +95,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(location),
-                Some(payer_details),
+                payer_details,
                 Some(payment_method_category),
                 Some(preferred_locale),
                 Some(reader),

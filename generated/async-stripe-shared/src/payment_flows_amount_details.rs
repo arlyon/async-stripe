@@ -25,12 +25,12 @@ impl std::fmt::Debug for PaymentFlowsAmountDetails {
 #[doc(hidden)]
 pub struct PaymentFlowsAmountDetailsBuilder {
     discount_amount: Option<Option<i64>>,
-    error: Option<Option<stripe_shared::PaymentFlowsAmountDetailsResourceError>>,
+    error: Option<stripe_shared::PaymentFlowsAmountDetailsResourceError>,
     line_items:
         Option<Option<stripe_types::List<stripe_shared::PaymentIntentAmountDetailsLineItem>>>,
-    shipping: Option<Option<stripe_shared::PaymentFlowsAmountDetailsResourceShipping>>,
-    tax: Option<Option<stripe_shared::PaymentFlowsAmountDetailsResourceTax>>,
-    tip: Option<Option<stripe_shared::PaymentFlowsAmountDetailsClientResourceTip>>,
+    shipping: Option<stripe_shared::PaymentFlowsAmountDetailsResourceShipping>,
+    tax: Option<stripe_shared::PaymentFlowsAmountDetailsResourceTax>,
+    tip: Option<stripe_shared::PaymentFlowsAmountDetailsClientResourceTip>,
 }
 
 #[allow(
@@ -74,11 +74,11 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "discount_amount" => Deserialize::begin(&mut self.discount_amount),
-                "error" => Deserialize::begin(&mut self.error),
+                "error" => stripe_types::miniserde_helpers::begin_nullable(&mut self.error),
                 "line_items" => Deserialize::begin(&mut self.line_items),
-                "shipping" => Deserialize::begin(&mut self.shipping),
-                "tax" => Deserialize::begin(&mut self.tax),
-                "tip" => Deserialize::begin(&mut self.tip),
+                "shipping" => stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping),
+                "tax" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tax),
+                "tip" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tip),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -86,31 +86,23 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 discount_amount: Some(None),
-                error: Some(None),
+                error: None,
                 line_items: Some(None),
-                shipping: Some(None),
-                tax: Some(None),
-                tip: Some(None),
+                shipping: None,
+                tax: None,
+                tip: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(discount_amount),
-                Some(error),
-                Some(line_items),
-                Some(shipping),
-                Some(tax),
-                Some(tip),
-            ) = (
+            let (Some(discount_amount), error, Some(line_items), shipping, tax, tip) = (
                 self.discount_amount,
                 self.error.take(),
                 self.line_items.take(),
                 self.shipping.take(),
                 self.tax,
                 self.tip,
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { discount_amount, error, line_items, shipping, tax, tip })

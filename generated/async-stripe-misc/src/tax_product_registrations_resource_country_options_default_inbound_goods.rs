@@ -17,8 +17,7 @@ impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsDefaultInb
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsBuilder {
-    standard:
-        Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsDefaultStandard>>,
+    standard: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsDefaultStandard>,
     type_: Option<TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType>,
 }
 
@@ -62,18 +61,18 @@ const _: () = {
         type Out = TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoods;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "standard" => Deserialize::begin(&mut self.standard),
+                "standard" => stripe_types::miniserde_helpers::begin_nullable(&mut self.standard),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { standard: Some(None), type_: None }
+            Self { standard: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(standard), Some(type_)) = (self.standard.take(), self.type_.take()) else {
+            let (standard, Some(type_)) = (self.standard.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { standard, type_ })

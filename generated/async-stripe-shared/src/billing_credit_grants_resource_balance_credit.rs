@@ -21,9 +21,8 @@ impl std::fmt::Debug for BillingCreditGrantsResourceBalanceCredit {
 #[doc(hidden)]
 pub struct BillingCreditGrantsResourceBalanceCreditBuilder {
     amount: Option<stripe_shared::BillingCreditGrantsResourceAmount>,
-    credits_application_invoice_voided: Option<
+    credits_application_invoice_voided:
         Option<stripe_shared::BillingCreditGrantsResourceBalanceCreditsApplicationInvoiceVoided>,
-    >,
     type_: Option<BillingCreditGrantsResourceBalanceCreditType>,
 }
 
@@ -69,7 +68,9 @@ const _: () = {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "credits_application_invoice_voided" => {
-                    Deserialize::begin(&mut self.credits_application_invoice_voided)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.credits_application_invoice_voided,
+                    )
                 }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -77,11 +78,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { amount: None, credits_application_invoice_voided: Some(None), type_: None }
+            Self { amount: None, credits_application_invoice_voided: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(credits_application_invoice_voided), Some(type_)) = (
+            let (Some(amount), credits_application_invoice_voided, Some(type_)) = (
                 self.amount.take(),
                 self.credits_application_invoice_voided.take(),
                 self.type_.take(),

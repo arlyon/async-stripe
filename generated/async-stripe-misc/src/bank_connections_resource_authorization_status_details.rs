@@ -15,8 +15,8 @@ impl std::fmt::Debug for BankConnectionsResourceAuthorizationStatusDetails {
 }
 #[doc(hidden)]
 pub struct BankConnectionsResourceAuthorizationStatusDetailsBuilder {
-    active: Option<Option<stripe_misc::BankConnectionsResourceAuthorizationStatusDetailsApiResourceActiveStatusDetails>>,
-inactive: Option<Option<stripe_misc::BankConnectionsResourceAuthorizationStatusDetailsApiResourceInactiveStatusDetails>>,
+    active: Option<stripe_misc::BankConnectionsResourceAuthorizationStatusDetailsApiResourceActiveStatusDetails>,
+inactive: Option<stripe_misc::BankConnectionsResourceAuthorizationStatusDetailsApiResourceInactiveStatusDetails>,
 
 }
 
@@ -60,18 +60,18 @@ const _: () = {
         type Out = BankConnectionsResourceAuthorizationStatusDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
-                "inactive" => Deserialize::begin(&mut self.inactive),
+                "active" => stripe_types::miniserde_helpers::begin_nullable(&mut self.active),
+                "inactive" => stripe_types::miniserde_helpers::begin_nullable(&mut self.inactive),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { active: Some(None), inactive: Some(None) }
+            Self { active: None, inactive: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(active), Some(inactive)) = (self.active.take(), self.inactive.take()) else {
+            let (active, inactive) = (self.active.take(), self.inactive.take()) else {
                 return None;
             };
             Some(Self::Out { active, inactive })

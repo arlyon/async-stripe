@@ -48,18 +48,18 @@ impl std::fmt::Debug for Review {
 #[doc(hidden)]
 pub struct ReviewBuilder {
     billing_zip: Option<Option<String>>,
-    charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
-    closed_reason: Option<Option<ReviewClosedReason>>,
+    charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
+    closed_reason: Option<ReviewClosedReason>,
     created: Option<stripe_types::Timestamp>,
     id: Option<stripe_shared::ReviewId>,
     ip_address: Option<Option<String>>,
-    ip_address_location: Option<Option<stripe_shared::RadarReviewResourceLocation>>,
+    ip_address_location: Option<stripe_shared::RadarReviewResourceLocation>,
     livemode: Option<bool>,
     open: Option<bool>,
     opened_reason: Option<ReviewOpenedReason>,
-    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
+    payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
     reason: Option<String>,
-    session: Option<Option<stripe_shared::RadarReviewResourceSession>>,
+    session: Option<stripe_shared::RadarReviewResourceSession>,
 }
 
 #[allow(
@@ -100,18 +100,24 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "billing_zip" => Deserialize::begin(&mut self.billing_zip),
-                "charge" => Deserialize::begin(&mut self.charge),
-                "closed_reason" => Deserialize::begin(&mut self.closed_reason),
+                "charge" => stripe_types::miniserde_helpers::begin_nullable(&mut self.charge),
+                "closed_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.closed_reason)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "id" => Deserialize::begin(&mut self.id),
                 "ip_address" => Deserialize::begin(&mut self.ip_address),
-                "ip_address_location" => Deserialize::begin(&mut self.ip_address_location),
+                "ip_address_location" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.ip_address_location)
+                }
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "open" => Deserialize::begin(&mut self.open),
                 "opened_reason" => Deserialize::begin(&mut self.opened_reason),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
+                "payment_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_intent)
+                }
                 "reason" => Deserialize::begin(&mut self.reason),
-                "session" => Deserialize::begin(&mut self.session),
+                "session" => stripe_types::miniserde_helpers::begin_nullable(&mut self.session),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -119,36 +125,36 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 billing_zip: Some(None),
-                charge: Some(None),
-                closed_reason: Some(None),
+                charge: None,
+                closed_reason: None,
                 created: None,
                 id: None,
                 ip_address: Some(None),
-                ip_address_location: Some(None),
+                ip_address_location: None,
                 livemode: None,
                 open: None,
                 opened_reason: None,
-                payment_intent: Some(None),
+                payment_intent: None,
                 reason: None,
-                session: Some(None),
+                session: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(billing_zip),
-                Some(charge),
-                Some(closed_reason),
+                charge,
+                closed_reason,
                 Some(created),
                 Some(id),
                 Some(ip_address),
-                Some(ip_address_location),
+                ip_address_location,
                 Some(livemode),
                 Some(open),
                 Some(opened_reason),
-                Some(payment_intent),
+                payment_intent,
                 Some(reason),
-                Some(session),
+                session,
             ) = (
                 self.billing_zip.take(),
                 self.charge.take(),

@@ -17,11 +17,10 @@ impl std::fmt::Debug for DisputeEnhancedEligibility {
 }
 #[doc(hidden)]
 pub struct DisputeEnhancedEligibilityBuilder {
-    mastercard_compliance:
-        Option<Option<stripe_shared::DisputeEnhancedEligibilityMastercardCompliance>>,
+    mastercard_compliance: Option<stripe_shared::DisputeEnhancedEligibilityMastercardCompliance>,
     visa_compelling_evidence_3:
-        Option<Option<stripe_shared::DisputeEnhancedEligibilityVisaCompellingEvidence3>>,
-    visa_compliance: Option<Option<stripe_shared::DisputeEnhancedEligibilityVisaCompliance>>,
+        Option<stripe_shared::DisputeEnhancedEligibilityVisaCompellingEvidence3>,
+    visa_compliance: Option<stripe_shared::DisputeEnhancedEligibilityVisaCompliance>,
 }
 
 #[allow(
@@ -64,34 +63,33 @@ const _: () = {
         type Out = DisputeEnhancedEligibility;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "mastercard_compliance" => Deserialize::begin(&mut self.mastercard_compliance),
-                "visa_compelling_evidence_3" => {
-                    Deserialize::begin(&mut self.visa_compelling_evidence_3)
+                "mastercard_compliance" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mastercard_compliance)
                 }
-                "visa_compliance" => Deserialize::begin(&mut self.visa_compliance),
+                "visa_compelling_evidence_3" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.visa_compelling_evidence_3,
+                ),
+                "visa_compliance" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.visa_compliance)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                mastercard_compliance: Some(None),
-                visa_compelling_evidence_3: Some(None),
-                visa_compliance: Some(None),
+                mastercard_compliance: None,
+                visa_compelling_evidence_3: None,
+                visa_compliance: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(mastercard_compliance),
-                Some(visa_compelling_evidence_3),
-                Some(visa_compliance),
-            ) = (
+            let (mastercard_compliance, visa_compelling_evidence_3, visa_compliance) = (
                 self.mastercard_compliance.take(),
                 self.visa_compelling_evidence_3.take(),
                 self.visa_compliance.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { mastercard_compliance, visa_compelling_evidence_3, visa_compliance })

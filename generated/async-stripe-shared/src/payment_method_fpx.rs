@@ -17,7 +17,7 @@ impl std::fmt::Debug for PaymentMethodFpx {
 }
 #[doc(hidden)]
 pub struct PaymentMethodFpxBuilder {
-    account_holder_type: Option<Option<PaymentMethodFpxAccountHolderType>>,
+    account_holder_type: Option<PaymentMethodFpxAccountHolderType>,
     bank: Option<PaymentMethodFpxBank>,
 }
 
@@ -61,18 +61,20 @@ const _: () = {
         type Out = PaymentMethodFpx;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder_type" => Deserialize::begin(&mut self.account_holder_type),
+                "account_holder_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.account_holder_type)
+                }
                 "bank" => Deserialize::begin(&mut self.bank),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { account_holder_type: Some(None), bank: None }
+            Self { account_holder_type: None, bank: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account_holder_type), Some(bank)) =
+            let (account_holder_type, Some(bank)) =
                 (self.account_holder_type.take(), self.bank.take())
             else {
                 return None;

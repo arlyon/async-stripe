@@ -20,10 +20,9 @@ impl std::fmt::Debug for BillingBillResourceInvoicingParentsInvoiceParent {
 }
 #[doc(hidden)]
 pub struct BillingBillResourceInvoicingParentsInvoiceParentBuilder {
-    quote_details:
-        Option<Option<stripe_shared::BillingBillResourceInvoicingParentsInvoiceQuoteParent>>,
+    quote_details: Option<stripe_shared::BillingBillResourceInvoicingParentsInvoiceQuoteParent>,
     subscription_details:
-        Option<Option<stripe_shared::BillingBillResourceInvoicingParentsInvoiceSubscriptionParent>>,
+        Option<stripe_shared::BillingBillResourceInvoicingParentsInvoiceSubscriptionParent>,
     type_: Option<BillingBillResourceInvoicingParentsInvoiceParentType>,
 }
 
@@ -67,19 +66,23 @@ const _: () = {
         type Out = BillingBillResourceInvoicingParentsInvoiceParent;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "quote_details" => Deserialize::begin(&mut self.quote_details),
-                "subscription_details" => Deserialize::begin(&mut self.subscription_details),
+                "quote_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.quote_details)
+                }
+                "subscription_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.subscription_details)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { quote_details: Some(None), subscription_details: Some(None), type_: None }
+            Self { quote_details: None, subscription_details: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(quote_details), Some(subscription_details), Some(type_)) =
+            let (quote_details, subscription_details, Some(type_)) =
                 (self.quote_details.take(), self.subscription_details.take(), self.type_.take())
             else {
                 return None;

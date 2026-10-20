@@ -19,9 +19,8 @@ impl std::fmt::Debug for BillingBillResourceInvoiceItemParentsInvoiceItemParent 
 }
 #[doc(hidden)]
 pub struct BillingBillResourceInvoiceItemParentsInvoiceItemParentBuilder {
-    subscription_details: Option<
+    subscription_details:
         Option<stripe_billing::BillingBillResourceInvoiceItemParentsInvoiceItemSubscriptionParent>,
-    >,
     type_: Option<BillingBillResourceInvoiceItemParentsInvoiceItemParentType>,
 }
 
@@ -66,18 +65,20 @@ const _: () = {
         type Out = BillingBillResourceInvoiceItemParentsInvoiceItemParent;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "subscription_details" => Deserialize::begin(&mut self.subscription_details),
+                "subscription_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.subscription_details)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { subscription_details: Some(None), type_: None }
+            Self { subscription_details: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(subscription_details), Some(type_)) =
+            let (subscription_details, Some(type_)) =
                 (self.subscription_details.take(), self.type_.take())
             else {
                 return None;

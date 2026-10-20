@@ -70,8 +70,8 @@ pub struct DisputeBuilder {
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     network_reason_code: Option<Option<String>>,
-    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
-    payment_method_details: Option<Option<stripe_shared::DisputePaymentMethodDetails>>,
+    payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
+    payment_method_details: Option<stripe_shared::DisputePaymentMethodDetails>,
     reason: Option<String>,
     status: Option<DisputeStatus>,
 }
@@ -128,8 +128,12 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "network_reason_code" => Deserialize::begin(&mut self.network_reason_code),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
+                "payment_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_intent)
+                }
+                "payment_method_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_details,
+                ),
                 "reason" => Deserialize::begin(&mut self.reason),
                 "status" => Deserialize::begin(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
@@ -151,8 +155,8 @@ const _: () = {
                 livemode: None,
                 metadata: None,
                 network_reason_code: Some(None),
-                payment_intent: Some(None),
-                payment_method_details: Some(None),
+                payment_intent: None,
+                payment_method_details: None,
                 reason: None,
                 status: None,
             }
@@ -173,8 +177,8 @@ const _: () = {
                 Some(livemode),
                 Some(metadata),
                 Some(network_reason_code),
-                Some(payment_intent),
-                Some(payment_method_details),
+                payment_intent,
+                payment_method_details,
                 Some(reason),
                 Some(status),
             ) = (

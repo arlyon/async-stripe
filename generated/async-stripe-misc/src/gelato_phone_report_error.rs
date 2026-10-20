@@ -17,7 +17,7 @@ impl std::fmt::Debug for GelatoPhoneReportError {
 }
 #[doc(hidden)]
 pub struct GelatoPhoneReportErrorBuilder {
-    code: Option<Option<GelatoPhoneReportErrorCode>>,
+    code: Option<GelatoPhoneReportErrorCode>,
     reason: Option<Option<String>>,
 }
 
@@ -61,18 +61,18 @@ const _: () = {
         type Out = GelatoPhoneReportError;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "code" => Deserialize::begin(&mut self.code),
+                "code" => stripe_types::miniserde_helpers::begin_nullable(&mut self.code),
                 "reason" => Deserialize::begin(&mut self.reason),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { code: Some(None), reason: Some(None) }
+            Self { code: None, reason: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(code), Some(reason)) = (self.code.take(), self.reason.take()) else {
+            let (code, Some(reason)) = (self.code.take(), self.reason.take()) else {
                 return None;
             };
             Some(Self::Out { code, reason })

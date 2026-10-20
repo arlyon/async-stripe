@@ -69,27 +69,27 @@ impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCa
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBuilder {
     authorization_code: Option<Option<String>>,
-brand: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand>>,
+brand: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand>,
 capture_before: Option<Option<stripe_types::Timestamp>>,
-checks: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecks>>,
+checks: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecks>,
 country: Option<Option<String>>,
 description: Option<Option<String>>,
 exp_month: Option<Option<i64>>,
 exp_year: Option<Option<i64>>,
 fingerprint: Option<Option<String>>,
-funding: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding>>,
+funding: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding>,
 iin: Option<Option<String>>,
-installments: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceInstallments>>,
+installments: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceInstallments>,
 issuer: Option<Option<String>>,
 last4: Option<Option<String>>,
 moto: Option<Option<bool>>,
-network: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork>>,
+network: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork>,
 network_advice_code: Option<Option<String>>,
 network_decline_code: Option<Option<String>>,
-network_token: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceNetworkToken>>,
+network_token: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceNetworkToken>,
 network_transaction_id: Option<Option<String>>,
-three_d_secure: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecure>>,
-wallet: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWallet>>,
+three_d_secure: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecure>,
+wallet: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWallet>,
 
 }
 
@@ -134,27 +134,33 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "authorization_code" => Deserialize::begin(&mut self.authorization_code),
-                "brand" => Deserialize::begin(&mut self.brand),
+                "brand" => stripe_types::miniserde_helpers::begin_nullable(&mut self.brand),
                 "capture_before" => Deserialize::begin(&mut self.capture_before),
-                "checks" => Deserialize::begin(&mut self.checks),
+                "checks" => stripe_types::miniserde_helpers::begin_nullable(&mut self.checks),
                 "country" => Deserialize::begin(&mut self.country),
                 "description" => Deserialize::begin(&mut self.description),
                 "exp_month" => Deserialize::begin(&mut self.exp_month),
                 "exp_year" => Deserialize::begin(&mut self.exp_year),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "funding" => Deserialize::begin(&mut self.funding),
+                "funding" => stripe_types::miniserde_helpers::begin_nullable(&mut self.funding),
                 "iin" => Deserialize::begin(&mut self.iin),
-                "installments" => Deserialize::begin(&mut self.installments),
+                "installments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.installments)
+                }
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "moto" => Deserialize::begin(&mut self.moto),
-                "network" => Deserialize::begin(&mut self.network),
+                "network" => stripe_types::miniserde_helpers::begin_nullable(&mut self.network),
                 "network_advice_code" => Deserialize::begin(&mut self.network_advice_code),
                 "network_decline_code" => Deserialize::begin(&mut self.network_decline_code),
-                "network_token" => Deserialize::begin(&mut self.network_token),
+                "network_token" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.network_token)
+                }
                 "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
-                "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
-                "wallet" => Deserialize::begin(&mut self.wallet),
+                "three_d_secure" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.three_d_secure)
+                }
+                "wallet" => stripe_types::miniserde_helpers::begin_nullable(&mut self.wallet),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -162,54 +168,54 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 authorization_code: Some(None),
-                brand: Some(None),
+                brand: None,
                 capture_before: Some(None),
-                checks: Some(None),
+                checks: None,
                 country: Some(None),
                 description: Some(None),
                 exp_month: Some(None),
                 exp_year: Some(None),
                 fingerprint: Some(None),
-                funding: Some(None),
+                funding: None,
                 iin: Some(None),
-                installments: Some(None),
+                installments: None,
                 issuer: Some(None),
                 last4: Some(None),
                 moto: Some(None),
-                network: Some(None),
+                network: None,
                 network_advice_code: Some(None),
                 network_decline_code: Some(None),
-                network_token: Some(None),
+                network_token: None,
                 network_transaction_id: Some(None),
-                three_d_secure: Some(None),
-                wallet: Some(None),
+                three_d_secure: None,
+                wallet: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(authorization_code),
-                Some(brand),
+                brand,
                 Some(capture_before),
-                Some(checks),
+                checks,
                 Some(country),
                 Some(description),
                 Some(exp_month),
                 Some(exp_year),
                 Some(fingerprint),
-                Some(funding),
+                funding,
                 Some(iin),
-                Some(installments),
+                installments,
                 Some(issuer),
                 Some(last4),
                 Some(moto),
-                Some(network),
+                network,
                 Some(network_advice_code),
                 Some(network_decline_code),
-                Some(network_token),
+                network_token,
                 Some(network_transaction_id),
-                Some(three_d_secure),
-                Some(wallet),
+                three_d_secure,
+                wallet,
             ) = (
                 self.authorization_code.take(),
                 self.brand.take(),

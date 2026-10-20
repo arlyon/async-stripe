@@ -26,11 +26,11 @@ impl std::fmt::Debug for IssuingCardholderIndividual {
 }
 #[doc(hidden)]
 pub struct IssuingCardholderIndividualBuilder {
-    card_issuing: Option<Option<stripe_shared::IssuingCardholderCardIssuing>>,
-    dob: Option<Option<stripe_shared::IssuingCardholderIndividualDob>>,
+    card_issuing: Option<stripe_shared::IssuingCardholderCardIssuing>,
+    dob: Option<stripe_shared::IssuingCardholderIndividualDob>,
     first_name: Option<Option<String>>,
     last_name: Option<Option<String>>,
-    verification: Option<Option<stripe_shared::IssuingCardholderVerification>>,
+    verification: Option<stripe_shared::IssuingCardholderVerification>,
 }
 
 #[allow(
@@ -73,40 +73,37 @@ const _: () = {
         type Out = IssuingCardholderIndividual;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card_issuing" => Deserialize::begin(&mut self.card_issuing),
-                "dob" => Deserialize::begin(&mut self.dob),
+                "card_issuing" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.card_issuing)
+                }
+                "dob" => stripe_types::miniserde_helpers::begin_nullable(&mut self.dob),
                 "first_name" => Deserialize::begin(&mut self.first_name),
                 "last_name" => Deserialize::begin(&mut self.last_name),
-                "verification" => Deserialize::begin(&mut self.verification),
+                "verification" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verification)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                card_issuing: Some(None),
-                dob: Some(None),
+                card_issuing: None,
+                dob: None,
                 first_name: Some(None),
                 last_name: Some(None),
-                verification: Some(None),
+                verification: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(card_issuing),
-                Some(dob),
-                Some(first_name),
-                Some(last_name),
-                Some(verification),
-            ) = (
+            let (card_issuing, dob, Some(first_name), Some(last_name), verification) = (
                 self.card_issuing.take(),
                 self.dob,
                 self.first_name.take(),
                 self.last_name.take(),
                 self.verification.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { card_issuing, dob, first_name, last_name, verification })

@@ -15,9 +15,8 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsAcssDebit {
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsAcssDebitBuilder {
-    mandate_options:
-        Option<Option<stripe_shared::InvoicePaymentMethodOptionsAcssDebitMandateOptions>>,
-    verification_method: Option<Option<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>>,
+    mandate_options: Option<stripe_shared::InvoicePaymentMethodOptionsAcssDebitMandateOptions>,
+    verification_method: Option<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
 #[allow(
@@ -60,18 +59,22 @@ const _: () = {
         type Out = InvoicePaymentMethodOptionsAcssDebit;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "verification_method" => Deserialize::begin(&mut self.verification_method),
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
+                "verification_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verification_method)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { mandate_options: Some(None), verification_method: Some(None) }
+            Self { mandate_options: None, verification_method: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options), Some(verification_method)) =
+            let (mandate_options, verification_method) =
                 (self.mandate_options.take(), self.verification_method.take())
             else {
                 return None;

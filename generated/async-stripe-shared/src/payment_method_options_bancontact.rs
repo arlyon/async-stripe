@@ -24,7 +24,7 @@ impl std::fmt::Debug for PaymentMethodOptionsBancontact {
 #[doc(hidden)]
 pub struct PaymentMethodOptionsBancontactBuilder {
     preferred_language: Option<PaymentMethodOptionsBancontactPreferredLanguage>,
-    setup_future_usage: Option<Option<PaymentMethodOptionsBancontactSetupFutureUsage>>,
+    setup_future_usage: Option<PaymentMethodOptionsBancontactSetupFutureUsage>,
 }
 
 #[allow(
@@ -68,17 +68,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "preferred_language" => Deserialize::begin(&mut self.preferred_language),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { preferred_language: None, setup_future_usage: Some(None) }
+            Self { preferred_language: None, setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(preferred_language), Some(setup_future_usage)) =
+            let (Some(preferred_language), setup_future_usage) =
                 (self.preferred_language.take(), self.setup_future_usage.take())
             else {
                 return None;

@@ -26,7 +26,7 @@ pub struct PaymentLinksResourceSubscriptionDataBuilder {
     invoice_settings: Option<stripe_shared::PaymentLinksResourceSubscriptionDataInvoiceSettings>,
     metadata: Option<std::collections::HashMap<String, String>>,
     trial_period_days: Option<Option<u32>>,
-    trial_settings: Option<Option<stripe_shared::SubscriptionsTrialsResourceTrialSettings>>,
+    trial_settings: Option<stripe_shared::SubscriptionsTrialsResourceTrialSettings>,
 }
 
 #[allow(
@@ -73,7 +73,9 @@ const _: () = {
                 "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "trial_period_days" => Deserialize::begin(&mut self.trial_period_days),
-                "trial_settings" => Deserialize::begin(&mut self.trial_settings),
+                "trial_settings" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.trial_settings)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -84,7 +86,7 @@ const _: () = {
                 invoice_settings: None,
                 metadata: None,
                 trial_period_days: Some(None),
-                trial_settings: Some(None),
+                trial_settings: None,
             }
         }
 
@@ -94,7 +96,7 @@ const _: () = {
                 Some(invoice_settings),
                 Some(metadata),
                 Some(trial_period_days),
-                Some(trial_settings),
+                trial_settings,
             ) = (
                 self.description.take(),
                 self.invoice_settings.take(),

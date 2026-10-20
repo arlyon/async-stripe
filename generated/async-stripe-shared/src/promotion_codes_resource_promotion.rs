@@ -17,7 +17,7 @@ impl std::fmt::Debug for PromotionCodesResourcePromotion {
 }
 #[doc(hidden)]
 pub struct PromotionCodesResourcePromotionBuilder {
-    coupon: Option<Option<stripe_types::Expandable<stripe_shared::Coupon>>>,
+    coupon: Option<stripe_types::Expandable<stripe_shared::Coupon>>,
     type_: Option<PromotionCodesResourcePromotionType>,
 }
 
@@ -61,18 +61,18 @@ const _: () = {
         type Out = PromotionCodesResourcePromotion;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "coupon" => Deserialize::begin(&mut self.coupon),
+                "coupon" => stripe_types::miniserde_helpers::begin_nullable(&mut self.coupon),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { coupon: Some(None), type_: None }
+            Self { coupon: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(coupon), Some(type_)) = (self.coupon.take(), self.type_.take()) else {
+            let (coupon, Some(type_)) = (self.coupon.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { coupon, type_ })

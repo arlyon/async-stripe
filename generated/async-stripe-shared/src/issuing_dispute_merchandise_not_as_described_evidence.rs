@@ -24,11 +24,11 @@ impl std::fmt::Debug for IssuingDisputeMerchandiseNotAsDescribedEvidence {
 }
 #[doc(hidden)]
 pub struct IssuingDisputeMerchandiseNotAsDescribedEvidenceBuilder {
-    additional_documentation: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    additional_documentation: Option<stripe_types::Expandable<stripe_shared::File>>,
     explanation: Option<Option<String>>,
     received_at: Option<Option<stripe_types::Timestamp>>,
     return_description: Option<Option<String>>,
-    return_status: Option<Option<IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus>>,
+    return_status: Option<IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus>,
     returned_at: Option<Option<stripe_types::Timestamp>>,
 }
 
@@ -72,13 +72,15 @@ const _: () = {
         type Out = IssuingDisputeMerchandiseNotAsDescribedEvidence;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "additional_documentation" => {
-                    Deserialize::begin(&mut self.additional_documentation)
-                }
+                "additional_documentation" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.additional_documentation,
+                ),
                 "explanation" => Deserialize::begin(&mut self.explanation),
                 "received_at" => Deserialize::begin(&mut self.received_at),
                 "return_description" => Deserialize::begin(&mut self.return_description),
-                "return_status" => Deserialize::begin(&mut self.return_status),
+                "return_status" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.return_status)
+                }
                 "returned_at" => Deserialize::begin(&mut self.returned_at),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -86,22 +88,22 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                additional_documentation: Some(None),
+                additional_documentation: None,
                 explanation: Some(None),
                 received_at: Some(None),
                 return_description: Some(None),
-                return_status: Some(None),
+                return_status: None,
                 returned_at: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(additional_documentation),
+                additional_documentation,
                 Some(explanation),
                 Some(received_at),
                 Some(return_description),
-                Some(return_status),
+                return_status,
                 Some(returned_at),
             ) = (
                 self.additional_documentation.take(),

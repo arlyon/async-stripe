@@ -22,7 +22,7 @@ impl std::fmt::Debug for BalanceSettingsResourceSettlementTiming {
 pub struct BalanceSettingsResourceSettlementTimingBuilder {
     delay_days: Option<u32>,
     delay_days_override: Option<Option<u32>>,
-    start_of_day: Option<Option<stripe_core::BalanceSettingsResourceStartOfDay>>,
+    start_of_day: Option<stripe_core::BalanceSettingsResourceStartOfDay>,
 }
 
 #[allow(
@@ -67,17 +67,19 @@ const _: () = {
             Ok(match k {
                 "delay_days" => Deserialize::begin(&mut self.delay_days),
                 "delay_days_override" => Deserialize::begin(&mut self.delay_days_override),
-                "start_of_day" => Deserialize::begin(&mut self.start_of_day),
+                "start_of_day" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.start_of_day)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { delay_days: None, delay_days_override: Some(None), start_of_day: Some(None) }
+            Self { delay_days: None, delay_days_override: Some(None), start_of_day: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(delay_days), Some(delay_days_override), Some(start_of_day)) =
+            let (Some(delay_days), Some(delay_days_override), start_of_day) =
                 (self.delay_days, self.delay_days_override, self.start_of_day.take())
             else {
                 return None;

@@ -17,7 +17,7 @@ impl std::fmt::Debug for TerminalReaderReaderResourcePrintContent {
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourcePrintContentBuilder {
-    image: Option<Option<stripe_terminal::TerminalReaderReaderResourceFileMetadata>>,
+    image: Option<stripe_terminal::TerminalReaderReaderResourceFileMetadata>,
     type_: Option<TerminalReaderReaderResourcePrintContentType>,
 }
 
@@ -61,18 +61,18 @@ const _: () = {
         type Out = TerminalReaderReaderResourcePrintContent;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "image" => Deserialize::begin(&mut self.image),
+                "image" => stripe_types::miniserde_helpers::begin_nullable(&mut self.image),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { image: Some(None), type_: None }
+            Self { image: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(image), Some(type_)) = (self.image.take(), self.type_.take()) else {
+            let (image, Some(type_)) = (self.image.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { image, type_ })

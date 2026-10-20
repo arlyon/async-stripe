@@ -19,8 +19,8 @@ impl std::fmt::Debug for PaymentMethodCardGeneratedCard {
 #[doc(hidden)]
 pub struct PaymentMethodCardGeneratedCardBuilder {
     charge: Option<Option<String>>,
-    payment_method_details: Option<Option<stripe_shared::CardGeneratedFromPaymentMethodDetails>>,
-    setup_attempt: Option<Option<stripe_types::Expandable<stripe_shared::SetupAttempt>>>,
+    payment_method_details: Option<stripe_shared::CardGeneratedFromPaymentMethodDetails>,
+    setup_attempt: Option<stripe_types::Expandable<stripe_shared::SetupAttempt>>,
 }
 
 #[allow(
@@ -64,22 +64,22 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "charge" => Deserialize::begin(&mut self.charge),
-                "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
-                "setup_attempt" => Deserialize::begin(&mut self.setup_attempt),
+                "payment_method_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_details,
+                ),
+                "setup_attempt" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_attempt)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                charge: Some(None),
-                payment_method_details: Some(None),
-                setup_attempt: Some(None),
-            }
+            Self { charge: Some(None), payment_method_details: None, setup_attempt: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(charge), Some(payment_method_details), Some(setup_attempt)) =
+            let (Some(charge), payment_method_details, setup_attempt) =
                 (self.charge.take(), self.payment_method_details.take(), self.setup_attempt.take())
             else {
                 return None;

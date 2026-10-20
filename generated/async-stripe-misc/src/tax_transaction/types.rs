@@ -62,9 +62,9 @@ pub struct TaxTransactionBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     posted_at: Option<stripe_types::Timestamp>,
     reference: Option<String>,
-    reversal: Option<Option<stripe_misc::TaxProductResourceTaxTransactionResourceReversal>>,
-    ship_from_details: Option<Option<stripe_misc::TaxProductResourceShipFromDetails>>,
-    shipping_cost: Option<Option<stripe_misc::TaxProductResourceTaxTransactionShippingCost>>,
+    reversal: Option<stripe_misc::TaxProductResourceTaxTransactionResourceReversal>,
+    ship_from_details: Option<stripe_misc::TaxProductResourceShipFromDetails>,
+    shipping_cost: Option<stripe_misc::TaxProductResourceTaxTransactionShippingCost>,
     tax_date: Option<stripe_types::Timestamp>,
     type_: Option<TaxTransactionType>,
 }
@@ -119,9 +119,13 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "posted_at" => Deserialize::begin(&mut self.posted_at),
                 "reference" => Deserialize::begin(&mut self.reference),
-                "reversal" => Deserialize::begin(&mut self.reversal),
-                "ship_from_details" => Deserialize::begin(&mut self.ship_from_details),
-                "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
+                "reversal" => stripe_types::miniserde_helpers::begin_nullable(&mut self.reversal),
+                "ship_from_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.ship_from_details)
+                }
+                "shipping_cost" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_cost)
+                }
                 "tax_date" => Deserialize::begin(&mut self.tax_date),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -140,9 +144,9 @@ const _: () = {
                 metadata: Some(None),
                 posted_at: None,
                 reference: None,
-                reversal: Some(None),
-                ship_from_details: Some(None),
-                shipping_cost: Some(None),
+                reversal: None,
+                ship_from_details: None,
+                shipping_cost: None,
                 tax_date: None,
                 type_: None,
             }
@@ -160,9 +164,9 @@ const _: () = {
                 Some(metadata),
                 Some(posted_at),
                 Some(reference),
-                Some(reversal),
-                Some(ship_from_details),
-                Some(shipping_cost),
+                reversal,
+                ship_from_details,
+                shipping_cost,
                 Some(tax_date),
                 Some(type_),
             ) = (

@@ -39,16 +39,16 @@ impl std::fmt::Debug for SourceTransaction {
 }
 #[doc(hidden)]
 pub struct SourceTransactionBuilder {
-    ach_credit_transfer: Option<Option<stripe_shared::SourceTransactionAchCreditTransferData>>,
+    ach_credit_transfer: Option<stripe_shared::SourceTransactionAchCreditTransferData>,
     amount: Option<i64>,
-    chf_credit_transfer: Option<Option<stripe_shared::SourceTransactionChfCreditTransferData>>,
+    chf_credit_transfer: Option<stripe_shared::SourceTransactionChfCreditTransferData>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
-    gbp_credit_transfer: Option<Option<stripe_shared::SourceTransactionGbpCreditTransferData>>,
+    gbp_credit_transfer: Option<stripe_shared::SourceTransactionGbpCreditTransferData>,
     id: Option<stripe_shared::SourceTransactionId>,
     livemode: Option<bool>,
-    paper_check: Option<Option<stripe_shared::SourceTransactionPaperCheckData>>,
-    sepa_credit_transfer: Option<Option<stripe_shared::SourceTransactionSepaCreditTransferData>>,
+    paper_check: Option<stripe_shared::SourceTransactionPaperCheckData>,
+    sepa_credit_transfer: Option<stripe_shared::SourceTransactionSepaCreditTransferData>,
     source: Option<String>,
     status: Option<String>,
     type_: Option<SourceTransactionType>,
@@ -94,16 +94,26 @@ const _: () = {
         type Out = SourceTransaction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "ach_credit_transfer" => Deserialize::begin(&mut self.ach_credit_transfer),
+                "ach_credit_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.ach_credit_transfer)
+                }
                 "amount" => Deserialize::begin(&mut self.amount),
-                "chf_credit_transfer" => Deserialize::begin(&mut self.chf_credit_transfer),
+                "chf_credit_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.chf_credit_transfer)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
-                "gbp_credit_transfer" => Deserialize::begin(&mut self.gbp_credit_transfer),
+                "gbp_credit_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.gbp_credit_transfer)
+                }
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "paper_check" => Deserialize::begin(&mut self.paper_check),
-                "sepa_credit_transfer" => Deserialize::begin(&mut self.sepa_credit_transfer),
+                "paper_check" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.paper_check)
+                }
+                "sepa_credit_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.sepa_credit_transfer)
+                }
                 "source" => Deserialize::begin(&mut self.source),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
@@ -113,16 +123,16 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                ach_credit_transfer: Some(None),
+                ach_credit_transfer: None,
                 amount: None,
-                chf_credit_transfer: Some(None),
+                chf_credit_transfer: None,
                 created: None,
                 currency: None,
-                gbp_credit_transfer: Some(None),
+                gbp_credit_transfer: None,
                 id: None,
                 livemode: None,
-                paper_check: Some(None),
-                sepa_credit_transfer: Some(None),
+                paper_check: None,
+                sepa_credit_transfer: None,
                 source: None,
                 status: None,
                 type_: None,
@@ -131,16 +141,16 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(ach_credit_transfer),
+                ach_credit_transfer,
                 Some(amount),
-                Some(chf_credit_transfer),
+                chf_credit_transfer,
                 Some(created),
                 Some(currency),
-                Some(gbp_credit_transfer),
+                gbp_credit_transfer,
                 Some(id),
                 Some(livemode),
-                Some(paper_check),
-                Some(sepa_credit_transfer),
+                paper_check,
+                sepa_credit_transfer,
                 Some(source),
                 Some(status),
                 Some(type_),

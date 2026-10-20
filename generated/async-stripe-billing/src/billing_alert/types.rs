@@ -29,9 +29,9 @@ pub struct BillingAlertBuilder {
     alert_type: Option<stripe_billing::BillingAlertAlertType>,
     id: Option<stripe_billing::BillingAlertId>,
     livemode: Option<bool>,
-    status: Option<Option<BillingAlertStatus>>,
+    status: Option<BillingAlertStatus>,
     title: Option<String>,
-    usage_threshold: Option<Option<stripe_billing::ThresholdsResourceUsageThresholdConfig>>,
+    usage_threshold: Option<stripe_billing::ThresholdsResourceUsageThresholdConfig>,
 }
 
 #[allow(
@@ -77,9 +77,11 @@ const _: () = {
                 "alert_type" => Deserialize::begin(&mut self.alert_type),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "status" => Deserialize::begin(&mut self.status),
+                "status" => stripe_types::miniserde_helpers::begin_nullable(&mut self.status),
                 "title" => Deserialize::begin(&mut self.title),
-                "usage_threshold" => Deserialize::begin(&mut self.usage_threshold),
+                "usage_threshold" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.usage_threshold)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -89,29 +91,21 @@ const _: () = {
                 alert_type: None,
                 id: None,
                 livemode: None,
-                status: Some(None),
+                status: None,
                 title: None,
-                usage_threshold: Some(None),
+                usage_threshold: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(alert_type),
-                Some(id),
-                Some(livemode),
-                Some(status),
-                Some(title),
-                Some(usage_threshold),
-            ) = (
+            let (Some(alert_type), Some(id), Some(livemode), status, Some(title), usage_threshold) = (
                 self.alert_type.take(),
                 self.id.take(),
                 self.livemode,
                 self.status.take(),
                 self.title.take(),
                 self.usage_threshold.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { alert_type, id, livemode, status, title, usage_threshold })

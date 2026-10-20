@@ -60,7 +60,7 @@ pub struct BillingCreditGrantBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     name: Option<Option<String>>,
     priority: Option<Option<i64>>,
-    test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
+    test_clock: Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>,
     updated: Option<stripe_types::Timestamp>,
     voided_at: Option<Option<stripe_types::Timestamp>>,
 }
@@ -118,7 +118,9 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "name" => Deserialize::begin(&mut self.name),
                 "priority" => Deserialize::begin(&mut self.priority),
-                "test_clock" => Deserialize::begin(&mut self.test_clock),
+                "test_clock" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.test_clock)
+                }
                 "updated" => Deserialize::begin(&mut self.updated),
                 "voided_at" => Deserialize::begin(&mut self.voided_at),
                 _ => <dyn Visitor>::ignore(),
@@ -140,7 +142,7 @@ const _: () = {
                 metadata: None,
                 name: Some(None),
                 priority: Some(None),
-                test_clock: Some(None),
+                test_clock: None,
                 updated: None,
                 voided_at: Some(None),
             }
@@ -161,7 +163,7 @@ const _: () = {
                 Some(metadata),
                 Some(name),
                 Some(priority),
-                Some(test_clock),
+                test_clock,
                 Some(updated),
                 Some(voided_at),
             ) = (

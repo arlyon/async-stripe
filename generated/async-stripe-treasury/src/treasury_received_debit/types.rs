@@ -51,17 +51,17 @@ pub struct TreasuryReceivedDebitBuilder {
 created: Option<stripe_types::Timestamp>,
 currency: Option<stripe_types::Currency>,
 description: Option<String>,
-failure_code: Option<Option<TreasuryReceivedDebitFailureCode>>,
+failure_code: Option<TreasuryReceivedDebitFailureCode>,
 financial_account: Option<Option<String>>,
 hosted_regulatory_receipt_url: Option<Option<String>>,
 id: Option<stripe_treasury::TreasuryReceivedDebitId>,
-initiating_payment_method_details: Option<Option<stripe_treasury::TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails>>,
+initiating_payment_method_details: Option<stripe_treasury::TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails>,
 linked_flows: Option<stripe_treasury::TreasuryReceivedDebitsResourceLinkedFlows>,
 livemode: Option<bool>,
 network: Option<TreasuryReceivedDebitNetwork>,
-reversal_details: Option<Option<stripe_treasury::TreasuryReceivedDebitsResourceReversalDetails>>,
+reversal_details: Option<stripe_treasury::TreasuryReceivedDebitsResourceReversalDetails>,
 status: Option<stripe_treasury::TreasuryReceivedDebitStatus>,
-transaction: Option<Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>>,
+transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 
 }
 
@@ -109,21 +109,29 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "description" => Deserialize::begin(&mut self.description),
-                "failure_code" => Deserialize::begin(&mut self.failure_code),
+                "failure_code" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.failure_code)
+                }
                 "financial_account" => Deserialize::begin(&mut self.financial_account),
                 "hosted_regulatory_receipt_url" => {
                     Deserialize::begin(&mut self.hosted_regulatory_receipt_url)
                 }
                 "id" => Deserialize::begin(&mut self.id),
                 "initiating_payment_method_details" => {
-                    Deserialize::begin(&mut self.initiating_payment_method_details)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.initiating_payment_method_details,
+                    )
                 }
                 "linked_flows" => Deserialize::begin(&mut self.linked_flows),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "network" => Deserialize::begin(&mut self.network),
-                "reversal_details" => Deserialize::begin(&mut self.reversal_details),
+                "reversal_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.reversal_details)
+                }
                 "status" => Deserialize::begin(&mut self.status),
-                "transaction" => Deserialize::begin(&mut self.transaction),
+                "transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transaction)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -134,17 +142,17 @@ const _: () = {
                 created: None,
                 currency: None,
                 description: None,
-                failure_code: Some(None),
+                failure_code: None,
                 financial_account: Some(None),
                 hosted_regulatory_receipt_url: Some(None),
                 id: None,
-                initiating_payment_method_details: Some(None),
+                initiating_payment_method_details: None,
                 linked_flows: None,
                 livemode: None,
                 network: None,
-                reversal_details: Some(None),
+                reversal_details: None,
                 status: None,
-                transaction: Some(None),
+                transaction: None,
             }
         }
 
@@ -154,17 +162,17 @@ const _: () = {
                 Some(created),
                 Some(currency),
                 Some(description),
-                Some(failure_code),
+                failure_code,
                 Some(financial_account),
                 Some(hosted_regulatory_receipt_url),
                 Some(id),
-                Some(initiating_payment_method_details),
+                initiating_payment_method_details,
                 Some(linked_flows),
                 Some(livemode),
                 Some(network),
-                Some(reversal_details),
+                reversal_details,
                 Some(status),
-                Some(transaction),
+                transaction,
             ) = (
                 self.amount,
                 self.created,

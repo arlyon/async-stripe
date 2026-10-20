@@ -4,6 +4,7 @@ use indoc::{formatdoc, writedoc};
 
 use crate::components::Components;
 use crate::rust_object::{EnumOfObjects, StructField};
+use crate::rust_type::{Container, PathToType, RustType};
 use crate::templates::ObjectWriter;
 use crate::types::RustIdent;
 
@@ -160,7 +161,7 @@ impl ObjectWriter<'_> {
         let mut builder_inner = String::new();
         for field in fields {
             let f_name = &field.variable_name();
-            let printable = self.components.construct_printable_type(&field.rust_type);
+            let printable = self.components.construct_printable_type(slot(&field.rust_type).typ);
             let _ = writeln!(builder_inner, "{f_name}: Option<{printable}>,");
         }
 
@@ -204,15 +205,25 @@ fn miniserde_struct_inner(
     for field in fields {
         let f_name = &field.variable_name();
         let wire_name = field.wire_name();
+        let slot = slot(&field.rust_type);
 
+        let begin = if slot.nullable {
+            "stripe_types::miniserde_helpers::begin_nullable"
+        } else {
+            "Deserialize::begin"
+        };
         let _ = write!(
             key_inner,
             r#"
-            "{wire_name}" => Deserialize::begin(&mut self.{f_name}),"#
+            "{wire_name}" => {begin}(&mut self.{f_name}),"#
         );
         let is_copy = field.rust_type.is_copy(components);
 
-        let _ = writeln!(take_out_left, "Some({f_name}),");
+        if slot.nullable {
+            let _ = writeln!(take_out_left, "{f_name},");
+        } else {
+            let _ = writeln!(take_out_left, "Some({f_name}),");
+        }
         // For types which implement `Copy`, we don't need to call `.take()`. Does not affect
         // behavior, but helps a bit according to `llvm-lines` and binary size, so may as well since
         // unnecessary `take()` is not optimized out
@@ -221,7 +232,8 @@ fn miniserde_struct_inner(
 
         // NB: matches miniserde::Deserialize::default(), but generates smaller artifacts. `None` vs `Some(None)`
         // is how missing required values are detected
-        let builder_default = if field.rust_type.is_option() { "Some(None)" } else { "None" };
+        let builder_default =
+            if field.rust_type.is_option() && !slot.nullable { "Some(None)" } else { "None" };
         let _ = writeln!(builder_new_inner, "{f_name}: {builder_default},");
     }
 
@@ -290,5 +302,36 @@ fn miniserde_struct_inner(
         }}
     }}
     "#
+    }
+}
+
+/// How a builder stores a field.
+struct Slot<'a> {
+    /// The builder stores `Option<typ>`.
+    typ: &'a RustType,
+    /// The field is optional, and the builder starts it with `begin_nullable`. That skips
+    /// miniserde's visitor for `Option<T>`, which is compiled again for every `T`.
+    nullable: bool,
+}
+
+fn slot(typ: &RustType) -> Slot<'_> {
+    match typ {
+        RustType::Container(Container::Option(inner)) if is_string_or_object(inner) => {
+            Slot { typ: inner, nullable: true }
+        }
+        _ => Slot { typ, nullable: false },
+    }
+}
+
+/// Whether the type is generated, so its visitor accepts only strings and objects.
+fn is_string_or_object(typ: &RustType) -> bool {
+    match typ {
+        RustType::Object(..) => true,
+        RustType::Path { path, is_ref: false } => matches!(
+            path,
+            PathToType::Component(_) | PathToType::Deduplicated { .. } | PathToType::Shared(_)
+        ),
+        RustType::Container(Container::Expandable(_)) => true,
+        _ => false,
     }
 }

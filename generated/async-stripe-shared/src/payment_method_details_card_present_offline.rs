@@ -18,7 +18,7 @@ impl std::fmt::Debug for PaymentMethodDetailsCardPresentOffline {
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCardPresentOfflineBuilder {
     stored_at: Option<Option<stripe_types::Timestamp>>,
-    type_: Option<Option<PaymentMethodDetailsCardPresentOfflineType>>,
+    type_: Option<PaymentMethodDetailsCardPresentOfflineType>,
 }
 
 #[allow(
@@ -62,17 +62,17 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "stored_at" => Deserialize::begin(&mut self.stored_at),
-                "type" => Deserialize::begin(&mut self.type_),
+                "type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { stored_at: Some(None), type_: Some(None) }
+            Self { stored_at: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(stored_at), Some(type_)) = (self.stored_at, self.type_.take()) else {
+            let (Some(stored_at), type_) = (self.stored_at, self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { stored_at, type_ })

@@ -43,23 +43,20 @@ impl std::fmt::Debug for TerminalReaderReaderResourceReaderAction {
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceReaderActionBuilder {
     api_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
-    collect_inputs:
-        Option<Option<stripe_terminal::TerminalReaderReaderResourceCollectInputsAction>>,
+    collect_inputs: Option<stripe_terminal::TerminalReaderReaderResourceCollectInputsAction>,
     collect_payment_method:
-        Option<Option<stripe_terminal::TerminalReaderReaderResourceCollectPaymentMethodAction>>,
+        Option<stripe_terminal::TerminalReaderReaderResourceCollectPaymentMethodAction>,
     confirm_payment_intent:
-        Option<Option<stripe_terminal::TerminalReaderReaderResourceConfirmPaymentIntentAction>>,
+        Option<stripe_terminal::TerminalReaderReaderResourceConfirmPaymentIntentAction>,
     failure_code: Option<Option<String>>,
     failure_message: Option<Option<String>>,
-    print_content: Option<Option<stripe_terminal::TerminalReaderReaderResourcePrintContent>>,
+    print_content: Option<stripe_terminal::TerminalReaderReaderResourcePrintContent>,
     process_payment_intent:
-        Option<Option<stripe_terminal::TerminalReaderReaderResourceProcessPaymentIntentAction>>,
+        Option<stripe_terminal::TerminalReaderReaderResourceProcessPaymentIntentAction>,
     process_setup_intent:
-        Option<Option<stripe_terminal::TerminalReaderReaderResourceProcessSetupIntentAction>>,
-    refund_payment:
-        Option<Option<stripe_terminal::TerminalReaderReaderResourceRefundPaymentAction>>,
-    set_reader_display:
-        Option<Option<stripe_terminal::TerminalReaderReaderResourceSetReaderDisplayAction>>,
+        Option<stripe_terminal::TerminalReaderReaderResourceProcessSetupIntentAction>,
+    refund_payment: Option<stripe_terminal::TerminalReaderReaderResourceRefundPaymentAction>,
+    set_reader_display: Option<stripe_terminal::TerminalReaderReaderResourceSetReaderDisplayAction>,
     status: Option<TerminalReaderReaderResourceReaderActionStatus>,
     type_: Option<TerminalReaderReaderResourceReaderActionType>,
 }
@@ -105,16 +102,32 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "api_error" => Deserialize::begin(&mut self.api_error),
-                "collect_inputs" => Deserialize::begin(&mut self.collect_inputs),
-                "collect_payment_method" => Deserialize::begin(&mut self.collect_payment_method),
-                "confirm_payment_intent" => Deserialize::begin(&mut self.confirm_payment_intent),
+                "collect_inputs" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.collect_inputs)
+                }
+                "collect_payment_method" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.collect_payment_method,
+                ),
+                "confirm_payment_intent" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.confirm_payment_intent,
+                ),
                 "failure_code" => Deserialize::begin(&mut self.failure_code),
                 "failure_message" => Deserialize::begin(&mut self.failure_message),
-                "print_content" => Deserialize::begin(&mut self.print_content),
-                "process_payment_intent" => Deserialize::begin(&mut self.process_payment_intent),
-                "process_setup_intent" => Deserialize::begin(&mut self.process_setup_intent),
-                "refund_payment" => Deserialize::begin(&mut self.refund_payment),
-                "set_reader_display" => Deserialize::begin(&mut self.set_reader_display),
+                "print_content" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.print_content)
+                }
+                "process_payment_intent" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.process_payment_intent,
+                ),
+                "process_setup_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.process_setup_intent)
+                }
+                "refund_payment" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.refund_payment)
+                }
+                "set_reader_display" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.set_reader_display)
+                }
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -124,16 +137,16 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 api_error: Some(None),
-                collect_inputs: Some(None),
-                collect_payment_method: Some(None),
-                confirm_payment_intent: Some(None),
+                collect_inputs: None,
+                collect_payment_method: None,
+                confirm_payment_intent: None,
                 failure_code: Some(None),
                 failure_message: Some(None),
-                print_content: Some(None),
-                process_payment_intent: Some(None),
-                process_setup_intent: Some(None),
-                refund_payment: Some(None),
-                set_reader_display: Some(None),
+                print_content: None,
+                process_payment_intent: None,
+                process_setup_intent: None,
+                refund_payment: None,
+                set_reader_display: None,
                 status: None,
                 type_: None,
             }
@@ -142,16 +155,16 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(api_error),
-                Some(collect_inputs),
-                Some(collect_payment_method),
-                Some(confirm_payment_intent),
+                collect_inputs,
+                collect_payment_method,
+                confirm_payment_intent,
                 Some(failure_code),
                 Some(failure_message),
-                Some(print_content),
-                Some(process_payment_intent),
-                Some(process_setup_intent),
-                Some(refund_payment),
-                Some(set_reader_display),
+                print_content,
+                process_payment_intent,
+                process_setup_intent,
+                refund_payment,
+                set_reader_display,
                 Some(status),
                 Some(type_),
             ) = (

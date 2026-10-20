@@ -48,15 +48,14 @@ pub struct ApplicationFeeBuilder {
     amount: Option<i64>,
     amount_refunded: Option<i64>,
     application: Option<stripe_types::Expandable<stripe_shared::Application>>,
-    balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
-    fee_source: Option<Option<stripe_shared::PlatformEarningFeeSource>>,
+    fee_source: Option<stripe_shared::PlatformEarningFeeSource>,
     id: Option<stripe_shared::ApplicationFeeId>,
     livemode: Option<bool>,
-    originating_transaction: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
+    originating_transaction: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     refunded: Option<bool>,
     refunds: Option<stripe_types::List<stripe_shared::ApplicationFeeRefund>>,
 }
@@ -105,14 +104,20 @@ const _: () = {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "amount_refunded" => Deserialize::begin(&mut self.amount_refunded),
                 "application" => Deserialize::begin(&mut self.application),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "balance_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.balance_transaction)
+                }
                 "charge" => Deserialize::begin(&mut self.charge),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
-                "fee_source" => Deserialize::begin(&mut self.fee_source),
+                "fee_source" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.fee_source)
+                }
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "originating_transaction" => Deserialize::begin(&mut self.originating_transaction),
+                "originating_transaction" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.originating_transaction,
+                ),
                 "refunded" => Deserialize::begin(&mut self.refunded),
                 "refunds" => Deserialize::begin(&mut self.refunds),
                 _ => <dyn Visitor>::ignore(),
@@ -125,14 +130,14 @@ const _: () = {
                 amount: None,
                 amount_refunded: None,
                 application: None,
-                balance_transaction: Some(None),
+                balance_transaction: None,
                 charge: None,
                 created: None,
                 currency: None,
-                fee_source: Some(None),
+                fee_source: None,
                 id: None,
                 livemode: None,
-                originating_transaction: Some(None),
+                originating_transaction: None,
                 refunded: None,
                 refunds: None,
             }
@@ -144,14 +149,14 @@ const _: () = {
                 Some(amount),
                 Some(amount_refunded),
                 Some(application),
-                Some(balance_transaction),
+                balance_transaction,
                 Some(charge),
                 Some(created),
                 Some(currency),
-                Some(fee_source),
+                fee_source,
                 Some(id),
                 Some(livemode),
-                Some(originating_transaction),
+                originating_transaction,
                 Some(refunded),
                 Some(refunds),
             ) = (

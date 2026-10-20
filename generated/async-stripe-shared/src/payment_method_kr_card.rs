@@ -16,7 +16,7 @@ impl std::fmt::Debug for PaymentMethodKrCard {
 }
 #[doc(hidden)]
 pub struct PaymentMethodKrCardBuilder {
-    brand: Option<Option<PaymentMethodKrCardBrand>>,
+    brand: Option<PaymentMethodKrCardBrand>,
     last4: Option<Option<String>>,
 }
 
@@ -60,18 +60,18 @@ const _: () = {
         type Out = PaymentMethodKrCard;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "brand" => Deserialize::begin(&mut self.brand),
+                "brand" => stripe_types::miniserde_helpers::begin_nullable(&mut self.brand),
                 "last4" => Deserialize::begin(&mut self.last4),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { brand: Some(None), last4: Some(None) }
+            Self { brand: None, last4: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(brand), Some(last4)) = (self.brand.take(), self.last4.take()) else {
+            let (brand, Some(last4)) = (self.brand.take(), self.last4.take()) else {
                 return None;
             };
             Some(Self::Out { brand, last4 })

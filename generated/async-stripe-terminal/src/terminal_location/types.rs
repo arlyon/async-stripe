@@ -38,8 +38,8 @@ impl std::fmt::Debug for TerminalLocation {
 #[doc(hidden)]
 pub struct TerminalLocationBuilder {
     address: Option<stripe_shared::AddressApiResourceTerminal>,
-    address_kana: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
-    address_kanji: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
+    address_kana: Option<stripe_shared::LegalEntityJapanAddress>,
+    address_kanji: Option<stripe_shared::LegalEntityJapanAddress>,
     configuration_overrides: Option<Option<String>>,
     display_name: Option<String>,
     display_name_kana: Option<Option<String>>,
@@ -91,8 +91,12 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "address" => Deserialize::begin(&mut self.address),
-                "address_kana" => Deserialize::begin(&mut self.address_kana),
-                "address_kanji" => Deserialize::begin(&mut self.address_kanji),
+                "address_kana" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.address_kana)
+                }
+                "address_kanji" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.address_kanji)
+                }
                 "configuration_overrides" => Deserialize::begin(&mut self.configuration_overrides),
                 "display_name" => Deserialize::begin(&mut self.display_name),
                 "display_name_kana" => Deserialize::begin(&mut self.display_name_kana),
@@ -108,8 +112,8 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 address: None,
-                address_kana: Some(None),
-                address_kanji: Some(None),
+                address_kana: None,
+                address_kanji: None,
                 configuration_overrides: Some(None),
                 display_name: None,
                 display_name_kana: Some(None),
@@ -124,8 +128,8 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(address),
-                Some(address_kana),
-                Some(address_kanji),
+                address_kana,
+                address_kanji,
                 Some(configuration_overrides),
                 Some(display_name),
                 Some(display_name_kana),

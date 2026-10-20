@@ -27,11 +27,11 @@ impl std::fmt::Debug for GelatoIdNumberReport {
 }
 #[doc(hidden)]
 pub struct GelatoIdNumberReportBuilder {
-    dob: Option<Option<stripe_misc::GelatoDataIdNumberReportDate>>,
-    error: Option<Option<stripe_misc::GelatoIdNumberReportError>>,
+    dob: Option<stripe_misc::GelatoDataIdNumberReportDate>,
+    error: Option<stripe_misc::GelatoIdNumberReportError>,
     first_name: Option<Option<String>>,
     id_number: Option<Option<String>>,
-    id_number_type: Option<Option<GelatoIdNumberReportIdNumberType>>,
+    id_number_type: Option<GelatoIdNumberReportIdNumberType>,
     last_name: Option<Option<String>>,
     status: Option<GelatoIdNumberReportStatus>,
 }
@@ -76,11 +76,13 @@ const _: () = {
         type Out = GelatoIdNumberReport;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "dob" => Deserialize::begin(&mut self.dob),
-                "error" => Deserialize::begin(&mut self.error),
+                "dob" => stripe_types::miniserde_helpers::begin_nullable(&mut self.dob),
+                "error" => stripe_types::miniserde_helpers::begin_nullable(&mut self.error),
                 "first_name" => Deserialize::begin(&mut self.first_name),
                 "id_number" => Deserialize::begin(&mut self.id_number),
-                "id_number_type" => Deserialize::begin(&mut self.id_number_type),
+                "id_number_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.id_number_type)
+                }
                 "last_name" => Deserialize::begin(&mut self.last_name),
                 "status" => Deserialize::begin(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
@@ -89,11 +91,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                dob: Some(None),
-                error: Some(None),
+                dob: None,
+                error: None,
                 first_name: Some(None),
                 id_number: Some(None),
-                id_number_type: Some(None),
+                id_number_type: None,
                 last_name: Some(None),
                 status: None,
             }
@@ -101,11 +103,11 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(dob),
-                Some(error),
+                dob,
+                error,
                 Some(first_name),
                 Some(id_number),
-                Some(id_number_type),
+                id_number_type,
                 Some(last_name),
                 Some(status),
             ) = (

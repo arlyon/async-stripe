@@ -144,72 +144,72 @@ impl std::fmt::Debug for AccountCapabilities {
 }
 #[doc(hidden)]
 pub struct AccountCapabilitiesBuilder {
-    acss_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    affirm_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    afterpay_clearpay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    alma_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    amazon_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    app_distribution: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    au_becs_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    bacs_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    bancontact_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    billie_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    bizum_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    blik_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    boleto_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    card_issuing: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    card_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    cartes_bancaires_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    cashapp_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    crypto_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    eps_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    fpx_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    gb_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    giropay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    grabpay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    ideal_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    india_international_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    jcb_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    jp_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    kakao_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    klarna_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    konbini_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    kr_card_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    legacy_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    link_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    mb_way_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    mobilepay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    multibanco_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    mx_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    naver_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    nz_bank_account_becs_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    oxxo_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    p24_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    pay_by_bank_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    payco_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    paynow_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    payto_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    pix_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    promptpay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    revolut_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    samsung_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    satispay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    scalapay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    sepa_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    sepa_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    sofort_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    sunbit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    swish_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    tax_reporting_us_1099_k: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    tax_reporting_us_1099_misc: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    transfers: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    treasury: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    twint_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    upi_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    us_bank_account_ach_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    us_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
-    zip_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    acss_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    affirm_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    afterpay_clearpay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    alma_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    amazon_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    app_distribution: Option<stripe_shared::AccountCapabilitiesStatus>,
+    au_becs_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    bacs_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    bancontact_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    billie_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    bizum_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    blik_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    boleto_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    card_issuing: Option<stripe_shared::AccountCapabilitiesStatus>,
+    card_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    cartes_bancaires_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    cashapp_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    crypto_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    eps_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    fpx_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    gb_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    giropay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    grabpay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    ideal_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    india_international_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    jcb_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    jp_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    kakao_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    klarna_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    konbini_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    kr_card_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    legacy_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    link_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    mb_way_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    mobilepay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    multibanco_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    mx_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    naver_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    nz_bank_account_becs_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    oxxo_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    p24_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pay_by_bank_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    payco_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    paynow_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    payto_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    pix_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    promptpay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    revolut_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    samsung_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    satispay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    scalapay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    sepa_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    sepa_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    sofort_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    sunbit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    swish_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    tax_reporting_us_1099_k: Option<stripe_shared::AccountCapabilitiesStatus>,
+    tax_reporting_us_1099_misc: Option<stripe_shared::AccountCapabilitiesStatus>,
+    transfers: Option<stripe_shared::AccountCapabilitiesStatus>,
+    treasury: Option<stripe_shared::AccountCapabilitiesStatus>,
+    twint_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    upi_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    us_bank_account_ach_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    us_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    zip_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
 }
 
 #[allow(
@@ -252,237 +252,345 @@ const _: () = {
         type Out = AccountCapabilities;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "acss_debit_payments" => Deserialize::begin(&mut self.acss_debit_payments),
-                "affirm_payments" => Deserialize::begin(&mut self.affirm_payments),
-                "afterpay_clearpay_payments" => {
-                    Deserialize::begin(&mut self.afterpay_clearpay_payments)
+                "acss_debit_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.acss_debit_payments)
                 }
-                "alma_payments" => Deserialize::begin(&mut self.alma_payments),
-                "amazon_pay_payments" => Deserialize::begin(&mut self.amazon_pay_payments),
-                "app_distribution" => Deserialize::begin(&mut self.app_distribution),
-                "au_becs_debit_payments" => Deserialize::begin(&mut self.au_becs_debit_payments),
-                "bacs_debit_payments" => Deserialize::begin(&mut self.bacs_debit_payments),
-                "bancontact_payments" => Deserialize::begin(&mut self.bancontact_payments),
-                "bank_transfer_payments" => Deserialize::begin(&mut self.bank_transfer_payments),
-                "billie_payments" => Deserialize::begin(&mut self.billie_payments),
-                "bizum_payments" => Deserialize::begin(&mut self.bizum_payments),
-                "blik_payments" => Deserialize::begin(&mut self.blik_payments),
-                "boleto_payments" => Deserialize::begin(&mut self.boleto_payments),
-                "card_issuing" => Deserialize::begin(&mut self.card_issuing),
-                "card_payments" => Deserialize::begin(&mut self.card_payments),
-                "cartes_bancaires_payments" => {
-                    Deserialize::begin(&mut self.cartes_bancaires_payments)
+                "affirm_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.affirm_payments)
                 }
-                "cashapp_payments" => Deserialize::begin(&mut self.cashapp_payments),
-                "crypto_payments" => Deserialize::begin(&mut self.crypto_payments),
-                "eps_payments" => Deserialize::begin(&mut self.eps_payments),
-                "fpx_payments" => Deserialize::begin(&mut self.fpx_payments),
-                "gb_bank_transfer_payments" => {
-                    Deserialize::begin(&mut self.gb_bank_transfer_payments)
+                "afterpay_clearpay_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.afterpay_clearpay_payments,
+                ),
+                "alma_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.alma_payments)
                 }
-                "giropay_payments" => Deserialize::begin(&mut self.giropay_payments),
-                "grabpay_payments" => Deserialize::begin(&mut self.grabpay_payments),
-                "ideal_payments" => Deserialize::begin(&mut self.ideal_payments),
-                "india_international_payments" => {
-                    Deserialize::begin(&mut self.india_international_payments)
+                "amazon_pay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amazon_pay_payments)
                 }
-                "jcb_payments" => Deserialize::begin(&mut self.jcb_payments),
-                "jp_bank_transfer_payments" => {
-                    Deserialize::begin(&mut self.jp_bank_transfer_payments)
+                "app_distribution" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.app_distribution)
                 }
-                "kakao_pay_payments" => Deserialize::begin(&mut self.kakao_pay_payments),
-                "klarna_payments" => Deserialize::begin(&mut self.klarna_payments),
-                "konbini_payments" => Deserialize::begin(&mut self.konbini_payments),
-                "kr_card_payments" => Deserialize::begin(&mut self.kr_card_payments),
-                "legacy_payments" => Deserialize::begin(&mut self.legacy_payments),
-                "link_payments" => Deserialize::begin(&mut self.link_payments),
-                "mb_way_payments" => Deserialize::begin(&mut self.mb_way_payments),
-                "mobilepay_payments" => Deserialize::begin(&mut self.mobilepay_payments),
-                "multibanco_payments" => Deserialize::begin(&mut self.multibanco_payments),
-                "mx_bank_transfer_payments" => {
-                    Deserialize::begin(&mut self.mx_bank_transfer_payments)
+                "au_becs_debit_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.au_becs_debit_payments,
+                ),
+                "bacs_debit_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bacs_debit_payments)
                 }
-                "naver_pay_payments" => Deserialize::begin(&mut self.naver_pay_payments),
+                "bancontact_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bancontact_payments)
+                }
+                "bank_transfer_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.bank_transfer_payments,
+                ),
+                "billie_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.billie_payments)
+                }
+                "bizum_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bizum_payments)
+                }
+                "blik_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.blik_payments)
+                }
+                "boleto_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.boleto_payments)
+                }
+                "card_issuing" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.card_issuing)
+                }
+                "card_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.card_payments)
+                }
+                "cartes_bancaires_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.cartes_bancaires_payments,
+                ),
+                "cashapp_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.cashapp_payments)
+                }
+                "crypto_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.crypto_payments)
+                }
+                "eps_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.eps_payments)
+                }
+                "fpx_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.fpx_payments)
+                }
+                "gb_bank_transfer_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.gb_bank_transfer_payments,
+                ),
+                "giropay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.giropay_payments)
+                }
+                "grabpay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.grabpay_payments)
+                }
+                "ideal_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.ideal_payments)
+                }
+                "india_international_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.india_international_payments,
+                ),
+                "jcb_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.jcb_payments)
+                }
+                "jp_bank_transfer_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.jp_bank_transfer_payments,
+                ),
+                "kakao_pay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.kakao_pay_payments)
+                }
+                "klarna_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.klarna_payments)
+                }
+                "konbini_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.konbini_payments)
+                }
+                "kr_card_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.kr_card_payments)
+                }
+                "legacy_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.legacy_payments)
+                }
+                "link_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.link_payments)
+                }
+                "mb_way_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mb_way_payments)
+                }
+                "mobilepay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mobilepay_payments)
+                }
+                "multibanco_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.multibanco_payments)
+                }
+                "mx_bank_transfer_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.mx_bank_transfer_payments,
+                ),
+                "naver_pay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.naver_pay_payments)
+                }
                 "nz_bank_account_becs_debit_payments" => {
-                    Deserialize::begin(&mut self.nz_bank_account_becs_debit_payments)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.nz_bank_account_becs_debit_payments,
+                    )
                 }
-                "oxxo_payments" => Deserialize::begin(&mut self.oxxo_payments),
-                "p24_payments" => Deserialize::begin(&mut self.p24_payments),
-                "pay_by_bank_payments" => Deserialize::begin(&mut self.pay_by_bank_payments),
-                "payco_payments" => Deserialize::begin(&mut self.payco_payments),
-                "paynow_payments" => Deserialize::begin(&mut self.paynow_payments),
-                "payto_payments" => Deserialize::begin(&mut self.payto_payments),
-                "pix_payments" => Deserialize::begin(&mut self.pix_payments),
-                "promptpay_payments" => Deserialize::begin(&mut self.promptpay_payments),
-                "revolut_pay_payments" => Deserialize::begin(&mut self.revolut_pay_payments),
-                "samsung_pay_payments" => Deserialize::begin(&mut self.samsung_pay_payments),
-                "satispay_payments" => Deserialize::begin(&mut self.satispay_payments),
-                "scalapay_payments" => Deserialize::begin(&mut self.scalapay_payments),
-                "sepa_bank_transfer_payments" => {
-                    Deserialize::begin(&mut self.sepa_bank_transfer_payments)
+                "oxxo_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.oxxo_payments)
                 }
-                "sepa_debit_payments" => Deserialize::begin(&mut self.sepa_debit_payments),
-                "sofort_payments" => Deserialize::begin(&mut self.sofort_payments),
-                "sunbit_payments" => Deserialize::begin(&mut self.sunbit_payments),
-                "swish_payments" => Deserialize::begin(&mut self.swish_payments),
-                "tax_reporting_us_1099_k" => Deserialize::begin(&mut self.tax_reporting_us_1099_k),
-                "tax_reporting_us_1099_misc" => {
-                    Deserialize::begin(&mut self.tax_reporting_us_1099_misc)
+                "p24_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.p24_payments)
                 }
-                "transfers" => Deserialize::begin(&mut self.transfers),
-                "treasury" => Deserialize::begin(&mut self.treasury),
-                "twint_payments" => Deserialize::begin(&mut self.twint_payments),
-                "upi_payments" => Deserialize::begin(&mut self.upi_payments),
-                "us_bank_account_ach_payments" => {
-                    Deserialize::begin(&mut self.us_bank_account_ach_payments)
+                "pay_by_bank_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.pay_by_bank_payments)
                 }
-                "us_bank_transfer_payments" => {
-                    Deserialize::begin(&mut self.us_bank_transfer_payments)
+                "payco_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payco_payments)
                 }
-                "zip_payments" => Deserialize::begin(&mut self.zip_payments),
+                "paynow_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.paynow_payments)
+                }
+                "payto_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payto_payments)
+                }
+                "pix_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.pix_payments)
+                }
+                "promptpay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.promptpay_payments)
+                }
+                "revolut_pay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.revolut_pay_payments)
+                }
+                "samsung_pay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.samsung_pay_payments)
+                }
+                "satispay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.satispay_payments)
+                }
+                "scalapay_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.scalapay_payments)
+                }
+                "sepa_bank_transfer_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.sepa_bank_transfer_payments,
+                ),
+                "sepa_debit_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.sepa_debit_payments)
+                }
+                "sofort_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.sofort_payments)
+                }
+                "sunbit_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.sunbit_payments)
+                }
+                "swish_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.swish_payments)
+                }
+                "tax_reporting_us_1099_k" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.tax_reporting_us_1099_k,
+                ),
+                "tax_reporting_us_1099_misc" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.tax_reporting_us_1099_misc,
+                ),
+                "transfers" => stripe_types::miniserde_helpers::begin_nullable(&mut self.transfers),
+                "treasury" => stripe_types::miniserde_helpers::begin_nullable(&mut self.treasury),
+                "twint_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.twint_payments)
+                }
+                "upi_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.upi_payments)
+                }
+                "us_bank_account_ach_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.us_bank_account_ach_payments,
+                ),
+                "us_bank_transfer_payments" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.us_bank_transfer_payments,
+                ),
+                "zip_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.zip_payments)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                acss_debit_payments: Some(None),
-                affirm_payments: Some(None),
-                afterpay_clearpay_payments: Some(None),
-                alma_payments: Some(None),
-                amazon_pay_payments: Some(None),
-                app_distribution: Some(None),
-                au_becs_debit_payments: Some(None),
-                bacs_debit_payments: Some(None),
-                bancontact_payments: Some(None),
-                bank_transfer_payments: Some(None),
-                billie_payments: Some(None),
-                bizum_payments: Some(None),
-                blik_payments: Some(None),
-                boleto_payments: Some(None),
-                card_issuing: Some(None),
-                card_payments: Some(None),
-                cartes_bancaires_payments: Some(None),
-                cashapp_payments: Some(None),
-                crypto_payments: Some(None),
-                eps_payments: Some(None),
-                fpx_payments: Some(None),
-                gb_bank_transfer_payments: Some(None),
-                giropay_payments: Some(None),
-                grabpay_payments: Some(None),
-                ideal_payments: Some(None),
-                india_international_payments: Some(None),
-                jcb_payments: Some(None),
-                jp_bank_transfer_payments: Some(None),
-                kakao_pay_payments: Some(None),
-                klarna_payments: Some(None),
-                konbini_payments: Some(None),
-                kr_card_payments: Some(None),
-                legacy_payments: Some(None),
-                link_payments: Some(None),
-                mb_way_payments: Some(None),
-                mobilepay_payments: Some(None),
-                multibanco_payments: Some(None),
-                mx_bank_transfer_payments: Some(None),
-                naver_pay_payments: Some(None),
-                nz_bank_account_becs_debit_payments: Some(None),
-                oxxo_payments: Some(None),
-                p24_payments: Some(None),
-                pay_by_bank_payments: Some(None),
-                payco_payments: Some(None),
-                paynow_payments: Some(None),
-                payto_payments: Some(None),
-                pix_payments: Some(None),
-                promptpay_payments: Some(None),
-                revolut_pay_payments: Some(None),
-                samsung_pay_payments: Some(None),
-                satispay_payments: Some(None),
-                scalapay_payments: Some(None),
-                sepa_bank_transfer_payments: Some(None),
-                sepa_debit_payments: Some(None),
-                sofort_payments: Some(None),
-                sunbit_payments: Some(None),
-                swish_payments: Some(None),
-                tax_reporting_us_1099_k: Some(None),
-                tax_reporting_us_1099_misc: Some(None),
-                transfers: Some(None),
-                treasury: Some(None),
-                twint_payments: Some(None),
-                upi_payments: Some(None),
-                us_bank_account_ach_payments: Some(None),
-                us_bank_transfer_payments: Some(None),
-                zip_payments: Some(None),
+                acss_debit_payments: None,
+                affirm_payments: None,
+                afterpay_clearpay_payments: None,
+                alma_payments: None,
+                amazon_pay_payments: None,
+                app_distribution: None,
+                au_becs_debit_payments: None,
+                bacs_debit_payments: None,
+                bancontact_payments: None,
+                bank_transfer_payments: None,
+                billie_payments: None,
+                bizum_payments: None,
+                blik_payments: None,
+                boleto_payments: None,
+                card_issuing: None,
+                card_payments: None,
+                cartes_bancaires_payments: None,
+                cashapp_payments: None,
+                crypto_payments: None,
+                eps_payments: None,
+                fpx_payments: None,
+                gb_bank_transfer_payments: None,
+                giropay_payments: None,
+                grabpay_payments: None,
+                ideal_payments: None,
+                india_international_payments: None,
+                jcb_payments: None,
+                jp_bank_transfer_payments: None,
+                kakao_pay_payments: None,
+                klarna_payments: None,
+                konbini_payments: None,
+                kr_card_payments: None,
+                legacy_payments: None,
+                link_payments: None,
+                mb_way_payments: None,
+                mobilepay_payments: None,
+                multibanco_payments: None,
+                mx_bank_transfer_payments: None,
+                naver_pay_payments: None,
+                nz_bank_account_becs_debit_payments: None,
+                oxxo_payments: None,
+                p24_payments: None,
+                pay_by_bank_payments: None,
+                payco_payments: None,
+                paynow_payments: None,
+                payto_payments: None,
+                pix_payments: None,
+                promptpay_payments: None,
+                revolut_pay_payments: None,
+                samsung_pay_payments: None,
+                satispay_payments: None,
+                scalapay_payments: None,
+                sepa_bank_transfer_payments: None,
+                sepa_debit_payments: None,
+                sofort_payments: None,
+                sunbit_payments: None,
+                swish_payments: None,
+                tax_reporting_us_1099_k: None,
+                tax_reporting_us_1099_misc: None,
+                transfers: None,
+                treasury: None,
+                twint_payments: None,
+                upi_payments: None,
+                us_bank_account_ach_payments: None,
+                us_bank_transfer_payments: None,
+                zip_payments: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(acss_debit_payments),
-                Some(affirm_payments),
-                Some(afterpay_clearpay_payments),
-                Some(alma_payments),
-                Some(amazon_pay_payments),
-                Some(app_distribution),
-                Some(au_becs_debit_payments),
-                Some(bacs_debit_payments),
-                Some(bancontact_payments),
-                Some(bank_transfer_payments),
-                Some(billie_payments),
-                Some(bizum_payments),
-                Some(blik_payments),
-                Some(boleto_payments),
-                Some(card_issuing),
-                Some(card_payments),
-                Some(cartes_bancaires_payments),
-                Some(cashapp_payments),
-                Some(crypto_payments),
-                Some(eps_payments),
-                Some(fpx_payments),
-                Some(gb_bank_transfer_payments),
-                Some(giropay_payments),
-                Some(grabpay_payments),
-                Some(ideal_payments),
-                Some(india_international_payments),
-                Some(jcb_payments),
-                Some(jp_bank_transfer_payments),
-                Some(kakao_pay_payments),
-                Some(klarna_payments),
-                Some(konbini_payments),
-                Some(kr_card_payments),
-                Some(legacy_payments),
-                Some(link_payments),
-                Some(mb_way_payments),
-                Some(mobilepay_payments),
-                Some(multibanco_payments),
-                Some(mx_bank_transfer_payments),
-                Some(naver_pay_payments),
-                Some(nz_bank_account_becs_debit_payments),
-                Some(oxxo_payments),
-                Some(p24_payments),
-                Some(pay_by_bank_payments),
-                Some(payco_payments),
-                Some(paynow_payments),
-                Some(payto_payments),
-                Some(pix_payments),
-                Some(promptpay_payments),
-                Some(revolut_pay_payments),
-                Some(samsung_pay_payments),
-                Some(satispay_payments),
-                Some(scalapay_payments),
-                Some(sepa_bank_transfer_payments),
-                Some(sepa_debit_payments),
-                Some(sofort_payments),
-                Some(sunbit_payments),
-                Some(swish_payments),
-                Some(tax_reporting_us_1099_k),
-                Some(tax_reporting_us_1099_misc),
-                Some(transfers),
-                Some(treasury),
-                Some(twint_payments),
-                Some(upi_payments),
-                Some(us_bank_account_ach_payments),
-                Some(us_bank_transfer_payments),
-                Some(zip_payments),
+                acss_debit_payments,
+                affirm_payments,
+                afterpay_clearpay_payments,
+                alma_payments,
+                amazon_pay_payments,
+                app_distribution,
+                au_becs_debit_payments,
+                bacs_debit_payments,
+                bancontact_payments,
+                bank_transfer_payments,
+                billie_payments,
+                bizum_payments,
+                blik_payments,
+                boleto_payments,
+                card_issuing,
+                card_payments,
+                cartes_bancaires_payments,
+                cashapp_payments,
+                crypto_payments,
+                eps_payments,
+                fpx_payments,
+                gb_bank_transfer_payments,
+                giropay_payments,
+                grabpay_payments,
+                ideal_payments,
+                india_international_payments,
+                jcb_payments,
+                jp_bank_transfer_payments,
+                kakao_pay_payments,
+                klarna_payments,
+                konbini_payments,
+                kr_card_payments,
+                legacy_payments,
+                link_payments,
+                mb_way_payments,
+                mobilepay_payments,
+                multibanco_payments,
+                mx_bank_transfer_payments,
+                naver_pay_payments,
+                nz_bank_account_becs_debit_payments,
+                oxxo_payments,
+                p24_payments,
+                pay_by_bank_payments,
+                payco_payments,
+                paynow_payments,
+                payto_payments,
+                pix_payments,
+                promptpay_payments,
+                revolut_pay_payments,
+                samsung_pay_payments,
+                satispay_payments,
+                scalapay_payments,
+                sepa_bank_transfer_payments,
+                sepa_debit_payments,
+                sofort_payments,
+                sunbit_payments,
+                swish_payments,
+                tax_reporting_us_1099_k,
+                tax_reporting_us_1099_misc,
+                transfers,
+                treasury,
+                twint_payments,
+                upi_payments,
+                us_bank_account_ach_payments,
+                us_bank_transfer_payments,
+                zip_payments,
             ) = (
                 self.acss_debit_payments.take(),
                 self.affirm_payments.take(),

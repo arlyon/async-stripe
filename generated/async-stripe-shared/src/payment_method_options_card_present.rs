@@ -20,10 +20,10 @@ impl std::fmt::Debug for PaymentMethodOptionsCardPresent {
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsCardPresentBuilder {
-    capture_method: Option<Option<PaymentMethodOptionsCardPresentCaptureMethod>>,
+    capture_method: Option<PaymentMethodOptionsCardPresentCaptureMethod>,
     request_extended_authorization: Option<Option<bool>>,
     request_incremental_authorization_support: Option<Option<bool>>,
-    routing: Option<Option<stripe_shared::PaymentMethodOptionsCardPresentRouting>>,
+    routing: Option<stripe_shared::PaymentMethodOptionsCardPresentRouting>,
 }
 
 #[allow(
@@ -66,33 +66,35 @@ const _: () = {
         type Out = PaymentMethodOptionsCardPresent;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
+                "capture_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.capture_method)
+                }
                 "request_extended_authorization" => {
                     Deserialize::begin(&mut self.request_extended_authorization)
                 }
                 "request_incremental_authorization_support" => {
                     Deserialize::begin(&mut self.request_incremental_authorization_support)
                 }
-                "routing" => Deserialize::begin(&mut self.routing),
+                "routing" => stripe_types::miniserde_helpers::begin_nullable(&mut self.routing),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                capture_method: Some(None),
+                capture_method: None,
                 request_extended_authorization: Some(None),
                 request_incremental_authorization_support: Some(None),
-                routing: Some(None),
+                routing: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(capture_method),
+                capture_method,
                 Some(request_extended_authorization),
                 Some(request_incremental_authorization_support),
-                Some(routing),
+                routing,
             ) = (
                 self.capture_method.take(),
                 self.request_extended_authorization,

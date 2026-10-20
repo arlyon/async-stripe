@@ -20,8 +20,7 @@ impl std::fmt::Debug for InboundTransfers {
 pub struct InboundTransfersBuilder {
     billing_details: Option<stripe_treasury::TreasurySharedResourceBillingDetails>,
     type_: Option<InboundTransfersType>,
-    us_bank_account:
-        Option<Option<stripe_treasury::InboundTransfersPaymentMethodDetailsUsBankAccount>>,
+    us_bank_account: Option<stripe_treasury::InboundTransfersPaymentMethodDetailsUsBankAccount>,
 }
 
 #[allow(
@@ -66,17 +65,19 @@ const _: () = {
             Ok(match k {
                 "billing_details" => Deserialize::begin(&mut self.billing_details),
                 "type" => Deserialize::begin(&mut self.type_),
-                "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
+                "us_bank_account" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.us_bank_account)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { billing_details: None, type_: None, us_bank_account: Some(None) }
+            Self { billing_details: None, type_: None, us_bank_account: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(billing_details), Some(type_), Some(us_bank_account)) =
+            let (Some(billing_details), Some(type_), us_bank_account) =
                 (self.billing_details.take(), self.type_.take(), self.us_bank_account.take())
             else {
                 return None;

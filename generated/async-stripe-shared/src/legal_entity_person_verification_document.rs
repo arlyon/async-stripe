@@ -22,10 +22,10 @@ impl std::fmt::Debug for LegalEntityPersonVerificationDocument {
 }
 #[doc(hidden)]
 pub struct LegalEntityPersonVerificationDocumentBuilder {
-    back: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    back: Option<stripe_types::Expandable<stripe_shared::File>>,
     details: Option<Option<String>>,
     details_code: Option<Option<String>>,
-    front: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    front: Option<stripe_types::Expandable<stripe_shared::File>>,
 }
 
 #[allow(
@@ -68,25 +68,20 @@ const _: () = {
         type Out = LegalEntityPersonVerificationDocument;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "back" => Deserialize::begin(&mut self.back),
+                "back" => stripe_types::miniserde_helpers::begin_nullable(&mut self.back),
                 "details" => Deserialize::begin(&mut self.details),
                 "details_code" => Deserialize::begin(&mut self.details_code),
-                "front" => Deserialize::begin(&mut self.front),
+                "front" => stripe_types::miniserde_helpers::begin_nullable(&mut self.front),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                back: Some(None),
-                details: Some(None),
-                details_code: Some(None),
-                front: Some(None),
-            }
+            Self { back: None, details: Some(None), details_code: Some(None), front: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(back), Some(details), Some(details_code), Some(front)) = (
+            let (back, Some(details), Some(details_code), front) = (
                 self.back.take(),
                 self.details.take(),
                 self.details_code.take(),

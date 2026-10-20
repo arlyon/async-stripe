@@ -26,10 +26,10 @@ impl std::fmt::Debug for CheckoutPixPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutPixPaymentMethodOptionsBuilder {
-    amount_includes_iof: Option<Option<CheckoutPixPaymentMethodOptionsAmountIncludesIof>>,
+    amount_includes_iof: Option<CheckoutPixPaymentMethodOptionsAmountIncludesIof>,
     expires_after_seconds: Option<Option<i64>>,
-    mandate_options: Option<Option<stripe_shared::PaymentMethodOptionsMandateOptionsPix>>,
-    setup_future_usage: Option<Option<CheckoutPixPaymentMethodOptionsSetupFutureUsage>>,
+    mandate_options: Option<stripe_shared::PaymentMethodOptionsMandateOptionsPix>,
+    setup_future_usage: Option<CheckoutPixPaymentMethodOptionsSetupFutureUsage>,
 }
 
 #[allow(
@@ -72,29 +72,35 @@ const _: () = {
         type Out = CheckoutPixPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_includes_iof" => Deserialize::begin(&mut self.amount_includes_iof),
+                "amount_includes_iof" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_includes_iof)
+                }
                 "expires_after_seconds" => Deserialize::begin(&mut self.expires_after_seconds),
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                amount_includes_iof: Some(None),
+                amount_includes_iof: None,
                 expires_after_seconds: Some(None),
-                mandate_options: Some(None),
-                setup_future_usage: Some(None),
+                mandate_options: None,
+                setup_future_usage: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(amount_includes_iof),
+                amount_includes_iof,
                 Some(expires_after_seconds),
-                Some(mandate_options),
-                Some(setup_future_usage),
+                mandate_options,
+                setup_future_usage,
             ) = (
                 self.amount_includes_iof.take(),
                 self.expires_after_seconds,

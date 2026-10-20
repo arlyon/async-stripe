@@ -33,15 +33,14 @@ impl std::fmt::Debug for ThreeDSecureDetailsCharge {
 }
 #[doc(hidden)]
 pub struct ThreeDSecureDetailsChargeBuilder {
-    authentication_flow: Option<Option<ThreeDSecureDetailsChargeAuthenticationFlow>>,
-    electronic_commerce_indicator:
-        Option<Option<ThreeDSecureDetailsChargeElectronicCommerceIndicator>>,
-    exemption_indicator: Option<Option<ThreeDSecureDetailsChargeExemptionIndicator>>,
+    authentication_flow: Option<ThreeDSecureDetailsChargeAuthenticationFlow>,
+    electronic_commerce_indicator: Option<ThreeDSecureDetailsChargeElectronicCommerceIndicator>,
+    exemption_indicator: Option<ThreeDSecureDetailsChargeExemptionIndicator>,
     exemption_indicator_applied: Option<Option<bool>>,
-    result: Option<Option<ThreeDSecureDetailsChargeResult>>,
-    result_reason: Option<Option<ThreeDSecureDetailsChargeResultReason>>,
+    result: Option<ThreeDSecureDetailsChargeResult>,
+    result_reason: Option<ThreeDSecureDetailsChargeResultReason>,
     transaction_id: Option<Option<String>>,
-    version: Option<Option<ThreeDSecureDetailsChargeVersion>>,
+    version: Option<ThreeDSecureDetailsChargeVersion>,
 }
 
 #[allow(
@@ -84,45 +83,51 @@ const _: () = {
         type Out = ThreeDSecureDetailsCharge;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "authentication_flow" => Deserialize::begin(&mut self.authentication_flow),
-                "electronic_commerce_indicator" => {
-                    Deserialize::begin(&mut self.electronic_commerce_indicator)
+                "authentication_flow" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.authentication_flow)
                 }
-                "exemption_indicator" => Deserialize::begin(&mut self.exemption_indicator),
+                "electronic_commerce_indicator" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.electronic_commerce_indicator,
+                ),
+                "exemption_indicator" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.exemption_indicator)
+                }
                 "exemption_indicator_applied" => {
                     Deserialize::begin(&mut self.exemption_indicator_applied)
                 }
-                "result" => Deserialize::begin(&mut self.result),
-                "result_reason" => Deserialize::begin(&mut self.result_reason),
+                "result" => stripe_types::miniserde_helpers::begin_nullable(&mut self.result),
+                "result_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.result_reason)
+                }
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-                "version" => Deserialize::begin(&mut self.version),
+                "version" => stripe_types::miniserde_helpers::begin_nullable(&mut self.version),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                authentication_flow: Some(None),
-                electronic_commerce_indicator: Some(None),
-                exemption_indicator: Some(None),
+                authentication_flow: None,
+                electronic_commerce_indicator: None,
+                exemption_indicator: None,
                 exemption_indicator_applied: Some(None),
-                result: Some(None),
-                result_reason: Some(None),
+                result: None,
+                result_reason: None,
                 transaction_id: Some(None),
-                version: Some(None),
+                version: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(authentication_flow),
-                Some(electronic_commerce_indicator),
-                Some(exemption_indicator),
+                authentication_flow,
+                electronic_commerce_indicator,
+                exemption_indicator,
                 Some(exemption_indicator_applied),
-                Some(result),
-                Some(result_reason),
+                result,
+                result_reason,
                 Some(transaction_id),
-                Some(version),
+                version,
             ) = (
                 self.authentication_flow.take(),
                 self.electronic_commerce_indicator.take(),

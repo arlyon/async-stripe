@@ -19,8 +19,8 @@ impl std::fmt::Debug for ReservesReserveReleasesResourcesSourceTransaction {
 }
 #[doc(hidden)]
 pub struct ReservesReserveReleasesResourcesSourceTransactionBuilder {
-    dispute: Option<Option<stripe_types::Expandable<stripe_shared::Dispute>>>,
-    refund: Option<Option<stripe_types::Expandable<stripe_shared::Refund>>>,
+    dispute: Option<stripe_types::Expandable<stripe_shared::Dispute>>,
+    refund: Option<stripe_types::Expandable<stripe_shared::Refund>>,
     type_: Option<ReservesReserveReleasesResourcesSourceTransactionType>,
 }
 
@@ -64,19 +64,19 @@ const _: () = {
         type Out = ReservesReserveReleasesResourcesSourceTransaction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "dispute" => Deserialize::begin(&mut self.dispute),
-                "refund" => Deserialize::begin(&mut self.refund),
+                "dispute" => stripe_types::miniserde_helpers::begin_nullable(&mut self.dispute),
+                "refund" => stripe_types::miniserde_helpers::begin_nullable(&mut self.refund),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { dispute: Some(None), refund: Some(None), type_: None }
+            Self { dispute: None, refund: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(dispute), Some(refund), Some(type_)) =
+            let (dispute, refund, Some(type_)) =
                 (self.dispute.take(), self.refund.take(), self.type_.take())
             else {
                 return None;

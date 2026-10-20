@@ -25,7 +25,7 @@ pub struct BillingBillResourceInvoicingLinesParentsInvoiceLineItemInvoiceItemPar
     invoice_item: Option<String>,
     proration: Option<bool>,
     proration_details:
-        Option<Option<stripe_shared::BillingBillResourceInvoicingLinesCommonProrationDetails>>,
+        Option<stripe_shared::BillingBillResourceInvoicingLinesCommonProrationDetails>,
     subscription: Option<Option<String>>,
 }
 
@@ -75,7 +75,9 @@ const _: () = {
             Ok(match k {
                 "invoice_item" => Deserialize::begin(&mut self.invoice_item),
                 "proration" => Deserialize::begin(&mut self.proration),
-                "proration_details" => Deserialize::begin(&mut self.proration_details),
+                "proration_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.proration_details)
+                }
                 "subscription" => Deserialize::begin(&mut self.subscription),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -85,13 +87,13 @@ const _: () = {
             Self {
                 invoice_item: None,
                 proration: None,
-                proration_details: Some(None),
+                proration_details: None,
                 subscription: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(invoice_item), Some(proration), Some(proration_details), Some(subscription)) = (
+            let (Some(invoice_item), Some(proration), proration_details, Some(subscription)) = (
                 self.invoice_item.take(),
                 self.proration,
                 self.proration_details.take(),

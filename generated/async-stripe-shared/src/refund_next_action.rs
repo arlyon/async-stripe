@@ -16,7 +16,7 @@ impl std::fmt::Debug for RefundNextAction {
 }
 #[doc(hidden)]
 pub struct RefundNextActionBuilder {
-    display_details: Option<Option<stripe_shared::RefundNextActionDisplayDetails>>,
+    display_details: Option<stripe_shared::RefundNextActionDisplayDetails>,
     type_: Option<String>,
 }
 
@@ -60,19 +60,20 @@ const _: () = {
         type Out = RefundNextAction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "display_details" => Deserialize::begin(&mut self.display_details),
+                "display_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.display_details)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { display_details: Some(None), type_: None }
+            Self { display_details: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(display_details), Some(type_)) =
-                (self.display_details.take(), self.type_.take())
+            let (display_details, Some(type_)) = (self.display_details.take(), self.type_.take())
             else {
                 return None;
             };

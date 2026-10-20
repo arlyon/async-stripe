@@ -56,16 +56,16 @@ impl std::fmt::Debug for CustomerBalanceTransaction {
 #[doc(hidden)]
 pub struct CustomerBalanceTransactionBuilder {
     amount: Option<i64>,
-    checkout_session: Option<Option<stripe_types::Expandable<stripe_shared::CheckoutSession>>>,
+    checkout_session: Option<stripe_types::Expandable<stripe_shared::CheckoutSession>>,
     created: Option<stripe_types::Timestamp>,
-    credit_note: Option<Option<stripe_types::Expandable<stripe_shared::CreditNote>>>,
+    credit_note: Option<stripe_types::Expandable<stripe_shared::CreditNote>>,
     currency: Option<stripe_types::Currency>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     description: Option<Option<String>>,
     ending_balance: Option<i64>,
     id: Option<stripe_shared::CustomerBalanceTransactionId>,
-    invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
+    invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     type_: Option<CustomerBalanceTransactionType>,
@@ -112,16 +112,20 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "checkout_session" => Deserialize::begin(&mut self.checkout_session),
+                "checkout_session" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.checkout_session)
+                }
                 "created" => Deserialize::begin(&mut self.created),
-                "credit_note" => Deserialize::begin(&mut self.credit_note),
+                "credit_note" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.credit_note)
+                }
                 "currency" => Deserialize::begin(&mut self.currency),
                 "customer" => Deserialize::begin(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "description" => Deserialize::begin(&mut self.description),
                 "ending_balance" => Deserialize::begin(&mut self.ending_balance),
                 "id" => Deserialize::begin(&mut self.id),
-                "invoice" => Deserialize::begin(&mut self.invoice),
+                "invoice" => stripe_types::miniserde_helpers::begin_nullable(&mut self.invoice),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "type" => Deserialize::begin(&mut self.type_),
@@ -132,16 +136,16 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: None,
-                checkout_session: Some(None),
+                checkout_session: None,
                 created: None,
-                credit_note: Some(None),
+                credit_note: None,
                 currency: None,
                 customer: None,
                 customer_account: Some(None),
                 description: Some(None),
                 ending_balance: None,
                 id: None,
-                invoice: Some(None),
+                invoice: None,
                 livemode: None,
                 metadata: Some(None),
                 type_: None,
@@ -151,16 +155,16 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(checkout_session),
+                checkout_session,
                 Some(created),
-                Some(credit_note),
+                credit_note,
                 Some(currency),
                 Some(customer),
                 Some(customer_account),
                 Some(description),
                 Some(ending_balance),
                 Some(id),
-                Some(invoice),
+                invoice,
                 Some(livemode),
                 Some(metadata),
                 Some(type_),

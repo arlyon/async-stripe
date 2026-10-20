@@ -19,7 +19,7 @@ impl std::fmt::Debug for InvoiceItemProrationCreditedItems {
 #[doc(hidden)]
 pub struct InvoiceItemProrationCreditedItemsBuilder {
     invoice_item: Option<Option<String>>,
-    invoice_line_item_details: Option<Option<stripe_billing::CreditedItemsInvoiceLineItems>>,
+    invoice_line_item_details: Option<stripe_billing::CreditedItemsInvoiceLineItems>,
     type_: Option<InvoiceItemProrationCreditedItemsType>,
 }
 
@@ -64,20 +64,20 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "invoice_item" => Deserialize::begin(&mut self.invoice_item),
-                "invoice_line_item_details" => {
-                    Deserialize::begin(&mut self.invoice_line_item_details)
-                }
+                "invoice_line_item_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.invoice_line_item_details,
+                ),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { invoice_item: Some(None), invoice_line_item_details: Some(None), type_: None }
+            Self { invoice_item: Some(None), invoice_line_item_details: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(invoice_item), Some(invoice_line_item_details), Some(type_)) = (
+            let (Some(invoice_item), invoice_line_item_details, Some(type_)) = (
                 self.invoice_item.take(),
                 self.invoice_line_item_details.take(),
                 self.type_.take(),

@@ -15,7 +15,7 @@ impl std::fmt::Debug for BankConnectionsResourceLinkAccountSessionManualEntry {
 }
 #[doc(hidden)]
 pub struct BankConnectionsResourceLinkAccountSessionManualEntryBuilder {
-    mode: Option<Option<BankConnectionsResourceLinkAccountSessionManualEntryMode>>,
+    mode: Option<BankConnectionsResourceLinkAccountSessionManualEntryMode>,
 }
 
 #[allow(
@@ -59,17 +59,17 @@ const _: () = {
         type Out = BankConnectionsResourceLinkAccountSessionManualEntry;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "mode" => Deserialize::begin(&mut self.mode),
+                "mode" => stripe_types::miniserde_helpers::begin_nullable(&mut self.mode),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { mode: Some(None) }
+            Self { mode: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mode),) = (self.mode.take(),) else {
+            let (mode,) = (self.mode.take(),) else {
                 return None;
             };
             Some(Self::Out { mode })

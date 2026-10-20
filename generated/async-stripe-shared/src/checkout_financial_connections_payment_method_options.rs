@@ -20,7 +20,7 @@ impl std::fmt::Debug for CheckoutFinancialConnectionsPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutFinancialConnectionsPaymentMethodOptionsBuilder {
-    filters: Option<Option<stripe_shared::CheckoutFinancialConnectionsPaymentMethodOptionsFilters>>,
+    filters: Option<stripe_shared::CheckoutFinancialConnectionsPaymentMethodOptionsFilters>,
     permissions: Option<Option<Vec<CheckoutFinancialConnectionsPaymentMethodOptionsPermissions>>>,
     prefetch: Option<Option<Vec<CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch>>>,
     return_url: Option<Option<String>>,
@@ -66,7 +66,7 @@ const _: () = {
         type Out = CheckoutFinancialConnectionsPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "filters" => Deserialize::begin(&mut self.filters),
+                "filters" => stripe_types::miniserde_helpers::begin_nullable(&mut self.filters),
                 "permissions" => Deserialize::begin(&mut self.permissions),
                 "prefetch" => Deserialize::begin(&mut self.prefetch),
                 "return_url" => Deserialize::begin(&mut self.return_url),
@@ -76,7 +76,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                filters: Some(None),
+                filters: None,
                 permissions: Some(None),
                 prefetch: Some(None),
                 return_url: Some(None),
@@ -84,7 +84,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(filters), Some(permissions), Some(prefetch), Some(return_url)) = (
+            let (filters, Some(permissions), Some(prefetch), Some(return_url)) = (
                 self.filters.take(),
                 self.permissions.take(),
                 self.prefetch.take(),

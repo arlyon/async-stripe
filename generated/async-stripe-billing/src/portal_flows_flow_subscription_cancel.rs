@@ -16,7 +16,7 @@ impl std::fmt::Debug for PortalFlowsFlowSubscriptionCancel {
 }
 #[doc(hidden)]
 pub struct PortalFlowsFlowSubscriptionCancelBuilder {
-    retention: Option<Option<stripe_billing::PortalFlowsRetention>>,
+    retention: Option<stripe_billing::PortalFlowsRetention>,
     subscription: Option<String>,
 }
 
@@ -60,19 +60,18 @@ const _: () = {
         type Out = PortalFlowsFlowSubscriptionCancel;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "retention" => Deserialize::begin(&mut self.retention),
+                "retention" => stripe_types::miniserde_helpers::begin_nullable(&mut self.retention),
                 "subscription" => Deserialize::begin(&mut self.subscription),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { retention: Some(None), subscription: None }
+            Self { retention: None, subscription: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(retention), Some(subscription)) =
-                (self.retention.take(), self.subscription.take())
+            let (retention, Some(subscription)) = (self.retention.take(), self.subscription.take())
             else {
                 return None;
             };

@@ -17,7 +17,7 @@ impl std::fmt::Debug for CustomerBalanceResourceCashBalanceTransactionResourceFu
 }
 #[doc(hidden)]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferBuilder {
-    network: Option<Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork>>,
+    network: Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork>,
 sender_name: Option<Option<String>>,
 
 }
@@ -62,20 +62,20 @@ const _: () = {
     type Out = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransfer;
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
-            "network" => Deserialize::begin(&mut self.network),
+            "network" => stripe_types::miniserde_helpers::begin_nullable(&mut self.network),
             "sender_name" => Deserialize::begin(&mut self.sender_name),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self { network: Some(None),
+        Self { network: None,
 sender_name: Some(None),
  }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(network),
+        let (network,
 Some(sender_name),
 ) = (self.network.take(),
 self.sender_name.take(),

@@ -14,8 +14,8 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionNameCollection {
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionNameCollectionBuilder {
-    business: Option<Option<stripe_shared::PaymentPagesCheckoutSessionBusinessName>>,
-    individual: Option<Option<stripe_shared::PaymentPagesCheckoutSessionIndividualName>>,
+    business: Option<stripe_shared::PaymentPagesCheckoutSessionBusinessName>,
+    individual: Option<stripe_shared::PaymentPagesCheckoutSessionIndividualName>,
 }
 
 #[allow(
@@ -58,18 +58,20 @@ const _: () = {
         type Out = PaymentPagesCheckoutSessionNameCollection;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "business" => Deserialize::begin(&mut self.business),
-                "individual" => Deserialize::begin(&mut self.individual),
+                "business" => stripe_types::miniserde_helpers::begin_nullable(&mut self.business),
+                "individual" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.individual)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { business: Some(None), individual: Some(None) }
+            Self { business: None, individual: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(business), Some(individual)) = (self.business, self.individual) else {
+            let (business, individual) = (self.business, self.individual) else {
                 return None;
             };
             Some(Self::Out { business, individual })

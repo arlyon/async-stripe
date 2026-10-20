@@ -20,8 +20,8 @@ impl std::fmt::Debug for CustomerAcceptance {
 #[doc(hidden)]
 pub struct CustomerAcceptanceBuilder {
     accepted_at: Option<Option<stripe_types::Timestamp>>,
-    offline: Option<Option<stripe_shared::OfflineAcceptance>>,
-    online: Option<Option<stripe_shared::OnlineAcceptance>>,
+    offline: Option<stripe_shared::OfflineAcceptance>,
+    online: Option<stripe_shared::OnlineAcceptance>,
     type_: Option<CustomerAcceptanceType>,
 }
 
@@ -66,19 +66,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "accepted_at" => Deserialize::begin(&mut self.accepted_at),
-                "offline" => Deserialize::begin(&mut self.offline),
-                "online" => Deserialize::begin(&mut self.online),
+                "offline" => stripe_types::miniserde_helpers::begin_nullable(&mut self.offline),
+                "online" => stripe_types::miniserde_helpers::begin_nullable(&mut self.online),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { accepted_at: Some(None), offline: Some(None), online: Some(None), type_: None }
+            Self { accepted_at: Some(None), offline: None, online: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(accepted_at), Some(offline), Some(online), Some(type_)) =
+            let (Some(accepted_at), offline, online, Some(type_)) =
                 (self.accepted_at, self.offline, self.online.take(), self.type_.take())
             else {
                 return None;

@@ -20,9 +20,9 @@ impl std::fmt::Debug for SubscriptionAutomaticTax {
 }
 #[doc(hidden)]
 pub struct SubscriptionAutomaticTaxBuilder {
-    disabled_reason: Option<Option<SubscriptionAutomaticTaxDisabledReason>>,
+    disabled_reason: Option<SubscriptionAutomaticTaxDisabledReason>,
     enabled: Option<bool>,
-    liability: Option<Option<stripe_shared::ConnectAccountReference>>,
+    liability: Option<stripe_shared::ConnectAccountReference>,
 }
 
 #[allow(
@@ -65,19 +65,21 @@ const _: () = {
         type Out = SubscriptionAutomaticTax;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "disabled_reason" => Deserialize::begin(&mut self.disabled_reason),
+                "disabled_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.disabled_reason)
+                }
                 "enabled" => Deserialize::begin(&mut self.enabled),
-                "liability" => Deserialize::begin(&mut self.liability),
+                "liability" => stripe_types::miniserde_helpers::begin_nullable(&mut self.liability),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { disabled_reason: Some(None), enabled: None, liability: Some(None) }
+            Self { disabled_reason: None, enabled: None, liability: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(disabled_reason), Some(enabled), Some(liability)) =
+            let (disabled_reason, Some(enabled), liability) =
                 (self.disabled_reason.take(), self.enabled, self.liability.take())
             else {
                 return None;

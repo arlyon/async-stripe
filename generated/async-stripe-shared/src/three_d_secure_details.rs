@@ -28,12 +28,12 @@ impl std::fmt::Debug for ThreeDSecureDetails {
 }
 #[doc(hidden)]
 pub struct ThreeDSecureDetailsBuilder {
-    authentication_flow: Option<Option<ThreeDSecureDetailsAuthenticationFlow>>,
-    electronic_commerce_indicator: Option<Option<ThreeDSecureDetailsElectronicCommerceIndicator>>,
-    result: Option<Option<ThreeDSecureDetailsResult>>,
-    result_reason: Option<Option<ThreeDSecureDetailsResultReason>>,
+    authentication_flow: Option<ThreeDSecureDetailsAuthenticationFlow>,
+    electronic_commerce_indicator: Option<ThreeDSecureDetailsElectronicCommerceIndicator>,
+    result: Option<ThreeDSecureDetailsResult>,
+    result_reason: Option<ThreeDSecureDetailsResultReason>,
     transaction_id: Option<Option<String>>,
-    version: Option<Option<ThreeDSecureDetailsVersion>>,
+    version: Option<ThreeDSecureDetailsVersion>,
 }
 
 #[allow(
@@ -76,37 +76,41 @@ const _: () = {
         type Out = ThreeDSecureDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "authentication_flow" => Deserialize::begin(&mut self.authentication_flow),
-                "electronic_commerce_indicator" => {
-                    Deserialize::begin(&mut self.electronic_commerce_indicator)
+                "authentication_flow" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.authentication_flow)
                 }
-                "result" => Deserialize::begin(&mut self.result),
-                "result_reason" => Deserialize::begin(&mut self.result_reason),
+                "electronic_commerce_indicator" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.electronic_commerce_indicator,
+                ),
+                "result" => stripe_types::miniserde_helpers::begin_nullable(&mut self.result),
+                "result_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.result_reason)
+                }
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-                "version" => Deserialize::begin(&mut self.version),
+                "version" => stripe_types::miniserde_helpers::begin_nullable(&mut self.version),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                authentication_flow: Some(None),
-                electronic_commerce_indicator: Some(None),
-                result: Some(None),
-                result_reason: Some(None),
+                authentication_flow: None,
+                electronic_commerce_indicator: None,
+                result: None,
+                result_reason: None,
                 transaction_id: Some(None),
-                version: Some(None),
+                version: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(authentication_flow),
-                Some(electronic_commerce_indicator),
-                Some(result),
-                Some(result_reason),
+                authentication_flow,
+                electronic_commerce_indicator,
+                result,
+                result_reason,
                 Some(transaction_id),
-                Some(version),
+                version,
             ) = (
                 self.authentication_flow.take(),
                 self.electronic_commerce_indicator.take(),

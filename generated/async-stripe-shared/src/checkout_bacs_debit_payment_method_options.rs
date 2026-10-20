@@ -26,9 +26,8 @@ impl std::fmt::Debug for CheckoutBacsDebitPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutBacsDebitPaymentMethodOptionsBuilder {
-    mandate_options:
-        Option<Option<stripe_shared::CheckoutPaymentMethodOptionsMandateOptionsBacsDebit>>,
-    setup_future_usage: Option<Option<CheckoutBacsDebitPaymentMethodOptionsSetupFutureUsage>>,
+    mandate_options: Option<stripe_shared::CheckoutPaymentMethodOptionsMandateOptionsBacsDebit>,
+    setup_future_usage: Option<CheckoutBacsDebitPaymentMethodOptionsSetupFutureUsage>,
     target_date: Option<Option<String>>,
 }
 
@@ -72,23 +71,23 @@ const _: () = {
         type Out = CheckoutBacsDebitPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 "target_date" => Deserialize::begin(&mut self.target_date),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                mandate_options: Some(None),
-                setup_future_usage: Some(None),
-                target_date: Some(None),
-            }
+            Self { mandate_options: None, setup_future_usage: None, target_date: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options), Some(setup_future_usage), Some(target_date)) = (
+            let (mandate_options, setup_future_usage, Some(target_date)) = (
                 self.mandate_options.take(),
                 self.setup_future_usage.take(),
                 self.target_date.take(),

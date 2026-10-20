@@ -27,9 +27,9 @@ impl std::fmt::Debug
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletBuilder {
-    apple_pay: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceApplePay>>,
+    apple_pay: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceApplePay>,
 dynamic_last4: Option<Option<String>>,
-google_pay: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePay>>,
+google_pay: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePay>,
 type_: Option<String>,
 
 }
@@ -83,25 +83,22 @@ const _: () = {
         type Out = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWallet;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "apple_pay" => Deserialize::begin(&mut self.apple_pay),
+                "apple_pay" => stripe_types::miniserde_helpers::begin_nullable(&mut self.apple_pay),
                 "dynamic_last4" => Deserialize::begin(&mut self.dynamic_last4),
-                "google_pay" => Deserialize::begin(&mut self.google_pay),
+                "google_pay" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.google_pay)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                apple_pay: Some(None),
-                dynamic_last4: Some(None),
-                google_pay: Some(None),
-                type_: None,
-            }
+            Self { apple_pay: None, dynamic_last4: Some(None), google_pay: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(apple_pay), Some(dynamic_last4), Some(google_pay), Some(type_)) = (
+            let (apple_pay, Some(dynamic_last4), google_pay, Some(type_)) = (
                 self.apple_pay.take(),
                 self.dynamic_last4.take(),
                 self.google_pay,

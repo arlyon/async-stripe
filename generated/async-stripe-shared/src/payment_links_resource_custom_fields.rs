@@ -25,12 +25,12 @@ impl std::fmt::Debug for PaymentLinksResourceCustomFields {
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceCustomFieldsBuilder {
-    dropdown: Option<Option<stripe_shared::PaymentLinksResourceCustomFieldsDropdown>>,
+    dropdown: Option<stripe_shared::PaymentLinksResourceCustomFieldsDropdown>,
     key: Option<String>,
     label: Option<stripe_shared::PaymentLinksResourceCustomFieldsLabel>,
-    numeric: Option<Option<stripe_shared::PaymentLinksResourceCustomFieldsNumeric>>,
+    numeric: Option<stripe_shared::PaymentLinksResourceCustomFieldsNumeric>,
     optional: Option<bool>,
-    text: Option<Option<stripe_shared::PaymentLinksResourceCustomFieldsText>>,
+    text: Option<stripe_shared::PaymentLinksResourceCustomFieldsText>,
     type_: Option<PaymentLinksResourceCustomFieldsType>,
 }
 
@@ -74,12 +74,12 @@ const _: () = {
         type Out = PaymentLinksResourceCustomFields;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "dropdown" => Deserialize::begin(&mut self.dropdown),
+                "dropdown" => stripe_types::miniserde_helpers::begin_nullable(&mut self.dropdown),
                 "key" => Deserialize::begin(&mut self.key),
                 "label" => Deserialize::begin(&mut self.label),
-                "numeric" => Deserialize::begin(&mut self.numeric),
+                "numeric" => stripe_types::miniserde_helpers::begin_nullable(&mut self.numeric),
                 "optional" => Deserialize::begin(&mut self.optional),
-                "text" => Deserialize::begin(&mut self.text),
+                "text" => stripe_types::miniserde_helpers::begin_nullable(&mut self.text),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -87,26 +87,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                dropdown: Some(None),
+                dropdown: None,
                 key: None,
                 label: None,
-                numeric: Some(None),
+                numeric: None,
                 optional: None,
-                text: Some(None),
+                text: None,
                 type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(dropdown),
-                Some(key),
-                Some(label),
-                Some(numeric),
-                Some(optional),
-                Some(text),
-                Some(type_),
-            ) = (
+            let (dropdown, Some(key), Some(label), numeric, Some(optional), text, Some(type_)) = (
                 self.dropdown.take(),
                 self.key.take(),
                 self.label.take(),
@@ -114,8 +106,7 @@ const _: () = {
                 self.optional,
                 self.text.take(),
                 self.type_.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { dropdown, key, label, numeric, optional, text, type_ })

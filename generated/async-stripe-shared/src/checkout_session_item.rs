@@ -41,7 +41,7 @@ impl std::fmt::Debug for CheckoutSessionItem {
 }
 #[doc(hidden)]
 pub struct CheckoutSessionItemBuilder {
-    adjustable_quantity: Option<Option<stripe_shared::LineItemsAdjustableQuantity>>,
+    adjustable_quantity: Option<stripe_shared::LineItemsAdjustableQuantity>,
     amount_discount: Option<i64>,
     amount_subtotal: Option<i64>,
     amount_tax: Option<i64>,
@@ -51,7 +51,7 @@ pub struct CheckoutSessionItemBuilder {
     discounts: Option<Option<Vec<stripe_shared::LineItemsDiscountAmount>>>,
     id: Option<stripe_shared::CheckoutSessionItemId>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    price: Option<Option<stripe_shared::Price>>,
+    price: Option<stripe_shared::Price>,
     quantity: Option<Option<u64>>,
     taxes: Option<Option<Vec<stripe_shared::LineItemsTaxAmount>>>,
 }
@@ -96,7 +96,9 @@ const _: () = {
         type Out = CheckoutSessionItem;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "adjustable_quantity" => Deserialize::begin(&mut self.adjustable_quantity),
+                "adjustable_quantity" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.adjustable_quantity)
+                }
                 "amount_discount" => Deserialize::begin(&mut self.amount_discount),
                 "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
                 "amount_tax" => Deserialize::begin(&mut self.amount_tax),
@@ -106,7 +108,7 @@ const _: () = {
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "id" => Deserialize::begin(&mut self.id),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "price" => Deserialize::begin(&mut self.price),
+                "price" => stripe_types::miniserde_helpers::begin_nullable(&mut self.price),
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 "taxes" => Deserialize::begin(&mut self.taxes),
                 _ => <dyn Visitor>::ignore(),
@@ -115,7 +117,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                adjustable_quantity: Some(None),
+                adjustable_quantity: None,
                 amount_discount: None,
                 amount_subtotal: None,
                 amount_tax: None,
@@ -125,7 +127,7 @@ const _: () = {
                 discounts: Some(None),
                 id: None,
                 metadata: Some(None),
-                price: Some(None),
+                price: None,
                 quantity: Some(None),
                 taxes: Some(None),
             }
@@ -133,7 +135,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(adjustable_quantity),
+                adjustable_quantity,
                 Some(amount_discount),
                 Some(amount_subtotal),
                 Some(amount_tax),
@@ -143,7 +145,7 @@ const _: () = {
                 Some(discounts),
                 Some(id),
                 Some(metadata),
-                Some(price),
+                price,
                 Some(quantity),
                 Some(taxes),
             ) = (

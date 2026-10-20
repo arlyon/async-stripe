@@ -28,8 +28,7 @@ impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTax {
 pub struct BillingBillResourceInvoicingTaxesTaxBuilder {
     amount: Option<i64>,
     tax_behavior: Option<BillingBillResourceInvoicingTaxesTaxTaxBehavior>,
-    tax_rate_details:
-        Option<Option<stripe_shared::BillingBillResourceInvoicingTaxesTaxRateDetails>>,
+    tax_rate_details: Option<stripe_shared::BillingBillResourceInvoicingTaxesTaxRateDetails>,
     taxability_reason: Option<BillingBillResourceInvoicingTaxesTaxTaxabilityReason>,
     taxable_amount: Option<Option<i64>>,
     type_: Option<BillingBillResourceInvoicingTaxesTaxType>,
@@ -77,7 +76,9 @@ const _: () = {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
-                "tax_rate_details" => Deserialize::begin(&mut self.tax_rate_details),
+                "tax_rate_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_rate_details)
+                }
                 "taxability_reason" => Deserialize::begin(&mut self.taxability_reason),
                 "taxable_amount" => Deserialize::begin(&mut self.taxable_amount),
                 "type" => Deserialize::begin(&mut self.type_),
@@ -89,7 +90,7 @@ const _: () = {
             Self {
                 amount: None,
                 tax_behavior: None,
-                tax_rate_details: Some(None),
+                tax_rate_details: None,
                 taxability_reason: None,
                 taxable_amount: Some(None),
                 type_: None,
@@ -100,7 +101,7 @@ const _: () = {
             let (
                 Some(amount),
                 Some(tax_behavior),
-                Some(tax_rate_details),
+                tax_rate_details,
                 Some(taxability_reason),
                 Some(taxable_amount),
                 Some(type_),

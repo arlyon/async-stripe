@@ -43,7 +43,7 @@ pub struct BillingMeterBuilder {
     default_aggregation: Option<stripe_billing::BillingMeterResourceAggregationSettings>,
     display_name: Option<String>,
     event_name: Option<String>,
-    event_time_window: Option<Option<stripe_billing::BillingMeterEventTimeWindow>>,
+    event_time_window: Option<stripe_billing::BillingMeterEventTimeWindow>,
     id: Option<stripe_billing::BillingMeterId>,
     livemode: Option<bool>,
     status: Option<stripe_billing::BillingMeterStatus>,
@@ -97,7 +97,9 @@ const _: () = {
                 "default_aggregation" => Deserialize::begin(&mut self.default_aggregation),
                 "display_name" => Deserialize::begin(&mut self.display_name),
                 "event_name" => Deserialize::begin(&mut self.event_name),
-                "event_time_window" => Deserialize::begin(&mut self.event_time_window),
+                "event_time_window" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.event_time_window)
+                }
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "status" => Deserialize::begin(&mut self.status),
@@ -115,7 +117,7 @@ const _: () = {
                 default_aggregation: None,
                 display_name: None,
                 event_name: None,
-                event_time_window: Some(None),
+                event_time_window: None,
                 id: None,
                 livemode: None,
                 status: None,
@@ -132,7 +134,7 @@ const _: () = {
                 Some(default_aggregation),
                 Some(display_name),
                 Some(event_name),
-                Some(event_time_window),
+                event_time_window,
                 Some(id),
                 Some(livemode),
                 Some(status),

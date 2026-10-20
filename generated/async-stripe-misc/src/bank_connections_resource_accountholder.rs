@@ -22,8 +22,8 @@ impl std::fmt::Debug for BankConnectionsResourceAccountholder {
 }
 #[doc(hidden)]
 pub struct BankConnectionsResourceAccountholderBuilder {
-    account: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    account: Option<stripe_types::Expandable<stripe_shared::Account>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     type_: Option<BankConnectionsResourceAccountholderType>,
 }
@@ -68,8 +68,8 @@ const _: () = {
         type Out = BankConnectionsResourceAccountholder;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account" => Deserialize::begin(&mut self.account),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "account" => stripe_types::miniserde_helpers::begin_nullable(&mut self.account),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -77,16 +77,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                account: Some(None),
-                customer: Some(None),
-                customer_account: Some(None),
-                type_: None,
-            }
+            Self { account: None, customer: None, customer_account: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account), Some(customer), Some(customer_account), Some(type_)) = (
+            let (account, customer, Some(customer_account), Some(type_)) = (
                 self.account.take(),
                 self.customer.take(),
                 self.customer_account.take(),

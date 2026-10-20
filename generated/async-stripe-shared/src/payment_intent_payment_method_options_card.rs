@@ -61,20 +61,19 @@ impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsCard {
 }
 #[doc(hidden)]
 pub struct PaymentIntentPaymentMethodOptionsCardBuilder {
-    capture_method: Option<Option<PaymentIntentPaymentMethodOptionsCardCaptureMethod>>,
-    installments: Option<Option<stripe_shared::PaymentMethodOptionsCardInstallments>>,
-    mandate_options: Option<Option<stripe_shared::PaymentMethodOptionsCardMandateOptions>>,
-    network: Option<Option<PaymentIntentPaymentMethodOptionsCardNetwork>>,
+    capture_method: Option<PaymentIntentPaymentMethodOptionsCardCaptureMethod>,
+    installments: Option<stripe_shared::PaymentMethodOptionsCardInstallments>,
+    mandate_options: Option<stripe_shared::PaymentMethodOptionsCardMandateOptions>,
+    network: Option<PaymentIntentPaymentMethodOptionsCardNetwork>,
     request_extended_authorization:
-        Option<Option<PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization>>,
+        Option<PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization>,
     request_incremental_authorization:
-        Option<Option<PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization>>,
-    request_multicapture: Option<Option<PaymentIntentPaymentMethodOptionsCardRequestMulticapture>>,
-    request_overcapture: Option<Option<PaymentIntentPaymentMethodOptionsCardRequestOvercapture>>,
-    request_three_d_secure:
-        Option<Option<PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>>,
+        Option<PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization>,
+    request_multicapture: Option<PaymentIntentPaymentMethodOptionsCardRequestMulticapture>,
+    request_overcapture: Option<PaymentIntentPaymentMethodOptionsCardRequestOvercapture>,
+    request_three_d_secure: Option<PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>,
     require_cvc_recollection: Option<Option<bool>>,
-    setup_future_usage: Option<Option<PaymentIntentPaymentMethodOptionsCardSetupFutureUsage>>,
+    setup_future_usage: Option<PaymentIntentPaymentMethodOptionsCardSetupFutureUsage>,
     statement_descriptor_suffix_kana: Option<Option<String>>,
     statement_descriptor_suffix_kanji: Option<Option<String>>,
 }
@@ -119,23 +118,41 @@ const _: () = {
         type Out = PaymentIntentPaymentMethodOptionsCard;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
-                "installments" => Deserialize::begin(&mut self.installments),
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "network" => Deserialize::begin(&mut self.network),
+                "capture_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.capture_method)
+                }
+                "installments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.installments)
+                }
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
+                "network" => stripe_types::miniserde_helpers::begin_nullable(&mut self.network),
                 "request_extended_authorization" => {
-                    Deserialize::begin(&mut self.request_extended_authorization)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.request_extended_authorization,
+                    )
                 }
                 "request_incremental_authorization" => {
-                    Deserialize::begin(&mut self.request_incremental_authorization)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.request_incremental_authorization,
+                    )
                 }
-                "request_multicapture" => Deserialize::begin(&mut self.request_multicapture),
-                "request_overcapture" => Deserialize::begin(&mut self.request_overcapture),
-                "request_three_d_secure" => Deserialize::begin(&mut self.request_three_d_secure),
+                "request_multicapture" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.request_multicapture)
+                }
+                "request_overcapture" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.request_overcapture)
+                }
+                "request_three_d_secure" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.request_three_d_secure,
+                ),
                 "require_cvc_recollection" => {
                     Deserialize::begin(&mut self.require_cvc_recollection)
                 }
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 "statement_descriptor_suffix_kana" => {
                     Deserialize::begin(&mut self.statement_descriptor_suffix_kana)
                 }
@@ -148,17 +165,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                capture_method: Some(None),
-                installments: Some(None),
-                mandate_options: Some(None),
-                network: Some(None),
-                request_extended_authorization: Some(None),
-                request_incremental_authorization: Some(None),
-                request_multicapture: Some(None),
-                request_overcapture: Some(None),
-                request_three_d_secure: Some(None),
+                capture_method: None,
+                installments: None,
+                mandate_options: None,
+                network: None,
+                request_extended_authorization: None,
+                request_incremental_authorization: None,
+                request_multicapture: None,
+                request_overcapture: None,
+                request_three_d_secure: None,
                 require_cvc_recollection: Some(None),
-                setup_future_usage: Some(None),
+                setup_future_usage: None,
                 statement_descriptor_suffix_kana: Some(None),
                 statement_descriptor_suffix_kanji: Some(None),
             }
@@ -166,17 +183,17 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(capture_method),
-                Some(installments),
-                Some(mandate_options),
-                Some(network),
-                Some(request_extended_authorization),
-                Some(request_incremental_authorization),
-                Some(request_multicapture),
-                Some(request_overcapture),
-                Some(request_three_d_secure),
+                capture_method,
+                installments,
+                mandate_options,
+                network,
+                request_extended_authorization,
+                request_incremental_authorization,
+                request_multicapture,
+                request_overcapture,
+                request_three_d_secure,
                 Some(require_cvc_recollection),
-                Some(setup_future_usage),
+                setup_future_usage,
                 Some(statement_descriptor_suffix_kana),
                 Some(statement_descriptor_suffix_kanji),
             ) = (

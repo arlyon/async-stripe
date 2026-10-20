@@ -17,7 +17,7 @@ impl std::fmt::Debug for CardGeneratedFromPaymentMethodDetails {
 }
 #[doc(hidden)]
 pub struct CardGeneratedFromPaymentMethodDetailsBuilder {
-    card_present: Option<Option<stripe_shared::PaymentMethodDetailsCardPresent>>,
+    card_present: Option<stripe_shared::PaymentMethodDetailsCardPresent>,
     type_: Option<String>,
 }
 
@@ -61,19 +61,20 @@ const _: () = {
         type Out = CardGeneratedFromPaymentMethodDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card_present" => Deserialize::begin(&mut self.card_present),
+                "card_present" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.card_present)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { card_present: Some(None), type_: None }
+            Self { card_present: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card_present), Some(type_)) = (self.card_present.take(), self.type_.take())
-            else {
+            let (card_present, Some(type_)) = (self.card_present.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { card_present, type_ })

@@ -17,7 +17,7 @@ impl std::fmt::Debug for PaymentLinksResourceInvoiceCreation {
 #[doc(hidden)]
 pub struct PaymentLinksResourceInvoiceCreationBuilder {
     enabled: Option<bool>,
-    invoice_data: Option<Option<stripe_shared::PaymentLinksResourceInvoiceSettings>>,
+    invoice_data: Option<stripe_shared::PaymentLinksResourceInvoiceSettings>,
 }
 
 #[allow(
@@ -61,18 +61,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "enabled" => Deserialize::begin(&mut self.enabled),
-                "invoice_data" => Deserialize::begin(&mut self.invoice_data),
+                "invoice_data" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.invoice_data)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { enabled: None, invoice_data: Some(None) }
+            Self { enabled: None, invoice_data: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(invoice_data)) = (self.enabled, self.invoice_data.take())
-            else {
+            let (Some(enabled), invoice_data) = (self.enabled, self.invoice_data.take()) else {
                 return None;
             };
             Some(Self::Out { enabled, invoice_data })

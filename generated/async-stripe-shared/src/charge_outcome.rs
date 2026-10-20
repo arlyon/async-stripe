@@ -47,14 +47,14 @@ impl std::fmt::Debug for ChargeOutcome {
 }
 #[doc(hidden)]
 pub struct ChargeOutcomeBuilder {
-    advice_code: Option<Option<ChargeOutcomeAdviceCode>>,
+    advice_code: Option<ChargeOutcomeAdviceCode>,
     network_advice_code: Option<Option<String>>,
     network_decline_code: Option<Option<String>>,
     network_status: Option<Option<String>>,
     reason: Option<Option<String>>,
     risk_level: Option<Option<String>>,
     risk_score: Option<Option<i64>>,
-    rule: Option<Option<stripe_types::Expandable<stripe_shared::Rule>>>,
+    rule: Option<stripe_types::Expandable<stripe_shared::Rule>>,
     seller_message: Option<Option<String>>,
     type_: Option<String>,
 }
@@ -99,14 +99,16 @@ const _: () = {
         type Out = ChargeOutcome;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "advice_code" => Deserialize::begin(&mut self.advice_code),
+                "advice_code" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.advice_code)
+                }
                 "network_advice_code" => Deserialize::begin(&mut self.network_advice_code),
                 "network_decline_code" => Deserialize::begin(&mut self.network_decline_code),
                 "network_status" => Deserialize::begin(&mut self.network_status),
                 "reason" => Deserialize::begin(&mut self.reason),
                 "risk_level" => Deserialize::begin(&mut self.risk_level),
                 "risk_score" => Deserialize::begin(&mut self.risk_score),
-                "rule" => Deserialize::begin(&mut self.rule),
+                "rule" => stripe_types::miniserde_helpers::begin_nullable(&mut self.rule),
                 "seller_message" => Deserialize::begin(&mut self.seller_message),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -115,14 +117,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                advice_code: Some(None),
+                advice_code: None,
                 network_advice_code: Some(None),
                 network_decline_code: Some(None),
                 network_status: Some(None),
                 reason: Some(None),
                 risk_level: Some(None),
                 risk_score: Some(None),
-                rule: Some(None),
+                rule: None,
                 seller_message: Some(None),
                 type_: None,
             }
@@ -130,14 +132,14 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(advice_code),
+                advice_code,
                 Some(network_advice_code),
                 Some(network_decline_code),
                 Some(network_status),
                 Some(reason),
                 Some(risk_level),
                 Some(risk_score),
-                Some(rule),
+                rule,
                 Some(seller_message),
                 Some(type_),
             ) = (

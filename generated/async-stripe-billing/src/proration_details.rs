@@ -16,7 +16,7 @@ impl std::fmt::Debug for ProrationDetails {
 }
 #[doc(hidden)]
 pub struct ProrationDetailsBuilder {
-    credited_items: Option<Option<stripe_billing::InvoiceItemProrationCreditedItems>>,
+    credited_items: Option<stripe_billing::InvoiceItemProrationCreditedItems>,
     discount_amounts: Option<Vec<stripe_shared::DiscountsResourceDiscountAmount>>,
 }
 
@@ -60,18 +60,20 @@ const _: () = {
         type Out = ProrationDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "credited_items" => Deserialize::begin(&mut self.credited_items),
+                "credited_items" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.credited_items)
+                }
                 "discount_amounts" => Deserialize::begin(&mut self.discount_amounts),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { credited_items: Some(None), discount_amounts: None }
+            Self { credited_items: None, discount_amounts: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(credited_items), Some(discount_amounts)) =
+            let (credited_items, Some(discount_amounts)) =
                 (self.credited_items.take(), self.discount_amounts.take())
             else {
                 return None;

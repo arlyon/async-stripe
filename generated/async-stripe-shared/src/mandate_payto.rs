@@ -35,7 +35,7 @@ pub struct MandatePaytoBuilder {
     end_date: Option<Option<String>>,
     payment_schedule: Option<MandatePaytoPaymentSchedule>,
     payments_per_period: Option<Option<i64>>,
-    purpose: Option<Option<MandatePaytoPurpose>>,
+    purpose: Option<MandatePaytoPurpose>,
     start_date: Option<Option<String>>,
 }
 
@@ -84,7 +84,7 @@ const _: () = {
                 "end_date" => Deserialize::begin(&mut self.end_date),
                 "payment_schedule" => Deserialize::begin(&mut self.payment_schedule),
                 "payments_per_period" => Deserialize::begin(&mut self.payments_per_period),
-                "purpose" => Deserialize::begin(&mut self.purpose),
+                "purpose" => stripe_types::miniserde_helpers::begin_nullable(&mut self.purpose),
                 "start_date" => Deserialize::begin(&mut self.start_date),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -97,7 +97,7 @@ const _: () = {
                 end_date: Some(None),
                 payment_schedule: None,
                 payments_per_period: Some(None),
-                purpose: Some(None),
+                purpose: None,
                 start_date: Some(None),
             }
         }
@@ -109,7 +109,7 @@ const _: () = {
                 Some(end_date),
                 Some(payment_schedule),
                 Some(payments_per_period),
-                Some(purpose),
+                purpose,
                 Some(start_date),
             ) = (
                 self.amount,

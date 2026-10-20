@@ -15,8 +15,7 @@ impl std::fmt::Debug for BillingBillResourceInvoicingLinesCommonProrationDetails
 }
 #[doc(hidden)]
 pub struct BillingBillResourceInvoicingLinesCommonProrationDetailsBuilder {
-    credited_items:
-        Option<Option<stripe_shared::BillingBillResourceInvoicingLinesCommonCreditedItems>>,
+    credited_items: Option<stripe_shared::BillingBillResourceInvoicingLinesCommonCreditedItems>,
 }
 
 #[allow(
@@ -60,17 +59,19 @@ const _: () = {
         type Out = BillingBillResourceInvoicingLinesCommonProrationDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "credited_items" => Deserialize::begin(&mut self.credited_items),
+                "credited_items" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.credited_items)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { credited_items: Some(None) }
+            Self { credited_items: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(credited_items),) = (self.credited_items.take(),) else {
+            let (credited_items,) = (self.credited_items.take(),) else {
                 return None;
             };
             Some(Self::Out { credited_items })

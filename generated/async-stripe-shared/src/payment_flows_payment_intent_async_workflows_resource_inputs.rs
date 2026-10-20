@@ -15,9 +15,7 @@ impl std::fmt::Debug for PaymentFlowsPaymentIntentAsyncWorkflowsResourceInputs {
 }
 #[doc(hidden)]
 pub struct PaymentFlowsPaymentIntentAsyncWorkflowsResourceInputsBuilder {
-    tax: Option<
-        Option<stripe_shared::PaymentFlowsPaymentIntentAsyncWorkflowsResourceInputsResourceTax>,
-    >,
+    tax: Option<stripe_shared::PaymentFlowsPaymentIntentAsyncWorkflowsResourceInputsResourceTax>,
 }
 
 #[allow(
@@ -61,17 +59,17 @@ const _: () = {
         type Out = PaymentFlowsPaymentIntentAsyncWorkflowsResourceInputs;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "tax" => Deserialize::begin(&mut self.tax),
+                "tax" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tax),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { tax: Some(None) }
+            Self { tax: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(tax),) = (self.tax.take(),) else {
+            let (tax,) = (self.tax.take(),) else {
                 return None;
             };
             Some(Self::Out { tax })

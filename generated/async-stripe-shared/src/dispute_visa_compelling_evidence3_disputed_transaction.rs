@@ -38,9 +38,9 @@ pub struct DisputeVisaCompellingEvidence3DisputedTransactionBuilder {
     customer_email_address: Option<Option<String>>,
     customer_purchase_ip: Option<Option<String>>,
     merchandise_or_services:
-        Option<Option<DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices>>,
+        Option<DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices>,
     product_description: Option<Option<String>>,
-    shipping_address: Option<Option<stripe_shared::DisputeTransactionShippingAddress>>,
+    shipping_address: Option<stripe_shared::DisputeTransactionShippingAddress>,
 }
 
 #[allow(
@@ -90,9 +90,13 @@ const _: () = {
                 "customer_device_id" => Deserialize::begin(&mut self.customer_device_id),
                 "customer_email_address" => Deserialize::begin(&mut self.customer_email_address),
                 "customer_purchase_ip" => Deserialize::begin(&mut self.customer_purchase_ip),
-                "merchandise_or_services" => Deserialize::begin(&mut self.merchandise_or_services),
+                "merchandise_or_services" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.merchandise_or_services,
+                ),
                 "product_description" => Deserialize::begin(&mut self.product_description),
-                "shipping_address" => Deserialize::begin(&mut self.shipping_address),
+                "shipping_address" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_address)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -104,9 +108,9 @@ const _: () = {
                 customer_device_id: Some(None),
                 customer_email_address: Some(None),
                 customer_purchase_ip: Some(None),
-                merchandise_or_services: Some(None),
+                merchandise_or_services: None,
                 product_description: Some(None),
-                shipping_address: Some(None),
+                shipping_address: None,
             }
         }
 
@@ -117,9 +121,9 @@ const _: () = {
                 Some(customer_device_id),
                 Some(customer_email_address),
                 Some(customer_purchase_ip),
-                Some(merchandise_or_services),
+                merchandise_or_services,
                 Some(product_description),
-                Some(shipping_address),
+                shipping_address,
             ) = (
                 self.customer_account_id.take(),
                 self.customer_device_fingerprint.take(),

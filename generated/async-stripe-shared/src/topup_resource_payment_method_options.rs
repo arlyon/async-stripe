@@ -14,7 +14,7 @@ impl std::fmt::Debug for TopupResourcePaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct TopupResourcePaymentMethodOptionsBuilder {
-    us_bank_account: Option<Option<stripe_shared::TopupResourceUsBankAccount>>,
+    us_bank_account: Option<stripe_shared::TopupResourceUsBankAccount>,
 }
 
 #[allow(
@@ -57,17 +57,19 @@ const _: () = {
         type Out = TopupResourcePaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
+                "us_bank_account" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.us_bank_account)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { us_bank_account: Some(None) }
+            Self { us_bank_account: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(us_bank_account),) = (self.us_bank_account.take(),) else {
+            let (us_bank_account,) = (self.us_bank_account.take(),) else {
                 return None;
             };
             Some(Self::Out { us_bank_account })

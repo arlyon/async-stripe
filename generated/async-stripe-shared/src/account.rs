@@ -71,28 +71,28 @@ impl std::fmt::Debug for Account {
 }
 #[doc(hidden)]
 pub struct AccountBuilder {
-    business_profile: Option<Option<stripe_shared::AccountBusinessProfile>>,
-    business_type: Option<Option<stripe_shared::AccountBusinessType>>,
-    capabilities: Option<Option<stripe_shared::AccountCapabilities>>,
+    business_profile: Option<stripe_shared::AccountBusinessProfile>,
+    business_type: Option<stripe_shared::AccountBusinessType>,
+    capabilities: Option<stripe_shared::AccountCapabilities>,
     charges_enabled: Option<Option<bool>>,
-    company: Option<Option<stripe_shared::LegalEntityCompany>>,
-    controller: Option<Option<stripe_shared::AccountUnificationAccountController>>,
+    company: Option<stripe_shared::LegalEntityCompany>,
+    controller: Option<stripe_shared::AccountUnificationAccountController>,
     country: Option<Option<String>>,
     created: Option<Option<stripe_types::Timestamp>>,
     default_currency: Option<Option<stripe_types::Currency>>,
     details_submitted: Option<Option<bool>>,
     email: Option<Option<String>>,
     external_accounts: Option<Option<stripe_types::List<stripe_shared::ExternalAccount>>>,
-    future_requirements: Option<Option<stripe_shared::AccountFutureRequirements>>,
-    groups: Option<Option<stripe_shared::AccountGroupMembership>>,
+    future_requirements: Option<stripe_shared::AccountFutureRequirements>,
+    groups: Option<stripe_shared::AccountGroupMembership>,
     id: Option<stripe_shared::AccountId>,
-    individual: Option<Option<stripe_shared::Person>>,
+    individual: Option<stripe_shared::Person>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     payouts_enabled: Option<Option<bool>>,
-    requirements: Option<Option<stripe_shared::AccountRequirements>>,
-    settings: Option<Option<stripe_shared::AccountSettings>>,
-    tos_acceptance: Option<Option<stripe_shared::AccountTosAcceptance>>,
-    type_: Option<Option<AccountType>>,
+    requirements: Option<stripe_shared::AccountRequirements>,
+    settings: Option<stripe_shared::AccountSettings>,
+    tos_acceptance: Option<stripe_shared::AccountTosAcceptance>,
+    type_: Option<AccountType>,
 }
 
 #[allow(
@@ -132,83 +132,99 @@ const _: () = {
         type Out = Account;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "business_profile" => Deserialize::begin(&mut self.business_profile),
-                "business_type" => Deserialize::begin(&mut self.business_type),
-                "capabilities" => Deserialize::begin(&mut self.capabilities),
+                "business_profile" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.business_profile)
+                }
+                "business_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.business_type)
+                }
+                "capabilities" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.capabilities)
+                }
                 "charges_enabled" => Deserialize::begin(&mut self.charges_enabled),
-                "company" => Deserialize::begin(&mut self.company),
-                "controller" => Deserialize::begin(&mut self.controller),
+                "company" => stripe_types::miniserde_helpers::begin_nullable(&mut self.company),
+                "controller" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.controller)
+                }
                 "country" => Deserialize::begin(&mut self.country),
                 "created" => Deserialize::begin(&mut self.created),
                 "default_currency" => Deserialize::begin(&mut self.default_currency),
                 "details_submitted" => Deserialize::begin(&mut self.details_submitted),
                 "email" => Deserialize::begin(&mut self.email),
                 "external_accounts" => Deserialize::begin(&mut self.external_accounts),
-                "future_requirements" => Deserialize::begin(&mut self.future_requirements),
-                "groups" => Deserialize::begin(&mut self.groups),
+                "future_requirements" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.future_requirements)
+                }
+                "groups" => stripe_types::miniserde_helpers::begin_nullable(&mut self.groups),
                 "id" => Deserialize::begin(&mut self.id),
-                "individual" => Deserialize::begin(&mut self.individual),
+                "individual" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.individual)
+                }
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "payouts_enabled" => Deserialize::begin(&mut self.payouts_enabled),
-                "requirements" => Deserialize::begin(&mut self.requirements),
-                "settings" => Deserialize::begin(&mut self.settings),
-                "tos_acceptance" => Deserialize::begin(&mut self.tos_acceptance),
-                "type" => Deserialize::begin(&mut self.type_),
+                "requirements" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.requirements)
+                }
+                "settings" => stripe_types::miniserde_helpers::begin_nullable(&mut self.settings),
+                "tos_acceptance" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tos_acceptance)
+                }
+                "type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                business_profile: Some(None),
-                business_type: Some(None),
-                capabilities: Some(None),
+                business_profile: None,
+                business_type: None,
+                capabilities: None,
                 charges_enabled: Some(None),
-                company: Some(None),
-                controller: Some(None),
+                company: None,
+                controller: None,
                 country: Some(None),
                 created: Some(None),
                 default_currency: Some(None),
                 details_submitted: Some(None),
                 email: Some(None),
                 external_accounts: Some(None),
-                future_requirements: Some(None),
-                groups: Some(None),
+                future_requirements: None,
+                groups: None,
                 id: None,
-                individual: Some(None),
+                individual: None,
                 metadata: Some(None),
                 payouts_enabled: Some(None),
-                requirements: Some(None),
-                settings: Some(None),
-                tos_acceptance: Some(None),
-                type_: Some(None),
+                requirements: None,
+                settings: None,
+                tos_acceptance: None,
+                type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(business_profile),
-                Some(business_type),
-                Some(capabilities),
+                business_profile,
+                business_type,
+                capabilities,
                 Some(charges_enabled),
-                Some(company),
-                Some(controller),
+                company,
+                controller,
                 Some(country),
                 Some(created),
                 Some(default_currency),
                 Some(details_submitted),
                 Some(email),
                 Some(external_accounts),
-                Some(future_requirements),
-                Some(groups),
+                future_requirements,
+                groups,
                 Some(id),
-                Some(individual),
+                individual,
                 Some(metadata),
                 Some(payouts_enabled),
-                Some(requirements),
-                Some(settings),
-                Some(tos_acceptance),
-                Some(type_),
+                requirements,
+                settings,
+                tos_acceptance,
+                type_,
             ) = (
                 self.business_profile.take(),
                 self.business_type.take(),

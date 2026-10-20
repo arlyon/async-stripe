@@ -62,7 +62,7 @@ pub struct EventBuilder {
     id: Option<stripe_shared::EventId>,
     livemode: Option<bool>,
     pending_webhooks: Option<i64>,
-    request: Option<Option<stripe_shared::NotificationEventRequest>>,
+    request: Option<stripe_shared::NotificationEventRequest>,
     type_: Option<EventType>,
 }
 
@@ -111,7 +111,7 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "pending_webhooks" => Deserialize::begin(&mut self.pending_webhooks),
-                "request" => Deserialize::begin(&mut self.request),
+                "request" => stripe_types::miniserde_helpers::begin_nullable(&mut self.request),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -127,7 +127,7 @@ const _: () = {
                 id: None,
                 livemode: None,
                 pending_webhooks: None,
-                request: Some(None),
+                request: None,
                 type_: None,
             }
         }
@@ -142,7 +142,7 @@ const _: () = {
                 Some(id),
                 Some(livemode),
                 Some(pending_webhooks),
-                Some(request),
+                request,
                 Some(type_),
             ) = (
                 self.account.take(),

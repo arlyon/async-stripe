@@ -40,7 +40,7 @@ pub struct BalanceSettingsResourcePayoutsBuilder {
         >,
     >,
     minimum_balance_by_currency: Option<Option<std::collections::HashMap<String, i64>>>,
-    schedule: Option<Option<stripe_core::BalanceSettingsResourcePayoutSchedule>>,
+    schedule: Option<stripe_core::BalanceSettingsResourcePayoutSchedule>,
     statement_descriptor: Option<Option<String>>,
     status: Option<BalanceSettingsResourcePayoutsStatus>,
 }
@@ -91,7 +91,7 @@ const _: () = {
                 "minimum_balance_by_currency" => {
                     Deserialize::begin(&mut self.minimum_balance_by_currency)
                 }
-                "schedule" => Deserialize::begin(&mut self.schedule),
+                "schedule" => stripe_types::miniserde_helpers::begin_nullable(&mut self.schedule),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
@@ -102,7 +102,7 @@ const _: () = {
             Self {
                 automatic_transfer_rules_by_currency: Some(None),
                 minimum_balance_by_currency: Some(None),
-                schedule: Some(None),
+                schedule: None,
                 statement_descriptor: Some(None),
                 status: None,
             }
@@ -112,7 +112,7 @@ const _: () = {
             let (
                 Some(automatic_transfer_rules_by_currency),
                 Some(minimum_balance_by_currency),
-                Some(schedule),
+                schedule,
                 Some(statement_descriptor),
                 Some(status),
             ) = (

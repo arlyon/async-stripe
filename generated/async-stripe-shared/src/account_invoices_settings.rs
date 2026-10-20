@@ -18,7 +18,7 @@ impl std::fmt::Debug for AccountInvoicesSettings {
 #[doc(hidden)]
 pub struct AccountInvoicesSettingsBuilder {
     default_account_tax_ids: Option<Option<Vec<stripe_types::Expandable<stripe_shared::TaxId>>>>,
-    hosted_payment_method_save: Option<Option<AccountInvoicesSettingsHostedPaymentMethodSave>>,
+    hosted_payment_method_save: Option<AccountInvoicesSettingsHostedPaymentMethodSave>,
 }
 
 #[allow(
@@ -62,19 +62,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "default_account_tax_ids" => Deserialize::begin(&mut self.default_account_tax_ids),
-                "hosted_payment_method_save" => {
-                    Deserialize::begin(&mut self.hosted_payment_method_save)
-                }
+                "hosted_payment_method_save" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.hosted_payment_method_save,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { default_account_tax_ids: Some(None), hosted_payment_method_save: Some(None) }
+            Self { default_account_tax_ids: Some(None), hosted_payment_method_save: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(default_account_tax_ids), Some(hosted_payment_method_save)) =
+            let (Some(default_account_tax_ids), hosted_payment_method_save) =
                 (self.default_account_tax_ids.take(), self.hosted_payment_method_save.take())
             else {
                 return None;

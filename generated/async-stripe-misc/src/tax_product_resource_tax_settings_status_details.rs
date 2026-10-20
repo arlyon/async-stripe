@@ -14,8 +14,8 @@ impl std::fmt::Debug for TaxProductResourceTaxSettingsStatusDetails {
 }
 #[doc(hidden)]
 pub struct TaxProductResourceTaxSettingsStatusDetailsBuilder {
-    active: Option<Option<stripe_misc::TaxProductResourceTaxSettingsStatusDetailsResourceActive>>,
-    pending: Option<Option<stripe_misc::TaxProductResourceTaxSettingsStatusDetailsResourcePending>>,
+    active: Option<stripe_misc::TaxProductResourceTaxSettingsStatusDetailsResourceActive>,
+    pending: Option<stripe_misc::TaxProductResourceTaxSettingsStatusDetailsResourcePending>,
 }
 
 #[allow(
@@ -58,18 +58,18 @@ const _: () = {
         type Out = TaxProductResourceTaxSettingsStatusDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
-                "pending" => Deserialize::begin(&mut self.pending),
+                "active" => stripe_types::miniserde_helpers::begin_nullable(&mut self.active),
+                "pending" => stripe_types::miniserde_helpers::begin_nullable(&mut self.pending),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { active: Some(None), pending: Some(None) }
+            Self { active: None, pending: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(active), Some(pending)) = (self.active, self.pending.take()) else {
+            let (active, pending) = (self.active, self.pending.take()) else {
                 return None;
             };
             Some(Self::Out { active, pending })

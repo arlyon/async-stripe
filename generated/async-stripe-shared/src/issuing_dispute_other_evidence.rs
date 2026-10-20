@@ -20,10 +20,10 @@ impl std::fmt::Debug for IssuingDisputeOtherEvidence {
 }
 #[doc(hidden)]
 pub struct IssuingDisputeOtherEvidenceBuilder {
-    additional_documentation: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    additional_documentation: Option<stripe_types::Expandable<stripe_shared::File>>,
     explanation: Option<Option<String>>,
     product_description: Option<Option<String>>,
-    product_type: Option<Option<IssuingDisputeOtherEvidenceProductType>>,
+    product_type: Option<IssuingDisputeOtherEvidenceProductType>,
 }
 
 #[allow(
@@ -66,31 +66,33 @@ const _: () = {
         type Out = IssuingDisputeOtherEvidence;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "additional_documentation" => {
-                    Deserialize::begin(&mut self.additional_documentation)
-                }
+                "additional_documentation" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.additional_documentation,
+                ),
                 "explanation" => Deserialize::begin(&mut self.explanation),
                 "product_description" => Deserialize::begin(&mut self.product_description),
-                "product_type" => Deserialize::begin(&mut self.product_type),
+                "product_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.product_type)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                additional_documentation: Some(None),
+                additional_documentation: None,
                 explanation: Some(None),
                 product_description: Some(None),
-                product_type: Some(None),
+                product_type: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(additional_documentation),
+                additional_documentation,
                 Some(explanation),
                 Some(product_description),
-                Some(product_type),
+                product_type,
             ) = (
                 self.additional_documentation.take(),
                 self.explanation.take(),

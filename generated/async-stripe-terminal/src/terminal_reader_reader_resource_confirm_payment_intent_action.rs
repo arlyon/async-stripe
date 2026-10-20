@@ -17,7 +17,7 @@ impl std::fmt::Debug for TerminalReaderReaderResourceConfirmPaymentIntentAction 
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceConfirmPaymentIntentActionBuilder {
-    confirm_config: Option<Option<stripe_terminal::TerminalReaderReaderResourceConfirmConfig>>,
+    confirm_config: Option<stripe_terminal::TerminalReaderReaderResourceConfirmConfig>,
     payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
 }
 
@@ -62,18 +62,20 @@ const _: () = {
         type Out = TerminalReaderReaderResourceConfirmPaymentIntentAction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "confirm_config" => Deserialize::begin(&mut self.confirm_config),
+                "confirm_config" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.confirm_config)
+                }
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { confirm_config: Some(None), payment_intent: None }
+            Self { confirm_config: None, payment_intent: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(confirm_config), Some(payment_intent)) =
+            let (confirm_config, Some(payment_intent)) =
                 (self.confirm_config.take(), self.payment_intent.take())
             else {
                 return None;

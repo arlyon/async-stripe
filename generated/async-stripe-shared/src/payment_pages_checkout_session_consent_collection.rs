@@ -24,9 +24,9 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionConsentCollection {
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionConsentCollectionBuilder {
     payment_method_reuse_agreement:
-        Option<Option<stripe_shared::PaymentPagesCheckoutSessionPaymentMethodReuseAgreement>>,
-    promotions: Option<Option<PaymentPagesCheckoutSessionConsentCollectionPromotions>>,
-    terms_of_service: Option<Option<PaymentPagesCheckoutSessionConsentCollectionTermsOfService>>,
+        Option<stripe_shared::PaymentPagesCheckoutSessionPaymentMethodReuseAgreement>,
+    promotions: Option<PaymentPagesCheckoutSessionConsentCollectionPromotions>,
+    terms_of_service: Option<PaymentPagesCheckoutSessionConsentCollectionTermsOfService>,
 }
 
 #[allow(
@@ -70,24 +70,26 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "payment_method_reuse_agreement" => {
-                    Deserialize::begin(&mut self.payment_method_reuse_agreement)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.payment_method_reuse_agreement,
+                    )
                 }
-                "promotions" => Deserialize::begin(&mut self.promotions),
-                "terms_of_service" => Deserialize::begin(&mut self.terms_of_service),
+                "promotions" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.promotions)
+                }
+                "terms_of_service" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.terms_of_service)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                payment_method_reuse_agreement: Some(None),
-                promotions: Some(None),
-                terms_of_service: Some(None),
-            }
+            Self { payment_method_reuse_agreement: None, promotions: None, terms_of_service: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payment_method_reuse_agreement), Some(promotions), Some(terms_of_service)) = (
+            let (payment_method_reuse_agreement, promotions, terms_of_service) = (
                 self.payment_method_reuse_agreement.take(),
                 self.promotions.take(),
                 self.terms_of_service.take(),

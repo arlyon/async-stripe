@@ -23,7 +23,7 @@ pub struct TerminalReaderReaderResourceProcessConfigBuilder {
     enable_customer_cancellation: Option<Option<bool>>,
     return_url: Option<Option<String>>,
     skip_tipping: Option<Option<bool>>,
-    tipping: Option<Option<stripe_terminal::TerminalReaderReaderResourceTippingConfig>>,
+    tipping: Option<stripe_terminal::TerminalReaderReaderResourceTippingConfig>,
 }
 
 #[allow(
@@ -71,7 +71,7 @@ const _: () = {
                 }
                 "return_url" => Deserialize::begin(&mut self.return_url),
                 "skip_tipping" => Deserialize::begin(&mut self.skip_tipping),
-                "tipping" => Deserialize::begin(&mut self.tipping),
+                "tipping" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tipping),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -81,23 +81,17 @@ const _: () = {
                 enable_customer_cancellation: Some(None),
                 return_url: Some(None),
                 skip_tipping: Some(None),
-                tipping: Some(None),
+                tipping: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(enable_customer_cancellation),
-                Some(return_url),
-                Some(skip_tipping),
-                Some(tipping),
-            ) = (
+            let (Some(enable_customer_cancellation), Some(return_url), Some(skip_tipping), tipping) = (
                 self.enable_customer_cancellation,
                 self.return_url.take(),
                 self.skip_tipping,
                 self.tipping,
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { enable_customer_cancellation, return_url, skip_tipping, tipping })

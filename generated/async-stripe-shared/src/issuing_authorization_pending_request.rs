@@ -31,7 +31,7 @@ impl std::fmt::Debug for IssuingAuthorizationPendingRequest {
 #[doc(hidden)]
 pub struct IssuingAuthorizationPendingRequestBuilder {
     amount: Option<i64>,
-    amount_details: Option<Option<stripe_shared::IssuingAuthorizationAmountDetails>>,
+    amount_details: Option<stripe_shared::IssuingAuthorizationAmountDetails>,
     currency: Option<stripe_types::Currency>,
     is_amount_controllable: Option<bool>,
     merchant_amount: Option<i64>,
@@ -80,7 +80,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "amount_details" => Deserialize::begin(&mut self.amount_details),
+                "amount_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_details)
+                }
                 "currency" => Deserialize::begin(&mut self.currency),
                 "is_amount_controllable" => Deserialize::begin(&mut self.is_amount_controllable),
                 "merchant_amount" => Deserialize::begin(&mut self.merchant_amount),
@@ -93,7 +95,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: None,
-                amount_details: Some(None),
+                amount_details: None,
                 currency: None,
                 is_amount_controllable: None,
                 merchant_amount: None,
@@ -105,7 +107,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(amount_details),
+                amount_details,
                 Some(currency),
                 Some(is_amount_controllable),
                 Some(merchant_amount),

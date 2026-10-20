@@ -53,7 +53,7 @@ impl std::fmt::Debug for SetupAttemptPaymentMethodDetailsCard {
 #[doc(hidden)]
 pub struct SetupAttemptPaymentMethodDetailsCardBuilder {
     brand: Option<Option<String>>,
-    checks: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardChecks>>,
+    checks: Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardChecks>,
     country: Option<Option<String>>,
     description: Option<Option<String>>,
     exp_month: Option<Option<i64>>,
@@ -65,8 +65,8 @@ pub struct SetupAttemptPaymentMethodDetailsCardBuilder {
     last4: Option<Option<String>>,
     moto: Option<Option<bool>>,
     network: Option<Option<String>>,
-    three_d_secure: Option<Option<stripe_shared::ThreeDSecureDetails>>,
-    wallet: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardWallet>>,
+    three_d_secure: Option<stripe_shared::ThreeDSecureDetails>,
+    wallet: Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardWallet>,
 }
 
 #[allow(
@@ -110,7 +110,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "brand" => Deserialize::begin(&mut self.brand),
-                "checks" => Deserialize::begin(&mut self.checks),
+                "checks" => stripe_types::miniserde_helpers::begin_nullable(&mut self.checks),
                 "country" => Deserialize::begin(&mut self.country),
                 "description" => Deserialize::begin(&mut self.description),
                 "exp_month" => Deserialize::begin(&mut self.exp_month),
@@ -122,8 +122,10 @@ const _: () = {
                 "last4" => Deserialize::begin(&mut self.last4),
                 "moto" => Deserialize::begin(&mut self.moto),
                 "network" => Deserialize::begin(&mut self.network),
-                "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
-                "wallet" => Deserialize::begin(&mut self.wallet),
+                "three_d_secure" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.three_d_secure)
+                }
+                "wallet" => stripe_types::miniserde_helpers::begin_nullable(&mut self.wallet),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -131,7 +133,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 brand: Some(None),
-                checks: Some(None),
+                checks: None,
                 country: Some(None),
                 description: Some(None),
                 exp_month: Some(None),
@@ -143,15 +145,15 @@ const _: () = {
                 last4: Some(None),
                 moto: Some(None),
                 network: Some(None),
-                three_d_secure: Some(None),
-                wallet: Some(None),
+                three_d_secure: None,
+                wallet: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(brand),
-                Some(checks),
+                checks,
                 Some(country),
                 Some(description),
                 Some(exp_month),
@@ -163,8 +165,8 @@ const _: () = {
                 Some(last4),
                 Some(moto),
                 Some(network),
-                Some(three_d_secure),
-                Some(wallet),
+                three_d_secure,
+                wallet,
             ) = (
                 self.brand.take(),
                 self.checks.take(),

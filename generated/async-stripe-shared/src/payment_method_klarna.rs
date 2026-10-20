@@ -14,7 +14,7 @@ impl std::fmt::Debug for PaymentMethodKlarna {
 }
 #[doc(hidden)]
 pub struct PaymentMethodKlarnaBuilder {
-    dob: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsKlarnaDob>>,
+    dob: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsKlarnaDob>,
 }
 
 #[allow(
@@ -57,17 +57,17 @@ const _: () = {
         type Out = PaymentMethodKlarna;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "dob" => Deserialize::begin(&mut self.dob),
+                "dob" => stripe_types::miniserde_helpers::begin_nullable(&mut self.dob),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { dob: Some(None) }
+            Self { dob: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(dob),) = (self.dob,) else {
+            let (dob,) = (self.dob,) else {
                 return None;
             };
             Some(Self::Out { dob })

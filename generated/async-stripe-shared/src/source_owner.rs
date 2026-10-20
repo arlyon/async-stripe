@@ -36,11 +36,11 @@ impl std::fmt::Debug for SourceOwner {
 }
 #[doc(hidden)]
 pub struct SourceOwnerBuilder {
-    address: Option<Option<stripe_shared::Address>>,
+    address: Option<stripe_shared::Address>,
     email: Option<Option<String>>,
     name: Option<Option<String>>,
     phone: Option<Option<String>>,
-    verified_address: Option<Option<stripe_shared::Address>>,
+    verified_address: Option<stripe_shared::Address>,
     verified_email: Option<Option<String>>,
     verified_name: Option<Option<String>>,
     verified_phone: Option<Option<String>>,
@@ -86,11 +86,13 @@ const _: () = {
         type Out = SourceOwner;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
+                "address" => stripe_types::miniserde_helpers::begin_nullable(&mut self.address),
                 "email" => Deserialize::begin(&mut self.email),
                 "name" => Deserialize::begin(&mut self.name),
                 "phone" => Deserialize::begin(&mut self.phone),
-                "verified_address" => Deserialize::begin(&mut self.verified_address),
+                "verified_address" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verified_address)
+                }
                 "verified_email" => Deserialize::begin(&mut self.verified_email),
                 "verified_name" => Deserialize::begin(&mut self.verified_name),
                 "verified_phone" => Deserialize::begin(&mut self.verified_phone),
@@ -100,11 +102,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Some(None),
+                address: None,
                 email: Some(None),
                 name: Some(None),
                 phone: Some(None),
-                verified_address: Some(None),
+                verified_address: None,
                 verified_email: Some(None),
                 verified_name: Some(None),
                 verified_phone: Some(None),
@@ -113,11 +115,11 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(address),
+                address,
                 Some(email),
                 Some(name),
                 Some(phone),
-                Some(verified_address),
+                verified_address,
                 Some(verified_email),
                 Some(verified_name),
                 Some(verified_phone),

@@ -37,7 +37,7 @@ impl std::fmt::Debug for CustomerSession {
 #[doc(hidden)]
 pub struct CustomerSessionBuilder {
     client_secret: Option<String>,
-    components: Option<Option<stripe_core::CustomerSessionResourceComponents>>,
+    components: Option<stripe_core::CustomerSessionResourceComponents>,
     created: Option<stripe_types::Timestamp>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
@@ -86,7 +86,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "client_secret" => Deserialize::begin(&mut self.client_secret),
-                "components" => Deserialize::begin(&mut self.components),
+                "components" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.components)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "customer" => Deserialize::begin(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
@@ -99,7 +101,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 client_secret: None,
-                components: Some(None),
+                components: None,
                 created: None,
                 customer: None,
                 customer_account: Some(None),
@@ -111,7 +113,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(client_secret),
-                Some(components),
+                components,
                 Some(created),
                 Some(customer),
                 Some(customer_account),

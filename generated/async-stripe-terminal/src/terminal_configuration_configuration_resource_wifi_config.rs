@@ -23,14 +23,12 @@ impl std::fmt::Debug for TerminalConfigurationConfigurationResourceWifiConfig {
 }
 #[doc(hidden)]
 pub struct TerminalConfigurationConfigurationResourceWifiConfigBuilder {
-    enterprise_eap_peap: Option<
+    enterprise_eap_peap:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceEnterprisePeapWifi>,
-    >,
-    enterprise_eap_tls: Option<
+    enterprise_eap_tls:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceEnterpriseTlsWifi>,
-    >,
     personal_psk:
-        Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourcePersonalPskWifi>>,
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourcePersonalPskWifi>,
     type_: Option<TerminalConfigurationConfigurationResourceWifiConfigType>,
 }
 
@@ -75,9 +73,15 @@ const _: () = {
         type Out = TerminalConfigurationConfigurationResourceWifiConfig;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "enterprise_eap_peap" => Deserialize::begin(&mut self.enterprise_eap_peap),
-                "enterprise_eap_tls" => Deserialize::begin(&mut self.enterprise_eap_tls),
-                "personal_psk" => Deserialize::begin(&mut self.personal_psk),
+                "enterprise_eap_peap" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.enterprise_eap_peap)
+                }
+                "enterprise_eap_tls" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.enterprise_eap_tls)
+                }
+                "personal_psk" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.personal_psk)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -85,26 +89,20 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                enterprise_eap_peap: Some(None),
-                enterprise_eap_tls: Some(None),
-                personal_psk: Some(None),
+                enterprise_eap_peap: None,
+                enterprise_eap_tls: None,
+                personal_psk: None,
                 type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(enterprise_eap_peap),
-                Some(enterprise_eap_tls),
-                Some(personal_psk),
-                Some(type_),
-            ) = (
+            let (enterprise_eap_peap, enterprise_eap_tls, personal_psk, Some(type_)) = (
                 self.enterprise_eap_peap.take(),
                 self.enterprise_eap_tls.take(),
                 self.personal_psk.take(),
                 self.type_.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { enterprise_eap_peap, enterprise_eap_tls, personal_psk, type_ })

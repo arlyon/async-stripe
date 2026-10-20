@@ -59,12 +59,12 @@ impl std::fmt::Debug for SubscriptionSchedule {
 }
 #[doc(hidden)]
 pub struct SubscriptionScheduleBuilder {
-    application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
+    application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     billing_mode: Option<stripe_shared::SubscriptionsResourceBillingMode>,
     canceled_at: Option<Option<stripe_types::Timestamp>>,
     completed_at: Option<Option<stripe_types::Timestamp>>,
     created: Option<stripe_types::Timestamp>,
-    current_phase: Option<Option<stripe_shared::SubscriptionScheduleCurrentPhase>>,
+    current_phase: Option<stripe_shared::SubscriptionScheduleCurrentPhase>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     default_settings: Option<stripe_shared::SubscriptionSchedulesResourceDefaultSettings>,
@@ -76,8 +76,8 @@ pub struct SubscriptionScheduleBuilder {
     released_at: Option<Option<stripe_types::Timestamp>>,
     released_subscription: Option<Option<String>>,
     status: Option<SubscriptionScheduleStatus>,
-    subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
-    test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
+    subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
+    test_clock: Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>,
 }
 
 #[allow(
@@ -120,12 +120,16 @@ const _: () = {
         type Out = SubscriptionSchedule;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "application" => Deserialize::begin(&mut self.application),
+                "application" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.application)
+                }
                 "billing_mode" => Deserialize::begin(&mut self.billing_mode),
                 "canceled_at" => Deserialize::begin(&mut self.canceled_at),
                 "completed_at" => Deserialize::begin(&mut self.completed_at),
                 "created" => Deserialize::begin(&mut self.created),
-                "current_phase" => Deserialize::begin(&mut self.current_phase),
+                "current_phase" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.current_phase)
+                }
                 "customer" => Deserialize::begin(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "default_settings" => Deserialize::begin(&mut self.default_settings),
@@ -137,20 +141,24 @@ const _: () = {
                 "released_at" => Deserialize::begin(&mut self.released_at),
                 "released_subscription" => Deserialize::begin(&mut self.released_subscription),
                 "status" => Deserialize::begin(&mut self.status),
-                "subscription" => Deserialize::begin(&mut self.subscription),
-                "test_clock" => Deserialize::begin(&mut self.test_clock),
+                "subscription" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.subscription)
+                }
+                "test_clock" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.test_clock)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                application: Some(None),
+                application: None,
                 billing_mode: None,
                 canceled_at: Some(None),
                 completed_at: Some(None),
                 created: None,
-                current_phase: Some(None),
+                current_phase: None,
                 customer: None,
                 customer_account: Some(None),
                 default_settings: None,
@@ -162,19 +170,19 @@ const _: () = {
                 released_at: Some(None),
                 released_subscription: Some(None),
                 status: None,
-                subscription: Some(None),
-                test_clock: Some(None),
+                subscription: None,
+                test_clock: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(application),
+                application,
                 Some(billing_mode),
                 Some(canceled_at),
                 Some(completed_at),
                 Some(created),
-                Some(current_phase),
+                current_phase,
                 Some(customer),
                 Some(customer_account),
                 Some(default_settings),
@@ -186,8 +194,8 @@ const _: () = {
                 Some(released_at),
                 Some(released_subscription),
                 Some(status),
-                Some(subscription),
-                Some(test_clock),
+                subscription,
+                test_clock,
             ) = (
                 self.application.take(),
                 self.billing_mode.take(),

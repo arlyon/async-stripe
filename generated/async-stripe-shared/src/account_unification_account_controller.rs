@@ -25,13 +25,11 @@ impl std::fmt::Debug for AccountUnificationAccountController {
 }
 #[doc(hidden)]
 pub struct AccountUnificationAccountControllerBuilder {
-    fees: Option<Option<stripe_shared::AccountUnificationAccountControllerFees>>,
+    fees: Option<stripe_shared::AccountUnificationAccountControllerFees>,
     is_controller: Option<Option<bool>>,
-    losses: Option<Option<stripe_shared::AccountUnificationAccountControllerLosses>>,
-    requirement_collection:
-        Option<Option<AccountUnificationAccountControllerRequirementCollection>>,
-    stripe_dashboard:
-        Option<Option<stripe_shared::AccountUnificationAccountControllerStripeDashboard>>,
+    losses: Option<stripe_shared::AccountUnificationAccountControllerLosses>,
+    requirement_collection: Option<AccountUnificationAccountControllerRequirementCollection>,
+    stripe_dashboard: Option<stripe_shared::AccountUnificationAccountControllerStripeDashboard>,
     type_: Option<AccountUnificationAccountControllerType>,
 }
 
@@ -75,11 +73,15 @@ const _: () = {
         type Out = AccountUnificationAccountController;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "fees" => Deserialize::begin(&mut self.fees),
+                "fees" => stripe_types::miniserde_helpers::begin_nullable(&mut self.fees),
                 "is_controller" => Deserialize::begin(&mut self.is_controller),
-                "losses" => Deserialize::begin(&mut self.losses),
-                "requirement_collection" => Deserialize::begin(&mut self.requirement_collection),
-                "stripe_dashboard" => Deserialize::begin(&mut self.stripe_dashboard),
+                "losses" => stripe_types::miniserde_helpers::begin_nullable(&mut self.losses),
+                "requirement_collection" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.requirement_collection,
+                ),
+                "stripe_dashboard" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.stripe_dashboard)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -87,22 +89,22 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                fees: Some(None),
+                fees: None,
                 is_controller: Some(None),
-                losses: Some(None),
-                requirement_collection: Some(None),
-                stripe_dashboard: Some(None),
+                losses: None,
+                requirement_collection: None,
+                stripe_dashboard: None,
                 type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(fees),
+                fees,
                 Some(is_controller),
-                Some(losses),
-                Some(requirement_collection),
-                Some(stripe_dashboard),
+                losses,
+                requirement_collection,
+                stripe_dashboard,
                 Some(type_),
             ) = (
                 self.fees.take(),

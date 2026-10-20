@@ -19,7 +19,7 @@ impl std::fmt::Debug for PaymentLinksResourceAutomaticTax {
 #[doc(hidden)]
 pub struct PaymentLinksResourceAutomaticTaxBuilder {
     enabled: Option<bool>,
-    liability: Option<Option<stripe_shared::ConnectAccountReference>>,
+    liability: Option<stripe_shared::ConnectAccountReference>,
 }
 
 #[allow(
@@ -63,17 +63,17 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "enabled" => Deserialize::begin(&mut self.enabled),
-                "liability" => Deserialize::begin(&mut self.liability),
+                "liability" => stripe_types::miniserde_helpers::begin_nullable(&mut self.liability),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { enabled: None, liability: Some(None) }
+            Self { enabled: None, liability: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(liability)) = (self.enabled, self.liability.take()) else {
+            let (Some(enabled), liability) = (self.enabled, self.liability.take()) else {
                 return None;
             };
             Some(Self::Out { enabled, liability })

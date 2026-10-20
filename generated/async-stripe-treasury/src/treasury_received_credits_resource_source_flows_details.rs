@@ -19,10 +19,10 @@ impl std::fmt::Debug for TreasuryReceivedCreditsResourceSourceFlowsDetails {
 }
 #[doc(hidden)]
 pub struct TreasuryReceivedCreditsResourceSourceFlowsDetailsBuilder {
-    credit_reversal: Option<Option<stripe_treasury::TreasuryCreditReversal>>,
-    outbound_payment: Option<Option<stripe_treasury::TreasuryOutboundPayment>>,
-    outbound_transfer: Option<Option<stripe_treasury::TreasuryOutboundTransfer>>,
-    payout: Option<Option<stripe_shared::Payout>>,
+    credit_reversal: Option<stripe_treasury::TreasuryCreditReversal>,
+    outbound_payment: Option<stripe_treasury::TreasuryOutboundPayment>,
+    outbound_transfer: Option<stripe_treasury::TreasuryOutboundTransfer>,
+    payout: Option<stripe_shared::Payout>,
     type_: Option<TreasuryReceivedCreditsResourceSourceFlowsDetailsType>,
 }
 
@@ -66,10 +66,16 @@ const _: () = {
         type Out = TreasuryReceivedCreditsResourceSourceFlowsDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "credit_reversal" => Deserialize::begin(&mut self.credit_reversal),
-                "outbound_payment" => Deserialize::begin(&mut self.outbound_payment),
-                "outbound_transfer" => Deserialize::begin(&mut self.outbound_transfer),
-                "payout" => Deserialize::begin(&mut self.payout),
+                "credit_reversal" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.credit_reversal)
+                }
+                "outbound_payment" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.outbound_payment)
+                }
+                "outbound_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.outbound_transfer)
+                }
+                "payout" => stripe_types::miniserde_helpers::begin_nullable(&mut self.payout),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -77,29 +83,22 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                credit_reversal: Some(None),
-                outbound_payment: Some(None),
-                outbound_transfer: Some(None),
-                payout: Some(None),
+                credit_reversal: None,
+                outbound_payment: None,
+                outbound_transfer: None,
+                payout: None,
                 type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(credit_reversal),
-                Some(outbound_payment),
-                Some(outbound_transfer),
-                Some(payout),
-                Some(type_),
-            ) = (
+            let (credit_reversal, outbound_payment, outbound_transfer, payout, Some(type_)) = (
                 self.credit_reversal.take(),
                 self.outbound_payment.take(),
                 self.outbound_transfer.take(),
                 self.payout.take(),
                 self.type_.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { credit_reversal, outbound_payment, outbound_transfer, payout, type_ })

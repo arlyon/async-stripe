@@ -21,7 +21,7 @@ impl std::fmt::Debug for TerminalReaderReaderResourceProcessSetupIntentAction {
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceProcessSetupIntentActionBuilder {
     generated_card: Option<Option<String>>,
-    process_config: Option<Option<stripe_terminal::TerminalReaderReaderResourceProcessSetupConfig>>,
+    process_config: Option<stripe_terminal::TerminalReaderReaderResourceProcessSetupConfig>,
     setup_intent: Option<stripe_types::Expandable<stripe_shared::SetupIntent>>,
 }
 
@@ -67,18 +67,20 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "generated_card" => Deserialize::begin(&mut self.generated_card),
-                "process_config" => Deserialize::begin(&mut self.process_config),
+                "process_config" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.process_config)
+                }
                 "setup_intent" => Deserialize::begin(&mut self.setup_intent),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { generated_card: Some(None), process_config: Some(None), setup_intent: None }
+            Self { generated_card: Some(None), process_config: None, setup_intent: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(generated_card), Some(process_config), Some(setup_intent)) =
+            let (Some(generated_card), process_config, Some(setup_intent)) =
                 (self.generated_card.take(), self.process_config, self.setup_intent.take())
             else {
                 return None;

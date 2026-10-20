@@ -20,8 +20,7 @@ impl std::fmt::Debug for BillingCreditGrantsResourceBalanceDebit {
 #[doc(hidden)]
 pub struct BillingCreditGrantsResourceBalanceDebitBuilder {
     amount: Option<stripe_shared::BillingCreditGrantsResourceAmount>,
-    credits_applied:
-        Option<Option<stripe_shared::BillingCreditGrantsResourceBalanceCreditsApplied>>,
+    credits_applied: Option<stripe_shared::BillingCreditGrantsResourceBalanceCreditsApplied>,
     type_: Option<BillingCreditGrantsResourceBalanceDebitType>,
 }
 
@@ -66,18 +65,20 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "credits_applied" => Deserialize::begin(&mut self.credits_applied),
+                "credits_applied" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.credits_applied)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { amount: None, credits_applied: Some(None), type_: None }
+            Self { amount: None, credits_applied: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(credits_applied), Some(type_)) =
+            let (Some(amount), credits_applied, Some(type_)) =
                 (self.amount.take(), self.credits_applied.take(), self.type_.take())
             else {
                 return None;

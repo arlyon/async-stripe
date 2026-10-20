@@ -26,7 +26,7 @@ impl std::fmt::Debug for TaxSettings {
 #[doc(hidden)]
 pub struct TaxSettingsBuilder {
     defaults: Option<stripe_misc::TaxProductResourceTaxSettingsDefaults>,
-    head_office: Option<Option<stripe_misc::TaxProductResourceTaxSettingsHeadOffice>>,
+    head_office: Option<stripe_misc::TaxProductResourceTaxSettingsHeadOffice>,
     livemode: Option<bool>,
     status: Option<TaxSettingsStatus>,
     status_details: Option<stripe_misc::TaxProductResourceTaxSettingsStatusDetails>,
@@ -73,7 +73,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "defaults" => Deserialize::begin(&mut self.defaults),
-                "head_office" => Deserialize::begin(&mut self.head_office),
+                "head_office" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.head_office)
+                }
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "status" => Deserialize::begin(&mut self.status),
                 "status_details" => Deserialize::begin(&mut self.status_details),
@@ -84,7 +86,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 defaults: None,
-                head_office: Some(None),
+                head_office: None,
                 livemode: None,
                 status: None,
                 status_details: None,
@@ -92,20 +94,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(defaults),
-                Some(head_office),
-                Some(livemode),
-                Some(status),
-                Some(status_details),
-            ) = (
+            let (Some(defaults), head_office, Some(livemode), Some(status), Some(status_details)) = (
                 self.defaults.take(),
                 self.head_office.take(),
                 self.livemode,
                 self.status.take(),
                 self.status_details.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { defaults, head_office, livemode, status, status_details })

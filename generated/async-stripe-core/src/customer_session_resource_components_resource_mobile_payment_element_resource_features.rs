@@ -42,10 +42,10 @@ impl std::fmt::Debug
 #[doc(hidden)]
 pub struct CustomerSessionResourceComponentsResourceMobilePaymentElementResourceFeaturesBuilder {
     payment_method_allow_redisplay_filters: Option<Option<Vec<CustomerSessionResourceComponentsResourceMobilePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters>>>,
-payment_method_redisplay: Option<Option<CustomerSessionResourceComponentsResourceMobilePaymentElementResourceFeaturesPaymentMethodRedisplay>>,
-payment_method_remove: Option<Option<CustomerSessionResourceComponentsResourceMobilePaymentElementResourceFeaturesPaymentMethodRemove>>,
-payment_method_save: Option<Option<CustomerSessionResourceComponentsResourceMobilePaymentElementResourceFeaturesPaymentMethodSave>>,
-payment_method_save_allow_redisplay_override: Option<Option<CustomerSessionResourceComponentsResourceMobilePaymentElementResourceFeaturesPaymentMethodSaveAllowRedisplayOverride>>,
+payment_method_redisplay: Option<CustomerSessionResourceComponentsResourceMobilePaymentElementResourceFeaturesPaymentMethodRedisplay>,
+payment_method_remove: Option<CustomerSessionResourceComponentsResourceMobilePaymentElementResourceFeaturesPaymentMethodRemove>,
+payment_method_save: Option<CustomerSessionResourceComponentsResourceMobilePaymentElementResourceFeaturesPaymentMethodSave>,
+payment_method_save_allow_redisplay_override: Option<CustomerSessionResourceComponentsResourceMobilePaymentElementResourceFeaturesPaymentMethodSaveAllowRedisplayOverride>,
 
 }
 
@@ -99,13 +99,19 @@ const _: () = {
                 "payment_method_allow_redisplay_filters" => {
                     Deserialize::begin(&mut self.payment_method_allow_redisplay_filters)
                 }
-                "payment_method_redisplay" => {
-                    Deserialize::begin(&mut self.payment_method_redisplay)
+                "payment_method_redisplay" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_redisplay,
+                ),
+                "payment_method_remove" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_method_remove)
                 }
-                "payment_method_remove" => Deserialize::begin(&mut self.payment_method_remove),
-                "payment_method_save" => Deserialize::begin(&mut self.payment_method_save),
+                "payment_method_save" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_method_save)
+                }
                 "payment_method_save_allow_redisplay_override" => {
-                    Deserialize::begin(&mut self.payment_method_save_allow_redisplay_override)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.payment_method_save_allow_redisplay_override,
+                    )
                 }
                 _ => <dyn Visitor>::ignore(),
             })
@@ -114,20 +120,20 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 payment_method_allow_redisplay_filters: Some(None),
-                payment_method_redisplay: Some(None),
-                payment_method_remove: Some(None),
-                payment_method_save: Some(None),
-                payment_method_save_allow_redisplay_override: Some(None),
+                payment_method_redisplay: None,
+                payment_method_remove: None,
+                payment_method_save: None,
+                payment_method_save_allow_redisplay_override: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(payment_method_allow_redisplay_filters),
-                Some(payment_method_redisplay),
-                Some(payment_method_remove),
-                Some(payment_method_save),
-                Some(payment_method_save_allow_redisplay_override),
+                payment_method_redisplay,
+                payment_method_remove,
+                payment_method_save,
+                payment_method_save_allow_redisplay_override,
             ) = (
                 self.payment_method_allow_redisplay_filters.take(),
                 self.payment_method_redisplay.take(),

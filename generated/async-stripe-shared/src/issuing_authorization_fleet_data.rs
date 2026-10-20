@@ -25,11 +25,10 @@ impl std::fmt::Debug for IssuingAuthorizationFleetData {
 }
 #[doc(hidden)]
 pub struct IssuingAuthorizationFleetDataBuilder {
-    cardholder_prompt_data:
-        Option<Option<stripe_shared::IssuingAuthorizationFleetCardholderPromptData>>,
-    purchase_type: Option<Option<IssuingAuthorizationFleetDataPurchaseType>>,
-    reported_breakdown: Option<Option<stripe_shared::IssuingAuthorizationFleetReportedBreakdown>>,
-    service_type: Option<Option<IssuingAuthorizationFleetDataServiceType>>,
+    cardholder_prompt_data: Option<stripe_shared::IssuingAuthorizationFleetCardholderPromptData>,
+    purchase_type: Option<IssuingAuthorizationFleetDataPurchaseType>,
+    reported_breakdown: Option<stripe_shared::IssuingAuthorizationFleetReportedBreakdown>,
+    service_type: Option<IssuingAuthorizationFleetDataServiceType>,
 }
 
 #[allow(
@@ -72,36 +71,38 @@ const _: () = {
         type Out = IssuingAuthorizationFleetData;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "cardholder_prompt_data" => Deserialize::begin(&mut self.cardholder_prompt_data),
-                "purchase_type" => Deserialize::begin(&mut self.purchase_type),
-                "reported_breakdown" => Deserialize::begin(&mut self.reported_breakdown),
-                "service_type" => Deserialize::begin(&mut self.service_type),
+                "cardholder_prompt_data" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.cardholder_prompt_data,
+                ),
+                "purchase_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.purchase_type)
+                }
+                "reported_breakdown" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.reported_breakdown)
+                }
+                "service_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.service_type)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                cardholder_prompt_data: Some(None),
-                purchase_type: Some(None),
-                reported_breakdown: Some(None),
-                service_type: Some(None),
+                cardholder_prompt_data: None,
+                purchase_type: None,
+                reported_breakdown: None,
+                service_type: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(cardholder_prompt_data),
-                Some(purchase_type),
-                Some(reported_breakdown),
-                Some(service_type),
-            ) = (
+            let (cardholder_prompt_data, purchase_type, reported_breakdown, service_type) = (
                 self.cardholder_prompt_data.take(),
                 self.purchase_type.take(),
                 self.reported_breakdown.take(),
                 self.service_type.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out {

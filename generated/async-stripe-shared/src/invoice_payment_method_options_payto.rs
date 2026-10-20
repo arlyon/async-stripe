@@ -13,7 +13,7 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsPayto {
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsPaytoBuilder {
-    mandate_options: Option<Option<stripe_shared::InvoiceMandateOptionsPayto>>,
+    mandate_options: Option<stripe_shared::InvoiceMandateOptionsPayto>,
 }
 
 #[allow(
@@ -56,17 +56,19 @@ const _: () = {
         type Out = InvoicePaymentMethodOptionsPayto;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { mandate_options: Some(None) }
+            Self { mandate_options: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options),) = (self.mandate_options.take(),) else {
+            let (mandate_options,) = (self.mandate_options.take(),) else {
                 return None;
             };
             Some(Self::Out { mandate_options })

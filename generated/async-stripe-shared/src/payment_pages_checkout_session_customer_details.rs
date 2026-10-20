@@ -31,13 +31,13 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionCustomerDetails {
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionCustomerDetailsBuilder {
-    address: Option<Option<stripe_shared::Address>>,
+    address: Option<stripe_shared::Address>,
     business_name: Option<Option<String>>,
     email: Option<Option<String>>,
     individual_name: Option<Option<String>>,
     name: Option<Option<String>>,
     phone: Option<Option<String>>,
-    tax_exempt: Option<Option<PaymentPagesCheckoutSessionCustomerDetailsTaxExempt>>,
+    tax_exempt: Option<PaymentPagesCheckoutSessionCustomerDetailsTaxExempt>,
     tax_ids: Option<Option<Vec<stripe_shared::PaymentPagesCheckoutSessionTaxId>>>,
 }
 
@@ -81,13 +81,15 @@ const _: () = {
         type Out = PaymentPagesCheckoutSessionCustomerDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
+                "address" => stripe_types::miniserde_helpers::begin_nullable(&mut self.address),
                 "business_name" => Deserialize::begin(&mut self.business_name),
                 "email" => Deserialize::begin(&mut self.email),
                 "individual_name" => Deserialize::begin(&mut self.individual_name),
                 "name" => Deserialize::begin(&mut self.name),
                 "phone" => Deserialize::begin(&mut self.phone),
-                "tax_exempt" => Deserialize::begin(&mut self.tax_exempt),
+                "tax_exempt" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_exempt)
+                }
                 "tax_ids" => Deserialize::begin(&mut self.tax_ids),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -95,26 +97,26 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Some(None),
+                address: None,
                 business_name: Some(None),
                 email: Some(None),
                 individual_name: Some(None),
                 name: Some(None),
                 phone: Some(None),
-                tax_exempt: Some(None),
+                tax_exempt: None,
                 tax_ids: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(address),
+                address,
                 Some(business_name),
                 Some(email),
                 Some(individual_name),
                 Some(name),
                 Some(phone),
-                Some(tax_exempt),
+                tax_exempt,
                 Some(tax_ids),
             ) = (
                 self.address.take(),

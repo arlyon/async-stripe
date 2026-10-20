@@ -16,8 +16,8 @@ impl std::fmt::Debug for IssuingCardholderIdDocument {
 }
 #[doc(hidden)]
 pub struct IssuingCardholderIdDocumentBuilder {
-    back: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
-    front: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    back: Option<stripe_types::Expandable<stripe_shared::File>>,
+    front: Option<stripe_types::Expandable<stripe_shared::File>>,
 }
 
 #[allow(
@@ -60,18 +60,18 @@ const _: () = {
         type Out = IssuingCardholderIdDocument;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "back" => Deserialize::begin(&mut self.back),
-                "front" => Deserialize::begin(&mut self.front),
+                "back" => stripe_types::miniserde_helpers::begin_nullable(&mut self.back),
+                "front" => stripe_types::miniserde_helpers::begin_nullable(&mut self.front),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { back: Some(None), front: Some(None) }
+            Self { back: None, front: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(back), Some(front)) = (self.back.take(), self.front.take()) else {
+            let (back, front) = (self.back.take(), self.front.take()) else {
                 return None;
             };
             Some(Self::Out { back, front })

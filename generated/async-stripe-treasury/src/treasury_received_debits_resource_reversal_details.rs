@@ -17,8 +17,7 @@ impl std::fmt::Debug for TreasuryReceivedDebitsResourceReversalDetails {
 #[doc(hidden)]
 pub struct TreasuryReceivedDebitsResourceReversalDetailsBuilder {
     deadline: Option<Option<stripe_types::Timestamp>>,
-    restricted_reason:
-        Option<Option<TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason>>,
+    restricted_reason: Option<TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason>,
 }
 
 #[allow(
@@ -62,17 +61,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "deadline" => Deserialize::begin(&mut self.deadline),
-                "restricted_reason" => Deserialize::begin(&mut self.restricted_reason),
+                "restricted_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.restricted_reason)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { deadline: Some(None), restricted_reason: Some(None) }
+            Self { deadline: Some(None), restricted_reason: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(deadline), Some(restricted_reason)) =
+            let (Some(deadline), restricted_reason) =
                 (self.deadline, self.restricted_reason.take())
             else {
                 return None;

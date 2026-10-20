@@ -53,7 +53,7 @@ pub struct TreasuryCreditReversalBuilder {
     received_credit: Option<String>,
     status: Option<stripe_treasury::TreasuryCreditReversalStatus>,
     status_transitions: Option<stripe_treasury::TreasuryReceivedCreditsResourceStatusTransitions>,
-    transaction: Option<Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>>,
+    transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 }
 
 #[allow(
@@ -110,7 +110,9 @@ const _: () = {
                 "received_credit" => Deserialize::begin(&mut self.received_credit),
                 "status" => Deserialize::begin(&mut self.status),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-                "transaction" => Deserialize::begin(&mut self.transaction),
+                "transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transaction)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -129,7 +131,7 @@ const _: () = {
                 received_credit: None,
                 status: None,
                 status_transitions: None,
-                transaction: Some(None),
+                transaction: None,
             }
         }
 
@@ -147,7 +149,7 @@ const _: () = {
                 Some(received_credit),
                 Some(status),
                 Some(status_transitions),
-                Some(transaction),
+                transaction,
             ) = (
                 self.amount,
                 self.created,

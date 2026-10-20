@@ -18,7 +18,7 @@ impl std::fmt::Debug for TerminalReaderReaderResourceProcessPaymentIntentAction 
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceProcessPaymentIntentActionBuilder {
     payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
-    process_config: Option<Option<stripe_terminal::TerminalReaderReaderResourceProcessConfig>>,
+    process_config: Option<stripe_terminal::TerminalReaderReaderResourceProcessConfig>,
 }
 
 #[allow(
@@ -63,17 +63,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "process_config" => Deserialize::begin(&mut self.process_config),
+                "process_config" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.process_config)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { payment_intent: None, process_config: Some(None) }
+            Self { payment_intent: None, process_config: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payment_intent), Some(process_config)) =
+            let (Some(payment_intent), process_config) =
                 (self.payment_intent.take(), self.process_config.take())
             else {
                 return None;

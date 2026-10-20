@@ -44,19 +44,19 @@ impl std::fmt::Debug for GelatoDocumentReport {
 }
 #[doc(hidden)]
 pub struct GelatoDocumentReportBuilder {
-    address: Option<Option<stripe_shared::Address>>,
-    dob: Option<Option<stripe_misc::GelatoDataDocumentReportDateOfBirth>>,
-    error: Option<Option<stripe_misc::GelatoDocumentReportError>>,
-    expiration_date: Option<Option<stripe_misc::GelatoDataDocumentReportExpirationDate>>,
+    address: Option<stripe_shared::Address>,
+    dob: Option<stripe_misc::GelatoDataDocumentReportDateOfBirth>,
+    error: Option<stripe_misc::GelatoDocumentReportError>,
+    expiration_date: Option<stripe_misc::GelatoDataDocumentReportExpirationDate>,
     files: Option<Option<Vec<String>>>,
     first_name: Option<Option<String>>,
-    issued_date: Option<Option<stripe_misc::GelatoDataDocumentReportIssuedDate>>,
+    issued_date: Option<stripe_misc::GelatoDataDocumentReportIssuedDate>,
     issuing_country: Option<Option<String>>,
     last_name: Option<Option<String>>,
     number: Option<Option<String>>,
-    sex: Option<Option<GelatoDocumentReportSex>>,
+    sex: Option<GelatoDocumentReportSex>,
     status: Option<GelatoDocumentReportStatus>,
-    type_: Option<Option<GelatoDocumentReportType>>,
+    type_: Option<GelatoDocumentReportType>,
     unparsed_place_of_birth: Option<Option<String>>,
     unparsed_sex: Option<Option<String>>,
 }
@@ -101,19 +101,23 @@ const _: () = {
         type Out = GelatoDocumentReport;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
-                "dob" => Deserialize::begin(&mut self.dob),
-                "error" => Deserialize::begin(&mut self.error),
-                "expiration_date" => Deserialize::begin(&mut self.expiration_date),
+                "address" => stripe_types::miniserde_helpers::begin_nullable(&mut self.address),
+                "dob" => stripe_types::miniserde_helpers::begin_nullable(&mut self.dob),
+                "error" => stripe_types::miniserde_helpers::begin_nullable(&mut self.error),
+                "expiration_date" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.expiration_date)
+                }
                 "files" => Deserialize::begin(&mut self.files),
                 "first_name" => Deserialize::begin(&mut self.first_name),
-                "issued_date" => Deserialize::begin(&mut self.issued_date),
+                "issued_date" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.issued_date)
+                }
                 "issuing_country" => Deserialize::begin(&mut self.issuing_country),
                 "last_name" => Deserialize::begin(&mut self.last_name),
                 "number" => Deserialize::begin(&mut self.number),
-                "sex" => Deserialize::begin(&mut self.sex),
+                "sex" => stripe_types::miniserde_helpers::begin_nullable(&mut self.sex),
                 "status" => Deserialize::begin(&mut self.status),
-                "type" => Deserialize::begin(&mut self.type_),
+                "type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.type_),
                 "unparsed_place_of_birth" => Deserialize::begin(&mut self.unparsed_place_of_birth),
                 "unparsed_sex" => Deserialize::begin(&mut self.unparsed_sex),
                 _ => <dyn Visitor>::ignore(),
@@ -122,19 +126,19 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Some(None),
-                dob: Some(None),
-                error: Some(None),
-                expiration_date: Some(None),
+                address: None,
+                dob: None,
+                error: None,
+                expiration_date: None,
                 files: Some(None),
                 first_name: Some(None),
-                issued_date: Some(None),
+                issued_date: None,
                 issuing_country: Some(None),
                 last_name: Some(None),
                 number: Some(None),
-                sex: Some(None),
+                sex: None,
                 status: None,
-                type_: Some(None),
+                type_: None,
                 unparsed_place_of_birth: Some(None),
                 unparsed_sex: Some(None),
             }
@@ -142,19 +146,19 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(address),
-                Some(dob),
-                Some(error),
-                Some(expiration_date),
+                address,
+                dob,
+                error,
+                expiration_date,
                 Some(files),
                 Some(first_name),
-                Some(issued_date),
+                issued_date,
                 Some(issuing_country),
                 Some(last_name),
                 Some(number),
-                Some(sex),
+                sex,
                 Some(status),
-                Some(type_),
+                type_,
                 Some(unparsed_place_of_birth),
                 Some(unparsed_sex),
             ) = (

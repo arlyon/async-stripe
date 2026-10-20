@@ -39,7 +39,7 @@ pub struct DisputeVisaCompellingEvidence3PriorUndisputedTransactionBuilder {
     customer_email_address: Option<Option<String>>,
     customer_purchase_ip: Option<Option<String>>,
     product_description: Option<Option<String>>,
-    shipping_address: Option<Option<stripe_shared::DisputeTransactionShippingAddress>>,
+    shipping_address: Option<stripe_shared::DisputeTransactionShippingAddress>,
 }
 
 #[allow(
@@ -92,7 +92,9 @@ const _: () = {
                 "customer_email_address" => Deserialize::begin(&mut self.customer_email_address),
                 "customer_purchase_ip" => Deserialize::begin(&mut self.customer_purchase_ip),
                 "product_description" => Deserialize::begin(&mut self.product_description),
-                "shipping_address" => Deserialize::begin(&mut self.shipping_address),
+                "shipping_address" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_address)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -106,7 +108,7 @@ const _: () = {
                 customer_email_address: Some(None),
                 customer_purchase_ip: Some(None),
                 product_description: Some(None),
-                shipping_address: Some(None),
+                shipping_address: None,
             }
         }
 
@@ -119,7 +121,7 @@ const _: () = {
                 Some(customer_email_address),
                 Some(customer_purchase_ip),
                 Some(product_description),
-                Some(shipping_address),
+                shipping_address,
             ) = (
                 self.charge.take(),
                 self.customer_account_id.take(),

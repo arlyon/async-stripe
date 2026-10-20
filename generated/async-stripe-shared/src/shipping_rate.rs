@@ -46,14 +46,14 @@ impl std::fmt::Debug for ShippingRate {
 pub struct ShippingRateBuilder {
     active: Option<bool>,
     created: Option<stripe_types::Timestamp>,
-    delivery_estimate: Option<Option<stripe_shared::ShippingRateDeliveryEstimate>>,
+    delivery_estimate: Option<stripe_shared::ShippingRateDeliveryEstimate>,
     display_name: Option<Option<String>>,
-    fixed_amount: Option<Option<stripe_shared::ShippingRateFixedAmount>>,
+    fixed_amount: Option<stripe_shared::ShippingRateFixedAmount>,
     id: Option<stripe_shared::ShippingRateId>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
-    tax_behavior: Option<Option<stripe_shared::ShippingRateTaxBehavior>>,
-    tax_code: Option<Option<stripe_types::Expandable<stripe_shared::TaxCode>>>,
+    tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
+    tax_code: Option<stripe_types::Expandable<stripe_shared::TaxCode>>,
     type_: Option<stripe_shared::ShippingRateType>,
 }
 
@@ -99,14 +99,20 @@ const _: () = {
             Ok(match k {
                 "active" => Deserialize::begin(&mut self.active),
                 "created" => Deserialize::begin(&mut self.created),
-                "delivery_estimate" => Deserialize::begin(&mut self.delivery_estimate),
+                "delivery_estimate" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.delivery_estimate)
+                }
                 "display_name" => Deserialize::begin(&mut self.display_name),
-                "fixed_amount" => Deserialize::begin(&mut self.fixed_amount),
+                "fixed_amount" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.fixed_amount)
+                }
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
-                "tax_code" => Deserialize::begin(&mut self.tax_code),
+                "tax_behavior" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_behavior)
+                }
+                "tax_code" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_code),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -116,14 +122,14 @@ const _: () = {
             Self {
                 active: None,
                 created: None,
-                delivery_estimate: Some(None),
+                delivery_estimate: None,
                 display_name: Some(None),
-                fixed_amount: Some(None),
+                fixed_amount: None,
                 id: None,
                 livemode: None,
                 metadata: None,
-                tax_behavior: Some(None),
-                tax_code: Some(None),
+                tax_behavior: None,
+                tax_code: None,
                 type_: None,
             }
         }
@@ -132,14 +138,14 @@ const _: () = {
             let (
                 Some(active),
                 Some(created),
-                Some(delivery_estimate),
+                delivery_estimate,
                 Some(display_name),
-                Some(fixed_amount),
+                fixed_amount,
                 Some(id),
                 Some(livemode),
                 Some(metadata),
-                Some(tax_behavior),
-                Some(tax_code),
+                tax_behavior,
+                tax_code,
                 Some(type_),
             ) = (
                 self.active,

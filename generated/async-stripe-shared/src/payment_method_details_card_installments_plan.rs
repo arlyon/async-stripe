@@ -21,7 +21,7 @@ impl std::fmt::Debug for PaymentMethodDetailsCardInstallmentsPlan {
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCardInstallmentsPlanBuilder {
     count: Option<Option<u64>>,
-    interval: Option<Option<PaymentMethodDetailsCardInstallmentsPlanInterval>>,
+    interval: Option<PaymentMethodDetailsCardInstallmentsPlanInterval>,
     type_: Option<PaymentMethodDetailsCardInstallmentsPlanType>,
 }
 
@@ -66,18 +66,18 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "count" => Deserialize::begin(&mut self.count),
-                "interval" => Deserialize::begin(&mut self.interval),
+                "interval" => stripe_types::miniserde_helpers::begin_nullable(&mut self.interval),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { count: Some(None), interval: Some(None), type_: None }
+            Self { count: Some(None), interval: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(count), Some(interval), Some(type_)) =
+            let (Some(count), interval, Some(type_)) =
                 (self.count, self.interval.take(), self.type_.take())
             else {
                 return None;

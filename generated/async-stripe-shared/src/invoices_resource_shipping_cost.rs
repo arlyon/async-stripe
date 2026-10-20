@@ -25,7 +25,7 @@ pub struct InvoicesResourceShippingCostBuilder {
     amount_subtotal: Option<i64>,
     amount_tax: Option<i64>,
     amount_total: Option<i64>,
-    shipping_rate: Option<Option<stripe_types::Expandable<stripe_shared::ShippingRate>>>,
+    shipping_rate: Option<stripe_types::Expandable<stripe_shared::ShippingRate>>,
     taxes: Option<Option<Vec<stripe_shared::LineItemsTaxAmount>>>,
 }
 
@@ -72,7 +72,9 @@ const _: () = {
                 "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
                 "amount_tax" => Deserialize::begin(&mut self.amount_tax),
                 "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "shipping_rate" => Deserialize::begin(&mut self.shipping_rate),
+                "shipping_rate" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_rate)
+                }
                 "taxes" => Deserialize::begin(&mut self.taxes),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -83,7 +85,7 @@ const _: () = {
                 amount_subtotal: None,
                 amount_tax: None,
                 amount_total: None,
-                shipping_rate: Some(None),
+                shipping_rate: None,
                 taxes: Some(None),
             }
         }
@@ -93,7 +95,7 @@ const _: () = {
                 Some(amount_subtotal),
                 Some(amount_tax),
                 Some(amount_total),
-                Some(shipping_rate),
+                shipping_rate,
                 Some(taxes),
             ) = (
                 self.amount_subtotal,

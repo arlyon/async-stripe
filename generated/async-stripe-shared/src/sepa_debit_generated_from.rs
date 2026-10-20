@@ -16,8 +16,8 @@ impl std::fmt::Debug for SepaDebitGeneratedFrom {
 }
 #[doc(hidden)]
 pub struct SepaDebitGeneratedFromBuilder {
-    charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
-    setup_attempt: Option<Option<stripe_types::Expandable<stripe_shared::SetupAttempt>>>,
+    charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
+    setup_attempt: Option<stripe_types::Expandable<stripe_shared::SetupAttempt>>,
 }
 
 #[allow(
@@ -60,20 +60,20 @@ const _: () = {
         type Out = SepaDebitGeneratedFrom;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "charge" => Deserialize::begin(&mut self.charge),
-                "setup_attempt" => Deserialize::begin(&mut self.setup_attempt),
+                "charge" => stripe_types::miniserde_helpers::begin_nullable(&mut self.charge),
+                "setup_attempt" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_attempt)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { charge: Some(None), setup_attempt: Some(None) }
+            Self { charge: None, setup_attempt: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(charge), Some(setup_attempt)) =
-                (self.charge.take(), self.setup_attempt.take())
-            else {
+            let (charge, setup_attempt) = (self.charge.take(), self.setup_attempt.take()) else {
                 return None;
             };
             Some(Self::Out { charge, setup_attempt })

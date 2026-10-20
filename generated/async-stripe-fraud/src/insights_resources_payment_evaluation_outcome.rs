@@ -21,11 +21,10 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationOutcome {
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationOutcomeBuilder {
-    merchant_blocked:
-        Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationMerchantBlocked>>,
+    merchant_blocked: Option<stripe_fraud::InsightsResourcesPaymentEvaluationMerchantBlocked>,
     payment_intent_id: Option<Option<String>>,
-    rejected: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationRejected>>,
-    succeeded: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationSucceeded>>,
+    rejected: Option<stripe_fraud::InsightsResourcesPaymentEvaluationRejected>,
+    succeeded: Option<stripe_fraud::InsightsResourcesPaymentEvaluationSucceeded>,
     type_: Option<InsightsResourcesPaymentEvaluationOutcomeType>,
 }
 
@@ -69,10 +68,12 @@ const _: () = {
         type Out = InsightsResourcesPaymentEvaluationOutcome;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "merchant_blocked" => Deserialize::begin(&mut self.merchant_blocked),
+                "merchant_blocked" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.merchant_blocked)
+                }
                 "payment_intent_id" => Deserialize::begin(&mut self.payment_intent_id),
-                "rejected" => Deserialize::begin(&mut self.rejected),
-                "succeeded" => Deserialize::begin(&mut self.succeeded),
+                "rejected" => stripe_types::miniserde_helpers::begin_nullable(&mut self.rejected),
+                "succeeded" => stripe_types::miniserde_helpers::begin_nullable(&mut self.succeeded),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -80,29 +81,22 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                merchant_blocked: Some(None),
+                merchant_blocked: None,
                 payment_intent_id: Some(None),
-                rejected: Some(None),
-                succeeded: Some(None),
+                rejected: None,
+                succeeded: None,
                 type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(merchant_blocked),
-                Some(payment_intent_id),
-                Some(rejected),
-                Some(succeeded),
-                Some(type_),
-            ) = (
+            let (merchant_blocked, Some(payment_intent_id), rejected, succeeded, Some(type_)) = (
                 self.merchant_blocked.take(),
                 self.payment_intent_id.take(),
                 self.rejected.take(),
                 self.succeeded.take(),
                 self.type_.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { merchant_blocked, payment_intent_id, rejected, succeeded, type_ })

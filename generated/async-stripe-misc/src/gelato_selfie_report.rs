@@ -22,7 +22,7 @@ impl std::fmt::Debug for GelatoSelfieReport {
 #[doc(hidden)]
 pub struct GelatoSelfieReportBuilder {
     document: Option<Option<String>>,
-    error: Option<Option<stripe_misc::GelatoSelfieReportError>>,
+    error: Option<stripe_misc::GelatoSelfieReportError>,
     selfie: Option<Option<String>>,
     status: Option<GelatoSelfieReportStatus>,
 }
@@ -68,7 +68,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "document" => Deserialize::begin(&mut self.document),
-                "error" => Deserialize::begin(&mut self.error),
+                "error" => stripe_types::miniserde_helpers::begin_nullable(&mut self.error),
                 "selfie" => Deserialize::begin(&mut self.selfie),
                 "status" => Deserialize::begin(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
@@ -76,11 +76,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { document: Some(None), error: Some(None), selfie: Some(None), status: None }
+            Self { document: Some(None), error: None, selfie: Some(None), status: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(document), Some(error), Some(selfie), Some(status)) =
+            let (Some(document), error, Some(selfie), Some(status)) =
                 (self.document.take(), self.error.take(), self.selfie.take(), self.status.take())
             else {
                 return None;

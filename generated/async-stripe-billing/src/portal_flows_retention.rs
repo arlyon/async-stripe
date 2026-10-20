@@ -17,7 +17,7 @@ impl std::fmt::Debug for PortalFlowsRetention {
 }
 #[doc(hidden)]
 pub struct PortalFlowsRetentionBuilder {
-    coupon_offer: Option<Option<stripe_billing::PortalFlowsCouponOffer>>,
+    coupon_offer: Option<stripe_billing::PortalFlowsCouponOffer>,
     type_: Option<PortalFlowsRetentionType>,
 }
 
@@ -61,19 +61,20 @@ const _: () = {
         type Out = PortalFlowsRetention;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "coupon_offer" => Deserialize::begin(&mut self.coupon_offer),
+                "coupon_offer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.coupon_offer)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { coupon_offer: Some(None), type_: None }
+            Self { coupon_offer: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(coupon_offer), Some(type_)) = (self.coupon_offer.take(), self.type_.take())
-            else {
+            let (coupon_offer, Some(type_)) = (self.coupon_offer.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { coupon_offer, type_ })

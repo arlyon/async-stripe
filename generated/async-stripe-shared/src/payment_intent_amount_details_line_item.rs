@@ -44,11 +44,11 @@ impl std::fmt::Debug for PaymentIntentAmountDetailsLineItem {
 pub struct PaymentIntentAmountDetailsLineItemBuilder {
     discount_amount: Option<Option<i64>>,
 id: Option<stripe_shared::PaymentIntentAmountDetailsLineItemId>,
-payment_method_options: Option<Option<stripe_shared::PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptions>>,
+payment_method_options: Option<stripe_shared::PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptions>,
 product_code: Option<Option<String>>,
 product_name: Option<String>,
 quantity: Option<u64>,
-tax: Option<Option<stripe_shared::PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourceTax>>,
+tax: Option<stripe_shared::PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourceTax>,
 unit_cost: Option<i64>,
 unit_of_measure: Option<Option<String>>,
 
@@ -96,11 +96,13 @@ const _: () = {
             Ok(match k {
                 "discount_amount" => Deserialize::begin(&mut self.discount_amount),
                 "id" => Deserialize::begin(&mut self.id),
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
+                "payment_method_options" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_options,
+                ),
                 "product_code" => Deserialize::begin(&mut self.product_code),
                 "product_name" => Deserialize::begin(&mut self.product_name),
                 "quantity" => Deserialize::begin(&mut self.quantity),
-                "tax" => Deserialize::begin(&mut self.tax),
+                "tax" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tax),
                 "unit_cost" => Deserialize::begin(&mut self.unit_cost),
                 "unit_of_measure" => Deserialize::begin(&mut self.unit_of_measure),
                 _ => <dyn Visitor>::ignore(),
@@ -111,11 +113,11 @@ const _: () = {
             Self {
                 discount_amount: Some(None),
                 id: None,
-                payment_method_options: Some(None),
+                payment_method_options: None,
                 product_code: Some(None),
                 product_name: None,
                 quantity: None,
-                tax: Some(None),
+                tax: None,
                 unit_cost: None,
                 unit_of_measure: Some(None),
             }
@@ -125,11 +127,11 @@ const _: () = {
             let (
                 Some(discount_amount),
                 Some(id),
-                Some(payment_method_options),
+                payment_method_options,
                 Some(product_code),
                 Some(product_name),
                 Some(quantity),
-                Some(tax),
+                tax,
                 Some(unit_cost),
                 Some(unit_of_measure),
             ) = (

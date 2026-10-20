@@ -23,8 +23,8 @@ impl std::fmt::Debug for PaymentMethodOptionsAmazonPay {
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsAmazonPayBuilder {
-    capture_method: Option<Option<PaymentMethodOptionsAmazonPayCaptureMethod>>,
-    setup_future_usage: Option<Option<PaymentMethodOptionsAmazonPaySetupFutureUsage>>,
+    capture_method: Option<PaymentMethodOptionsAmazonPayCaptureMethod>,
+    setup_future_usage: Option<PaymentMethodOptionsAmazonPaySetupFutureUsage>,
 }
 
 #[allow(
@@ -67,18 +67,22 @@ const _: () = {
         type Out = PaymentMethodOptionsAmazonPay;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "capture_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.capture_method)
+                }
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { capture_method: Some(None), setup_future_usage: Some(None) }
+            Self { capture_method: None, setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(capture_method), Some(setup_future_usage)) =
+            let (capture_method, setup_future_usage) =
                 (self.capture_method.take(), self.setup_future_usage.take())
             else {
                 return None;

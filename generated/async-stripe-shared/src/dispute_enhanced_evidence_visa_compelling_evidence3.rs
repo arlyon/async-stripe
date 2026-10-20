@@ -18,8 +18,7 @@ impl std::fmt::Debug for DisputeEnhancedEvidenceVisaCompellingEvidence3 {
 }
 #[doc(hidden)]
 pub struct DisputeEnhancedEvidenceVisaCompellingEvidence3Builder {
-    disputed_transaction:
-        Option<Option<stripe_shared::DisputeVisaCompellingEvidence3DisputedTransaction>>,
+    disputed_transaction: Option<stripe_shared::DisputeVisaCompellingEvidence3DisputedTransaction>,
     prior_undisputed_transactions:
         Option<Vec<stripe_shared::DisputeVisaCompellingEvidence3PriorUndisputedTransaction>>,
 }
@@ -64,7 +63,9 @@ const _: () = {
         type Out = DisputeEnhancedEvidenceVisaCompellingEvidence3;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "disputed_transaction" => Deserialize::begin(&mut self.disputed_transaction),
+                "disputed_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.disputed_transaction)
+                }
                 "prior_undisputed_transactions" => {
                     Deserialize::begin(&mut self.prior_undisputed_transactions)
                 }
@@ -73,11 +74,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { disputed_transaction: Some(None), prior_undisputed_transactions: None }
+            Self { disputed_transaction: None, prior_undisputed_transactions: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(disputed_transaction), Some(prior_undisputed_transactions)) =
+            let (disputed_transaction, Some(prior_undisputed_transactions)) =
                 (self.disputed_transaction.take(), self.prior_undisputed_transactions.take())
             else {
                 return None;

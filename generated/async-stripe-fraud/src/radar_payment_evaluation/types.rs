@@ -37,16 +37,15 @@ impl std::fmt::Debug for RadarPaymentEvaluation {
 #[doc(hidden)]
 pub struct RadarPaymentEvaluationBuilder {
     client_device_metadata_details:
-        Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationClientDeviceMetadata>>,
+        Option<stripe_fraud::InsightsResourcesPaymentEvaluationClientDeviceMetadata>,
     created_at: Option<stripe_types::Timestamp>,
-    customer_details:
-        Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationCustomerDetails>>,
+    customer_details: Option<stripe_fraud::InsightsResourcesPaymentEvaluationCustomerDetails>,
     events: Option<Option<Vec<stripe_fraud::InsightsResourcesPaymentEvaluationEvent>>>,
     id: Option<stripe_fraud::RadarPaymentEvaluationId>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    outcome: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationOutcome>>,
-    payment_details: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationPaymentDetails>>,
+    outcome: Option<stripe_fraud::InsightsResourcesPaymentEvaluationOutcome>,
+    payment_details: Option<stripe_fraud::InsightsResourcesPaymentEvaluationPaymentDetails>,
     recommended_action: Option<RadarPaymentEvaluationRecommendedAction>,
     signals: Option<stripe_fraud::InsightsResourcesPaymentEvaluationSignals>,
 }
@@ -92,16 +91,22 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "client_device_metadata_details" => {
-                    Deserialize::begin(&mut self.client_device_metadata_details)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.client_device_metadata_details,
+                    )
                 }
                 "created_at" => Deserialize::begin(&mut self.created_at),
-                "customer_details" => Deserialize::begin(&mut self.customer_details),
+                "customer_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.customer_details)
+                }
                 "events" => Deserialize::begin(&mut self.events),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "outcome" => Deserialize::begin(&mut self.outcome),
-                "payment_details" => Deserialize::begin(&mut self.payment_details),
+                "outcome" => stripe_types::miniserde_helpers::begin_nullable(&mut self.outcome),
+                "payment_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_details)
+                }
                 "recommended_action" => Deserialize::begin(&mut self.recommended_action),
                 "signals" => Deserialize::begin(&mut self.signals),
                 _ => <dyn Visitor>::ignore(),
@@ -110,15 +115,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                client_device_metadata_details: Some(None),
+                client_device_metadata_details: None,
                 created_at: None,
-                customer_details: Some(None),
+                customer_details: None,
                 events: Some(None),
                 id: None,
                 livemode: None,
                 metadata: Some(None),
-                outcome: Some(None),
-                payment_details: Some(None),
+                outcome: None,
+                payment_details: None,
                 recommended_action: None,
                 signals: None,
             }
@@ -126,15 +131,15 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(client_device_metadata_details),
+                client_device_metadata_details,
                 Some(created_at),
-                Some(customer_details),
+                customer_details,
                 Some(events),
                 Some(id),
                 Some(livemode),
                 Some(metadata),
-                Some(outcome),
-                Some(payment_details),
+                outcome,
+                payment_details,
                 Some(recommended_action),
                 Some(signals),
             ) = (

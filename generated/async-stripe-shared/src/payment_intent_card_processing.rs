@@ -13,8 +13,7 @@ impl std::fmt::Debug for PaymentIntentCardProcessing {
 }
 #[doc(hidden)]
 pub struct PaymentIntentCardProcessingBuilder {
-    customer_notification:
-        Option<Option<stripe_shared::PaymentIntentProcessingCustomerNotification>>,
+    customer_notification: Option<stripe_shared::PaymentIntentProcessingCustomerNotification>,
 }
 
 #[allow(
@@ -57,17 +56,19 @@ const _: () = {
         type Out = PaymentIntentCardProcessing;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "customer_notification" => Deserialize::begin(&mut self.customer_notification),
+                "customer_notification" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.customer_notification)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { customer_notification: Some(None) }
+            Self { customer_notification: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer_notification),) = (self.customer_notification,) else {
+            let (customer_notification,) = (self.customer_notification,) else {
                 return None;
             };
             Some(Self::Out { customer_notification })

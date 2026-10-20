@@ -38,14 +38,13 @@ impl std::fmt::Debug for TerminalReaderReaderResourceRefundPaymentAction {
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceRefundPaymentActionBuilder {
     amount: Option<Option<i64>>,
-    charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
+    charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
-    reason: Option<Option<TerminalReaderReaderResourceRefundPaymentActionReason>>,
-    refund: Option<Option<stripe_types::Expandable<stripe_shared::Refund>>>,
+    payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
+    reason: Option<TerminalReaderReaderResourceRefundPaymentActionReason>,
+    refund: Option<stripe_types::Expandable<stripe_shared::Refund>>,
     refund_application_fee: Option<Option<bool>>,
-    refund_payment_config:
-        Option<Option<stripe_terminal::TerminalReaderReaderResourceRefundPaymentConfig>>,
+    refund_payment_config: Option<stripe_terminal::TerminalReaderReaderResourceRefundPaymentConfig>,
     reverse_transfer: Option<Option<bool>>,
 }
 
@@ -90,13 +89,17 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "charge" => Deserialize::begin(&mut self.charge),
+                "charge" => stripe_types::miniserde_helpers::begin_nullable(&mut self.charge),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "reason" => Deserialize::begin(&mut self.reason),
-                "refund" => Deserialize::begin(&mut self.refund),
+                "payment_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_intent)
+                }
+                "reason" => stripe_types::miniserde_helpers::begin_nullable(&mut self.reason),
+                "refund" => stripe_types::miniserde_helpers::begin_nullable(&mut self.refund),
                 "refund_application_fee" => Deserialize::begin(&mut self.refund_application_fee),
-                "refund_payment_config" => Deserialize::begin(&mut self.refund_payment_config),
+                "refund_payment_config" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.refund_payment_config)
+                }
                 "reverse_transfer" => Deserialize::begin(&mut self.reverse_transfer),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -105,13 +108,13 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: Some(None),
-                charge: Some(None),
+                charge: None,
                 metadata: Some(None),
-                payment_intent: Some(None),
-                reason: Some(None),
-                refund: Some(None),
+                payment_intent: None,
+                reason: None,
+                refund: None,
                 refund_application_fee: Some(None),
-                refund_payment_config: Some(None),
+                refund_payment_config: None,
                 reverse_transfer: Some(None),
             }
         }
@@ -119,13 +122,13 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(charge),
+                charge,
                 Some(metadata),
-                Some(payment_intent),
-                Some(reason),
-                Some(refund),
+                payment_intent,
+                reason,
+                refund,
                 Some(refund_application_fee),
-                Some(refund_payment_config),
+                refund_payment_config,
                 Some(reverse_transfer),
             ) = (
                 self.amount,

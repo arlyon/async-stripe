@@ -41,7 +41,7 @@ impl std::fmt::Debug for BillingPortalConfiguration {
 #[doc(hidden)]
 pub struct BillingPortalConfigurationBuilder {
     active: Option<bool>,
-    application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
+    application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     business_profile: Option<stripe_billing::PortalBusinessProfile>,
     created: Option<stripe_types::Timestamp>,
     default_return_url: Option<Option<String>>,
@@ -96,7 +96,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "active" => Deserialize::begin(&mut self.active),
-                "application" => Deserialize::begin(&mut self.application),
+                "application" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.application)
+                }
                 "business_profile" => Deserialize::begin(&mut self.business_profile),
                 "created" => Deserialize::begin(&mut self.created),
                 "default_return_url" => Deserialize::begin(&mut self.default_return_url),
@@ -115,7 +117,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 active: None,
-                application: Some(None),
+                application: None,
                 business_profile: None,
                 created: None,
                 default_return_url: Some(None),
@@ -133,7 +135,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(active),
-                Some(application),
+                application,
                 Some(business_profile),
                 Some(created),
                 Some(default_return_url),

@@ -26,10 +26,11 @@ impl std::fmt::Debug
 }
 #[doc(hidden)]
 pub struct PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsBuilder {
-    category: Option<Option<PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory>>,
-description: Option<Option<String>>,
-sold_by: Option<Option<String>>,
-
+    category: Option<
+        PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory,
+    >,
+    description: Option<Option<String>>,
+    sold_by: Option<Option<String>>,
 }
 
 #[allow(
@@ -81,7 +82,7 @@ const _: () = {
         type Out = PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "category" => Deserialize::begin(&mut self.category),
+                "category" => stripe_types::miniserde_helpers::begin_nullable(&mut self.category),
                 "description" => Deserialize::begin(&mut self.description),
                 "sold_by" => Deserialize::begin(&mut self.sold_by),
                 _ => <dyn Visitor>::ignore(),
@@ -89,11 +90,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { category: Some(None), description: Some(None), sold_by: Some(None) }
+            Self { category: None, description: Some(None), sold_by: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(category), Some(description), Some(sold_by)) =
+            let (category, Some(description), Some(sold_by)) =
                 (self.category.take(), self.description.take(), self.sold_by.take())
             else {
                 return None;

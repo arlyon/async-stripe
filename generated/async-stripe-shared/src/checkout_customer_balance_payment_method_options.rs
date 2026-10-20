@@ -26,10 +26,9 @@ impl std::fmt::Debug for CheckoutCustomerBalancePaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutCustomerBalancePaymentMethodOptionsBuilder {
-    bank_transfer:
-        Option<Option<stripe_shared::CheckoutCustomerBalanceBankTransferPaymentMethodOptions>>,
-    funding_type: Option<Option<CheckoutCustomerBalancePaymentMethodOptionsFundingType>>,
-    setup_future_usage: Option<Option<CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage>>,
+    bank_transfer: Option<stripe_shared::CheckoutCustomerBalanceBankTransferPaymentMethodOptions>,
+    funding_type: Option<CheckoutCustomerBalancePaymentMethodOptionsFundingType>,
+    setup_future_usage: Option<CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage>,
 }
 
 #[allow(
@@ -72,23 +71,25 @@ const _: () = {
         type Out = CheckoutCustomerBalancePaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank_transfer" => Deserialize::begin(&mut self.bank_transfer),
-                "funding_type" => Deserialize::begin(&mut self.funding_type),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "bank_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bank_transfer)
+                }
+                "funding_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.funding_type)
+                }
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                bank_transfer: Some(None),
-                funding_type: Some(None),
-                setup_future_usage: Some(None),
-            }
+            Self { bank_transfer: None, funding_type: None, setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank_transfer), Some(funding_type), Some(setup_future_usage)) = (
+            let (bank_transfer, funding_type, setup_future_usage) = (
                 self.bank_transfer.take(),
                 self.funding_type.take(),
                 self.setup_future_usage.take(),

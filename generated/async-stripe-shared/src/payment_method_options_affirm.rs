@@ -25,9 +25,9 @@ impl std::fmt::Debug for PaymentMethodOptionsAffirm {
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsAffirmBuilder {
-    capture_method: Option<Option<PaymentMethodOptionsAffirmCaptureMethod>>,
+    capture_method: Option<PaymentMethodOptionsAffirmCaptureMethod>,
     preferred_locale: Option<Option<String>>,
-    setup_future_usage: Option<Option<PaymentMethodOptionsAffirmSetupFutureUsage>>,
+    setup_future_usage: Option<PaymentMethodOptionsAffirmSetupFutureUsage>,
 }
 
 #[allow(
@@ -70,23 +70,23 @@ const _: () = {
         type Out = PaymentMethodOptionsAffirm;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
+                "capture_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.capture_method)
+                }
                 "preferred_locale" => Deserialize::begin(&mut self.preferred_locale),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                capture_method: Some(None),
-                preferred_locale: Some(None),
-                setup_future_usage: Some(None),
-            }
+            Self { capture_method: None, preferred_locale: Some(None), setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(capture_method), Some(preferred_locale), Some(setup_future_usage)) = (
+            let (capture_method, Some(preferred_locale), setup_future_usage) = (
                 self.capture_method.take(),
                 self.preferred_locale.take(),
                 self.setup_future_usage.take(),

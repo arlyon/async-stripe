@@ -14,7 +14,7 @@ impl std::fmt::Debug for TreasuryFinancialAccountsResourceStatusDetails {
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceStatusDetailsBuilder {
-    closed: Option<Option<stripe_treasury::TreasuryFinancialAccountsResourceClosedStatusDetails>>,
+    closed: Option<stripe_treasury::TreasuryFinancialAccountsResourceClosedStatusDetails>,
 }
 
 #[allow(
@@ -57,17 +57,17 @@ const _: () = {
         type Out = TreasuryFinancialAccountsResourceStatusDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "closed" => Deserialize::begin(&mut self.closed),
+                "closed" => stripe_types::miniserde_helpers::begin_nullable(&mut self.closed),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { closed: Some(None) }
+            Self { closed: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(closed),) = (self.closed.take(),) else {
+            let (closed,) = (self.closed.take(),) else {
                 return None;
             };
             Some(Self::Out { closed })

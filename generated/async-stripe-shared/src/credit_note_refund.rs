@@ -22,9 +22,9 @@ impl std::fmt::Debug for CreditNoteRefund {
 #[doc(hidden)]
 pub struct CreditNoteRefundBuilder {
     amount_refunded: Option<i64>,
-    payment_record_refund: Option<Option<stripe_shared::CreditNotesPaymentRecordRefund>>,
+    payment_record_refund: Option<stripe_shared::CreditNotesPaymentRecordRefund>,
     refund: Option<stripe_types::Expandable<stripe_shared::Refund>>,
-    type_: Option<Option<CreditNoteRefundType>>,
+    type_: Option<CreditNoteRefundType>,
 }
 
 #[allow(
@@ -68,24 +68,21 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount_refunded" => Deserialize::begin(&mut self.amount_refunded),
-                "payment_record_refund" => Deserialize::begin(&mut self.payment_record_refund),
+                "payment_record_refund" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_record_refund)
+                }
                 "refund" => Deserialize::begin(&mut self.refund),
-                "type" => Deserialize::begin(&mut self.type_),
+                "type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                amount_refunded: None,
-                payment_record_refund: Some(None),
-                refund: None,
-                type_: Some(None),
-            }
+            Self { amount_refunded: None, payment_record_refund: None, refund: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_refunded), Some(payment_record_refund), Some(refund), Some(type_)) = (
+            let (Some(amount_refunded), payment_record_refund, Some(refund), type_) = (
                 self.amount_refunded,
                 self.payment_record_refund.take(),
                 self.refund.take(),

@@ -64,20 +64,20 @@ pub struct PaymentAttemptRecordBuilder {
     application: Option<Option<String>>,
     created: Option<stripe_types::Timestamp>,
     customer_details:
-        Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceCustomerDetails>>,
-    customer_presence: Option<Option<PaymentAttemptRecordCustomerPresence>>,
+        Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceCustomerDetails>,
+    customer_presence: Option<PaymentAttemptRecordCustomerPresence>,
     description: Option<Option<String>>,
     id: Option<stripe_payment::PaymentAttemptRecordId>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     payment_method_details:
-        Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails>>,
+        Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails>,
     payment_record: Option<Option<String>>,
     processor_details:
         Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceProcessorDetails>,
     reported_by: Option<PaymentAttemptRecordReportedBy>,
     shipping_details:
-        Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceShippingDetails>>,
+        Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceShippingDetails>,
 }
 
 #[allow(
@@ -129,17 +129,25 @@ const _: () = {
                 "amount_requested" => Deserialize::begin(&mut self.amount_requested),
                 "application" => Deserialize::begin(&mut self.application),
                 "created" => Deserialize::begin(&mut self.created),
-                "customer_details" => Deserialize::begin(&mut self.customer_details),
-                "customer_presence" => Deserialize::begin(&mut self.customer_presence),
+                "customer_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.customer_details)
+                }
+                "customer_presence" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.customer_presence)
+                }
                 "description" => Deserialize::begin(&mut self.description),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
+                "payment_method_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_details,
+                ),
                 "payment_record" => Deserialize::begin(&mut self.payment_record),
                 "processor_details" => Deserialize::begin(&mut self.processor_details),
                 "reported_by" => Deserialize::begin(&mut self.reported_by),
-                "shipping_details" => Deserialize::begin(&mut self.shipping_details),
+                "shipping_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_details)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -155,17 +163,17 @@ const _: () = {
                 amount_requested: None,
                 application: Some(None),
                 created: None,
-                customer_details: Some(None),
-                customer_presence: Some(None),
+                customer_details: None,
+                customer_presence: None,
                 description: Some(None),
                 id: None,
                 livemode: None,
                 metadata: None,
-                payment_method_details: Some(None),
+                payment_method_details: None,
                 payment_record: Some(None),
                 processor_details: None,
                 reported_by: None,
-                shipping_details: Some(None),
+                shipping_details: None,
             }
         }
 
@@ -180,17 +188,17 @@ const _: () = {
                 Some(amount_requested),
                 Some(application),
                 Some(created),
-                Some(customer_details),
-                Some(customer_presence),
+                customer_details,
+                customer_presence,
                 Some(description),
                 Some(id),
                 Some(livemode),
                 Some(metadata),
-                Some(payment_method_details),
+                payment_method_details,
                 Some(payment_record),
                 Some(processor_details),
                 Some(reported_by),
-                Some(shipping_details),
+                shipping_details,
             ) = (
                 self.amount.take(),
                 self.amount_authorized.take(),

@@ -14,7 +14,7 @@ impl std::fmt::Debug for PaymentLinksResourceCardPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceCardPaymentMethodOptionsBuilder {
-    restrictions: Option<Option<stripe_shared::PaymentLinksResourceCardRestrictions>>,
+    restrictions: Option<stripe_shared::PaymentLinksResourceCardRestrictions>,
 }
 
 #[allow(
@@ -57,17 +57,19 @@ const _: () = {
         type Out = PaymentLinksResourceCardPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "restrictions" => Deserialize::begin(&mut self.restrictions),
+                "restrictions" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.restrictions)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { restrictions: Some(None) }
+            Self { restrictions: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(restrictions),) = (self.restrictions.take(),) else {
+            let (restrictions,) = (self.restrictions.take(),) else {
                 return None;
             };
             Some(Self::Out { restrictions })

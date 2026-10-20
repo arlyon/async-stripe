@@ -80,22 +80,22 @@ pub struct IdentityVerificationSessionBuilder {
     client_secret: Option<Option<String>>,
     created: Option<stripe_types::Timestamp>,
     id: Option<stripe_misc::IdentityVerificationSessionId>,
-    last_error: Option<Option<stripe_misc::GelatoSessionLastError>>,
+    last_error: Option<stripe_misc::GelatoSessionLastError>,
     last_verification_report:
-        Option<Option<stripe_types::Expandable<stripe_misc::IdentityVerificationReport>>>,
+        Option<stripe_types::Expandable<stripe_misc::IdentityVerificationReport>>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
-    options: Option<Option<stripe_misc::GelatoVerificationSessionOptions>>,
-    provided_details: Option<Option<stripe_misc::GelatoProvidedDetails>>,
-    redaction: Option<Option<stripe_misc::VerificationSessionRedaction>>,
+    options: Option<stripe_misc::GelatoVerificationSessionOptions>,
+    provided_details: Option<stripe_misc::GelatoProvidedDetails>,
+    redaction: Option<stripe_misc::VerificationSessionRedaction>,
     related_customer: Option<Option<String>>,
     related_customer_account: Option<Option<String>>,
-    related_person: Option<Option<stripe_misc::GelatoRelatedPerson>>,
+    related_person: Option<stripe_misc::GelatoRelatedPerson>,
     status: Option<stripe_misc::IdentityVerificationSessionStatus>,
     type_: Option<IdentityVerificationSessionType>,
     url: Option<Option<String>>,
     verification_flow: Option<Option<String>>,
-    verified_outputs: Option<Option<stripe_misc::GelatoVerifiedOutputs>>,
+    verified_outputs: Option<stripe_misc::GelatoVerifiedOutputs>,
 }
 
 #[allow(
@@ -142,25 +142,33 @@ const _: () = {
                 "client_secret" => Deserialize::begin(&mut self.client_secret),
                 "created" => Deserialize::begin(&mut self.created),
                 "id" => Deserialize::begin(&mut self.id),
-                "last_error" => Deserialize::begin(&mut self.last_error),
-                "last_verification_report" => {
-                    Deserialize::begin(&mut self.last_verification_report)
+                "last_error" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.last_error)
                 }
+                "last_verification_report" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.last_verification_report,
+                ),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "options" => Deserialize::begin(&mut self.options),
-                "provided_details" => Deserialize::begin(&mut self.provided_details),
-                "redaction" => Deserialize::begin(&mut self.redaction),
+                "options" => stripe_types::miniserde_helpers::begin_nullable(&mut self.options),
+                "provided_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.provided_details)
+                }
+                "redaction" => stripe_types::miniserde_helpers::begin_nullable(&mut self.redaction),
                 "related_customer" => Deserialize::begin(&mut self.related_customer),
                 "related_customer_account" => {
                     Deserialize::begin(&mut self.related_customer_account)
                 }
-                "related_person" => Deserialize::begin(&mut self.related_person),
+                "related_person" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.related_person)
+                }
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
                 "url" => Deserialize::begin(&mut self.url),
                 "verification_flow" => Deserialize::begin(&mut self.verification_flow),
-                "verified_outputs" => Deserialize::begin(&mut self.verified_outputs),
+                "verified_outputs" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verified_outputs)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -171,21 +179,21 @@ const _: () = {
                 client_secret: Some(None),
                 created: None,
                 id: None,
-                last_error: Some(None),
-                last_verification_report: Some(None),
+                last_error: None,
+                last_verification_report: None,
                 livemode: None,
                 metadata: None,
-                options: Some(None),
-                provided_details: Some(None),
-                redaction: Some(None),
+                options: None,
+                provided_details: None,
+                redaction: None,
                 related_customer: Some(None),
                 related_customer_account: Some(None),
-                related_person: Some(None),
+                related_person: None,
                 status: None,
                 type_: None,
                 url: Some(None),
                 verification_flow: Some(None),
-                verified_outputs: Some(None),
+                verified_outputs: None,
             }
         }
 
@@ -195,21 +203,21 @@ const _: () = {
                 Some(client_secret),
                 Some(created),
                 Some(id),
-                Some(last_error),
-                Some(last_verification_report),
+                last_error,
+                last_verification_report,
                 Some(livemode),
                 Some(metadata),
-                Some(options),
-                Some(provided_details),
-                Some(redaction),
+                options,
+                provided_details,
+                redaction,
                 Some(related_customer),
                 Some(related_customer_account),
-                Some(related_person),
+                related_person,
                 Some(status),
                 Some(type_),
                 Some(url),
                 Some(verification_flow),
-                Some(verified_outputs),
+                verified_outputs,
             ) = (
                 self.client_reference_id.take(),
                 self.client_secret.take(),

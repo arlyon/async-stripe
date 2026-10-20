@@ -26,7 +26,7 @@ pub struct SourceOrderBuilder {
     currency: Option<stripe_types::Currency>,
     email: Option<Option<String>>,
     items: Option<Option<Vec<stripe_shared::SourceOrderItem>>>,
-    shipping: Option<Option<stripe_shared::Shipping>>,
+    shipping: Option<stripe_shared::Shipping>,
 }
 
 #[allow(
@@ -73,7 +73,7 @@ const _: () = {
                 "currency" => Deserialize::begin(&mut self.currency),
                 "email" => Deserialize::begin(&mut self.email),
                 "items" => Deserialize::begin(&mut self.items),
-                "shipping" => Deserialize::begin(&mut self.shipping),
+                "shipping" => stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -84,12 +84,12 @@ const _: () = {
                 currency: None,
                 email: Some(None),
                 items: Some(None),
-                shipping: Some(None),
+                shipping: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(currency), Some(email), Some(items), Some(shipping)) = (
+            let (Some(amount), Some(currency), Some(email), Some(items), shipping) = (
                 self.amount,
                 self.currency.take(),
                 self.email.take(),

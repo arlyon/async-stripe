@@ -38,7 +38,7 @@ pub struct RadarEarlyFraudWarningBuilder {
     fraud_type: Option<String>,
     id: Option<stripe_fraud::RadarEarlyFraudWarningId>,
     livemode: Option<bool>,
-    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
+    payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
 }
 
 #[allow(
@@ -87,7 +87,9 @@ const _: () = {
                 "fraud_type" => Deserialize::begin(&mut self.fraud_type),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
+                "payment_intent" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_intent)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +102,7 @@ const _: () = {
                 fraud_type: None,
                 id: None,
                 livemode: None,
-                payment_intent: Some(None),
+                payment_intent: None,
             }
         }
 
@@ -112,7 +114,7 @@ const _: () = {
                 Some(fraud_type),
                 Some(id),
                 Some(livemode),
-                Some(payment_intent),
+                payment_intent,
             ) = (
                 self.actionable,
                 self.charge.take(),

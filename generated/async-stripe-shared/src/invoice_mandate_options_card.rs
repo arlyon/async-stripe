@@ -21,7 +21,7 @@ impl std::fmt::Debug for InvoiceMandateOptionsCard {
 #[doc(hidden)]
 pub struct InvoiceMandateOptionsCardBuilder {
     amount: Option<Option<i64>>,
-    amount_type: Option<Option<InvoiceMandateOptionsCardAmountType>>,
+    amount_type: Option<InvoiceMandateOptionsCardAmountType>,
     description: Option<Option<String>>,
 }
 
@@ -66,18 +66,20 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "amount_type" => Deserialize::begin(&mut self.amount_type),
+                "amount_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_type)
+                }
                 "description" => Deserialize::begin(&mut self.description),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { amount: Some(None), amount_type: Some(None), description: Some(None) }
+            Self { amount: Some(None), amount_type: None, description: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(amount_type), Some(description)) =
+            let (Some(amount), amount_type, Some(description)) =
                 (self.amount, self.amount_type.take(), self.description.take())
             else {
                 return None;

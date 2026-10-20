@@ -106,7 +106,7 @@ impl std::fmt::Debug for Card {
 }
 #[doc(hidden)]
 pub struct CardBuilder {
-    account: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    account: Option<stripe_types::Expandable<stripe_shared::Account>>,
     address_city: Option<Option<String>>,
     address_country: Option<Option<String>>,
     address_line1: Option<Option<String>>,
@@ -115,12 +115,12 @@ pub struct CardBuilder {
     address_state: Option<Option<String>>,
     address_zip: Option<Option<String>>,
     address_zip_check: Option<Option<String>>,
-    allow_redisplay: Option<Option<CardAllowRedisplay>>,
+    allow_redisplay: Option<CardAllowRedisplay>,
     available_payout_methods: Option<Option<Vec<CardAvailablePayoutMethods>>>,
     brand: Option<String>,
     country: Option<Option<String>>,
     currency: Option<Option<stripe_types::Currency>>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     cvc_check: Option<Option<String>>,
     default_for_currency: Option<Option<bool>>,
     description: Option<Option<String>>,
@@ -135,8 +135,8 @@ pub struct CardBuilder {
     last4: Option<String>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     name: Option<Option<String>>,
-    networks: Option<Option<stripe_shared::TokenCardNetworks>>,
-    regulated_status: Option<Option<CardRegulatedStatus>>,
+    networks: Option<stripe_shared::TokenCardNetworks>,
+    regulated_status: Option<CardRegulatedStatus>,
     status: Option<Option<String>>,
     tokenization_method: Option<Option<String>>,
 }
@@ -178,7 +178,7 @@ const _: () = {
         type Out = Card;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account" => Deserialize::begin(&mut self.account),
+                "account" => stripe_types::miniserde_helpers::begin_nullable(&mut self.account),
                 "address_city" => Deserialize::begin(&mut self.address_city),
                 "address_country" => Deserialize::begin(&mut self.address_country),
                 "address_line1" => Deserialize::begin(&mut self.address_line1),
@@ -187,14 +187,16 @@ const _: () = {
                 "address_state" => Deserialize::begin(&mut self.address_state),
                 "address_zip" => Deserialize::begin(&mut self.address_zip),
                 "address_zip_check" => Deserialize::begin(&mut self.address_zip_check),
-                "allow_redisplay" => Deserialize::begin(&mut self.allow_redisplay),
+                "allow_redisplay" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.allow_redisplay)
+                }
                 "available_payout_methods" => {
                     Deserialize::begin(&mut self.available_payout_methods)
                 }
                 "brand" => Deserialize::begin(&mut self.brand),
                 "country" => Deserialize::begin(&mut self.country),
                 "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "cvc_check" => Deserialize::begin(&mut self.cvc_check),
                 "default_for_currency" => Deserialize::begin(&mut self.default_for_currency),
                 "description" => Deserialize::begin(&mut self.description),
@@ -209,8 +211,10 @@ const _: () = {
                 "last4" => Deserialize::begin(&mut self.last4),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "name" => Deserialize::begin(&mut self.name),
-                "networks" => Deserialize::begin(&mut self.networks),
-                "regulated_status" => Deserialize::begin(&mut self.regulated_status),
+                "networks" => stripe_types::miniserde_helpers::begin_nullable(&mut self.networks),
+                "regulated_status" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.regulated_status)
+                }
                 "status" => Deserialize::begin(&mut self.status),
                 "tokenization_method" => Deserialize::begin(&mut self.tokenization_method),
                 _ => <dyn Visitor>::ignore(),
@@ -219,7 +223,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account: Some(None),
+                account: None,
                 address_city: Some(None),
                 address_country: Some(None),
                 address_line1: Some(None),
@@ -228,12 +232,12 @@ const _: () = {
                 address_state: Some(None),
                 address_zip: Some(None),
                 address_zip_check: Some(None),
-                allow_redisplay: Some(None),
+                allow_redisplay: None,
                 available_payout_methods: Some(None),
                 brand: None,
                 country: Some(None),
                 currency: Some(None),
-                customer: Some(None),
+                customer: None,
                 cvc_check: Some(None),
                 default_for_currency: Some(None),
                 description: Some(None),
@@ -248,8 +252,8 @@ const _: () = {
                 last4: None,
                 metadata: Some(None),
                 name: Some(None),
-                networks: Some(None),
-                regulated_status: Some(None),
+                networks: None,
+                regulated_status: None,
                 status: Some(None),
                 tokenization_method: Some(None),
             }
@@ -257,7 +261,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(account),
+                account,
                 Some(address_city),
                 Some(address_country),
                 Some(address_line1),
@@ -266,12 +270,12 @@ const _: () = {
                 Some(address_state),
                 Some(address_zip),
                 Some(address_zip_check),
-                Some(allow_redisplay),
+                allow_redisplay,
                 Some(available_payout_methods),
                 Some(brand),
                 Some(country),
                 Some(currency),
-                Some(customer),
+                customer,
                 Some(cvc_check),
                 Some(default_for_currency),
                 Some(description),
@@ -286,8 +290,8 @@ const _: () = {
                 Some(last4),
                 Some(metadata),
                 Some(name),
-                Some(networks),
-                Some(regulated_status),
+                networks,
+                regulated_status,
                 Some(status),
                 Some(tokenization_method),
             ) = (

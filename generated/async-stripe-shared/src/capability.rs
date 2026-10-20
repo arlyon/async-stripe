@@ -29,11 +29,11 @@ impl std::fmt::Debug for Capability {
 #[doc(hidden)]
 pub struct CapabilityBuilder {
     account: Option<stripe_types::Expandable<stripe_shared::Account>>,
-    future_requirements: Option<Option<stripe_shared::AccountCapabilityFutureRequirements>>,
+    future_requirements: Option<stripe_shared::AccountCapabilityFutureRequirements>,
     id: Option<stripe_shared::CapabilityId>,
     requested: Option<bool>,
     requested_at: Option<Option<stripe_types::Timestamp>>,
-    requirements: Option<Option<stripe_shared::AccountCapabilityRequirements>>,
+    requirements: Option<stripe_shared::AccountCapabilityRequirements>,
     status: Option<CapabilityStatus>,
 }
 
@@ -78,11 +78,15 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "account" => Deserialize::begin(&mut self.account),
-                "future_requirements" => Deserialize::begin(&mut self.future_requirements),
+                "future_requirements" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.future_requirements)
+                }
                 "id" => Deserialize::begin(&mut self.id),
                 "requested" => Deserialize::begin(&mut self.requested),
                 "requested_at" => Deserialize::begin(&mut self.requested_at),
-                "requirements" => Deserialize::begin(&mut self.requirements),
+                "requirements" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.requirements)
+                }
                 "status" => Deserialize::begin(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -91,11 +95,11 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 account: None,
-                future_requirements: Some(None),
+                future_requirements: None,
                 id: None,
                 requested: None,
                 requested_at: Some(None),
-                requirements: Some(None),
+                requirements: None,
                 status: None,
             }
         }
@@ -103,11 +107,11 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(account),
-                Some(future_requirements),
+                future_requirements,
                 Some(id),
                 Some(requested),
                 Some(requested_at),
-                Some(requirements),
+                requirements,
                 Some(status),
             ) = (
                 self.account.take(),

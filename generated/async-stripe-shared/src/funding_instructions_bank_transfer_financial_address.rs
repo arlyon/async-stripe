@@ -25,15 +25,15 @@ impl std::fmt::Debug for FundingInstructionsBankTransferFinancialAddress {
 }
 #[doc(hidden)]
 pub struct FundingInstructionsBankTransferFinancialAddressBuilder {
-    aba: Option<Option<stripe_shared::FundingInstructionsBankTransferAbaRecord>>,
-    iban: Option<Option<stripe_shared::FundingInstructionsBankTransferIbanRecord>>,
-    sort_code: Option<Option<stripe_shared::FundingInstructionsBankTransferSortCodeRecord>>,
-    spei: Option<Option<stripe_shared::FundingInstructionsBankTransferSpeiRecord>>,
+    aba: Option<stripe_shared::FundingInstructionsBankTransferAbaRecord>,
+    iban: Option<stripe_shared::FundingInstructionsBankTransferIbanRecord>,
+    sort_code: Option<stripe_shared::FundingInstructionsBankTransferSortCodeRecord>,
+    spei: Option<stripe_shared::FundingInstructionsBankTransferSpeiRecord>,
     supported_networks:
         Option<Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>>,
-    swift: Option<Option<stripe_shared::FundingInstructionsBankTransferSwiftRecord>>,
+    swift: Option<stripe_shared::FundingInstructionsBankTransferSwiftRecord>,
     type_: Option<FundingInstructionsBankTransferFinancialAddressType>,
-    zengin: Option<Option<stripe_shared::FundingInstructionsBankTransferZenginRecord>>,
+    zengin: Option<stripe_shared::FundingInstructionsBankTransferZenginRecord>,
 }
 
 #[allow(
@@ -76,42 +76,33 @@ const _: () = {
         type Out = FundingInstructionsBankTransferFinancialAddress;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "aba" => Deserialize::begin(&mut self.aba),
-                "iban" => Deserialize::begin(&mut self.iban),
-                "sort_code" => Deserialize::begin(&mut self.sort_code),
-                "spei" => Deserialize::begin(&mut self.spei),
+                "aba" => stripe_types::miniserde_helpers::begin_nullable(&mut self.aba),
+                "iban" => stripe_types::miniserde_helpers::begin_nullable(&mut self.iban),
+                "sort_code" => stripe_types::miniserde_helpers::begin_nullable(&mut self.sort_code),
+                "spei" => stripe_types::miniserde_helpers::begin_nullable(&mut self.spei),
                 "supported_networks" => Deserialize::begin(&mut self.supported_networks),
-                "swift" => Deserialize::begin(&mut self.swift),
+                "swift" => stripe_types::miniserde_helpers::begin_nullable(&mut self.swift),
                 "type" => Deserialize::begin(&mut self.type_),
-                "zengin" => Deserialize::begin(&mut self.zengin),
+                "zengin" => stripe_types::miniserde_helpers::begin_nullable(&mut self.zengin),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                aba: Some(None),
-                iban: Some(None),
-                sort_code: Some(None),
-                spei: Some(None),
+                aba: None,
+                iban: None,
+                sort_code: None,
+                spei: None,
                 supported_networks: Some(None),
-                swift: Some(None),
+                swift: None,
                 type_: None,
-                zengin: Some(None),
+                zengin: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(aba),
-                Some(iban),
-                Some(sort_code),
-                Some(spei),
-                Some(supported_networks),
-                Some(swift),
-                Some(type_),
-                Some(zengin),
-            ) = (
+            let (aba, iban, sort_code, spei, Some(supported_networks), swift, Some(type_), zengin) = (
                 self.aba.take(),
                 self.iban.take(),
                 self.sort_code.take(),
@@ -120,8 +111,7 @@ const _: () = {
                 self.swift.take(),
                 self.type_.take(),
                 self.zengin.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { aba, iban, sort_code, spei, supported_networks, swift, type_, zengin })

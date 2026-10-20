@@ -13,8 +13,7 @@ impl std::fmt::Debug for BillingClocksResourceStatusDetailsStatusDetails {
 }
 #[doc(hidden)]
 pub struct BillingClocksResourceStatusDetailsStatusDetailsBuilder {
-    advancing:
-        Option<Option<stripe_shared::BillingClocksResourceStatusDetailsAdvancingStatusDetails>>,
+    advancing: Option<stripe_shared::BillingClocksResourceStatusDetailsAdvancingStatusDetails>,
 }
 
 #[allow(
@@ -57,17 +56,17 @@ const _: () = {
         type Out = BillingClocksResourceStatusDetailsStatusDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "advancing" => Deserialize::begin(&mut self.advancing),
+                "advancing" => stripe_types::miniserde_helpers::begin_nullable(&mut self.advancing),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { advancing: Some(None) }
+            Self { advancing: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(advancing),) = (self.advancing,) else {
+            let (advancing,) = (self.advancing,) else {
                 return None;
             };
             Some(Self::Out { advancing })

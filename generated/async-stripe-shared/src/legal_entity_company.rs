@@ -66,12 +66,12 @@ impl std::fmt::Debug for LegalEntityCompany {
 }
 #[doc(hidden)]
 pub struct LegalEntityCompanyBuilder {
-    address: Option<Option<stripe_shared::Address>>,
-    address_kana: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
-    address_kanji: Option<Option<stripe_shared::LegalEntityJapanAddress>>,
-    administrative_address: Option<Option<stripe_shared::Address>>,
+    address: Option<stripe_shared::Address>,
+    address_kana: Option<stripe_shared::LegalEntityJapanAddress>,
+    address_kanji: Option<stripe_shared::LegalEntityJapanAddress>,
+    administrative_address: Option<stripe_shared::Address>,
     directors_provided: Option<Option<bool>>,
-    directorship_declaration: Option<Option<stripe_shared::LegalEntityDirectorshipDeclaration>>,
+    directorship_declaration: Option<stripe_shared::LegalEntityDirectorshipDeclaration>,
     executives_provided: Option<Option<bool>>,
     export_license_id: Option<Option<String>>,
     export_purpose_code: Option<Option<String>>,
@@ -79,17 +79,17 @@ pub struct LegalEntityCompanyBuilder {
     name_kana: Option<Option<String>>,
     name_kanji: Option<Option<String>>,
     owners_provided: Option<Option<bool>>,
-    ownership_declaration: Option<Option<stripe_shared::LegalEntityUboDeclaration>>,
-    ownership_exemption_reason: Option<Option<LegalEntityCompanyOwnershipExemptionReason>>,
+    ownership_declaration: Option<stripe_shared::LegalEntityUboDeclaration>,
+    ownership_exemption_reason: Option<LegalEntityCompanyOwnershipExemptionReason>,
     phone: Option<Option<String>>,
-    principal_place_of_business: Option<Option<stripe_shared::Address>>,
-    registration_date: Option<Option<stripe_shared::LegalEntityRegistrationDate>>,
-    representative_declaration: Option<Option<stripe_shared::LegalEntityRepresentativeDeclaration>>,
-    structure: Option<Option<LegalEntityCompanyStructure>>,
+    principal_place_of_business: Option<stripe_shared::Address>,
+    registration_date: Option<stripe_shared::LegalEntityRegistrationDate>,
+    representative_declaration: Option<stripe_shared::LegalEntityRepresentativeDeclaration>,
+    structure: Option<LegalEntityCompanyStructure>,
     tax_id_provided: Option<Option<bool>>,
     tax_id_registrar: Option<Option<String>>,
     vat_id_provided: Option<Option<bool>>,
-    verification: Option<Option<stripe_shared::LegalEntityCompanyVerification>>,
+    verification: Option<stripe_shared::LegalEntityCompanyVerification>,
 }
 
 #[allow(
@@ -132,14 +132,20 @@ const _: () = {
         type Out = LegalEntityCompany;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "address" => Deserialize::begin(&mut self.address),
-                "address_kana" => Deserialize::begin(&mut self.address_kana),
-                "address_kanji" => Deserialize::begin(&mut self.address_kanji),
-                "administrative_address" => Deserialize::begin(&mut self.administrative_address),
-                "directors_provided" => Deserialize::begin(&mut self.directors_provided),
-                "directorship_declaration" => {
-                    Deserialize::begin(&mut self.directorship_declaration)
+                "address" => stripe_types::miniserde_helpers::begin_nullable(&mut self.address),
+                "address_kana" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.address_kana)
                 }
+                "address_kanji" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.address_kanji)
+                }
+                "administrative_address" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.administrative_address,
+                ),
+                "directors_provided" => Deserialize::begin(&mut self.directors_provided),
+                "directorship_declaration" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.directorship_declaration,
+                ),
                 "executives_provided" => Deserialize::begin(&mut self.executives_provided),
                 "export_license_id" => Deserialize::begin(&mut self.export_license_id),
                 "export_purpose_code" => Deserialize::begin(&mut self.export_purpose_code),
@@ -147,35 +153,41 @@ const _: () = {
                 "name_kana" => Deserialize::begin(&mut self.name_kana),
                 "name_kanji" => Deserialize::begin(&mut self.name_kanji),
                 "owners_provided" => Deserialize::begin(&mut self.owners_provided),
-                "ownership_declaration" => Deserialize::begin(&mut self.ownership_declaration),
-                "ownership_exemption_reason" => {
-                    Deserialize::begin(&mut self.ownership_exemption_reason)
+                "ownership_declaration" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.ownership_declaration)
                 }
+                "ownership_exemption_reason" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.ownership_exemption_reason,
+                ),
                 "phone" => Deserialize::begin(&mut self.phone),
-                "principal_place_of_business" => {
-                    Deserialize::begin(&mut self.principal_place_of_business)
+                "principal_place_of_business" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.principal_place_of_business,
+                ),
+                "registration_date" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.registration_date)
                 }
-                "registration_date" => Deserialize::begin(&mut self.registration_date),
-                "representative_declaration" => {
-                    Deserialize::begin(&mut self.representative_declaration)
-                }
-                "structure" => Deserialize::begin(&mut self.structure),
+                "representative_declaration" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.representative_declaration,
+                ),
+                "structure" => stripe_types::miniserde_helpers::begin_nullable(&mut self.structure),
                 "tax_id_provided" => Deserialize::begin(&mut self.tax_id_provided),
                 "tax_id_registrar" => Deserialize::begin(&mut self.tax_id_registrar),
                 "vat_id_provided" => Deserialize::begin(&mut self.vat_id_provided),
-                "verification" => Deserialize::begin(&mut self.verification),
+                "verification" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verification)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                address: Some(None),
-                address_kana: Some(None),
-                address_kanji: Some(None),
-                administrative_address: Some(None),
+                address: None,
+                address_kana: None,
+                address_kanji: None,
+                administrative_address: None,
                 directors_provided: Some(None),
-                directorship_declaration: Some(None),
+                directorship_declaration: None,
                 executives_provided: Some(None),
                 export_license_id: Some(None),
                 export_purpose_code: Some(None),
@@ -183,28 +195,28 @@ const _: () = {
                 name_kana: Some(None),
                 name_kanji: Some(None),
                 owners_provided: Some(None),
-                ownership_declaration: Some(None),
-                ownership_exemption_reason: Some(None),
+                ownership_declaration: None,
+                ownership_exemption_reason: None,
                 phone: Some(None),
-                principal_place_of_business: Some(None),
-                registration_date: Some(None),
-                representative_declaration: Some(None),
-                structure: Some(None),
+                principal_place_of_business: None,
+                registration_date: None,
+                representative_declaration: None,
+                structure: None,
                 tax_id_provided: Some(None),
                 tax_id_registrar: Some(None),
                 vat_id_provided: Some(None),
-                verification: Some(None),
+                verification: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(address),
-                Some(address_kana),
-                Some(address_kanji),
-                Some(administrative_address),
+                address,
+                address_kana,
+                address_kanji,
+                administrative_address,
                 Some(directors_provided),
-                Some(directorship_declaration),
+                directorship_declaration,
                 Some(executives_provided),
                 Some(export_license_id),
                 Some(export_purpose_code),
@@ -212,17 +224,17 @@ const _: () = {
                 Some(name_kana),
                 Some(name_kanji),
                 Some(owners_provided),
-                Some(ownership_declaration),
-                Some(ownership_exemption_reason),
+                ownership_declaration,
+                ownership_exemption_reason,
                 Some(phone),
-                Some(principal_place_of_business),
-                Some(registration_date),
-                Some(representative_declaration),
-                Some(structure),
+                principal_place_of_business,
+                registration_date,
+                representative_declaration,
+                structure,
                 Some(tax_id_provided),
                 Some(tax_id_registrar),
                 Some(vat_id_provided),
-                Some(verification),
+                verification,
             ) = (
                 self.address.take(),
                 self.address_kana.take(),

@@ -36,15 +36,15 @@ impl std::fmt::Debug for FinancialConnectionsSession {
 }
 #[doc(hidden)]
 pub struct FinancialConnectionsSessionBuilder {
-    account_holder: Option<Option<stripe_misc::BankConnectionsResourceAccountholder>>,
+    account_holder: Option<stripe_misc::BankConnectionsResourceAccountholder>,
     accounts: Option<stripe_types::List<stripe_misc::FinancialConnectionsAccount>>,
-    bank_account_token: Option<Option<stripe_shared::Token>>,
+    bank_account_token: Option<stripe_shared::Token>,
     client_secret: Option<Option<String>>,
-    filters: Option<Option<stripe_misc::BankConnectionsResourceLinkAccountSessionFilters>>,
+    filters: Option<stripe_misc::BankConnectionsResourceLinkAccountSessionFilters>,
     id: Option<stripe_misc::FinancialConnectionsSessionId>,
-    limits: Option<Option<stripe_misc::BankConnectionsResourceLinkAccountSessionLimits>>,
+    limits: Option<stripe_misc::BankConnectionsResourceLinkAccountSessionLimits>,
     livemode: Option<bool>,
-    manual_entry: Option<Option<stripe_misc::BankConnectionsResourceLinkAccountSessionManualEntry>>,
+    manual_entry: Option<stripe_misc::BankConnectionsResourceLinkAccountSessionManualEntry>,
     permissions: Option<Vec<stripe_misc::FinancialConnectionsSessionPermissions>>,
     prefetch: Option<Option<Vec<stripe_misc::FinancialConnectionsSessionPrefetch>>>,
     return_url: Option<Option<String>>,
@@ -90,15 +90,21 @@ const _: () = {
         type Out = FinancialConnectionsSession;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder" => Deserialize::begin(&mut self.account_holder),
+                "account_holder" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.account_holder)
+                }
                 "accounts" => Deserialize::begin(&mut self.accounts),
-                "bank_account_token" => Deserialize::begin(&mut self.bank_account_token),
+                "bank_account_token" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bank_account_token)
+                }
                 "client_secret" => Deserialize::begin(&mut self.client_secret),
-                "filters" => Deserialize::begin(&mut self.filters),
+                "filters" => stripe_types::miniserde_helpers::begin_nullable(&mut self.filters),
                 "id" => Deserialize::begin(&mut self.id),
-                "limits" => Deserialize::begin(&mut self.limits),
+                "limits" => stripe_types::miniserde_helpers::begin_nullable(&mut self.limits),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "manual_entry" => Deserialize::begin(&mut self.manual_entry),
+                "manual_entry" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.manual_entry)
+                }
                 "permissions" => Deserialize::begin(&mut self.permissions),
                 "prefetch" => Deserialize::begin(&mut self.prefetch),
                 "return_url" => Deserialize::begin(&mut self.return_url),
@@ -108,15 +114,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account_holder: Some(None),
+                account_holder: None,
                 accounts: None,
-                bank_account_token: Some(None),
+                bank_account_token: None,
                 client_secret: Some(None),
-                filters: Some(None),
+                filters: None,
                 id: None,
-                limits: Some(None),
+                limits: None,
                 livemode: None,
-                manual_entry: Some(None),
+                manual_entry: None,
                 permissions: None,
                 prefetch: Some(None),
                 return_url: Some(None),
@@ -125,15 +131,15 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(account_holder),
+                account_holder,
                 Some(accounts),
-                Some(bank_account_token),
+                bank_account_token,
                 Some(client_secret),
-                Some(filters),
+                filters,
                 Some(id),
-                Some(limits),
+                limits,
                 Some(livemode),
-                Some(manual_entry),
+                manual_entry,
                 Some(permissions),
                 Some(prefetch),
                 Some(return_url),

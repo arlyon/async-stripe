@@ -16,7 +16,7 @@ impl std::fmt::Debug for InvoiceRenderingPdf {
 }
 #[doc(hidden)]
 pub struct InvoiceRenderingPdfBuilder {
-    page_size: Option<Option<InvoiceRenderingPdfPageSize>>,
+    page_size: Option<InvoiceRenderingPdfPageSize>,
 }
 
 #[allow(
@@ -59,17 +59,17 @@ const _: () = {
         type Out = InvoiceRenderingPdf;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "page_size" => Deserialize::begin(&mut self.page_size),
+                "page_size" => stripe_types::miniserde_helpers::begin_nullable(&mut self.page_size),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { page_size: Some(None) }
+            Self { page_size: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(page_size),) = (self.page_size.take(),) else {
+            let (page_size,) = (self.page_size.take(),) else {
                 return None;
             };
             Some(Self::Out { page_size })

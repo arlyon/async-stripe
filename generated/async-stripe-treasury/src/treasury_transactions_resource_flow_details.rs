@@ -23,14 +23,14 @@ impl std::fmt::Debug for TreasuryTransactionsResourceFlowDetails {
 }
 #[doc(hidden)]
 pub struct TreasuryTransactionsResourceFlowDetailsBuilder {
-    credit_reversal: Option<Option<stripe_treasury::TreasuryCreditReversal>>,
-    debit_reversal: Option<Option<stripe_treasury::TreasuryDebitReversal>>,
-    inbound_transfer: Option<Option<stripe_treasury::TreasuryInboundTransfer>>,
-    issuing_authorization: Option<Option<stripe_shared::IssuingAuthorization>>,
-    outbound_payment: Option<Option<stripe_treasury::TreasuryOutboundPayment>>,
-    outbound_transfer: Option<Option<stripe_treasury::TreasuryOutboundTransfer>>,
-    received_credit: Option<Option<stripe_treasury::TreasuryReceivedCredit>>,
-    received_debit: Option<Option<stripe_treasury::TreasuryReceivedDebit>>,
+    credit_reversal: Option<stripe_treasury::TreasuryCreditReversal>,
+    debit_reversal: Option<stripe_treasury::TreasuryDebitReversal>,
+    inbound_transfer: Option<stripe_treasury::TreasuryInboundTransfer>,
+    issuing_authorization: Option<stripe_shared::IssuingAuthorization>,
+    outbound_payment: Option<stripe_treasury::TreasuryOutboundPayment>,
+    outbound_transfer: Option<stripe_treasury::TreasuryOutboundTransfer>,
+    received_credit: Option<stripe_treasury::TreasuryReceivedCredit>,
+    received_debit: Option<stripe_treasury::TreasuryReceivedDebit>,
     type_: Option<TreasuryTransactionsResourceFlowDetailsType>,
 }
 
@@ -74,14 +74,30 @@ const _: () = {
         type Out = TreasuryTransactionsResourceFlowDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "credit_reversal" => Deserialize::begin(&mut self.credit_reversal),
-                "debit_reversal" => Deserialize::begin(&mut self.debit_reversal),
-                "inbound_transfer" => Deserialize::begin(&mut self.inbound_transfer),
-                "issuing_authorization" => Deserialize::begin(&mut self.issuing_authorization),
-                "outbound_payment" => Deserialize::begin(&mut self.outbound_payment),
-                "outbound_transfer" => Deserialize::begin(&mut self.outbound_transfer),
-                "received_credit" => Deserialize::begin(&mut self.received_credit),
-                "received_debit" => Deserialize::begin(&mut self.received_debit),
+                "credit_reversal" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.credit_reversal)
+                }
+                "debit_reversal" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.debit_reversal)
+                }
+                "inbound_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.inbound_transfer)
+                }
+                "issuing_authorization" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.issuing_authorization)
+                }
+                "outbound_payment" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.outbound_payment)
+                }
+                "outbound_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.outbound_transfer)
+                }
+                "received_credit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.received_credit)
+                }
+                "received_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.received_debit)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -89,28 +105,28 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                credit_reversal: Some(None),
-                debit_reversal: Some(None),
-                inbound_transfer: Some(None),
-                issuing_authorization: Some(None),
-                outbound_payment: Some(None),
-                outbound_transfer: Some(None),
-                received_credit: Some(None),
-                received_debit: Some(None),
+                credit_reversal: None,
+                debit_reversal: None,
+                inbound_transfer: None,
+                issuing_authorization: None,
+                outbound_payment: None,
+                outbound_transfer: None,
+                received_credit: None,
+                received_debit: None,
                 type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(credit_reversal),
-                Some(debit_reversal),
-                Some(inbound_transfer),
-                Some(issuing_authorization),
-                Some(outbound_payment),
-                Some(outbound_transfer),
-                Some(received_credit),
-                Some(received_debit),
+                credit_reversal,
+                debit_reversal,
+                inbound_transfer,
+                issuing_authorization,
+                outbound_payment,
+                outbound_transfer,
+                received_credit,
+                received_debit,
                 Some(type_),
             ) = (
                 self.credit_reversal.take(),

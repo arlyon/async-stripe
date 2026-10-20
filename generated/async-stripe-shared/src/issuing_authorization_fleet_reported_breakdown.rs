@@ -18,9 +18,9 @@ impl std::fmt::Debug for IssuingAuthorizationFleetReportedBreakdown {
 }
 #[doc(hidden)]
 pub struct IssuingAuthorizationFleetReportedBreakdownBuilder {
-    fuel: Option<Option<stripe_shared::IssuingAuthorizationFleetFuelPriceData>>,
-    non_fuel: Option<Option<stripe_shared::IssuingAuthorizationFleetNonFuelPriceData>>,
-    tax: Option<Option<stripe_shared::IssuingAuthorizationFleetTaxData>>,
+    fuel: Option<stripe_shared::IssuingAuthorizationFleetFuelPriceData>,
+    non_fuel: Option<stripe_shared::IssuingAuthorizationFleetNonFuelPriceData>,
+    tax: Option<stripe_shared::IssuingAuthorizationFleetTaxData>,
 }
 
 #[allow(
@@ -63,20 +63,19 @@ const _: () = {
         type Out = IssuingAuthorizationFleetReportedBreakdown;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "fuel" => Deserialize::begin(&mut self.fuel),
-                "non_fuel" => Deserialize::begin(&mut self.non_fuel),
-                "tax" => Deserialize::begin(&mut self.tax),
+                "fuel" => stripe_types::miniserde_helpers::begin_nullable(&mut self.fuel),
+                "non_fuel" => stripe_types::miniserde_helpers::begin_nullable(&mut self.non_fuel),
+                "tax" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tax),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { fuel: Some(None), non_fuel: Some(None), tax: Some(None) }
+            Self { fuel: None, non_fuel: None, tax: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fuel), Some(non_fuel), Some(tax)) =
-                (self.fuel.take(), self.non_fuel.take(), self.tax.take())
+            let (fuel, non_fuel, tax) = (self.fuel.take(), self.non_fuel.take(), self.tax.take())
             else {
                 return None;
             };

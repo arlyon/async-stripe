@@ -13,7 +13,7 @@ impl std::fmt::Debug for PaymentFlowsPaymentIntentAsyncWorkflows {
 }
 #[doc(hidden)]
 pub struct PaymentFlowsPaymentIntentAsyncWorkflowsBuilder {
-    inputs: Option<Option<stripe_shared::PaymentFlowsPaymentIntentAsyncWorkflowsResourceInputs>>,
+    inputs: Option<stripe_shared::PaymentFlowsPaymentIntentAsyncWorkflowsResourceInputs>,
 }
 
 #[allow(
@@ -56,17 +56,17 @@ const _: () = {
         type Out = PaymentFlowsPaymentIntentAsyncWorkflows;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "inputs" => Deserialize::begin(&mut self.inputs),
+                "inputs" => stripe_types::miniserde_helpers::begin_nullable(&mut self.inputs),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { inputs: Some(None) }
+            Self { inputs: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(inputs),) = (self.inputs.take(),) else {
+            let (inputs,) = (self.inputs.take(),) else {
                 return None;
             };
             Some(Self::Out { inputs })

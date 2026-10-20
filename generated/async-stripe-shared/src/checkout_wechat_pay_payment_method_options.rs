@@ -26,8 +26,8 @@ impl std::fmt::Debug for CheckoutWechatPayPaymentMethodOptions {
 #[doc(hidden)]
 pub struct CheckoutWechatPayPaymentMethodOptionsBuilder {
     app_id: Option<Option<String>>,
-    client: Option<Option<CheckoutWechatPayPaymentMethodOptionsClient>>,
-    setup_future_usage: Option<Option<CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage>>,
+    client: Option<CheckoutWechatPayPaymentMethodOptionsClient>,
+    setup_future_usage: Option<CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage>,
 }
 
 #[allow(
@@ -71,18 +71,20 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "app_id" => Deserialize::begin(&mut self.app_id),
-                "client" => Deserialize::begin(&mut self.client),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "client" => stripe_types::miniserde_helpers::begin_nullable(&mut self.client),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { app_id: Some(None), client: Some(None), setup_future_usage: Some(None) }
+            Self { app_id: Some(None), client: None, setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(app_id), Some(client), Some(setup_future_usage)) =
+            let (Some(app_id), client, setup_future_usage) =
                 (self.app_id.take(), self.client.take(), self.setup_future_usage.take())
             else {
                 return None;

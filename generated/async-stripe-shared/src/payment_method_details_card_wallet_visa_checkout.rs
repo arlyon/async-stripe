@@ -28,10 +28,10 @@ impl std::fmt::Debug for PaymentMethodDetailsCardWalletVisaCheckout {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCardWalletVisaCheckoutBuilder {
-    billing_address: Option<Option<stripe_shared::Address>>,
+    billing_address: Option<stripe_shared::Address>,
     email: Option<Option<String>>,
     name: Option<Option<String>>,
-    shipping_address: Option<Option<stripe_shared::Address>>,
+    shipping_address: Option<stripe_shared::Address>,
 }
 
 #[allow(
@@ -74,25 +74,29 @@ const _: () = {
         type Out = PaymentMethodDetailsCardWalletVisaCheckout;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "billing_address" => Deserialize::begin(&mut self.billing_address),
+                "billing_address" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.billing_address)
+                }
                 "email" => Deserialize::begin(&mut self.email),
                 "name" => Deserialize::begin(&mut self.name),
-                "shipping_address" => Deserialize::begin(&mut self.shipping_address),
+                "shipping_address" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_address)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                billing_address: Some(None),
+                billing_address: None,
                 email: Some(None),
                 name: Some(None),
-                shipping_address: Some(None),
+                shipping_address: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(billing_address), Some(email), Some(name), Some(shipping_address)) = (
+            let (billing_address, Some(email), Some(name), shipping_address) = (
                 self.billing_address.take(),
                 self.email.take(),
                 self.name.take(),

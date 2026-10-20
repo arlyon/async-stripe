@@ -31,8 +31,7 @@ pub struct TreasuryReceivedCreditsResourceLinkedFlowsBuilder {
     issuing_authorization: Option<Option<String>>,
     issuing_transaction: Option<Option<String>>,
     source_flow: Option<Option<String>>,
-    source_flow_details:
-        Option<Option<stripe_treasury::TreasuryReceivedCreditsResourceSourceFlowsDetails>>,
+    source_flow_details: Option<stripe_treasury::TreasuryReceivedCreditsResourceSourceFlowsDetails>,
     source_flow_type: Option<Option<String>>,
 }
 
@@ -80,7 +79,9 @@ const _: () = {
                 "issuing_authorization" => Deserialize::begin(&mut self.issuing_authorization),
                 "issuing_transaction" => Deserialize::begin(&mut self.issuing_transaction),
                 "source_flow" => Deserialize::begin(&mut self.source_flow),
-                "source_flow_details" => Deserialize::begin(&mut self.source_flow_details),
+                "source_flow_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.source_flow_details)
+                }
                 "source_flow_type" => Deserialize::begin(&mut self.source_flow_type),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -92,7 +93,7 @@ const _: () = {
                 issuing_authorization: Some(None),
                 issuing_transaction: Some(None),
                 source_flow: Some(None),
-                source_flow_details: Some(None),
+                source_flow_details: None,
                 source_flow_type: Some(None),
             }
         }
@@ -103,7 +104,7 @@ const _: () = {
                 Some(issuing_authorization),
                 Some(issuing_transaction),
                 Some(source_flow),
-                Some(source_flow_details),
+                source_flow_details,
                 Some(source_flow_type),
             ) = (
                 self.credit_reversal.take(),

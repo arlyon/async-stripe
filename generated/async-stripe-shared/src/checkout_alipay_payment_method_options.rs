@@ -21,7 +21,7 @@ impl std::fmt::Debug for CheckoutAlipayPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutAlipayPaymentMethodOptionsBuilder {
-    setup_future_usage: Option<Option<CheckoutAlipayPaymentMethodOptionsSetupFutureUsage>>,
+    setup_future_usage: Option<CheckoutAlipayPaymentMethodOptionsSetupFutureUsage>,
 }
 
 #[allow(
@@ -64,17 +64,19 @@ const _: () = {
         type Out = CheckoutAlipayPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { setup_future_usage: Some(None) }
+            Self { setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(setup_future_usage),) = (self.setup_future_usage.take(),) else {
+            let (setup_future_usage,) = (self.setup_future_usage.take(),) else {
                 return None;
             };
             Some(Self::Out { setup_future_usage })

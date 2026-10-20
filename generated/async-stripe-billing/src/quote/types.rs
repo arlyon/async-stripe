@@ -99,7 +99,7 @@ impl std::fmt::Debug for Quote {
 pub struct QuoteBuilder {
     amount_subtotal: Option<i64>,
     amount_total: Option<i64>,
-    application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
+    application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     application_fee_amount: Option<Option<i64>>,
     application_fee_percent: Option<Option<f64>>,
     automatic_tax: Option<stripe_billing::QuotesResourceAutomaticTax>,
@@ -107,32 +107,31 @@ pub struct QuoteBuilder {
     computed: Option<stripe_billing::QuotesResourceComputed>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<Option<stripe_types::Currency>>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     default_tax_rates: Option<Option<Vec<stripe_types::Expandable<stripe_shared::TaxRate>>>>,
     description: Option<Option<String>>,
     discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
     expires_at: Option<stripe_types::Timestamp>,
     footer: Option<Option<String>>,
-    from_quote: Option<Option<stripe_billing::QuotesResourceFromQuote>>,
+    from_quote: Option<stripe_billing::QuotesResourceFromQuote>,
     header: Option<Option<String>>,
     id: Option<stripe_billing::QuoteId>,
-    invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
+    invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
     invoice_settings: Option<stripe_billing::InvoiceSettingQuoteSetting>,
     line_items: Option<Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     number: Option<Option<String>>,
-    on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     status: Option<stripe_billing::QuoteStatus>,
     status_transitions: Option<stripe_billing::QuotesResourceStatusTransitions>,
-    subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
+    subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
     subscription_data: Option<stripe_billing::QuotesResourceSubscriptionDataSubscriptionData>,
-    subscription_schedule:
-        Option<Option<stripe_types::Expandable<stripe_shared::SubscriptionSchedule>>>,
-    test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
+    subscription_schedule: Option<stripe_types::Expandable<stripe_shared::SubscriptionSchedule>>,
+    test_clock: Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>,
     total_details: Option<stripe_billing::QuotesResourceTotalDetails>,
-    transfer_data: Option<Option<stripe_billing::QuotesResourceTransferData>>,
+    transfer_data: Option<stripe_billing::QuotesResourceTransferData>,
 }
 
 #[allow(
@@ -174,7 +173,9 @@ const _: () = {
             Ok(match k {
                 "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
                 "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "application" => Deserialize::begin(&mut self.application),
+                "application" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.application)
+                }
                 "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
                 "application_fee_percent" => Deserialize::begin(&mut self.application_fee_percent),
                 "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
@@ -182,31 +183,43 @@ const _: () = {
                 "computed" => Deserialize::begin(&mut self.computed),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "default_tax_rates" => Deserialize::begin(&mut self.default_tax_rates),
                 "description" => Deserialize::begin(&mut self.description),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "footer" => Deserialize::begin(&mut self.footer),
-                "from_quote" => Deserialize::begin(&mut self.from_quote),
+                "from_quote" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.from_quote)
+                }
                 "header" => Deserialize::begin(&mut self.header),
                 "id" => Deserialize::begin(&mut self.id),
-                "invoice" => Deserialize::begin(&mut self.invoice),
+                "invoice" => stripe_types::miniserde_helpers::begin_nullable(&mut self.invoice),
                 "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
                 "line_items" => Deserialize::begin(&mut self.line_items),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "number" => Deserialize::begin(&mut self.number),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
+                "on_behalf_of" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.on_behalf_of)
+                }
                 "status" => Deserialize::begin(&mut self.status),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-                "subscription" => Deserialize::begin(&mut self.subscription),
+                "subscription" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.subscription)
+                }
                 "subscription_data" => Deserialize::begin(&mut self.subscription_data),
-                "subscription_schedule" => Deserialize::begin(&mut self.subscription_schedule),
-                "test_clock" => Deserialize::begin(&mut self.test_clock),
+                "subscription_schedule" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.subscription_schedule)
+                }
+                "test_clock" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.test_clock)
+                }
                 "total_details" => Deserialize::begin(&mut self.total_details),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
+                "transfer_data" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transfer_data)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -215,7 +228,7 @@ const _: () = {
             Self {
                 amount_subtotal: None,
                 amount_total: None,
-                application: Some(None),
+                application: None,
                 application_fee_amount: Some(None),
                 application_fee_percent: Some(None),
                 automatic_tax: None,
@@ -223,31 +236,31 @@ const _: () = {
                 computed: None,
                 created: None,
                 currency: Some(None),
-                customer: Some(None),
+                customer: None,
                 customer_account: Some(None),
                 default_tax_rates: Some(None),
                 description: Some(None),
                 discounts: None,
                 expires_at: None,
                 footer: Some(None),
-                from_quote: Some(None),
+                from_quote: None,
                 header: Some(None),
                 id: None,
-                invoice: Some(None),
+                invoice: None,
                 invoice_settings: None,
                 line_items: Some(None),
                 livemode: None,
                 metadata: None,
                 number: Some(None),
-                on_behalf_of: Some(None),
+                on_behalf_of: None,
                 status: None,
                 status_transitions: None,
-                subscription: Some(None),
+                subscription: None,
                 subscription_data: None,
-                subscription_schedule: Some(None),
-                test_clock: Some(None),
+                subscription_schedule: None,
+                test_clock: None,
                 total_details: None,
-                transfer_data: Some(None),
+                transfer_data: None,
             }
         }
 
@@ -255,7 +268,7 @@ const _: () = {
             let (
                 Some(amount_subtotal),
                 Some(amount_total),
-                Some(application),
+                application,
                 Some(application_fee_amount),
                 Some(application_fee_percent),
                 Some(automatic_tax),
@@ -263,31 +276,31 @@ const _: () = {
                 Some(computed),
                 Some(created),
                 Some(currency),
-                Some(customer),
+                customer,
                 Some(customer_account),
                 Some(default_tax_rates),
                 Some(description),
                 Some(discounts),
                 Some(expires_at),
                 Some(footer),
-                Some(from_quote),
+                from_quote,
                 Some(header),
                 Some(id),
-                Some(invoice),
+                invoice,
                 Some(invoice_settings),
                 Some(line_items),
                 Some(livemode),
                 Some(metadata),
                 Some(number),
-                Some(on_behalf_of),
+                on_behalf_of,
                 Some(status),
                 Some(status_transitions),
-                Some(subscription),
+                subscription,
                 Some(subscription_data),
-                Some(subscription_schedule),
-                Some(test_clock),
+                subscription_schedule,
+                test_clock,
                 Some(total_details),
-                Some(transfer_data),
+                transfer_data,
             ) = (
                 self.amount_subtotal,
                 self.amount_total,

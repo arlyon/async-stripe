@@ -17,8 +17,8 @@ impl std::fmt::Debug for PaymentMethodIdeal {
 }
 #[doc(hidden)]
 pub struct PaymentMethodIdealBuilder {
-    bank: Option<Option<PaymentMethodIdealBank>>,
-    bic: Option<Option<PaymentMethodIdealBic>>,
+    bank: Option<PaymentMethodIdealBank>,
+    bic: Option<PaymentMethodIdealBic>,
 }
 
 #[allow(
@@ -61,18 +61,18 @@ const _: () = {
         type Out = PaymentMethodIdeal;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank" => Deserialize::begin(&mut self.bank),
-                "bic" => Deserialize::begin(&mut self.bic),
+                "bank" => stripe_types::miniserde_helpers::begin_nullable(&mut self.bank),
+                "bic" => stripe_types::miniserde_helpers::begin_nullable(&mut self.bic),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { bank: Some(None), bic: Some(None) }
+            Self { bank: None, bic: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank), Some(bic)) = (self.bank.take(), self.bic.take()) else {
+            let (bank, bic) = (self.bank.take(), self.bic.take()) else {
                 return None;
             };
             Some(Self::Out { bank, bic })

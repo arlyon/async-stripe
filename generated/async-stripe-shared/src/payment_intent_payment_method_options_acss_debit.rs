@@ -30,11 +30,10 @@ impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsAcssDebit {
 #[doc(hidden)]
 pub struct PaymentIntentPaymentMethodOptionsAcssDebitBuilder {
     mandate_options:
-        Option<Option<stripe_shared::PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit>>,
-    setup_future_usage: Option<Option<PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage>>,
+        Option<stripe_shared::PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
+    setup_future_usage: Option<PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage>,
     target_date: Option<Option<String>>,
-    verification_method:
-        Option<Option<PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>>,
+    verification_method: Option<PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
 #[allow(
@@ -77,36 +76,36 @@ const _: () = {
         type Out = PaymentIntentPaymentMethodOptionsAcssDebit;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 "target_date" => Deserialize::begin(&mut self.target_date),
-                "verification_method" => Deserialize::begin(&mut self.verification_method),
+                "verification_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verification_method)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                mandate_options: Some(None),
-                setup_future_usage: Some(None),
+                mandate_options: None,
+                setup_future_usage: None,
                 target_date: Some(None),
-                verification_method: Some(None),
+                verification_method: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(mandate_options),
-                Some(setup_future_usage),
-                Some(target_date),
-                Some(verification_method),
-            ) = (
+            let (mandate_options, setup_future_usage, Some(target_date), verification_method) = (
                 self.mandate_options.take(),
                 self.setup_future_usage.take(),
                 self.target_date.take(),
                 self.verification_method.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out {

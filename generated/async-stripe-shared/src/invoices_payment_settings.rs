@@ -22,7 +22,7 @@ impl std::fmt::Debug for InvoicesPaymentSettings {
 #[doc(hidden)]
 pub struct InvoicesPaymentSettingsBuilder {
     default_mandate: Option<Option<String>>,
-    payment_method_options: Option<Option<stripe_shared::InvoicesPaymentMethodOptions>>,
+    payment_method_options: Option<stripe_shared::InvoicesPaymentMethodOptions>,
     payment_method_types: Option<Option<Vec<InvoicesPaymentSettingsPaymentMethodTypes>>>,
 }
 
@@ -67,7 +67,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "default_mandate" => Deserialize::begin(&mut self.default_mandate),
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
+                "payment_method_options" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_options,
+                ),
                 "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -76,13 +78,13 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 default_mandate: Some(None),
-                payment_method_options: Some(None),
+                payment_method_options: None,
                 payment_method_types: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(default_mandate), Some(payment_method_options), Some(payment_method_types)) = (
+            let (Some(default_mandate), payment_method_options, Some(payment_method_types)) = (
                 self.default_mandate.take(),
                 self.payment_method_options.take(),
                 self.payment_method_types.take(),

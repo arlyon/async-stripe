@@ -38,10 +38,10 @@ pub struct BalanceBuilder {
     available: Option<Vec<stripe_core::BalanceAmount>>,
     connect_reserved: Option<Option<Vec<stripe_core::BalanceAmount>>>,
     instant_available: Option<Option<Vec<stripe_core::BalanceAmountNet>>>,
-    issuing: Option<Option<stripe_core::BalanceDetail>>,
+    issuing: Option<stripe_core::BalanceDetail>,
     livemode: Option<bool>,
     pending: Option<Vec<stripe_core::BalanceAmount>>,
-    refund_and_dispute_prefunding: Option<Option<stripe_core::BalanceDetailUngated>>,
+    refund_and_dispute_prefunding: Option<stripe_core::BalanceDetailUngated>,
 }
 
 #[allow(
@@ -84,12 +84,12 @@ const _: () = {
                 "available" => Deserialize::begin(&mut self.available),
                 "connect_reserved" => Deserialize::begin(&mut self.connect_reserved),
                 "instant_available" => Deserialize::begin(&mut self.instant_available),
-                "issuing" => Deserialize::begin(&mut self.issuing),
+                "issuing" => stripe_types::miniserde_helpers::begin_nullable(&mut self.issuing),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "pending" => Deserialize::begin(&mut self.pending),
-                "refund_and_dispute_prefunding" => {
-                    Deserialize::begin(&mut self.refund_and_dispute_prefunding)
-                }
+                "refund_and_dispute_prefunding" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.refund_and_dispute_prefunding,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,10 +99,10 @@ const _: () = {
                 available: None,
                 connect_reserved: Some(None),
                 instant_available: Some(None),
-                issuing: Some(None),
+                issuing: None,
                 livemode: None,
                 pending: None,
-                refund_and_dispute_prefunding: Some(None),
+                refund_and_dispute_prefunding: None,
             }
         }
 
@@ -111,10 +111,10 @@ const _: () = {
                 Some(available),
                 Some(connect_reserved),
                 Some(instant_available),
-                Some(issuing),
+                issuing,
                 Some(livemode),
                 Some(pending),
-                Some(refund_and_dispute_prefunding),
+                refund_and_dispute_prefunding,
             ) = (
                 self.available.take(),
                 self.connect_reserved.take(),

@@ -169,50 +169,50 @@ pub struct PaymentIntentBuilder {
         Option<Option<Vec<stripe_shared::PaymentIntentAllowedPaymentMethodTypes>>>,
     amount: Option<i64>,
     amount_capturable: Option<i64>,
-    amount_details: Option<Option<stripe_shared::PaymentFlowsAmountDetails>>,
+    amount_details: Option<stripe_shared::PaymentFlowsAmountDetails>,
     amount_received: Option<i64>,
-    application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
+    application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     application_fee_amount: Option<Option<i64>>,
     automatic_payment_methods:
-        Option<Option<stripe_shared::PaymentFlowsAutomaticPaymentMethodsPaymentIntent>>,
+        Option<stripe_shared::PaymentFlowsAutomaticPaymentMethodsPaymentIntent>,
     canceled_at: Option<Option<stripe_types::Timestamp>>,
-    cancellation_reason: Option<Option<PaymentIntentCancellationReason>>,
+    cancellation_reason: Option<PaymentIntentCancellationReason>,
     capture_method: Option<stripe_shared::PaymentIntentCaptureMethod>,
     client_secret: Option<Option<String>>,
     confirmation_method: Option<stripe_shared::PaymentIntentConfirmationMethod>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     description: Option<Option<String>>,
     excluded_payment_method_types:
         Option<Option<Vec<stripe_shared::PaymentIntentExcludedPaymentMethodTypes>>>,
-    hooks: Option<Option<stripe_shared::PaymentFlowsPaymentIntentAsyncWorkflows>>,
+    hooks: Option<stripe_shared::PaymentFlowsPaymentIntentAsyncWorkflows>,
     id: Option<stripe_shared::PaymentIntentId>,
     last_payment_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
-    latest_charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
+    latest_charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     livemode: Option<bool>,
-    managed_payments: Option<Option<stripe_shared::SmorResourceManagedPayments>>,
+    managed_payments: Option<stripe_shared::SmorResourceManagedPayments>,
     metadata: Option<std::collections::HashMap<String, String>>,
-    next_action: Option<Option<stripe_shared::PaymentIntentNextAction>>,
-    on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
-    payment_details: Option<Option<stripe_shared::PaymentFlowsPaymentDetails>>,
-    payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
+    next_action: Option<stripe_shared::PaymentIntentNextAction>,
+    on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
+    payment_details: Option<stripe_shared::PaymentFlowsPaymentDetails>,
+    payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
     payment_method_configuration_details:
-        Option<Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>>,
-    payment_method_options: Option<Option<stripe_shared::PaymentIntentPaymentMethodOptions>>,
+        Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>,
+    payment_method_options: Option<stripe_shared::PaymentIntentPaymentMethodOptions>,
     payment_method_types: Option<Vec<String>>,
-    presentment_details: Option<Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>>,
-    processing: Option<Option<stripe_shared::PaymentIntentProcessing>>,
+    presentment_details: Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>,
+    processing: Option<stripe_shared::PaymentIntentProcessing>,
     receipt_email: Option<Option<String>>,
-    review: Option<Option<stripe_types::Expandable<stripe_shared::Review>>>,
-    setup_future_usage: Option<Option<stripe_shared::PaymentIntentSetupFutureUsage>>,
-    shipping: Option<Option<stripe_shared::Shipping>>,
-    source: Option<Option<stripe_types::Expandable<stripe_shared::PaymentSource>>>,
+    review: Option<stripe_types::Expandable<stripe_shared::Review>>,
+    setup_future_usage: Option<stripe_shared::PaymentIntentSetupFutureUsage>,
+    shipping: Option<stripe_shared::Shipping>,
+    source: Option<stripe_types::Expandable<stripe_shared::PaymentSource>>,
     statement_descriptor: Option<Option<String>>,
     statement_descriptor_suffix: Option<Option<String>>,
     status: Option<PaymentIntentStatus>,
-    transfer_data: Option<Option<stripe_shared::TransferData>>,
+    transfer_data: Option<stripe_shared::TransferData>,
     transfer_group: Option<Option<String>>,
 }
 
@@ -261,55 +261,85 @@ const _: () = {
                 }
                 "amount" => Deserialize::begin(&mut self.amount),
                 "amount_capturable" => Deserialize::begin(&mut self.amount_capturable),
-                "amount_details" => Deserialize::begin(&mut self.amount_details),
-                "amount_received" => Deserialize::begin(&mut self.amount_received),
-                "application" => Deserialize::begin(&mut self.application),
-                "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
-                "automatic_payment_methods" => {
-                    Deserialize::begin(&mut self.automatic_payment_methods)
+                "amount_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_details)
                 }
+                "amount_received" => Deserialize::begin(&mut self.amount_received),
+                "application" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.application)
+                }
+                "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
+                "automatic_payment_methods" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.automatic_payment_methods,
+                ),
                 "canceled_at" => Deserialize::begin(&mut self.canceled_at),
-                "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
+                "cancellation_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.cancellation_reason)
+                }
                 "capture_method" => Deserialize::begin(&mut self.capture_method),
                 "client_secret" => Deserialize::begin(&mut self.client_secret),
                 "confirmation_method" => Deserialize::begin(&mut self.confirmation_method),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "description" => Deserialize::begin(&mut self.description),
                 "excluded_payment_method_types" => {
                     Deserialize::begin(&mut self.excluded_payment_method_types)
                 }
-                "hooks" => Deserialize::begin(&mut self.hooks),
+                "hooks" => stripe_types::miniserde_helpers::begin_nullable(&mut self.hooks),
                 "id" => Deserialize::begin(&mut self.id),
                 "last_payment_error" => Deserialize::begin(&mut self.last_payment_error),
-                "latest_charge" => Deserialize::begin(&mut self.latest_charge),
-                "livemode" => Deserialize::begin(&mut self.livemode),
-                "managed_payments" => Deserialize::begin(&mut self.managed_payments),
-                "metadata" => Deserialize::begin(&mut self.metadata),
-                "next_action" => Deserialize::begin(&mut self.next_action),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "payment_details" => Deserialize::begin(&mut self.payment_details),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
-                "payment_method_configuration_details" => {
-                    Deserialize::begin(&mut self.payment_method_configuration_details)
+                "latest_charge" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.latest_charge)
                 }
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "managed_payments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.managed_payments)
+                }
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "next_action" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.next_action)
+                }
+                "on_behalf_of" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.on_behalf_of)
+                }
+                "payment_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_details)
+                }
+                "payment_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_method)
+                }
+                "payment_method_configuration_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.payment_method_configuration_details,
+                    )
+                }
+                "payment_method_options" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_options,
+                ),
                 "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
-                "presentment_details" => Deserialize::begin(&mut self.presentment_details),
-                "processing" => Deserialize::begin(&mut self.processing),
+                "presentment_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.presentment_details)
+                }
+                "processing" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.processing)
+                }
                 "receipt_email" => Deserialize::begin(&mut self.receipt_email),
-                "review" => Deserialize::begin(&mut self.review),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-                "shipping" => Deserialize::begin(&mut self.shipping),
-                "source" => Deserialize::begin(&mut self.source),
+                "review" => stripe_types::miniserde_helpers::begin_nullable(&mut self.review),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
+                "shipping" => stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping),
+                "source" => stripe_types::miniserde_helpers::begin_nullable(&mut self.source),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "statement_descriptor_suffix" => {
                     Deserialize::begin(&mut self.statement_descriptor_suffix)
                 }
                 "status" => Deserialize::begin(&mut self.status),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
+                "transfer_data" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transfer_data)
+                }
                 "transfer_group" => Deserialize::begin(&mut self.transfer_group),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -320,47 +350,47 @@ const _: () = {
                 allowed_payment_method_types: Some(None),
                 amount: None,
                 amount_capturable: None,
-                amount_details: Some(None),
+                amount_details: None,
                 amount_received: None,
-                application: Some(None),
+                application: None,
                 application_fee_amount: Some(None),
-                automatic_payment_methods: Some(None),
+                automatic_payment_methods: None,
                 canceled_at: Some(None),
-                cancellation_reason: Some(None),
+                cancellation_reason: None,
                 capture_method: None,
                 client_secret: Some(None),
                 confirmation_method: None,
                 created: None,
                 currency: None,
-                customer: Some(None),
+                customer: None,
                 customer_account: Some(None),
                 description: Some(None),
                 excluded_payment_method_types: Some(None),
-                hooks: Some(None),
+                hooks: None,
                 id: None,
                 last_payment_error: Some(None),
-                latest_charge: Some(None),
+                latest_charge: None,
                 livemode: None,
-                managed_payments: Some(None),
+                managed_payments: None,
                 metadata: None,
-                next_action: Some(None),
-                on_behalf_of: Some(None),
-                payment_details: Some(None),
-                payment_method: Some(None),
-                payment_method_configuration_details: Some(None),
-                payment_method_options: Some(None),
+                next_action: None,
+                on_behalf_of: None,
+                payment_details: None,
+                payment_method: None,
+                payment_method_configuration_details: None,
+                payment_method_options: None,
                 payment_method_types: None,
-                presentment_details: Some(None),
-                processing: Some(None),
+                presentment_details: None,
+                processing: None,
                 receipt_email: Some(None),
-                review: Some(None),
-                setup_future_usage: Some(None),
-                shipping: Some(None),
-                source: Some(None),
+                review: None,
+                setup_future_usage: None,
+                shipping: None,
+                source: None,
                 statement_descriptor: Some(None),
                 statement_descriptor_suffix: Some(None),
                 status: None,
-                transfer_data: Some(None),
+                transfer_data: None,
                 transfer_group: Some(None),
             }
         }
@@ -370,47 +400,47 @@ const _: () = {
                 Some(allowed_payment_method_types),
                 Some(amount),
                 Some(amount_capturable),
-                Some(amount_details),
+                amount_details,
                 Some(amount_received),
-                Some(application),
+                application,
                 Some(application_fee_amount),
-                Some(automatic_payment_methods),
+                automatic_payment_methods,
                 Some(canceled_at),
-                Some(cancellation_reason),
+                cancellation_reason,
                 Some(capture_method),
                 Some(client_secret),
                 Some(confirmation_method),
                 Some(created),
                 Some(currency),
-                Some(customer),
+                customer,
                 Some(customer_account),
                 Some(description),
                 Some(excluded_payment_method_types),
-                Some(hooks),
+                hooks,
                 Some(id),
                 Some(last_payment_error),
-                Some(latest_charge),
+                latest_charge,
                 Some(livemode),
-                Some(managed_payments),
+                managed_payments,
                 Some(metadata),
-                Some(next_action),
-                Some(on_behalf_of),
-                Some(payment_details),
-                Some(payment_method),
-                Some(payment_method_configuration_details),
-                Some(payment_method_options),
+                next_action,
+                on_behalf_of,
+                payment_details,
+                payment_method,
+                payment_method_configuration_details,
+                payment_method_options,
                 Some(payment_method_types),
-                Some(presentment_details),
-                Some(processing),
+                presentment_details,
+                processing,
                 Some(receipt_email),
-                Some(review),
-                Some(setup_future_usage),
-                Some(shipping),
-                Some(source),
+                review,
+                setup_future_usage,
+                shipping,
+                source,
                 Some(statement_descriptor),
                 Some(statement_descriptor_suffix),
                 Some(status),
-                Some(transfer_data),
+                transfer_data,
                 Some(transfer_group),
             ) = (
                 self.allowed_payment_method_types.take(),

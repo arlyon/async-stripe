@@ -19,10 +19,10 @@ impl std::fmt::Debug for DisputePaymentMethodDetails {
 }
 #[doc(hidden)]
 pub struct DisputePaymentMethodDetailsBuilder {
-    amazon_pay: Option<Option<stripe_shared::DisputePaymentMethodDetailsAmazonPay>>,
-    card: Option<Option<stripe_shared::DisputePaymentMethodDetailsCard>>,
-    klarna: Option<Option<stripe_shared::DisputePaymentMethodDetailsKlarna>>,
-    paypal: Option<Option<stripe_shared::DisputePaymentMethodDetailsPaypal>>,
+    amazon_pay: Option<stripe_shared::DisputePaymentMethodDetailsAmazonPay>,
+    card: Option<stripe_shared::DisputePaymentMethodDetailsCard>,
+    klarna: Option<stripe_shared::DisputePaymentMethodDetailsKlarna>,
+    paypal: Option<stripe_shared::DisputePaymentMethodDetailsPaypal>,
     type_: Option<DisputePaymentMethodDetailsType>,
 }
 
@@ -66,27 +66,23 @@ const _: () = {
         type Out = DisputePaymentMethodDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
-                "card" => Deserialize::begin(&mut self.card),
-                "klarna" => Deserialize::begin(&mut self.klarna),
-                "paypal" => Deserialize::begin(&mut self.paypal),
+                "amazon_pay" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amazon_pay)
+                }
+                "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
+                "klarna" => stripe_types::miniserde_helpers::begin_nullable(&mut self.klarna),
+                "paypal" => stripe_types::miniserde_helpers::begin_nullable(&mut self.paypal),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                amazon_pay: Some(None),
-                card: Some(None),
-                klarna: Some(None),
-                paypal: Some(None),
-                type_: None,
-            }
+            Self { amazon_pay: None, card: None, klarna: None, paypal: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amazon_pay), Some(card), Some(klarna), Some(paypal), Some(type_)) = (
+            let (amazon_pay, card, klarna, paypal, Some(type_)) = (
                 self.amazon_pay.take(),
                 self.card.take(),
                 self.klarna.take(),

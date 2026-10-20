@@ -17,8 +17,8 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsCard {
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsCardBuilder {
-    installments: Option<Option<stripe_shared::InvoiceInstallmentsCard>>,
-    request_three_d_secure: Option<Option<InvoicePaymentMethodOptionsCardRequestThreeDSecure>>,
+    installments: Option<stripe_shared::InvoiceInstallmentsCard>,
+    request_three_d_secure: Option<InvoicePaymentMethodOptionsCardRequestThreeDSecure>,
 }
 
 #[allow(
@@ -61,18 +61,22 @@ const _: () = {
         type Out = InvoicePaymentMethodOptionsCard;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "installments" => Deserialize::begin(&mut self.installments),
-                "request_three_d_secure" => Deserialize::begin(&mut self.request_three_d_secure),
+                "installments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.installments)
+                }
+                "request_three_d_secure" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.request_three_d_secure,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { installments: Some(None), request_three_d_secure: Some(None) }
+            Self { installments: None, request_three_d_secure: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(installments), Some(request_three_d_secure)) =
+            let (installments, request_three_d_secure) =
                 (self.installments, self.request_three_d_secure.take())
             else {
                 return None;

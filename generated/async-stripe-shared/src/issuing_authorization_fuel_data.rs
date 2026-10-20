@@ -25,8 +25,8 @@ impl std::fmt::Debug for IssuingAuthorizationFuelData {
 pub struct IssuingAuthorizationFuelDataBuilder {
     industry_product_code: Option<Option<String>>,
     quantity_decimal: Option<Option<String>>,
-    type_: Option<Option<IssuingAuthorizationFuelDataType>>,
-    unit: Option<Option<IssuingAuthorizationFuelDataUnit>>,
+    type_: Option<IssuingAuthorizationFuelDataType>,
+    unit: Option<IssuingAuthorizationFuelDataUnit>,
     unit_cost_decimal: Option<Option<String>>,
 }
 
@@ -72,8 +72,8 @@ const _: () = {
             Ok(match k {
                 "industry_product_code" => Deserialize::begin(&mut self.industry_product_code),
                 "quantity_decimal" => Deserialize::begin(&mut self.quantity_decimal),
-                "type" => Deserialize::begin(&mut self.type_),
-                "unit" => Deserialize::begin(&mut self.unit),
+                "type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.type_),
+                "unit" => stripe_types::miniserde_helpers::begin_nullable(&mut self.unit),
                 "unit_cost_decimal" => Deserialize::begin(&mut self.unit_cost_decimal),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -83,8 +83,8 @@ const _: () = {
             Self {
                 industry_product_code: Some(None),
                 quantity_decimal: Some(None),
-                type_: Some(None),
-                unit: Some(None),
+                type_: None,
+                unit: None,
                 unit_cost_decimal: Some(None),
             }
         }
@@ -93,8 +93,8 @@ const _: () = {
             let (
                 Some(industry_product_code),
                 Some(quantity_decimal),
-                Some(type_),
-                Some(unit),
+                type_,
+                unit,
                 Some(unit_cost_decimal),
             ) = (
                 self.industry_product_code.take(),

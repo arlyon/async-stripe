@@ -18,7 +18,7 @@ impl std::fmt::Debug for TerminalReaderReaderResourceSetReaderDisplayAction {
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceSetReaderDisplayActionBuilder {
-    cart: Option<Option<stripe_terminal::TerminalReaderReaderResourceCart>>,
+    cart: Option<stripe_terminal::TerminalReaderReaderResourceCart>,
     type_: Option<TerminalReaderReaderResourceSetReaderDisplayActionType>,
 }
 
@@ -62,18 +62,18 @@ const _: () = {
         type Out = TerminalReaderReaderResourceSetReaderDisplayAction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "cart" => Deserialize::begin(&mut self.cart),
+                "cart" => stripe_types::miniserde_helpers::begin_nullable(&mut self.cart),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { cart: Some(None), type_: None }
+            Self { cart: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(cart), Some(type_)) = (self.cart.take(), self.type_.take()) else {
+            let (cart, Some(type_)) = (self.cart.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { cart, type_ })

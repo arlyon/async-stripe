@@ -13,7 +13,7 @@ impl std::fmt::Debug for PaymentMethodUsBankAccountStatusDetails {
 }
 #[doc(hidden)]
 pub struct PaymentMethodUsBankAccountStatusDetailsBuilder {
-    blocked: Option<Option<stripe_shared::PaymentMethodUsBankAccountBlocked>>,
+    blocked: Option<stripe_shared::PaymentMethodUsBankAccountBlocked>,
 }
 
 #[allow(
@@ -56,17 +56,17 @@ const _: () = {
         type Out = PaymentMethodUsBankAccountStatusDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "blocked" => Deserialize::begin(&mut self.blocked),
+                "blocked" => stripe_types::miniserde_helpers::begin_nullable(&mut self.blocked),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { blocked: Some(None) }
+            Self { blocked: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(blocked),) = (self.blocked.take(),) else {
+            let (blocked,) = (self.blocked.take(),) else {
                 return None;
             };
             Some(Self::Out { blocked })

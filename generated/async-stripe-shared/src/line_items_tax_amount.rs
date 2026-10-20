@@ -22,7 +22,7 @@ impl std::fmt::Debug for LineItemsTaxAmount {
 pub struct LineItemsTaxAmountBuilder {
     amount: Option<i64>,
     rate: Option<stripe_shared::TaxRate>,
-    taxability_reason: Option<Option<LineItemsTaxAmountTaxabilityReason>>,
+    taxability_reason: Option<LineItemsTaxAmountTaxabilityReason>,
     taxable_amount: Option<Option<i64>>,
 }
 
@@ -68,23 +68,20 @@ const _: () = {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "rate" => Deserialize::begin(&mut self.rate),
-                "taxability_reason" => Deserialize::begin(&mut self.taxability_reason),
+                "taxability_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.taxability_reason)
+                }
                 "taxable_amount" => Deserialize::begin(&mut self.taxable_amount),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                amount: None,
-                rate: None,
-                taxability_reason: Some(None),
-                taxable_amount: Some(None),
-            }
+            Self { amount: None, rate: None, taxability_reason: None, taxable_amount: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(rate), Some(taxability_reason), Some(taxable_amount)) =
+            let (Some(amount), Some(rate), taxability_reason, Some(taxable_amount)) =
                 (self.amount, self.rate.take(), self.taxability_reason.take(), self.taxable_amount)
             else {
                 return None;

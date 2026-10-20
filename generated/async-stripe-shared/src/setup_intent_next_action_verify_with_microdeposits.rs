@@ -21,7 +21,7 @@ impl std::fmt::Debug for SetupIntentNextActionVerifyWithMicrodeposits {
 pub struct SetupIntentNextActionVerifyWithMicrodepositsBuilder {
     arrival_date: Option<stripe_types::Timestamp>,
     hosted_verification_url: Option<String>,
-    microdeposit_type: Option<Option<SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType>>,
+    microdeposit_type: Option<SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType>,
 }
 
 #[allow(
@@ -66,21 +66,19 @@ const _: () = {
             Ok(match k {
                 "arrival_date" => Deserialize::begin(&mut self.arrival_date),
                 "hosted_verification_url" => Deserialize::begin(&mut self.hosted_verification_url),
-                "microdeposit_type" => Deserialize::begin(&mut self.microdeposit_type),
+                "microdeposit_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.microdeposit_type)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                arrival_date: None,
-                hosted_verification_url: None,
-                microdeposit_type: Some(None),
-            }
+            Self { arrival_date: None, hosted_verification_url: None, microdeposit_type: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(arrival_date), Some(hosted_verification_url), Some(microdeposit_type)) = (
+            let (Some(arrival_date), Some(hosted_verification_url), microdeposit_type) = (
                 self.arrival_date,
                 self.hosted_verification_url.take(),
                 self.microdeposit_type.take(),

@@ -70,7 +70,7 @@ pub struct BalanceTransactionBuilder {
     id: Option<stripe_shared::BalanceTransactionId>,
     net: Option<i64>,
     reporting_category: Option<String>,
-    source: Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransactionSource>>>,
+    source: Option<stripe_types::Expandable<stripe_shared::BalanceTransactionSource>>,
     status: Option<String>,
     type_: Option<BalanceTransactionType>,
 }
@@ -127,7 +127,7 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "net" => Deserialize::begin(&mut self.net),
                 "reporting_category" => Deserialize::begin(&mut self.reporting_category),
-                "source" => Deserialize::begin(&mut self.source),
+                "source" => stripe_types::miniserde_helpers::begin_nullable(&mut self.source),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -148,7 +148,7 @@ const _: () = {
                 id: None,
                 net: None,
                 reporting_category: None,
-                source: Some(None),
+                source: None,
                 status: None,
                 type_: None,
             }
@@ -168,7 +168,7 @@ const _: () = {
                 Some(id),
                 Some(net),
                 Some(reporting_category),
-                Some(source),
+                source,
                 Some(status),
                 Some(type_),
             ) = (

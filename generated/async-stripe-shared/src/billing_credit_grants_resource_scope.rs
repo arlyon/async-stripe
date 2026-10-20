@@ -22,7 +22,7 @@ impl std::fmt::Debug for BillingCreditGrantsResourceScope {
 }
 #[doc(hidden)]
 pub struct BillingCreditGrantsResourceScopeBuilder {
-    price_type: Option<Option<BillingCreditGrantsResourceScopePriceType>>,
+    price_type: Option<BillingCreditGrantsResourceScopePriceType>,
     prices: Option<Option<Vec<stripe_shared::BillingCreditGrantsResourceApplicablePrice>>>,
 }
 
@@ -66,19 +66,20 @@ const _: () = {
         type Out = BillingCreditGrantsResourceScope;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "price_type" => Deserialize::begin(&mut self.price_type),
+                "price_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.price_type)
+                }
                 "prices" => Deserialize::begin(&mut self.prices),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { price_type: Some(None), prices: Some(None) }
+            Self { price_type: None, prices: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(price_type), Some(prices)) = (self.price_type.take(), self.prices.take())
-            else {
+            let (price_type, Some(prices)) = (self.price_type.take(), self.prices.take()) else {
                 return None;
             };
             Some(Self::Out { price_type, prices })

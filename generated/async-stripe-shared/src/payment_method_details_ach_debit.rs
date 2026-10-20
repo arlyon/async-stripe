@@ -25,7 +25,7 @@ impl std::fmt::Debug for PaymentMethodDetailsAchDebit {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsAchDebitBuilder {
-    account_holder_type: Option<Option<PaymentMethodDetailsAchDebitAccountHolderType>>,
+    account_holder_type: Option<PaymentMethodDetailsAchDebitAccountHolderType>,
     bank_name: Option<Option<String>>,
     country: Option<Option<String>>,
     fingerprint: Option<Option<String>>,
@@ -73,7 +73,9 @@ const _: () = {
         type Out = PaymentMethodDetailsAchDebit;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder_type" => Deserialize::begin(&mut self.account_holder_type),
+                "account_holder_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.account_holder_type)
+                }
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "country" => Deserialize::begin(&mut self.country),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
@@ -85,7 +87,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account_holder_type: Some(None),
+                account_holder_type: None,
                 bank_name: Some(None),
                 country: Some(None),
                 fingerprint: Some(None),
@@ -96,7 +98,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(account_holder_type),
+                account_holder_type,
                 Some(bank_name),
                 Some(country),
                 Some(fingerprint),

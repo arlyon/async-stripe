@@ -18,9 +18,8 @@ impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsCanada {
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsCanadaBuilder {
-    province_standard: Option<
+    province_standard:
         Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard>,
-    >,
     type_: Option<TaxProductRegistrationsResourceCountryOptionsCanadaType>,
 }
 
@@ -65,18 +64,20 @@ const _: () = {
         type Out = TaxProductRegistrationsResourceCountryOptionsCanada;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "province_standard" => Deserialize::begin(&mut self.province_standard),
+                "province_standard" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.province_standard)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { province_standard: Some(None), type_: None }
+            Self { province_standard: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(province_standard), Some(type_)) =
+            let (province_standard, Some(type_)) =
                 (self.province_standard.take(), self.type_.take())
             else {
                 return None;

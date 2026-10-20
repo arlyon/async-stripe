@@ -62,9 +62,9 @@ pub struct ClimateOrderBuilder {
     amount_fees: Option<i64>,
     amount_subtotal: Option<i64>,
     amount_total: Option<i64>,
-    beneficiary: Option<Option<stripe_misc::ClimateRemovalsBeneficiary>>,
+    beneficiary: Option<stripe_misc::ClimateRemovalsBeneficiary>,
     canceled_at: Option<Option<stripe_types::Timestamp>>,
-    cancellation_reason: Option<Option<ClimateOrderCancellationReason>>,
+    cancellation_reason: Option<ClimateOrderCancellationReason>,
     certificate: Option<Option<String>>,
     confirmed_at: Option<Option<stripe_types::Timestamp>>,
     created: Option<stripe_types::Timestamp>,
@@ -125,9 +125,13 @@ const _: () = {
                 "amount_fees" => Deserialize::begin(&mut self.amount_fees),
                 "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
                 "amount_total" => Deserialize::begin(&mut self.amount_total),
-                "beneficiary" => Deserialize::begin(&mut self.beneficiary),
+                "beneficiary" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.beneficiary)
+                }
                 "canceled_at" => Deserialize::begin(&mut self.canceled_at),
-                "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
+                "cancellation_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.cancellation_reason)
+                }
                 "certificate" => Deserialize::begin(&mut self.certificate),
                 "confirmed_at" => Deserialize::begin(&mut self.confirmed_at),
                 "created" => Deserialize::begin(&mut self.created),
@@ -152,9 +156,9 @@ const _: () = {
                 amount_fees: None,
                 amount_subtotal: None,
                 amount_total: None,
-                beneficiary: Some(None),
+                beneficiary: None,
                 canceled_at: Some(None),
-                cancellation_reason: Some(None),
+                cancellation_reason: None,
                 certificate: Some(None),
                 confirmed_at: Some(None),
                 created: None,
@@ -178,9 +182,9 @@ const _: () = {
                 Some(amount_fees),
                 Some(amount_subtotal),
                 Some(amount_total),
-                Some(beneficiary),
+                beneficiary,
                 Some(canceled_at),
-                Some(cancellation_reason),
+                cancellation_reason,
                 Some(certificate),
                 Some(confirmed_at),
                 Some(created),

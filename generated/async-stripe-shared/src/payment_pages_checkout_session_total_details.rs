@@ -22,8 +22,7 @@ pub struct PaymentPagesCheckoutSessionTotalDetailsBuilder {
     amount_discount: Option<i64>,
     amount_shipping: Option<Option<i64>>,
     amount_tax: Option<i64>,
-    breakdown:
-        Option<Option<stripe_shared::PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown>>,
+    breakdown: Option<stripe_shared::PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown>,
 }
 
 #[allow(
@@ -69,7 +68,7 @@ const _: () = {
                 "amount_discount" => Deserialize::begin(&mut self.amount_discount),
                 "amount_shipping" => Deserialize::begin(&mut self.amount_shipping),
                 "amount_tax" => Deserialize::begin(&mut self.amount_tax),
-                "breakdown" => Deserialize::begin(&mut self.breakdown),
+                "breakdown" => stripe_types::miniserde_helpers::begin_nullable(&mut self.breakdown),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -79,14 +78,17 @@ const _: () = {
                 amount_discount: None,
                 amount_shipping: Some(None),
                 amount_tax: None,
-                breakdown: Some(None),
+                breakdown: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_discount), Some(amount_shipping), Some(amount_tax), Some(breakdown)) =
-                (self.amount_discount, self.amount_shipping, self.amount_tax, self.breakdown.take())
-            else {
+            let (Some(amount_discount), Some(amount_shipping), Some(amount_tax), breakdown) = (
+                self.amount_discount,
+                self.amount_shipping,
+                self.amount_tax,
+                self.breakdown.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { amount_discount, amount_shipping, amount_tax, breakdown })

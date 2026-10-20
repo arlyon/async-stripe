@@ -15,7 +15,7 @@ impl std::fmt::Debug for TerminalConfigurationConfigurationResourceDeviceTypeSpe
 }
 #[doc(hidden)]
 pub struct TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfigBuilder {
-    splashscreen: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    splashscreen: Option<stripe_types::Expandable<stripe_shared::File>>,
 }
 
 #[allow(
@@ -58,17 +58,19 @@ const _: () = {
         type Out = TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "splashscreen" => Deserialize::begin(&mut self.splashscreen),
+                "splashscreen" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.splashscreen)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { splashscreen: Some(None) }
+            Self { splashscreen: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(splashscreen),) = (self.splashscreen.take(),) else {
+            let (splashscreen,) = (self.splashscreen.take(),) else {
                 return None;
             };
             Some(Self::Out { splashscreen })

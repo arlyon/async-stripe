@@ -37,14 +37,14 @@ impl std::fmt::Debug for SourceMandateNotification {
 }
 #[doc(hidden)]
 pub struct SourceMandateNotificationBuilder {
-    acss_debit: Option<Option<stripe_payment::SourceMandateNotificationAcssDebitData>>,
+    acss_debit: Option<stripe_payment::SourceMandateNotificationAcssDebitData>,
     amount: Option<Option<i64>>,
-    bacs_debit: Option<Option<stripe_payment::SourceMandateNotificationBacsDebitData>>,
+    bacs_debit: Option<stripe_payment::SourceMandateNotificationBacsDebitData>,
     created: Option<stripe_types::Timestamp>,
     id: Option<stripe_payment::SourceMandateNotificationId>,
     livemode: Option<bool>,
     reason: Option<String>,
-    sepa_debit: Option<Option<stripe_payment::SourceMandateNotificationSepaDebitData>>,
+    sepa_debit: Option<stripe_payment::SourceMandateNotificationSepaDebitData>,
     source: Option<stripe_shared::Source>,
     status: Option<String>,
     type_: Option<String>,
@@ -90,14 +90,20 @@ const _: () = {
         type Out = SourceMandateNotification;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "acss_debit" => Deserialize::begin(&mut self.acss_debit),
+                "acss_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.acss_debit)
+                }
                 "amount" => Deserialize::begin(&mut self.amount),
-                "bacs_debit" => Deserialize::begin(&mut self.bacs_debit),
+                "bacs_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bacs_debit)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "reason" => Deserialize::begin(&mut self.reason),
-                "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
+                "sepa_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.sepa_debit)
+                }
                 "source" => Deserialize::begin(&mut self.source),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
@@ -107,14 +113,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                acss_debit: Some(None),
+                acss_debit: None,
                 amount: Some(None),
-                bacs_debit: Some(None),
+                bacs_debit: None,
                 created: None,
                 id: None,
                 livemode: None,
                 reason: None,
-                sepa_debit: Some(None),
+                sepa_debit: None,
                 source: None,
                 status: None,
                 type_: None,
@@ -123,14 +129,14 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(acss_debit),
+                acss_debit,
                 Some(amount),
-                Some(bacs_debit),
+                bacs_debit,
                 Some(created),
                 Some(id),
                 Some(livemode),
                 Some(reason),
-                Some(sepa_debit),
+                sepa_debit,
                 Some(source),
                 Some(status),
                 Some(type_),

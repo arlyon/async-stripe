@@ -16,7 +16,7 @@ impl std::fmt::Debug for IssuingCardholderRequirements {
 }
 #[doc(hidden)]
 pub struct IssuingCardholderRequirementsBuilder {
-    disabled_reason: Option<Option<IssuingCardholderRequirementsDisabledReason>>,
+    disabled_reason: Option<IssuingCardholderRequirementsDisabledReason>,
     past_due: Option<Option<Vec<IssuingCardholderRequirementsPastDue>>>,
 }
 
@@ -60,18 +60,20 @@ const _: () = {
         type Out = IssuingCardholderRequirements;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "disabled_reason" => Deserialize::begin(&mut self.disabled_reason),
+                "disabled_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.disabled_reason)
+                }
                 "past_due" => Deserialize::begin(&mut self.past_due),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { disabled_reason: Some(None), past_due: Some(None) }
+            Self { disabled_reason: None, past_due: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(disabled_reason), Some(past_due)) =
+            let (disabled_reason, Some(past_due)) =
                 (self.disabled_reason.take(), self.past_due.take())
             else {
                 return None;

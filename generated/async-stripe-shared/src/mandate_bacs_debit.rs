@@ -28,7 +28,7 @@ pub struct MandateBacsDebitBuilder {
     display_name: Option<Option<String>>,
     network_status: Option<MandateBacsDebitNetworkStatus>,
     reference: Option<String>,
-    revocation_reason: Option<Option<MandateBacsDebitRevocationReason>>,
+    revocation_reason: Option<MandateBacsDebitRevocationReason>,
     service_user_number: Option<Option<String>>,
     url: Option<String>,
 }
@@ -76,7 +76,9 @@ const _: () = {
                 "display_name" => Deserialize::begin(&mut self.display_name),
                 "network_status" => Deserialize::begin(&mut self.network_status),
                 "reference" => Deserialize::begin(&mut self.reference),
-                "revocation_reason" => Deserialize::begin(&mut self.revocation_reason),
+                "revocation_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.revocation_reason)
+                }
                 "service_user_number" => Deserialize::begin(&mut self.service_user_number),
                 "url" => Deserialize::begin(&mut self.url),
                 _ => <dyn Visitor>::ignore(),
@@ -88,7 +90,7 @@ const _: () = {
                 display_name: Some(None),
                 network_status: None,
                 reference: None,
-                revocation_reason: Some(None),
+                revocation_reason: None,
                 service_user_number: Some(None),
                 url: None,
             }
@@ -99,7 +101,7 @@ const _: () = {
                 Some(display_name),
                 Some(network_status),
                 Some(reference),
-                Some(revocation_reason),
+                revocation_reason,
                 Some(service_user_number),
                 Some(url),
             ) = (

@@ -21,12 +21,11 @@ impl std::fmt::Debug for SubscriptionsResourcePaymentSettings {
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourcePaymentSettingsBuilder {
-    payment_method_options:
-        Option<Option<stripe_shared::SubscriptionsResourcePaymentMethodOptions>>,
+    payment_method_options: Option<stripe_shared::SubscriptionsResourcePaymentMethodOptions>,
     payment_method_types:
         Option<Option<Vec<SubscriptionsResourcePaymentSettingsPaymentMethodTypes>>>,
     save_default_payment_method:
-        Option<Option<SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod>>,
+        Option<SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod>,
 }
 
 #[allow(
@@ -69,34 +68,31 @@ const _: () = {
         type Out = SubscriptionsResourcePaymentSettings;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
+                "payment_method_options" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_options,
+                ),
                 "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
-                "save_default_payment_method" => {
-                    Deserialize::begin(&mut self.save_default_payment_method)
-                }
+                "save_default_payment_method" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.save_default_payment_method,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                payment_method_options: Some(None),
+                payment_method_options: None,
                 payment_method_types: Some(None),
-                save_default_payment_method: Some(None),
+                save_default_payment_method: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(payment_method_options),
-                Some(payment_method_types),
-                Some(save_default_payment_method),
-            ) = (
+            let (payment_method_options, Some(payment_method_types), save_default_payment_method) = (
                 self.payment_method_options.take(),
                 self.payment_method_types.take(),
                 self.save_default_payment_method.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out {

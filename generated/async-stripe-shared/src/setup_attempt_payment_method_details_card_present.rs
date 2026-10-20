@@ -16,8 +16,8 @@ impl std::fmt::Debug for SetupAttemptPaymentMethodDetailsCardPresent {
 }
 #[doc(hidden)]
 pub struct SetupAttemptPaymentMethodDetailsCardPresentBuilder {
-    generated_card: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
-    offline: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>>,
+    generated_card: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
+    offline: Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>,
 }
 
 #[allow(
@@ -60,19 +60,20 @@ const _: () = {
         type Out = SetupAttemptPaymentMethodDetailsCardPresent;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "generated_card" => Deserialize::begin(&mut self.generated_card),
-                "offline" => Deserialize::begin(&mut self.offline),
+                "generated_card" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.generated_card)
+                }
+                "offline" => stripe_types::miniserde_helpers::begin_nullable(&mut self.offline),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { generated_card: Some(None), offline: Some(None) }
+            Self { generated_card: None, offline: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(generated_card), Some(offline)) =
-                (self.generated_card.take(), self.offline.take())
+            let (generated_card, offline) = (self.generated_card.take(), self.offline.take())
             else {
                 return None;
             };

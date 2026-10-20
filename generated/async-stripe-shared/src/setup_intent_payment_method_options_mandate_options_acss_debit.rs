@@ -30,10 +30,8 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder {
     default_for:
         Option<Option<Vec<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor>>>,
     interval_description: Option<Option<String>>,
-    payment_schedule:
-        Option<Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>>,
-    transaction_type:
-        Option<Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>>,
+    payment_schedule: Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
+    transaction_type: Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
 }
 
 #[allow(
@@ -80,8 +78,12 @@ const _: () = {
                 "custom_mandate_url" => Deserialize::begin(&mut self.custom_mandate_url),
                 "default_for" => Deserialize::begin(&mut self.default_for),
                 "interval_description" => Deserialize::begin(&mut self.interval_description),
-                "payment_schedule" => Deserialize::begin(&mut self.payment_schedule),
-                "transaction_type" => Deserialize::begin(&mut self.transaction_type),
+                "payment_schedule" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_schedule)
+                }
+                "transaction_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transaction_type)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -91,8 +93,8 @@ const _: () = {
                 custom_mandate_url: Some(None),
                 default_for: Some(None),
                 interval_description: Some(None),
-                payment_schedule: Some(None),
-                transaction_type: Some(None),
+                payment_schedule: None,
+                transaction_type: None,
             }
         }
 
@@ -101,8 +103,8 @@ const _: () = {
                 Some(custom_mandate_url),
                 Some(default_for),
                 Some(interval_description),
-                Some(payment_schedule),
-                Some(transaction_type),
+                payment_schedule,
+                transaction_type,
             ) = (
                 self.custom_mandate_url.take(),
                 self.default_for.take(),

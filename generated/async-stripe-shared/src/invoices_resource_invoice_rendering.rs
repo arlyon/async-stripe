@@ -21,7 +21,7 @@ impl std::fmt::Debug for InvoicesResourceInvoiceRendering {
 #[doc(hidden)]
 pub struct InvoicesResourceInvoiceRenderingBuilder {
     amount_tax_display: Option<Option<String>>,
-    pdf: Option<Option<stripe_shared::InvoiceRenderingPdf>>,
+    pdf: Option<stripe_shared::InvoiceRenderingPdf>,
     template: Option<Option<String>>,
     template_version: Option<Option<i64>>,
 }
@@ -67,7 +67,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount_tax_display" => Deserialize::begin(&mut self.amount_tax_display),
-                "pdf" => Deserialize::begin(&mut self.pdf),
+                "pdf" => stripe_types::miniserde_helpers::begin_nullable(&mut self.pdf),
                 "template" => Deserialize::begin(&mut self.template),
                 "template_version" => Deserialize::begin(&mut self.template_version),
                 _ => <dyn Visitor>::ignore(),
@@ -77,14 +77,14 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount_tax_display: Some(None),
-                pdf: Some(None),
+                pdf: None,
                 template: Some(None),
                 template_version: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_tax_display), Some(pdf), Some(template), Some(template_version)) = (
+            let (Some(amount_tax_display), pdf, Some(template), Some(template_version)) = (
                 self.amount_tax_display.take(),
                 self.pdf.take(),
                 self.template.take(),

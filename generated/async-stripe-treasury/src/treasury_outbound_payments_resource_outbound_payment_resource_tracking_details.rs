@@ -19,11 +19,10 @@ impl std::fmt::Debug for TreasuryOutboundPaymentsResourceOutboundPaymentResource
 }
 #[doc(hidden)]
 pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsBuilder {
-    ach: Option<Option<stripe_treasury::TreasuryOutboundPaymentsResourceAchTrackingDetails>>,
+    ach: Option<stripe_treasury::TreasuryOutboundPaymentsResourceAchTrackingDetails>,
     type_: Option<TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType>,
-    us_domestic_wire: Option<
+    us_domestic_wire:
         Option<stripe_treasury::TreasuryOutboundPaymentsResourceUsDomesticWireTrackingDetails>,
-    >,
 }
 
 #[allow(
@@ -66,19 +65,21 @@ const _: () = {
         type Out = TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "ach" => Deserialize::begin(&mut self.ach),
+                "ach" => stripe_types::miniserde_helpers::begin_nullable(&mut self.ach),
                 "type" => Deserialize::begin(&mut self.type_),
-                "us_domestic_wire" => Deserialize::begin(&mut self.us_domestic_wire),
+                "us_domestic_wire" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.us_domestic_wire)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { ach: Some(None), type_: None, us_domestic_wire: Some(None) }
+            Self { ach: None, type_: None, us_domestic_wire: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(ach), Some(type_), Some(us_domestic_wire)) =
+            let (ach, Some(type_), us_domestic_wire) =
                 (self.ach.take(), self.type_.take(), self.us_domestic_wire.take())
             else {
                 return None;

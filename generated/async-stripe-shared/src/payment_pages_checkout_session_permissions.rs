@@ -21,8 +21,7 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionPermissions {
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionPermissionsBuilder {
-    update_shipping_details:
-        Option<Option<PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails>>,
+    update_shipping_details: Option<PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails>,
 }
 
 #[allow(
@@ -65,17 +64,19 @@ const _: () = {
         type Out = PaymentPagesCheckoutSessionPermissions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "update_shipping_details" => Deserialize::begin(&mut self.update_shipping_details),
+                "update_shipping_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.update_shipping_details,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { update_shipping_details: Some(None) }
+            Self { update_shipping_details: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(update_shipping_details),) = (self.update_shipping_details.take(),) else {
+            let (update_shipping_details,) = (self.update_shipping_details.take(),) else {
                 return None;
             };
             Some(Self::Out { update_shipping_details })

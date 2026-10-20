@@ -55,42 +55,37 @@ impl std::fmt::Debug for PaymentIntentNextAction {
 }
 #[doc(hidden)]
 pub struct PaymentIntentNextActionBuilder {
-    alipay_handle_redirect:
-        Option<Option<stripe_shared::PaymentIntentNextActionAlipayHandleRedirect>>,
-    blik_authorize: Option<Option<stripe_shared::PaymentIntentNextActionBlikAuthorize>>,
-    boleto_display_details: Option<Option<stripe_shared::PaymentIntentNextActionBoleto>>,
-    card_await_notification:
-        Option<Option<stripe_shared::PaymentIntentNextActionCardAwaitNotification>>,
+    alipay_handle_redirect: Option<stripe_shared::PaymentIntentNextActionAlipayHandleRedirect>,
+    blik_authorize: Option<stripe_shared::PaymentIntentNextActionBlikAuthorize>,
+    boleto_display_details: Option<stripe_shared::PaymentIntentNextActionBoleto>,
+    card_await_notification: Option<stripe_shared::PaymentIntentNextActionCardAwaitNotification>,
     cashapp_handle_redirect_or_display_qr_code:
-        Option<Option<stripe_shared::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>>,
+        Option<stripe_shared::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
     display_bank_transfer_instructions:
-        Option<Option<stripe_shared::PaymentIntentNextActionDisplayBankTransferInstructions>>,
-    klarna_display_qr_code:
-        Option<Option<stripe_shared::PaymentIntentNextActionKlarnaDisplayQrCode>>,
-    konbini_display_details: Option<Option<stripe_shared::PaymentIntentNextActionKonbini>>,
+        Option<stripe_shared::PaymentIntentNextActionDisplayBankTransferInstructions>,
+    klarna_display_qr_code: Option<stripe_shared::PaymentIntentNextActionKlarnaDisplayQrCode>,
+    konbini_display_details: Option<stripe_shared::PaymentIntentNextActionKonbini>,
     multibanco_display_details:
-        Option<Option<stripe_shared::PaymentIntentNextActionDisplayMultibancoDetails>>,
-    oxxo_display_details: Option<Option<stripe_shared::PaymentIntentNextActionDisplayOxxoDetails>>,
-    paynow_display_qr_code:
-        Option<Option<stripe_shared::PaymentIntentNextActionPaynowDisplayQrCode>>,
-    pix_display_qr_code: Option<Option<stripe_shared::PaymentIntentNextActionPixDisplayQrCode>>,
-    promptpay_display_qr_code:
-        Option<Option<stripe_shared::PaymentIntentNextActionPromptpayDisplayQrCode>>,
-    redirect_to_url: Option<Option<stripe_shared::PaymentIntentNextActionRedirectToUrl>>,
+        Option<stripe_shared::PaymentIntentNextActionDisplayMultibancoDetails>,
+    oxxo_display_details: Option<stripe_shared::PaymentIntentNextActionDisplayOxxoDetails>,
+    paynow_display_qr_code: Option<stripe_shared::PaymentIntentNextActionPaynowDisplayQrCode>,
+    pix_display_qr_code: Option<stripe_shared::PaymentIntentNextActionPixDisplayQrCode>,
+    promptpay_display_qr_code: Option<stripe_shared::PaymentIntentNextActionPromptpayDisplayQrCode>,
+    redirect_to_url: Option<stripe_shared::PaymentIntentNextActionRedirectToUrl>,
     swish_handle_redirect_or_display_qr_code:
-        Option<Option<stripe_shared::PaymentIntentNextActionSwishHandleRedirectOrDisplayQrCode>>,
+        Option<stripe_shared::PaymentIntentNextActionSwishHandleRedirectOrDisplayQrCode>,
     type_: Option<String>,
     upi_handle_redirect_or_display_qr_code:
-        Option<Option<stripe_shared::PaymentIntentNextActionUpiHandleRedirectOrDisplayQrCode>>,
+        Option<stripe_shared::PaymentIntentNextActionUpiHandleRedirectOrDisplayQrCode>,
     use_stripe_sdk: Option<Option<miniserde::json::Value>>,
     verify_with_microdeposits:
-        Option<Option<stripe_shared::PaymentIntentNextActionVerifyWithMicrodeposits>>,
+        Option<stripe_shared::PaymentIntentNextActionVerifyWithMicrodeposits>,
     wechat_pay_display_qr_code:
-        Option<Option<stripe_shared::PaymentIntentNextActionWechatPayDisplayQrCode>>,
+        Option<stripe_shared::PaymentIntentNextActionWechatPayDisplayQrCode>,
     wechat_pay_redirect_to_android_app:
-        Option<Option<stripe_shared::PaymentIntentNextActionWechatPayRedirectToAndroidApp>>,
+        Option<stripe_shared::PaymentIntentNextActionWechatPayRedirectToAndroidApp>,
     wechat_pay_redirect_to_ios_app:
-        Option<Option<stripe_shared::PaymentIntentNextActionWechatPayRedirectToIosApp>>,
+        Option<stripe_shared::PaymentIntentNextActionWechatPayRedirectToIosApp>,
 }
 
 #[allow(
@@ -133,47 +128,79 @@ const _: () = {
         type Out = PaymentIntentNextAction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "alipay_handle_redirect" => Deserialize::begin(&mut self.alipay_handle_redirect),
-                "blik_authorize" => Deserialize::begin(&mut self.blik_authorize),
-                "boleto_display_details" => Deserialize::begin(&mut self.boleto_display_details),
-                "card_await_notification" => Deserialize::begin(&mut self.card_await_notification),
+                "alipay_handle_redirect" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.alipay_handle_redirect,
+                ),
+                "blik_authorize" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.blik_authorize)
+                }
+                "boleto_display_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.boleto_display_details,
+                ),
+                "card_await_notification" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.card_await_notification,
+                ),
                 "cashapp_handle_redirect_or_display_qr_code" => {
-                    Deserialize::begin(&mut self.cashapp_handle_redirect_or_display_qr_code)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.cashapp_handle_redirect_or_display_qr_code,
+                    )
                 }
                 "display_bank_transfer_instructions" => {
-                    Deserialize::begin(&mut self.display_bank_transfer_instructions)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.display_bank_transfer_instructions,
+                    )
                 }
-                "klarna_display_qr_code" => Deserialize::begin(&mut self.klarna_display_qr_code),
-                "konbini_display_details" => Deserialize::begin(&mut self.konbini_display_details),
-                "multibanco_display_details" => {
-                    Deserialize::begin(&mut self.multibanco_display_details)
+                "klarna_display_qr_code" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.klarna_display_qr_code,
+                ),
+                "konbini_display_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.konbini_display_details,
+                ),
+                "multibanco_display_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.multibanco_display_details,
+                ),
+                "oxxo_display_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.oxxo_display_details)
                 }
-                "oxxo_display_details" => Deserialize::begin(&mut self.oxxo_display_details),
-                "paynow_display_qr_code" => Deserialize::begin(&mut self.paynow_display_qr_code),
-                "pix_display_qr_code" => Deserialize::begin(&mut self.pix_display_qr_code),
-                "promptpay_display_qr_code" => {
-                    Deserialize::begin(&mut self.promptpay_display_qr_code)
+                "paynow_display_qr_code" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.paynow_display_qr_code,
+                ),
+                "pix_display_qr_code" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.pix_display_qr_code)
                 }
-                "redirect_to_url" => Deserialize::begin(&mut self.redirect_to_url),
+                "promptpay_display_qr_code" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.promptpay_display_qr_code,
+                ),
+                "redirect_to_url" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.redirect_to_url)
+                }
                 "swish_handle_redirect_or_display_qr_code" => {
-                    Deserialize::begin(&mut self.swish_handle_redirect_or_display_qr_code)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.swish_handle_redirect_or_display_qr_code,
+                    )
                 }
                 "type" => Deserialize::begin(&mut self.type_),
                 "upi_handle_redirect_or_display_qr_code" => {
-                    Deserialize::begin(&mut self.upi_handle_redirect_or_display_qr_code)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.upi_handle_redirect_or_display_qr_code,
+                    )
                 }
                 "use_stripe_sdk" => Deserialize::begin(&mut self.use_stripe_sdk),
-                "verify_with_microdeposits" => {
-                    Deserialize::begin(&mut self.verify_with_microdeposits)
-                }
-                "wechat_pay_display_qr_code" => {
-                    Deserialize::begin(&mut self.wechat_pay_display_qr_code)
-                }
+                "verify_with_microdeposits" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.verify_with_microdeposits,
+                ),
+                "wechat_pay_display_qr_code" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.wechat_pay_display_qr_code,
+                ),
                 "wechat_pay_redirect_to_android_app" => {
-                    Deserialize::begin(&mut self.wechat_pay_redirect_to_android_app)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.wechat_pay_redirect_to_android_app,
+                    )
                 }
                 "wechat_pay_redirect_to_ios_app" => {
-                    Deserialize::begin(&mut self.wechat_pay_redirect_to_ios_app)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.wechat_pay_redirect_to_ios_app,
+                    )
                 }
                 _ => <dyn Visitor>::ignore(),
             })
@@ -181,55 +208,55 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                alipay_handle_redirect: Some(None),
-                blik_authorize: Some(None),
-                boleto_display_details: Some(None),
-                card_await_notification: Some(None),
-                cashapp_handle_redirect_or_display_qr_code: Some(None),
-                display_bank_transfer_instructions: Some(None),
-                klarna_display_qr_code: Some(None),
-                konbini_display_details: Some(None),
-                multibanco_display_details: Some(None),
-                oxxo_display_details: Some(None),
-                paynow_display_qr_code: Some(None),
-                pix_display_qr_code: Some(None),
-                promptpay_display_qr_code: Some(None),
-                redirect_to_url: Some(None),
-                swish_handle_redirect_or_display_qr_code: Some(None),
+                alipay_handle_redirect: None,
+                blik_authorize: None,
+                boleto_display_details: None,
+                card_await_notification: None,
+                cashapp_handle_redirect_or_display_qr_code: None,
+                display_bank_transfer_instructions: None,
+                klarna_display_qr_code: None,
+                konbini_display_details: None,
+                multibanco_display_details: None,
+                oxxo_display_details: None,
+                paynow_display_qr_code: None,
+                pix_display_qr_code: None,
+                promptpay_display_qr_code: None,
+                redirect_to_url: None,
+                swish_handle_redirect_or_display_qr_code: None,
                 type_: None,
-                upi_handle_redirect_or_display_qr_code: Some(None),
+                upi_handle_redirect_or_display_qr_code: None,
                 use_stripe_sdk: Some(None),
-                verify_with_microdeposits: Some(None),
-                wechat_pay_display_qr_code: Some(None),
-                wechat_pay_redirect_to_android_app: Some(None),
-                wechat_pay_redirect_to_ios_app: Some(None),
+                verify_with_microdeposits: None,
+                wechat_pay_display_qr_code: None,
+                wechat_pay_redirect_to_android_app: None,
+                wechat_pay_redirect_to_ios_app: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(alipay_handle_redirect),
-                Some(blik_authorize),
-                Some(boleto_display_details),
-                Some(card_await_notification),
-                Some(cashapp_handle_redirect_or_display_qr_code),
-                Some(display_bank_transfer_instructions),
-                Some(klarna_display_qr_code),
-                Some(konbini_display_details),
-                Some(multibanco_display_details),
-                Some(oxxo_display_details),
-                Some(paynow_display_qr_code),
-                Some(pix_display_qr_code),
-                Some(promptpay_display_qr_code),
-                Some(redirect_to_url),
-                Some(swish_handle_redirect_or_display_qr_code),
+                alipay_handle_redirect,
+                blik_authorize,
+                boleto_display_details,
+                card_await_notification,
+                cashapp_handle_redirect_or_display_qr_code,
+                display_bank_transfer_instructions,
+                klarna_display_qr_code,
+                konbini_display_details,
+                multibanco_display_details,
+                oxxo_display_details,
+                paynow_display_qr_code,
+                pix_display_qr_code,
+                promptpay_display_qr_code,
+                redirect_to_url,
+                swish_handle_redirect_or_display_qr_code,
                 Some(type_),
-                Some(upi_handle_redirect_or_display_qr_code),
+                upi_handle_redirect_or_display_qr_code,
                 Some(use_stripe_sdk),
-                Some(verify_with_microdeposits),
-                Some(wechat_pay_display_qr_code),
-                Some(wechat_pay_redirect_to_android_app),
-                Some(wechat_pay_redirect_to_ios_app),
+                verify_with_microdeposits,
+                wechat_pay_display_qr_code,
+                wechat_pay_redirect_to_android_app,
+                wechat_pay_redirect_to_ios_app,
             ) = (
                 self.alipay_handle_redirect.take(),
                 self.blik_authorize,

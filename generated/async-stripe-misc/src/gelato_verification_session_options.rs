@@ -17,11 +17,11 @@ impl std::fmt::Debug for GelatoVerificationSessionOptions {
 }
 #[doc(hidden)]
 pub struct GelatoVerificationSessionOptionsBuilder {
-    document: Option<Option<stripe_misc::GelatoSessionDocumentOptions>>,
-    email: Option<Option<stripe_misc::GelatoSessionEmailOptions>>,
-    id_number: Option<Option<stripe_misc::GelatoSessionIdNumberOptions>>,
-    matching: Option<Option<stripe_misc::GelatoSessionMatchingOptions>>,
-    phone: Option<Option<stripe_misc::GelatoSessionPhoneOptions>>,
+    document: Option<stripe_misc::GelatoSessionDocumentOptions>,
+    email: Option<stripe_misc::GelatoSessionEmailOptions>,
+    id_number: Option<stripe_misc::GelatoSessionIdNumberOptions>,
+    matching: Option<stripe_misc::GelatoSessionMatchingOptions>,
+    phone: Option<stripe_misc::GelatoSessionPhoneOptions>,
 }
 
 #[allow(
@@ -64,27 +64,21 @@ const _: () = {
         type Out = GelatoVerificationSessionOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "document" => Deserialize::begin(&mut self.document),
-                "email" => Deserialize::begin(&mut self.email),
-                "id_number" => Deserialize::begin(&mut self.id_number),
-                "matching" => Deserialize::begin(&mut self.matching),
-                "phone" => Deserialize::begin(&mut self.phone),
+                "document" => stripe_types::miniserde_helpers::begin_nullable(&mut self.document),
+                "email" => stripe_types::miniserde_helpers::begin_nullable(&mut self.email),
+                "id_number" => stripe_types::miniserde_helpers::begin_nullable(&mut self.id_number),
+                "matching" => stripe_types::miniserde_helpers::begin_nullable(&mut self.matching),
+                "phone" => stripe_types::miniserde_helpers::begin_nullable(&mut self.phone),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                document: Some(None),
-                email: Some(None),
-                id_number: Some(None),
-                matching: Some(None),
-                phone: Some(None),
-            }
+            Self { document: None, email: None, id_number: None, matching: None, phone: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(document), Some(email), Some(id_number), Some(matching), Some(phone)) = (
+            let (document, email, id_number, matching, phone) = (
                 self.document.take(),
                 self.email,
                 self.id_number,

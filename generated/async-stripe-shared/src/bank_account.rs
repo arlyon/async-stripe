@@ -74,7 +74,7 @@ impl std::fmt::Debug for BankAccount {
 }
 #[doc(hidden)]
 pub struct BankAccountBuilder {
-    account: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    account: Option<stripe_types::Expandable<stripe_shared::Account>>,
     account_holder_name: Option<Option<String>>,
     account_holder_type: Option<Option<String>>,
     account_type: Option<Option<String>>,
@@ -82,14 +82,14 @@ pub struct BankAccountBuilder {
     bank_name: Option<Option<String>>,
     country: Option<String>,
     currency: Option<stripe_types::Currency>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     default_for_currency: Option<Option<bool>>,
     fingerprint: Option<Option<String>>,
-    future_requirements: Option<Option<stripe_shared::ExternalAccountRequirements>>,
+    future_requirements: Option<stripe_shared::ExternalAccountRequirements>,
     id: Option<stripe_shared::BankAccountId>,
     last4: Option<String>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    requirements: Option<Option<stripe_shared::ExternalAccountRequirements>>,
+    requirements: Option<stripe_shared::ExternalAccountRequirements>,
     routing_number: Option<Option<String>>,
     status: Option<String>,
 }
@@ -134,7 +134,7 @@ const _: () = {
         type Out = BankAccount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account" => Deserialize::begin(&mut self.account),
+                "account" => stripe_types::miniserde_helpers::begin_nullable(&mut self.account),
                 "account_holder_name" => Deserialize::begin(&mut self.account_holder_name),
                 "account_holder_type" => Deserialize::begin(&mut self.account_holder_type),
                 "account_type" => Deserialize::begin(&mut self.account_type),
@@ -144,14 +144,18 @@ const _: () = {
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "country" => Deserialize::begin(&mut self.country),
                 "currency" => Deserialize::begin(&mut self.currency),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "default_for_currency" => Deserialize::begin(&mut self.default_for_currency),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
-                "future_requirements" => Deserialize::begin(&mut self.future_requirements),
+                "future_requirements" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.future_requirements)
+                }
                 "id" => Deserialize::begin(&mut self.id),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "requirements" => Deserialize::begin(&mut self.requirements),
+                "requirements" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.requirements)
+                }
                 "routing_number" => Deserialize::begin(&mut self.routing_number),
                 "status" => Deserialize::begin(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
@@ -160,7 +164,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account: Some(None),
+                account: None,
                 account_holder_name: Some(None),
                 account_holder_type: Some(None),
                 account_type: Some(None),
@@ -168,14 +172,14 @@ const _: () = {
                 bank_name: Some(None),
                 country: None,
                 currency: None,
-                customer: Some(None),
+                customer: None,
                 default_for_currency: Some(None),
                 fingerprint: Some(None),
-                future_requirements: Some(None),
+                future_requirements: None,
                 id: None,
                 last4: None,
                 metadata: Some(None),
-                requirements: Some(None),
+                requirements: None,
                 routing_number: Some(None),
                 status: None,
             }
@@ -183,7 +187,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(account),
+                account,
                 Some(account_holder_name),
                 Some(account_holder_type),
                 Some(account_type),
@@ -191,14 +195,14 @@ const _: () = {
                 Some(bank_name),
                 Some(country),
                 Some(currency),
-                Some(customer),
+                customer,
                 Some(default_for_currency),
                 Some(fingerprint),
-                Some(future_requirements),
+                future_requirements,
                 Some(id),
                 Some(last4),
                 Some(metadata),
-                Some(requirements),
+                requirements,
                 Some(routing_number),
                 Some(status),
             ) = (

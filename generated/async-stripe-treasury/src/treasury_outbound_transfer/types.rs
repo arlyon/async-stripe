@@ -64,25 +64,27 @@ impl std::fmt::Debug for TreasuryOutboundTransfer {
 #[doc(hidden)]
 pub struct TreasuryOutboundTransferBuilder {
     amount: Option<i64>,
-cancelable: Option<bool>,
-created: Option<stripe_types::Timestamp>,
-currency: Option<stripe_types::Currency>,
-description: Option<Option<String>>,
-destination_payment_method: Option<Option<String>>,
-destination_payment_method_details: Option<stripe_treasury::OutboundTransfersPaymentMethodDetails>,
-expected_arrival_date: Option<stripe_types::Timestamp>,
-financial_account: Option<String>,
-hosted_regulatory_receipt_url: Option<Option<String>>,
-id: Option<stripe_treasury::TreasuryOutboundTransferId>,
-livemode: Option<bool>,
-metadata: Option<std::collections::HashMap<String, String>>,
-returned_details: Option<Option<stripe_treasury::TreasuryOutboundTransfersResourceReturnedDetails>>,
-statement_descriptor: Option<String>,
-status: Option<stripe_treasury::TreasuryOutboundTransferStatus>,
-status_transitions: Option<stripe_treasury::TreasuryOutboundTransfersResourceStatusTransitions>,
-tracking_details: Option<Option<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetails>>,
-transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
-
+    cancelable: Option<bool>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<stripe_types::Currency>,
+    description: Option<Option<String>>,
+    destination_payment_method: Option<Option<String>>,
+    destination_payment_method_details:
+        Option<stripe_treasury::OutboundTransfersPaymentMethodDetails>,
+    expected_arrival_date: Option<stripe_types::Timestamp>,
+    financial_account: Option<String>,
+    hosted_regulatory_receipt_url: Option<Option<String>>,
+    id: Option<stripe_treasury::TreasuryOutboundTransferId>,
+    livemode: Option<bool>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    returned_details: Option<stripe_treasury::TreasuryOutboundTransfersResourceReturnedDetails>,
+    statement_descriptor: Option<String>,
+    status: Option<stripe_treasury::TreasuryOutboundTransferStatus>,
+    status_transitions: Option<stripe_treasury::TreasuryOutboundTransfersResourceStatusTransitions>,
+    tracking_details: Option<
+        stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransferResourceTrackingDetails,
+    >,
+    transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 }
 
 #[allow(
@@ -144,11 +146,15 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "returned_details" => Deserialize::begin(&mut self.returned_details),
+                "returned_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.returned_details)
+                }
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-                "tracking_details" => Deserialize::begin(&mut self.tracking_details),
+                "tracking_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tracking_details)
+                }
                 "transaction" => Deserialize::begin(&mut self.transaction),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -169,11 +175,11 @@ const _: () = {
                 id: None,
                 livemode: None,
                 metadata: None,
-                returned_details: Some(None),
+                returned_details: None,
                 statement_descriptor: None,
                 status: None,
                 status_transitions: None,
-                tracking_details: Some(None),
+                tracking_details: None,
                 transaction: None,
             }
         }
@@ -193,11 +199,11 @@ const _: () = {
                 Some(id),
                 Some(livemode),
                 Some(metadata),
-                Some(returned_details),
+                returned_details,
                 Some(statement_descriptor),
                 Some(status),
                 Some(status_transitions),
-                Some(tracking_details),
+                tracking_details,
                 Some(transaction),
             ) = (
                 self.amount,

@@ -48,45 +48,33 @@ impl std::fmt::Debug for TerminalConfiguration {
 }
 #[doc(hidden)]
 pub struct TerminalConfigurationBuilder {
-    bbpos_wisepad3: Option<
+    bbpos_wisepad3:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
-    >,
-    bbpos_wisepos_e: Option<
+    bbpos_wisepos_e:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
-    >,
-    cellular:
-        Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceCellularConfig>>,
+    cellular: Option<stripe_terminal::TerminalConfigurationConfigurationResourceCellularConfig>,
     id: Option<stripe_terminal::TerminalConfigurationId>,
     is_account_default: Option<Option<bool>>,
     livemode: Option<bool>,
     name: Option<Option<String>>,
-    offline:
-        Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceOfflineConfig>>,
-    reboot_window:
-        Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceRebootWindow>>,
-    stripe_s700: Option<
+    offline: Option<stripe_terminal::TerminalConfigurationConfigurationResourceOfflineConfig>,
+    reboot_window: Option<stripe_terminal::TerminalConfigurationConfigurationResourceRebootWindow>,
+    stripe_s700:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
-    >,
-    stripe_s710: Option<
+    stripe_s710:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
-    >,
-    tipping: Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceTipping>>,
-    verifone_m425: Option<
+    tipping: Option<stripe_terminal::TerminalConfigurationConfigurationResourceTipping>,
+    verifone_m425:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
-    >,
-    verifone_p400: Option<
+    verifone_p400:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
-    >,
-    verifone_p630: Option<
+    verifone_p630:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
-    >,
-    verifone_ux700: Option<
+    verifone_ux700:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
-    >,
-    verifone_v660p: Option<
+    verifone_v660p:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
-    >,
-    wifi: Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceWifiConfig>>,
+    wifi: Option<stripe_terminal::TerminalConfigurationConfigurationResourceWifiConfig>,
 }
 
 #[allow(
@@ -129,71 +117,91 @@ const _: () = {
         type Out = TerminalConfiguration;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bbpos_wisepad3" => Deserialize::begin(&mut self.bbpos_wisepad3),
-                "bbpos_wisepos_e" => Deserialize::begin(&mut self.bbpos_wisepos_e),
-                "cellular" => Deserialize::begin(&mut self.cellular),
+                "bbpos_wisepad3" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bbpos_wisepad3)
+                }
+                "bbpos_wisepos_e" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bbpos_wisepos_e)
+                }
+                "cellular" => stripe_types::miniserde_helpers::begin_nullable(&mut self.cellular),
                 "id" => Deserialize::begin(&mut self.id),
                 "is_account_default" => Deserialize::begin(&mut self.is_account_default),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "name" => Deserialize::begin(&mut self.name),
-                "offline" => Deserialize::begin(&mut self.offline),
-                "reboot_window" => Deserialize::begin(&mut self.reboot_window),
-                "stripe_s700" => Deserialize::begin(&mut self.stripe_s700),
-                "stripe_s710" => Deserialize::begin(&mut self.stripe_s710),
-                "tipping" => Deserialize::begin(&mut self.tipping),
-                "verifone_m425" => Deserialize::begin(&mut self.verifone_m425),
-                "verifone_p400" => Deserialize::begin(&mut self.verifone_p400),
-                "verifone_p630" => Deserialize::begin(&mut self.verifone_p630),
-                "verifone_ux700" => Deserialize::begin(&mut self.verifone_ux700),
-                "verifone_v660p" => Deserialize::begin(&mut self.verifone_v660p),
-                "wifi" => Deserialize::begin(&mut self.wifi),
+                "offline" => stripe_types::miniserde_helpers::begin_nullable(&mut self.offline),
+                "reboot_window" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.reboot_window)
+                }
+                "stripe_s700" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.stripe_s700)
+                }
+                "stripe_s710" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.stripe_s710)
+                }
+                "tipping" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tipping),
+                "verifone_m425" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verifone_m425)
+                }
+                "verifone_p400" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verifone_p400)
+                }
+                "verifone_p630" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verifone_p630)
+                }
+                "verifone_ux700" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verifone_ux700)
+                }
+                "verifone_v660p" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verifone_v660p)
+                }
+                "wifi" => stripe_types::miniserde_helpers::begin_nullable(&mut self.wifi),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                bbpos_wisepad3: Some(None),
-                bbpos_wisepos_e: Some(None),
-                cellular: Some(None),
+                bbpos_wisepad3: None,
+                bbpos_wisepos_e: None,
+                cellular: None,
                 id: None,
                 is_account_default: Some(None),
                 livemode: None,
                 name: Some(None),
-                offline: Some(None),
-                reboot_window: Some(None),
-                stripe_s700: Some(None),
-                stripe_s710: Some(None),
-                tipping: Some(None),
-                verifone_m425: Some(None),
-                verifone_p400: Some(None),
-                verifone_p630: Some(None),
-                verifone_ux700: Some(None),
-                verifone_v660p: Some(None),
-                wifi: Some(None),
+                offline: None,
+                reboot_window: None,
+                stripe_s700: None,
+                stripe_s710: None,
+                tipping: None,
+                verifone_m425: None,
+                verifone_p400: None,
+                verifone_p630: None,
+                verifone_ux700: None,
+                verifone_v660p: None,
+                wifi: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(bbpos_wisepad3),
-                Some(bbpos_wisepos_e),
-                Some(cellular),
+                bbpos_wisepad3,
+                bbpos_wisepos_e,
+                cellular,
                 Some(id),
                 Some(is_account_default),
                 Some(livemode),
                 Some(name),
-                Some(offline),
-                Some(reboot_window),
-                Some(stripe_s700),
-                Some(stripe_s710),
-                Some(tipping),
-                Some(verifone_m425),
-                Some(verifone_p400),
-                Some(verifone_p630),
-                Some(verifone_ux700),
-                Some(verifone_v660p),
-                Some(wifi),
+                offline,
+                reboot_window,
+                stripe_s700,
+                stripe_s710,
+                tipping,
+                verifone_m425,
+                verifone_p400,
+                verifone_p630,
+                verifone_ux700,
+                verifone_v660p,
+                wifi,
             ) = (
                 self.bbpos_wisepad3.take(),
                 self.bbpos_wisepos_e.take(),

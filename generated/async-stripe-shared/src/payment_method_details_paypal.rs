@@ -32,7 +32,7 @@ pub struct PaymentMethodDetailsPaypalBuilder {
     payer_email: Option<Option<String>>,
     payer_id: Option<Option<String>>,
     payer_name: Option<Option<String>>,
-    seller_protection: Option<Option<stripe_shared::PaypalSellerProtection>>,
+    seller_protection: Option<stripe_shared::PaypalSellerProtection>,
     transaction_id: Option<Option<String>>,
 }
 
@@ -80,7 +80,9 @@ const _: () = {
                 "payer_email" => Deserialize::begin(&mut self.payer_email),
                 "payer_id" => Deserialize::begin(&mut self.payer_id),
                 "payer_name" => Deserialize::begin(&mut self.payer_name),
-                "seller_protection" => Deserialize::begin(&mut self.seller_protection),
+                "seller_protection" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.seller_protection)
+                }
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -92,7 +94,7 @@ const _: () = {
                 payer_email: Some(None),
                 payer_id: Some(None),
                 payer_name: Some(None),
-                seller_protection: Some(None),
+                seller_protection: None,
                 transaction_id: Some(None),
             }
         }
@@ -103,7 +105,7 @@ const _: () = {
                 Some(payer_email),
                 Some(payer_id),
                 Some(payer_name),
-                Some(seller_protection),
+                seller_protection,
                 Some(transaction_id),
             ) = (
                 self.country.take(),

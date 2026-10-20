@@ -32,8 +32,8 @@ pub struct PaymentPagesCheckoutSessionBrandingSettingsBuilder {
     button_color: Option<String>,
     display_name: Option<String>,
     font_family: Option<String>,
-    icon: Option<Option<stripe_shared::PaymentPagesCheckoutSessionBrandingSettingsIcon>>,
-    logo: Option<Option<stripe_shared::PaymentPagesCheckoutSessionBrandingSettingsLogo>>,
+    icon: Option<stripe_shared::PaymentPagesCheckoutSessionBrandingSettingsIcon>,
+    logo: Option<stripe_shared::PaymentPagesCheckoutSessionBrandingSettingsLogo>,
 }
 
 #[allow(
@@ -81,8 +81,8 @@ const _: () = {
                 "button_color" => Deserialize::begin(&mut self.button_color),
                 "display_name" => Deserialize::begin(&mut self.display_name),
                 "font_family" => Deserialize::begin(&mut self.font_family),
-                "icon" => Deserialize::begin(&mut self.icon),
-                "logo" => Deserialize::begin(&mut self.logo),
+                "icon" => stripe_types::miniserde_helpers::begin_nullable(&mut self.icon),
+                "logo" => stripe_types::miniserde_helpers::begin_nullable(&mut self.logo),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -94,8 +94,8 @@ const _: () = {
                 button_color: None,
                 display_name: None,
                 font_family: None,
-                icon: Some(None),
-                logo: Some(None),
+                icon: None,
+                logo: None,
             }
         }
 
@@ -106,8 +106,8 @@ const _: () = {
                 Some(button_color),
                 Some(display_name),
                 Some(font_family),
-                Some(icon),
-                Some(logo),
+                icon,
+                logo,
             ) = (
                 self.background_color.take(),
                 self.border_style.take(),

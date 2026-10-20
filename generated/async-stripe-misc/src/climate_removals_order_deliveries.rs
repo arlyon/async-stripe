@@ -23,7 +23,7 @@ impl std::fmt::Debug for ClimateRemovalsOrderDeliveries {
 #[doc(hidden)]
 pub struct ClimateRemovalsOrderDeliveriesBuilder {
     delivered_at: Option<stripe_types::Timestamp>,
-    location: Option<Option<stripe_misc::ClimateRemovalsLocation>>,
+    location: Option<stripe_misc::ClimateRemovalsLocation>,
     metric_tons: Option<String>,
     registry_url: Option<Option<String>>,
     supplier: Option<stripe_misc::ClimateSupplier>,
@@ -70,7 +70,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "delivered_at" => Deserialize::begin(&mut self.delivered_at),
-                "location" => Deserialize::begin(&mut self.location),
+                "location" => stripe_types::miniserde_helpers::begin_nullable(&mut self.location),
                 "metric_tons" => Deserialize::begin(&mut self.metric_tons),
                 "registry_url" => Deserialize::begin(&mut self.registry_url),
                 "supplier" => Deserialize::begin(&mut self.supplier),
@@ -81,7 +81,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 delivered_at: None,
-                location: Some(None),
+                location: None,
                 metric_tons: None,
                 registry_url: Some(None),
                 supplier: None,
@@ -91,7 +91,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(delivered_at),
-                Some(location),
+                location,
                 Some(metric_tons),
                 Some(registry_url),
                 Some(supplier),

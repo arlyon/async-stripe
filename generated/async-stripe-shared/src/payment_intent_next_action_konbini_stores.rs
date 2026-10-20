@@ -20,10 +20,10 @@ impl std::fmt::Debug for PaymentIntentNextActionKonbiniStores {
 }
 #[doc(hidden)]
 pub struct PaymentIntentNextActionKonbiniStoresBuilder {
-    familymart: Option<Option<stripe_shared::PaymentIntentNextActionKonbiniFamilymart>>,
-    lawson: Option<Option<stripe_shared::PaymentIntentNextActionKonbiniLawson>>,
-    ministop: Option<Option<stripe_shared::PaymentIntentNextActionKonbiniMinistop>>,
-    seicomart: Option<Option<stripe_shared::PaymentIntentNextActionKonbiniSeicomart>>,
+    familymart: Option<stripe_shared::PaymentIntentNextActionKonbiniFamilymart>,
+    lawson: Option<stripe_shared::PaymentIntentNextActionKonbiniLawson>,
+    ministop: Option<stripe_shared::PaymentIntentNextActionKonbiniMinistop>,
+    seicomart: Option<stripe_shared::PaymentIntentNextActionKonbiniSeicomart>,
 }
 
 #[allow(
@@ -66,25 +66,22 @@ const _: () = {
         type Out = PaymentIntentNextActionKonbiniStores;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "familymart" => Deserialize::begin(&mut self.familymart),
-                "lawson" => Deserialize::begin(&mut self.lawson),
-                "ministop" => Deserialize::begin(&mut self.ministop),
-                "seicomart" => Deserialize::begin(&mut self.seicomart),
+                "familymart" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.familymart)
+                }
+                "lawson" => stripe_types::miniserde_helpers::begin_nullable(&mut self.lawson),
+                "ministop" => stripe_types::miniserde_helpers::begin_nullable(&mut self.ministop),
+                "seicomart" => stripe_types::miniserde_helpers::begin_nullable(&mut self.seicomart),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                familymart: Some(None),
-                lawson: Some(None),
-                ministop: Some(None),
-                seicomart: Some(None),
-            }
+            Self { familymart: None, lawson: None, ministop: None, seicomart: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(familymart), Some(lawson), Some(ministop), Some(seicomart)) = (
+            let (familymart, lawson, ministop, seicomart) = (
                 self.familymart.take(),
                 self.lawson.take(),
                 self.ministop.take(),

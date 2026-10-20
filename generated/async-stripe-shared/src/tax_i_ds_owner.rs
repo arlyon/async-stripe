@@ -23,9 +23,9 @@ impl std::fmt::Debug for TaxIDsOwner {
 }
 #[doc(hidden)]
 pub struct TaxIDsOwnerBuilder {
-    account: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
-    application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
-    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    account: Option<stripe_types::Expandable<stripe_shared::Account>>,
+    application: Option<stripe_types::Expandable<stripe_shared::Application>>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     customer_account: Option<Option<String>>,
     type_: Option<TaxIDsOwnerType>,
 }
@@ -70,9 +70,11 @@ const _: () = {
         type Out = TaxIDsOwner;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account" => Deserialize::begin(&mut self.account),
-                "application" => Deserialize::begin(&mut self.application),
-                "customer" => Deserialize::begin(&mut self.customer),
+                "account" => stripe_types::miniserde_helpers::begin_nullable(&mut self.account),
+                "application" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.application)
+                }
+                "customer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.customer),
                 "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
@@ -81,29 +83,22 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account: Some(None),
-                application: Some(None),
-                customer: Some(None),
+                account: None,
+                application: None,
+                customer: None,
                 customer_account: Some(None),
                 type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account),
-                Some(application),
-                Some(customer),
-                Some(customer_account),
-                Some(type_),
-            ) = (
+            let (account, application, customer, Some(customer_account), Some(type_)) = (
                 self.account.take(),
                 self.application.take(),
                 self.customer.take(),
                 self.customer_account.take(),
                 self.type_.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { account, application, customer, customer_account, type_ })

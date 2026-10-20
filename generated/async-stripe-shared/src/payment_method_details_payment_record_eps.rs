@@ -20,7 +20,7 @@ impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordEps {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsPaymentRecordEpsBuilder {
-    bank: Option<Option<PaymentMethodDetailsPaymentRecordEpsBank>>,
+    bank: Option<PaymentMethodDetailsPaymentRecordEpsBank>,
     verified_name: Option<Option<String>>,
 }
 
@@ -64,19 +64,18 @@ const _: () = {
         type Out = PaymentMethodDetailsPaymentRecordEps;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank" => Deserialize::begin(&mut self.bank),
+                "bank" => stripe_types::miniserde_helpers::begin_nullable(&mut self.bank),
                 "verified_name" => Deserialize::begin(&mut self.verified_name),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { bank: Some(None), verified_name: Some(None) }
+            Self { bank: None, verified_name: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank), Some(verified_name)) = (self.bank.take(), self.verified_name.take())
-            else {
+            let (bank, Some(verified_name)) = (self.bank.take(), self.verified_name.take()) else {
                 return None;
             };
             Some(Self::Out { bank, verified_name })

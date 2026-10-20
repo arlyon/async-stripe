@@ -68,10 +68,10 @@ impl std::fmt::Debug for FinancialConnectionsAccount {
 }
 #[doc(hidden)]
 pub struct FinancialConnectionsAccountBuilder {
-    account_holder: Option<Option<stripe_misc::BankConnectionsResourceAccountholder>>,
+    account_holder: Option<stripe_misc::BankConnectionsResourceAccountholder>,
     account_numbers: Option<Option<Vec<stripe_misc::BankConnectionsResourceAccountNumberDetails>>>,
-    balance: Option<Option<stripe_misc::BankConnectionsResourceBalance>>,
-    balance_refresh: Option<Option<stripe_misc::BankConnectionsResourceBalanceRefresh>>,
+    balance: Option<stripe_misc::BankConnectionsResourceBalance>,
+    balance_refresh: Option<stripe_misc::BankConnectionsResourceBalanceRefresh>,
     category: Option<FinancialConnectionsAccountCategory>,
     created: Option<stripe_types::Timestamp>,
     display_name: Option<Option<String>>,
@@ -79,17 +79,16 @@ pub struct FinancialConnectionsAccountBuilder {
     institution_name: Option<String>,
     last4: Option<Option<String>>,
     livemode: Option<bool>,
-    ownership:
-        Option<Option<stripe_types::Expandable<stripe_misc::FinancialConnectionsAccountOwnership>>>,
-    ownership_refresh: Option<Option<stripe_misc::BankConnectionsResourceOwnershipRefresh>>,
+    ownership: Option<stripe_types::Expandable<stripe_misc::FinancialConnectionsAccountOwnership>>,
+    ownership_refresh: Option<stripe_misc::BankConnectionsResourceOwnershipRefresh>,
     permissions: Option<Option<Vec<FinancialConnectionsAccountPermissions>>>,
     status: Option<FinancialConnectionsAccountStatus>,
-    status_details: Option<Option<stripe_misc::BankConnectionsResourceAccountStatusDetails>>,
+    status_details: Option<stripe_misc::BankConnectionsResourceAccountStatusDetails>,
     subcategory: Option<FinancialConnectionsAccountSubcategory>,
     subscriptions: Option<Option<Vec<FinancialConnectionsAccountSubscriptions>>>,
     supported_payment_method_types:
         Option<Vec<FinancialConnectionsAccountSupportedPaymentMethodTypes>>,
-    transaction_refresh: Option<Option<stripe_misc::BankConnectionsResourceTransactionRefresh>>,
+    transaction_refresh: Option<stripe_misc::BankConnectionsResourceTransactionRefresh>,
 }
 
 #[allow(
@@ -132,10 +131,14 @@ const _: () = {
         type Out = FinancialConnectionsAccount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder" => Deserialize::begin(&mut self.account_holder),
+                "account_holder" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.account_holder)
+                }
                 "account_numbers" => Deserialize::begin(&mut self.account_numbers),
-                "balance" => Deserialize::begin(&mut self.balance),
-                "balance_refresh" => Deserialize::begin(&mut self.balance_refresh),
+                "balance" => stripe_types::miniserde_helpers::begin_nullable(&mut self.balance),
+                "balance_refresh" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.balance_refresh)
+                }
                 "category" => Deserialize::begin(&mut self.category),
                 "created" => Deserialize::begin(&mut self.created),
                 "display_name" => Deserialize::begin(&mut self.display_name),
@@ -143,27 +146,33 @@ const _: () = {
                 "institution_name" => Deserialize::begin(&mut self.institution_name),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "ownership" => Deserialize::begin(&mut self.ownership),
-                "ownership_refresh" => Deserialize::begin(&mut self.ownership_refresh),
+                "ownership" => stripe_types::miniserde_helpers::begin_nullable(&mut self.ownership),
+                "ownership_refresh" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.ownership_refresh)
+                }
                 "permissions" => Deserialize::begin(&mut self.permissions),
                 "status" => Deserialize::begin(&mut self.status),
-                "status_details" => Deserialize::begin(&mut self.status_details),
+                "status_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.status_details)
+                }
                 "subcategory" => Deserialize::begin(&mut self.subcategory),
                 "subscriptions" => Deserialize::begin(&mut self.subscriptions),
                 "supported_payment_method_types" => {
                     Deserialize::begin(&mut self.supported_payment_method_types)
                 }
-                "transaction_refresh" => Deserialize::begin(&mut self.transaction_refresh),
+                "transaction_refresh" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transaction_refresh)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                account_holder: Some(None),
+                account_holder: None,
                 account_numbers: Some(None),
-                balance: Some(None),
-                balance_refresh: Some(None),
+                balance: None,
+                balance_refresh: None,
                 category: None,
                 created: None,
                 display_name: Some(None),
@@ -171,24 +180,24 @@ const _: () = {
                 institution_name: None,
                 last4: Some(None),
                 livemode: None,
-                ownership: Some(None),
-                ownership_refresh: Some(None),
+                ownership: None,
+                ownership_refresh: None,
                 permissions: Some(None),
                 status: None,
-                status_details: Some(None),
+                status_details: None,
                 subcategory: None,
                 subscriptions: Some(None),
                 supported_payment_method_types: None,
-                transaction_refresh: Some(None),
+                transaction_refresh: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(account_holder),
+                account_holder,
                 Some(account_numbers),
-                Some(balance),
-                Some(balance_refresh),
+                balance,
+                balance_refresh,
                 Some(category),
                 Some(created),
                 Some(display_name),
@@ -196,15 +205,15 @@ const _: () = {
                 Some(institution_name),
                 Some(last4),
                 Some(livemode),
-                Some(ownership),
-                Some(ownership_refresh),
+                ownership,
+                ownership_refresh,
                 Some(permissions),
                 Some(status),
-                Some(status_details),
+                status_details,
                 Some(subcategory),
                 Some(subscriptions),
                 Some(supported_payment_method_types),
-                Some(transaction_refresh),
+                transaction_refresh,
             ) = (
                 self.account_holder.take(),
                 self.account_numbers.take(),

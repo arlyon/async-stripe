@@ -16,9 +16,7 @@ impl std::fmt::Debug for BankConnectionsResourceAccountStatusDetails {
 #[doc(hidden)]
 pub struct BankConnectionsResourceAccountStatusDetailsBuilder {
     active: Option<
-        Option<
-            stripe_misc::BankConnectionsResourceAccountStatusDetailsApiResourceActiveStatusDetails,
-        >,
+        stripe_misc::BankConnectionsResourceAccountStatusDetailsApiResourceActiveStatusDetails,
     >,
 }
 
@@ -62,17 +60,17 @@ const _: () = {
         type Out = BankConnectionsResourceAccountStatusDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "active" => Deserialize::begin(&mut self.active),
+                "active" => stripe_types::miniserde_helpers::begin_nullable(&mut self.active),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { active: Some(None) }
+            Self { active: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(active),) = (self.active.take(),) else {
+            let (active,) = (self.active.take(),) else {
                 return None;
             };
             Some(Self::Out { active })

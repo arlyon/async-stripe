@@ -17,7 +17,7 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsPix {
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsPixBuilder {
-    amount_includes_iof: Option<Option<InvoicePaymentMethodOptionsPixAmountIncludesIof>>,
+    amount_includes_iof: Option<InvoicePaymentMethodOptionsPixAmountIncludesIof>,
     expires_after_seconds: Option<Option<i64>>,
 }
 
@@ -61,18 +61,20 @@ const _: () = {
         type Out = InvoicePaymentMethodOptionsPix;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "amount_includes_iof" => Deserialize::begin(&mut self.amount_includes_iof),
+                "amount_includes_iof" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_includes_iof)
+                }
                 "expires_after_seconds" => Deserialize::begin(&mut self.expires_after_seconds),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { amount_includes_iof: Some(None), expires_after_seconds: Some(None) }
+            Self { amount_includes_iof: None, expires_after_seconds: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_includes_iof), Some(expires_after_seconds)) =
+            let (amount_includes_iof, Some(expires_after_seconds)) =
                 (self.amount_includes_iof.take(), self.expires_after_seconds)
             else {
                 return None;

@@ -35,8 +35,7 @@ impl std::fmt::Debug for ApplicationFeeRefund {
 #[doc(hidden)]
 pub struct ApplicationFeeRefundBuilder {
     amount: Option<i64>,
-    balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     fee: Option<stripe_types::Expandable<stripe_shared::ApplicationFee>>,
@@ -85,7 +84,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "balance_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.balance_transaction)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "fee" => Deserialize::begin(&mut self.fee),
@@ -98,7 +99,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: None,
-                balance_transaction: Some(None),
+                balance_transaction: None,
                 created: None,
                 currency: None,
                 fee: None,
@@ -110,7 +111,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(balance_transaction),
+                balance_transaction,
                 Some(created),
                 Some(currency),
                 Some(fee),

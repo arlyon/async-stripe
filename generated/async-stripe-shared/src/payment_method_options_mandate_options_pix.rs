@@ -29,11 +29,11 @@ impl std::fmt::Debug for PaymentMethodOptionsMandateOptionsPix {
 #[doc(hidden)]
 pub struct PaymentMethodOptionsMandateOptionsPixBuilder {
     amount: Option<Option<i64>>,
-    amount_includes_iof: Option<Option<PaymentMethodOptionsMandateOptionsPixAmountIncludesIof>>,
-    amount_type: Option<Option<PaymentMethodOptionsMandateOptionsPixAmountType>>,
+    amount_includes_iof: Option<PaymentMethodOptionsMandateOptionsPixAmountIncludesIof>,
+    amount_type: Option<PaymentMethodOptionsMandateOptionsPixAmountType>,
     currency: Option<Option<stripe_types::Currency>>,
     end_date: Option<Option<String>>,
-    payment_schedule: Option<Option<PaymentMethodOptionsMandateOptionsPixPaymentSchedule>>,
+    payment_schedule: Option<PaymentMethodOptionsMandateOptionsPixPaymentSchedule>,
     reference: Option<Option<String>>,
     start_date: Option<Option<String>>,
 }
@@ -79,11 +79,17 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "amount_includes_iof" => Deserialize::begin(&mut self.amount_includes_iof),
-                "amount_type" => Deserialize::begin(&mut self.amount_type),
+                "amount_includes_iof" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_includes_iof)
+                }
+                "amount_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_type)
+                }
                 "currency" => Deserialize::begin(&mut self.currency),
                 "end_date" => Deserialize::begin(&mut self.end_date),
-                "payment_schedule" => Deserialize::begin(&mut self.payment_schedule),
+                "payment_schedule" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_schedule)
+                }
                 "reference" => Deserialize::begin(&mut self.reference),
                 "start_date" => Deserialize::begin(&mut self.start_date),
                 _ => <dyn Visitor>::ignore(),
@@ -93,11 +99,11 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: Some(None),
-                amount_includes_iof: Some(None),
-                amount_type: Some(None),
+                amount_includes_iof: None,
+                amount_type: None,
                 currency: Some(None),
                 end_date: Some(None),
-                payment_schedule: Some(None),
+                payment_schedule: None,
                 reference: Some(None),
                 start_date: Some(None),
             }
@@ -106,11 +112,11 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(amount_includes_iof),
-                Some(amount_type),
+                amount_includes_iof,
+                amount_type,
                 Some(currency),
                 Some(end_date),
-                Some(payment_schedule),
+                payment_schedule,
                 Some(reference),
                 Some(start_date),
             ) = (

@@ -17,8 +17,7 @@ impl std::fmt::Debug for SubscriptionPaymentMethodOptionsPix {
 #[doc(hidden)]
 pub struct SubscriptionPaymentMethodOptionsPixBuilder {
     expires_after_seconds: Option<Option<i64>>,
-    mandate_options:
-        Option<Option<stripe_shared::SubscriptionPaymentMethodOptionsMandateOptionsPix>>,
+    mandate_options: Option<stripe_shared::SubscriptionPaymentMethodOptionsMandateOptionsPix>,
 }
 
 #[allow(
@@ -62,17 +61,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "expires_after_seconds" => Deserialize::begin(&mut self.expires_after_seconds),
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { expires_after_seconds: Some(None), mandate_options: Some(None) }
+            Self { expires_after_seconds: Some(None), mandate_options: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_after_seconds), Some(mandate_options)) =
+            let (Some(expires_after_seconds), mandate_options) =
                 (self.expires_after_seconds, self.mandate_options.take())
             else {
                 return None;

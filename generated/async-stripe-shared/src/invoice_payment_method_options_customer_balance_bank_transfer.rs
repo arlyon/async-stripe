@@ -19,9 +19,8 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsCustomerBalanceBankTransfer 
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransferBuilder {
-    eu_bank_transfer: Option<
+    eu_bank_transfer:
         Option<stripe_shared::InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
-    >,
     type_: Option<Option<String>>,
 }
 
@@ -66,19 +65,20 @@ const _: () = {
         type Out = InvoicePaymentMethodOptionsCustomerBalanceBankTransfer;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "eu_bank_transfer" => Deserialize::begin(&mut self.eu_bank_transfer),
+                "eu_bank_transfer" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.eu_bank_transfer)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { eu_bank_transfer: Some(None), type_: Some(None) }
+            Self { eu_bank_transfer: None, type_: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(eu_bank_transfer), Some(type_)) =
-                (self.eu_bank_transfer.take(), self.type_.take())
+            let (eu_bank_transfer, Some(type_)) = (self.eu_bank_transfer.take(), self.type_.take())
             else {
                 return None;
             };

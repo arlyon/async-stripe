@@ -23,10 +23,9 @@ impl std::fmt::Debug for SetupIntentPaymentMethodOptionsCard {
 }
 #[doc(hidden)]
 pub struct SetupIntentPaymentMethodOptionsCardBuilder {
-    mandate_options:
-        Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsCardMandateOptions>>,
-    network: Option<Option<SetupIntentPaymentMethodOptionsCardNetwork>>,
-    request_three_d_secure: Option<Option<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure>>,
+    mandate_options: Option<stripe_shared::SetupIntentPaymentMethodOptionsCardMandateOptions>,
+    network: Option<SetupIntentPaymentMethodOptionsCardNetwork>,
+    request_three_d_secure: Option<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
 
 #[allow(
@@ -69,23 +68,23 @@ const _: () = {
         type Out = SetupIntentPaymentMethodOptionsCard;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "network" => Deserialize::begin(&mut self.network),
-                "request_three_d_secure" => Deserialize::begin(&mut self.request_three_d_secure),
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
+                "network" => stripe_types::miniserde_helpers::begin_nullable(&mut self.network),
+                "request_three_d_secure" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.request_three_d_secure,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                mandate_options: Some(None),
-                network: Some(None),
-                request_three_d_secure: Some(None),
-            }
+            Self { mandate_options: None, network: None, request_three_d_secure: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options), Some(network), Some(request_three_d_secure)) = (
+            let (mandate_options, network, request_three_d_secure) = (
                 self.mandate_options.take(),
                 self.network.take(),
                 self.request_three_d_secure.take(),

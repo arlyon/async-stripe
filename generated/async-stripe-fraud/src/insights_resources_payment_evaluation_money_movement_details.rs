@@ -19,7 +19,7 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementDetails 
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationMoneyMovementDetailsBuilder {
-    card: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationMoneyMovementCard>>,
+    card: Option<stripe_fraud::InsightsResourcesPaymentEvaluationMoneyMovementCard>,
     money_movement_type:
         Option<InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType>,
 }
@@ -65,18 +65,18 @@ const _: () = {
         type Out = InsightsResourcesPaymentEvaluationMoneyMovementDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card" => Deserialize::begin(&mut self.card),
+                "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
                 "money_movement_type" => Deserialize::begin(&mut self.money_movement_type),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { card: Some(None), money_movement_type: None }
+            Self { card: None, money_movement_type: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card), Some(money_movement_type)) =
+            let (card, Some(money_movement_type)) =
                 (self.card.take(), self.money_movement_type.take())
             else {
                 return None;

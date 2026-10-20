@@ -28,10 +28,10 @@ impl std::fmt::Debug for PaymentMethodDetailsIdeal {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsIdealBuilder {
-    bank: Option<Option<PaymentMethodDetailsIdealBank>>,
-    bic: Option<Option<PaymentMethodDetailsIdealBic>>,
-    generated_sepa_debit: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
-    generated_sepa_debit_mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
+    bank: Option<PaymentMethodDetailsIdealBank>,
+    bic: Option<PaymentMethodDetailsIdealBic>,
+    generated_sepa_debit: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
+    generated_sepa_debit_mandate: Option<stripe_types::Expandable<stripe_shared::Mandate>>,
     iban_last4: Option<Option<String>>,
     transaction_id: Option<Option<String>>,
     verified_name: Option<Option<String>>,
@@ -77,12 +77,14 @@ const _: () = {
         type Out = PaymentMethodDetailsIdeal;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "bank" => Deserialize::begin(&mut self.bank),
-                "bic" => Deserialize::begin(&mut self.bic),
-                "generated_sepa_debit" => Deserialize::begin(&mut self.generated_sepa_debit),
-                "generated_sepa_debit_mandate" => {
-                    Deserialize::begin(&mut self.generated_sepa_debit_mandate)
+                "bank" => stripe_types::miniserde_helpers::begin_nullable(&mut self.bank),
+                "bic" => stripe_types::miniserde_helpers::begin_nullable(&mut self.bic),
+                "generated_sepa_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.generated_sepa_debit)
                 }
+                "generated_sepa_debit_mandate" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.generated_sepa_debit_mandate,
+                ),
                 "iban_last4" => Deserialize::begin(&mut self.iban_last4),
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
                 "verified_name" => Deserialize::begin(&mut self.verified_name),
@@ -92,10 +94,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                bank: Some(None),
-                bic: Some(None),
-                generated_sepa_debit: Some(None),
-                generated_sepa_debit_mandate: Some(None),
+                bank: None,
+                bic: None,
+                generated_sepa_debit: None,
+                generated_sepa_debit_mandate: None,
                 iban_last4: Some(None),
                 transaction_id: Some(None),
                 verified_name: Some(None),
@@ -104,10 +106,10 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(bank),
-                Some(bic),
-                Some(generated_sepa_debit),
-                Some(generated_sepa_debit_mandate),
+                bank,
+                bic,
+                generated_sepa_debit,
+                generated_sepa_debit_mandate,
                 Some(iban_last4),
                 Some(transaction_id),
                 Some(verified_name),

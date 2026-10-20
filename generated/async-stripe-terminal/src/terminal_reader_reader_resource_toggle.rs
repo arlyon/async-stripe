@@ -21,10 +21,10 @@ impl std::fmt::Debug for TerminalReaderReaderResourceToggle {
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceToggleBuilder {
-    default_value: Option<Option<TerminalReaderReaderResourceToggleDefaultValue>>,
+    default_value: Option<TerminalReaderReaderResourceToggleDefaultValue>,
     description: Option<Option<String>>,
     title: Option<Option<String>>,
-    value: Option<Option<TerminalReaderReaderResourceToggleValue>>,
+    value: Option<TerminalReaderReaderResourceToggleValue>,
 }
 
 #[allow(
@@ -67,25 +67,22 @@ const _: () = {
         type Out = TerminalReaderReaderResourceToggle;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "default_value" => Deserialize::begin(&mut self.default_value),
+                "default_value" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.default_value)
+                }
                 "description" => Deserialize::begin(&mut self.description),
                 "title" => Deserialize::begin(&mut self.title),
-                "value" => Deserialize::begin(&mut self.value),
+                "value" => stripe_types::miniserde_helpers::begin_nullable(&mut self.value),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                default_value: Some(None),
-                description: Some(None),
-                title: Some(None),
-                value: Some(None),
-            }
+            Self { default_value: None, description: Some(None), title: Some(None), value: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(default_value), Some(description), Some(title), Some(value)) = (
+            let (default_value, Some(description), Some(title), value) = (
                 self.default_value.take(),
                 self.description.take(),
                 self.title.take(),

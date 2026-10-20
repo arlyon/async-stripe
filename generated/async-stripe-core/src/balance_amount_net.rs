@@ -23,7 +23,7 @@ pub struct BalanceAmountNetBuilder {
     amount: Option<i64>,
     currency: Option<stripe_types::Currency>,
     net_available: Option<Option<Vec<stripe_core::BalanceNetAvailable>>>,
-    source_types: Option<Option<stripe_core::BalanceAmountBySourceType>>,
+    source_types: Option<stripe_core::BalanceAmountBySourceType>,
 }
 
 #[allow(
@@ -69,22 +69,19 @@ const _: () = {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "net_available" => Deserialize::begin(&mut self.net_available),
-                "source_types" => Deserialize::begin(&mut self.source_types),
+                "source_types" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.source_types)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                amount: None,
-                currency: None,
-                net_available: Some(None),
-                source_types: Some(None),
-            }
+            Self { amount: None, currency: None, net_available: Some(None), source_types: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(currency), Some(net_available), Some(source_types)) =
+            let (Some(amount), Some(currency), Some(net_available), source_types) =
                 (self.amount, self.currency.take(), self.net_available.take(), self.source_types)
             else {
                 return None;

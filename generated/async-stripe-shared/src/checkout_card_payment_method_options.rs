@@ -51,19 +51,18 @@ impl std::fmt::Debug for CheckoutCardPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutCardPaymentMethodOptionsBuilder {
-    capture_method: Option<Option<CheckoutCardPaymentMethodOptionsCaptureMethod>>,
-    installments: Option<Option<stripe_shared::CheckoutCardInstallmentsOptions>>,
+    capture_method: Option<CheckoutCardPaymentMethodOptionsCaptureMethod>,
+    installments: Option<stripe_shared::CheckoutCardInstallmentsOptions>,
     request_extended_authorization:
-        Option<Option<CheckoutCardPaymentMethodOptionsRequestExtendedAuthorization>>,
+        Option<CheckoutCardPaymentMethodOptionsRequestExtendedAuthorization>,
     request_incremental_authorization:
-        Option<Option<CheckoutCardPaymentMethodOptionsRequestIncrementalAuthorization>>,
-    request_multicapture: Option<Option<CheckoutCardPaymentMethodOptionsRequestMulticapture>>,
-    request_overcapture: Option<Option<CheckoutCardPaymentMethodOptionsRequestOvercapture>>,
+        Option<CheckoutCardPaymentMethodOptionsRequestIncrementalAuthorization>,
+    request_multicapture: Option<CheckoutCardPaymentMethodOptionsRequestMulticapture>,
+    request_overcapture: Option<CheckoutCardPaymentMethodOptionsRequestOvercapture>,
     request_three_d_secure: Option<CheckoutCardPaymentMethodOptionsRequestThreeDSecure>,
-    restrictions: Option<
+    restrictions:
         Option<stripe_shared::PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictions>,
-    >,
-    setup_future_usage: Option<Option<CheckoutCardPaymentMethodOptionsSetupFutureUsage>>,
+    setup_future_usage: Option<CheckoutCardPaymentMethodOptionsSetupFutureUsage>,
     statement_descriptor_suffix_kana: Option<Option<String>>,
     statement_descriptor_suffix_kanji: Option<Option<String>>,
 }
@@ -108,19 +107,35 @@ const _: () = {
         type Out = CheckoutCardPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
-                "installments" => Deserialize::begin(&mut self.installments),
+                "capture_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.capture_method)
+                }
+                "installments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.installments)
+                }
                 "request_extended_authorization" => {
-                    Deserialize::begin(&mut self.request_extended_authorization)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.request_extended_authorization,
+                    )
                 }
                 "request_incremental_authorization" => {
-                    Deserialize::begin(&mut self.request_incremental_authorization)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.request_incremental_authorization,
+                    )
                 }
-                "request_multicapture" => Deserialize::begin(&mut self.request_multicapture),
-                "request_overcapture" => Deserialize::begin(&mut self.request_overcapture),
+                "request_multicapture" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.request_multicapture)
+                }
+                "request_overcapture" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.request_overcapture)
+                }
                 "request_three_d_secure" => Deserialize::begin(&mut self.request_three_d_secure),
-                "restrictions" => Deserialize::begin(&mut self.restrictions),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "restrictions" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.restrictions)
+                }
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 "statement_descriptor_suffix_kana" => {
                     Deserialize::begin(&mut self.statement_descriptor_suffix_kana)
                 }
@@ -133,15 +148,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                capture_method: Some(None),
-                installments: Some(None),
-                request_extended_authorization: Some(None),
-                request_incremental_authorization: Some(None),
-                request_multicapture: Some(None),
-                request_overcapture: Some(None),
+                capture_method: None,
+                installments: None,
+                request_extended_authorization: None,
+                request_incremental_authorization: None,
+                request_multicapture: None,
+                request_overcapture: None,
                 request_three_d_secure: None,
-                restrictions: Some(None),
-                setup_future_usage: Some(None),
+                restrictions: None,
+                setup_future_usage: None,
                 statement_descriptor_suffix_kana: Some(None),
                 statement_descriptor_suffix_kanji: Some(None),
             }
@@ -149,15 +164,15 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(capture_method),
-                Some(installments),
-                Some(request_extended_authorization),
-                Some(request_incremental_authorization),
-                Some(request_multicapture),
-                Some(request_overcapture),
+                capture_method,
+                installments,
+                request_extended_authorization,
+                request_incremental_authorization,
+                request_multicapture,
+                request_overcapture,
                 Some(request_three_d_secure),
-                Some(restrictions),
-                Some(setup_future_usage),
+                restrictions,
+                setup_future_usage,
                 Some(statement_descriptor_suffix_kana),
                 Some(statement_descriptor_suffix_kanji),
             ) = (

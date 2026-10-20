@@ -14,7 +14,7 @@ impl std::fmt::Debug for PersonAdditionalTosAcceptances {
 }
 #[doc(hidden)]
 pub struct PersonAdditionalTosAcceptancesBuilder {
-    account: Option<Option<stripe_shared::PersonAdditionalTosAcceptance>>,
+    account: Option<stripe_shared::PersonAdditionalTosAcceptance>,
 }
 
 #[allow(
@@ -57,17 +57,17 @@ const _: () = {
         type Out = PersonAdditionalTosAcceptances;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account" => Deserialize::begin(&mut self.account),
+                "account" => stripe_types::miniserde_helpers::begin_nullable(&mut self.account),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { account: Some(None) }
+            Self { account: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account),) = (self.account.take(),) else {
+            let (account,) = (self.account.take(),) else {
                 return None;
             };
             Some(Self::Out { account })

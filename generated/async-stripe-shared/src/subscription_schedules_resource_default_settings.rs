@@ -41,16 +41,15 @@ impl std::fmt::Debug for SubscriptionSchedulesResourceDefaultSettings {
 #[doc(hidden)]
 pub struct SubscriptionSchedulesResourceDefaultSettingsBuilder {
     application_fee_percent: Option<Option<f64>>,
-    automatic_tax:
-        Option<Option<stripe_shared::SubscriptionSchedulesResourceDefaultSettingsAutomaticTax>>,
+    automatic_tax: Option<stripe_shared::SubscriptionSchedulesResourceDefaultSettingsAutomaticTax>,
     billing_cycle_anchor: Option<SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor>,
-    billing_thresholds: Option<Option<stripe_shared::SubscriptionBillingThresholds>>,
-    collection_method: Option<Option<SubscriptionSchedulesResourceDefaultSettingsCollectionMethod>>,
-    default_payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
+    billing_thresholds: Option<stripe_shared::SubscriptionBillingThresholds>,
+    collection_method: Option<SubscriptionSchedulesResourceDefaultSettingsCollectionMethod>,
+    default_payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
     description: Option<Option<String>>,
     invoice_settings: Option<stripe_shared::InvoiceSettingSubscriptionScheduleSetting>,
-    on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
-    transfer_data: Option<Option<stripe_shared::SubscriptionTransferData>>,
+    on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
+    transfer_data: Option<stripe_shared::SubscriptionTransferData>,
 }
 
 #[allow(
@@ -94,15 +93,27 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "application_fee_percent" => Deserialize::begin(&mut self.application_fee_percent),
-                "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
+                "automatic_tax" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.automatic_tax)
+                }
                 "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
-                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
-                "collection_method" => Deserialize::begin(&mut self.collection_method),
-                "default_payment_method" => Deserialize::begin(&mut self.default_payment_method),
+                "billing_thresholds" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.billing_thresholds)
+                }
+                "collection_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.collection_method)
+                }
+                "default_payment_method" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.default_payment_method,
+                ),
                 "description" => Deserialize::begin(&mut self.description),
                 "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
-                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
-                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
+                "on_behalf_of" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.on_behalf_of)
+                }
+                "transfer_data" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transfer_data)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,30 +121,30 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 application_fee_percent: Some(None),
-                automatic_tax: Some(None),
+                automatic_tax: None,
                 billing_cycle_anchor: None,
-                billing_thresholds: Some(None),
-                collection_method: Some(None),
-                default_payment_method: Some(None),
+                billing_thresholds: None,
+                collection_method: None,
+                default_payment_method: None,
                 description: Some(None),
                 invoice_settings: None,
-                on_behalf_of: Some(None),
-                transfer_data: Some(None),
+                on_behalf_of: None,
+                transfer_data: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(application_fee_percent),
-                Some(automatic_tax),
+                automatic_tax,
                 Some(billing_cycle_anchor),
-                Some(billing_thresholds),
-                Some(collection_method),
-                Some(default_payment_method),
+                billing_thresholds,
+                collection_method,
+                default_payment_method,
                 Some(description),
                 Some(invoice_settings),
-                Some(on_behalf_of),
-                Some(transfer_data),
+                on_behalf_of,
+                transfer_data,
             ) = (
                 self.application_fee_percent,
                 self.automatic_tax.take(),

@@ -16,10 +16,9 @@ impl std::fmt::Debug for SetupIntentPaymentMethodOptionsUsBankAccount {
 }
 #[doc(hidden)]
 pub struct SetupIntentPaymentMethodOptionsUsBankAccountBuilder {
-    financial_connections: Option<Option<stripe_shared::LinkedAccountOptionsCommon>>,
-    mandate_options: Option<Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>>,
-    verification_method:
-        Option<Option<SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>>,
+    financial_connections: Option<stripe_shared::LinkedAccountOptionsCommon>,
+    mandate_options: Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>,
+    verification_method: Option<SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 
 #[allow(
@@ -62,23 +61,25 @@ const _: () = {
         type Out = SetupIntentPaymentMethodOptionsUsBankAccount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "financial_connections" => Deserialize::begin(&mut self.financial_connections),
-                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "verification_method" => Deserialize::begin(&mut self.verification_method),
+                "financial_connections" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.financial_connections)
+                }
+                "mandate_options" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_options)
+                }
+                "verification_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.verification_method)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                financial_connections: Some(None),
-                mandate_options: Some(None),
-                verification_method: Some(None),
-            }
+            Self { financial_connections: None, mandate_options: None, verification_method: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(financial_connections), Some(mandate_options), Some(verification_method)) = (
+            let (financial_connections, mandate_options, verification_method) = (
                 self.financial_connections.take(),
                 self.mandate_options.take(),
                 self.verification_method.take(),

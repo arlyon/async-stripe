@@ -14,7 +14,7 @@ impl std::fmt::Debug for DisputePaymentMethodDetailsAmazonPay {
 }
 #[doc(hidden)]
 pub struct DisputePaymentMethodDetailsAmazonPayBuilder {
-    dispute_type: Option<Option<DisputePaymentMethodDetailsAmazonPayDisputeType>>,
+    dispute_type: Option<DisputePaymentMethodDetailsAmazonPayDisputeType>,
 }
 
 #[allow(
@@ -57,17 +57,19 @@ const _: () = {
         type Out = DisputePaymentMethodDetailsAmazonPay;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "dispute_type" => Deserialize::begin(&mut self.dispute_type),
+                "dispute_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.dispute_type)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { dispute_type: Some(None) }
+            Self { dispute_type: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(dispute_type),) = (self.dispute_type.take(),) else {
+            let (dispute_type,) = (self.dispute_type.take(),) else {
                 return None;
             };
             Some(Self::Out { dispute_type })

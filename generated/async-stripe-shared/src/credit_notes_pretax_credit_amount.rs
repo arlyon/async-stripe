@@ -24,8 +24,8 @@ impl std::fmt::Debug for CreditNotesPretaxCreditAmount {
 pub struct CreditNotesPretaxCreditAmountBuilder {
     amount: Option<i64>,
     credit_balance_transaction:
-        Option<Option<stripe_types::Expandable<stripe_shared::BillingCreditBalanceTransaction>>>,
-    discount: Option<Option<stripe_types::Expandable<stripe_shared::Discount>>>,
+        Option<stripe_types::Expandable<stripe_shared::BillingCreditBalanceTransaction>>,
+    discount: Option<stripe_types::Expandable<stripe_shared::Discount>>,
     type_: Option<CreditNotesPretaxCreditAmountType>,
 }
 
@@ -70,26 +70,21 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "credit_balance_transaction" => {
-                    Deserialize::begin(&mut self.credit_balance_transaction)
-                }
-                "discount" => Deserialize::begin(&mut self.discount),
+                "credit_balance_transaction" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.credit_balance_transaction,
+                ),
+                "discount" => stripe_types::miniserde_helpers::begin_nullable(&mut self.discount),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                amount: None,
-                credit_balance_transaction: Some(None),
-                discount: Some(None),
-                type_: None,
-            }
+            Self { amount: None, credit_balance_transaction: None, discount: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(credit_balance_transaction), Some(discount), Some(type_)) = (
+            let (Some(amount), credit_balance_transaction, discount, Some(type_)) = (
                 self.amount,
                 self.credit_balance_transaction.take(),
                 self.discount.take(),

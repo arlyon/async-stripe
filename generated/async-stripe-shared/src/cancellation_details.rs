@@ -21,9 +21,9 @@ impl std::fmt::Debug for CancellationDetails {
 #[doc(hidden)]
 pub struct CancellationDetailsBuilder {
     comment: Option<Option<String>>,
-    feedback: Option<Option<CancellationDetailsFeedback>>,
-    feedback_option: Option<Option<stripe_types::Expandable<stripe_shared::BillingFeedbackOption>>>,
-    reason: Option<Option<CancellationDetailsReason>>,
+    feedback: Option<CancellationDetailsFeedback>,
+    feedback_option: Option<stripe_types::Expandable<stripe_shared::BillingFeedbackOption>>,
+    reason: Option<CancellationDetailsReason>,
 }
 
 #[allow(
@@ -67,24 +67,21 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "comment" => Deserialize::begin(&mut self.comment),
-                "feedback" => Deserialize::begin(&mut self.feedback),
-                "feedback_option" => Deserialize::begin(&mut self.feedback_option),
-                "reason" => Deserialize::begin(&mut self.reason),
+                "feedback" => stripe_types::miniserde_helpers::begin_nullable(&mut self.feedback),
+                "feedback_option" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.feedback_option)
+                }
+                "reason" => stripe_types::miniserde_helpers::begin_nullable(&mut self.reason),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                comment: Some(None),
-                feedback: Some(None),
-                feedback_option: Some(None),
-                reason: Some(None),
-            }
+            Self { comment: Some(None), feedback: None, feedback_option: None, reason: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(comment), Some(feedback), Some(feedback_option), Some(reason)) = (
+            let (Some(comment), feedback, feedback_option, reason) = (
                 self.comment.take(),
                 self.feedback.take(),
                 self.feedback_option.take(),

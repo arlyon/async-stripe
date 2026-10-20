@@ -28,10 +28,10 @@ impl std::fmt::Debug for PaymentLinksResourcePaymentIntentData {
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourcePaymentIntentDataBuilder {
-    capture_method: Option<Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>>,
+    capture_method: Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>,
     description: Option<Option<String>>,
     metadata: Option<std::collections::HashMap<String, String>>,
-    setup_future_usage: Option<Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>>,
+    setup_future_usage: Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>,
     statement_descriptor: Option<Option<String>>,
     statement_descriptor_suffix: Option<Option<String>>,
     transfer_group: Option<Option<String>>,
@@ -77,10 +77,14 @@ const _: () = {
         type Out = PaymentLinksResourcePaymentIntentData;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
+                "capture_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.capture_method)
+                }
                 "description" => Deserialize::begin(&mut self.description),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "statement_descriptor_suffix" => {
                     Deserialize::begin(&mut self.statement_descriptor_suffix)
@@ -92,10 +96,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                capture_method: Some(None),
+                capture_method: None,
                 description: Some(None),
                 metadata: None,
-                setup_future_usage: Some(None),
+                setup_future_usage: None,
                 statement_descriptor: Some(None),
                 statement_descriptor_suffix: Some(None),
                 transfer_group: Some(None),
@@ -104,10 +108,10 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(capture_method),
+                capture_method,
                 Some(description),
                 Some(metadata),
-                Some(setup_future_usage),
+                setup_future_usage,
                 Some(statement_descriptor),
                 Some(statement_descriptor_suffix),
                 Some(transfer_group),

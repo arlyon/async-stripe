@@ -22,8 +22,8 @@ impl std::fmt::Debug for AccountBrandingSettings {
 }
 #[doc(hidden)]
 pub struct AccountBrandingSettingsBuilder {
-    icon: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
-    logo: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    icon: Option<stripe_types::Expandable<stripe_shared::File>>,
+    logo: Option<stripe_types::Expandable<stripe_shared::File>>,
     primary_color: Option<Option<String>>,
     secondary_color: Option<Option<String>>,
 }
@@ -68,8 +68,8 @@ const _: () = {
         type Out = AccountBrandingSettings;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "icon" => Deserialize::begin(&mut self.icon),
-                "logo" => Deserialize::begin(&mut self.logo),
+                "icon" => stripe_types::miniserde_helpers::begin_nullable(&mut self.icon),
+                "logo" => stripe_types::miniserde_helpers::begin_nullable(&mut self.logo),
                 "primary_color" => Deserialize::begin(&mut self.primary_color),
                 "secondary_color" => Deserialize::begin(&mut self.secondary_color),
                 _ => <dyn Visitor>::ignore(),
@@ -77,16 +77,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                icon: Some(None),
-                logo: Some(None),
-                primary_color: Some(None),
-                secondary_color: Some(None),
-            }
+            Self { icon: None, logo: None, primary_color: Some(None), secondary_color: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(icon), Some(logo), Some(primary_color), Some(secondary_color)) = (
+            let (icon, logo, Some(primary_color), Some(secondary_color)) = (
                 self.icon.take(),
                 self.logo.take(),
                 self.primary_color.take(),

@@ -103,13 +103,13 @@ pub struct PaymentMethodDetailsCardPresentBuilder {
     location: Option<Option<String>>,
     network: Option<Option<String>>,
     network_transaction_id: Option<Option<String>>,
-    offline: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>>,
+    offline: Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>,
     overcapture_supported: Option<bool>,
     preferred_locales: Option<Option<Vec<String>>>,
-    read_method: Option<Option<PaymentMethodDetailsCardPresentReadMethod>>,
+    read_method: Option<PaymentMethodDetailsCardPresentReadMethod>,
     reader: Option<Option<String>>,
-    receipt: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentReceipt>>,
-    wallet: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>>,
+    receipt: Option<stripe_shared::PaymentMethodDetailsCardPresentReceipt>,
+    wallet: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>,
 }
 
 #[allow(
@@ -174,13 +174,15 @@ const _: () = {
                 "location" => Deserialize::begin(&mut self.location),
                 "network" => Deserialize::begin(&mut self.network),
                 "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
-                "offline" => Deserialize::begin(&mut self.offline),
+                "offline" => stripe_types::miniserde_helpers::begin_nullable(&mut self.offline),
                 "overcapture_supported" => Deserialize::begin(&mut self.overcapture_supported),
                 "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
-                "read_method" => Deserialize::begin(&mut self.read_method),
+                "read_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.read_method)
+                }
                 "reader" => Deserialize::begin(&mut self.reader),
-                "receipt" => Deserialize::begin(&mut self.receipt),
-                "wallet" => Deserialize::begin(&mut self.wallet),
+                "receipt" => stripe_types::miniserde_helpers::begin_nullable(&mut self.receipt),
+                "wallet" => stripe_types::miniserde_helpers::begin_nullable(&mut self.wallet),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -207,13 +209,13 @@ const _: () = {
                 location: Some(None),
                 network: Some(None),
                 network_transaction_id: Some(None),
-                offline: Some(None),
+                offline: None,
                 overcapture_supported: None,
                 preferred_locales: Some(None),
-                read_method: Some(None),
+                read_method: None,
                 reader: Some(None),
-                receipt: Some(None),
-                wallet: Some(None),
+                receipt: None,
+                wallet: None,
             }
         }
 
@@ -239,13 +241,13 @@ const _: () = {
                 Some(location),
                 Some(network),
                 Some(network_transaction_id),
-                Some(offline),
+                offline,
                 Some(overcapture_supported),
                 Some(preferred_locales),
-                Some(read_method),
+                read_method,
                 Some(reader),
-                Some(receipt),
-                Some(wallet),
+                receipt,
+                wallet,
             ) = (
                 self.amount_authorized,
                 self.brand.take(),

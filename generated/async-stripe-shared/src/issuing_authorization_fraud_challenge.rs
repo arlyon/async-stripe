@@ -20,7 +20,7 @@ impl std::fmt::Debug for IssuingAuthorizationFraudChallenge {
 pub struct IssuingAuthorizationFraudChallengeBuilder {
     channel: Option<IssuingAuthorizationFraudChallengeChannel>,
     status: Option<IssuingAuthorizationFraudChallengeStatus>,
-    undeliverable_reason: Option<Option<IssuingAuthorizationFraudChallengeUndeliverableReason>>,
+    undeliverable_reason: Option<IssuingAuthorizationFraudChallengeUndeliverableReason>,
 }
 
 #[allow(
@@ -65,17 +65,19 @@ const _: () = {
             Ok(match k {
                 "channel" => Deserialize::begin(&mut self.channel),
                 "status" => Deserialize::begin(&mut self.status),
-                "undeliverable_reason" => Deserialize::begin(&mut self.undeliverable_reason),
+                "undeliverable_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.undeliverable_reason)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { channel: None, status: None, undeliverable_reason: Some(None) }
+            Self { channel: None, status: None, undeliverable_reason: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(channel), Some(status), Some(undeliverable_reason)) =
+            let (Some(channel), Some(status), undeliverable_reason) =
                 (self.channel.take(), self.status.take(), self.undeliverable_reason.take())
             else {
                 return None;

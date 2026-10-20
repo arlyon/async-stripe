@@ -50,10 +50,9 @@ pub struct ReserveReleaseBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     reason: Option<ReserveReleaseReason>,
     released_at: Option<stripe_types::Timestamp>,
-    reserve_hold: Option<Option<stripe_types::Expandable<stripe_reserve::ReserveHold>>>,
-    reserve_plan: Option<Option<stripe_types::Expandable<stripe_reserve::ReservePlan>>>,
-    source_transaction:
-        Option<Option<stripe_reserve::ReservesReserveReleasesResourcesSourceTransaction>>,
+    reserve_hold: Option<stripe_types::Expandable<stripe_reserve::ReserveHold>>,
+    reserve_plan: Option<stripe_types::Expandable<stripe_reserve::ReservePlan>>,
+    source_transaction: Option<stripe_reserve::ReservesReserveReleasesResourcesSourceTransaction>,
 }
 
 #[allow(
@@ -105,9 +104,15 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "reason" => Deserialize::begin(&mut self.reason),
                 "released_at" => Deserialize::begin(&mut self.released_at),
-                "reserve_hold" => Deserialize::begin(&mut self.reserve_hold),
-                "reserve_plan" => Deserialize::begin(&mut self.reserve_plan),
-                "source_transaction" => Deserialize::begin(&mut self.source_transaction),
+                "reserve_hold" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.reserve_hold)
+                }
+                "reserve_plan" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.reserve_plan)
+                }
+                "source_transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.source_transaction)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -123,9 +128,9 @@ const _: () = {
                 metadata: Some(None),
                 reason: None,
                 released_at: None,
-                reserve_hold: Some(None),
-                reserve_plan: Some(None),
-                source_transaction: Some(None),
+                reserve_hold: None,
+                reserve_plan: None,
+                source_transaction: None,
             }
         }
 
@@ -140,9 +145,9 @@ const _: () = {
                 Some(metadata),
                 Some(reason),
                 Some(released_at),
-                Some(reserve_hold),
-                Some(reserve_plan),
-                Some(source_transaction),
+                reserve_hold,
+                reserve_plan,
+                source_transaction,
             ) = (
                 self.amount,
                 self.created,

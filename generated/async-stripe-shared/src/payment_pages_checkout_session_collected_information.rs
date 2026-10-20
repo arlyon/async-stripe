@@ -20,8 +20,7 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionCollectedInformation {
 pub struct PaymentPagesCheckoutSessionCollectedInformationBuilder {
     business_name: Option<Option<String>>,
     individual_name: Option<Option<String>>,
-    shipping_details:
-        Option<Option<stripe_shared::PaymentPagesCheckoutSessionCheckoutAddressDetails>>,
+    shipping_details: Option<stripe_shared::PaymentPagesCheckoutSessionCheckoutAddressDetails>,
 }
 
 #[allow(
@@ -66,21 +65,19 @@ const _: () = {
             Ok(match k {
                 "business_name" => Deserialize::begin(&mut self.business_name),
                 "individual_name" => Deserialize::begin(&mut self.individual_name),
-                "shipping_details" => Deserialize::begin(&mut self.shipping_details),
+                "shipping_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_details)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                business_name: Some(None),
-                individual_name: Some(None),
-                shipping_details: Some(None),
-            }
+            Self { business_name: Some(None), individual_name: Some(None), shipping_details: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(business_name), Some(individual_name), Some(shipping_details)) = (
+            let (Some(business_name), Some(individual_name), shipping_details) = (
                 self.business_name.take(),
                 self.individual_name.take(),
                 self.shipping_details.take(),

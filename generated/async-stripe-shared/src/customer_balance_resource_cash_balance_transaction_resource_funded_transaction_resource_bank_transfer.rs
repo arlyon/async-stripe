@@ -25,12 +25,12 @@ impl std::fmt::Debug
 }
 #[doc(hidden)]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferBuilder {
-    eu_bank_transfer: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransfer>>,
-gb_bank_transfer: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceGbBankTransfer>>,
-jp_bank_transfer: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransfer>>,
+    eu_bank_transfer: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransfer>,
+gb_bank_transfer: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceGbBankTransfer>,
+jp_bank_transfer: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransfer>,
 reference: Option<Option<String>>,
 type_: Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType>,
-us_bank_transfer: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransfer>>,
+us_bank_transfer: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransfer>,
 
 }
 
@@ -74,33 +74,33 @@ const _: () = {
     type Out = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer;
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
-            "eu_bank_transfer" => Deserialize::begin(&mut self.eu_bank_transfer),
-            "gb_bank_transfer" => Deserialize::begin(&mut self.gb_bank_transfer),
-            "jp_bank_transfer" => Deserialize::begin(&mut self.jp_bank_transfer),
+            "eu_bank_transfer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.eu_bank_transfer),
+            "gb_bank_transfer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.gb_bank_transfer),
+            "jp_bank_transfer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.jp_bank_transfer),
             "reference" => Deserialize::begin(&mut self.reference),
             "type" => Deserialize::begin(&mut self.type_),
-            "us_bank_transfer" => Deserialize::begin(&mut self.us_bank_transfer),
+            "us_bank_transfer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.us_bank_transfer),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self { eu_bank_transfer: Some(None),
-gb_bank_transfer: Some(None),
-jp_bank_transfer: Some(None),
+        Self { eu_bank_transfer: None,
+gb_bank_transfer: None,
+jp_bank_transfer: None,
 reference: Some(None),
 type_: None,
-us_bank_transfer: Some(None),
+us_bank_transfer: None,
  }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(eu_bank_transfer),
-Some(gb_bank_transfer),
-Some(jp_bank_transfer),
+        let (eu_bank_transfer,
+gb_bank_transfer,
+jp_bank_transfer,
 Some(reference),
 Some(type_),
-Some(us_bank_transfer),
+us_bank_transfer,
 ) = (self.eu_bank_transfer.take(),
 self.gb_bank_transfer.take(),
 self.jp_bank_transfer.take(),

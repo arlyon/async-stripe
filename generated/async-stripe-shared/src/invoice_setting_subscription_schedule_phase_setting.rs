@@ -32,7 +32,7 @@ pub struct InvoiceSettingSubscriptionSchedulePhaseSettingBuilder {
     days_until_due: Option<Option<u32>>,
     description: Option<Option<String>>,
     footer: Option<Option<String>>,
-    issuer: Option<Option<stripe_shared::ConnectAccountReference>>,
+    issuer: Option<stripe_shared::ConnectAccountReference>,
 }
 
 #[allow(
@@ -80,7 +80,7 @@ const _: () = {
                 "days_until_due" => Deserialize::begin(&mut self.days_until_due),
                 "description" => Deserialize::begin(&mut self.description),
                 "footer" => Deserialize::begin(&mut self.footer),
-                "issuer" => Deserialize::begin(&mut self.issuer),
+                "issuer" => stripe_types::miniserde_helpers::begin_nullable(&mut self.issuer),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -92,7 +92,7 @@ const _: () = {
                 days_until_due: Some(None),
                 description: Some(None),
                 footer: Some(None),
-                issuer: Some(None),
+                issuer: None,
             }
         }
 
@@ -103,7 +103,7 @@ const _: () = {
                 Some(days_until_due),
                 Some(description),
                 Some(footer),
-                Some(issuer),
+                issuer,
             ) = (
                 self.account_tax_ids.take(),
                 self.custom_fields.take(),

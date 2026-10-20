@@ -68,7 +68,7 @@ impl std::fmt::Debug for Product {
 pub struct ProductBuilder {
     active: Option<bool>,
     created: Option<stripe_types::Timestamp>,
-    default_price: Option<Option<stripe_types::Expandable<stripe_shared::Price>>>,
+    default_price: Option<stripe_types::Expandable<stripe_shared::Price>>,
     description: Option<Option<String>>,
     id: Option<stripe_shared::ProductId>,
     images: Option<Vec<String>>,
@@ -76,10 +76,10 @@ pub struct ProductBuilder {
     marketing_features: Option<Vec<stripe_shared::ProductMarketingFeature>>,
     metadata: Option<std::collections::HashMap<String, String>>,
     name: Option<String>,
-    package_dimensions: Option<Option<stripe_shared::PackageDimensions>>,
+    package_dimensions: Option<stripe_shared::PackageDimensions>,
     shippable: Option<Option<bool>>,
     statement_descriptor: Option<Option<String>>,
-    tax_code: Option<Option<stripe_types::Expandable<stripe_shared::TaxCode>>>,
+    tax_code: Option<stripe_types::Expandable<stripe_shared::TaxCode>>,
     type_: Option<stripe_shared::ProductType>,
     unit_label: Option<Option<String>>,
     updated: Option<stripe_types::Timestamp>,
@@ -125,7 +125,9 @@ const _: () = {
             Ok(match k {
                 "active" => Deserialize::begin(&mut self.active),
                 "created" => Deserialize::begin(&mut self.created),
-                "default_price" => Deserialize::begin(&mut self.default_price),
+                "default_price" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.default_price)
+                }
                 "description" => Deserialize::begin(&mut self.description),
                 "id" => Deserialize::begin(&mut self.id),
                 "images" => Deserialize::begin(&mut self.images),
@@ -133,10 +135,12 @@ const _: () = {
                 "marketing_features" => Deserialize::begin(&mut self.marketing_features),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "name" => Deserialize::begin(&mut self.name),
-                "package_dimensions" => Deserialize::begin(&mut self.package_dimensions),
+                "package_dimensions" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.package_dimensions)
+                }
                 "shippable" => Deserialize::begin(&mut self.shippable),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-                "tax_code" => Deserialize::begin(&mut self.tax_code),
+                "tax_code" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_code),
                 "type" => Deserialize::begin(&mut self.type_),
                 "unit_label" => Deserialize::begin(&mut self.unit_label),
                 "updated" => Deserialize::begin(&mut self.updated),
@@ -149,7 +153,7 @@ const _: () = {
             Self {
                 active: None,
                 created: None,
-                default_price: Some(None),
+                default_price: None,
                 description: Some(None),
                 id: None,
                 images: None,
@@ -157,10 +161,10 @@ const _: () = {
                 marketing_features: None,
                 metadata: None,
                 name: None,
-                package_dimensions: Some(None),
+                package_dimensions: None,
                 shippable: Some(None),
                 statement_descriptor: Some(None),
-                tax_code: Some(None),
+                tax_code: None,
                 type_: None,
                 unit_label: Some(None),
                 updated: None,
@@ -172,7 +176,7 @@ const _: () = {
             let (
                 Some(active),
                 Some(created),
-                Some(default_price),
+                default_price,
                 Some(description),
                 Some(id),
                 Some(images),
@@ -180,10 +184,10 @@ const _: () = {
                 Some(marketing_features),
                 Some(metadata),
                 Some(name),
-                Some(package_dimensions),
+                package_dimensions,
                 Some(shippable),
                 Some(statement_descriptor),
-                Some(tax_code),
+                tax_code,
                 Some(type_),
                 Some(unit_label),
                 Some(updated),

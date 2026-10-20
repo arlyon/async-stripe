@@ -72,17 +72,17 @@ pub struct TaxRateBuilder {
     description: Option<Option<String>>,
     display_name: Option<String>,
     effective_percentage: Option<Option<f64>>,
-    flat_amount: Option<Option<stripe_shared::TaxRateFlatAmount>>,
+    flat_amount: Option<stripe_shared::TaxRateFlatAmount>,
     id: Option<stripe_shared::TaxRateId>,
     inclusive: Option<bool>,
     jurisdiction: Option<Option<String>>,
-    jurisdiction_level: Option<Option<TaxRateJurisdictionLevel>>,
+    jurisdiction_level: Option<TaxRateJurisdictionLevel>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     percentage: Option<f64>,
-    rate_type: Option<Option<TaxRateRateType>>,
+    rate_type: Option<TaxRateRateType>,
     state: Option<Option<String>>,
-    tax_type: Option<Option<stripe_shared::TaxRateTaxType>>,
+    tax_type: Option<stripe_shared::TaxRateTaxType>,
 }
 
 #[allow(
@@ -128,17 +128,21 @@ const _: () = {
                 "description" => Deserialize::begin(&mut self.description),
                 "display_name" => Deserialize::begin(&mut self.display_name),
                 "effective_percentage" => Deserialize::begin(&mut self.effective_percentage),
-                "flat_amount" => Deserialize::begin(&mut self.flat_amount),
+                "flat_amount" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.flat_amount)
+                }
                 "id" => Deserialize::begin(&mut self.id),
                 "inclusive" => Deserialize::begin(&mut self.inclusive),
                 "jurisdiction" => Deserialize::begin(&mut self.jurisdiction),
-                "jurisdiction_level" => Deserialize::begin(&mut self.jurisdiction_level),
+                "jurisdiction_level" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.jurisdiction_level)
+                }
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "percentage" => Deserialize::begin(&mut self.percentage),
-                "rate_type" => Deserialize::begin(&mut self.rate_type),
+                "rate_type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.rate_type),
                 "state" => Deserialize::begin(&mut self.state),
-                "tax_type" => Deserialize::begin(&mut self.tax_type),
+                "tax_type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_type),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -151,17 +155,17 @@ const _: () = {
                 description: Some(None),
                 display_name: None,
                 effective_percentage: Some(None),
-                flat_amount: Some(None),
+                flat_amount: None,
                 id: None,
                 inclusive: None,
                 jurisdiction: Some(None),
-                jurisdiction_level: Some(None),
+                jurisdiction_level: None,
                 livemode: None,
                 metadata: Some(None),
                 percentage: None,
-                rate_type: Some(None),
+                rate_type: None,
                 state: Some(None),
-                tax_type: Some(None),
+                tax_type: None,
             }
         }
 
@@ -173,17 +177,17 @@ const _: () = {
                 Some(description),
                 Some(display_name),
                 Some(effective_percentage),
-                Some(flat_amount),
+                flat_amount,
                 Some(id),
                 Some(inclusive),
                 Some(jurisdiction),
-                Some(jurisdiction_level),
+                jurisdiction_level,
                 Some(livemode),
                 Some(metadata),
                 Some(percentage),
-                Some(rate_type),
+                rate_type,
                 Some(state),
-                Some(tax_type),
+                tax_type,
             ) = (
                 self.active,
                 self.country.take(),

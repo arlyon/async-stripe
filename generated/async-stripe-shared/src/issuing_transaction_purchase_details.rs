@@ -24,10 +24,10 @@ impl std::fmt::Debug for IssuingTransactionPurchaseDetails {
 }
 #[doc(hidden)]
 pub struct IssuingTransactionPurchaseDetailsBuilder {
-    fleet: Option<Option<stripe_shared::IssuingTransactionFleetData>>,
-    flight: Option<Option<stripe_shared::IssuingTransactionFlightData>>,
-    fuel: Option<Option<stripe_shared::IssuingTransactionFuelData>>,
-    lodging: Option<Option<stripe_shared::IssuingTransactionLodgingData>>,
+    fleet: Option<stripe_shared::IssuingTransactionFleetData>,
+    flight: Option<stripe_shared::IssuingTransactionFlightData>,
+    fuel: Option<stripe_shared::IssuingTransactionFuelData>,
+    lodging: Option<stripe_shared::IssuingTransactionLodgingData>,
     receipt: Option<Option<Vec<stripe_shared::IssuingTransactionReceiptData>>>,
     reference: Option<Option<String>>,
 }
@@ -72,10 +72,10 @@ const _: () = {
         type Out = IssuingTransactionPurchaseDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "fleet" => Deserialize::begin(&mut self.fleet),
-                "flight" => Deserialize::begin(&mut self.flight),
-                "fuel" => Deserialize::begin(&mut self.fuel),
-                "lodging" => Deserialize::begin(&mut self.lodging),
+                "fleet" => stripe_types::miniserde_helpers::begin_nullable(&mut self.fleet),
+                "flight" => stripe_types::miniserde_helpers::begin_nullable(&mut self.flight),
+                "fuel" => stripe_types::miniserde_helpers::begin_nullable(&mut self.fuel),
+                "lodging" => stripe_types::miniserde_helpers::begin_nullable(&mut self.lodging),
                 "receipt" => Deserialize::begin(&mut self.receipt),
                 "reference" => Deserialize::begin(&mut self.reference),
                 _ => <dyn Visitor>::ignore(),
@@ -84,32 +84,24 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                fleet: Some(None),
-                flight: Some(None),
-                fuel: Some(None),
-                lodging: Some(None),
+                fleet: None,
+                flight: None,
+                fuel: None,
+                lodging: None,
                 receipt: Some(None),
                 reference: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(fleet),
-                Some(flight),
-                Some(fuel),
-                Some(lodging),
-                Some(receipt),
-                Some(reference),
-            ) = (
+            let (fleet, flight, fuel, lodging, Some(receipt), Some(reference)) = (
                 self.fleet.take(),
                 self.flight.take(),
                 self.fuel.take(),
                 self.lodging,
                 self.receipt.take(),
                 self.reference.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { fleet, flight, fuel, lodging, receipt, reference })

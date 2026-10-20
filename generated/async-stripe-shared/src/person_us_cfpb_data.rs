@@ -18,8 +18,8 @@ impl std::fmt::Debug for PersonUsCfpbData {
 }
 #[doc(hidden)]
 pub struct PersonUsCfpbDataBuilder {
-    ethnicity_details: Option<Option<stripe_shared::PersonEthnicityDetails>>,
-    race_details: Option<Option<stripe_shared::PersonRaceDetails>>,
+    ethnicity_details: Option<stripe_shared::PersonEthnicityDetails>,
+    race_details: Option<stripe_shared::PersonRaceDetails>,
     self_identified_gender: Option<Option<String>>,
 }
 
@@ -63,23 +63,23 @@ const _: () = {
         type Out = PersonUsCfpbData;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "ethnicity_details" => Deserialize::begin(&mut self.ethnicity_details),
-                "race_details" => Deserialize::begin(&mut self.race_details),
+                "ethnicity_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.ethnicity_details)
+                }
+                "race_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.race_details)
+                }
                 "self_identified_gender" => Deserialize::begin(&mut self.self_identified_gender),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                ethnicity_details: Some(None),
-                race_details: Some(None),
-                self_identified_gender: Some(None),
-            }
+            Self { ethnicity_details: None, race_details: None, self_identified_gender: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(ethnicity_details), Some(race_details), Some(self_identified_gender)) = (
+            let (ethnicity_details, race_details, Some(self_identified_gender)) = (
                 self.ethnicity_details.take(),
                 self.race_details.take(),
                 self.self_identified_gender.take(),

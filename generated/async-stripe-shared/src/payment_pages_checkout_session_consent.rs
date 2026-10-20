@@ -17,8 +17,8 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionConsent {
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionConsentBuilder {
-    promotions: Option<Option<PaymentPagesCheckoutSessionConsentPromotions>>,
-    terms_of_service: Option<Option<PaymentPagesCheckoutSessionConsentTermsOfService>>,
+    promotions: Option<PaymentPagesCheckoutSessionConsentPromotions>,
+    terms_of_service: Option<PaymentPagesCheckoutSessionConsentTermsOfService>,
 }
 
 #[allow(
@@ -61,18 +61,22 @@ const _: () = {
         type Out = PaymentPagesCheckoutSessionConsent;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "promotions" => Deserialize::begin(&mut self.promotions),
-                "terms_of_service" => Deserialize::begin(&mut self.terms_of_service),
+                "promotions" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.promotions)
+                }
+                "terms_of_service" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.terms_of_service)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { promotions: Some(None), terms_of_service: Some(None) }
+            Self { promotions: None, terms_of_service: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(promotions), Some(terms_of_service)) =
+            let (promotions, terms_of_service) =
                 (self.promotions.take(), self.terms_of_service.take())
             else {
                 return None;

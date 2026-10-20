@@ -32,14 +32,13 @@ impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordUsBankAccount {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsPaymentRecordUsBankAccountBuilder {
-    account_holder_type:
-        Option<Option<PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType>>,
-    account_type: Option<Option<PaymentMethodDetailsPaymentRecordUsBankAccountAccountType>>,
+    account_holder_type: Option<PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType>,
+    account_type: Option<PaymentMethodDetailsPaymentRecordUsBankAccountAccountType>,
     bank_name: Option<Option<String>>,
     expected_debit_date: Option<Option<String>>,
     fingerprint: Option<Option<String>>,
     last4: Option<Option<String>>,
-    mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
+    mandate: Option<stripe_types::Expandable<stripe_shared::Mandate>>,
     payment_reference: Option<Option<String>>,
     routing_number: Option<Option<String>>,
 }
@@ -84,13 +83,17 @@ const _: () = {
         type Out = PaymentMethodDetailsPaymentRecordUsBankAccount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account_holder_type" => Deserialize::begin(&mut self.account_holder_type),
-                "account_type" => Deserialize::begin(&mut self.account_type),
+                "account_holder_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.account_holder_type)
+                }
+                "account_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.account_type)
+                }
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "expected_debit_date" => Deserialize::begin(&mut self.expected_debit_date),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 "last4" => Deserialize::begin(&mut self.last4),
-                "mandate" => Deserialize::begin(&mut self.mandate),
+                "mandate" => stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate),
                 "payment_reference" => Deserialize::begin(&mut self.payment_reference),
                 "routing_number" => Deserialize::begin(&mut self.routing_number),
                 _ => <dyn Visitor>::ignore(),
@@ -99,13 +102,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account_holder_type: Some(None),
-                account_type: Some(None),
+                account_holder_type: None,
+                account_type: None,
                 bank_name: Some(None),
                 expected_debit_date: Some(None),
                 fingerprint: Some(None),
                 last4: Some(None),
-                mandate: Some(None),
+                mandate: None,
                 payment_reference: Some(None),
                 routing_number: Some(None),
             }
@@ -113,13 +116,13 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(account_holder_type),
-                Some(account_type),
+                account_holder_type,
+                account_type,
                 Some(bank_name),
                 Some(expected_debit_date),
                 Some(fingerprint),
                 Some(last4),
-                Some(mandate),
+                mandate,
                 Some(payment_reference),
                 Some(routing_number),
             ) = (

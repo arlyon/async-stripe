@@ -19,7 +19,7 @@ impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodOptionsResourceC
 #[doc(hidden)]
 pub struct ConfirmationTokensResourcePaymentMethodOptionsResourceCardBuilder {
     cvc_token: Option<Option<String>>,
-installments: Option<Option<stripe_payment::ConfirmationTokensResourcePaymentMethodOptionsResourceCardResourceInstallment>>,
+installments: Option<stripe_payment::ConfirmationTokensResourcePaymentMethodOptionsResourceCardResourceInstallment>,
 
 }
 
@@ -66,18 +66,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "cvc_token" => Deserialize::begin(&mut self.cvc_token),
-                "installments" => Deserialize::begin(&mut self.installments),
+                "installments" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.installments)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { cvc_token: Some(None), installments: Some(None) }
+            Self { cvc_token: Some(None), installments: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(cvc_token), Some(installments)) =
-                (self.cvc_token.take(), self.installments.take())
+            let (Some(cvc_token), installments) = (self.cvc_token.take(), self.installments.take())
             else {
                 return None;
             };

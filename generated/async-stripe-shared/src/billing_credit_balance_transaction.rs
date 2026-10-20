@@ -33,14 +33,14 @@ impl std::fmt::Debug for BillingCreditBalanceTransaction {
 #[doc(hidden)]
 pub struct BillingCreditBalanceTransactionBuilder {
     created: Option<stripe_types::Timestamp>,
-    credit: Option<Option<stripe_shared::BillingCreditGrantsResourceBalanceCredit>>,
+    credit: Option<stripe_shared::BillingCreditGrantsResourceBalanceCredit>,
     credit_grant: Option<stripe_types::Expandable<stripe_shared::BillingCreditGrant>>,
-    debit: Option<Option<stripe_shared::BillingCreditGrantsResourceBalanceDebit>>,
+    debit: Option<stripe_shared::BillingCreditGrantsResourceBalanceDebit>,
     effective_at: Option<stripe_types::Timestamp>,
     id: Option<stripe_shared::BillingCreditBalanceTransactionId>,
     livemode: Option<bool>,
-    test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
-    type_: Option<Option<BillingCreditBalanceTransactionType>>,
+    test_clock: Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>,
+    type_: Option<BillingCreditBalanceTransactionType>,
 }
 
 #[allow(
@@ -84,14 +84,16 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "created" => Deserialize::begin(&mut self.created),
-                "credit" => Deserialize::begin(&mut self.credit),
+                "credit" => stripe_types::miniserde_helpers::begin_nullable(&mut self.credit),
                 "credit_grant" => Deserialize::begin(&mut self.credit_grant),
-                "debit" => Deserialize::begin(&mut self.debit),
+                "debit" => stripe_types::miniserde_helpers::begin_nullable(&mut self.debit),
                 "effective_at" => Deserialize::begin(&mut self.effective_at),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "test_clock" => Deserialize::begin(&mut self.test_clock),
-                "type" => Deserialize::begin(&mut self.type_),
+                "test_clock" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.test_clock)
+                }
+                "type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,28 +101,28 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 created: None,
-                credit: Some(None),
+                credit: None,
                 credit_grant: None,
-                debit: Some(None),
+                debit: None,
                 effective_at: None,
                 id: None,
                 livemode: None,
-                test_clock: Some(None),
-                type_: Some(None),
+                test_clock: None,
+                type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(created),
-                Some(credit),
+                credit,
                 Some(credit_grant),
-                Some(debit),
+                debit,
                 Some(effective_at),
                 Some(id),
                 Some(livemode),
-                Some(test_clock),
-                Some(type_),
+                test_clock,
+                type_,
             ) = (
                 self.created,
                 self.credit.take(),

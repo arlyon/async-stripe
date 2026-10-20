@@ -21,8 +21,8 @@ impl std::fmt::Debug for PaymentMethodDetailsCrypto {
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCryptoBuilder {
     buyer_address: Option<Option<String>>,
-    network: Option<Option<PaymentMethodDetailsCryptoNetwork>>,
-    token_currency: Option<Option<PaymentMethodDetailsCryptoTokenCurrency>>,
+    network: Option<PaymentMethodDetailsCryptoNetwork>,
+    token_currency: Option<PaymentMethodDetailsCryptoTokenCurrency>,
     transaction_hash: Option<Option<String>>,
 }
 
@@ -67,8 +67,10 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "buyer_address" => Deserialize::begin(&mut self.buyer_address),
-                "network" => Deserialize::begin(&mut self.network),
-                "token_currency" => Deserialize::begin(&mut self.token_currency),
+                "network" => stripe_types::miniserde_helpers::begin_nullable(&mut self.network),
+                "token_currency" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.token_currency)
+                }
                 "transaction_hash" => Deserialize::begin(&mut self.transaction_hash),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -77,14 +79,14 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 buyer_address: Some(None),
-                network: Some(None),
-                token_currency: Some(None),
+                network: None,
+                token_currency: None,
                 transaction_hash: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buyer_address), Some(network), Some(token_currency), Some(transaction_hash)) = (
+            let (Some(buyer_address), network, token_currency, Some(transaction_hash)) = (
                 self.buyer_address.take(),
                 self.network.take(),
                 self.token_currency.take(),

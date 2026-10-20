@@ -15,8 +15,7 @@ impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct ConfirmationTokensResourcePaymentMethodOptionsBuilder {
-    card:
-        Option<Option<stripe_payment::ConfirmationTokensResourcePaymentMethodOptionsResourceCard>>,
+    card: Option<stripe_payment::ConfirmationTokensResourcePaymentMethodOptionsResourceCard>,
 }
 
 #[allow(
@@ -59,17 +58,17 @@ const _: () = {
         type Out = ConfirmationTokensResourcePaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card" => Deserialize::begin(&mut self.card),
+                "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { card: Some(None) }
+            Self { card: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card),) = (self.card.take(),) else {
+            let (card,) = (self.card.take(),) else {
                 return None;
             };
             Some(Self::Out { card })

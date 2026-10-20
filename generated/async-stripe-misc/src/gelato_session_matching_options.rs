@@ -16,8 +16,8 @@ impl std::fmt::Debug for GelatoSessionMatchingOptions {
 }
 #[doc(hidden)]
 pub struct GelatoSessionMatchingOptionsBuilder {
-    dob: Option<Option<GelatoSessionMatchingOptionsDob>>,
-    name: Option<Option<GelatoSessionMatchingOptionsName>>,
+    dob: Option<GelatoSessionMatchingOptionsDob>,
+    name: Option<GelatoSessionMatchingOptionsName>,
 }
 
 #[allow(
@@ -60,18 +60,18 @@ const _: () = {
         type Out = GelatoSessionMatchingOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "dob" => Deserialize::begin(&mut self.dob),
-                "name" => Deserialize::begin(&mut self.name),
+                "dob" => stripe_types::miniserde_helpers::begin_nullable(&mut self.dob),
+                "name" => stripe_types::miniserde_helpers::begin_nullable(&mut self.name),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { dob: Some(None), name: Some(None) }
+            Self { dob: None, name: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(dob), Some(name)) = (self.dob.take(), self.name.take()) else {
+            let (dob, name) = (self.dob.take(), self.name.take()) else {
                 return None;
             };
             Some(Self::Out { dob, name })

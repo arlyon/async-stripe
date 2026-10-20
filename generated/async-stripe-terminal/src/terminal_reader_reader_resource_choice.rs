@@ -20,7 +20,7 @@ impl std::fmt::Debug for TerminalReaderReaderResourceChoice {
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceChoiceBuilder {
     id: Option<Option<stripe_terminal::TerminalReaderReaderResourceChoiceId>>,
-    style: Option<Option<TerminalReaderReaderResourceChoiceStyle>>,
+    style: Option<TerminalReaderReaderResourceChoiceStyle>,
     text: Option<String>,
 }
 
@@ -65,18 +65,18 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "id" => Deserialize::begin(&mut self.id),
-                "style" => Deserialize::begin(&mut self.style),
+                "style" => stripe_types::miniserde_helpers::begin_nullable(&mut self.style),
                 "text" => Deserialize::begin(&mut self.text),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { id: Some(None), style: Some(None), text: None }
+            Self { id: Some(None), style: None, text: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(id), Some(style), Some(text)) =
+            let (Some(id), style, Some(text)) =
                 (self.id.take(), self.style.take(), self.text.take())
             else {
                 return None;

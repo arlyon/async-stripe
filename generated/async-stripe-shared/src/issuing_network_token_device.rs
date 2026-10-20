@@ -31,7 +31,7 @@ pub struct IssuingNetworkTokenDeviceBuilder {
     location: Option<Option<String>>,
     name: Option<Option<String>>,
     phone_number: Option<Option<String>>,
-    type_: Option<Option<IssuingNetworkTokenDeviceType>>,
+    type_: Option<IssuingNetworkTokenDeviceType>,
 }
 
 #[allow(
@@ -79,7 +79,7 @@ const _: () = {
                 "location" => Deserialize::begin(&mut self.location),
                 "name" => Deserialize::begin(&mut self.name),
                 "phone_number" => Deserialize::begin(&mut self.phone_number),
-                "type" => Deserialize::begin(&mut self.type_),
+                "type" => stripe_types::miniserde_helpers::begin_nullable(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -91,7 +91,7 @@ const _: () = {
                 location: Some(None),
                 name: Some(None),
                 phone_number: Some(None),
-                type_: Some(None),
+                type_: None,
             }
         }
 
@@ -102,7 +102,7 @@ const _: () = {
                 Some(location),
                 Some(name),
                 Some(phone_number),
-                Some(type_),
+                type_,
             ) = (
                 self.device_fingerprint.take(),
                 self.ip_address.take(),

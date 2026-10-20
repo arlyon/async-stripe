@@ -25,8 +25,7 @@ impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsNzBankAccount {
 }
 #[doc(hidden)]
 pub struct PaymentIntentPaymentMethodOptionsNzBankAccountBuilder {
-    setup_future_usage:
-        Option<Option<PaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage>>,
+    setup_future_usage: Option<PaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage>,
     target_date: Option<Option<String>>,
 }
 
@@ -70,18 +69,20 @@ const _: () = {
         type Out = PaymentIntentPaymentMethodOptionsNzBankAccount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 "target_date" => Deserialize::begin(&mut self.target_date),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { setup_future_usage: Some(None), target_date: Some(None) }
+            Self { setup_future_usage: None, target_date: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(setup_future_usage), Some(target_date)) =
+            let (setup_future_usage, Some(target_date)) =
                 (self.setup_future_usage.take(), self.target_date.take())
             else {
                 return None;

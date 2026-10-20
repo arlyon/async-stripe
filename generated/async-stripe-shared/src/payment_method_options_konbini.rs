@@ -35,7 +35,7 @@ pub struct PaymentMethodOptionsKonbiniBuilder {
     expires_after_days: Option<Option<u32>>,
     expires_at: Option<Option<stripe_types::Timestamp>>,
     product_description: Option<Option<String>>,
-    setup_future_usage: Option<Option<PaymentMethodOptionsKonbiniSetupFutureUsage>>,
+    setup_future_usage: Option<PaymentMethodOptionsKonbiniSetupFutureUsage>,
 }
 
 #[allow(
@@ -82,7 +82,9 @@ const _: () = {
                 "expires_after_days" => Deserialize::begin(&mut self.expires_after_days),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "product_description" => Deserialize::begin(&mut self.product_description),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -93,7 +95,7 @@ const _: () = {
                 expires_after_days: Some(None),
                 expires_at: Some(None),
                 product_description: Some(None),
-                setup_future_usage: Some(None),
+                setup_future_usage: None,
             }
         }
 
@@ -103,7 +105,7 @@ const _: () = {
                 Some(expires_after_days),
                 Some(expires_at),
                 Some(product_description),
-                Some(setup_future_usage),
+                setup_future_usage,
             ) = (
                 self.confirmation_number.take(),
                 self.expires_after_days,

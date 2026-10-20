@@ -65,8 +65,7 @@ pub struct TreasuryInboundTransferBuilder {
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     description: Option<Option<String>>,
-    failure_details:
-        Option<Option<stripe_treasury::TreasuryInboundTransfersResourceFailureDetails>>,
+    failure_details: Option<stripe_treasury::TreasuryInboundTransfersResourceFailureDetails>,
     financial_account: Option<String>,
     hosted_regulatory_receipt_url: Option<Option<String>>,
     id: Option<stripe_treasury::TreasuryInboundTransferId>,
@@ -75,14 +74,14 @@ pub struct TreasuryInboundTransferBuilder {
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     origin_payment_method: Option<Option<String>>,
-    origin_payment_method_details: Option<Option<stripe_treasury::InboundTransfers>>,
+    origin_payment_method_details: Option<stripe_treasury::InboundTransfers>,
     returned: Option<Option<bool>>,
     statement_descriptor: Option<String>,
     status: Option<stripe_treasury::TreasuryInboundTransferStatus>,
     status_transitions: Option<
         stripe_treasury::TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitions,
     >,
-    transaction: Option<Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>>,
+    transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 }
 
 #[allow(
@@ -130,7 +129,9 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "description" => Deserialize::begin(&mut self.description),
-                "failure_details" => Deserialize::begin(&mut self.failure_details),
+                "failure_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.failure_details)
+                }
                 "financial_account" => Deserialize::begin(&mut self.financial_account),
                 "hosted_regulatory_receipt_url" => {
                     Deserialize::begin(&mut self.hosted_regulatory_receipt_url)
@@ -140,14 +141,16 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "origin_payment_method" => Deserialize::begin(&mut self.origin_payment_method),
-                "origin_payment_method_details" => {
-                    Deserialize::begin(&mut self.origin_payment_method_details)
-                }
+                "origin_payment_method_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.origin_payment_method_details,
+                ),
                 "returned" => Deserialize::begin(&mut self.returned),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-                "transaction" => Deserialize::begin(&mut self.transaction),
+                "transaction" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transaction)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -159,7 +162,7 @@ const _: () = {
                 created: None,
                 currency: None,
                 description: Some(None),
-                failure_details: Some(None),
+                failure_details: None,
                 financial_account: None,
                 hosted_regulatory_receipt_url: Some(None),
                 id: None,
@@ -167,12 +170,12 @@ const _: () = {
                 livemode: None,
                 metadata: None,
                 origin_payment_method: Some(None),
-                origin_payment_method_details: Some(None),
+                origin_payment_method_details: None,
                 returned: Some(None),
                 statement_descriptor: None,
                 status: None,
                 status_transitions: None,
-                transaction: Some(None),
+                transaction: None,
             }
         }
 
@@ -183,7 +186,7 @@ const _: () = {
                 Some(created),
                 Some(currency),
                 Some(description),
-                Some(failure_details),
+                failure_details,
                 Some(financial_account),
                 Some(hosted_regulatory_receipt_url),
                 Some(id),
@@ -191,12 +194,12 @@ const _: () = {
                 Some(livemode),
                 Some(metadata),
                 Some(origin_payment_method),
-                Some(origin_payment_method_details),
+                origin_payment_method_details,
                 Some(returned),
                 Some(statement_descriptor),
                 Some(status),
                 Some(status_transitions),
-                Some(transaction),
+                transaction,
             ) = (
                 self.amount,
                 self.cancelable,

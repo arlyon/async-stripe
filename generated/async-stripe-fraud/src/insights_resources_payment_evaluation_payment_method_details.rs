@@ -18,7 +18,7 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationPaymentMethodDetails 
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationPaymentMethodDetailsBuilder {
-    billing_details: Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationBillingDetails>>,
+    billing_details: Option<stripe_fraud::InsightsResourcesPaymentEvaluationBillingDetails>,
     payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
 }
 
@@ -63,18 +63,20 @@ const _: () = {
         type Out = InsightsResourcesPaymentEvaluationPaymentMethodDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "billing_details" => Deserialize::begin(&mut self.billing_details),
+                "billing_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.billing_details)
+                }
                 "payment_method" => Deserialize::begin(&mut self.payment_method),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { billing_details: Some(None), payment_method: None }
+            Self { billing_details: None, payment_method: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(billing_details), Some(payment_method)) =
+            let (billing_details, Some(payment_method)) =
                 (self.billing_details.take(), self.payment_method.take())
             else {
                 return None;

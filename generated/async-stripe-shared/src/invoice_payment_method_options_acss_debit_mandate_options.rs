@@ -14,8 +14,7 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsAcssDebitMandateOptions {
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsAcssDebitMandateOptionsBuilder {
-    transaction_type:
-        Option<Option<InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
+    transaction_type: Option<InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 
 #[allow(
@@ -58,17 +57,19 @@ const _: () = {
         type Out = InvoicePaymentMethodOptionsAcssDebitMandateOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "transaction_type" => Deserialize::begin(&mut self.transaction_type),
+                "transaction_type" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.transaction_type)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { transaction_type: Some(None) }
+            Self { transaction_type: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(transaction_type),) = (self.transaction_type.take(),) else {
+            let (transaction_type,) = (self.transaction_type.take(),) else {
                 return None;
             };
             Some(Self::Out { transaction_type })

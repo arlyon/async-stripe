@@ -25,7 +25,7 @@ impl std::fmt::Debug for CheckoutBoletoPaymentMethodOptions {
 #[doc(hidden)]
 pub struct CheckoutBoletoPaymentMethodOptionsBuilder {
     expires_after_days: Option<u32>,
-    setup_future_usage: Option<Option<CheckoutBoletoPaymentMethodOptionsSetupFutureUsage>>,
+    setup_future_usage: Option<CheckoutBoletoPaymentMethodOptionsSetupFutureUsage>,
 }
 
 #[allow(
@@ -69,17 +69,19 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "expires_after_days" => Deserialize::begin(&mut self.expires_after_days),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { expires_after_days: None, setup_future_usage: Some(None) }
+            Self { expires_after_days: None, setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_after_days), Some(setup_future_usage)) =
+            let (Some(expires_after_days), setup_future_usage) =
                 (self.expires_after_days, self.setup_future_usage.take())
             else {
                 return None;

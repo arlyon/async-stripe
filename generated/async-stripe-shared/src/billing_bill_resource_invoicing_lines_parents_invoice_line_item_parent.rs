@@ -21,8 +21,8 @@ impl std::fmt::Debug for BillingBillResourceInvoicingLinesParentsInvoiceLineItem
 }
 #[doc(hidden)]
 pub struct BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentBuilder {
-    invoice_item_details: Option<Option<stripe_shared::BillingBillResourceInvoicingLinesParentsInvoiceLineItemInvoiceItemParent>>,
-subscription_item_details: Option<Option<stripe_shared::BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParent>>,
+    invoice_item_details: Option<stripe_shared::BillingBillResourceInvoicingLinesParentsInvoiceLineItemInvoiceItemParent>,
+subscription_item_details: Option<stripe_shared::BillingBillResourceInvoicingLinesParentsInvoiceLineItemSubscriptionItemParent>,
 type_: Option<BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType>,
 
 }
@@ -67,25 +67,23 @@ const _: () = {
         type Out = BillingBillResourceInvoicingLinesParentsInvoiceLineItemParent;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "invoice_item_details" => Deserialize::begin(&mut self.invoice_item_details),
-                "subscription_item_details" => {
-                    Deserialize::begin(&mut self.subscription_item_details)
+                "invoice_item_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.invoice_item_details)
                 }
+                "subscription_item_details" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.subscription_item_details,
+                ),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                invoice_item_details: Some(None),
-                subscription_item_details: Some(None),
-                type_: None,
-            }
+            Self { invoice_item_details: None, subscription_item_details: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(invoice_item_details), Some(subscription_item_details), Some(type_)) = (
+            let (invoice_item_details, subscription_item_details, Some(type_)) = (
                 self.invoice_item_details.take(),
                 self.subscription_item_details.take(),
                 self.type_.take(),

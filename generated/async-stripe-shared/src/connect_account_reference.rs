@@ -17,7 +17,7 @@ impl std::fmt::Debug for ConnectAccountReference {
 }
 #[doc(hidden)]
 pub struct ConnectAccountReferenceBuilder {
-    account: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    account: Option<stripe_types::Expandable<stripe_shared::Account>>,
     type_: Option<ConnectAccountReferenceType>,
 }
 
@@ -61,18 +61,18 @@ const _: () = {
         type Out = ConnectAccountReference;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "account" => Deserialize::begin(&mut self.account),
+                "account" => stripe_types::miniserde_helpers::begin_nullable(&mut self.account),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { account: Some(None), type_: None }
+            Self { account: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account), Some(type_)) = (self.account.take(), self.type_.take()) else {
+            let (account, Some(type_)) = (self.account.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { account, type_ })

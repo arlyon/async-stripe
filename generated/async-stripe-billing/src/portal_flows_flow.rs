@@ -26,11 +26,10 @@ impl std::fmt::Debug for PortalFlowsFlow {
 #[doc(hidden)]
 pub struct PortalFlowsFlowBuilder {
     after_completion: Option<stripe_billing::PortalFlowsFlowAfterCompletion>,
-    customer_update: Option<Option<stripe_billing::PortalFlowsFlowCustomerUpdate>>,
-    subscription_cancel: Option<Option<stripe_billing::PortalFlowsFlowSubscriptionCancel>>,
-    subscription_update: Option<Option<stripe_billing::PortalFlowsFlowSubscriptionUpdate>>,
-    subscription_update_confirm:
-        Option<Option<stripe_billing::PortalFlowsFlowSubscriptionUpdateConfirm>>,
+    customer_update: Option<stripe_billing::PortalFlowsFlowCustomerUpdate>,
+    subscription_cancel: Option<stripe_billing::PortalFlowsFlowSubscriptionCancel>,
+    subscription_update: Option<stripe_billing::PortalFlowsFlowSubscriptionUpdate>,
+    subscription_update_confirm: Option<stripe_billing::PortalFlowsFlowSubscriptionUpdateConfirm>,
     type_: Option<PortalFlowsFlowType>,
 }
 
@@ -75,12 +74,18 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "after_completion" => Deserialize::begin(&mut self.after_completion),
-                "customer_update" => Deserialize::begin(&mut self.customer_update),
-                "subscription_cancel" => Deserialize::begin(&mut self.subscription_cancel),
-                "subscription_update" => Deserialize::begin(&mut self.subscription_update),
-                "subscription_update_confirm" => {
-                    Deserialize::begin(&mut self.subscription_update_confirm)
+                "customer_update" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.customer_update)
                 }
+                "subscription_cancel" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.subscription_cancel)
+                }
+                "subscription_update" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.subscription_update)
+                }
+                "subscription_update_confirm" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.subscription_update_confirm,
+                ),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -89,10 +94,10 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 after_completion: None,
-                customer_update: Some(None),
-                subscription_cancel: Some(None),
-                subscription_update: Some(None),
-                subscription_update_confirm: Some(None),
+                customer_update: None,
+                subscription_cancel: None,
+                subscription_update: None,
+                subscription_update_confirm: None,
                 type_: None,
             }
         }
@@ -100,10 +105,10 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(after_completion),
-                Some(customer_update),
-                Some(subscription_cancel),
-                Some(subscription_update),
-                Some(subscription_update_confirm),
+                customer_update,
+                subscription_cancel,
+                subscription_update,
+                subscription_update_confirm,
                 Some(type_),
             ) = (
                 self.after_completion.take(),

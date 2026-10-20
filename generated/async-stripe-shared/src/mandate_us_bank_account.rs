@@ -14,7 +14,7 @@ impl std::fmt::Debug for MandateUsBankAccount {
 }
 #[doc(hidden)]
 pub struct MandateUsBankAccountBuilder {
-    collection_method: Option<Option<MandateUsBankAccountCollectionMethod>>,
+    collection_method: Option<MandateUsBankAccountCollectionMethod>,
 }
 
 #[allow(
@@ -57,17 +57,19 @@ const _: () = {
         type Out = MandateUsBankAccount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "collection_method" => Deserialize::begin(&mut self.collection_method),
+                "collection_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.collection_method)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { collection_method: Some(None) }
+            Self { collection_method: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(collection_method),) = (self.collection_method.take(),) else {
+            let (collection_method,) = (self.collection_method.take(),) else {
                 return None;
             };
             Some(Self::Out { collection_method })

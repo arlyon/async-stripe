@@ -14,7 +14,7 @@ impl std::fmt::Debug for CheckoutSatispayPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct CheckoutSatispayPaymentMethodOptionsBuilder {
-    capture_method: Option<Option<CheckoutSatispayPaymentMethodOptionsCaptureMethod>>,
+    capture_method: Option<CheckoutSatispayPaymentMethodOptionsCaptureMethod>,
 }
 
 #[allow(
@@ -57,17 +57,19 @@ const _: () = {
         type Out = CheckoutSatispayPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
+                "capture_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.capture_method)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { capture_method: Some(None) }
+            Self { capture_method: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(capture_method),) = (self.capture_method.take(),) else {
+            let (capture_method,) = (self.capture_method.take(),) else {
                 return None;
             };
             Some(Self::Out { capture_method })

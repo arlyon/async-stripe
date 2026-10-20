@@ -21,7 +21,7 @@ impl std::fmt::Debug for TaxProductResourceTaxSettingsDefaults {
 #[doc(hidden)]
 pub struct TaxProductResourceTaxSettingsDefaultsBuilder {
     provider: Option<TaxProductResourceTaxSettingsDefaultsProvider>,
-    tax_behavior: Option<Option<TaxProductResourceTaxSettingsDefaultsTaxBehavior>>,
+    tax_behavior: Option<TaxProductResourceTaxSettingsDefaultsTaxBehavior>,
     tax_code: Option<Option<String>>,
 }
 
@@ -66,18 +66,20 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "provider" => Deserialize::begin(&mut self.provider),
-                "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
+                "tax_behavior" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.tax_behavior)
+                }
                 "tax_code" => Deserialize::begin(&mut self.tax_code),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { provider: None, tax_behavior: Some(None), tax_code: Some(None) }
+            Self { provider: None, tax_behavior: None, tax_code: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(provider), Some(tax_behavior), Some(tax_code)) =
+            let (Some(provider), tax_behavior, Some(tax_code)) =
                 (self.provider.take(), self.tax_behavior.take(), self.tax_code.take())
             else {
                 return None;

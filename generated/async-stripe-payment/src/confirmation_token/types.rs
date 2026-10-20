@@ -57,17 +57,15 @@ pub struct ConfirmationTokenBuilder {
     expires_at: Option<Option<stripe_types::Timestamp>>,
     id: Option<stripe_payment::ConfirmationTokenId>,
     livemode: Option<bool>,
-    mandate_data: Option<Option<stripe_payment::ConfirmationTokensResourceMandateData>>,
+    mandate_data: Option<stripe_payment::ConfirmationTokensResourceMandateData>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     payment_intent: Option<Option<String>>,
-    payment_method_options:
-        Option<Option<stripe_payment::ConfirmationTokensResourcePaymentMethodOptions>>,
-    payment_method_preview:
-        Option<Option<stripe_payment::ConfirmationTokensResourcePaymentMethodPreview>>,
+    payment_method_options: Option<stripe_payment::ConfirmationTokensResourcePaymentMethodOptions>,
+    payment_method_preview: Option<stripe_payment::ConfirmationTokensResourcePaymentMethodPreview>,
     return_url: Option<Option<String>>,
-    setup_future_usage: Option<Option<stripe_payment::ConfirmationTokenSetupFutureUsage>>,
+    setup_future_usage: Option<stripe_payment::ConfirmationTokenSetupFutureUsage>,
     setup_intent: Option<Option<String>>,
-    shipping: Option<Option<stripe_payment::ConfirmationTokensResourceShipping>>,
+    shipping: Option<stripe_payment::ConfirmationTokensResourceShipping>,
     use_stripe_sdk: Option<bool>,
 }
 
@@ -115,15 +113,23 @@ const _: () = {
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-                "mandate_data" => Deserialize::begin(&mut self.mandate_data),
+                "mandate_data" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mandate_data)
+                }
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
-                "payment_method_preview" => Deserialize::begin(&mut self.payment_method_preview),
+                "payment_method_options" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_options,
+                ),
+                "payment_method_preview" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.payment_method_preview,
+                ),
                 "return_url" => Deserialize::begin(&mut self.return_url),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 "setup_intent" => Deserialize::begin(&mut self.setup_intent),
-                "shipping" => Deserialize::begin(&mut self.shipping),
+                "shipping" => stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping),
                 "use_stripe_sdk" => Deserialize::begin(&mut self.use_stripe_sdk),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -135,15 +141,15 @@ const _: () = {
                 expires_at: Some(None),
                 id: None,
                 livemode: None,
-                mandate_data: Some(None),
+                mandate_data: None,
                 metadata: Some(None),
                 payment_intent: Some(None),
-                payment_method_options: Some(None),
-                payment_method_preview: Some(None),
+                payment_method_options: None,
+                payment_method_preview: None,
                 return_url: Some(None),
-                setup_future_usage: Some(None),
+                setup_future_usage: None,
                 setup_intent: Some(None),
-                shipping: Some(None),
+                shipping: None,
                 use_stripe_sdk: None,
             }
         }
@@ -154,15 +160,15 @@ const _: () = {
                 Some(expires_at),
                 Some(id),
                 Some(livemode),
-                Some(mandate_data),
+                mandate_data,
                 Some(metadata),
                 Some(payment_intent),
-                Some(payment_method_options),
-                Some(payment_method_preview),
+                payment_method_options,
+                payment_method_preview,
                 Some(return_url),
-                Some(setup_future_usage),
+                setup_future_usage,
                 Some(setup_intent),
-                Some(shipping),
+                shipping,
                 Some(use_stripe_sdk),
             ) = (
                 self.created,

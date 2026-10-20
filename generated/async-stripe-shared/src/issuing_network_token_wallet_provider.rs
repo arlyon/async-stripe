@@ -34,13 +34,13 @@ impl std::fmt::Debug for IssuingNetworkTokenWalletProvider {
 pub struct IssuingNetworkTokenWalletProviderBuilder {
     account_id: Option<Option<String>>,
     account_trust_score: Option<Option<i64>>,
-    card_number_source: Option<Option<IssuingNetworkTokenWalletProviderCardNumberSource>>,
-    cardholder_address: Option<Option<stripe_shared::IssuingNetworkTokenAddress>>,
+    card_number_source: Option<IssuingNetworkTokenWalletProviderCardNumberSource>,
+    cardholder_address: Option<stripe_shared::IssuingNetworkTokenAddress>,
     cardholder_name: Option<Option<String>>,
     device_trust_score: Option<Option<i64>>,
     hashed_account_email_address: Option<Option<String>>,
     reason_codes: Option<Option<Vec<IssuingNetworkTokenWalletProviderReasonCodes>>>,
-    suggested_decision: Option<Option<IssuingNetworkTokenWalletProviderSuggestedDecision>>,
+    suggested_decision: Option<IssuingNetworkTokenWalletProviderSuggestedDecision>,
     suggested_decision_version: Option<Option<String>>,
 }
 
@@ -86,15 +86,21 @@ const _: () = {
             Ok(match k {
                 "account_id" => Deserialize::begin(&mut self.account_id),
                 "account_trust_score" => Deserialize::begin(&mut self.account_trust_score),
-                "card_number_source" => Deserialize::begin(&mut self.card_number_source),
-                "cardholder_address" => Deserialize::begin(&mut self.cardholder_address),
+                "card_number_source" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.card_number_source)
+                }
+                "cardholder_address" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.cardholder_address)
+                }
                 "cardholder_name" => Deserialize::begin(&mut self.cardholder_name),
                 "device_trust_score" => Deserialize::begin(&mut self.device_trust_score),
                 "hashed_account_email_address" => {
                     Deserialize::begin(&mut self.hashed_account_email_address)
                 }
                 "reason_codes" => Deserialize::begin(&mut self.reason_codes),
-                "suggested_decision" => Deserialize::begin(&mut self.suggested_decision),
+                "suggested_decision" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.suggested_decision)
+                }
                 "suggested_decision_version" => {
                     Deserialize::begin(&mut self.suggested_decision_version)
                 }
@@ -106,13 +112,13 @@ const _: () = {
             Self {
                 account_id: Some(None),
                 account_trust_score: Some(None),
-                card_number_source: Some(None),
-                cardholder_address: Some(None),
+                card_number_source: None,
+                cardholder_address: None,
                 cardholder_name: Some(None),
                 device_trust_score: Some(None),
                 hashed_account_email_address: Some(None),
                 reason_codes: Some(None),
-                suggested_decision: Some(None),
+                suggested_decision: None,
                 suggested_decision_version: Some(None),
             }
         }
@@ -121,13 +127,13 @@ const _: () = {
             let (
                 Some(account_id),
                 Some(account_trust_score),
-                Some(card_number_source),
-                Some(cardholder_address),
+                card_number_source,
+                cardholder_address,
                 Some(cardholder_name),
                 Some(device_trust_score),
                 Some(hashed_account_email_address),
                 Some(reason_codes),
-                Some(suggested_decision),
+                suggested_decision,
                 Some(suggested_decision_version),
             ) = (
                 self.account_id.take(),

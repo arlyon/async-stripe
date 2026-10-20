@@ -26,20 +26,20 @@ impl std::fmt::Debug for SetupIntentPaymentMethodOptions {
 }
 #[doc(hidden)]
 pub struct SetupIntentPaymentMethodOptionsBuilder {
-    acss_debit: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsAcssDebit>>,
-    amazon_pay: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsAmazonPay>>,
-    bacs_debit: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsBacsDebit>>,
-    bizum: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsBizum>>,
-    card: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsCard>>,
-    card_present: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsCardPresent>>,
-    klarna: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsKlarna>>,
-    link: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsLink>>,
-    paypal: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsPaypal>>,
-    payto: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsPayto>>,
-    pix: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsPix>>,
-    sepa_debit: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsSepaDebit>>,
-    upi: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsUpi>>,
-    us_bank_account: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsUsBankAccount>>,
+    acss_debit: Option<stripe_shared::SetupIntentPaymentMethodOptionsAcssDebit>,
+    amazon_pay: Option<stripe_shared::SetupIntentPaymentMethodOptionsAmazonPay>,
+    bacs_debit: Option<stripe_shared::SetupIntentPaymentMethodOptionsBacsDebit>,
+    bizum: Option<stripe_shared::SetupIntentPaymentMethodOptionsBizum>,
+    card: Option<stripe_shared::SetupIntentPaymentMethodOptionsCard>,
+    card_present: Option<stripe_shared::SetupIntentPaymentMethodOptionsCardPresent>,
+    klarna: Option<stripe_shared::SetupIntentPaymentMethodOptionsKlarna>,
+    link: Option<stripe_shared::SetupIntentPaymentMethodOptionsLink>,
+    paypal: Option<stripe_shared::SetupIntentPaymentMethodOptionsPaypal>,
+    payto: Option<stripe_shared::SetupIntentPaymentMethodOptionsPayto>,
+    pix: Option<stripe_shared::SetupIntentPaymentMethodOptionsPix>,
+    sepa_debit: Option<stripe_shared::SetupIntentPaymentMethodOptionsSepaDebit>,
+    upi: Option<stripe_shared::SetupIntentPaymentMethodOptionsUpi>,
+    us_bank_account: Option<stripe_shared::SetupIntentPaymentMethodOptionsUsBankAccount>,
 }
 
 #[allow(
@@ -82,59 +82,71 @@ const _: () = {
         type Out = SetupIntentPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "acss_debit" => Deserialize::begin(&mut self.acss_debit),
-                "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
-                "bacs_debit" => Deserialize::begin(&mut self.bacs_debit),
-                "bizum" => Deserialize::begin(&mut self.bizum),
-                "card" => Deserialize::begin(&mut self.card),
-                "card_present" => Deserialize::begin(&mut self.card_present),
-                "klarna" => Deserialize::begin(&mut self.klarna),
-                "link" => Deserialize::begin(&mut self.link),
-                "paypal" => Deserialize::begin(&mut self.paypal),
-                "payto" => Deserialize::begin(&mut self.payto),
-                "pix" => Deserialize::begin(&mut self.pix),
-                "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
-                "upi" => Deserialize::begin(&mut self.upi),
-                "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
+                "acss_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.acss_debit)
+                }
+                "amazon_pay" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amazon_pay)
+                }
+                "bacs_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bacs_debit)
+                }
+                "bizum" => stripe_types::miniserde_helpers::begin_nullable(&mut self.bizum),
+                "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
+                "card_present" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.card_present)
+                }
+                "klarna" => stripe_types::miniserde_helpers::begin_nullable(&mut self.klarna),
+                "link" => stripe_types::miniserde_helpers::begin_nullable(&mut self.link),
+                "paypal" => stripe_types::miniserde_helpers::begin_nullable(&mut self.paypal),
+                "payto" => stripe_types::miniserde_helpers::begin_nullable(&mut self.payto),
+                "pix" => stripe_types::miniserde_helpers::begin_nullable(&mut self.pix),
+                "sepa_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.sepa_debit)
+                }
+                "upi" => stripe_types::miniserde_helpers::begin_nullable(&mut self.upi),
+                "us_bank_account" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.us_bank_account)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                acss_debit: Some(None),
-                amazon_pay: Some(None),
-                bacs_debit: Some(None),
-                bizum: Some(None),
-                card: Some(None),
-                card_present: Some(None),
-                klarna: Some(None),
-                link: Some(None),
-                paypal: Some(None),
-                payto: Some(None),
-                pix: Some(None),
-                sepa_debit: Some(None),
-                upi: Some(None),
-                us_bank_account: Some(None),
+                acss_debit: None,
+                amazon_pay: None,
+                bacs_debit: None,
+                bizum: None,
+                card: None,
+                card_present: None,
+                klarna: None,
+                link: None,
+                paypal: None,
+                payto: None,
+                pix: None,
+                sepa_debit: None,
+                upi: None,
+                us_bank_account: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(acss_debit),
-                Some(amazon_pay),
-                Some(bacs_debit),
-                Some(bizum),
-                Some(card),
-                Some(card_present),
-                Some(klarna),
-                Some(link),
-                Some(paypal),
-                Some(payto),
-                Some(pix),
-                Some(sepa_debit),
-                Some(upi),
-                Some(us_bank_account),
+                acss_debit,
+                amazon_pay,
+                bacs_debit,
+                bizum,
+                card,
+                card_present,
+                klarna,
+                link,
+                paypal,
+                payto,
+                pix,
+                sepa_debit,
+                upi,
+                us_bank_account,
             ) = (
                 self.acss_debit.take(),
                 self.amazon_pay,

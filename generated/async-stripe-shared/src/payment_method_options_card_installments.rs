@@ -20,7 +20,7 @@ impl std::fmt::Debug for PaymentMethodOptionsCardInstallments {
 pub struct PaymentMethodOptionsCardInstallmentsBuilder {
     available_plans: Option<Option<Vec<stripe_shared::PaymentMethodDetailsCardInstallmentsPlan>>>,
     enabled: Option<bool>,
-    plan: Option<Option<stripe_shared::PaymentMethodDetailsCardInstallmentsPlan>>,
+    plan: Option<stripe_shared::PaymentMethodDetailsCardInstallmentsPlan>,
 }
 
 #[allow(
@@ -65,17 +65,17 @@ const _: () = {
             Ok(match k {
                 "available_plans" => Deserialize::begin(&mut self.available_plans),
                 "enabled" => Deserialize::begin(&mut self.enabled),
-                "plan" => Deserialize::begin(&mut self.plan),
+                "plan" => stripe_types::miniserde_helpers::begin_nullable(&mut self.plan),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { available_plans: Some(None), enabled: None, plan: Some(None) }
+            Self { available_plans: Some(None), enabled: None, plan: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(available_plans), Some(enabled), Some(plan)) =
+            let (Some(available_plans), Some(enabled), plan) =
                 (self.available_plans.take(), self.enabled, self.plan.take())
             else {
                 return None;

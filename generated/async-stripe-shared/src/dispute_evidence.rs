@@ -79,31 +79,31 @@ impl std::fmt::Debug for DisputeEvidence {
 pub struct DisputeEvidenceBuilder {
     access_activity_log: Option<Option<String>>,
     billing_address: Option<Option<String>>,
-    cancellation_policy: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    cancellation_policy: Option<stripe_types::Expandable<stripe_shared::File>>,
     cancellation_policy_disclosure: Option<Option<String>>,
     cancellation_rebuttal: Option<Option<String>>,
-    customer_communication: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    customer_communication: Option<stripe_types::Expandable<stripe_shared::File>>,
     customer_email_address: Option<Option<String>>,
     customer_name: Option<Option<String>>,
     customer_purchase_ip: Option<Option<String>>,
-    customer_signature: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
-    duplicate_charge_documentation: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    customer_signature: Option<stripe_types::Expandable<stripe_shared::File>>,
+    duplicate_charge_documentation: Option<stripe_types::Expandable<stripe_shared::File>>,
     duplicate_charge_explanation: Option<Option<String>>,
     duplicate_charge_id: Option<Option<String>>,
     enhanced_evidence: Option<stripe_shared::DisputeEnhancedEvidence>,
     product_description: Option<Option<String>>,
-    receipt: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
-    refund_policy: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    receipt: Option<stripe_types::Expandable<stripe_shared::File>>,
+    refund_policy: Option<stripe_types::Expandable<stripe_shared::File>>,
     refund_policy_disclosure: Option<Option<String>>,
     refund_refusal_explanation: Option<Option<String>>,
     service_date: Option<Option<String>>,
-    service_documentation: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    service_documentation: Option<stripe_types::Expandable<stripe_shared::File>>,
     shipping_address: Option<Option<String>>,
     shipping_carrier: Option<Option<String>>,
     shipping_date: Option<Option<String>>,
-    shipping_documentation: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    shipping_documentation: Option<stripe_types::Expandable<stripe_shared::File>>,
     shipping_tracking_number: Option<Option<String>>,
-    uncategorized_file: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
+    uncategorized_file: Option<stripe_types::Expandable<stripe_shared::File>>,
     uncategorized_text: Option<Option<String>>,
 }
 
@@ -149,18 +149,26 @@ const _: () = {
             Ok(match k {
                 "access_activity_log" => Deserialize::begin(&mut self.access_activity_log),
                 "billing_address" => Deserialize::begin(&mut self.billing_address),
-                "cancellation_policy" => Deserialize::begin(&mut self.cancellation_policy),
+                "cancellation_policy" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.cancellation_policy)
+                }
                 "cancellation_policy_disclosure" => {
                     Deserialize::begin(&mut self.cancellation_policy_disclosure)
                 }
                 "cancellation_rebuttal" => Deserialize::begin(&mut self.cancellation_rebuttal),
-                "customer_communication" => Deserialize::begin(&mut self.customer_communication),
+                "customer_communication" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.customer_communication,
+                ),
                 "customer_email_address" => Deserialize::begin(&mut self.customer_email_address),
                 "customer_name" => Deserialize::begin(&mut self.customer_name),
                 "customer_purchase_ip" => Deserialize::begin(&mut self.customer_purchase_ip),
-                "customer_signature" => Deserialize::begin(&mut self.customer_signature),
+                "customer_signature" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.customer_signature)
+                }
                 "duplicate_charge_documentation" => {
-                    Deserialize::begin(&mut self.duplicate_charge_documentation)
+                    stripe_types::miniserde_helpers::begin_nullable(
+                        &mut self.duplicate_charge_documentation,
+                    )
                 }
                 "duplicate_charge_explanation" => {
                     Deserialize::begin(&mut self.duplicate_charge_explanation)
@@ -168,8 +176,10 @@ const _: () = {
                 "duplicate_charge_id" => Deserialize::begin(&mut self.duplicate_charge_id),
                 "enhanced_evidence" => Deserialize::begin(&mut self.enhanced_evidence),
                 "product_description" => Deserialize::begin(&mut self.product_description),
-                "receipt" => Deserialize::begin(&mut self.receipt),
-                "refund_policy" => Deserialize::begin(&mut self.refund_policy),
+                "receipt" => stripe_types::miniserde_helpers::begin_nullable(&mut self.receipt),
+                "refund_policy" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.refund_policy)
+                }
                 "refund_policy_disclosure" => {
                     Deserialize::begin(&mut self.refund_policy_disclosure)
                 }
@@ -177,15 +187,21 @@ const _: () = {
                     Deserialize::begin(&mut self.refund_refusal_explanation)
                 }
                 "service_date" => Deserialize::begin(&mut self.service_date),
-                "service_documentation" => Deserialize::begin(&mut self.service_documentation),
+                "service_documentation" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.service_documentation)
+                }
                 "shipping_address" => Deserialize::begin(&mut self.shipping_address),
                 "shipping_carrier" => Deserialize::begin(&mut self.shipping_carrier),
                 "shipping_date" => Deserialize::begin(&mut self.shipping_date),
-                "shipping_documentation" => Deserialize::begin(&mut self.shipping_documentation),
+                "shipping_documentation" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.shipping_documentation,
+                ),
                 "shipping_tracking_number" => {
                     Deserialize::begin(&mut self.shipping_tracking_number)
                 }
-                "uncategorized_file" => Deserialize::begin(&mut self.uncategorized_file),
+                "uncategorized_file" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.uncategorized_file)
+                }
                 "uncategorized_text" => Deserialize::begin(&mut self.uncategorized_text),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -195,31 +211,31 @@ const _: () = {
             Self {
                 access_activity_log: Some(None),
                 billing_address: Some(None),
-                cancellation_policy: Some(None),
+                cancellation_policy: None,
                 cancellation_policy_disclosure: Some(None),
                 cancellation_rebuttal: Some(None),
-                customer_communication: Some(None),
+                customer_communication: None,
                 customer_email_address: Some(None),
                 customer_name: Some(None),
                 customer_purchase_ip: Some(None),
-                customer_signature: Some(None),
-                duplicate_charge_documentation: Some(None),
+                customer_signature: None,
+                duplicate_charge_documentation: None,
                 duplicate_charge_explanation: Some(None),
                 duplicate_charge_id: Some(None),
                 enhanced_evidence: None,
                 product_description: Some(None),
-                receipt: Some(None),
-                refund_policy: Some(None),
+                receipt: None,
+                refund_policy: None,
                 refund_policy_disclosure: Some(None),
                 refund_refusal_explanation: Some(None),
                 service_date: Some(None),
-                service_documentation: Some(None),
+                service_documentation: None,
                 shipping_address: Some(None),
                 shipping_carrier: Some(None),
                 shipping_date: Some(None),
-                shipping_documentation: Some(None),
+                shipping_documentation: None,
                 shipping_tracking_number: Some(None),
-                uncategorized_file: Some(None),
+                uncategorized_file: None,
                 uncategorized_text: Some(None),
             }
         }
@@ -228,31 +244,31 @@ const _: () = {
             let (
                 Some(access_activity_log),
                 Some(billing_address),
-                Some(cancellation_policy),
+                cancellation_policy,
                 Some(cancellation_policy_disclosure),
                 Some(cancellation_rebuttal),
-                Some(customer_communication),
+                customer_communication,
                 Some(customer_email_address),
                 Some(customer_name),
                 Some(customer_purchase_ip),
-                Some(customer_signature),
-                Some(duplicate_charge_documentation),
+                customer_signature,
+                duplicate_charge_documentation,
                 Some(duplicate_charge_explanation),
                 Some(duplicate_charge_id),
                 Some(enhanced_evidence),
                 Some(product_description),
-                Some(receipt),
-                Some(refund_policy),
+                receipt,
+                refund_policy,
                 Some(refund_policy_disclosure),
                 Some(refund_refusal_explanation),
                 Some(service_date),
-                Some(service_documentation),
+                service_documentation,
                 Some(shipping_address),
                 Some(shipping_carrier),
                 Some(shipping_date),
-                Some(shipping_documentation),
+                shipping_documentation,
                 Some(shipping_tracking_number),
-                Some(uncategorized_file),
+                uncategorized_file,
                 Some(uncategorized_text),
             ) = (
                 self.access_activity_log.take(),

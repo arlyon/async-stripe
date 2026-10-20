@@ -19,7 +19,7 @@ impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourceProcessorDetail
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsBuilder {
-    custom: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsResourceCustomDetails>>,
+    custom: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsResourceCustomDetails>,
 type_: Option<PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType>,
 
 }
@@ -65,18 +65,18 @@ const _: () = {
         type Out = PaymentsPrimitivesPaymentRecordsResourceProcessorDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "custom" => Deserialize::begin(&mut self.custom),
+                "custom" => stripe_types::miniserde_helpers::begin_nullable(&mut self.custom),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { custom: Some(None), type_: None }
+            Self { custom: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(custom), Some(type_)) = (self.custom.take(), self.type_.take()) else {
+            let (custom, Some(type_)) = (self.custom.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { custom, type_ })

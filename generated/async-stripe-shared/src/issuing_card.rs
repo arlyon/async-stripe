@@ -78,7 +78,7 @@ impl std::fmt::Debug for IssuingCard {
 #[doc(hidden)]
 pub struct IssuingCardBuilder {
     brand: Option<String>,
-    cancellation_reason: Option<Option<IssuingCardCancellationReason>>,
+    cancellation_reason: Option<IssuingCardCancellationReason>,
     cardholder: Option<stripe_shared::IssuingCardholder>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
@@ -88,22 +88,22 @@ pub struct IssuingCardBuilder {
     financial_account: Option<Option<String>>,
     id: Option<stripe_shared::IssuingCardId>,
     last4: Option<String>,
-    latest_fraud_warning: Option<Option<stripe_shared::IssuingCardFraudWarning>>,
-    lifecycle_controls: Option<Option<stripe_shared::IssuingCardLifecycleControls>>,
+    latest_fraud_warning: Option<stripe_shared::IssuingCardFraudWarning>,
+    lifecycle_controls: Option<stripe_shared::IssuingCardLifecycleControls>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     number: Option<Option<String>>,
     personalization_design:
-        Option<Option<stripe_types::Expandable<stripe_shared::IssuingPersonalizationDesign>>>,
-    replaced_by: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCard>>>,
-    replacement_for: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCard>>>,
-    replacement_reason: Option<Option<IssuingCardReplacementReason>>,
+        Option<stripe_types::Expandable<stripe_shared::IssuingPersonalizationDesign>>,
+    replaced_by: Option<stripe_types::Expandable<stripe_shared::IssuingCard>>,
+    replacement_for: Option<stripe_types::Expandable<stripe_shared::IssuingCard>>,
+    replacement_reason: Option<IssuingCardReplacementReason>,
     second_line: Option<Option<String>>,
-    shipping: Option<Option<stripe_shared::IssuingCardShipping>>,
+    shipping: Option<stripe_shared::IssuingCardShipping>,
     spending_controls: Option<stripe_shared::IssuingCardAuthorizationControls>,
     status: Option<stripe_shared::IssuingCardStatus>,
     type_: Option<stripe_shared::IssuingCardType>,
-    wallets: Option<Option<stripe_shared::IssuingCardWallets>>,
+    wallets: Option<stripe_shared::IssuingCardWallets>,
 }
 
 #[allow(
@@ -147,7 +147,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "brand" => Deserialize::begin(&mut self.brand),
-                "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
+                "cancellation_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.cancellation_reason)
+                }
                 "cardholder" => Deserialize::begin(&mut self.cardholder),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
@@ -157,21 +159,33 @@ const _: () = {
                 "financial_account" => Deserialize::begin(&mut self.financial_account),
                 "id" => Deserialize::begin(&mut self.id),
                 "last4" => Deserialize::begin(&mut self.last4),
-                "latest_fraud_warning" => Deserialize::begin(&mut self.latest_fraud_warning),
-                "lifecycle_controls" => Deserialize::begin(&mut self.lifecycle_controls),
+                "latest_fraud_warning" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.latest_fraud_warning)
+                }
+                "lifecycle_controls" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.lifecycle_controls)
+                }
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "number" => Deserialize::begin(&mut self.number),
-                "personalization_design" => Deserialize::begin(&mut self.personalization_design),
-                "replaced_by" => Deserialize::begin(&mut self.replaced_by),
-                "replacement_for" => Deserialize::begin(&mut self.replacement_for),
-                "replacement_reason" => Deserialize::begin(&mut self.replacement_reason),
+                "personalization_design" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.personalization_design,
+                ),
+                "replaced_by" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.replaced_by)
+                }
+                "replacement_for" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.replacement_for)
+                }
+                "replacement_reason" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.replacement_reason)
+                }
                 "second_line" => Deserialize::begin(&mut self.second_line),
-                "shipping" => Deserialize::begin(&mut self.shipping),
+                "shipping" => stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping),
                 "spending_controls" => Deserialize::begin(&mut self.spending_controls),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
-                "wallets" => Deserialize::begin(&mut self.wallets),
+                "wallets" => stripe_types::miniserde_helpers::begin_nullable(&mut self.wallets),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -179,7 +193,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 brand: None,
-                cancellation_reason: Some(None),
+                cancellation_reason: None,
                 cardholder: None,
                 created: None,
                 currency: None,
@@ -189,28 +203,28 @@ const _: () = {
                 financial_account: Some(None),
                 id: None,
                 last4: None,
-                latest_fraud_warning: Some(None),
-                lifecycle_controls: Some(None),
+                latest_fraud_warning: None,
+                lifecycle_controls: None,
                 livemode: None,
                 metadata: None,
                 number: Some(None),
-                personalization_design: Some(None),
-                replaced_by: Some(None),
-                replacement_for: Some(None),
-                replacement_reason: Some(None),
+                personalization_design: None,
+                replaced_by: None,
+                replacement_for: None,
+                replacement_reason: None,
                 second_line: Some(None),
-                shipping: Some(None),
+                shipping: None,
                 spending_controls: None,
                 status: None,
                 type_: None,
-                wallets: Some(None),
+                wallets: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(brand),
-                Some(cancellation_reason),
+                cancellation_reason,
                 Some(cardholder),
                 Some(created),
                 Some(currency),
@@ -220,21 +234,21 @@ const _: () = {
                 Some(financial_account),
                 Some(id),
                 Some(last4),
-                Some(latest_fraud_warning),
-                Some(lifecycle_controls),
+                latest_fraud_warning,
+                lifecycle_controls,
                 Some(livemode),
                 Some(metadata),
                 Some(number),
-                Some(personalization_design),
-                Some(replaced_by),
-                Some(replacement_for),
-                Some(replacement_reason),
+                personalization_design,
+                replaced_by,
+                replacement_for,
+                replacement_reason,
                 Some(second_line),
-                Some(shipping),
+                shipping,
                 Some(spending_controls),
                 Some(status),
                 Some(type_),
-                Some(wallets),
+                wallets,
             ) = (
                 self.brand.take(),
                 self.cancellation_reason.take(),

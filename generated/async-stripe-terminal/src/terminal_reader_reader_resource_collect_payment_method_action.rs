@@ -18,9 +18,9 @@ impl std::fmt::Debug for TerminalReaderReaderResourceCollectPaymentMethodAction 
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceCollectPaymentMethodActionBuilder {
-    collect_config: Option<Option<stripe_terminal::TerminalReaderReaderResourceCollectConfig>>,
+    collect_config: Option<stripe_terminal::TerminalReaderReaderResourceCollectConfig>,
     payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
-    payment_method: Option<Option<stripe_shared::PaymentMethod>>,
+    payment_method: Option<stripe_shared::PaymentMethod>,
 }
 
 #[allow(
@@ -64,19 +64,23 @@ const _: () = {
         type Out = TerminalReaderReaderResourceCollectPaymentMethodAction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "collect_config" => Deserialize::begin(&mut self.collect_config),
+                "collect_config" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.collect_config)
+                }
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-                "payment_method" => Deserialize::begin(&mut self.payment_method),
+                "payment_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.payment_method)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { collect_config: Some(None), payment_intent: None, payment_method: Some(None) }
+            Self { collect_config: None, payment_intent: None, payment_method: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(collect_config), Some(payment_intent), Some(payment_method)) =
+            let (collect_config, Some(payment_intent), payment_method) =
                 (self.collect_config, self.payment_intent.take(), self.payment_method.take())
             else {
                 return None;

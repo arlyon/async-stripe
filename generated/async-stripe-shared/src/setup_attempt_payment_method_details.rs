@@ -44,34 +44,33 @@ impl std::fmt::Debug for SetupAttemptPaymentMethodDetails {
 }
 #[doc(hidden)]
 pub struct SetupAttemptPaymentMethodDetailsBuilder {
-    acss_debit: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsAcssDebit>>,
-    amazon_pay: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsAmazonPay>>,
-    au_becs_debit: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsAuBecsDebit>>,
-    bacs_debit: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsBacsDebit>>,
-    bancontact: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsBancontact>>,
-    boleto: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsBoleto>>,
-    card: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsCard>>,
-    card_present: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardPresent>>,
-    cashapp: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsCashapp>>,
-    ideal: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsIdeal>>,
-    kakao_pay: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsKakaoPay>>,
-    klarna: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsKlarna>>,
-    kr_card: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsKrCard>>,
-    link: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsLink>>,
-    naver_pay: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsNaverPay>>,
-    nz_bank_account: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsNzBankAccount>>,
-    paypal: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsPaypal>>,
-    payto: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsPayto>>,
-    pix: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsPix>>,
-    revolut_pay: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsRevolutPay>>,
-    satispay:
-        Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsSatispaySetupAttemptDetails>>,
-    sepa_debit: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsSepaDebit>>,
-    sofort: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsSofort>>,
-    twint: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsTwint>>,
+    acss_debit: Option<stripe_shared::SetupAttemptPaymentMethodDetailsAcssDebit>,
+    amazon_pay: Option<stripe_shared::SetupAttemptPaymentMethodDetailsAmazonPay>,
+    au_becs_debit: Option<stripe_shared::SetupAttemptPaymentMethodDetailsAuBecsDebit>,
+    bacs_debit: Option<stripe_shared::SetupAttemptPaymentMethodDetailsBacsDebit>,
+    bancontact: Option<stripe_shared::SetupAttemptPaymentMethodDetailsBancontact>,
+    boleto: Option<stripe_shared::SetupAttemptPaymentMethodDetailsBoleto>,
+    card: Option<stripe_shared::SetupAttemptPaymentMethodDetailsCard>,
+    card_present: Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardPresent>,
+    cashapp: Option<stripe_shared::SetupAttemptPaymentMethodDetailsCashapp>,
+    ideal: Option<stripe_shared::SetupAttemptPaymentMethodDetailsIdeal>,
+    kakao_pay: Option<stripe_shared::SetupAttemptPaymentMethodDetailsKakaoPay>,
+    klarna: Option<stripe_shared::SetupAttemptPaymentMethodDetailsKlarna>,
+    kr_card: Option<stripe_shared::SetupAttemptPaymentMethodDetailsKrCard>,
+    link: Option<stripe_shared::SetupAttemptPaymentMethodDetailsLink>,
+    naver_pay: Option<stripe_shared::SetupAttemptPaymentMethodDetailsNaverPay>,
+    nz_bank_account: Option<stripe_shared::SetupAttemptPaymentMethodDetailsNzBankAccount>,
+    paypal: Option<stripe_shared::SetupAttemptPaymentMethodDetailsPaypal>,
+    payto: Option<stripe_shared::SetupAttemptPaymentMethodDetailsPayto>,
+    pix: Option<stripe_shared::SetupAttemptPaymentMethodDetailsPix>,
+    revolut_pay: Option<stripe_shared::SetupAttemptPaymentMethodDetailsRevolutPay>,
+    satispay: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsSatispaySetupAttemptDetails>,
+    sepa_debit: Option<stripe_shared::SetupAttemptPaymentMethodDetailsSepaDebit>,
+    sofort: Option<stripe_shared::SetupAttemptPaymentMethodDetailsSofort>,
+    twint: Option<stripe_shared::SetupAttemptPaymentMethodDetailsTwint>,
     type_: Option<String>,
-    upi: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsUpi>>,
-    us_bank_account: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsUsBankAccount>>,
+    upi: Option<stripe_shared::SetupAttemptPaymentMethodDetailsUpi>,
+    us_bank_account: Option<stripe_shared::SetupAttemptPaymentMethodDetailsUsBankAccount>,
 }
 
 #[allow(
@@ -114,98 +113,118 @@ const _: () = {
         type Out = SetupAttemptPaymentMethodDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "acss_debit" => Deserialize::begin(&mut self.acss_debit),
-                "amazon_pay" => Deserialize::begin(&mut self.amazon_pay),
-                "au_becs_debit" => Deserialize::begin(&mut self.au_becs_debit),
-                "bacs_debit" => Deserialize::begin(&mut self.bacs_debit),
-                "bancontact" => Deserialize::begin(&mut self.bancontact),
-                "boleto" => Deserialize::begin(&mut self.boleto),
-                "card" => Deserialize::begin(&mut self.card),
-                "card_present" => Deserialize::begin(&mut self.card_present),
-                "cashapp" => Deserialize::begin(&mut self.cashapp),
-                "ideal" => Deserialize::begin(&mut self.ideal),
-                "kakao_pay" => Deserialize::begin(&mut self.kakao_pay),
-                "klarna" => Deserialize::begin(&mut self.klarna),
-                "kr_card" => Deserialize::begin(&mut self.kr_card),
-                "link" => Deserialize::begin(&mut self.link),
-                "naver_pay" => Deserialize::begin(&mut self.naver_pay),
-                "nz_bank_account" => Deserialize::begin(&mut self.nz_bank_account),
-                "paypal" => Deserialize::begin(&mut self.paypal),
-                "payto" => Deserialize::begin(&mut self.payto),
-                "pix" => Deserialize::begin(&mut self.pix),
-                "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
-                "satispay" => Deserialize::begin(&mut self.satispay),
-                "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
-                "sofort" => Deserialize::begin(&mut self.sofort),
-                "twint" => Deserialize::begin(&mut self.twint),
+                "acss_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.acss_debit)
+                }
+                "amazon_pay" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amazon_pay)
+                }
+                "au_becs_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.au_becs_debit)
+                }
+                "bacs_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bacs_debit)
+                }
+                "bancontact" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.bancontact)
+                }
+                "boleto" => stripe_types::miniserde_helpers::begin_nullable(&mut self.boleto),
+                "card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.card),
+                "card_present" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.card_present)
+                }
+                "cashapp" => stripe_types::miniserde_helpers::begin_nullable(&mut self.cashapp),
+                "ideal" => stripe_types::miniserde_helpers::begin_nullable(&mut self.ideal),
+                "kakao_pay" => stripe_types::miniserde_helpers::begin_nullable(&mut self.kakao_pay),
+                "klarna" => stripe_types::miniserde_helpers::begin_nullable(&mut self.klarna),
+                "kr_card" => stripe_types::miniserde_helpers::begin_nullable(&mut self.kr_card),
+                "link" => stripe_types::miniserde_helpers::begin_nullable(&mut self.link),
+                "naver_pay" => stripe_types::miniserde_helpers::begin_nullable(&mut self.naver_pay),
+                "nz_bank_account" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.nz_bank_account)
+                }
+                "paypal" => stripe_types::miniserde_helpers::begin_nullable(&mut self.paypal),
+                "payto" => stripe_types::miniserde_helpers::begin_nullable(&mut self.payto),
+                "pix" => stripe_types::miniserde_helpers::begin_nullable(&mut self.pix),
+                "revolut_pay" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.revolut_pay)
+                }
+                "satispay" => stripe_types::miniserde_helpers::begin_nullable(&mut self.satispay),
+                "sepa_debit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.sepa_debit)
+                }
+                "sofort" => stripe_types::miniserde_helpers::begin_nullable(&mut self.sofort),
+                "twint" => stripe_types::miniserde_helpers::begin_nullable(&mut self.twint),
                 "type" => Deserialize::begin(&mut self.type_),
-                "upi" => Deserialize::begin(&mut self.upi),
-                "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
+                "upi" => stripe_types::miniserde_helpers::begin_nullable(&mut self.upi),
+                "us_bank_account" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.us_bank_account)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                acss_debit: Some(None),
-                amazon_pay: Some(None),
-                au_becs_debit: Some(None),
-                bacs_debit: Some(None),
-                bancontact: Some(None),
-                boleto: Some(None),
-                card: Some(None),
-                card_present: Some(None),
-                cashapp: Some(None),
-                ideal: Some(None),
-                kakao_pay: Some(None),
-                klarna: Some(None),
-                kr_card: Some(None),
-                link: Some(None),
-                naver_pay: Some(None),
-                nz_bank_account: Some(None),
-                paypal: Some(None),
-                payto: Some(None),
-                pix: Some(None),
-                revolut_pay: Some(None),
-                satispay: Some(None),
-                sepa_debit: Some(None),
-                sofort: Some(None),
-                twint: Some(None),
+                acss_debit: None,
+                amazon_pay: None,
+                au_becs_debit: None,
+                bacs_debit: None,
+                bancontact: None,
+                boleto: None,
+                card: None,
+                card_present: None,
+                cashapp: None,
+                ideal: None,
+                kakao_pay: None,
+                klarna: None,
+                kr_card: None,
+                link: None,
+                naver_pay: None,
+                nz_bank_account: None,
+                paypal: None,
+                payto: None,
+                pix: None,
+                revolut_pay: None,
+                satispay: None,
+                sepa_debit: None,
+                sofort: None,
+                twint: None,
                 type_: None,
-                upi: Some(None),
-                us_bank_account: Some(None),
+                upi: None,
+                us_bank_account: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(acss_debit),
-                Some(amazon_pay),
-                Some(au_becs_debit),
-                Some(bacs_debit),
-                Some(bancontact),
-                Some(boleto),
-                Some(card),
-                Some(card_present),
-                Some(cashapp),
-                Some(ideal),
-                Some(kakao_pay),
-                Some(klarna),
-                Some(kr_card),
-                Some(link),
-                Some(naver_pay),
-                Some(nz_bank_account),
-                Some(paypal),
-                Some(payto),
-                Some(pix),
-                Some(revolut_pay),
-                Some(satispay),
-                Some(sepa_debit),
-                Some(sofort),
-                Some(twint),
+                acss_debit,
+                amazon_pay,
+                au_becs_debit,
+                bacs_debit,
+                bancontact,
+                boleto,
+                card,
+                card_present,
+                cashapp,
+                ideal,
+                kakao_pay,
+                klarna,
+                kr_card,
+                link,
+                naver_pay,
+                nz_bank_account,
+                paypal,
+                payto,
+                pix,
+                revolut_pay,
+                satispay,
+                sepa_debit,
+                sofort,
+                twint,
                 Some(type_),
-                Some(upi),
-                Some(us_bank_account),
+                upi,
+                us_bank_account,
             ) = (
                 self.acss_debit,
                 self.amazon_pay,

@@ -44,7 +44,7 @@ impl std::fmt::Debug for SubscriptionItem {
 #[doc(hidden)]
 pub struct SubscriptionItemBuilder {
     billed_until: Option<Option<stripe_types::Timestamp>>,
-    billing_thresholds: Option<Option<stripe_shared::SubscriptionItemBillingThresholds>>,
+    billing_thresholds: Option<stripe_shared::SubscriptionItemBillingThresholds>,
     created: Option<i64>,
     current_period_end: Option<stripe_types::Timestamp>,
     current_period_start: Option<stripe_types::Timestamp>,
@@ -99,7 +99,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "billed_until" => Deserialize::begin(&mut self.billed_until),
-                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
+                "billing_thresholds" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.billing_thresholds)
+                }
                 "created" => Deserialize::begin(&mut self.created),
                 "current_period_end" => Deserialize::begin(&mut self.current_period_end),
                 "current_period_start" => Deserialize::begin(&mut self.current_period_start),
@@ -118,7 +120,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 billed_until: Some(None),
-                billing_thresholds: Some(None),
+                billing_thresholds: None,
                 created: None,
                 current_period_end: None,
                 current_period_start: None,
@@ -136,7 +138,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(billed_until),
-                Some(billing_thresholds),
+                billing_thresholds,
                 Some(created),
                 Some(current_period_end),
                 Some(current_period_start),

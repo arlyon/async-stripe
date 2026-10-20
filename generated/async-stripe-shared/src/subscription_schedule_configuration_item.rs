@@ -31,7 +31,7 @@ impl std::fmt::Debug for SubscriptionScheduleConfigurationItem {
 }
 #[doc(hidden)]
 pub struct SubscriptionScheduleConfigurationItemBuilder {
-    billing_thresholds: Option<Option<stripe_shared::SubscriptionItemBillingThresholds>>,
+    billing_thresholds: Option<stripe_shared::SubscriptionItemBillingThresholds>,
     discounts: Option<Vec<stripe_shared::StackableDiscountWithDiscountSettings>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     plan: Option<stripe_types::Expandable<stripe_shared::Plan>>,
@@ -80,7 +80,9 @@ const _: () = {
         type Out = SubscriptionScheduleConfigurationItem;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
+                "billing_thresholds" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.billing_thresholds)
+                }
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "plan" => Deserialize::begin(&mut self.plan),
@@ -93,7 +95,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                billing_thresholds: Some(None),
+                billing_thresholds: None,
                 discounts: None,
                 metadata: Some(None),
                 plan: None,
@@ -105,7 +107,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
-                Some(billing_thresholds),
+                billing_thresholds,
                 Some(discounts),
                 Some(metadata),
                 Some(plan),

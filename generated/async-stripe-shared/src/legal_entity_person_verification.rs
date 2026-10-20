@@ -25,10 +25,10 @@ impl std::fmt::Debug for LegalEntityPersonVerification {
 }
 #[doc(hidden)]
 pub struct LegalEntityPersonVerificationBuilder {
-    additional_document: Option<Option<stripe_shared::LegalEntityPersonVerificationDocument>>,
+    additional_document: Option<stripe_shared::LegalEntityPersonVerificationDocument>,
     details: Option<Option<String>>,
     details_code: Option<Option<String>>,
-    document: Option<Option<stripe_shared::LegalEntityPersonVerificationDocument>>,
+    document: Option<stripe_shared::LegalEntityPersonVerificationDocument>,
     status: Option<String>,
 }
 
@@ -72,10 +72,12 @@ const _: () = {
         type Out = LegalEntityPersonVerification;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "additional_document" => Deserialize::begin(&mut self.additional_document),
+                "additional_document" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.additional_document)
+                }
                 "details" => Deserialize::begin(&mut self.details),
                 "details_code" => Deserialize::begin(&mut self.details_code),
-                "document" => Deserialize::begin(&mut self.document),
+                "document" => stripe_types::miniserde_helpers::begin_nullable(&mut self.document),
                 "status" => Deserialize::begin(&mut self.status),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -83,29 +85,22 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                additional_document: Some(None),
+                additional_document: None,
                 details: Some(None),
                 details_code: Some(None),
-                document: Some(None),
+                document: None,
                 status: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(additional_document),
-                Some(details),
-                Some(details_code),
-                Some(document),
-                Some(status),
-            ) = (
+            let (additional_document, Some(details), Some(details_code), document, Some(status)) = (
                 self.additional_document.take(),
                 self.details.take(),
                 self.details_code.take(),
                 self.document.take(),
                 self.status.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { additional_document, details, details_code, document, status })

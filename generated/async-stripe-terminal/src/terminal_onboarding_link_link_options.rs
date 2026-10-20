@@ -17,7 +17,7 @@ impl std::fmt::Debug for TerminalOnboardingLinkLinkOptions {
 #[doc(hidden)]
 pub struct TerminalOnboardingLinkLinkOptionsBuilder {
     apple_terms_and_conditions:
-        Option<Option<stripe_terminal::TerminalOnboardingLinkAppleTermsAndConditions>>,
+        Option<stripe_terminal::TerminalOnboardingLinkAppleTermsAndConditions>,
 }
 
 #[allow(
@@ -60,20 +60,19 @@ const _: () = {
         type Out = TerminalOnboardingLinkLinkOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "apple_terms_and_conditions" => {
-                    Deserialize::begin(&mut self.apple_terms_and_conditions)
-                }
+                "apple_terms_and_conditions" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.apple_terms_and_conditions,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { apple_terms_and_conditions: Some(None) }
+            Self { apple_terms_and_conditions: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(apple_terms_and_conditions),) = (self.apple_terms_and_conditions.take(),)
-            else {
+            let (apple_terms_and_conditions,) = (self.apple_terms_and_conditions.take(),) else {
                 return None;
             };
             Some(Self::Out { apple_terms_and_conditions })

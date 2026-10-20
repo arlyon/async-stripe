@@ -19,8 +19,7 @@ impl std::fmt::Debug for BillingBillResourceInvoicingPricingPricing {
 }
 #[doc(hidden)]
 pub struct BillingBillResourceInvoicingPricingPricingBuilder {
-    price_details:
-        Option<Option<stripe_shared::BillingBillResourceInvoicingPricingPricingPriceDetails>>,
+    price_details: Option<stripe_shared::BillingBillResourceInvoicingPricingPricingPriceDetails>,
     type_: Option<BillingBillResourceInvoicingPricingPricingType>,
     unit_amount_decimal: Option<Option<String>>,
 }
@@ -65,7 +64,9 @@ const _: () = {
         type Out = BillingBillResourceInvoicingPricingPricing;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "price_details" => Deserialize::begin(&mut self.price_details),
+                "price_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.price_details)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
                 "unit_amount_decimal" => Deserialize::begin(&mut self.unit_amount_decimal),
                 _ => <dyn Visitor>::ignore(),
@@ -73,11 +74,11 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { price_details: Some(None), type_: None, unit_amount_decimal: Some(None) }
+            Self { price_details: None, type_: None, unit_amount_decimal: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(price_details), Some(type_), Some(unit_amount_decimal)) =
+            let (price_details, Some(type_), Some(unit_amount_decimal)) =
                 (self.price_details.take(), self.type_.take(), self.unit_amount_decimal.take())
             else {
                 return None;

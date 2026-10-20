@@ -48,7 +48,7 @@ impl std::fmt::Debug for IssuingAuthorizationRequest {
 #[doc(hidden)]
 pub struct IssuingAuthorizationRequestBuilder {
     amount: Option<i64>,
-    amount_details: Option<Option<stripe_shared::IssuingAuthorizationAmountDetails>>,
+    amount_details: Option<stripe_shared::IssuingAuthorizationAmountDetails>,
     approved: Option<bool>,
     authorization_code: Option<Option<String>>,
     created: Option<stripe_types::Timestamp>,
@@ -102,7 +102,9 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
-                "amount_details" => Deserialize::begin(&mut self.amount_details),
+                "amount_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.amount_details)
+                }
                 "approved" => Deserialize::begin(&mut self.approved),
                 "authorization_code" => Deserialize::begin(&mut self.authorization_code),
                 "created" => Deserialize::begin(&mut self.created),
@@ -120,7 +122,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: None,
-                amount_details: Some(None),
+                amount_details: None,
                 approved: None,
                 authorization_code: Some(None),
                 created: None,
@@ -137,7 +139,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
-                Some(amount_details),
+                amount_details,
                 Some(approved),
                 Some(authorization_code),
                 Some(created),

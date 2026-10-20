@@ -4,7 +4,7 @@ use std::mem;
 use std::str::FromStr;
 
 use miniserde::Deserialize;
-use miniserde::de::Visitor;
+use miniserde::de::{Map, Visitor};
 use miniserde::json::{Number, Object, Value};
 
 use crate::Currency;
@@ -255,6 +255,31 @@ pub fn from_value_via_deserialize<T: Deserialize>(value: Value) -> Option<T> {
     match visit_value(value, T::begin(&mut out)) {
         Ok(()) => out,
         Err(_) => None,
+    }
+}
+
+miniserde::make_place!(NullablePlace);
+
+/// `Deserialize::begin` for an optional field of a type that accepts only strings and objects.
+///
+/// `null` leaves the slot empty, and strings and objects go to `T`'s visitor. miniserde's
+/// `Option<T>` visitor forwards every `Visitor` method, which costs more for each `T`.
+pub fn begin_nullable<T: Deserialize>(out: &mut Option<T>) -> &mut dyn Visitor {
+    NullablePlace::new(out)
+}
+
+impl<T: Deserialize> Visitor for NullablePlace<T> {
+    fn null(&mut self) -> miniserde::Result<()> {
+        self.out = None;
+        Ok(())
+    }
+
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        T::begin(&mut self.out).string(s)
+    }
+
+    fn map(&mut self) -> miniserde::Result<Box<dyn Map + '_>> {
+        T::begin(&mut self.out).map()
     }
 }
 

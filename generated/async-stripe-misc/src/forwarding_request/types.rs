@@ -57,9 +57,9 @@ pub struct ForwardingRequestBuilder {
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     payment_method: Option<String>,
     replacements: Option<Vec<stripe_misc::ForwardingRequestReplacements>>,
-    request_context: Option<Option<stripe_misc::ForwardedRequestContext>>,
-    request_details: Option<Option<stripe_misc::ForwardedRequestDetails>>,
-    response_details: Option<Option<stripe_misc::ForwardedResponseDetails>>,
+    request_context: Option<stripe_misc::ForwardedRequestContext>,
+    request_details: Option<stripe_misc::ForwardedRequestDetails>,
+    response_details: Option<stripe_misc::ForwardedResponseDetails>,
     url: Option<Option<String>>,
 }
 
@@ -109,9 +109,15 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "payment_method" => Deserialize::begin(&mut self.payment_method),
                 "replacements" => Deserialize::begin(&mut self.replacements),
-                "request_context" => Deserialize::begin(&mut self.request_context),
-                "request_details" => Deserialize::begin(&mut self.request_details),
-                "response_details" => Deserialize::begin(&mut self.response_details),
+                "request_context" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.request_context)
+                }
+                "request_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.request_details)
+                }
+                "response_details" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.response_details)
+                }
                 "url" => Deserialize::begin(&mut self.url),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -125,9 +131,9 @@ const _: () = {
                 metadata: Some(None),
                 payment_method: None,
                 replacements: None,
-                request_context: Some(None),
-                request_details: Some(None),
-                response_details: Some(None),
+                request_context: None,
+                request_details: None,
+                response_details: None,
                 url: Some(None),
             }
         }
@@ -140,9 +146,9 @@ const _: () = {
                 Some(metadata),
                 Some(payment_method),
                 Some(replacements),
-                Some(request_context),
-                Some(request_details),
-                Some(response_details),
+                request_context,
+                request_details,
+                response_details,
                 Some(url),
             ) = (
                 self.created,

@@ -14,8 +14,7 @@ impl std::fmt::Debug for PaymentMethodDetailsKonbini {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsKonbiniBuilder {
-    store:
-        Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore>>,
+    store: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStore>,
 }
 
 #[allow(
@@ -58,17 +57,17 @@ const _: () = {
         type Out = PaymentMethodDetailsKonbini;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "store" => Deserialize::begin(&mut self.store),
+                "store" => stripe_types::miniserde_helpers::begin_nullable(&mut self.store),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { store: Some(None) }
+            Self { store: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(store),) = (self.store.take(),) else {
+            let (store,) = (self.store.take(),) else {
                 return None;
             };
             Some(Self::Out { store })

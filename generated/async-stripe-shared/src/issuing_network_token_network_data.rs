@@ -20,11 +20,11 @@ impl std::fmt::Debug for IssuingNetworkTokenNetworkData {
 }
 #[doc(hidden)]
 pub struct IssuingNetworkTokenNetworkDataBuilder {
-    device: Option<Option<stripe_shared::IssuingNetworkTokenDevice>>,
-    mastercard: Option<Option<stripe_shared::IssuingNetworkTokenMastercard>>,
+    device: Option<stripe_shared::IssuingNetworkTokenDevice>,
+    mastercard: Option<stripe_shared::IssuingNetworkTokenMastercard>,
     type_: Option<IssuingNetworkTokenNetworkDataType>,
-    visa: Option<Option<stripe_shared::IssuingNetworkTokenVisa>>,
-    wallet_provider: Option<Option<stripe_shared::IssuingNetworkTokenWalletProvider>>,
+    visa: Option<stripe_shared::IssuingNetworkTokenVisa>,
+    wallet_provider: Option<stripe_shared::IssuingNetworkTokenWalletProvider>,
 }
 
 #[allow(
@@ -67,27 +67,25 @@ const _: () = {
         type Out = IssuingNetworkTokenNetworkData;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "device" => Deserialize::begin(&mut self.device),
-                "mastercard" => Deserialize::begin(&mut self.mastercard),
+                "device" => stripe_types::miniserde_helpers::begin_nullable(&mut self.device),
+                "mastercard" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.mastercard)
+                }
                 "type" => Deserialize::begin(&mut self.type_),
-                "visa" => Deserialize::begin(&mut self.visa),
-                "wallet_provider" => Deserialize::begin(&mut self.wallet_provider),
+                "visa" => stripe_types::miniserde_helpers::begin_nullable(&mut self.visa),
+                "wallet_provider" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.wallet_provider)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                device: Some(None),
-                mastercard: Some(None),
-                type_: None,
-                visa: Some(None),
-                wallet_provider: Some(None),
-            }
+            Self { device: None, mastercard: None, type_: None, visa: None, wallet_provider: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(device), Some(mastercard), Some(type_), Some(visa), Some(wallet_provider)) = (
+            let (device, mastercard, Some(type_), visa, wallet_provider) = (
                 self.device.take(),
                 self.mastercard.take(),
                 self.type_.take(),

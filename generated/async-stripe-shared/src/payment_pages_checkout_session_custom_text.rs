@@ -21,11 +21,11 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionCustomText {
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionCustomTextBuilder {
-    after_submit: Option<Option<stripe_shared::PaymentPagesCheckoutSessionCustomTextPosition>>,
-    shipping_address: Option<Option<stripe_shared::PaymentPagesCheckoutSessionCustomTextPosition>>,
-    submit: Option<Option<stripe_shared::PaymentPagesCheckoutSessionCustomTextPosition>>,
+    after_submit: Option<stripe_shared::PaymentPagesCheckoutSessionCustomTextPosition>,
+    shipping_address: Option<stripe_shared::PaymentPagesCheckoutSessionCustomTextPosition>,
+    submit: Option<stripe_shared::PaymentPagesCheckoutSessionCustomTextPosition>,
     terms_of_service_acceptance:
-        Option<Option<stripe_shared::PaymentPagesCheckoutSessionCustomTextPosition>>,
+        Option<stripe_shared::PaymentPagesCheckoutSessionCustomTextPosition>,
 }
 
 #[allow(
@@ -68,38 +68,36 @@ const _: () = {
         type Out = PaymentPagesCheckoutSessionCustomText;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "after_submit" => Deserialize::begin(&mut self.after_submit),
-                "shipping_address" => Deserialize::begin(&mut self.shipping_address),
-                "submit" => Deserialize::begin(&mut self.submit),
-                "terms_of_service_acceptance" => {
-                    Deserialize::begin(&mut self.terms_of_service_acceptance)
+                "after_submit" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.after_submit)
                 }
+                "shipping_address" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.shipping_address)
+                }
+                "submit" => stripe_types::miniserde_helpers::begin_nullable(&mut self.submit),
+                "terms_of_service_acceptance" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.terms_of_service_acceptance,
+                ),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
-                after_submit: Some(None),
-                shipping_address: Some(None),
-                submit: Some(None),
-                terms_of_service_acceptance: Some(None),
+                after_submit: None,
+                shipping_address: None,
+                submit: None,
+                terms_of_service_acceptance: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(after_submit),
-                Some(shipping_address),
-                Some(submit),
-                Some(terms_of_service_acceptance),
-            ) = (
+            let (after_submit, shipping_address, submit, terms_of_service_acceptance) = (
                 self.after_submit.take(),
                 self.shipping_address.take(),
                 self.submit.take(),
                 self.terms_of_service_acceptance.take(),
-            )
-            else {
+            ) else {
                 return None;
             };
             Some(Self::Out { after_submit, shipping_address, submit, terms_of_service_acceptance })

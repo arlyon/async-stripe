@@ -19,9 +19,8 @@ impl std::fmt::Debug for PortalFlowsFlowAfterCompletion {
 }
 #[doc(hidden)]
 pub struct PortalFlowsFlowAfterCompletionBuilder {
-    hosted_confirmation:
-        Option<Option<stripe_billing::PortalFlowsAfterCompletionHostedConfirmation>>,
-    redirect: Option<Option<stripe_billing::PortalFlowsAfterCompletionRedirect>>,
+    hosted_confirmation: Option<stripe_billing::PortalFlowsAfterCompletionHostedConfirmation>,
+    redirect: Option<stripe_billing::PortalFlowsAfterCompletionRedirect>,
     type_: Option<PortalFlowsFlowAfterCompletionType>,
 }
 
@@ -65,19 +64,21 @@ const _: () = {
         type Out = PortalFlowsFlowAfterCompletion;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "hosted_confirmation" => Deserialize::begin(&mut self.hosted_confirmation),
-                "redirect" => Deserialize::begin(&mut self.redirect),
+                "hosted_confirmation" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.hosted_confirmation)
+                }
+                "redirect" => stripe_types::miniserde_helpers::begin_nullable(&mut self.redirect),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { hosted_confirmation: Some(None), redirect: Some(None), type_: None }
+            Self { hosted_confirmation: None, redirect: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(hosted_confirmation), Some(redirect), Some(type_)) =
+            let (hosted_confirmation, redirect, Some(type_)) =
                 (self.hosted_confirmation.take(), self.redirect.take(), self.type_.take())
             else {
                 return None;

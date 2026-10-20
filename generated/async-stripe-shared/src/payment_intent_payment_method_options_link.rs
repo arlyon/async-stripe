@@ -25,9 +25,9 @@ impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsLink {
 }
 #[doc(hidden)]
 pub struct PaymentIntentPaymentMethodOptionsLinkBuilder {
-    capture_method: Option<Option<PaymentIntentPaymentMethodOptionsLinkCaptureMethod>>,
+    capture_method: Option<PaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
     persistent_token: Option<Option<String>>,
-    setup_future_usage: Option<Option<PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage>>,
+    setup_future_usage: Option<PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage>,
 }
 
 #[allow(
@@ -70,23 +70,23 @@ const _: () = {
         type Out = PaymentIntentPaymentMethodOptionsLink;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "capture_method" => Deserialize::begin(&mut self.capture_method),
+                "capture_method" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.capture_method)
+                }
                 "persistent_token" => Deserialize::begin(&mut self.persistent_token),
-                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "setup_future_usage" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.setup_future_usage)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {
-                capture_method: Some(None),
-                persistent_token: Some(None),
-                setup_future_usage: Some(None),
-            }
+            Self { capture_method: None, persistent_token: Some(None), setup_future_usage: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(capture_method), Some(persistent_token), Some(setup_future_usage)) = (
+            let (capture_method, Some(persistent_token), setup_future_usage) = (
                 self.capture_method.take(),
                 self.persistent_token.take(),
                 self.setup_future_usage.take(),

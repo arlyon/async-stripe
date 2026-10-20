@@ -20,7 +20,7 @@ impl std::fmt::Debug for PaymentMethodCustom {
 #[doc(hidden)]
 pub struct PaymentMethodCustomBuilder {
     display_name: Option<Option<String>>,
-    logo: Option<Option<stripe_shared::CustomLogo>>,
+    logo: Option<stripe_shared::CustomLogo>,
     type_: Option<String>,
 }
 
@@ -65,18 +65,18 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "display_name" => Deserialize::begin(&mut self.display_name),
-                "logo" => Deserialize::begin(&mut self.logo),
+                "logo" => stripe_types::miniserde_helpers::begin_nullable(&mut self.logo),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { display_name: Some(None), logo: Some(None), type_: None }
+            Self { display_name: Some(None), logo: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(display_name), Some(logo), Some(type_)) =
+            let (Some(display_name), logo, Some(type_)) =
                 (self.display_name.take(), self.logo.take(), self.type_.take())
             else {
                 return None;

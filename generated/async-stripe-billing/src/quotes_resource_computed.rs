@@ -17,7 +17,7 @@ impl std::fmt::Debug for QuotesResourceComputed {
 }
 #[doc(hidden)]
 pub struct QuotesResourceComputedBuilder {
-    recurring: Option<Option<stripe_billing::QuotesResourceRecurring>>,
+    recurring: Option<stripe_billing::QuotesResourceRecurring>,
     upfront: Option<stripe_billing::QuotesResourceUpfront>,
 }
 
@@ -61,19 +61,18 @@ const _: () = {
         type Out = QuotesResourceComputed;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "recurring" => Deserialize::begin(&mut self.recurring),
+                "recurring" => stripe_types::miniserde_helpers::begin_nullable(&mut self.recurring),
                 "upfront" => Deserialize::begin(&mut self.upfront),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { recurring: Some(None), upfront: None }
+            Self { recurring: None, upfront: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(recurring), Some(upfront)) = (self.recurring.take(), self.upfront.take())
-            else {
+            let (recurring, Some(upfront)) = (self.recurring.take(), self.upfront.take()) else {
                 return None;
             };
             Some(Self::Out { recurring, upfront })

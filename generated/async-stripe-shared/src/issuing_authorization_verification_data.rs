@@ -29,12 +29,11 @@ impl std::fmt::Debug for IssuingAuthorizationVerificationData {
 pub struct IssuingAuthorizationVerificationDataBuilder {
     address_line1_check: Option<IssuingAuthorizationVerificationDataAddressLine1Check>,
     address_postal_code_check: Option<IssuingAuthorizationVerificationDataAddressPostalCodeCheck>,
-    authentication_exemption:
-        Option<Option<stripe_shared::IssuingAuthorizationAuthenticationExemption>>,
+    authentication_exemption: Option<stripe_shared::IssuingAuthorizationAuthenticationExemption>,
     cvc_check: Option<IssuingAuthorizationVerificationDataCvcCheck>,
     expiry_check: Option<IssuingAuthorizationVerificationDataExpiryCheck>,
     postal_code: Option<Option<String>>,
-    three_d_secure: Option<Option<stripe_shared::IssuingAuthorizationThreeDSecure>>,
+    three_d_secure: Option<stripe_shared::IssuingAuthorizationThreeDSecure>,
 }
 
 #[allow(
@@ -81,13 +80,15 @@ const _: () = {
                 "address_postal_code_check" => {
                     Deserialize::begin(&mut self.address_postal_code_check)
                 }
-                "authentication_exemption" => {
-                    Deserialize::begin(&mut self.authentication_exemption)
-                }
+                "authentication_exemption" => stripe_types::miniserde_helpers::begin_nullable(
+                    &mut self.authentication_exemption,
+                ),
                 "cvc_check" => Deserialize::begin(&mut self.cvc_check),
                 "expiry_check" => Deserialize::begin(&mut self.expiry_check),
                 "postal_code" => Deserialize::begin(&mut self.postal_code),
-                "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
+                "three_d_secure" => {
+                    stripe_types::miniserde_helpers::begin_nullable(&mut self.three_d_secure)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -96,11 +97,11 @@ const _: () = {
             Self {
                 address_line1_check: None,
                 address_postal_code_check: None,
-                authentication_exemption: Some(None),
+                authentication_exemption: None,
                 cvc_check: None,
                 expiry_check: None,
                 postal_code: Some(None),
-                three_d_secure: Some(None),
+                three_d_secure: None,
             }
         }
 
@@ -108,11 +109,11 @@ const _: () = {
             let (
                 Some(address_line1_check),
                 Some(address_postal_code_check),
-                Some(authentication_exemption),
+                authentication_exemption,
                 Some(cvc_check),
                 Some(expiry_check),
                 Some(postal_code),
-                Some(three_d_secure),
+                three_d_secure,
             ) = (
                 self.address_line1_check.take(),
                 self.address_postal_code_check.take(),
