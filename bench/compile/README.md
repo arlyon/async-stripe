@@ -6,7 +6,7 @@ around compilation time and binary size. Benchmarks are simple rust binaries con
 They are just meant
 to be compiled, never run.
 
-The collector builds each selected consumer in an isolated temporary target directory,
+The collector builds each selected consumer in an isolated target directory,
 reads [Cargo's artifact messages](https://doc.rust-lang.org/1.88.0/cargo/reference/external-tools.html#json-messages)
 through `cargo_metadata`, and writes readable `summary.md` and
 `results.json` files.
@@ -44,6 +44,48 @@ The collector is an unpublished workspace member outside `default-members`. It
 has no Stripe dependencies; its compilation and dependencies are outside the
 measured target directories. `cargo run -p compile-bench` compiles the collector
 first.
+
+The measured repository defaults to the current Cargo workspace, discovered from
+the invocation directory. An existing collector binary can measure another
+worktree without recompiling the collector:
+
+```sh
+/path/to/compile-bench collect --repo /path/to/other-worktree --cases all
+```
+
+The resolved repository path and source commit are printed before any builds
+and included in new reports. Reports also identify the collector version and a
+SHA-256 fingerprint of its source, separately from the measured library commit.
+
+## Retaining artifacts
+
+By default, build targets are deleted after collection. Use
+`--keep-artifacts executable` to retain the exact unstripped executable measured
+for each case/profile, or `--keep-artifacts target` to retain every clean build's
+complete target directory, including targets from failed builds:
+
+```sh
+cargo run --quiet --locked -p compile-bench -- collect \
+  --cases webhook --profiles release --keep-artifacts executable
+
+cargo run --quiet --locked -p compile-bench -- collect \
+  --cases webhook --profiles release --keep-artifacts target \
+  --output target/compile-benchmarks/webhook-inspection
+```
+
+Retained paths are listed in `summary.md` and `results.json`, relative to the
+report directory. Executable mode keeps the first build's executable, which
+supplies the size measurements; subsequent timing builds remain temporary.
+Target mode keeps all timing-build targets and can consume substantial disk
+space. LLVM diagnostics use a separate temporary target so they do not replace
+the measured artifacts.
+
+Every build writes a `logs/<case>-<profile>/build-<N>.command.json` manifest
+containing its command, working directory, and explicit environment overrides
+(including removed variables). Inherited build settings remain in
+`results.json`; manifests do not capture the entire shell environment. Fetch
+and LLVM commands also have adjacent command manifests. Temporary paths in
+manifests and Cargo artifact logs cease to exist unless full targets were kept.
 
 ## Workloads
 
@@ -126,7 +168,10 @@ toolchains, platforms, targets, recorded environment settings, Cargo configurati
 hashes, workspace profile tables or Cargo artifact profile fields are rejected unless
 `--allow-mismatch` is explicit; failures name the differing environment fields.
 Changed workload hashes, incomplete reports and measurement warnings are called
-out. Binary sizes can still change with compiler/linker layout; exact reproducibility is not a
+out. Changes to the lockfile, library feature sets, added/removed libraries, or
+collector source are shown as informational notes and do not block comparison.
+Existing reports without the new provenance/retention fields remain readable.
+Binary sizes can still change with compiler/linker layout; exact reproducibility is not a
 promise.
 
 ## Optional diagnostics and progress

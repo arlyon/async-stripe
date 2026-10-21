@@ -52,8 +52,15 @@ struct Collect {
     offline: bool,
     #[arg(long, help = "Compilation target (defaults to the rustc host)")]
     target: Option<String>,
-    #[arg(long, help = "Repository to measure (defaults to this checkout)")]
+    #[arg(long, help = "Repository to measure (defaults to the current Cargo workspace)")]
     repo: Option<PathBuf>,
+    #[arg(
+        long,
+        value_enum,
+        default_value = "none",
+        help = "Retain the measured executable or every build target under the report directory"
+    )]
+    keep_artifacts: model::KeepArtifacts,
 }
 
 fn main() -> Result<()> {

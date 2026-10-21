@@ -74,12 +74,19 @@ pub fn collect(args: Collect) -> Result<()> {
     };
     validate_selection(&cases, CASES, "workload")?;
     validate_selection(&args.profiles, &["dev", "release"], "profile")?;
-    let repo = args
-        .repo
-        .clone()
-        .unwrap_or_else(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("../../.."))
-        .canonicalize()
-        .context("find repository")?;
+    let cargo = env::var_os("CARGO").map(PathBuf::from).unwrap_or_else(|| "cargo".into());
+    let repo = repository(&cargo, args.repo.as_deref(), &env::current_dir()?)?;
+    let commit =
+        process::output(Command::new("git").current_dir(&repo).args(["rev-parse", "HEAD"]))?;
+    let dirty =
+        !process::output(Command::new("git").current_dir(&repo).args(["status", "--porcelain"]))?
+            .is_empty();
+    info!(
+        "Measuring repository: {} at {}{}",
+        repo.display(),
+        commit,
+        if dirty { " (dirty)" } else { "" }
+    );
     let output = if let Some(output) = args.output {
         let output = if output.is_absolute() { output } else { repo.join(output) };
         fs::create_dir_all(output.parent().context("output directory has no parent")?)?;
@@ -97,7 +104,6 @@ pub fn collect(args: Collect) -> Result<()> {
     };
     fs::create_dir(output.join("logs"))?;
     info!("Reports and logs: {}", output.display());
-    let cargo = env::var_os("CARGO").map(PathBuf::from).unwrap_or_else(|| "cargo".into());
     // Pin the compiler we inspect, rather than reimplement Cargo's config resolution.
     let rustc_program = env::var_os("RUSTC")
         .or_else(|| env::var_os("CARGO_BUILD_RUSTC"))
@@ -141,9 +147,11 @@ pub fn collect(args: Collect) -> Result<()> {
         schema_version: SCHEMA_VERSION,
         started_unix_seconds: SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs(),
         finished: false,
+        collector: Some(collector_identity()),
         source: Source {
-            commit: process::output(Command::new("git").current_dir(&repo).args(["rev-parse", "HEAD"]))?,
-            dirty: !process::output(Command::new("git").current_dir(&repo).args(["status", "--porcelain"]))?.is_empty(),
+            repository: Some(repo.clone()),
+            commit,
+            dirty,
             lockfile_sha256: hash(&fs::read(repo.join("Cargo.lock"))?),
             workload_sha256: cases.iter().map(|case| Ok((case.clone(), workload_hash(&repo, case)?))).collect::<Result<_>>()?,
         },
@@ -164,6 +172,7 @@ pub fn collect(args: Collect) -> Result<()> {
             timing_runs: args.timings.map(usize::from),
             llvm_lines: llvm_version.as_ref().and_then(|version| version.as_ref().ok().cloned()),
             offline: args.offline,
+            keep_artifacts: args.keep_artifacts,
         },
         measurements: Vec::new(),
         library_ir: Vec::new(),
@@ -214,6 +223,7 @@ pub fn collect(args: Collect) -> Result<()> {
                 timing_samples: Vec::new(),
                 consumer_ir: None,
                 warnings: Vec::new(),
+                retained_artifacts: Vec::new(),
             });
             if args.timings.is_some() && !rss {
                 results.measurements[index].warnings.push(
@@ -258,16 +268,21 @@ fn measure(
     let name = format!("bench-{case}");
     let logs = output.join("logs").join(format!("{case}-{profile}"));
     fs::create_dir_all(&logs)?;
-    let first_target = tempfile::Builder::new().prefix("stripe-bench-").tempdir()?;
+    let keep = results.options.keep_artifacts;
+    let first_target =
+        build_target(output, &case, &profile, 1, keep, &mut results.measurements[index])?;
     let runs = results.options.timing_runs.unwrap_or(1);
     for run in 1..=runs {
         let extra_target;
         let target_dir = if run == 1 {
-            first_target.path()
+            &first_target.path
         } else {
-            extra_target = tempfile::Builder::new().prefix("stripe-bench-").tempdir()?;
-            extra_target.path()
+            extra_target =
+                build_target(output, &case, &profile, run, keep, &mut results.measurements[index])?;
+            &extra_target.path
         };
+        // Persist retained targets before starting, so failed builds remain discoverable.
+        report::save(output, results)?;
         let stdout = logs.join(format!("build-{run}.jsonl"));
         let stderr = logs.join(format!("build-{run}.stderr.log"));
         let rss_log = logs.join(format!("build-{run}.rss.log"));
@@ -290,6 +305,25 @@ fn measure(
                 profile == "dev",
                 &mut row.warnings,
             )?);
+            if keep != KeepArtifacts::None {
+                let source = metrics::executable(&stdout, &metadata.packages, &name)?;
+                let retained = if keep == KeepArtifacts::Target && source.starts_with(output) {
+                    source
+                } else {
+                    let path = output
+                        .join("artifacts")
+                        .join(format!("{case}-{profile}"))
+                        .join("executable");
+                    fs::create_dir_all(path.parent().unwrap())?;
+                    fs::copy(source, &path)?;
+                    path
+                };
+                row.retained_artifacts.push(RetainedArtifact {
+                    build: run,
+                    kind: "executable".into(),
+                    path: retained.strip_prefix(output)?.to_owned(),
+                });
+            }
         }
         if results.options.timing_runs.is_some() {
             let max_rss_bytes = if rss {
@@ -304,10 +338,12 @@ fn measure(
         report::save(output, results)?;
     }
     if results.options.llvm_lines.is_some() {
+        // IR diagnostics may rebuild/replace artifacts; preserve the measured target.
+        let diagnostic_target = tempfile::Builder::new().prefix("stripe-bench-ir-").tempdir()?;
         let consumer = llvm(
             build,
             output,
-            first_target.path(),
+            diagnostic_target.path(),
             &profile,
             &name,
             false,
@@ -322,7 +358,7 @@ fn measure(
             let shared = llvm(
                 build,
                 output,
-                first_target.path(),
+                diagnostic_target.path(),
                 &profile,
                 "async-stripe-shared",
                 true,
@@ -344,6 +380,76 @@ fn measure(
         warn!("{case}: {warning}");
     }
     Ok(())
+}
+
+struct BuildTarget {
+    path: PathBuf,
+    _temporary: Option<tempfile::TempDir>,
+}
+
+fn build_target(
+    output: &Path,
+    case: &str,
+    profile: &str,
+    run: usize,
+    keep: KeepArtifacts,
+    row: &mut Measurement,
+) -> Result<BuildTarget> {
+    if keep == KeepArtifacts::Target {
+        let relative = PathBuf::from("artifacts")
+            .join(format!("{case}-{profile}"))
+            .join(format!("build-{run}"))
+            .join("target");
+        let path = output.join(&relative);
+        fs::create_dir_all(&path)?;
+        row.retained_artifacts.push(RetainedArtifact {
+            build: run,
+            kind: "target".into(),
+            path: relative,
+        });
+        Ok(BuildTarget { path, _temporary: None })
+    } else {
+        let temporary = tempfile::Builder::new().prefix("stripe-bench-").tempdir()?;
+        Ok(BuildTarget { path: temporary.path().to_owned(), _temporary: Some(temporary) })
+    }
+}
+
+fn repository(cargo: &Path, explicit: Option<&Path>, invocation_dir: &Path) -> Result<PathBuf> {
+    let path = if let Some(path) = explicit {
+        path.to_owned()
+    } else {
+        let manifest = process::output(Command::new(cargo).current_dir(invocation_dir).args([
+            "locate-project",
+            "--workspace",
+            "--message-format=plain",
+        ]))
+        .context("find current Cargo workspace; use --repo to select a checkout explicitly")?;
+        Path::new(&manifest).parent().context("workspace manifest has no parent")?.to_owned()
+    };
+    let path = if path.is_absolute() { path } else { invocation_dir.join(path) };
+    path.canonicalize().with_context(|| format!("find repository {}", path.display()))
+}
+
+fn collector_identity() -> Collector {
+    let mut digest = Sha256::new();
+    for (name, bytes) in [
+        ("Cargo.toml", include_bytes!("../Cargo.toml").as_slice()),
+        ("main.rs", include_bytes!("main.rs").as_slice()),
+        ("collect.rs", include_bytes!("collect.rs").as_slice()),
+        ("metrics.rs", include_bytes!("metrics.rs").as_slice()),
+        ("model.rs", include_bytes!("model.rs").as_slice()),
+        ("process.rs", include_bytes!("process.rs").as_slice()),
+        ("report.rs", include_bytes!("report.rs").as_slice()),
+    ] {
+        digest.update(name);
+        digest.update([0]);
+        digest.update(bytes);
+        digest.update([0]);
+    }
+    Collector {
+        version: env!("CARGO_PKG_VERSION").into(),
+        source_sha256: format!("{:x}", digest.finalize()),
+    }
 }
 
 fn llvm(
@@ -519,5 +625,32 @@ fn rss_available(output: &Path) -> bool {
             warn!("/usr/bin/time RSS measurement unavailable; collecting wall time only");
             false
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn repository_follows_the_invocation_workspace_and_explicit_overrides() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let workspace = temp.path().join("workspace");
+        let nested = workspace.join("nested/directory");
+        fs::create_dir_all(&nested)?;
+        fs::write(workspace.join("Cargo.toml"), "[workspace]\nmembers = []\n")?;
+        let cargo = env::var_os("CARGO").map(PathBuf::from).unwrap_or_else(|| "cargo".into());
+        assert_eq!(repository(&cargo, None, &nested)?, workspace.canonicalize()?);
+        let explicit = temp.path().join("other-checkout");
+        fs::create_dir(&explicit)?;
+        assert_eq!(repository(&cargo, Some(&explicit), &nested)?, explicit.canonicalize()?);
+        assert_eq!(
+            repository(&cargo, Some(Path::new("../..")), &nested)?,
+            workspace.canonicalize()?
+        );
+        assert!(
+            repository(&cargo, None, temp.path()).unwrap_err().to_string().contains("use --repo")
+        );
+        Ok(())
     }
 }
