@@ -20,6 +20,33 @@ fn artifacts(log: &Path) -> Result<Vec<Artifact>> {
     Ok(artifacts)
 }
 
+fn root_artifact<'a>(
+    artifacts: &'a [Artifact],
+    packages: &[Package],
+    name: &str,
+) -> Result<&'a Artifact> {
+    let package =
+        packages.iter().find(|p| p.name.as_ref() == name).context("fixture package missing")?;
+    artifacts
+        .iter()
+        .find(|a| {
+            a.package_id == package.id
+                && a.target.name == name
+                && a.target.kind.contains(&TargetKind::Bin)
+                && a.executable.is_some()
+        })
+        .context("Cargo did not report the fixture executable")
+}
+
+pub fn executable(log: &Path, packages: &[Package], name: &str) -> Result<std::path::PathBuf> {
+    Ok(root_artifact(&artifacts(log)?, packages, name)?
+        .executable
+        .as_ref()
+        .unwrap()
+        .as_std_path()
+        .to_owned())
+}
+
 pub fn collect(
     log: &Path,
     packages: &[Package],
@@ -29,17 +56,7 @@ pub fn collect(
     warnings: &mut Vec<String>,
 ) -> Result<Sizes> {
     let artifacts = artifacts(log)?;
-    let package =
-        packages.iter().find(|p| p.name.as_ref() == name).context("fixture package missing")?;
-    let root = artifacts
-        .iter()
-        .find(|a| {
-            a.package_id == package.id
-                && a.target.name == name
-                && a.target.kind.contains(&TargetKind::Bin)
-                && a.executable.is_some()
-        })
-        .context("Cargo did not report the fixture executable")?;
+    let root = root_artifact(&artifacts, packages, name)?;
     let executable = root.executable.as_ref().unwrap().as_std_path();
     let sections = match read_sections(executable) {
         Ok(sections) => Some(sections),

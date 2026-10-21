@@ -60,6 +60,17 @@ fn markdown(report: &Report) -> String {
         report.environment.target
     )
     .unwrap();
+    if let Some(repository) = &report.source.repository {
+        writeln!(out, "Repository: `{}`.\n", repository.display()).unwrap();
+    }
+    if let Some(collector) = &report.collector {
+        writeln!(
+            out,
+            "Collector: `{}`; source SHA-256: `{}`.\n",
+            collector.version, collector.source_sha256
+        )
+        .unwrap();
+    }
     writeln!(
         out,
         "`{}`. Platform: `{}`. [Raw data](results.json).\n",
@@ -151,6 +162,23 @@ fn markdown(report: &Report) -> String {
             writeln!(out, "- {error}").unwrap();
         }
     }
+    if report.measurements.iter().any(|row| !row.retained_artifacts.is_empty()) {
+        out.push_str("\n## Retained artifacts\n\nPaths are relative to this report directory. Full targets can include incomplete failed builds.\n\n| Workload/profile | Build | Artifact | Path |\n|---|---:|---|---|\n");
+        for row in &report.measurements {
+            for artifact in &row.retained_artifacts {
+                let path = artifact.path.display();
+                writeln!(
+                    out,
+                    "| {}/{} | {} | {} | [{}](<{}>) |",
+                    row.case, row.profile, artifact.build, artifact.kind, path, path
+                )
+                .unwrap();
+            }
+        }
+    }
+    if report.collector.is_some() && !report.measurements.is_empty() {
+        out.push_str("\nBuild commands and explicit environment overrides are saved as `logs/<workload>-<profile>/build-<N>.command.json`. Inherited build inputs are recorded in `results.json`.\n");
+    }
     out
 }
 
@@ -195,6 +223,20 @@ fn compare(baseline: &Report, current: &Report, allow_mismatch: bool) -> Result<
             "build environments differ: {differences}; use matching settings or pass --allow-mismatch"
         );
         notes.push(format!("WARNING: build environments differ ({differences}); these deltas are not a controlled comparison."));
+    }
+    if baseline.source.lockfile_sha256 != current.source.lockfile_sha256 {
+        notes.push(format!(
+            "Dependency lockfile changed: `{}` → `{}`.",
+            baseline.source.lockfile_sha256, current.source.lockfile_sha256
+        ));
+    }
+    if let (Some(a), Some(b)) = (&baseline.collector, &current.collector)
+        && (a.version != b.version || a.source_sha256 != b.source_sha256)
+    {
+        notes.push(format!(
+            "Collector changed: `{}` / `{}` → `{}` / `{}`.",
+            a.version, a.source_sha256, b.version, b.source_sha256
+        ));
     }
     for (label, report) in [("Baseline", baseline), ("Current", current)] {
         if !report.finished || !report.errors.is_empty() {
@@ -248,6 +290,41 @@ fn compare(baseline: &Report, current: &Report, allow_mismatch: bool) -> Result<
                 notes.push(note);
             }
         }
+        if let (Some(a), Some(b)) = (&a.sizes, &b.sizes) {
+            let libraries_before: BTreeMap<_, _> =
+                a.libraries.iter().map(|l| (l.package.as_str(), l)).collect();
+            let libraries_after: BTreeMap<_, _> =
+                b.libraries.iter().map(|l| (l.package.as_str(), l)).collect();
+            for package in libraries_before
+                .keys()
+                .chain(libraries_after.keys())
+                .copied()
+                .collect::<BTreeSet<_>>()
+            {
+                match (libraries_before.get(package), libraries_after.get(package)) {
+                    (Some(a), Some(b)) => {
+                        let before: BTreeSet<_> = a.features.iter().collect();
+                        let after: BTreeSet<_> = b.features.iter().collect();
+                        if before != after {
+                            notes.push(format!(
+                                "{}/{}: `{package}` features changed: [{}] → [{}].",
+                                key.0,
+                                key.1,
+                                a.features.join(", "),
+                                b.features.join(", ")
+                            ));
+                        }
+                    }
+                    (Some(_), None) => {
+                        notes.push(format!("{}/{}: library `{package}` removed.", key.0, key.1))
+                    }
+                    (None, Some(_)) => {
+                        notes.push(format!("{}/{}: library `{package}` added.", key.0, key.1))
+                    }
+                    (None, None) => unreachable!(),
+                }
+            }
+        }
         let columns = sizes(a.sizes.as_ref())
             .into_iter()
             .zip(sizes(b.sizes.as_ref()))
@@ -272,6 +349,11 @@ fn compare(baseline: &Report, current: &Report, allow_mismatch: bool) -> Result<
         current.source.commit,
         if current.source.dirty { " (dirty)" } else { "" }
     );
+    for (label, report) in [("Baseline", baseline), ("Current", current)] {
+        if let Some(repository) = &report.source.repository {
+            writeln!(out, "{label} repository: `{}`.\n", repository.display()).unwrap();
+        }
+    }
     for note in notes {
         writeln!(out, "- {note}").unwrap();
     }
@@ -322,7 +404,9 @@ mod tests {
             schema_version: SCHEMA_VERSION,
             started_unix_seconds: 0,
             finished: true,
+            collector: None,
             source: Source {
+                repository: None,
                 commit: "commit".into(),
                 dirty: false,
                 lockfile_sha256: "lock".into(),
@@ -345,6 +429,7 @@ mod tests {
                 timing_runs: None,
                 llvm_lines: None,
                 offline: true,
+                keep_artifacts: KeepArtifacts::None,
             },
             measurements: vec![Measurement {
                 case: "minimal".into(),
@@ -353,6 +438,7 @@ mod tests {
                 timing_samples: vec![],
                 consumer_ir: None,
                 warnings: vec![],
+                retained_artifacts: vec![],
             }],
             library_ir: vec![],
             errors: vec![],
@@ -405,6 +491,61 @@ mod tests {
             compare_files(directory.path(), &json, false)?,
             compare(&report, &report, false)?
         );
+        Ok(())
+    }
+
+    #[test]
+    fn dependency_changes_are_informational_and_features_ignore_order() -> Result<()> {
+        fn sizes(features: &[&str]) -> Sizes {
+            Sizes {
+                executable_bytes: 100,
+                stripped_executable_bytes: None,
+                sections: None,
+                libraries: vec![Library {
+                    package: "async-stripe-shared".into(),
+                    features: features.iter().map(|s| (*s).into()).collect(),
+                    rlib_bytes: 10,
+                    rmeta_bytes: 5,
+                }],
+                consumer_incremental_bytes: None,
+                library_incremental_bytes: None,
+                artifact_profile: serde_json::from_value(serde_json::json!({
+                    "opt_level": "0", "debuginfo": 2, "debug_assertions": true,
+                    "overflow_checks": true, "test": false,
+                }))
+                .unwrap(),
+            }
+        }
+        let mut before = sample();
+        let mut after = sample();
+        before.measurements[0].sizes = Some(sizes(&["serialize", "deserialize"]));
+        after.measurements[0].sizes = Some(sizes(&["deserialize", "serialize"]));
+        assert!(!compare(&before, &after, false)?.contains("features changed"));
+        after.source.lockfile_sha256 = "new-lock".into();
+        after.measurements[0].sizes = Some(sizes(&["serialize"]));
+        let output = compare(&before, &after, false)?;
+        assert!(output.contains("Dependency lockfile changed"));
+        assert!(output.contains("async-stripe-shared` features changed"));
+        assert!(!output.contains("WARNING:"));
+        after.measurements[0].sizes.as_mut().unwrap().libraries[0].package =
+            "async-stripe-webhook".into();
+        let output = compare(&before, &after, false)?;
+        assert!(output.contains("library `async-stripe-shared` removed"));
+        assert!(output.contains("library `async-stripe-webhook` added"));
+        Ok(())
+    }
+
+    #[test]
+    fn old_reports_without_provenance_or_retention_still_compare() -> Result<()> {
+        let mut old = serde_json::to_value(sample())?;
+        old.as_object_mut().unwrap().remove("collector");
+        old["source"].as_object_mut().unwrap().remove("repository");
+        old["options"].as_object_mut().unwrap().remove("keep_artifacts");
+        old["measurements"][0].as_object_mut().unwrap().remove("retained_artifacts");
+        let temp = tempfile::tempdir()?;
+        let path = temp.path().join("old.json");
+        fs::write(&path, serde_json::to_vec(&old)?)?;
+        assert!(compare_files(&path, &path, false)?.contains("Compile benchmark comparison"));
         Ok(())
     }
 }

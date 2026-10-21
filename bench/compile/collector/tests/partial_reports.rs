@@ -26,7 +26,13 @@ fn completed_sizes_and_logs_survive_later_build_or_diagnostic_failure() -> Resul
         .iter()
         .find(|p| p["name"] == "async-stripe-shared")
         .unwrap();
-    for (phase, profile) in [("second-build", "release"), ("llvm", "release"), ("llvm", "dev")] {
+    for (phase, profile, keep) in [
+        ("second-build", "release", "none"),
+        ("llvm", "release", "none"),
+        ("llvm", "dev", "none"),
+        ("second-build", "release", "executable"),
+        ("second-build", "release", "target"),
+    ] {
         let temp = tempfile::tempdir()?;
         let script = temp.path().join("cargo");
         fs::write(
@@ -36,6 +42,7 @@ case "$1" in
     -vV) cat "$FAKE_RUSTC" ;;
     --version) echo 'cargo test fixture' ;;
     metadata) cat "$FAKE_METADATA" ;;
+    locate-project) printf '%s/Cargo.toml\n' "$FAKE_WORKSPACE" ;;
     build)
         if [ "$CARGO_INCREMENTAL" != "$EXPECTED_INCREMENTAL" ]; then
             echo 'incorrect incremental setting' >&2
@@ -99,6 +106,7 @@ esac
             .args(["collect", "--cases", "minimal", "--profiles", profile, "--offline"])
             .arg("--output")
             .arg(&output)
+            .args(["--keep-artifacts", keep])
             .env("CARGO", &script)
             .env("RUSTC", &script)
             .env("FAIL_PHASE", phase)
@@ -106,6 +114,7 @@ esac
             .env("FAKE_INCREMENTAL_DIR", executable.parent().unwrap().join("incremental"))
             .env("FAKE_RUSTC", temp.path().join("rustc.txt"))
             .env("FAKE_METADATA", temp.path().join("metadata.json"))
+            .env("FAKE_WORKSPACE", packages["workspace_root"].as_str().unwrap())
             .env("FAKE_ARTIFACT", temp.path().join("artifact.json"))
             .env("FAKE_MARKER", temp.path().join("first-build"));
         if phase == "second-build" {
@@ -129,9 +138,29 @@ esac
             assert!(sizes["library_incremental_bytes"].is_null());
         }
         let target_dir = fs::read_to_string(temp.path().join("first-build"))?;
-        assert!(!std::path::Path::new(target_dir.trim()).exists());
+        assert_eq!(std::path::Path::new(target_dir.trim()).exists(), keep == "target");
+        assert_eq!(report["source"]["repository"], packages["workspace_root"]);
+        assert_eq!(report["collector"]["source_sha256"].as_str().unwrap().len(), 64);
+        let artifacts = report["measurements"][0]["retained_artifacts"].as_array().unwrap();
+        if keep == "none" {
+            assert!(artifacts.is_empty());
+        } else {
+            let retained = artifacts.iter().find(|a| a["kind"] == "executable").unwrap();
+            let retained_path = output.join(retained["path"].as_str().unwrap());
+            assert_eq!(fs::read(retained_path)?, fs::read(&executable)?);
+            let targets: Vec<_> = artifacts.iter().filter(|a| a["kind"] == "target").collect();
+            assert_eq!(targets.len(), if keep == "target" { 2 } else { 0 });
+            for target in targets {
+                assert!(output.join(target["path"].as_str().unwrap()).is_dir());
+            }
+        }
         let logs = output.join("logs").join(format!("minimal-{profile}"));
         assert!(logs.join("build-1.jsonl").is_file());
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(logs.join("build-1.command.json"))?)?;
+        assert_eq!(manifest["working_directory"], packages["workspace_root"]);
+        assert_eq!(manifest["environment_overrides"]["RUSTC"], script.to_string_lossy().as_ref());
+        assert_eq!(manifest["arguments"][0], "build");
         assert!(fs::read_to_string(output.join("summary.md"))?.contains("Finished with errors"));
         let stderr = String::from_utf8(result.stderr)?;
         assert!(!stderr.contains("fixture build progress"));

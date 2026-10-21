@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
@@ -10,6 +11,8 @@ pub struct Report {
     pub schema_version: u32,
     pub started_unix_seconds: u64,
     pub finished: bool,
+    #[serde(default)]
+    pub collector: Option<Collector>,
     pub source: Source,
     pub environment: Environment,
     pub options: Options,
@@ -19,7 +22,15 @@ pub struct Report {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+pub struct Collector {
+    pub version: String,
+    pub source_sha256: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Source {
+    #[serde(default)]
+    pub repository: Option<PathBuf>,
     pub commit: String,
     pub dirty: bool,
     pub lockfile_sha256: String,
@@ -46,6 +57,17 @@ pub struct Options {
     pub timing_runs: Option<usize>,
     pub llvm_lines: Option<String>,
     pub offline: bool,
+    #[serde(default)]
+    pub keep_artifacts: KeepArtifacts,
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, PartialEq, Eq, clap::ValueEnum)]
+#[serde(rename_all = "kebab-case")]
+pub enum KeepArtifacts {
+    #[default]
+    None,
+    Executable,
+    Target,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -56,6 +78,16 @@ pub struct Measurement {
     pub timing_samples: Vec<TimingSample>,
     pub consumer_ir: Option<Ir>,
     pub warnings: Vec<String>,
+    #[serde(default)]
+    pub retained_artifacts: Vec<RetainedArtifact>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct RetainedArtifact {
+    pub build: usize,
+    pub kind: String,
+    /// Relative to the report directory, so a retained report can be moved.
+    pub path: PathBuf,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
