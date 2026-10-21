@@ -149,59 +149,45 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(amount_releasable),
-                Some(created),
-                Some(created_by),
-                Some(currency),
-                Some(id),
-                Some(is_releasable),
-                Some(livemode),
-                Some(metadata),
-                Some(reason),
-                Some(release_details),
-                Some(release_schedule),
-                reserve_plan,
-                source_charge,
-                Some(source_type),
-            ) = (
-                self.amount,
-                self.amount_releasable,
-                self.created,
-                self.created_by.take(),
-                self.currency.take(),
-                self.id.take(),
-                self.is_releasable,
-                self.livemode,
-                self.metadata.take(),
-                self.reason.take(),
-                self.release_details.take(),
-                self.release_schedule,
-                self.reserve_plan.take(),
-                self.source_charge.take(),
-                self.source_type.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                amount_releasable,
-                created,
-                created_by,
-                currency,
-                id,
-                is_releasable,
-                livemode,
-                metadata,
-                reason,
-                release_details,
-                release_schedule,
-                reserve_plan,
-                source_charge,
-                source_type,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    amount_releasable: Some(amount_releasable),
+                    created: Some(created),
+                    created_by: Some(created_by),
+                    currency: Some(currency),
+                    id: Some(id),
+                    is_releasable: Some(is_releasable),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    reason: Some(reason),
+                    release_details: Some(release_details),
+                    release_schedule: Some(release_schedule),
+                    reserve_plan,
+                    source_charge,
+                    source_type: Some(source_type),
+                } => Some(Self::Out {
+                    amount,
+                    amount_releasable,
+                    created,
+                    created_by,
+                    currency,
+                    id,
+                    is_releasable,
+                    livemode,
+                    metadata,
+                    reason,
+                    release_details,
+                    release_schedule,
+                    reserve_plan,
+                    source_charge,
+                    source_type,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

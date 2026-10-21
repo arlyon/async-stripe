@@ -100,38 +100,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_number),
-                Some(bank_name),
-                Some(fingerprint),
-                Some(refund_account_holder_name),
-                Some(refund_account_holder_type),
-                Some(refund_routing_number),
-                Some(routing_number),
-                Some(swift_code),
-            ) = (
-                self.account_number.take(),
-                self.bank_name.take(),
-                self.fingerprint.take(),
-                self.refund_account_holder_name.take(),
-                self.refund_account_holder_type.take(),
-                self.refund_routing_number.take(),
-                self.routing_number.take(),
-                self.swift_code.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account_number,
-                bank_name,
-                fingerprint,
-                refund_account_holder_name,
-                refund_account_holder_type,
-                refund_routing_number,
-                routing_number,
-                swift_code,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_number: Some(account_number),
+                    bank_name: Some(bank_name),
+                    fingerprint: Some(fingerprint),
+                    refund_account_holder_name: Some(refund_account_holder_name),
+                    refund_account_holder_type: Some(refund_account_holder_type),
+                    refund_routing_number: Some(refund_routing_number),
+                    routing_number: Some(routing_number),
+                    swift_code: Some(swift_code),
+                } => Some(Self::Out {
+                    account_number,
+                    bank_name,
+                    fingerprint,
+                    refund_account_holder_name,
+                    refund_account_holder_type,
+                    refund_routing_number,
+                    routing_number,
+                    swift_code,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

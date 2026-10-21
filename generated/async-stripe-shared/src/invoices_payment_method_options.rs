@@ -129,7 +129,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
+            let Self {
                 acss_debit,
                 bancontact,
                 billie,
@@ -141,22 +141,7 @@ const _: () = {
                 sepa_debit,
                 upi,
                 us_bank_account,
-            ) = (
-                self.acss_debit.take(),
-                self.bancontact.take(),
-                self.billie,
-                self.card.take(),
-                self.customer_balance.take(),
-                self.konbini,
-                self.payto.take(),
-                self.pix.take(),
-                self.sepa_debit,
-                self.upi.take(),
-                self.us_bank_account.take(),
-            )
-            else {
-                return None;
-            };
+            } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out {
                 acss_debit,
                 bancontact,

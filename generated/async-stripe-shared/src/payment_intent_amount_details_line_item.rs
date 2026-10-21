@@ -124,41 +124,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(discount_amount),
-                Some(id),
-                payment_method_options,
-                Some(product_code),
-                Some(product_name),
-                Some(quantity),
-                tax,
-                Some(unit_cost),
-                Some(unit_of_measure),
-            ) = (
-                self.discount_amount,
-                self.id.take(),
-                self.payment_method_options.take(),
-                self.product_code.take(),
-                self.product_name.take(),
-                self.quantity,
-                self.tax,
-                self.unit_cost,
-                self.unit_of_measure.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                discount_amount,
-                id,
-                payment_method_options,
-                product_code,
-                product_name,
-                quantity,
-                tax,
-                unit_cost,
-                unit_of_measure,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    discount_amount: Some(discount_amount),
+                    id: Some(id),
+                    payment_method_options,
+                    product_code: Some(product_code),
+                    product_name: Some(product_name),
+                    quantity: Some(quantity),
+                    tax,
+                    unit_cost: Some(unit_cost),
+                    unit_of_measure: Some(unit_of_measure),
+                } => Some(Self::Out {
+                    discount_amount,
+                    id,
+                    payment_method_options,
+                    product_code,
+                    product_name,
+                    quantity,
+                    tax,
+                    unit_cost,
+                    unit_of_measure,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

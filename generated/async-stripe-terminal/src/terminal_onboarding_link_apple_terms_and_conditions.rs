@@ -72,12 +72,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(allow_relinking), Some(merchant_display_name)) =
-                (self.allow_relinking, self.merchant_display_name.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { allow_relinking, merchant_display_name })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    allow_relinking: Some(allow_relinking),
+                    merchant_display_name: Some(merchant_display_name),
+                } => Some(Self::Out { allow_relinking, merchant_display_name }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

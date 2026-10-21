@@ -128,47 +128,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                acss_debit,
-                Some(amount),
-                bacs_debit,
-                Some(created),
-                Some(id),
-                Some(livemode),
-                Some(reason),
-                sepa_debit,
-                Some(source),
-                Some(status),
-                Some(type_),
-            ) = (
-                self.acss_debit.take(),
-                self.amount,
-                self.bacs_debit.take(),
-                self.created,
-                self.id.take(),
-                self.livemode,
-                self.reason.take(),
-                self.sepa_debit.take(),
-                self.source.take(),
-                self.status.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                acss_debit,
-                amount,
-                bacs_debit,
-                created,
-                id,
-                livemode,
-                reason,
-                sepa_debit,
-                source,
-                status,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    acss_debit,
+                    amount: Some(amount),
+                    bacs_debit,
+                    created: Some(created),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    reason: Some(reason),
+                    sepa_debit,
+                    source: Some(source),
+                    status: Some(status),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    acss_debit,
+                    amount,
+                    bacs_debit,
+                    created,
+                    id,
+                    livemode,
+                    reason,
+                    sepa_debit,
+                    source,
+                    status,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

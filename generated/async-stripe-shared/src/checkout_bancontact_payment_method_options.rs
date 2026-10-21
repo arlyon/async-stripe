@@ -76,9 +76,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (setup_future_usage,) = (self.setup_future_usage.take(),) else {
-                return None;
-            };
+            let Self { setup_future_usage } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { setup_future_usage })
         }
     }

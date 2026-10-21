@@ -74,12 +74,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (amount_includes_iof, Some(expires_after_seconds)) =
-                (self.amount_includes_iof.take(), self.expires_after_seconds)
-            else {
-                return None;
-            };
-            Some(Self::Out { amount_includes_iof, expires_after_seconds })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount_includes_iof,
+                    expires_after_seconds: Some(expires_after_seconds),
+                } => Some(Self::Out { amount_includes_iof, expires_after_seconds }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

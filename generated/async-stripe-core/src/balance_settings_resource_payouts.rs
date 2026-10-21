@@ -109,29 +109,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(automatic_transfer_rules_by_currency),
-                Some(minimum_balance_by_currency),
-                schedule,
-                Some(statement_descriptor),
-                Some(status),
-            ) = (
-                self.automatic_transfer_rules_by_currency.take(),
-                self.minimum_balance_by_currency.take(),
-                self.schedule.take(),
-                self.statement_descriptor.take(),
-                self.status.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                automatic_transfer_rules_by_currency,
-                minimum_balance_by_currency,
-                schedule,
-                statement_descriptor,
-                status,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    automatic_transfer_rules_by_currency: Some(automatic_transfer_rules_by_currency),
+                    minimum_balance_by_currency: Some(minimum_balance_by_currency),
+                    schedule,
+                    statement_descriptor: Some(statement_descriptor),
+                    status: Some(status),
+                } => Some(Self::Out {
+                    automatic_transfer_rules_by_currency,
+                    minimum_balance_by_currency,
+                    schedule,
+                    statement_descriptor,
+                    status,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

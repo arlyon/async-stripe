@@ -91,23 +91,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                address,
-                address_source,
-                Some(ip_address),
-                Some(tax_ids),
-                Some(taxability_override),
-            ) = (
-                self.address.take(),
-                self.address_source.take(),
-                self.ip_address.take(),
-                self.tax_ids.take(),
-                self.taxability_override.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { address, address_source, ip_address, tax_ids, taxability_override })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    address,
+                    address_source,
+                    ip_address: Some(ip_address),
+                    tax_ids: Some(tax_ids),
+                    taxability_override: Some(taxability_override),
+                } => Some(Self::Out {
+                    address,
+                    address_source,
+                    ip_address,
+                    tax_ids,
+                    taxability_override,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

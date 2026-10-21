@@ -136,38 +136,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(allowed_card_presences),
-                Some(allowed_categories),
-                Some(allowed_merchant_countries),
-                Some(blocked_card_presences),
-                Some(blocked_categories),
-                Some(blocked_merchant_countries),
-                Some(spending_limits),
-                Some(spending_limits_currency),
-            ) = (
-                self.allowed_card_presences.take(),
-                self.allowed_categories.take(),
-                self.allowed_merchant_countries.take(),
-                self.blocked_card_presences.take(),
-                self.blocked_categories.take(),
-                self.blocked_merchant_countries.take(),
-                self.spending_limits.take(),
-                self.spending_limits_currency.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                allowed_card_presences,
-                allowed_categories,
-                allowed_merchant_countries,
-                blocked_card_presences,
-                blocked_categories,
-                blocked_merchant_countries,
-                spending_limits,
-                spending_limits_currency,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    allowed_card_presences: Some(allowed_card_presences),
+                    allowed_categories: Some(allowed_categories),
+                    allowed_merchant_countries: Some(allowed_merchant_countries),
+                    blocked_card_presences: Some(blocked_card_presences),
+                    blocked_categories: Some(blocked_categories),
+                    blocked_merchant_countries: Some(blocked_merchant_countries),
+                    spending_limits: Some(spending_limits),
+                    spending_limits_currency: Some(spending_limits_currency),
+                } => Some(Self::Out {
+                    allowed_card_presences,
+                    allowed_categories,
+                    allowed_merchant_countries,
+                    blocked_card_presences,
+                    blocked_categories,
+                    blocked_merchant_countries,
+                    spending_limits,
+                    spending_limits_currency,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

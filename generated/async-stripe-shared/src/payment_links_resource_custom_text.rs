@@ -90,14 +90,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (after_submit, shipping_address, submit, terms_of_service_acceptance) = (
-                self.after_submit.take(),
-                self.shipping_address.take(),
-                self.submit.take(),
-                self.terms_of_service_acceptance.take(),
-            ) else {
-                return None;
-            };
+            let Self { after_submit, shipping_address, submit, terms_of_service_acceptance } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { after_submit, shipping_address, submit, terms_of_service_acceptance })
         }
     }

@@ -119,38 +119,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                authentication_flow,
-                electronic_commerce_indicator,
-                exemption_indicator,
-                Some(exemption_indicator_applied),
-                result,
-                result_reason,
-                Some(transaction_id),
-                version,
-            ) = (
-                self.authentication_flow.take(),
-                self.electronic_commerce_indicator.take(),
-                self.exemption_indicator.take(),
-                self.exemption_indicator_applied,
-                self.result.take(),
-                self.result_reason.take(),
-                self.transaction_id.take(),
-                self.version.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                authentication_flow,
-                electronic_commerce_indicator,
-                exemption_indicator,
-                exemption_indicator_applied,
-                result,
-                result_reason,
-                transaction_id,
-                version,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    authentication_flow,
+                    electronic_commerce_indicator,
+                    exemption_indicator,
+                    exemption_indicator_applied: Some(exemption_indicator_applied),
+                    result,
+                    result_reason,
+                    transaction_id: Some(transaction_id),
+                    version,
+                } => Some(Self::Out {
+                    authentication_flow,
+                    electronic_commerce_indicator,
+                    exemption_indicator,
+                    exemption_indicator_applied,
+                    result,
+                    result_reason,
+                    transaction_id,
+                    version,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -75,12 +75,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_gte), Some(reset_billing_cycle_anchor)) =
-                (self.amount_gte, self.reset_billing_cycle_anchor)
-            else {
-                return None;
-            };
-            Some(Self::Out { amount_gte, reset_billing_cycle_anchor })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount_gte: Some(amount_gte),
+                    reset_billing_cycle_anchor: Some(reset_billing_cycle_anchor),
+                } => Some(Self::Out { amount_gte, reset_billing_cycle_anchor }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

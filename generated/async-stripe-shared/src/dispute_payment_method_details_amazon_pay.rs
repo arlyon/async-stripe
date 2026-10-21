@@ -69,9 +69,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (dispute_type,) = (self.dispute_type.take(),) else {
-                return None;
-            };
+            let Self { dispute_type } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { dispute_type })
         }
     }

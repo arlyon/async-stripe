@@ -80,12 +80,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(generated_card), process_config, Some(setup_intent)) =
-                (self.generated_card.take(), self.process_config, self.setup_intent.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { generated_card, process_config, setup_intent })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    generated_card: Some(generated_card),
+                    process_config,
+                    setup_intent: Some(setup_intent),
+                } => Some(Self::Out { generated_card, process_config, setup_intent }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

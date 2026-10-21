@@ -108,35 +108,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                billing_cycle_anchor,
-                Some(default_allowed_updates),
-                Some(enabled),
-                Some(products),
-                Some(proration_behavior),
-                Some(schedule_at_period_end),
-                Some(trial_update_behavior),
-            ) = (
-                self.billing_cycle_anchor.take(),
-                self.default_allowed_updates.take(),
-                self.enabled,
-                self.products.take(),
-                self.proration_behavior.take(),
-                self.schedule_at_period_end.take(),
-                self.trial_update_behavior.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                billing_cycle_anchor,
-                default_allowed_updates,
-                enabled,
-                products,
-                proration_behavior,
-                schedule_at_period_end,
-                trial_update_behavior,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    billing_cycle_anchor,
+                    default_allowed_updates: Some(default_allowed_updates),
+                    enabled: Some(enabled),
+                    products: Some(products),
+                    proration_behavior: Some(proration_behavior),
+                    schedule_at_period_end: Some(schedule_at_period_end),
+                    trial_update_behavior: Some(trial_update_behavior),
+                } => Some(Self::Out {
+                    billing_cycle_anchor,
+                    default_allowed_updates,
+                    enabled,
+                    products,
+                    proration_behavior,
+                    schedule_at_period_end,
+                    trial_update_behavior,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

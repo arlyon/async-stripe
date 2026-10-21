@@ -140,53 +140,41 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                ach_credit_transfer,
-                Some(amount),
-                chf_credit_transfer,
-                Some(created),
-                Some(currency),
-                gbp_credit_transfer,
-                Some(id),
-                Some(livemode),
-                paper_check,
-                sepa_credit_transfer,
-                Some(source),
-                Some(status),
-                Some(type_),
-            ) = (
-                self.ach_credit_transfer.take(),
-                self.amount,
-                self.chf_credit_transfer.take(),
-                self.created,
-                self.currency.take(),
-                self.gbp_credit_transfer.take(),
-                self.id.take(),
-                self.livemode,
-                self.paper_check.take(),
-                self.sepa_credit_transfer.take(),
-                self.source.take(),
-                self.status.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                ach_credit_transfer,
-                amount,
-                chf_credit_transfer,
-                created,
-                currency,
-                gbp_credit_transfer,
-                id,
-                livemode,
-                paper_check,
-                sepa_credit_transfer,
-                source,
-                status,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    ach_credit_transfer,
+                    amount: Some(amount),
+                    chf_credit_transfer,
+                    created: Some(created),
+                    currency: Some(currency),
+                    gbp_credit_transfer,
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    paper_check,
+                    sepa_credit_transfer,
+                    source: Some(source),
+                    status: Some(status),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    ach_credit_transfer,
+                    amount,
+                    chf_credit_transfer,
+                    created,
+                    currency,
+                    gbp_credit_transfer,
+                    id,
+                    livemode,
+                    paper_check,
+                    sepa_credit_transfer,
+                    source,
+                    status,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

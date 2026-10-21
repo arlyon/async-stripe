@@ -76,11 +76,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (promotions, terms_of_service) =
-                (self.promotions.take(), self.terms_of_service.take())
-            else {
-                return None;
-            };
+            let Self { promotions, terms_of_service } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { promotions, terms_of_service })
         }
     }

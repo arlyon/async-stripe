@@ -145,59 +145,45 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                address,
-                dob,
-                error,
-                expiration_date,
-                Some(files),
-                Some(first_name),
-                issued_date,
-                Some(issuing_country),
-                Some(last_name),
-                Some(number),
-                sex,
-                Some(status),
-                type_,
-                Some(unparsed_place_of_birth),
-                Some(unparsed_sex),
-            ) = (
-                self.address.take(),
-                self.dob,
-                self.error.take(),
-                self.expiration_date,
-                self.files.take(),
-                self.first_name.take(),
-                self.issued_date,
-                self.issuing_country.take(),
-                self.last_name.take(),
-                self.number.take(),
-                self.sex.take(),
-                self.status.take(),
-                self.type_.take(),
-                self.unparsed_place_of_birth.take(),
-                self.unparsed_sex.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                address,
-                dob,
-                error,
-                expiration_date,
-                files,
-                first_name,
-                issued_date,
-                issuing_country,
-                last_name,
-                number,
-                sex,
-                status,
-                type_,
-                unparsed_place_of_birth,
-                unparsed_sex,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    address,
+                    dob,
+                    error,
+                    expiration_date,
+                    files: Some(files),
+                    first_name: Some(first_name),
+                    issued_date,
+                    issuing_country: Some(issuing_country),
+                    last_name: Some(last_name),
+                    number: Some(number),
+                    sex,
+                    status: Some(status),
+                    type_,
+                    unparsed_place_of_birth: Some(unparsed_place_of_birth),
+                    unparsed_sex: Some(unparsed_sex),
+                } => Some(Self::Out {
+                    address,
+                    dob,
+                    error,
+                    expiration_date,
+                    files,
+                    first_name,
+                    issued_date,
+                    issuing_country,
+                    last_name,
+                    number,
+                    sex,
+                    status,
+                    type_,
+                    unparsed_place_of_birth,
+                    unparsed_sex,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

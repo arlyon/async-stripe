@@ -141,56 +141,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(address),
-                address_validation,
-                Some(business_name),
-                carrier,
-                customs,
-                Some(eta),
-                Some(name),
-                Some(phone_number),
-                Some(require_signature),
-                Some(service),
-                status,
-                Some(tracking_number),
-                Some(tracking_url),
-                Some(type_),
-            ) = (
-                self.address.take(),
-                self.address_validation.take(),
-                self.business_name.take(),
-                self.carrier.take(),
-                self.customs.take(),
-                self.eta,
-                self.name.take(),
-                self.phone_number.take(),
-                self.require_signature,
-                self.service.take(),
-                self.status.take(),
-                self.tracking_number.take(),
-                self.tracking_url.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                address,
-                address_validation,
-                business_name,
-                carrier,
-                customs,
-                eta,
-                name,
-                phone_number,
-                require_signature,
-                service,
-                status,
-                tracking_number,
-                tracking_url,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    address: Some(address),
+                    address_validation,
+                    business_name: Some(business_name),
+                    carrier,
+                    customs,
+                    eta: Some(eta),
+                    name: Some(name),
+                    phone_number: Some(phone_number),
+                    require_signature: Some(require_signature),
+                    service: Some(service),
+                    status,
+                    tracking_number: Some(tracking_number),
+                    tracking_url: Some(tracking_url),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    address,
+                    address_validation,
+                    business_name,
+                    carrier,
+                    customs,
+                    eta,
+                    name,
+                    phone_number,
+                    require_signature,
+                    service,
+                    status,
+                    tracking_number,
+                    tracking_url,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

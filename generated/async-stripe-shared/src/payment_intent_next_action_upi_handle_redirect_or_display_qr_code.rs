@@ -72,12 +72,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(hosted_instructions_url), Some(qr_code)) =
-                (self.hosted_instructions_url.take(), self.qr_code.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { hosted_instructions_url, qr_code })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    hosted_instructions_url: Some(hosted_instructions_url),
+                    qr_code: Some(qr_code),
+                } => Some(Self::Out { hosted_instructions_url, qr_code }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

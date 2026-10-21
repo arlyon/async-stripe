@@ -131,50 +131,39 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                card_logo,
-                carrier_text,
-                Some(created),
-                Some(id),
-                Some(livemode),
-                Some(lookup_key),
-                Some(metadata),
-                Some(name),
-                Some(physical_bundle),
-                Some(preferences),
-                Some(rejection_reasons),
-                Some(status),
-            ) = (
-                self.card_logo.take(),
-                self.carrier_text.take(),
-                self.created,
-                self.id.take(),
-                self.livemode,
-                self.lookup_key.take(),
-                self.metadata.take(),
-                self.name.take(),
-                self.physical_bundle.take(),
-                self.preferences,
-                self.rejection_reasons.take(),
-                self.status.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                card_logo,
-                carrier_text,
-                created,
-                id,
-                livemode,
-                lookup_key,
-                metadata,
-                name,
-                physical_bundle,
-                preferences,
-                rejection_reasons,
-                status,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    card_logo,
+                    carrier_text,
+                    created: Some(created),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    lookup_key: Some(lookup_key),
+                    metadata: Some(metadata),
+                    name: Some(name),
+                    physical_bundle: Some(physical_bundle),
+                    preferences: Some(preferences),
+                    rejection_reasons: Some(rejection_reasons),
+                    status: Some(status),
+                } => Some(Self::Out {
+                    card_logo,
+                    carrier_text,
+                    created,
+                    id,
+                    livemode,
+                    lookup_key,
+                    metadata,
+                    name,
+                    physical_bundle,
+                    preferences,
+                    rejection_reasons,
+                    status,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

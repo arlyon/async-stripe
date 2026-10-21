@@ -190,71 +190,53 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(active),
-                Some(amount),
-                Some(amount_decimal),
-                Some(billing_scheme),
-                Some(created),
-                Some(currency),
-                Some(id),
-                Some(interval),
-                Some(interval_count),
-                Some(livemode),
-                Some(metadata),
-                Some(meter),
-                Some(nickname),
-                product,
-                Some(tiers),
-                tiers_mode,
-                transform_usage,
-                Some(trial_period_days),
-                Some(usage_type),
-            ) = (
-                self.active,
-                self.amount,
-                self.amount_decimal.take(),
-                self.billing_scheme.take(),
-                self.created,
-                self.currency.take(),
-                self.id.take(),
-                self.interval.take(),
-                self.interval_count,
-                self.livemode,
-                self.metadata.take(),
-                self.meter.take(),
-                self.nickname.take(),
-                self.product.take(),
-                self.tiers.take(),
-                self.tiers_mode.take(),
-                self.transform_usage.take(),
-                self.trial_period_days,
-                self.usage_type.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                active,
-                amount,
-                amount_decimal,
-                billing_scheme,
-                created,
-                currency,
-                id,
-                interval,
-                interval_count,
-                livemode,
-                metadata,
-                meter,
-                nickname,
-                product,
-                tiers,
-                tiers_mode,
-                transform_usage,
-                trial_period_days,
-                usage_type,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    active: Some(active),
+                    amount: Some(amount),
+                    amount_decimal: Some(amount_decimal),
+                    billing_scheme: Some(billing_scheme),
+                    created: Some(created),
+                    currency: Some(currency),
+                    id: Some(id),
+                    interval: Some(interval),
+                    interval_count: Some(interval_count),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    meter: Some(meter),
+                    nickname: Some(nickname),
+                    product,
+                    tiers: Some(tiers),
+                    tiers_mode,
+                    transform_usage,
+                    trial_period_days: Some(trial_period_days),
+                    usage_type: Some(usage_type),
+                } => Some(Self::Out {
+                    active,
+                    amount,
+                    amount_decimal,
+                    billing_scheme,
+                    created,
+                    currency,
+                    id,
+                    interval,
+                    interval_count,
+                    livemode,
+                    metadata,
+                    meter,
+                    nickname,
+                    product,
+                    tiers,
+                    tiers_mode,
+                    transform_usage,
+                    trial_period_days,
+                    usage_type,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

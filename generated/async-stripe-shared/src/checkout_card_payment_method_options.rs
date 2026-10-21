@@ -163,47 +163,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                capture_method,
-                installments,
-                request_extended_authorization,
-                request_incremental_authorization,
-                request_multicapture,
-                request_overcapture,
-                Some(request_three_d_secure),
-                restrictions,
-                setup_future_usage,
-                Some(statement_descriptor_suffix_kana),
-                Some(statement_descriptor_suffix_kanji),
-            ) = (
-                self.capture_method.take(),
-                self.installments,
-                self.request_extended_authorization.take(),
-                self.request_incremental_authorization.take(),
-                self.request_multicapture.take(),
-                self.request_overcapture.take(),
-                self.request_three_d_secure.take(),
-                self.restrictions.take(),
-                self.setup_future_usage.take(),
-                self.statement_descriptor_suffix_kana.take(),
-                self.statement_descriptor_suffix_kanji.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                capture_method,
-                installments,
-                request_extended_authorization,
-                request_incremental_authorization,
-                request_multicapture,
-                request_overcapture,
-                request_three_d_secure,
-                restrictions,
-                setup_future_usage,
-                statement_descriptor_suffix_kana,
-                statement_descriptor_suffix_kanji,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    capture_method,
+                    installments,
+                    request_extended_authorization,
+                    request_incremental_authorization,
+                    request_multicapture,
+                    request_overcapture,
+                    request_three_d_secure: Some(request_three_d_secure),
+                    restrictions,
+                    setup_future_usage,
+                    statement_descriptor_suffix_kana: Some(statement_descriptor_suffix_kana),
+                    statement_descriptor_suffix_kanji: Some(statement_descriptor_suffix_kanji),
+                } => Some(Self::Out {
+                    capture_method,
+                    installments,
+                    request_extended_authorization,
+                    request_incremental_authorization,
+                    request_multicapture,
+                    request_overcapture,
+                    request_three_d_secure,
+                    restrictions,
+                    setup_future_usage,
+                    statement_descriptor_suffix_kana,
+                    statement_descriptor_suffix_kanji,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

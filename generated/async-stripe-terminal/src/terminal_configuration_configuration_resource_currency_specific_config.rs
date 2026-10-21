@@ -80,12 +80,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fixed_amounts), Some(percentages), Some(smart_tip_threshold)) =
-                (self.fixed_amounts.take(), self.percentages.take(), self.smart_tip_threshold)
-            else {
-                return None;
-            };
-            Some(Self::Out { fixed_amounts, percentages, smart_tip_threshold })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    fixed_amounts: Some(fixed_amounts),
+                    percentages: Some(percentages),
+                    smart_tip_threshold: Some(smart_tip_threshold),
+                } => Some(Self::Out { fixed_amounts, percentages, smart_tip_threshold }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -80,12 +80,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(document), error, Some(selfie), Some(status)) =
-                (self.document.take(), self.error.take(), self.selfie.take(), self.status.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { document, error, selfie, status })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    document: Some(document),
+                    error,
+                    selfie: Some(selfie),
+                    status: Some(status),
+                } => Some(Self::Out { document, error, selfie, status }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -71,10 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(check_in_at), Some(nights)) = (self.check_in_at, self.nights) else {
-                return None;
-            };
-            Some(Self::Out { check_in_at, nights })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { check_in_at: Some(check_in_at), nights: Some(nights) } => {
+                    Some(Self::Out { check_in_at, nights })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

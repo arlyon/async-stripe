@@ -159,59 +159,45 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                adjusted_for_overdraft,
-                applied_to_payment,
-                Some(created),
-                Some(currency),
-                Some(customer),
-                Some(customer_account),
-                Some(ending_balance),
-                funded,
-                Some(id),
-                Some(livemode),
-                Some(net_amount),
-                refunded_from_payment,
-                transferred_to_balance,
-                Some(type_),
-                unapplied_from_payment,
-            ) = (
-                self.adjusted_for_overdraft.take(),
-                self.applied_to_payment.take(),
-                self.created,
-                self.currency.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.ending_balance,
-                self.funded.take(),
-                self.id.take(),
-                self.livemode,
-                self.net_amount,
-                self.refunded_from_payment.take(),
-                self.transferred_to_balance.take(),
-                self.type_.take(),
-                self.unapplied_from_payment.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                adjusted_for_overdraft,
-                applied_to_payment,
-                created,
-                currency,
-                customer,
-                customer_account,
-                ending_balance,
-                funded,
-                id,
-                livemode,
-                net_amount,
-                refunded_from_payment,
-                transferred_to_balance,
-                type_,
-                unapplied_from_payment,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    adjusted_for_overdraft,
+                    applied_to_payment,
+                    created: Some(created),
+                    currency: Some(currency),
+                    customer: Some(customer),
+                    customer_account: Some(customer_account),
+                    ending_balance: Some(ending_balance),
+                    funded,
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    net_amount: Some(net_amount),
+                    refunded_from_payment,
+                    transferred_to_balance,
+                    type_: Some(type_),
+                    unapplied_from_payment,
+                } => Some(Self::Out {
+                    adjusted_for_overdraft,
+                    applied_to_payment,
+                    created,
+                    currency,
+                    customer,
+                    customer_account,
+                    ending_balance,
+                    funded,
+                    id,
+                    livemode,
+                    net_amount,
+                    refunded_from_payment,
+                    transferred_to_balance,
+                    type_,
+                    unapplied_from_payment,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

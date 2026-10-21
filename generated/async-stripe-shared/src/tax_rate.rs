@@ -170,65 +170,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(active),
-                Some(country),
-                Some(created),
-                Some(description),
-                Some(display_name),
-                Some(effective_percentage),
-                flat_amount,
-                Some(id),
-                Some(inclusive),
-                Some(jurisdiction),
-                jurisdiction_level,
-                Some(livemode),
-                Some(metadata),
-                Some(percentage),
-                rate_type,
-                Some(state),
-                tax_type,
-            ) = (
-                self.active,
-                self.country.take(),
-                self.created,
-                self.description.take(),
-                self.display_name.take(),
-                self.effective_percentage,
-                self.flat_amount.take(),
-                self.id.take(),
-                self.inclusive,
-                self.jurisdiction.take(),
-                self.jurisdiction_level.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.percentage,
-                self.rate_type.take(),
-                self.state.take(),
-                self.tax_type.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                active,
-                country,
-                created,
-                description,
-                display_name,
-                effective_percentage,
-                flat_amount,
-                id,
-                inclusive,
-                jurisdiction,
-                jurisdiction_level,
-                livemode,
-                metadata,
-                percentage,
-                rate_type,
-                state,
-                tax_type,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    active: Some(active),
+                    country: Some(country),
+                    created: Some(created),
+                    description: Some(description),
+                    display_name: Some(display_name),
+                    effective_percentage: Some(effective_percentage),
+                    flat_amount,
+                    id: Some(id),
+                    inclusive: Some(inclusive),
+                    jurisdiction: Some(jurisdiction),
+                    jurisdiction_level,
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    percentage: Some(percentage),
+                    rate_type,
+                    state: Some(state),
+                    tax_type,
+                } => Some(Self::Out {
+                    active,
+                    country,
+                    created,
+                    description,
+                    display_name,
+                    effective_percentage,
+                    flat_amount,
+                    id,
+                    inclusive,
+                    jurisdiction,
+                    jurisdiction_level,
+                    livemode,
+                    metadata,
+                    percentage,
+                    rate_type,
+                    state,
+                    tax_type,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

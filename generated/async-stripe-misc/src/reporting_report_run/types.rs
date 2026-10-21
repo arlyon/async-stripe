@@ -122,41 +122,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(error),
-                Some(id),
-                Some(livemode),
-                Some(parameters),
-                Some(report_type),
-                result,
-                Some(status),
-                Some(succeeded_at),
-            ) = (
-                self.created,
-                self.error.take(),
-                self.id.take(),
-                self.livemode,
-                self.parameters.take(),
-                self.report_type.take(),
-                self.result.take(),
-                self.status.take(),
-                self.succeeded_at,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                created,
-                error,
-                id,
-                livemode,
-                parameters,
-                report_type,
-                result,
-                status,
-                succeeded_at,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    error: Some(error),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    parameters: Some(parameters),
+                    report_type: Some(report_type),
+                    result,
+                    status: Some(status),
+                    succeeded_at: Some(succeeded_at),
+                } => Some(Self::Out {
+                    created,
+                    error,
+                    id,
+                    livemode,
+                    parameters,
+                    report_type,
+                    result,
+                    status,
+                    succeeded_at,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

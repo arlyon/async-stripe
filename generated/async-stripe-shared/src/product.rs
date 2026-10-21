@@ -173,68 +173,51 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(active),
-                Some(created),
-                default_price,
-                Some(description),
-                Some(id),
-                Some(images),
-                Some(livemode),
-                Some(marketing_features),
-                Some(metadata),
-                Some(name),
-                package_dimensions,
-                Some(shippable),
-                Some(statement_descriptor),
-                tax_code,
-                Some(type_),
-                Some(unit_label),
-                Some(updated),
-                Some(url),
-            ) = (
-                self.active,
-                self.created,
-                self.default_price.take(),
-                self.description.take(),
-                self.id.take(),
-                self.images.take(),
-                self.livemode,
-                self.marketing_features.take(),
-                self.metadata.take(),
-                self.name.take(),
-                self.package_dimensions,
-                self.shippable,
-                self.statement_descriptor.take(),
-                self.tax_code.take(),
-                self.type_.take(),
-                self.unit_label.take(),
-                self.updated,
-                self.url.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                active,
-                created,
-                default_price,
-                description,
-                id,
-                images,
-                livemode,
-                marketing_features,
-                metadata,
-                name,
-                package_dimensions,
-                shippable,
-                statement_descriptor,
-                tax_code,
-                type_,
-                unit_label,
-                updated,
-                url,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    active: Some(active),
+                    created: Some(created),
+                    default_price,
+                    description: Some(description),
+                    id: Some(id),
+                    images: Some(images),
+                    livemode: Some(livemode),
+                    marketing_features: Some(marketing_features),
+                    metadata: Some(metadata),
+                    name: Some(name),
+                    package_dimensions,
+                    shippable: Some(shippable),
+                    statement_descriptor: Some(statement_descriptor),
+                    tax_code,
+                    type_: Some(type_),
+                    unit_label: Some(unit_label),
+                    updated: Some(updated),
+                    url: Some(url),
+                } => Some(Self::Out {
+                    active,
+                    created,
+                    default_price,
+                    description,
+                    id,
+                    images,
+                    livemode,
+                    marketing_features,
+                    metadata,
+                    name,
+                    package_dimensions,
+                    shippable,
+                    statement_descriptor,
+                    tax_code,
+                    type_,
+                    unit_label,
+                    updated,
+                    url,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

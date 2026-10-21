@@ -73,12 +73,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(eligible), ineligible_reason) =
-                (self.eligible, self.ineligible_reason.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { eligible, ineligible_reason })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { eligible: Some(eligible), ineligible_reason } => {
+                    Some(Self::Out { eligible, ineligible_reason })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

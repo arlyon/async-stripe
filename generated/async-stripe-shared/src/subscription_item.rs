@@ -136,53 +136,41 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(billed_until),
-                billing_thresholds,
-                Some(created),
-                Some(current_period_end),
-                Some(current_period_start),
-                Some(discounts),
-                Some(id),
-                Some(metadata),
-                Some(plan),
-                Some(price),
-                Some(quantity),
-                Some(subscription),
-                Some(tax_rates),
-            ) = (
-                self.billed_until,
-                self.billing_thresholds,
-                self.created,
-                self.current_period_end,
-                self.current_period_start,
-                self.discounts.take(),
-                self.id.take(),
-                self.metadata.take(),
-                self.plan.take(),
-                self.price.take(),
-                self.quantity,
-                self.subscription.take(),
-                self.tax_rates.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                billed_until,
-                billing_thresholds,
-                created,
-                current_period_end,
-                current_period_start,
-                discounts,
-                id,
-                metadata,
-                plan,
-                price,
-                quantity,
-                subscription,
-                tax_rates,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    billed_until: Some(billed_until),
+                    billing_thresholds,
+                    created: Some(created),
+                    current_period_end: Some(current_period_end),
+                    current_period_start: Some(current_period_start),
+                    discounts: Some(discounts),
+                    id: Some(id),
+                    metadata: Some(metadata),
+                    plan: Some(plan),
+                    price: Some(price),
+                    quantity: Some(quantity),
+                    subscription: Some(subscription),
+                    tax_rates: Some(tax_rates),
+                } => Some(Self::Out {
+                    billed_until,
+                    billing_thresholds,
+                    created,
+                    current_period_end,
+                    current_period_start,
+                    discounts,
+                    id,
+                    metadata,
+                    plan,
+                    price,
+                    quantity,
+                    subscription,
+                    tax_rates,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

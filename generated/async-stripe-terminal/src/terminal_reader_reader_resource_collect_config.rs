@@ -81,12 +81,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enable_customer_cancellation), Some(skip_tipping), tipping) =
-                (self.enable_customer_cancellation, self.skip_tipping, self.tipping)
-            else {
-                return None;
-            };
-            Some(Self::Out { enable_customer_cancellation, skip_tipping, tipping })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    enable_customer_cancellation: Some(enable_customer_cancellation),
+                    skip_tipping: Some(skip_tipping),
+                    tipping,
+                } => Some(Self::Out { enable_customer_cancellation, skip_tipping, tipping }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

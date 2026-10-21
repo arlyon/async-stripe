@@ -132,7 +132,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
+            let Self {
                 acss_debit,
                 amazon_pay,
                 bacs_debit,
@@ -147,25 +147,7 @@ const _: () = {
                 sepa_debit,
                 upi,
                 us_bank_account,
-            ) = (
-                self.acss_debit.take(),
-                self.amazon_pay,
-                self.bacs_debit.take(),
-                self.bizum,
-                self.card.take(),
-                self.card_present,
-                self.klarna.take(),
-                self.link.take(),
-                self.paypal.take(),
-                self.payto.take(),
-                self.pix.take(),
-                self.sepa_debit.take(),
-                self.upi.take(),
-                self.us_bank_account.take(),
-            )
-            else {
-                return None;
-            };
+            } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out {
                 acss_debit,
                 amazon_pay,

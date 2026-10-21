@@ -74,12 +74,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(default_account_tax_ids), hosted_payment_method_save) =
-                (self.default_account_tax_ids.take(), self.hosted_payment_method_save.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { default_account_tax_ids, hosted_payment_method_save })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    default_account_tax_ids: Some(default_account_tax_ids),
+                    hosted_payment_method_save,
+                } => Some(Self::Out { default_account_tax_ids, hosted_payment_method_save }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

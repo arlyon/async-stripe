@@ -79,12 +79,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(delay_days), Some(delay_days_override), start_of_day) =
-                (self.delay_days, self.delay_days_override, self.start_of_day.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { delay_days, delay_days_override, start_of_day })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    delay_days: Some(delay_days),
+                    delay_days_override: Some(delay_days_override),
+                    start_of_day,
+                } => Some(Self::Out { delay_days, delay_days_override, start_of_day }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

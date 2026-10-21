@@ -96,15 +96,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (capture_method, Some(preferred_locale), Some(reference), setup_future_usage) = (
-                self.capture_method.take(),
-                self.preferred_locale.take(),
-                self.reference.take(),
-                self.setup_future_usage.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { capture_method, preferred_locale, reference, setup_future_usage })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    capture_method,
+                    preferred_locale: Some(preferred_locale),
+                    reference: Some(reference),
+                    setup_future_usage,
+                } => Some(Self::Out {
+                    capture_method,
+                    preferred_locale,
+                    reference,
+                    setup_future_usage,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

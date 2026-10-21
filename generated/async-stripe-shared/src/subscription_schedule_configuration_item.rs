@@ -106,35 +106,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                billing_thresholds,
-                Some(discounts),
-                Some(metadata),
-                Some(plan),
-                Some(price),
-                Some(quantity),
-                Some(tax_rates),
-            ) = (
-                self.billing_thresholds,
-                self.discounts.take(),
-                self.metadata.take(),
-                self.plan.take(),
-                self.price.take(),
-                self.quantity,
-                self.tax_rates.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                billing_thresholds,
-                discounts,
-                metadata,
-                plan,
-                price,
-                quantity,
-                tax_rates,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    billing_thresholds,
+                    discounts: Some(discounts),
+                    metadata: Some(metadata),
+                    plan: Some(plan),
+                    price: Some(price),
+                    quantity: Some(quantity),
+                    tax_rates: Some(tax_rates),
+                } => Some(Self::Out {
+                    billing_thresholds,
+                    discounts,
+                    metadata,
+                    plan,
+                    price,
+                    quantity,
+                    tax_rates,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

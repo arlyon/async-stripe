@@ -124,44 +124,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_id),
-                Some(account_trust_score),
-                card_number_source,
-                cardholder_address,
-                Some(cardholder_name),
-                Some(device_trust_score),
-                Some(hashed_account_email_address),
-                Some(reason_codes),
-                suggested_decision,
-                Some(suggested_decision_version),
-            ) = (
-                self.account_id.take(),
-                self.account_trust_score,
-                self.card_number_source.take(),
-                self.cardholder_address.take(),
-                self.cardholder_name.take(),
-                self.device_trust_score,
-                self.hashed_account_email_address.take(),
-                self.reason_codes.take(),
-                self.suggested_decision.take(),
-                self.suggested_decision_version.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account_id,
-                account_trust_score,
-                card_number_source,
-                cardholder_address,
-                cardholder_name,
-                device_trust_score,
-                hashed_account_email_address,
-                reason_codes,
-                suggested_decision,
-                suggested_decision_version,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_id: Some(account_id),
+                    account_trust_score: Some(account_trust_score),
+                    card_number_source,
+                    cardholder_address,
+                    cardholder_name: Some(cardholder_name),
+                    device_trust_score: Some(device_trust_score),
+                    hashed_account_email_address: Some(hashed_account_email_address),
+                    reason_codes: Some(reason_codes),
+                    suggested_decision,
+                    suggested_decision_version: Some(suggested_decision_version),
+                } => Some(Self::Out {
+                    account_id,
+                    account_trust_score,
+                    card_number_source,
+                    cardholder_address,
+                    cardholder_name,
+                    device_trust_score,
+                    hashed_account_email_address,
+                    reason_codes,
+                    suggested_decision,
+                    suggested_decision_version,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

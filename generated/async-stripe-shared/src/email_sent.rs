@@ -68,12 +68,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(email_sent_at), Some(email_sent_to)) =
-                (self.email_sent_at, self.email_sent_to.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { email_sent_at, email_sent_to })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { email_sent_at: Some(email_sent_at), email_sent_to: Some(email_sent_to) } => {
+                    Some(Self::Out { email_sent_at, email_sent_to })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

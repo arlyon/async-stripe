@@ -66,9 +66,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (blocked,) = (self.blocked.take(),) else {
-                return None;
-            };
+            let Self { blocked } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { blocked })
         }
     }

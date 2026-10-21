@@ -103,32 +103,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(after_completion),
-                customer_update,
-                subscription_cancel,
-                subscription_update,
-                subscription_update_confirm,
-                Some(type_),
-            ) = (
-                self.after_completion.take(),
-                self.customer_update,
-                self.subscription_cancel.take(),
-                self.subscription_update.take(),
-                self.subscription_update_confirm.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                after_completion,
-                customer_update,
-                subscription_cancel,
-                subscription_update,
-                subscription_update_confirm,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    after_completion: Some(after_completion),
+                    customer_update,
+                    subscription_cancel,
+                    subscription_update,
+                    subscription_update_confirm,
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    after_completion,
+                    customer_update,
+                    subscription_cancel,
+                    subscription_update,
+                    subscription_update_confirm,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

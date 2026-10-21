@@ -140,56 +140,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(balance_impact),
-                Some(created),
-                Some(currency),
-                Some(description),
-                Some(entries),
-                Some(financial_account),
-                Some(flow),
-                flow_details,
-                Some(flow_type),
-                Some(id),
-                Some(livemode),
-                Some(status),
-                Some(status_transitions),
-            ) = (
-                self.amount,
-                self.balance_impact,
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.entries.take(),
-                self.financial_account.take(),
-                self.flow.take(),
-                self.flow_details.take(),
-                self.flow_type.take(),
-                self.id.take(),
-                self.livemode,
-                self.status.take(),
-                self.status_transitions,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                balance_impact,
-                created,
-                currency,
-                description,
-                entries,
-                financial_account,
-                flow,
-                flow_details,
-                flow_type,
-                id,
-                livemode,
-                status,
-                status_transitions,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    balance_impact: Some(balance_impact),
+                    created: Some(created),
+                    currency: Some(currency),
+                    description: Some(description),
+                    entries: Some(entries),
+                    financial_account: Some(financial_account),
+                    flow: Some(flow),
+                    flow_details,
+                    flow_type: Some(flow_type),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    status: Some(status),
+                    status_transitions: Some(status_transitions),
+                } => Some(Self::Out {
+                    amount,
+                    balance_impact,
+                    created,
+                    currency,
+                    description,
+                    entries,
+                    financial_account,
+                    flow,
+                    flow_details,
+                    flow_type,
+                    id,
+                    livemode,
+                    status,
+                    status_transitions,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

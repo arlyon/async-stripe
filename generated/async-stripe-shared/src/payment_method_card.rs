@@ -165,65 +165,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(brand),
-                checks,
-                Some(country),
-                Some(description),
-                Some(display_brand),
-                Some(exp_month),
-                Some(exp_year),
-                Some(fingerprint),
-                Some(funding),
-                generated_from,
-                Some(iin),
-                Some(issuer),
-                Some(last4),
-                networks,
-                regulated_status,
-                three_d_secure_usage,
-                wallet,
-            ) = (
-                self.brand.take(),
-                self.checks.take(),
-                self.country.take(),
-                self.description.take(),
-                self.display_brand.take(),
-                self.exp_month,
-                self.exp_year,
-                self.fingerprint.take(),
-                self.funding.take(),
-                self.generated_from.take(),
-                self.iin.take(),
-                self.issuer.take(),
-                self.last4.take(),
-                self.networks.take(),
-                self.regulated_status.take(),
-                self.three_d_secure_usage,
-                self.wallet.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                brand,
-                checks,
-                country,
-                description,
-                display_brand,
-                exp_month,
-                exp_year,
-                fingerprint,
-                funding,
-                generated_from,
-                iin,
-                issuer,
-                last4,
-                networks,
-                regulated_status,
-                three_d_secure_usage,
-                wallet,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    brand: Some(brand),
+                    checks,
+                    country: Some(country),
+                    description: Some(description),
+                    display_brand: Some(display_brand),
+                    exp_month: Some(exp_month),
+                    exp_year: Some(exp_year),
+                    fingerprint: Some(fingerprint),
+                    funding: Some(funding),
+                    generated_from,
+                    iin: Some(iin),
+                    issuer: Some(issuer),
+                    last4: Some(last4),
+                    networks,
+                    regulated_status,
+                    three_d_secure_usage,
+                    wallet,
+                } => Some(Self::Out {
+                    brand,
+                    checks,
+                    country,
+                    description,
+                    display_brand,
+                    exp_month,
+                    exp_year,
+                    fingerprint,
+                    funding,
+                    generated_from,
+                    iin,
+                    issuer,
+                    last4,
+                    networks,
+                    regulated_status,
+                    three_d_secure_usage,
+                    wallet,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

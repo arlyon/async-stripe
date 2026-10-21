@@ -146,56 +146,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount_total),
-                Some(currency),
-                Some(customer),
-                Some(customer_details),
-                Some(expires_at),
-                Some(id),
-                Some(line_items),
-                Some(livemode),
-                ship_from_details,
-                shipping_cost,
-                Some(tax_amount_exclusive),
-                Some(tax_amount_inclusive),
-                Some(tax_breakdown),
-                Some(tax_date),
-            ) = (
-                self.amount_total,
-                self.currency.take(),
-                self.customer.take(),
-                self.customer_details.take(),
-                self.expires_at,
-                self.id.take(),
-                self.line_items.take(),
-                self.livemode,
-                self.ship_from_details.take(),
-                self.shipping_cost.take(),
-                self.tax_amount_exclusive,
-                self.tax_amount_inclusive,
-                self.tax_breakdown.take(),
-                self.tax_date,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount_total,
-                currency,
-                customer,
-                customer_details,
-                expires_at,
-                id,
-                line_items,
-                livemode,
-                ship_from_details,
-                shipping_cost,
-                tax_amount_exclusive,
-                tax_amount_inclusive,
-                tax_breakdown,
-                tax_date,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount_total: Some(amount_total),
+                    currency: Some(currency),
+                    customer: Some(customer),
+                    customer_details: Some(customer_details),
+                    expires_at: Some(expires_at),
+                    id: Some(id),
+                    line_items: Some(line_items),
+                    livemode: Some(livemode),
+                    ship_from_details,
+                    shipping_cost,
+                    tax_amount_exclusive: Some(tax_amount_exclusive),
+                    tax_amount_inclusive: Some(tax_amount_inclusive),
+                    tax_breakdown: Some(tax_breakdown),
+                    tax_date: Some(tax_date),
+                } => Some(Self::Out {
+                    amount_total,
+                    currency,
+                    customer,
+                    customer_details,
+                    expires_at,
+                    id,
+                    line_items,
+                    livemode,
+                    ship_from_details,
+                    shipping_cost,
+                    tax_amount_exclusive,
+                    tax_amount_inclusive,
+                    tax_breakdown,
+                    tax_date,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

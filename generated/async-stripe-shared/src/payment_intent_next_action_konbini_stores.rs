@@ -81,14 +81,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (familymart, lawson, ministop, seicomart) = (
-                self.familymart.take(),
-                self.lawson.take(),
-                self.ministop.take(),
-                self.seicomart.take(),
-            ) else {
-                return None;
-            };
+            let Self { familymart, lawson, ministop, seicomart } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { familymart, lawson, ministop, seicomart })
         }
     }

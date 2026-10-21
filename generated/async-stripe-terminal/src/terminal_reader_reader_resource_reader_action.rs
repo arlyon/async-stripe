@@ -153,53 +153,41 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(api_error),
-                collect_inputs,
-                collect_payment_method,
-                confirm_payment_intent,
-                Some(failure_code),
-                Some(failure_message),
-                print_content,
-                process_payment_intent,
-                process_setup_intent,
-                refund_payment,
-                set_reader_display,
-                Some(status),
-                Some(type_),
-            ) = (
-                self.api_error.take(),
-                self.collect_inputs.take(),
-                self.collect_payment_method.take(),
-                self.confirm_payment_intent.take(),
-                self.failure_code.take(),
-                self.failure_message.take(),
-                self.print_content.take(),
-                self.process_payment_intent.take(),
-                self.process_setup_intent.take(),
-                self.refund_payment.take(),
-                self.set_reader_display.take(),
-                self.status.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                api_error,
-                collect_inputs,
-                collect_payment_method,
-                confirm_payment_intent,
-                failure_code,
-                failure_message,
-                print_content,
-                process_payment_intent,
-                process_setup_intent,
-                refund_payment,
-                set_reader_display,
-                status,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    api_error: Some(api_error),
+                    collect_inputs,
+                    collect_payment_method,
+                    confirm_payment_intent,
+                    failure_code: Some(failure_code),
+                    failure_message: Some(failure_message),
+                    print_content,
+                    process_payment_intent,
+                    process_setup_intent,
+                    refund_payment,
+                    set_reader_display,
+                    status: Some(status),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    api_error,
+                    collect_inputs,
+                    collect_payment_method,
+                    confirm_payment_intent,
+                    failure_code,
+                    failure_message,
+                    print_content,
+                    process_payment_intent,
+                    process_setup_intent,
+                    refund_payment,
+                    set_reader_display,
+                    status,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

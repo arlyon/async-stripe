@@ -131,44 +131,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                advice_code,
-                Some(network_advice_code),
-                Some(network_decline_code),
-                Some(network_status),
-                Some(reason),
-                Some(risk_level),
-                Some(risk_score),
-                rule,
-                Some(seller_message),
-                Some(type_),
-            ) = (
-                self.advice_code.take(),
-                self.network_advice_code.take(),
-                self.network_decline_code.take(),
-                self.network_status.take(),
-                self.reason.take(),
-                self.risk_level.take(),
-                self.risk_score,
-                self.rule.take(),
-                self.seller_message.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                advice_code,
-                network_advice_code,
-                network_decline_code,
-                network_status,
-                reason,
-                risk_level,
-                risk_score,
-                rule,
-                seller_message,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    advice_code,
+                    network_advice_code: Some(network_advice_code),
+                    network_decline_code: Some(network_decline_code),
+                    network_status: Some(network_status),
+                    reason: Some(reason),
+                    risk_level: Some(risk_level),
+                    risk_score: Some(risk_score),
+                    rule,
+                    seller_message: Some(seller_message),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    advice_code,
+                    network_advice_code,
+                    network_decline_code,
+                    network_status,
+                    reason,
+                    risk_level,
+                    risk_score,
+                    rule,
+                    seller_message,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

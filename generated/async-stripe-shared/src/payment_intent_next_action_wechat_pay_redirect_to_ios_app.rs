@@ -67,10 +67,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(native_url),) = (self.native_url.take(),) else {
-                return None;
-            };
-            Some(Self::Out { native_url })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { native_url: Some(native_url) } => Some(Self::Out { native_url }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

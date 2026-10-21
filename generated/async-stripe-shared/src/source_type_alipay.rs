@@ -76,12 +76,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(data_string), Some(native_url), Some(statement_descriptor)) =
-                (self.data_string.take(), self.native_url.take(), self.statement_descriptor.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { data_string, native_url, statement_descriptor })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    data_string: Some(data_string),
+                    native_url: Some(native_url),
+                    statement_descriptor: Some(statement_descriptor),
+                } => Some(Self::Out { data_string, native_url, statement_descriptor }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

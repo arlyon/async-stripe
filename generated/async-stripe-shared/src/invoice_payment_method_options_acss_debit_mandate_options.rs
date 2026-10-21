@@ -69,9 +69,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (transaction_type,) = (self.transaction_type.take(),) else {
-                return None;
-            };
+            let Self { transaction_type } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { transaction_type })
         }
     }

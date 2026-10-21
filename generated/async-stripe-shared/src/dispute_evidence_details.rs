@@ -91,29 +91,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(due_by),
-                Some(enhanced_eligibility),
-                Some(has_evidence),
-                Some(past_due),
-                Some(submission_count),
-            ) = (
-                self.due_by,
-                self.enhanced_eligibility.take(),
-                self.has_evidence,
-                self.past_due,
-                self.submission_count,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                due_by,
-                enhanced_eligibility,
-                has_evidence,
-                past_due,
-                submission_count,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    due_by: Some(due_by),
+                    enhanced_eligibility: Some(enhanced_eligibility),
+                    has_evidence: Some(has_evidence),
+                    past_due: Some(past_due),
+                    submission_count: Some(submission_count),
+                } => Some(Self::Out {
+                    due_by,
+                    enhanced_eligibility,
+                    has_evidence,
+                    past_due,
+                    submission_count,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -78,14 +78,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(arrival_date), Some(hosted_verification_url), microdeposit_type) = (
-                self.arrival_date,
-                self.hosted_verification_url.take(),
-                self.microdeposit_type.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { arrival_date, hosted_verification_url, microdeposit_type })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    arrival_date: Some(arrival_date),
+                    hosted_verification_url: Some(hosted_verification_url),
+                    microdeposit_type,
+                } => Some(Self::Out { arrival_date, hosted_verification_url, microdeposit_type }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

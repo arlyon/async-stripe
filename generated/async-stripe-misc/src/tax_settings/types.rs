@@ -94,16 +94,19 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(defaults), head_office, Some(livemode), Some(status), Some(status_details)) = (
-                self.defaults.take(),
-                self.head_office.take(),
-                self.livemode,
-                self.status.take(),
-                self.status_details.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { defaults, head_office, livemode, status, status_details })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    defaults: Some(defaults),
+                    head_office,
+                    livemode: Some(livemode),
+                    status: Some(status),
+                    status_details: Some(status_details),
+                } => Some(Self::Out { defaults, head_office, livemode, status, status_details }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

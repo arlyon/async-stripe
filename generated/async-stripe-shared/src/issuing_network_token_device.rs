@@ -96,25 +96,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(device_fingerprint),
-                Some(ip_address),
-                Some(location),
-                Some(name),
-                Some(phone_number),
-                type_,
-            ) = (
-                self.device_fingerprint.take(),
-                self.ip_address.take(),
-                self.location.take(),
-                self.name.take(),
-                self.phone_number.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { device_fingerprint, ip_address, location, name, phone_number, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    device_fingerprint: Some(device_fingerprint),
+                    ip_address: Some(ip_address),
+                    location: Some(location),
+                    name: Some(name),
+                    phone_number: Some(phone_number),
+                    type_,
+                } => Some(Self::Out {
+                    device_fingerprint,
+                    ip_address,
+                    location,
+                    name,
+                    phone_number,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

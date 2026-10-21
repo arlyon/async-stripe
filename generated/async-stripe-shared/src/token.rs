@@ -124,29 +124,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                bank_account,
-                card,
-                Some(client_ip),
-                Some(created),
-                Some(id),
-                Some(livemode),
-                Some(type_),
-                Some(used),
-            ) = (
-                self.bank_account.take(),
-                self.card.take(),
-                self.client_ip.take(),
-                self.created,
-                self.id.take(),
-                self.livemode,
-                self.type_.take(),
-                self.used,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { bank_account, card, client_ip, created, id, livemode, type_, used })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    bank_account,
+                    card,
+                    client_ip: Some(client_ip),
+                    created: Some(created),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    type_: Some(type_),
+                    used: Some(used),
+                } => Some(Self::Out {
+                    bank_account,
+                    card,
+                    client_ip,
+                    created,
+                    id,
+                    livemode,
+                    type_,
+                    used,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

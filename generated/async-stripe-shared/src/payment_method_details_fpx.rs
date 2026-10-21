@@ -78,12 +78,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (account_holder_type, Some(bank), Some(transaction_id)) =
-                (self.account_holder_type.take(), self.bank.take(), self.transaction_id.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { account_holder_type, bank, transaction_id })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_holder_type,
+                    bank: Some(bank),
+                    transaction_id: Some(transaction_id),
+                } => Some(Self::Out { account_holder_type, bank, transaction_id }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

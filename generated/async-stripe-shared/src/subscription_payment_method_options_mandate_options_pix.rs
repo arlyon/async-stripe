@@ -89,15 +89,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), amount_includes_iof, Some(end_date), payment_schedule) = (
-                self.amount,
-                self.amount_includes_iof.take(),
-                self.end_date.take(),
-                self.payment_schedule.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { amount, amount_includes_iof, end_date, payment_schedule })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    amount_includes_iof,
+                    end_date: Some(end_date),
+                    payment_schedule,
+                } => Some(Self::Out { amount, amount_includes_iof, end_date, payment_schedule }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

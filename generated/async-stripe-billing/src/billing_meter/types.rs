@@ -128,50 +128,39 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(customer_mapping),
-                Some(default_aggregation),
-                Some(display_name),
-                Some(event_name),
-                event_time_window,
-                Some(id),
-                Some(livemode),
-                Some(status),
-                Some(status_transitions),
-                Some(updated),
-                Some(value_settings),
-            ) = (
-                self.created,
-                self.customer_mapping.take(),
-                self.default_aggregation.take(),
-                self.display_name.take(),
-                self.event_name.take(),
-                self.event_time_window.take(),
-                self.id.take(),
-                self.livemode,
-                self.status.take(),
-                self.status_transitions,
-                self.updated,
-                self.value_settings.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                created,
-                customer_mapping,
-                default_aggregation,
-                display_name,
-                event_name,
-                event_time_window,
-                id,
-                livemode,
-                status,
-                status_transitions,
-                updated,
-                value_settings,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    customer_mapping: Some(customer_mapping),
+                    default_aggregation: Some(default_aggregation),
+                    display_name: Some(display_name),
+                    event_name: Some(event_name),
+                    event_time_window,
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    status: Some(status),
+                    status_transitions: Some(status_transitions),
+                    updated: Some(updated),
+                    value_settings: Some(value_settings),
+                } => Some(Self::Out {
+                    created,
+                    customer_mapping,
+                    default_aggregation,
+                    display_name,
+                    event_name,
+                    event_time_window,
+                    id,
+                    livemode,
+                    status,
+                    status_transitions,
+                    updated,
+                    value_settings,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

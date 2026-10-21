@@ -135,50 +135,39 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(created),
-                Some(created_by),
-                Some(currency),
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(reason),
-                Some(released_at),
-                reserve_hold,
-                reserve_plan,
-                source_transaction,
-            ) = (
-                self.amount,
-                self.created,
-                self.created_by.take(),
-                self.currency.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.reason.take(),
-                self.released_at,
-                self.reserve_hold.take(),
-                self.reserve_plan.take(),
-                self.source_transaction.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                created,
-                created_by,
-                currency,
-                id,
-                livemode,
-                metadata,
-                reason,
-                released_at,
-                reserve_hold,
-                reserve_plan,
-                source_transaction,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    created: Some(created),
+                    created_by: Some(created_by),
+                    currency: Some(currency),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    reason: Some(reason),
+                    released_at: Some(released_at),
+                    reserve_hold,
+                    reserve_plan,
+                    source_transaction,
+                } => Some(Self::Out {
+                    amount,
+                    created,
+                    created_by,
+                    currency,
+                    id,
+                    livemode,
+                    metadata,
+                    reason,
+                    released_at,
+                    reserve_hold,
+                    reserve_plan,
+                    source_transaction,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

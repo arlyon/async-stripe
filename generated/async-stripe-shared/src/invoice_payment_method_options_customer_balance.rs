@@ -76,11 +76,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (bank_transfer, funding_type) =
-                (self.bank_transfer.take(), self.funding_type.take())
-            else {
-                return None;
-            };
+            let Self { bank_transfer, funding_type } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { bank_transfer, funding_type })
         }
     }

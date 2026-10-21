@@ -2,7 +2,6 @@ use std::fmt::Write;
 
 use indoc::{formatdoc, writedoc};
 
-use crate::components::Components;
 use crate::rust_object::{EnumOfObjects, StructField};
 use crate::rust_type::{Container, PathToType, RustType};
 use crate::templates::ObjectWriter;
@@ -165,7 +164,7 @@ impl ObjectWriter<'_> {
             let _ = writeln!(builder_inner, "{f_name}: Option<{printable}>,");
         }
 
-        let inner = miniserde_struct_inner(ident, &builder_name, fields, self.components);
+        let inner = miniserde_struct_inner(ident, &builder_name, fields);
         let _ = writedoc! {
             out,
             r#"
@@ -195,13 +194,12 @@ fn miniserde_struct_inner(
     ident: &RustIdent,
     builder_name: &RustIdent,
     fields: &[StructField],
-    components: &Components,
 ) -> String {
     let mut key_inner = String::new();
     let mut builder_new_inner = String::new();
 
-    let mut take_out_left = String::new();
-    let mut take_out_right = String::new();
+    let mut take_out_pattern = String::new();
+    let mut has_required = false;
     for field in fields {
         let f_name = &field.variable_name();
         let wire_name = field.wire_name();
@@ -217,18 +215,13 @@ fn miniserde_struct_inner(
             r#"
             "{wire_name}" => {begin}(&mut self.{f_name}),"#
         );
-        let is_copy = field.rust_type.is_copy(components);
 
         if slot.nullable {
-            let _ = writeln!(take_out_left, "{f_name},");
+            let _ = writeln!(take_out_pattern, "{f_name},");
         } else {
-            let _ = writeln!(take_out_left, "Some({f_name}),");
+            has_required = true;
+            let _ = writeln!(take_out_pattern, "{f_name}: Some({f_name}),");
         }
-        // For types which implement `Copy`, we don't need to call `.take()`. Does not affect
-        // behavior, but helps a bit according to `llvm-lines` and binary size, so may as well since
-        // unnecessary `take()` is not optimized out
-        let take = if is_copy { "" } else { ".take()" };
-        let _ = writeln!(take_out_right, "self.{f_name}{take},");
 
         // NB: matches miniserde::Deserialize::default(), but generates smaller artifacts. `None` vs `Some(None)`
         // is how missing required values are detected
@@ -239,6 +232,25 @@ fn miniserde_struct_inner(
 
     let comma_sep_fields =
         fields.iter().map(|f| f.variable_name().clone()).collect::<Vec<_>>().join(",");
+
+    // Move the whole builder in the fallback arm, so a missing field costs one drop of the builder
+    // instead of one drop per field
+    let take_out_body = if has_required {
+        format!(
+            "match core::mem::replace(self, Self::deser_default()) {{
+                Self {{ {take_out_pattern} }} => Some(Self::Out {{ {comma_sep_fields} }}),
+                builder => {{
+                    *self = builder;
+                    None
+                }}
+            }}"
+        )
+    } else {
+        format!(
+            "let Self {{ {take_out_pattern} }} = core::mem::replace(self, Self::deser_default());
+            Some(Self::Out {{ {comma_sep_fields} }})"
+        )
+    };
 
     formatdoc! {r#"
     impl Deserialize for {ident} {{
@@ -274,10 +286,7 @@ fn miniserde_struct_inner(
         }}
 
         fn take_out(&mut self) -> Option<Self::Out> {{
-            let ({take_out_left}) = ({take_out_right}) else {{
-                return None;
-            }};
-            Some(Self::Out {{ {comma_sep_fields} }})
+            {take_out_body}
         }}
     }}
 

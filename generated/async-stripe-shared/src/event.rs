@@ -133,44 +133,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account),
-                Some(api_version),
-                Some(context),
-                Some(created),
-                Some(data),
-                Some(id),
-                Some(livemode),
-                Some(pending_webhooks),
-                request,
-                Some(type_),
-            ) = (
-                self.account.take(),
-                self.api_version.take(),
-                self.context.take(),
-                self.created,
-                self.data.take(),
-                self.id.take(),
-                self.livemode,
-                self.pending_webhooks,
-                self.request.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account,
-                api_version,
-                context,
-                created,
-                data,
-                id,
-                livemode,
-                pending_webhooks,
-                request,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account: Some(account),
+                    api_version: Some(api_version),
+                    context: Some(context),
+                    created: Some(created),
+                    data: Some(data),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    pending_webhooks: Some(pending_webhooks),
+                    request,
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    account,
+                    api_version,
+                    context,
+                    created,
+                    data,
+                    id,
+                    livemode,
+                    pending_webhooks,
+                    request,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

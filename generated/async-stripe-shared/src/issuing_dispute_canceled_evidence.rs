@@ -122,44 +122,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                additional_documentation,
-                Some(canceled_at),
-                Some(cancellation_policy_provided),
-                Some(cancellation_reason),
-                Some(expected_at),
-                Some(explanation),
-                Some(product_description),
-                product_type,
-                return_status,
-                Some(returned_at),
-            ) = (
-                self.additional_documentation.take(),
-                self.canceled_at,
-                self.cancellation_policy_provided,
-                self.cancellation_reason.take(),
-                self.expected_at,
-                self.explanation.take(),
-                self.product_description.take(),
-                self.product_type.take(),
-                self.return_status.take(),
-                self.returned_at,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                additional_documentation,
-                canceled_at,
-                cancellation_policy_provided,
-                cancellation_reason,
-                expected_at,
-                explanation,
-                product_description,
-                product_type,
-                return_status,
-                returned_at,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    additional_documentation,
+                    canceled_at: Some(canceled_at),
+                    cancellation_policy_provided: Some(cancellation_policy_provided),
+                    cancellation_reason: Some(cancellation_reason),
+                    expected_at: Some(expected_at),
+                    explanation: Some(explanation),
+                    product_description: Some(product_description),
+                    product_type,
+                    return_status,
+                    returned_at: Some(returned_at),
+                } => Some(Self::Out {
+                    additional_documentation,
+                    canceled_at,
+                    cancellation_policy_provided,
+                    cancellation_reason,
+                    expected_at,
+                    explanation,
+                    product_description,
+                    product_type,
+                    return_status,
+                    returned_at,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

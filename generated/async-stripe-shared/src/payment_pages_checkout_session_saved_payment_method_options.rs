@@ -94,14 +94,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(allow_redisplay_filters), payment_method_remove, payment_method_save) = (
-                self.allow_redisplay_filters.take(),
-                self.payment_method_remove.take(),
-                self.payment_method_save.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { allow_redisplay_filters, payment_method_remove, payment_method_save })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    allow_redisplay_filters: Some(allow_redisplay_filters),
+                    payment_method_remove,
+                    payment_method_save,
+                } => Some(Self::Out {
+                    allow_redisplay_filters,
+                    payment_method_remove,
+                    payment_method_save,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -122,47 +122,39 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(bank_name),
-                Some(bic),
-                Some(iban),
-                Some(refund_account_holder_address_city),
-                Some(refund_account_holder_address_country),
-                Some(refund_account_holder_address_line1),
-                Some(refund_account_holder_address_line2),
-                Some(refund_account_holder_address_postal_code),
-                Some(refund_account_holder_address_state),
-                Some(refund_account_holder_name),
-                Some(refund_iban),
-            ) = (
-                self.bank_name.take(),
-                self.bic.take(),
-                self.iban.take(),
-                self.refund_account_holder_address_city.take(),
-                self.refund_account_holder_address_country.take(),
-                self.refund_account_holder_address_line1.take(),
-                self.refund_account_holder_address_line2.take(),
-                self.refund_account_holder_address_postal_code.take(),
-                self.refund_account_holder_address_state.take(),
-                self.refund_account_holder_name.take(),
-                self.refund_iban.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                bank_name,
-                bic,
-                iban,
-                refund_account_holder_address_city,
-                refund_account_holder_address_country,
-                refund_account_holder_address_line1,
-                refund_account_holder_address_line2,
-                refund_account_holder_address_postal_code,
-                refund_account_holder_address_state,
-                refund_account_holder_name,
-                refund_iban,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    bank_name: Some(bank_name),
+                    bic: Some(bic),
+                    iban: Some(iban),
+                    refund_account_holder_address_city: Some(refund_account_holder_address_city),
+                    refund_account_holder_address_country:
+                        Some(refund_account_holder_address_country),
+                    refund_account_holder_address_line1: Some(refund_account_holder_address_line1),
+                    refund_account_holder_address_line2: Some(refund_account_holder_address_line2),
+                    refund_account_holder_address_postal_code:
+                        Some(refund_account_holder_address_postal_code),
+                    refund_account_holder_address_state: Some(refund_account_holder_address_state),
+                    refund_account_holder_name: Some(refund_account_holder_name),
+                    refund_iban: Some(refund_iban),
+                } => Some(Self::Out {
+                    bank_name,
+                    bic,
+                    iban,
+                    refund_account_holder_address_city,
+                    refund_account_holder_address_country,
+                    refund_account_holder_address_line1,
+                    refund_account_holder_address_line2,
+                    refund_account_holder_address_postal_code,
+                    refund_account_holder_address_state,
+                    refund_account_holder_name,
+                    refund_iban,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

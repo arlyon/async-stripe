@@ -176,71 +176,53 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                application,
-                Some(billing_mode),
-                Some(canceled_at),
-                Some(completed_at),
-                Some(created),
-                current_phase,
-                Some(customer),
-                Some(customer_account),
-                Some(default_settings),
-                Some(end_behavior),
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(phases),
-                Some(released_at),
-                Some(released_subscription),
-                Some(status),
-                subscription,
-                test_clock,
-            ) = (
-                self.application.take(),
-                self.billing_mode.take(),
-                self.canceled_at,
-                self.completed_at,
-                self.created,
-                self.current_phase,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.default_settings.take(),
-                self.end_behavior.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.phases.take(),
-                self.released_at,
-                self.released_subscription.take(),
-                self.status.take(),
-                self.subscription.take(),
-                self.test_clock.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                application,
-                billing_mode,
-                canceled_at,
-                completed_at,
-                created,
-                current_phase,
-                customer,
-                customer_account,
-                default_settings,
-                end_behavior,
-                id,
-                livemode,
-                metadata,
-                phases,
-                released_at,
-                released_subscription,
-                status,
-                subscription,
-                test_clock,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    application,
+                    billing_mode: Some(billing_mode),
+                    canceled_at: Some(canceled_at),
+                    completed_at: Some(completed_at),
+                    created: Some(created),
+                    current_phase,
+                    customer: Some(customer),
+                    customer_account: Some(customer_account),
+                    default_settings: Some(default_settings),
+                    end_behavior: Some(end_behavior),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    phases: Some(phases),
+                    released_at: Some(released_at),
+                    released_subscription: Some(released_subscription),
+                    status: Some(status),
+                    subscription,
+                    test_clock,
+                } => Some(Self::Out {
+                    application,
+                    billing_mode,
+                    canceled_at,
+                    completed_at,
+                    created,
+                    current_phase,
+                    customer,
+                    customer_account,
+                    default_settings,
+                    end_behavior,
+                    id,
+                    livemode,
+                    metadata,
+                    phases,
+                    released_at,
+                    released_subscription,
+                    status,
+                    subscription,
+                    test_clock,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

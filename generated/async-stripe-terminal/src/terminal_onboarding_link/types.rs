@@ -83,15 +83,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(link_options), Some(link_type), Some(on_behalf_of), Some(redirect_url)) = (
-                self.link_options.take(),
-                self.link_type.take(),
-                self.on_behalf_of.take(),
-                self.redirect_url.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { link_options, link_type, on_behalf_of, redirect_url })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    link_options: Some(link_options),
+                    link_type: Some(link_type),
+                    on_behalf_of: Some(on_behalf_of),
+                    redirect_url: Some(redirect_url),
+                } => Some(Self::Out { link_options, link_type, on_behalf_of, redirect_url }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

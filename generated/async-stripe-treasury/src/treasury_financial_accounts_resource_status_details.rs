@@ -67,9 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (closed,) = (self.closed.take(),) else {
-                return None;
-            };
+            let Self { closed } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { closed })
         }
     }

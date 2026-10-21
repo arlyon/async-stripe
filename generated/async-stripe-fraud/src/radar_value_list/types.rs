@@ -116,41 +116,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(alias),
-                Some(created),
-                Some(created_by),
-                Some(id),
-                Some(item_type),
-                Some(list_items),
-                Some(livemode),
-                Some(metadata),
-                Some(name),
-            ) = (
-                self.alias.take(),
-                self.created,
-                self.created_by.take(),
-                self.id.take(),
-                self.item_type.take(),
-                self.list_items.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.name.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                alias,
-                created,
-                created_by,
-                id,
-                item_type,
-                list_items,
-                livemode,
-                metadata,
-                name,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    alias: Some(alias),
+                    created: Some(created),
+                    created_by: Some(created_by),
+                    id: Some(id),
+                    item_type: Some(item_type),
+                    list_items: Some(list_items),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    name: Some(name),
+                } => Some(Self::Out {
+                    alias,
+                    created,
+                    created_by,
+                    id,
+                    item_type,
+                    list_items,
+                    livemode,
+                    metadata,
+                    name,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

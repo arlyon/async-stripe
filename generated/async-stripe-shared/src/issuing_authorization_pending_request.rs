@@ -105,35 +105,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                amount_details,
-                Some(currency),
-                Some(is_amount_controllable),
-                Some(merchant_amount),
-                Some(merchant_currency),
-                Some(network_risk_score),
-            ) = (
-                self.amount,
-                self.amount_details,
-                self.currency.take(),
-                self.is_amount_controllable,
-                self.merchant_amount,
-                self.merchant_currency.take(),
-                self.network_risk_score,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                amount_details,
-                currency,
-                is_amount_controllable,
-                merchant_amount,
-                merchant_currency,
-                network_risk_score,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    amount_details,
+                    currency: Some(currency),
+                    is_amount_controllable: Some(is_amount_controllable),
+                    merchant_amount: Some(merchant_amount),
+                    merchant_currency: Some(merchant_currency),
+                    network_risk_score: Some(network_risk_score),
+                } => Some(Self::Out {
+                    amount,
+                    amount_details,
+                    currency,
+                    is_amount_controllable,
+                    merchant_amount,
+                    merchant_currency,
+                    network_risk_score,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

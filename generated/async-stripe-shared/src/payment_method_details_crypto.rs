@@ -86,15 +86,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buyer_address), network, token_currency, Some(transaction_hash)) = (
-                self.buyer_address.take(),
-                self.network.take(),
-                self.token_currency.take(),
-                self.transaction_hash.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { buyer_address, network, token_currency, transaction_hash })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    buyer_address: Some(buyer_address),
+                    network,
+                    token_currency,
+                    transaction_hash: Some(transaction_hash),
+                } => Some(Self::Out { buyer_address, network, token_currency, transaction_hash }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

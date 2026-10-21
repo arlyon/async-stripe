@@ -73,12 +73,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(deadline), restricted_reason) =
-                (self.deadline, self.restricted_reason.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { deadline, restricted_reason })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { deadline: Some(deadline), restricted_reason } => {
+                    Some(Self::Out { deadline, restricted_reason })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

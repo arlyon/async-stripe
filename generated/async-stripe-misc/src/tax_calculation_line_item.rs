@@ -123,47 +123,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(amount_tax),
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(product),
-                Some(quantity),
-                Some(reference),
-                Some(tax_behavior),
-                Some(tax_breakdown),
-                Some(tax_code),
-            ) = (
-                self.amount,
-                self.amount_tax,
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.product.take(),
-                self.quantity,
-                self.reference.take(),
-                self.tax_behavior.take(),
-                self.tax_breakdown.take(),
-                self.tax_code.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                amount_tax,
-                id,
-                livemode,
-                metadata,
-                product,
-                quantity,
-                reference,
-                tax_behavior,
-                tax_breakdown,
-                tax_code,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    amount_tax: Some(amount_tax),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    product: Some(product),
+                    quantity: Some(quantity),
+                    reference: Some(reference),
+                    tax_behavior: Some(tax_behavior),
+                    tax_breakdown: Some(tax_breakdown),
+                    tax_code: Some(tax_code),
+                } => Some(Self::Out {
+                    amount,
+                    amount_tax,
+                    id,
+                    livemode,
+                    metadata,
+                    product,
+                    quantity,
+                    reference,
+                    tax_behavior,
+                    tax_breakdown,
+                    tax_code,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

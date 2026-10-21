@@ -96,26 +96,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                amount_includes_iof,
-                Some(expires_after_seconds),
-                mandate_options,
-                setup_future_usage,
-            ) = (
-                self.amount_includes_iof.take(),
-                self.expires_after_seconds,
-                self.mandate_options.take(),
-                self.setup_future_usage.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount_includes_iof,
-                expires_after_seconds,
-                mandate_options,
-                setup_future_usage,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount_includes_iof,
+                    expires_after_seconds: Some(expires_after_seconds),
+                    mandate_options,
+                    setup_future_usage,
+                } => Some(Self::Out {
+                    amount_includes_iof,
+                    expires_after_seconds,
+                    mandate_options,
+                    setup_future_usage,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

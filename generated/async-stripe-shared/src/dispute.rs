@@ -163,65 +163,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(balance_transactions),
-                Some(charge),
-                Some(created),
-                Some(currency),
-                Some(enhanced_eligibility_types),
-                Some(evidence),
-                Some(evidence_details),
-                Some(id),
-                Some(is_charge_refundable),
-                Some(livemode),
-                Some(metadata),
-                Some(network_reason_code),
-                payment_intent,
-                payment_method_details,
-                Some(reason),
-                Some(status),
-            ) = (
-                self.amount,
-                self.balance_transactions.take(),
-                self.charge.take(),
-                self.created,
-                self.currency.take(),
-                self.enhanced_eligibility_types.take(),
-                self.evidence.take(),
-                self.evidence_details.take(),
-                self.id.take(),
-                self.is_charge_refundable,
-                self.livemode,
-                self.metadata.take(),
-                self.network_reason_code.take(),
-                self.payment_intent.take(),
-                self.payment_method_details.take(),
-                self.reason.take(),
-                self.status.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                balance_transactions,
-                charge,
-                created,
-                currency,
-                enhanced_eligibility_types,
-                evidence,
-                evidence_details,
-                id,
-                is_charge_refundable,
-                livemode,
-                metadata,
-                network_reason_code,
-                payment_intent,
-                payment_method_details,
-                reason,
-                status,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    balance_transactions: Some(balance_transactions),
+                    charge: Some(charge),
+                    created: Some(created),
+                    currency: Some(currency),
+                    enhanced_eligibility_types: Some(enhanced_eligibility_types),
+                    evidence: Some(evidence),
+                    evidence_details: Some(evidence_details),
+                    id: Some(id),
+                    is_charge_refundable: Some(is_charge_refundable),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    network_reason_code: Some(network_reason_code),
+                    payment_intent,
+                    payment_method_details,
+                    reason: Some(reason),
+                    status: Some(status),
+                } => Some(Self::Out {
+                    amount,
+                    balance_transactions,
+                    charge,
+                    created,
+                    currency,
+                    enhanced_eligibility_types,
+                    evidence,
+                    evidence_details,
+                    id,
+                    is_charge_refundable,
+                    livemode,
+                    metadata,
+                    network_reason_code,
+                    payment_intent,
+                    payment_method_details,
+                    reason,
+                    status,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

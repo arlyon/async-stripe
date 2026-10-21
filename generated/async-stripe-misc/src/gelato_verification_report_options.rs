@@ -69,9 +69,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (document, id_number) = (self.document.take(), self.id_number) else {
-                return None;
-            };
+            let Self { document, id_number } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { document, id_number })
         }
     }

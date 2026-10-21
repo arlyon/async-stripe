@@ -75,12 +75,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(date), Some(ip), Some(user_agent)) =
-                (self.date, self.ip.take(), self.user_agent.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { date, ip, user_agent })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { date: Some(date), ip: Some(ip), user_agent: Some(user_agent) } => {
+                    Some(Self::Out { date, ip, user_agent })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

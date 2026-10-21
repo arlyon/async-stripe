@@ -127,38 +127,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                blik_authorize,
-                cashapp_handle_redirect_or_display_qr_code,
-                pix_display_qr_code,
-                redirect_to_url,
-                Some(type_),
-                upi_handle_redirect_or_display_qr_code,
-                Some(use_stripe_sdk),
-                verify_with_microdeposits,
-            ) = (
-                self.blik_authorize,
-                self.cashapp_handle_redirect_or_display_qr_code.take(),
-                self.pix_display_qr_code.take(),
-                self.redirect_to_url.take(),
-                self.type_.take(),
-                self.upi_handle_redirect_or_display_qr_code.take(),
-                self.use_stripe_sdk.take(),
-                self.verify_with_microdeposits.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                blik_authorize,
-                cashapp_handle_redirect_or_display_qr_code,
-                pix_display_qr_code,
-                redirect_to_url,
-                type_,
-                upi_handle_redirect_or_display_qr_code,
-                use_stripe_sdk,
-                verify_with_microdeposits,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    blik_authorize,
+                    cashapp_handle_redirect_or_display_qr_code,
+                    pix_display_qr_code,
+                    redirect_to_url,
+                    type_: Some(type_),
+                    upi_handle_redirect_or_display_qr_code,
+                    use_stripe_sdk: Some(use_stripe_sdk),
+                    verify_with_microdeposits,
+                } => Some(Self::Out {
+                    blik_authorize,
+                    cashapp_handle_redirect_or_display_qr_code,
+                    pix_display_qr_code,
+                    redirect_to_url,
+                    type_,
+                    upi_handle_redirect_or_display_qr_code,
+                    use_stripe_sdk,
+                    verify_with_microdeposits,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

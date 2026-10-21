@@ -155,59 +155,45 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(available_on),
-                Some(balance_type),
-                Some(created),
-                Some(currency),
-                Some(description),
-                Some(exchange_rate),
-                Some(fee),
-                Some(fee_details),
-                Some(id),
-                Some(net),
-                Some(reporting_category),
-                source,
-                Some(status),
-                Some(type_),
-            ) = (
-                self.amount,
-                self.available_on,
-                self.balance_type.take(),
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.exchange_rate,
-                self.fee,
-                self.fee_details.take(),
-                self.id.take(),
-                self.net,
-                self.reporting_category.take(),
-                self.source.take(),
-                self.status.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                available_on,
-                balance_type,
-                created,
-                currency,
-                description,
-                exchange_rate,
-                fee,
-                fee_details,
-                id,
-                net,
-                reporting_category,
-                source,
-                status,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    available_on: Some(available_on),
+                    balance_type: Some(balance_type),
+                    created: Some(created),
+                    currency: Some(currency),
+                    description: Some(description),
+                    exchange_rate: Some(exchange_rate),
+                    fee: Some(fee),
+                    fee_details: Some(fee_details),
+                    id: Some(id),
+                    net: Some(net),
+                    reporting_category: Some(reporting_category),
+                    source,
+                    status: Some(status),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    amount,
+                    available_on,
+                    balance_type,
+                    created,
+                    currency,
+                    description,
+                    exchange_rate,
+                    fee,
+                    fee_details,
+                    id,
+                    net,
+                    reporting_category,
+                    source,
+                    status,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

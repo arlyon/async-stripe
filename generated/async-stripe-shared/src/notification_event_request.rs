@@ -74,11 +74,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(id), Some(idempotency_key)) = (self.id.take(), self.idempotency_key.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { id, idempotency_key })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { id: Some(id), idempotency_key: Some(idempotency_key) } => {
+                    Some(Self::Out { id, idempotency_key })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

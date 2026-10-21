@@ -176,68 +176,51 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                balance_transaction,
-                Some(created),
-                Some(currency),
-                Some(description),
-                Some(expected_availability_date),
-                Some(failure_code),
-                Some(failure_message),
-                Some(id),
-                initiated_by,
-                Some(livemode),
-                Some(metadata),
-                payment_method,
-                payment_method_options,
-                source,
-                Some(statement_descriptor),
-                Some(status),
-                Some(transfer_group),
-            ) = (
-                self.amount,
-                self.balance_transaction.take(),
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.expected_availability_date,
-                self.failure_code.take(),
-                self.failure_message.take(),
-                self.id.take(),
-                self.initiated_by.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.payment_method.take(),
-                self.payment_method_options.take(),
-                self.source.take(),
-                self.statement_descriptor.take(),
-                self.status.take(),
-                self.transfer_group.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                balance_transaction,
-                created,
-                currency,
-                description,
-                expected_availability_date,
-                failure_code,
-                failure_message,
-                id,
-                initiated_by,
-                livemode,
-                metadata,
-                payment_method,
-                payment_method_options,
-                source,
-                statement_descriptor,
-                status,
-                transfer_group,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    balance_transaction,
+                    created: Some(created),
+                    currency: Some(currency),
+                    description: Some(description),
+                    expected_availability_date: Some(expected_availability_date),
+                    failure_code: Some(failure_code),
+                    failure_message: Some(failure_message),
+                    id: Some(id),
+                    initiated_by,
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    payment_method,
+                    payment_method_options,
+                    source,
+                    statement_descriptor: Some(statement_descriptor),
+                    status: Some(status),
+                    transfer_group: Some(transfer_group),
+                } => Some(Self::Out {
+                    amount,
+                    balance_transaction,
+                    created,
+                    currency,
+                    description,
+                    expected_availability_date,
+                    failure_code,
+                    failure_message,
+                    id,
+                    initiated_by,
+                    livemode,
+                    metadata,
+                    payment_method,
+                    payment_method_options,
+                    source,
+                    statement_descriptor,
+                    status,
+                    transfer_group,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

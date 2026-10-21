@@ -116,38 +116,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(alternatives),
-                Some(current_deadline),
-                Some(currently_due),
-                disabled_reason,
-                Some(errors),
-                Some(eventually_due),
-                Some(past_due),
-                Some(pending_verification),
-            ) = (
-                self.alternatives.take(),
-                self.current_deadline,
-                self.currently_due.take(),
-                self.disabled_reason.take(),
-                self.errors.take(),
-                self.eventually_due.take(),
-                self.past_due.take(),
-                self.pending_verification.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                alternatives,
-                current_deadline,
-                currently_due,
-                disabled_reason,
-                errors,
-                eventually_due,
-                past_due,
-                pending_verification,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    alternatives: Some(alternatives),
+                    current_deadline: Some(current_deadline),
+                    currently_due: Some(currently_due),
+                    disabled_reason,
+                    errors: Some(errors),
+                    eventually_due: Some(eventually_due),
+                    past_due: Some(past_due),
+                    pending_verification: Some(pending_verification),
+                } => Some(Self::Out {
+                    alternatives,
+                    current_deadline,
+                    currently_due,
+                    disabled_reason,
+                    errors,
+                    eventually_due,
+                    past_due,
+                    pending_verification,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

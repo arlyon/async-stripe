@@ -114,22 +114,19 @@ us_bank_account: None,
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (balance,
-Some(billing_details),
+        match core::mem::replace(self, Self::deser_default()) {
+                Self { balance,
+billing_details: Some(billing_details),
 financial_account,
-Some(issuing_card),
-Some(type_),
+issuing_card: Some(issuing_card),
+type_: Some(type_),
 us_bank_account,
-) = (self.balance.take(),
-self.billing_details.take(),
-self.financial_account.take(),
-self.issuing_card.take(),
-self.type_.take(),
-self.us_bank_account.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { balance,billing_details,financial_account,issuing_card,type_,us_bank_account })
+ } => Some(Self::Out { balance,billing_details,financial_account,issuing_card,type_,us_bank_account }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
     }
 }
 

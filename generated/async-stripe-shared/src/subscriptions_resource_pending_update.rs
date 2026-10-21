@@ -112,38 +112,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(billing_cycle_anchor),
-                discount,
-                Some(discounts),
-                Some(expires_at),
-                Some(metadata),
-                Some(subscription_items),
-                Some(trial_end),
-                Some(trial_from_plan),
-            ) = (
-                self.billing_cycle_anchor,
-                self.discount.take(),
-                self.discounts.take(),
-                self.expires_at,
-                self.metadata.take(),
-                self.subscription_items.take(),
-                self.trial_end,
-                self.trial_from_plan,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                billing_cycle_anchor,
-                discount,
-                discounts,
-                expires_at,
-                metadata,
-                subscription_items,
-                trial_end,
-                trial_from_plan,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    billing_cycle_anchor: Some(billing_cycle_anchor),
+                    discount,
+                    discounts: Some(discounts),
+                    expires_at: Some(expires_at),
+                    metadata: Some(metadata),
+                    subscription_items: Some(subscription_items),
+                    trial_end: Some(trial_end),
+                    trial_from_plan: Some(trial_from_plan),
+                } => Some(Self::Out {
+                    billing_cycle_anchor,
+                    discount,
+                    discounts,
+                    expires_at,
+                    metadata,
+                    subscription_items,
+                    trial_end,
+                    trial_from_plan,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

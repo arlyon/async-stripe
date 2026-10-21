@@ -80,15 +80,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(automatic_tax), Some(ip_address), location, Some(provider)) = (
-                self.automatic_tax.take(),
-                self.ip_address.take(),
-                self.location.take(),
-                self.provider.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { automatic_tax, ip_address, location, provider })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    automatic_tax: Some(automatic_tax),
+                    ip_address: Some(ip_address),
+                    location,
+                    provider: Some(provider),
+                } => Some(Self::Out { automatic_tax, ip_address, location, provider }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

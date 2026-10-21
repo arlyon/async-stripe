@@ -73,11 +73,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(avs_failure), Some(cvc_failure)) = (self.avs_failure, self.cvc_failure)
-            else {
-                return None;
-            };
-            Some(Self::Out { avs_failure, cvc_failure })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { avs_failure: Some(avs_failure), cvc_failure: Some(cvc_failure) } => {
+                    Some(Self::Out { avs_failure, cvc_failure })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

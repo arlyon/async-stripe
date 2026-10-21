@@ -160,62 +160,47 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount_off),
-                applies_to,
-                Some(created),
-                Some(currency),
-                Some(currency_options),
-                Some(duration),
-                Some(duration_in_months),
-                Some(id),
-                Some(livemode),
-                Some(max_redemptions),
-                Some(metadata),
-                Some(name),
-                Some(percent_off),
-                Some(redeem_by),
-                Some(times_redeemed),
-                Some(valid),
-            ) = (
-                self.amount_off,
-                self.applies_to.take(),
-                self.created,
-                self.currency.take(),
-                self.currency_options.take(),
-                self.duration.take(),
-                self.duration_in_months,
-                self.id.take(),
-                self.livemode,
-                self.max_redemptions,
-                self.metadata.take(),
-                self.name.take(),
-                self.percent_off,
-                self.redeem_by,
-                self.times_redeemed,
-                self.valid,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount_off,
-                applies_to,
-                created,
-                currency,
-                currency_options,
-                duration,
-                duration_in_months,
-                id,
-                livemode,
-                max_redemptions,
-                metadata,
-                name,
-                percent_off,
-                redeem_by,
-                times_redeemed,
-                valid,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount_off: Some(amount_off),
+                    applies_to,
+                    created: Some(created),
+                    currency: Some(currency),
+                    currency_options: Some(currency_options),
+                    duration: Some(duration),
+                    duration_in_months: Some(duration_in_months),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    max_redemptions: Some(max_redemptions),
+                    metadata: Some(metadata),
+                    name: Some(name),
+                    percent_off: Some(percent_off),
+                    redeem_by: Some(redeem_by),
+                    times_redeemed: Some(times_redeemed),
+                    valid: Some(valid),
+                } => Some(Self::Out {
+                    amount_off,
+                    applies_to,
+                    created,
+                    currency,
+                    currency_options,
+                    duration,
+                    duration_in_months,
+                    id,
+                    livemode,
+                    max_redemptions,
+                    metadata,
+                    name,
+                    percent_off,
+                    redeem_by,
+                    times_redeemed,
+                    valid,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

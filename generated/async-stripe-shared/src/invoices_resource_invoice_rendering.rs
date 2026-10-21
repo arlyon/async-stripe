@@ -84,15 +84,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_tax_display), pdf, Some(template), Some(template_version)) = (
-                self.amount_tax_display.take(),
-                self.pdf.take(),
-                self.template.take(),
-                self.template_version,
-            ) else {
-                return None;
-            };
-            Some(Self::Out { amount_tax_display, pdf, template, template_version })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount_tax_display: Some(amount_tax_display),
+                    pdf,
+                    template: Some(template),
+                    template_version: Some(template_version),
+                } => Some(Self::Out { amount_tax_display, pdf, template, template_version }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

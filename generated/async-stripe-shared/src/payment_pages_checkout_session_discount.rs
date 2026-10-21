@@ -73,9 +73,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (coupon, promotion_code) = (self.coupon.take(), self.promotion_code.take()) else {
-                return None;
-            };
+            let Self { coupon, promotion_code } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { coupon, promotion_code })
         }
     }

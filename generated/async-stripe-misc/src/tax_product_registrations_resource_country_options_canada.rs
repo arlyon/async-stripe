@@ -77,12 +77,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (province_standard, Some(type_)) =
-                (self.province_standard.take(), self.type_.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { province_standard, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { province_standard, type_: Some(type_) } => {
+                    Some(Self::Out { province_standard, type_ })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

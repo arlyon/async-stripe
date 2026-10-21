@@ -95,22 +95,19 @@ us_bank_transfer: None,
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (eu_bank_transfer,
+        match core::mem::replace(self, Self::deser_default()) {
+                Self { eu_bank_transfer,
 gb_bank_transfer,
 jp_bank_transfer,
-Some(reference),
-Some(type_),
+reference: Some(reference),
+type_: Some(type_),
 us_bank_transfer,
-) = (self.eu_bank_transfer.take(),
-self.gb_bank_transfer.take(),
-self.jp_bank_transfer.take(),
-self.reference.take(),
-self.type_.take(),
-self.us_bank_transfer.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { eu_bank_transfer,gb_bank_transfer,jp_bank_transfer,reference,type_,us_bank_transfer })
+ } => Some(Self::Out { eu_bank_transfer,gb_bank_transfer,jp_bank_transfer,reference,type_,us_bank_transfer }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
     }
 }
 

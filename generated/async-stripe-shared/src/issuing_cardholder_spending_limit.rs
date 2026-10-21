@@ -77,12 +77,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(categories), Some(interval)) =
-                (self.amount, self.categories.take(), self.interval.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { amount, categories, interval })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    categories: Some(categories),
+                    interval: Some(interval),
+                } => Some(Self::Out { amount, categories, interval }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

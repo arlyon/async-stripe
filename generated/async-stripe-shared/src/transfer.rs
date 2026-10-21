@@ -167,62 +167,47 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(amount_reversed),
-                balance_transaction,
-                Some(created),
-                Some(currency),
-                Some(description),
-                destination,
-                destination_payment,
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(reversals),
-                Some(reversed),
-                source_transaction,
-                Some(source_type),
-                Some(transfer_group),
-            ) = (
-                self.amount,
-                self.amount_reversed,
-                self.balance_transaction.take(),
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.destination.take(),
-                self.destination_payment.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.reversals.take(),
-                self.reversed,
-                self.source_transaction.take(),
-                self.source_type.take(),
-                self.transfer_group.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                amount_reversed,
-                balance_transaction,
-                created,
-                currency,
-                description,
-                destination,
-                destination_payment,
-                id,
-                livemode,
-                metadata,
-                reversals,
-                reversed,
-                source_transaction,
-                source_type,
-                transfer_group,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    amount_reversed: Some(amount_reversed),
+                    balance_transaction,
+                    created: Some(created),
+                    currency: Some(currency),
+                    description: Some(description),
+                    destination,
+                    destination_payment,
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    reversals: Some(reversals),
+                    reversed: Some(reversed),
+                    source_transaction,
+                    source_type: Some(source_type),
+                    transfer_group: Some(transfer_group),
+                } => Some(Self::Out {
+                    amount,
+                    amount_reversed,
+                    balance_transaction,
+                    created,
+                    currency,
+                    description,
+                    destination,
+                    destination_payment,
+                    id,
+                    livemode,
+                    metadata,
+                    reversals,
+                    reversed,
+                    source_transaction,
+                    source_type,
+                    transfer_group,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

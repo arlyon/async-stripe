@@ -79,12 +79,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(last_attempted_at), Some(next_refresh_available_at), Some(status)) =
-                (self.last_attempted_at, self.next_refresh_available_at, self.status.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { last_attempted_at, next_refresh_available_at, status })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    last_attempted_at: Some(last_attempted_at),
+                    next_refresh_available_at: Some(next_refresh_available_at),
+                    status: Some(status),
+                } => Some(Self::Out { last_attempted_at, next_refresh_available_at, status }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

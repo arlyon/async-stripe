@@ -68,10 +68,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fingerprint),) = (self.fingerprint.take(),) else {
-                return None;
-            };
-            Some(Self::Out { fingerprint })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { fingerprint: Some(fingerprint) } => Some(Self::Out { fingerprint }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

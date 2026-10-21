@@ -76,11 +76,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (allow_redirects, Some(enabled)) = (self.allow_redirects.take(), self.enabled)
-            else {
-                return None;
-            };
-            Some(Self::Out { allow_redirects, enabled })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { allow_redirects, enabled: Some(enabled) } => {
+                    Some(Self::Out { allow_redirects, enabled })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -75,14 +75,15 @@ sender_name: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (network,
-Some(sender_name),
-) = (self.network.take(),
-self.sender_name.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { network,sender_name })
+        match core::mem::replace(self, Self::deser_default()) {
+                Self { network,
+sender_name: Some(sender_name),
+ } => Some(Self::Out { network,sender_name }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
     }
 }
 

@@ -138,47 +138,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(configuration),
-                Some(created),
-                Some(customer),
-                Some(customer_account),
-                flow,
-                Some(id),
-                Some(livemode),
-                locale,
-                Some(on_behalf_of),
-                Some(return_url),
-                Some(url),
-            ) = (
-                self.configuration.take(),
-                self.created,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.flow.take(),
-                self.id.take(),
-                self.livemode,
-                self.locale.take(),
-                self.on_behalf_of.take(),
-                self.return_url.take(),
-                self.url.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                configuration,
-                created,
-                customer,
-                customer_account,
-                flow,
-                id,
-                livemode,
-                locale,
-                on_behalf_of,
-                return_url,
-                url,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    configuration: Some(configuration),
+                    created: Some(created),
+                    customer: Some(customer),
+                    customer_account: Some(customer_account),
+                    flow,
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    locale,
+                    on_behalf_of: Some(on_behalf_of),
+                    return_url: Some(return_url),
+                    url: Some(url),
+                } => Some(Self::Out {
+                    configuration,
+                    created,
+                    customer,
+                    customer_account,
+                    flow,
+                    id,
+                    livemode,
+                    locale,
+                    on_behalf_of,
+                    return_url,
+                    url,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

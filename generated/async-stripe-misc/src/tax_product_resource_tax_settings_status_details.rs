@@ -69,9 +69,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (active, pending) = (self.active, self.pending.take()) else {
-                return None;
-            };
+            let Self { active, pending } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { active, pending })
         }
     }

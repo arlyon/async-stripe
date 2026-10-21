@@ -110,35 +110,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                dispute_opened,
-                early_fraud_warning_received,
-                Some(occurred_at),
-                refunded,
-                Some(type_),
-                user_intervention_raised,
-                user_intervention_resolved,
-            ) = (
-                self.dispute_opened.take(),
-                self.early_fraud_warning_received.take(),
-                self.occurred_at,
-                self.refunded.take(),
-                self.type_.take(),
-                self.user_intervention_raised.take(),
-                self.user_intervention_resolved.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                dispute_opened,
-                early_fraud_warning_received,
-                occurred_at,
-                refunded,
-                type_,
-                user_intervention_raised,
-                user_intervention_resolved,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    dispute_opened,
+                    early_fraud_warning_received,
+                    occurred_at: Some(occurred_at),
+                    refunded,
+                    type_: Some(type_),
+                    user_intervention_raised,
+                    user_intervention_resolved,
+                } => Some(Self::Out {
+                    dispute_opened,
+                    early_fraud_warning_received,
+                    occurred_at,
+                    refunded,
+                    type_,
+                    user_intervention_raised,
+                    user_intervention_resolved,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

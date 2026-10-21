@@ -94,16 +94,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (additional_document, Some(details), Some(details_code), document, Some(status)) = (
-                self.additional_document.take(),
-                self.details.take(),
-                self.details_code.take(),
-                self.document.take(),
-                self.status.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { additional_document, details, details_code, document, status })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    additional_document,
+                    details: Some(details),
+                    details_code: Some(details_code),
+                    document,
+                    status: Some(status),
+                } => {
+                    Some(Self::Out { additional_document, details, details_code, document, status })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

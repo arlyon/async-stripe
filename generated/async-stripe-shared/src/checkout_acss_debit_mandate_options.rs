@@ -95,29 +95,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(custom_mandate_url),
-                Some(default_for),
-                Some(interval_description),
-                payment_schedule,
-                transaction_type,
-            ) = (
-                self.custom_mandate_url.take(),
-                self.default_for.take(),
-                self.interval_description.take(),
-                self.payment_schedule.take(),
-                self.transaction_type.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                custom_mandate_url,
-                default_for,
-                interval_description,
-                payment_schedule,
-                transaction_type,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    custom_mandate_url: Some(custom_mandate_url),
+                    default_for: Some(default_for),
+                    interval_description: Some(interval_description),
+                    payment_schedule,
+                    transaction_type,
+                } => Some(Self::Out {
+                    custom_mandate_url,
+                    default_for,
+                    interval_description,
+                    payment_schedule,
+                    transaction_type,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

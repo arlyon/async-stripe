@@ -84,15 +84,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(footer_body), Some(footer_title), Some(header_body), Some(header_title)) = (
-                self.footer_body.take(),
-                self.footer_title.take(),
-                self.header_body.take(),
-                self.header_title.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { footer_body, footer_title, header_body, header_title })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    footer_body: Some(footer_body),
+                    footer_title: Some(footer_title),
+                    header_body: Some(header_body),
+                    header_title: Some(header_title),
+                } => Some(Self::Out { footer_body, footer_title, header_body, header_title }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

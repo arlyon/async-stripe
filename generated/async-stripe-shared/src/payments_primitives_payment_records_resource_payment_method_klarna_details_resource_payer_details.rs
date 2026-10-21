@@ -78,12 +78,9 @@ const _: () = {
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (address,
-) = (self.address.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { address })
+        let Self { address,
+ } = core::mem::replace(self, Self::deser_default());
+            Some(Self::Out { address })
     }
 }
 

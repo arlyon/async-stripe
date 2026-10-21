@@ -100,35 +100,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(background_color),
-                Some(border_style),
-                Some(button_color),
-                Some(display_name),
-                Some(font_family),
-                icon,
-                logo,
-            ) = (
-                self.background_color.take(),
-                self.border_style.take(),
-                self.button_color.take(),
-                self.display_name.take(),
-                self.font_family.take(),
-                self.icon.take(),
-                self.logo.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                background_color,
-                border_style,
-                button_color,
-                display_name,
-                font_family,
-                icon,
-                logo,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    background_color: Some(background_color),
+                    border_style: Some(border_style),
+                    button_color: Some(button_color),
+                    display_name: Some(display_name),
+                    font_family: Some(font_family),
+                    icon,
+                    logo,
+                } => Some(Self::Out {
+                    background_color,
+                    border_style,
+                    button_color,
+                    display_name,
+                    font_family,
+                    icon,
+                    logo,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

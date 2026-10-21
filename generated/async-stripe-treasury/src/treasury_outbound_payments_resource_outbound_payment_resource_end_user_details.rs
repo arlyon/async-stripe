@@ -76,10 +76,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(ip_address), Some(present)) = (self.ip_address.take(), self.present) else {
-                return None;
-            };
-            Some(Self::Out { ip_address, present })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { ip_address: Some(ip_address), present: Some(present) } => {
+                    Some(Self::Out { ip_address, present })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

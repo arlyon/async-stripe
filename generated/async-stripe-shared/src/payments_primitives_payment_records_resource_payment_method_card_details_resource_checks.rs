@@ -95,13 +95,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (address_line1_check, address_postal_code_check, cvc_check) = (
-                self.address_line1_check.take(),
-                self.address_postal_code_check.take(),
-                self.cvc_check.take(),
-            ) else {
-                return None;
-            };
+            let Self { address_line1_check, address_postal_code_check, cvc_check } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { address_line1_check, address_postal_code_check, cvc_check })
         }
     }

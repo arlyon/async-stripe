@@ -71,12 +71,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(presentment_amount), Some(presentment_currency)) =
-                (self.presentment_amount, self.presentment_currency.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { presentment_amount, presentment_currency })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    presentment_amount: Some(presentment_amount),
+                    presentment_currency: Some(presentment_currency),
+                } => Some(Self::Out { presentment_amount, presentment_currency }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

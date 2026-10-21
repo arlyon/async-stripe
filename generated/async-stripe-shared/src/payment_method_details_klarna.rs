@@ -93,29 +93,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(location),
-                payer_details,
-                Some(payment_method_category),
-                Some(preferred_locale),
-                Some(reader),
-            ) = (
-                self.location.take(),
-                self.payer_details.take(),
-                self.payment_method_category.take(),
-                self.preferred_locale.take(),
-                self.reader.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                location,
-                payer_details,
-                payment_method_category,
-                preferred_locale,
-                reader,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    location: Some(location),
+                    payer_details,
+                    payment_method_category: Some(payment_method_category),
+                    preferred_locale: Some(preferred_locale),
+                    reader: Some(reader),
+                } => Some(Self::Out {
+                    location,
+                    payer_details,
+                    payment_method_category,
+                    preferred_locale,
+                    reader,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

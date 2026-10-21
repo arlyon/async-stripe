@@ -97,26 +97,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(currency_options),
-                Some(first_time_transaction),
-                Some(minimum_amount),
-                Some(minimum_amount_currency),
-            ) = (
-                self.currency_options.take(),
-                self.first_time_transaction,
-                self.minimum_amount,
-                self.minimum_amount_currency.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                currency_options,
-                first_time_transaction,
-                minimum_amount,
-                minimum_amount_currency,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    currency_options: Some(currency_options),
+                    first_time_transaction: Some(first_time_transaction),
+                    minimum_amount: Some(minimum_amount),
+                    minimum_amount_currency: Some(minimum_amount_currency),
+                } => Some(Self::Out {
+                    currency_options,
+                    first_time_transaction,
+                    minimum_amount,
+                    minimum_amount_currency,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

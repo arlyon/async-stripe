@@ -79,13 +79,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (financial_connections, mandate_options, verification_method) = (
-                self.financial_connections.take(),
-                self.mandate_options.take(),
-                self.verification_method.take(),
-            ) else {
-                return None;
-            };
+            let Self { financial_connections, mandate_options, verification_method } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { financial_connections, mandate_options, verification_method })
         }
     }

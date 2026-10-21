@@ -72,9 +72,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (ach, us_domestic_wire) = (self.ach.take(), self.us_domestic_wire.take()) else {
-                return None;
-            };
+            let Self { ach, us_domestic_wire } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { ach, us_domestic_wire })
         }
     }

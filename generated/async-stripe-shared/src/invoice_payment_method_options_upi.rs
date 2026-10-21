@@ -68,9 +68,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (mandate_options,) = (self.mandate_options.take(),) else {
-                return None;
-            };
+            let Self { mandate_options } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { mandate_options })
         }
     }

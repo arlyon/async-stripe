@@ -73,12 +73,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (disabled_reason, Some(past_due)) =
-                (self.disabled_reason.take(), self.past_due.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { disabled_reason, past_due })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { disabled_reason, past_due: Some(past_due) } => {
+                    Some(Self::Out { disabled_reason, past_due })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

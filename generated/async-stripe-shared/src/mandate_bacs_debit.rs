@@ -97,32 +97,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(display_name),
-                Some(network_status),
-                Some(reference),
-                revocation_reason,
-                Some(service_user_number),
-                Some(url),
-            ) = (
-                self.display_name.take(),
-                self.network_status.take(),
-                self.reference.take(),
-                self.revocation_reason.take(),
-                self.service_user_number.take(),
-                self.url.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                display_name,
-                network_status,
-                reference,
-                revocation_reason,
-                service_user_number,
-                url,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    display_name: Some(display_name),
+                    network_status: Some(network_status),
+                    reference: Some(reference),
+                    revocation_reason,
+                    service_user_number: Some(service_user_number),
+                    url: Some(url),
+                } => Some(Self::Out {
+                    display_name,
+                    network_status,
+                    reference,
+                    revocation_reason,
+                    service_user_number,
+                    url,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

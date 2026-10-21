@@ -138,53 +138,41 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(active),
-                Some(code),
-                Some(created),
-                customer,
-                Some(customer_account),
-                Some(expires_at),
-                Some(id),
-                Some(livemode),
-                Some(max_redemptions),
-                Some(metadata),
-                Some(promotion),
-                Some(restrictions),
-                Some(times_redeemed),
-            ) = (
-                self.active,
-                self.code.take(),
-                self.created,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.expires_at,
-                self.id.take(),
-                self.livemode,
-                self.max_redemptions,
-                self.metadata.take(),
-                self.promotion.take(),
-                self.restrictions.take(),
-                self.times_redeemed,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                active,
-                code,
-                created,
-                customer,
-                customer_account,
-                expires_at,
-                id,
-                livemode,
-                max_redemptions,
-                metadata,
-                promotion,
-                restrictions,
-                times_redeemed,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    active: Some(active),
+                    code: Some(code),
+                    created: Some(created),
+                    customer,
+                    customer_account: Some(customer_account),
+                    expires_at: Some(expires_at),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    max_redemptions: Some(max_redemptions),
+                    metadata: Some(metadata),
+                    promotion: Some(promotion),
+                    restrictions: Some(restrictions),
+                    times_redeemed: Some(times_redeemed),
+                } => Some(Self::Out {
+                    active,
+                    code,
+                    created,
+                    customer,
+                    customer_account,
+                    expires_at,
+                    id,
+                    livemode,
+                    max_redemptions,
+                    metadata,
+                    promotion,
+                    restrictions,
+                    times_redeemed,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

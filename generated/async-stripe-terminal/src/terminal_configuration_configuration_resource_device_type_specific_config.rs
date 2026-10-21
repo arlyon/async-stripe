@@ -70,9 +70,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (splashscreen,) = (self.splashscreen.take(),) else {
-                return None;
-            };
+            let Self { splashscreen } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { splashscreen })
         }
     }

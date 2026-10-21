@@ -73,9 +73,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (network_code, reason) = (self.network_code.take(), self.reason.take()) else {
-                return None;
-            };
+            let Self { network_code, reason } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { network_code, reason })
         }
     }

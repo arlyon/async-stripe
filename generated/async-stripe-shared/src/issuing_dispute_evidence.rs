@@ -114,41 +114,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                canceled,
-                duplicate,
-                fraudulent,
-                merchandise_not_as_described,
-                no_valid_authorization,
-                not_received,
-                other,
-                Some(reason),
-                service_not_as_described,
-            ) = (
-                self.canceled.take(),
-                self.duplicate.take(),
-                self.fraudulent.take(),
-                self.merchandise_not_as_described.take(),
-                self.no_valid_authorization.take(),
-                self.not_received.take(),
-                self.other.take(),
-                self.reason.take(),
-                self.service_not_as_described.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                canceled,
-                duplicate,
-                fraudulent,
-                merchandise_not_as_described,
-                no_valid_authorization,
-                not_received,
-                other,
-                reason,
-                service_not_as_described,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    canceled,
+                    duplicate,
+                    fraudulent,
+                    merchandise_not_as_described,
+                    no_valid_authorization,
+                    not_received,
+                    other,
+                    reason: Some(reason),
+                    service_not_as_described,
+                } => Some(Self::Out {
+                    canceled,
+                    duplicate,
+                    fraudulent,
+                    merchandise_not_as_described,
+                    no_valid_authorization,
+                    not_received,
+                    other,
+                    reason,
+                    service_not_as_described,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

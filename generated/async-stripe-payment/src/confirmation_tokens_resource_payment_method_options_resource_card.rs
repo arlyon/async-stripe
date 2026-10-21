@@ -78,11 +78,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(cvc_token), installments) = (self.cvc_token.take(), self.installments.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { cvc_token, installments })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { cvc_token: Some(cvc_token), installments } => {
+                    Some(Self::Out { cvc_token, installments })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

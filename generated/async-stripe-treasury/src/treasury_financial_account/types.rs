@@ -155,65 +155,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(active_features),
-                Some(balance),
-                Some(country),
-                Some(created),
-                features,
-                Some(financial_addresses),
-                Some(id),
-                Some(is_default),
-                Some(livemode),
-                Some(metadata),
-                Some(nickname),
-                Some(pending_features),
-                platform_restrictions,
-                Some(restricted_features),
-                Some(status),
-                Some(status_details),
-                Some(supported_currencies),
-            ) = (
-                self.active_features.take(),
-                self.balance.take(),
-                self.country.take(),
-                self.created,
-                self.features.take(),
-                self.financial_addresses.take(),
-                self.id.take(),
-                self.is_default,
-                self.livemode,
-                self.metadata.take(),
-                self.nickname.take(),
-                self.pending_features.take(),
-                self.platform_restrictions.take(),
-                self.restricted_features.take(),
-                self.status.take(),
-                self.status_details.take(),
-                self.supported_currencies.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                active_features,
-                balance,
-                country,
-                created,
-                features,
-                financial_addresses,
-                id,
-                is_default,
-                livemode,
-                metadata,
-                nickname,
-                pending_features,
-                platform_restrictions,
-                restricted_features,
-                status,
-                status_details,
-                supported_currencies,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    active_features: Some(active_features),
+                    balance: Some(balance),
+                    country: Some(country),
+                    created: Some(created),
+                    features,
+                    financial_addresses: Some(financial_addresses),
+                    id: Some(id),
+                    is_default: Some(is_default),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    nickname: Some(nickname),
+                    pending_features: Some(pending_features),
+                    platform_restrictions,
+                    restricted_features: Some(restricted_features),
+                    status: Some(status),
+                    status_details: Some(status_details),
+                    supported_currencies: Some(supported_currencies),
+                } => Some(Self::Out {
+                    active_features,
+                    balance,
+                    country,
+                    created,
+                    features,
+                    financial_addresses,
+                    id,
+                    is_default,
+                    livemode,
+                    metadata,
+                    nickname,
+                    pending_features,
+                    platform_restrictions,
+                    restricted_features,
+                    status,
+                    status_details,
+                    supported_currencies,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

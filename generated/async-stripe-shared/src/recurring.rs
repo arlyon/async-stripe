@@ -91,23 +91,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(interval),
-                Some(interval_count),
-                Some(meter),
-                Some(trial_period_days),
-                Some(usage_type),
-            ) = (
-                self.interval.take(),
-                self.interval_count,
-                self.meter.take(),
-                self.trial_period_days,
-                self.usage_type.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { interval, interval_count, meter, trial_period_days, usage_type })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    interval: Some(interval),
+                    interval_count: Some(interval_count),
+                    meter: Some(meter),
+                    trial_period_days: Some(trial_period_days),
+                    usage_type: Some(usage_type),
+                } => Some(Self::Out {
+                    interval,
+                    interval_count,
+                    meter,
+                    trial_period_days,
+                    usage_type,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

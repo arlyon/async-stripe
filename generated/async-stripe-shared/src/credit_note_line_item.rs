@@ -145,59 +145,45 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(description),
-                Some(discount_amount),
-                Some(discount_amounts),
-                Some(id),
-                Some(invoice_line_item),
-                Some(livemode),
-                Some(metadata),
-                Some(pretax_credit_amounts),
-                Some(quantity),
-                Some(tax_rates),
-                Some(taxes),
-                Some(type_),
-                Some(unit_amount),
-                Some(unit_amount_decimal),
-            ) = (
-                self.amount,
-                self.description.take(),
-                self.discount_amount,
-                self.discount_amounts.take(),
-                self.id.take(),
-                self.invoice_line_item.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.pretax_credit_amounts.take(),
-                self.quantity,
-                self.tax_rates.take(),
-                self.taxes.take(),
-                self.type_.take(),
-                self.unit_amount,
-                self.unit_amount_decimal.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                description,
-                discount_amount,
-                discount_amounts,
-                id,
-                invoice_line_item,
-                livemode,
-                metadata,
-                pretax_credit_amounts,
-                quantity,
-                tax_rates,
-                taxes,
-                type_,
-                unit_amount,
-                unit_amount_decimal,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    description: Some(description),
+                    discount_amount: Some(discount_amount),
+                    discount_amounts: Some(discount_amounts),
+                    id: Some(id),
+                    invoice_line_item: Some(invoice_line_item),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    pretax_credit_amounts: Some(pretax_credit_amounts),
+                    quantity: Some(quantity),
+                    tax_rates: Some(tax_rates),
+                    taxes: Some(taxes),
+                    type_: Some(type_),
+                    unit_amount: Some(unit_amount),
+                    unit_amount_decimal: Some(unit_amount_decimal),
+                } => Some(Self::Out {
+                    amount,
+                    description,
+                    discount_amount,
+                    discount_amounts,
+                    id,
+                    invoice_line_item,
+                    livemode,
+                    metadata,
+                    pretax_credit_amounts,
+                    quantity,
+                    tax_rates,
+                    taxes,
+                    type_,
+                    unit_amount,
+                    unit_amount_decimal,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

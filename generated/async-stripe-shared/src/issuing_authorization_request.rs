@@ -137,50 +137,39 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                amount_details,
-                Some(approved),
-                Some(authorization_code),
-                Some(created),
-                Some(currency),
-                Some(merchant_amount),
-                Some(merchant_currency),
-                Some(network_risk_score),
-                Some(reason),
-                Some(reason_message),
-                Some(requested_at),
-            ) = (
-                self.amount,
-                self.amount_details,
-                self.approved,
-                self.authorization_code.take(),
-                self.created,
-                self.currency.take(),
-                self.merchant_amount,
-                self.merchant_currency.take(),
-                self.network_risk_score,
-                self.reason.take(),
-                self.reason_message.take(),
-                self.requested_at,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                amount_details,
-                approved,
-                authorization_code,
-                created,
-                currency,
-                merchant_amount,
-                merchant_currency,
-                network_risk_score,
-                reason,
-                reason_message,
-                requested_at,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    amount_details,
+                    approved: Some(approved),
+                    authorization_code: Some(authorization_code),
+                    created: Some(created),
+                    currency: Some(currency),
+                    merchant_amount: Some(merchant_amount),
+                    merchant_currency: Some(merchant_currency),
+                    network_risk_score: Some(network_risk_score),
+                    reason: Some(reason),
+                    reason_message: Some(reason_message),
+                    requested_at: Some(requested_at),
+                } => Some(Self::Out {
+                    amount,
+                    amount_details,
+                    approved,
+                    authorization_code,
+                    created,
+                    currency,
+                    merchant_amount,
+                    merchant_currency,
+                    network_risk_score,
+                    reason,
+                    reason_message,
+                    requested_at,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

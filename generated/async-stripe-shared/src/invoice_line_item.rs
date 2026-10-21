@@ -171,71 +171,53 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(currency),
-                Some(description),
-                Some(discount_amounts),
-                Some(discountable),
-                Some(discounts),
-                Some(id),
-                Some(invoice),
-                Some(livemode),
-                Some(metadata),
-                parent,
-                Some(period),
-                Some(pretax_credit_amounts),
-                pricing,
-                Some(quantity),
-                Some(quantity_decimal),
-                subscription,
-                Some(subtotal),
-                Some(taxes),
-            ) = (
-                self.amount,
-                self.currency.take(),
-                self.description.take(),
-                self.discount_amounts.take(),
-                self.discountable,
-                self.discounts.take(),
-                self.id.take(),
-                self.invoice.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.parent.take(),
-                self.period,
-                self.pretax_credit_amounts.take(),
-                self.pricing.take(),
-                self.quantity,
-                self.quantity_decimal.take(),
-                self.subscription.take(),
-                self.subtotal,
-                self.taxes.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                currency,
-                description,
-                discount_amounts,
-                discountable,
-                discounts,
-                id,
-                invoice,
-                livemode,
-                metadata,
-                parent,
-                period,
-                pretax_credit_amounts,
-                pricing,
-                quantity,
-                quantity_decimal,
-                subscription,
-                subtotal,
-                taxes,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    currency: Some(currency),
+                    description: Some(description),
+                    discount_amounts: Some(discount_amounts),
+                    discountable: Some(discountable),
+                    discounts: Some(discounts),
+                    id: Some(id),
+                    invoice: Some(invoice),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    parent,
+                    period: Some(period),
+                    pretax_credit_amounts: Some(pretax_credit_amounts),
+                    pricing,
+                    quantity: Some(quantity),
+                    quantity_decimal: Some(quantity_decimal),
+                    subscription,
+                    subtotal: Some(subtotal),
+                    taxes: Some(taxes),
+                } => Some(Self::Out {
+                    amount,
+                    currency,
+                    description,
+                    discount_amounts,
+                    discountable,
+                    discounts,
+                    id,
+                    invoice,
+                    livemode,
+                    metadata,
+                    parent,
+                    period,
+                    pretax_credit_amounts,
+                    pricing,
+                    quantity,
+                    quantity_decimal,
+                    subscription,
+                    subtotal,
+                    taxes,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

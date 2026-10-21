@@ -73,12 +73,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_after_seconds), mandate_options) =
-                (self.expires_after_seconds, self.mandate_options.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { expires_after_seconds, mandate_options })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { expires_after_seconds: Some(expires_after_seconds), mandate_options } => {
+                    Some(Self::Out { expires_after_seconds, mandate_options })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -82,11 +82,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (preferred_language, setup_future_usage) =
-                (self.preferred_language.take(), self.setup_future_usage.take())
-            else {
-                return None;
-            };
+            let Self { preferred_language, setup_future_usage } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { preferred_language, setup_future_usage })
         }
     }

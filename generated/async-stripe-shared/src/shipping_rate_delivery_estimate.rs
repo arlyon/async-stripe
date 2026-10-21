@@ -71,9 +71,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (maximum, minimum) = (self.maximum.take(), self.minimum.take()) else {
-                return None;
-            };
+            let Self { maximum, minimum } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { maximum, minimum })
         }
     }

@@ -148,62 +148,47 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(advice_code),
-                Some(charge),
-                code,
-                Some(decline_code),
-                Some(doc_url),
-                Some(message),
-                Some(network_advice_code),
-                Some(network_decline_code),
-                Some(param),
-                payment_intent,
-                payment_method,
-                Some(payment_method_type),
-                Some(request_log_url),
-                setup_intent,
-                source,
-                Some(type_),
-            ) = (
-                self.advice_code.take(),
-                self.charge.take(),
-                self.code.take(),
-                self.decline_code.take(),
-                self.doc_url.take(),
-                self.message.take(),
-                self.network_advice_code.take(),
-                self.network_decline_code.take(),
-                self.param.take(),
-                self.payment_intent.take(),
-                self.payment_method.take(),
-                self.payment_method_type.take(),
-                self.request_log_url.take(),
-                self.setup_intent.take(),
-                self.source.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                advice_code,
-                charge,
-                code,
-                decline_code,
-                doc_url,
-                message,
-                network_advice_code,
-                network_decline_code,
-                param,
-                payment_intent,
-                payment_method,
-                payment_method_type,
-                request_log_url,
-                setup_intent,
-                source,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    advice_code: Some(advice_code),
+                    charge: Some(charge),
+                    code,
+                    decline_code: Some(decline_code),
+                    doc_url: Some(doc_url),
+                    message: Some(message),
+                    network_advice_code: Some(network_advice_code),
+                    network_decline_code: Some(network_decline_code),
+                    param: Some(param),
+                    payment_intent,
+                    payment_method,
+                    payment_method_type: Some(payment_method_type),
+                    request_log_url: Some(request_log_url),
+                    setup_intent,
+                    source,
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    advice_code,
+                    charge,
+                    code,
+                    decline_code,
+                    doc_url,
+                    message,
+                    network_advice_code,
+                    network_decline_code,
+                    param,
+                    payment_intent,
+                    payment_method,
+                    payment_method_type,
+                    request_log_url,
+                    setup_intent,
+                    source,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

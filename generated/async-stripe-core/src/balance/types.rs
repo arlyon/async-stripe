@@ -107,35 +107,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(available),
-                Some(connect_reserved),
-                Some(instant_available),
-                issuing,
-                Some(livemode),
-                Some(pending),
-                refund_and_dispute_prefunding,
-            ) = (
-                self.available.take(),
-                self.connect_reserved.take(),
-                self.instant_available.take(),
-                self.issuing.take(),
-                self.livemode,
-                self.pending.take(),
-                self.refund_and_dispute_prefunding.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                available,
-                connect_reserved,
-                instant_available,
-                issuing,
-                livemode,
-                pending,
-                refund_and_dispute_prefunding,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    available: Some(available),
+                    connect_reserved: Some(connect_reserved),
+                    instant_available: Some(instant_available),
+                    issuing,
+                    livemode: Some(livemode),
+                    pending: Some(pending),
+                    refund_and_dispute_prefunding,
+                } => Some(Self::Out {
+                    available,
+                    connect_reserved,
+                    instant_available,
+                    issuing,
+                    livemode,
+                    pending,
+                    refund_and_dispute_prefunding,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

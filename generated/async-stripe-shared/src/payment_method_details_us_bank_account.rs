@@ -114,41 +114,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                account_holder_type,
-                account_type,
-                Some(bank_name),
-                Some(expected_debit_date),
-                Some(fingerprint),
-                Some(last4),
-                mandate,
-                Some(payment_reference),
-                Some(routing_number),
-            ) = (
-                self.account_holder_type.take(),
-                self.account_type.take(),
-                self.bank_name.take(),
-                self.expected_debit_date.take(),
-                self.fingerprint.take(),
-                self.last4.take(),
-                self.mandate.take(),
-                self.payment_reference.take(),
-                self.routing_number.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account_holder_type,
-                account_type,
-                bank_name,
-                expected_debit_date,
-                fingerprint,
-                last4,
-                mandate,
-                payment_reference,
-                routing_number,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_holder_type,
+                    account_type,
+                    bank_name: Some(bank_name),
+                    expected_debit_date: Some(expected_debit_date),
+                    fingerprint: Some(fingerprint),
+                    last4: Some(last4),
+                    mandate,
+                    payment_reference: Some(payment_reference),
+                    routing_number: Some(routing_number),
+                } => Some(Self::Out {
+                    account_holder_type,
+                    account_type,
+                    bank_name,
+                    expected_debit_date,
+                    fingerprint,
+                    last4,
+                    mandate,
+                    payment_reference,
+                    routing_number,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

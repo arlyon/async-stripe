@@ -75,12 +75,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(accepted_at), Some(canceled_at), Some(finalized_at)) =
-                (self.accepted_at, self.canceled_at, self.finalized_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { accepted_at, canceled_at, finalized_at })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    accepted_at: Some(accepted_at),
+                    canceled_at: Some(canceled_at),
+                    finalized_at: Some(finalized_at),
+                } => Some(Self::Out { accepted_at, canceled_at, finalized_at }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

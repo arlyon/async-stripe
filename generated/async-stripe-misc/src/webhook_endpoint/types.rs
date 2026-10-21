@@ -131,47 +131,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(api_version),
-                Some(application),
-                Some(created),
-                Some(description),
-                Some(enabled_events),
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(secret),
-                Some(status),
-                Some(url),
-            ) = (
-                self.api_version.take(),
-                self.application.take(),
-                self.created,
-                self.description.take(),
-                self.enabled_events.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.secret.take(),
-                self.status.take(),
-                self.url.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                api_version,
-                application,
-                created,
-                description,
-                enabled_events,
-                id,
-                livemode,
-                metadata,
-                secret,
-                status,
-                url,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    api_version: Some(api_version),
+                    application: Some(application),
+                    created: Some(created),
+                    description: Some(description),
+                    enabled_events: Some(enabled_events),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    secret: Some(secret),
+                    status: Some(status),
+                    url: Some(url),
+                } => Some(Self::Out {
+                    api_version,
+                    application,
+                    created,
+                    description,
+                    enabled_events,
+                    id,
+                    livemode,
+                    metadata,
+                    secret,
+                    status,
+                    url,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

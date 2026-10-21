@@ -67,10 +67,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(custom_message),) = (self.custom_message.take(),) else {
-                return None;
-            };
-            Some(Self::Out { custom_message })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { custom_message: Some(custom_message) } => Some(Self::Out { custom_message }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

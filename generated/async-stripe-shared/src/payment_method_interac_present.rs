@@ -148,56 +148,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(brand),
-                Some(cardholder_name),
-                Some(country),
-                Some(description),
-                Some(exp_month),
-                Some(exp_year),
-                Some(fingerprint),
-                Some(funding),
-                Some(iin),
-                Some(issuer),
-                Some(last4),
-                networks,
-                Some(preferred_locales),
-                read_method,
-            ) = (
-                self.brand.take(),
-                self.cardholder_name.take(),
-                self.country.take(),
-                self.description.take(),
-                self.exp_month,
-                self.exp_year,
-                self.fingerprint.take(),
-                self.funding.take(),
-                self.iin.take(),
-                self.issuer.take(),
-                self.last4.take(),
-                self.networks.take(),
-                self.preferred_locales.take(),
-                self.read_method.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                brand,
-                cardholder_name,
-                country,
-                description,
-                exp_month,
-                exp_year,
-                fingerprint,
-                funding,
-                iin,
-                issuer,
-                last4,
-                networks,
-                preferred_locales,
-                read_method,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    brand: Some(brand),
+                    cardholder_name: Some(cardholder_name),
+                    country: Some(country),
+                    description: Some(description),
+                    exp_month: Some(exp_month),
+                    exp_year: Some(exp_year),
+                    fingerprint: Some(fingerprint),
+                    funding: Some(funding),
+                    iin: Some(iin),
+                    issuer: Some(issuer),
+                    last4: Some(last4),
+                    networks,
+                    preferred_locales: Some(preferred_locales),
+                    read_method,
+                } => Some(Self::Out {
+                    brand,
+                    cardholder_name,
+                    country,
+                    description,
+                    exp_month,
+                    exp_year,
+                    fingerprint,
+                    funding,
+                    iin,
+                    issuer,
+                    last4,
+                    networks,
+                    preferred_locales,
+                    read_method,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

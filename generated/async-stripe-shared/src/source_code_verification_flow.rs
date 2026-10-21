@@ -71,12 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(attempts_remaining), Some(status)) =
-                (self.attempts_remaining, self.status.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { attempts_remaining, status })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { attempts_remaining: Some(attempts_remaining), status: Some(status) } => {
+                    Some(Self::Out { attempts_remaining, status })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

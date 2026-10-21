@@ -106,35 +106,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                bank,
-                bic,
-                generated_sepa_debit,
-                generated_sepa_debit_mandate,
-                Some(iban_last4),
-                Some(transaction_id),
-                Some(verified_name),
-            ) = (
-                self.bank.take(),
-                self.bic.take(),
-                self.generated_sepa_debit.take(),
-                self.generated_sepa_debit_mandate.take(),
-                self.iban_last4.take(),
-                self.transaction_id.take(),
-                self.verified_name.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                bank,
-                bic,
-                generated_sepa_debit,
-                generated_sepa_debit_mandate,
-                iban_last4,
-                transaction_id,
-                verified_name,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    bank,
+                    bic,
+                    generated_sepa_debit,
+                    generated_sepa_debit_mandate,
+                    iban_last4: Some(iban_last4),
+                    transaction_id: Some(transaction_id),
+                    verified_name: Some(verified_name),
+                } => Some(Self::Out {
+                    bank,
+                    bic,
+                    generated_sepa_debit,
+                    generated_sepa_debit_mandate,
+                    iban_last4,
+                    transaction_id,
+                    verified_name,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -132,65 +132,49 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(address_line1_check),
-                Some(address_zip_check),
-                Some(brand),
-                Some(country),
-                Some(cvc_check),
-                Some(description),
-                Some(dynamic_last4),
-                Some(exp_month),
-                Some(exp_year),
-                Some(fingerprint),
-                Some(funding),
-                Some(iin),
-                Some(issuer),
-                Some(last4),
-                Some(name),
-                Some(three_d_secure),
-                Some(tokenization_method),
-            ) = (
-                self.address_line1_check.take(),
-                self.address_zip_check.take(),
-                self.brand.take(),
-                self.country.take(),
-                self.cvc_check.take(),
-                self.description.take(),
-                self.dynamic_last4.take(),
-                self.exp_month,
-                self.exp_year,
-                self.fingerprint.take(),
-                self.funding.take(),
-                self.iin.take(),
-                self.issuer.take(),
-                self.last4.take(),
-                self.name.take(),
-                self.three_d_secure.take(),
-                self.tokenization_method.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                address_line1_check,
-                address_zip_check,
-                brand,
-                country,
-                cvc_check,
-                description,
-                dynamic_last4,
-                exp_month,
-                exp_year,
-                fingerprint,
-                funding,
-                iin,
-                issuer,
-                last4,
-                name,
-                three_d_secure,
-                tokenization_method,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    address_line1_check: Some(address_line1_check),
+                    address_zip_check: Some(address_zip_check),
+                    brand: Some(brand),
+                    country: Some(country),
+                    cvc_check: Some(cvc_check),
+                    description: Some(description),
+                    dynamic_last4: Some(dynamic_last4),
+                    exp_month: Some(exp_month),
+                    exp_year: Some(exp_year),
+                    fingerprint: Some(fingerprint),
+                    funding: Some(funding),
+                    iin: Some(iin),
+                    issuer: Some(issuer),
+                    last4: Some(last4),
+                    name: Some(name),
+                    three_d_secure: Some(three_d_secure),
+                    tokenization_method: Some(tokenization_method),
+                } => Some(Self::Out {
+                    address_line1_check,
+                    address_zip_check,
+                    brand,
+                    country,
+                    cvc_check,
+                    description,
+                    dynamic_last4,
+                    exp_month,
+                    exp_year,
+                    fingerprint,
+                    funding,
+                    iin,
+                    issuer,
+                    last4,
+                    name,
+                    three_d_secure,
+                    tokenization_method,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

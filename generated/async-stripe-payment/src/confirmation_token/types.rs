@@ -155,56 +155,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(expires_at),
-                Some(id),
-                Some(livemode),
-                mandate_data,
-                Some(metadata),
-                Some(payment_intent),
-                payment_method_options,
-                payment_method_preview,
-                Some(return_url),
-                setup_future_usage,
-                Some(setup_intent),
-                shipping,
-                Some(use_stripe_sdk),
-            ) = (
-                self.created,
-                self.expires_at,
-                self.id.take(),
-                self.livemode,
-                self.mandate_data.take(),
-                self.metadata.take(),
-                self.payment_intent.take(),
-                self.payment_method_options.take(),
-                self.payment_method_preview.take(),
-                self.return_url.take(),
-                self.setup_future_usage.take(),
-                self.setup_intent.take(),
-                self.shipping.take(),
-                self.use_stripe_sdk,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                created,
-                expires_at,
-                id,
-                livemode,
-                mandate_data,
-                metadata,
-                payment_intent,
-                payment_method_options,
-                payment_method_preview,
-                return_url,
-                setup_future_usage,
-                setup_intent,
-                shipping,
-                use_stripe_sdk,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    expires_at: Some(expires_at),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    mandate_data,
+                    metadata: Some(metadata),
+                    payment_intent: Some(payment_intent),
+                    payment_method_options,
+                    payment_method_preview,
+                    return_url: Some(return_url),
+                    setup_future_usage,
+                    setup_intent: Some(setup_intent),
+                    shipping,
+                    use_stripe_sdk: Some(use_stripe_sdk),
+                } => Some(Self::Out {
+                    created,
+                    expires_at,
+                    id,
+                    livemode,
+                    mandate_data,
+                    metadata,
+                    payment_intent,
+                    payment_method_options,
+                    payment_method_preview,
+                    return_url,
+                    setup_future_usage,
+                    setup_intent,
+                    shipping,
+                    use_stripe_sdk,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

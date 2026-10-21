@@ -76,11 +76,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (installments, request_three_d_secure) =
-                (self.installments, self.request_three_d_secure.take())
-            else {
-                return None;
-            };
+            let Self { installments, request_three_d_secure } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { installments, request_three_d_secure })
         }
     }

@@ -141,53 +141,41 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(billing_zip),
-                charge,
-                closed_reason,
-                Some(created),
-                Some(id),
-                Some(ip_address),
-                ip_address_location,
-                Some(livemode),
-                Some(open),
-                Some(opened_reason),
-                payment_intent,
-                Some(reason),
-                session,
-            ) = (
-                self.billing_zip.take(),
-                self.charge.take(),
-                self.closed_reason.take(),
-                self.created,
-                self.id.take(),
-                self.ip_address.take(),
-                self.ip_address_location.take(),
-                self.livemode,
-                self.open,
-                self.opened_reason.take(),
-                self.payment_intent.take(),
-                self.reason.take(),
-                self.session.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                billing_zip,
-                charge,
-                closed_reason,
-                created,
-                id,
-                ip_address,
-                ip_address_location,
-                livemode,
-                open,
-                opened_reason,
-                payment_intent,
-                reason,
-                session,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    billing_zip: Some(billing_zip),
+                    charge,
+                    closed_reason,
+                    created: Some(created),
+                    id: Some(id),
+                    ip_address: Some(ip_address),
+                    ip_address_location,
+                    livemode: Some(livemode),
+                    open: Some(open),
+                    opened_reason: Some(opened_reason),
+                    payment_intent,
+                    reason: Some(reason),
+                    session,
+                } => Some(Self::Out {
+                    billing_zip,
+                    charge,
+                    closed_reason,
+                    created,
+                    id,
+                    ip_address,
+                    ip_address_location,
+                    livemode,
+                    open,
+                    opened_reason,
+                    payment_intent,
+                    reason,
+                    session,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

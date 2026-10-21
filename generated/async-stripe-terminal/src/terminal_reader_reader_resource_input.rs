@@ -117,47 +117,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                custom_text,
-                email,
-                numeric,
-                phone,
-                Some(required),
-                selection,
-                signature,
-                Some(skipped),
-                text,
-                Some(toggles),
-                Some(type_),
-            ) = (
-                self.custom_text.take(),
-                self.email.take(),
-                self.numeric.take(),
-                self.phone.take(),
-                self.required,
-                self.selection.take(),
-                self.signature.take(),
-                self.skipped,
-                self.text.take(),
-                self.toggles.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                custom_text,
-                email,
-                numeric,
-                phone,
-                required,
-                selection,
-                signature,
-                skipped,
-                text,
-                toggles,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    custom_text,
+                    email,
+                    numeric,
+                    phone,
+                    required: Some(required),
+                    selection,
+                    signature,
+                    skipped: Some(skipped),
+                    text,
+                    toggles: Some(toggles),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    custom_text,
+                    email,
+                    numeric,
+                    phone,
+                    required,
+                    selection,
+                    signature,
+                    skipped,
+                    text,
+                    toggles,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

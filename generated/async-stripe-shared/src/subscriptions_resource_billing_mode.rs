@@ -77,12 +77,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (flexible, Some(type_), Some(updated_at)) =
-                (self.flexible.take(), self.type_.take(), self.updated_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { flexible, type_, updated_at })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { flexible, type_: Some(type_), updated_at: Some(updated_at) } => {
+                    Some(Self::Out { flexible, type_, updated_at })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

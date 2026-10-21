@@ -86,15 +86,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (filters, Some(permissions), Some(prefetch), Some(return_url)) = (
-                self.filters.take(),
-                self.permissions.take(),
-                self.prefetch.take(),
-                self.return_url.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { filters, permissions, prefetch, return_url })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    filters,
+                    permissions: Some(permissions),
+                    prefetch: Some(prefetch),
+                    return_url: Some(return_url),
+                } => Some(Self::Out { filters, permissions, prefetch, return_url }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

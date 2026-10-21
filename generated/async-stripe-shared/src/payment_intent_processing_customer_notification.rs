@@ -72,12 +72,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(approval_requested), Some(completes_at)) =
-                (self.approval_requested, self.completes_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { approval_requested, completes_at })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    approval_requested: Some(approval_requested),
+                    completes_at: Some(completes_at),
+                } => Some(Self::Out { approval_requested, completes_at }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

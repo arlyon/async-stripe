@@ -138,53 +138,41 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(client_reference_id),
-                Some(created),
-                document,
-                email,
-                Some(id),
-                id_number,
-                Some(livemode),
-                options,
-                phone,
-                selfie,
-                Some(type_),
-                Some(verification_flow),
-                Some(verification_session),
-            ) = (
-                self.client_reference_id.take(),
-                self.created,
-                self.document.take(),
-                self.email.take(),
-                self.id.take(),
-                self.id_number.take(),
-                self.livemode,
-                self.options.take(),
-                self.phone.take(),
-                self.selfie.take(),
-                self.type_.take(),
-                self.verification_flow.take(),
-                self.verification_session.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                client_reference_id,
-                created,
-                document,
-                email,
-                id,
-                id_number,
-                livemode,
-                options,
-                phone,
-                selfie,
-                type_,
-                verification_flow,
-                verification_session,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    client_reference_id: Some(client_reference_id),
+                    created: Some(created),
+                    document,
+                    email,
+                    id: Some(id),
+                    id_number,
+                    livemode: Some(livemode),
+                    options,
+                    phone,
+                    selfie,
+                    type_: Some(type_),
+                    verification_flow: Some(verification_flow),
+                    verification_session: Some(verification_session),
+                } => Some(Self::Out {
+                    client_reference_id,
+                    created,
+                    document,
+                    email,
+                    id,
+                    id_number,
+                    livemode,
+                    options,
+                    phone,
+                    selfie,
+                    type_,
+                    verification_flow,
+                    verification_session,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

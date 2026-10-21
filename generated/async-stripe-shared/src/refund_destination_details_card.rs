@@ -85,15 +85,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(reference), Some(reference_status), Some(reference_type), Some(type_)) = (
-                self.reference.take(),
-                self.reference_status.take(),
-                self.reference_type.take(),
-                self.type_.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { reference, reference_status, reference_type, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    reference: Some(reference),
+                    reference_status: Some(reference_status),
+                    reference_type: Some(reference_type),
+                    type_: Some(type_),
+                } => Some(Self::Out { reference, reference_status, reference_type, type_ }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

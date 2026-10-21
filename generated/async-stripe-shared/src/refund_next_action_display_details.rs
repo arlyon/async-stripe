@@ -70,11 +70,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(email_sent), Some(expires_at)) = (self.email_sent.take(), self.expires_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { email_sent, expires_at })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { email_sent: Some(email_sent), expires_at: Some(expires_at) } => {
+                    Some(Self::Out { email_sent, expires_at })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

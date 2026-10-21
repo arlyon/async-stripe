@@ -79,14 +79,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (ethnicity_details, race_details, Some(self_identified_gender)) = (
-                self.ethnicity_details.take(),
-                self.race_details.take(),
-                self.self_identified_gender.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { ethnicity_details, race_details, self_identified_gender })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    ethnicity_details,
+                    race_details,
+                    self_identified_gender: Some(self_identified_gender),
+                } => Some(Self::Out { ethnicity_details, race_details, self_identified_gender }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

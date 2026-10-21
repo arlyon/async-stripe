@@ -88,26 +88,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(card_management),
-                Some(card_spend_dispute_management),
-                Some(cardholder_management),
-                Some(spend_control_management),
-            ) = (
-                self.card_management,
-                self.card_spend_dispute_management,
-                self.cardholder_management,
-                self.spend_control_management,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                card_management,
-                card_spend_dispute_management,
-                cardholder_management,
-                spend_control_management,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    card_management: Some(card_management),
+                    card_spend_dispute_management: Some(card_spend_dispute_management),
+                    cardholder_management: Some(cardholder_management),
+                    spend_control_management: Some(spend_control_management),
+                } => Some(Self::Out {
+                    card_management,
+                    card_spend_dispute_management,
+                    cardholder_management,
+                    spend_control_management,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

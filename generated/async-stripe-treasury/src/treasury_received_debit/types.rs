@@ -157,59 +157,45 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(created),
-                Some(currency),
-                Some(description),
-                failure_code,
-                Some(financial_account),
-                Some(hosted_regulatory_receipt_url),
-                Some(id),
-                initiating_payment_method_details,
-                Some(linked_flows),
-                Some(livemode),
-                Some(network),
-                reversal_details,
-                Some(status),
-                transaction,
-            ) = (
-                self.amount,
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.failure_code.take(),
-                self.financial_account.take(),
-                self.hosted_regulatory_receipt_url.take(),
-                self.id.take(),
-                self.initiating_payment_method_details.take(),
-                self.linked_flows.take(),
-                self.livemode,
-                self.network.take(),
-                self.reversal_details.take(),
-                self.status.take(),
-                self.transaction.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                created,
-                currency,
-                description,
-                failure_code,
-                financial_account,
-                hosted_regulatory_receipt_url,
-                id,
-                initiating_payment_method_details,
-                linked_flows,
-                livemode,
-                network,
-                reversal_details,
-                status,
-                transaction,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    created: Some(created),
+                    currency: Some(currency),
+                    description: Some(description),
+                    failure_code,
+                    financial_account: Some(financial_account),
+                    hosted_regulatory_receipt_url: Some(hosted_regulatory_receipt_url),
+                    id: Some(id),
+                    initiating_payment_method_details,
+                    linked_flows: Some(linked_flows),
+                    livemode: Some(livemode),
+                    network: Some(network),
+                    reversal_details,
+                    status: Some(status),
+                    transaction,
+                } => Some(Self::Out {
+                    amount,
+                    created,
+                    currency,
+                    description,
+                    failure_code,
+                    financial_account,
+                    hosted_regulatory_receipt_url,
+                    id,
+                    initiating_payment_method_details,
+                    linked_flows,
+                    livemode,
+                    network,
+                    reversal_details,
+                    status,
+                    transaction,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -120,47 +120,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amazon_pay),
-                Some(apple_pay),
-                Some(created),
-                Some(domain_name),
-                Some(enabled),
-                Some(google_pay),
-                Some(id),
-                Some(klarna),
-                Some(link),
-                Some(livemode),
-                Some(paypal),
-            ) = (
-                self.amazon_pay.take(),
-                self.apple_pay.take(),
-                self.created,
-                self.domain_name.take(),
-                self.enabled,
-                self.google_pay.take(),
-                self.id.take(),
-                self.klarna.take(),
-                self.link.take(),
-                self.livemode,
-                self.paypal.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amazon_pay,
-                apple_pay,
-                created,
-                domain_name,
-                enabled,
-                google_pay,
-                id,
-                klarna,
-                link,
-                livemode,
-                paypal,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amazon_pay: Some(amazon_pay),
+                    apple_pay: Some(apple_pay),
+                    created: Some(created),
+                    domain_name: Some(domain_name),
+                    enabled: Some(enabled),
+                    google_pay: Some(google_pay),
+                    id: Some(id),
+                    klarna: Some(klarna),
+                    link: Some(link),
+                    livemode: Some(livemode),
+                    paypal: Some(paypal),
+                } => Some(Self::Out {
+                    amazon_pay,
+                    apple_pay,
+                    created,
+                    domain_name,
+                    enabled,
+                    google_pay,
+                    id,
+                    klarna,
+                    link,
+                    livemode,
+                    paypal,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

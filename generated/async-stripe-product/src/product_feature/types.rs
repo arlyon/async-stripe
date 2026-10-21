@@ -76,12 +76,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(entitlement_feature), Some(id), Some(livemode)) =
-                (self.entitlement_feature.take(), self.id.take(), self.livemode)
-            else {
-                return None;
-            };
-            Some(Self::Out { entitlement_feature, id, livemode })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    entitlement_feature: Some(entitlement_feature),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                } => Some(Self::Out { entitlement_feature, id, livemode }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

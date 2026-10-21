@@ -134,53 +134,41 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                adjustable_quantity,
-                Some(amount_discount),
-                Some(amount_subtotal),
-                Some(amount_tax),
-                Some(amount_total),
-                Some(currency),
-                Some(description),
-                Some(discounts),
-                Some(id),
-                Some(metadata),
-                price,
-                Some(quantity),
-                Some(taxes),
-            ) = (
-                self.adjustable_quantity,
-                self.amount_discount,
-                self.amount_subtotal,
-                self.amount_tax,
-                self.amount_total,
-                self.currency.take(),
-                self.description.take(),
-                self.discounts.take(),
-                self.id.take(),
-                self.metadata.take(),
-                self.price.take(),
-                self.quantity,
-                self.taxes.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                adjustable_quantity,
-                amount_discount,
-                amount_subtotal,
-                amount_tax,
-                amount_total,
-                currency,
-                description,
-                discounts,
-                id,
-                metadata,
-                price,
-                quantity,
-                taxes,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    adjustable_quantity,
+                    amount_discount: Some(amount_discount),
+                    amount_subtotal: Some(amount_subtotal),
+                    amount_tax: Some(amount_tax),
+                    amount_total: Some(amount_total),
+                    currency: Some(currency),
+                    description: Some(description),
+                    discounts: Some(discounts),
+                    id: Some(id),
+                    metadata: Some(metadata),
+                    price,
+                    quantity: Some(quantity),
+                    taxes: Some(taxes),
+                } => Some(Self::Out {
+                    adjustable_quantity,
+                    amount_discount,
+                    amount_subtotal,
+                    amount_tax,
+                    amount_total,
+                    currency,
+                    description,
+                    discounts,
+                    id,
+                    metadata,
+                    price,
+                    quantity,
+                    taxes,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

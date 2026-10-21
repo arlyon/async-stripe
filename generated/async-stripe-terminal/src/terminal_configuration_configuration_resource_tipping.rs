@@ -169,7 +169,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
+            let Self {
                 aed,
                 aud,
                 cad,
@@ -191,32 +191,7 @@ const _: () = {
                 sek,
                 sgd,
                 usd,
-            ) = (
-                self.aed.take(),
-                self.aud.take(),
-                self.cad.take(),
-                self.chf.take(),
-                self.czk.take(),
-                self.dkk.take(),
-                self.eur.take(),
-                self.gbp.take(),
-                self.gip.take(),
-                self.hkd.take(),
-                self.huf.take(),
-                self.jpy.take(),
-                self.mxn.take(),
-                self.myr.take(),
-                self.nok.take(),
-                self.nzd.take(),
-                self.pln.take(),
-                self.ron.take(),
-                self.sek.take(),
-                self.sgd.take(),
-                self.usd.take(),
-            )
-            else {
-                return None;
-            };
+            } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out {
                 aed,
                 aud,

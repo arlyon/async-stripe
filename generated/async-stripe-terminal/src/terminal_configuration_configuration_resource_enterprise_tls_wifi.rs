@@ -92,29 +92,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(ca_certificate_file),
-                Some(client_certificate_file),
-                Some(private_key_file),
-                Some(private_key_file_password),
-                Some(ssid),
-            ) = (
-                self.ca_certificate_file.take(),
-                self.client_certificate_file.take(),
-                self.private_key_file.take(),
-                self.private_key_file_password.take(),
-                self.ssid.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                ca_certificate_file,
-                client_certificate_file,
-                private_key_file,
-                private_key_file_password,
-                ssid,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    ca_certificate_file: Some(ca_certificate_file),
+                    client_certificate_file: Some(client_certificate_file),
+                    private_key_file: Some(private_key_file),
+                    private_key_file_password: Some(private_key_file_password),
+                    ssid: Some(ssid),
+                } => Some(Self::Out {
+                    ca_certificate_file,
+                    client_certificate_file,
+                    private_key_file,
+                    private_key_file_password,
+                    ssid,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -84,15 +84,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(native_data), Some(native_url), Some(return_url), Some(url)) = (
-                self.native_data.take(),
-                self.native_url.take(),
-                self.return_url.take(),
-                self.url.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { native_data, native_url, return_url, url })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    native_data: Some(native_data),
+                    native_url: Some(native_url),
+                    return_url: Some(return_url),
+                    url: Some(url),
+                } => Some(Self::Out { native_data, native_url, return_url, url }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

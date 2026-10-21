@@ -100,29 +100,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                custom_unit_amount,
-                tax_behavior,
-                Some(tiers),
-                Some(unit_amount),
-                Some(unit_amount_decimal),
-            ) = (
-                self.custom_unit_amount,
-                self.tax_behavior.take(),
-                self.tiers.take(),
-                self.unit_amount,
-                self.unit_amount_decimal.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                custom_unit_amount,
-                tax_behavior,
-                tiers,
-                unit_amount,
-                unit_amount_decimal,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    custom_unit_amount,
+                    tax_behavior,
+                    tiers: Some(tiers),
+                    unit_amount: Some(unit_amount),
+                    unit_amount_decimal: Some(unit_amount_decimal),
+                } => Some(Self::Out {
+                    custom_unit_amount,
+                    tax_behavior,
+                    tiers,
+                    unit_amount,
+                    unit_amount_decimal,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

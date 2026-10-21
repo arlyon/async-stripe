@@ -71,12 +71,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(release_after), Some(scheduled_release)) =
-                (self.release_after, self.scheduled_release)
-            else {
-                return None;
-            };
-            Some(Self::Out { release_after, scheduled_release })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    release_after: Some(release_after),
+                    scheduled_release: Some(scheduled_release),
+                } => Some(Self::Out { release_after, scheduled_release }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

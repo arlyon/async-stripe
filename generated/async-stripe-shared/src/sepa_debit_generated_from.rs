@@ -73,9 +73,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (charge, setup_attempt) = (self.charge.take(), self.setup_attempt.take()) else {
-                return None;
-            };
+            let Self { charge, setup_attempt } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { charge, setup_attempt })
         }
     }

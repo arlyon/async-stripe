@@ -183,68 +183,51 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                bbpos_wisepad3,
-                bbpos_wisepos_e,
-                cellular,
-                Some(id),
-                Some(is_account_default),
-                Some(livemode),
-                Some(name),
-                offline,
-                reboot_window,
-                stripe_s700,
-                stripe_s710,
-                tipping,
-                verifone_m425,
-                verifone_p400,
-                verifone_p630,
-                verifone_ux700,
-                verifone_v660p,
-                wifi,
-            ) = (
-                self.bbpos_wisepad3.take(),
-                self.bbpos_wisepos_e.take(),
-                self.cellular,
-                self.id.take(),
-                self.is_account_default,
-                self.livemode,
-                self.name.take(),
-                self.offline,
-                self.reboot_window,
-                self.stripe_s700.take(),
-                self.stripe_s710.take(),
-                self.tipping.take(),
-                self.verifone_m425.take(),
-                self.verifone_p400.take(),
-                self.verifone_p630.take(),
-                self.verifone_ux700.take(),
-                self.verifone_v660p.take(),
-                self.wifi.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                bbpos_wisepad3,
-                bbpos_wisepos_e,
-                cellular,
-                id,
-                is_account_default,
-                livemode,
-                name,
-                offline,
-                reboot_window,
-                stripe_s700,
-                stripe_s710,
-                tipping,
-                verifone_m425,
-                verifone_p400,
-                verifone_p630,
-                verifone_ux700,
-                verifone_v660p,
-                wifi,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    bbpos_wisepad3,
+                    bbpos_wisepos_e,
+                    cellular,
+                    id: Some(id),
+                    is_account_default: Some(is_account_default),
+                    livemode: Some(livemode),
+                    name: Some(name),
+                    offline,
+                    reboot_window,
+                    stripe_s700,
+                    stripe_s710,
+                    tipping,
+                    verifone_m425,
+                    verifone_p400,
+                    verifone_p630,
+                    verifone_ux700,
+                    verifone_v660p,
+                    wifi,
+                } => Some(Self::Out {
+                    bbpos_wisepad3,
+                    bbpos_wisepos_e,
+                    cellular,
+                    id,
+                    is_account_default,
+                    livemode,
+                    name,
+                    offline,
+                    reboot_window,
+                    stripe_s700,
+                    stripe_s710,
+                    tipping,
+                    verifone_m425,
+                    verifone_p400,
+                    verifone_p630,
+                    verifone_ux700,
+                    verifone_v660p,
+                    wifi,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

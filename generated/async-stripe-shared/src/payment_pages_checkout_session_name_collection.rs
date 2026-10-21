@@ -71,9 +71,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (business, individual) = (self.business, self.individual) else {
-                return None;
-            };
+            let Self { business, individual } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { business, individual })
         }
     }

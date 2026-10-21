@@ -102,29 +102,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(statement_descriptor),
-                Some(statement_descriptor_kana),
-                Some(statement_descriptor_kanji),
-                Some(statement_descriptor_prefix_kana),
-                Some(statement_descriptor_prefix_kanji),
-            ) = (
-                self.statement_descriptor.take(),
-                self.statement_descriptor_kana.take(),
-                self.statement_descriptor_kanji.take(),
-                self.statement_descriptor_prefix_kana.take(),
-                self.statement_descriptor_prefix_kanji.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                statement_descriptor,
-                statement_descriptor_kana,
-                statement_descriptor_kanji,
-                statement_descriptor_prefix_kana,
-                statement_descriptor_prefix_kanji,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    statement_descriptor: Some(statement_descriptor),
+                    statement_descriptor_kana: Some(statement_descriptor_kana),
+                    statement_descriptor_kanji: Some(statement_descriptor_kanji),
+                    statement_descriptor_prefix_kana: Some(statement_descriptor_prefix_kana),
+                    statement_descriptor_prefix_kanji: Some(statement_descriptor_prefix_kanji),
+                } => Some(Self::Out {
+                    statement_descriptor,
+                    statement_descriptor_kana,
+                    statement_descriptor_kanji,
+                    statement_descriptor_prefix_kana,
+                    statement_descriptor_prefix_kanji,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

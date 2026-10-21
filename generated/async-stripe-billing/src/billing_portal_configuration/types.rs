@@ -133,53 +133,41 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(active),
-                application,
-                Some(business_profile),
-                Some(created),
-                Some(default_return_url),
-                Some(features),
-                Some(id),
-                Some(is_default),
-                Some(livemode),
-                Some(login_page),
-                Some(metadata),
-                Some(name),
-                Some(updated),
-            ) = (
-                self.active,
-                self.application.take(),
-                self.business_profile.take(),
-                self.created,
-                self.default_return_url.take(),
-                self.features.take(),
-                self.id.take(),
-                self.is_default,
-                self.livemode,
-                self.login_page.take(),
-                self.metadata.take(),
-                self.name.take(),
-                self.updated,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                active,
-                application,
-                business_profile,
-                created,
-                default_return_url,
-                features,
-                id,
-                is_default,
-                livemode,
-                login_page,
-                metadata,
-                name,
-                updated,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    active: Some(active),
+                    application,
+                    business_profile: Some(business_profile),
+                    created: Some(created),
+                    default_return_url: Some(default_return_url),
+                    features: Some(features),
+                    id: Some(id),
+                    is_default: Some(is_default),
+                    livemode: Some(livemode),
+                    login_page: Some(login_page),
+                    metadata: Some(metadata),
+                    name: Some(name),
+                    updated: Some(updated),
+                } => Some(Self::Out {
+                    active,
+                    application,
+                    business_profile,
+                    created,
+                    default_return_url,
+                    features,
+                    id,
+                    is_default,
+                    livemode,
+                    login_page,
+                    metadata,
+                    name,
+                    updated,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

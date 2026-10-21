@@ -120,44 +120,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(expires_at),
-                Some(filename),
-                Some(id),
-                Some(links),
-                Some(purpose),
-                Some(size),
-                Some(title),
-                Some(type_),
-                Some(url),
-            ) = (
-                self.created,
-                self.expires_at,
-                self.filename.take(),
-                self.id.take(),
-                self.links.take(),
-                self.purpose.take(),
-                self.size,
-                self.title.take(),
-                self.type_.take(),
-                self.url.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                created,
-                expires_at,
-                filename,
-                id,
-                links,
-                purpose,
-                size,
-                title,
-                type_,
-                url,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    expires_at: Some(expires_at),
+                    filename: Some(filename),
+                    id: Some(id),
+                    links: Some(links),
+                    purpose: Some(purpose),
+                    size: Some(size),
+                    title: Some(title),
+                    type_: Some(type_),
+                    url: Some(url),
+                } => Some(Self::Out {
+                    created,
+                    expires_at,
+                    filename,
+                    id,
+                    links,
+                    purpose,
+                    size,
+                    title,
+                    type_,
+                    url,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

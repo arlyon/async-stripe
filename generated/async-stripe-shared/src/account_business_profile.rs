@@ -136,50 +136,39 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                annual_revenue,
-                Some(estimated_worker_count),
-                Some(mcc),
-                Some(minority_owned_business_designation),
-                monthly_estimated_revenue,
-                Some(name),
-                Some(product_description),
-                support_address,
-                Some(support_email),
-                Some(support_phone),
-                Some(support_url),
-                Some(url),
-            ) = (
-                self.annual_revenue.take(),
-                self.estimated_worker_count,
-                self.mcc.take(),
-                self.minority_owned_business_designation.take(),
-                self.monthly_estimated_revenue.take(),
-                self.name.take(),
-                self.product_description.take(),
-                self.support_address.take(),
-                self.support_email.take(),
-                self.support_phone.take(),
-                self.support_url.take(),
-                self.url.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                annual_revenue,
-                estimated_worker_count,
-                mcc,
-                minority_owned_business_designation,
-                monthly_estimated_revenue,
-                name,
-                product_description,
-                support_address,
-                support_email,
-                support_phone,
-                support_url,
-                url,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    annual_revenue,
+                    estimated_worker_count: Some(estimated_worker_count),
+                    mcc: Some(mcc),
+                    minority_owned_business_designation: Some(minority_owned_business_designation),
+                    monthly_estimated_revenue,
+                    name: Some(name),
+                    product_description: Some(product_description),
+                    support_address,
+                    support_email: Some(support_email),
+                    support_phone: Some(support_phone),
+                    support_url: Some(support_url),
+                    url: Some(url),
+                } => Some(Self::Out {
+                    annual_revenue,
+                    estimated_worker_count,
+                    mcc,
+                    minority_owned_business_designation,
+                    monthly_estimated_revenue,
+                    name,
+                    product_description,
+                    support_address,
+                    support_email,
+                    support_phone,
+                    support_url,
+                    url,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

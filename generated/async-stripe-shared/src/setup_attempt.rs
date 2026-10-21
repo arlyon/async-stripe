@@ -155,59 +155,45 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                application,
-                Some(attach_to_self),
-                Some(created),
-                customer,
-                Some(customer_account),
-                Some(flow_directions),
-                Some(id),
-                Some(livemode),
-                on_behalf_of,
-                Some(payment_method),
-                Some(payment_method_details),
-                Some(setup_error),
-                Some(setup_intent),
-                Some(status),
-                Some(usage),
-            ) = (
-                self.application.take(),
-                self.attach_to_self,
-                self.created,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.flow_directions.take(),
-                self.id.take(),
-                self.livemode,
-                self.on_behalf_of.take(),
-                self.payment_method.take(),
-                self.payment_method_details.take(),
-                self.setup_error.take(),
-                self.setup_intent.take(),
-                self.status.take(),
-                self.usage.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                application,
-                attach_to_self,
-                created,
-                customer,
-                customer_account,
-                flow_directions,
-                id,
-                livemode,
-                on_behalf_of,
-                payment_method,
-                payment_method_details,
-                setup_error,
-                setup_intent,
-                status,
-                usage,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    application,
+                    attach_to_self: Some(attach_to_self),
+                    created: Some(created),
+                    customer,
+                    customer_account: Some(customer_account),
+                    flow_directions: Some(flow_directions),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    on_behalf_of,
+                    payment_method: Some(payment_method),
+                    payment_method_details: Some(payment_method_details),
+                    setup_error: Some(setup_error),
+                    setup_intent: Some(setup_intent),
+                    status: Some(status),
+                    usage: Some(usage),
+                } => Some(Self::Out {
+                    application,
+                    attach_to_self,
+                    created,
+                    customer,
+                    customer_account,
+                    flow_directions,
+                    id,
+                    livemode,
+                    on_behalf_of,
+                    payment_method,
+                    payment_method_details,
+                    setup_error,
+                    setup_intent,
+                    status,
+                    usage,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

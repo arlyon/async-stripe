@@ -77,12 +77,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(channel), Some(status), undeliverable_reason) =
-                (self.channel.take(), self.status.take(), self.undeliverable_reason.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { channel, status, undeliverable_reason })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { channel: Some(channel), status: Some(status), undeliverable_reason } => {
+                    Some(Self::Out { channel, status, undeliverable_reason })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

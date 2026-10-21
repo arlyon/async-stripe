@@ -79,13 +79,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (currency, mandate_options, verification_method) = (
-                self.currency.take(),
-                self.mandate_options.take(),
-                self.verification_method.take(),
-            ) else {
-                return None;
-            };
+            let Self { currency, mandate_options, verification_method } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { currency, mandate_options, verification_method })
         }
     }

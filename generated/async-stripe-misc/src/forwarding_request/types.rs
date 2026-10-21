@@ -139,44 +139,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(payment_method),
-                Some(replacements),
-                request_context,
-                request_details,
-                response_details,
-                Some(url),
-            ) = (
-                self.created,
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.payment_method.take(),
-                self.replacements.take(),
-                self.request_context.take(),
-                self.request_details.take(),
-                self.response_details.take(),
-                self.url.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                created,
-                id,
-                livemode,
-                metadata,
-                payment_method,
-                replacements,
-                request_context,
-                request_details,
-                response_details,
-                url,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    payment_method: Some(payment_method),
+                    replacements: Some(replacements),
+                    request_context,
+                    request_details,
+                    response_details,
+                    url: Some(url),
+                } => Some(Self::Out {
+                    created,
+                    id,
+                    livemode,
+                    metadata,
+                    payment_method,
+                    replacements,
+                    request_context,
+                    request_details,
+                    response_details,
+                    url,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

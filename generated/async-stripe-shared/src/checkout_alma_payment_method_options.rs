@@ -69,9 +69,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (capture_method,) = (self.capture_method.take(),) else {
-                return None;
-            };
+            let Self { capture_method } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { capture_method })
         }
     }

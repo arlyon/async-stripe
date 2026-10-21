@@ -76,9 +76,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (update_shipping_details,) = (self.update_shipping_details.take(),) else {
-                return None;
-            };
+            let Self { update_shipping_details } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { update_shipping_details })
         }
     }

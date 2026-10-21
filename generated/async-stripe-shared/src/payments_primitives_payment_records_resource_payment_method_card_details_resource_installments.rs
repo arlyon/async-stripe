@@ -81,12 +81,9 @@ const _: () = {
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (plan,
-) = (self.plan.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { plan })
+        let Self { plan,
+ } = core::mem::replace(self, Self::deser_default());
+            Some(Self::Out { plan })
     }
 }
 

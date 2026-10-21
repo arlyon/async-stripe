@@ -76,12 +76,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(overridable), Some(preference), Some(value)) =
-                (self.overridable, self.preference.take(), self.value.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { overridable, preference, value })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    overridable: Some(overridable),
+                    preference: Some(preference),
+                    value: Some(value),
+                } => Some(Self::Out { overridable, preference, value }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

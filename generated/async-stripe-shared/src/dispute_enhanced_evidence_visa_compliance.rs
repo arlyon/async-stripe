@@ -70,10 +70,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fee_acknowledged),) = (self.fee_acknowledged,) else {
-                return None;
-            };
-            Some(Self::Out { fee_acknowledged })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { fee_acknowledged: Some(fee_acknowledged) } => {
+                    Some(Self::Out { fee_acknowledged })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

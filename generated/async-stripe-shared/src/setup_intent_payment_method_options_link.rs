@@ -67,10 +67,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(persistent_token),) = (self.persistent_token.take(),) else {
-                return None;
-            };
-            Some(Self::Out { persistent_token })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { persistent_token: Some(persistent_token) } => {
+                    Some(Self::Out { persistent_token })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

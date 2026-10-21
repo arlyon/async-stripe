@@ -149,62 +149,47 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(applicability_config),
-                Some(category),
-                Some(created),
-                Some(customer),
-                Some(customer_account),
-                Some(effective_at),
-                Some(expires_at),
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(name),
-                Some(priority),
-                test_clock,
-                Some(updated),
-                Some(voided_at),
-            ) = (
-                self.amount.take(),
-                self.applicability_config.take(),
-                self.category.take(),
-                self.created,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.effective_at,
-                self.expires_at,
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.name.take(),
-                self.priority,
-                self.test_clock.take(),
-                self.updated,
-                self.voided_at,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                applicability_config,
-                category,
-                created,
-                customer,
-                customer_account,
-                effective_at,
-                expires_at,
-                id,
-                livemode,
-                metadata,
-                name,
-                priority,
-                test_clock,
-                updated,
-                voided_at,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    applicability_config: Some(applicability_config),
+                    category: Some(category),
+                    created: Some(created),
+                    customer: Some(customer),
+                    customer_account: Some(customer_account),
+                    effective_at: Some(effective_at),
+                    expires_at: Some(expires_at),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    name: Some(name),
+                    priority: Some(priority),
+                    test_clock,
+                    updated: Some(updated),
+                    voided_at: Some(voided_at),
+                } => Some(Self::Out {
+                    amount,
+                    applicability_config,
+                    category,
+                    created,
+                    customer,
+                    customer_account,
+                    effective_at,
+                    expires_at,
+                    id,
+                    livemode,
+                    metadata,
+                    name,
+                    priority,
+                    test_clock,
+                    updated,
+                    voided_at,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

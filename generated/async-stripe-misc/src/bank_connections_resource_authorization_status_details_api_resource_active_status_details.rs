@@ -90,12 +90,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(action), Some(expected_deactivation_date)) =
-                (self.action.take(), self.expected_deactivation_date)
-            else {
-                return None;
-            };
-            Some(Self::Out { action, expected_deactivation_date })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    action: Some(action),
+                    expected_deactivation_date: Some(expected_deactivation_date),
+                } => Some(Self::Out { action, expected_deactivation_date }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -92,16 +92,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (credit_reversal, outbound_payment, outbound_transfer, payout, Some(type_)) = (
-                self.credit_reversal.take(),
-                self.outbound_payment.take(),
-                self.outbound_transfer.take(),
-                self.payout.take(),
-                self.type_.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { credit_reversal, outbound_payment, outbound_transfer, payout, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    credit_reversal,
+                    outbound_payment,
+                    outbound_transfer,
+                    payout,
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    credit_reversal,
+                    outbound_payment,
+                    outbound_transfer,
+                    payout,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

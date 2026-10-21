@@ -71,12 +71,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(confirmation_number), Some(payment_code)) =
-                (self.confirmation_number.take(), self.payment_code.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { confirmation_number, payment_code })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    confirmation_number: Some(confirmation_number),
+                    payment_code: Some(payment_code),
+                } => Some(Self::Out { confirmation_number, payment_code }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

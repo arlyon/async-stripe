@@ -67,9 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (recovery,) = (self.recovery.take(),) else {
-                return None;
-            };
+            let Self { recovery } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { recovery })
         }
     }

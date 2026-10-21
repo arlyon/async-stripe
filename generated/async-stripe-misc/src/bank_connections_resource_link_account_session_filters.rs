@@ -93,26 +93,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_subcategories),
-                Some(countries),
-                Some(country),
-                require_payment_method_support,
-            ) = (
-                self.account_subcategories.take(),
-                self.countries.take(),
-                self.country.take(),
-                self.require_payment_method_support.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account_subcategories,
-                countries,
-                country,
-                require_payment_method_support,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_subcategories: Some(account_subcategories),
+                    countries: Some(countries),
+                    country: Some(country),
+                    require_payment_method_support,
+                } => Some(Self::Out {
+                    account_subcategories,
+                    countries,
+                    country,
+                    require_payment_method_support,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

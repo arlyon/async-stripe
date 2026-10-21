@@ -126,47 +126,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(address),
-                address_kana,
-                address_kanji,
-                Some(configuration_overrides),
-                Some(display_name),
-                Some(display_name_kana),
-                Some(display_name_kanji),
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(phone),
-            ) = (
-                self.address.take(),
-                self.address_kana.take(),
-                self.address_kanji.take(),
-                self.configuration_overrides.take(),
-                self.display_name.take(),
-                self.display_name_kana.take(),
-                self.display_name_kanji.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.phone.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                address,
-                address_kana,
-                address_kanji,
-                configuration_overrides,
-                display_name,
-                display_name_kana,
-                display_name_kanji,
-                id,
-                livemode,
-                metadata,
-                phone,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    address: Some(address),
+                    address_kana,
+                    address_kanji,
+                    configuration_overrides: Some(configuration_overrides),
+                    display_name: Some(display_name),
+                    display_name_kana: Some(display_name_kana),
+                    display_name_kanji: Some(display_name_kanji),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    phone: Some(phone),
+                } => Some(Self::Out {
+                    address,
+                    address_kana,
+                    address_kanji,
+                    configuration_overrides,
+                    display_name,
+                    display_name_kana,
+                    display_name_kanji,
+                    id,
+                    livemode,
+                    metadata,
+                    phone,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -133,50 +133,39 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                action,
-                Some(device_sw_version),
-                Some(device_type),
-                Some(id),
-                Some(ip_address),
-                Some(label),
-                Some(last_seen_at),
-                Some(livemode),
-                location,
-                Some(metadata),
-                Some(serial_number),
-                status,
-            ) = (
-                self.action.take(),
-                self.device_sw_version.take(),
-                self.device_type.take(),
-                self.id.take(),
-                self.ip_address.take(),
-                self.label.take(),
-                self.last_seen_at,
-                self.livemode,
-                self.location.take(),
-                self.metadata.take(),
-                self.serial_number.take(),
-                self.status.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                action,
-                device_sw_version,
-                device_type,
-                id,
-                ip_address,
-                label,
-                last_seen_at,
-                livemode,
-                location,
-                metadata,
-                serial_number,
-                status,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    action,
+                    device_sw_version: Some(device_sw_version),
+                    device_type: Some(device_type),
+                    id: Some(id),
+                    ip_address: Some(ip_address),
+                    label: Some(label),
+                    last_seen_at: Some(last_seen_at),
+                    livemode: Some(livemode),
+                    location,
+                    metadata: Some(metadata),
+                    serial_number: Some(serial_number),
+                    status,
+                } => Some(Self::Out {
+                    action,
+                    device_sw_version,
+                    device_type,
+                    id,
+                    ip_address,
+                    label,
+                    last_seen_at,
+                    livemode,
+                    location,
+                    metadata,
+                    serial_number,
+                    status,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

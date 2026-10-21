@@ -79,14 +79,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (interval, Some(monthly_payout_days), Some(weekly_payout_days)) = (
-                self.interval.take(),
-                self.monthly_payout_days.take(),
-                self.weekly_payout_days.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { interval, monthly_payout_days, weekly_payout_days })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    interval,
+                    monthly_payout_days: Some(monthly_payout_days),
+                    weekly_payout_days: Some(weekly_payout_days),
+                } => Some(Self::Out { interval, monthly_payout_days, weekly_payout_days }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

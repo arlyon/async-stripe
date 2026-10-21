@@ -73,10 +73,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (generated_card, offline) = (self.generated_card.take(), self.offline.take())
-            else {
-                return None;
-            };
+            let Self { generated_card, offline } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { generated_card, offline })
         }
     }

@@ -78,11 +78,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (inbound_flows, outbound_flows) =
-                (self.inbound_flows.take(), self.outbound_flows.take())
-            else {
-                return None;
-            };
+            let Self { inbound_flows, outbound_flows } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { inbound_flows, outbound_flows })
         }
     }

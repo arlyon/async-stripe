@@ -113,38 +113,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(charge),
-                Some(customer_account_id),
-                Some(customer_device_fingerprint),
-                Some(customer_device_id),
-                Some(customer_email_address),
-                Some(customer_purchase_ip),
-                Some(product_description),
-                shipping_address,
-            ) = (
-                self.charge.take(),
-                self.customer_account_id.take(),
-                self.customer_device_fingerprint.take(),
-                self.customer_device_id.take(),
-                self.customer_email_address.take(),
-                self.customer_purchase_ip.take(),
-                self.product_description.take(),
-                self.shipping_address.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                charge,
-                customer_account_id,
-                customer_device_fingerprint,
-                customer_device_id,
-                customer_email_address,
-                customer_purchase_ip,
-                product_description,
-                shipping_address,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    charge: Some(charge),
+                    customer_account_id: Some(customer_account_id),
+                    customer_device_fingerprint: Some(customer_device_fingerprint),
+                    customer_device_id: Some(customer_device_id),
+                    customer_email_address: Some(customer_email_address),
+                    customer_purchase_ip: Some(customer_purchase_ip),
+                    product_description: Some(product_description),
+                    shipping_address,
+                } => Some(Self::Out {
+                    charge,
+                    customer_account_id,
+                    customer_device_fingerprint,
+                    customer_device_id,
+                    customer_email_address,
+                    customer_purchase_ip,
+                    product_description,
+                    shipping_address,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

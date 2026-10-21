@@ -118,41 +118,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                account_holder_type,
-                account_type,
-                Some(bank_name),
-                Some(financial_connections_account),
-                Some(fingerprint),
-                Some(last4),
-                networks,
-                Some(routing_number),
-                status_details,
-            ) = (
-                self.account_holder_type.take(),
-                self.account_type.take(),
-                self.bank_name.take(),
-                self.financial_connections_account.take(),
-                self.fingerprint.take(),
-                self.last4.take(),
-                self.networks.take(),
-                self.routing_number.take(),
-                self.status_details.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account_holder_type,
-                account_type,
-                bank_name,
-                financial_connections_account,
-                fingerprint,
-                last4,
-                networks,
-                routing_number,
-                status_details,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_holder_type,
+                    account_type,
+                    bank_name: Some(bank_name),
+                    financial_connections_account: Some(financial_connections_account),
+                    fingerprint: Some(fingerprint),
+                    last4: Some(last4),
+                    networks,
+                    routing_number: Some(routing_number),
+                    status_details,
+                } => Some(Self::Out {
+                    account_holder_type,
+                    account_type,
+                    bank_name,
+                    financial_connections_account,
+                    fingerprint,
+                    last4,
+                    networks,
+                    routing_number,
+                    status_details,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

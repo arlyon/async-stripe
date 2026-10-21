@@ -94,12 +94,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (category, Some(description), Some(sold_by)) =
-                (self.category.take(), self.description.take(), self.sold_by.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { category, description, sold_by })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { category, description: Some(description), sold_by: Some(sold_by) } => {
+                    Some(Self::Out { category, description, sold_by })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

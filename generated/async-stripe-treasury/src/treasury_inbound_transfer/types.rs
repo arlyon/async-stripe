@@ -180,71 +180,53 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(cancelable),
-                Some(created),
-                Some(currency),
-                Some(description),
-                failure_details,
-                Some(financial_account),
-                Some(hosted_regulatory_receipt_url),
-                Some(id),
-                Some(linked_flows),
-                Some(livemode),
-                Some(metadata),
-                Some(origin_payment_method),
-                origin_payment_method_details,
-                Some(returned),
-                Some(statement_descriptor),
-                Some(status),
-                Some(status_transitions),
-                transaction,
-            ) = (
-                self.amount,
-                self.cancelable,
-                self.created,
-                self.currency.take(),
-                self.description.take(),
-                self.failure_details.take(),
-                self.financial_account.take(),
-                self.hosted_regulatory_receipt_url.take(),
-                self.id.take(),
-                self.linked_flows.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.origin_payment_method.take(),
-                self.origin_payment_method_details.take(),
-                self.returned,
-                self.statement_descriptor.take(),
-                self.status.take(),
-                self.status_transitions,
-                self.transaction.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                cancelable,
-                created,
-                currency,
-                description,
-                failure_details,
-                financial_account,
-                hosted_regulatory_receipt_url,
-                id,
-                linked_flows,
-                livemode,
-                metadata,
-                origin_payment_method,
-                origin_payment_method_details,
-                returned,
-                statement_descriptor,
-                status,
-                status_transitions,
-                transaction,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    cancelable: Some(cancelable),
+                    created: Some(created),
+                    currency: Some(currency),
+                    description: Some(description),
+                    failure_details,
+                    financial_account: Some(financial_account),
+                    hosted_regulatory_receipt_url: Some(hosted_regulatory_receipt_url),
+                    id: Some(id),
+                    linked_flows: Some(linked_flows),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    origin_payment_method: Some(origin_payment_method),
+                    origin_payment_method_details,
+                    returned: Some(returned),
+                    statement_descriptor: Some(statement_descriptor),
+                    status: Some(status),
+                    status_transitions: Some(status_transitions),
+                    transaction,
+                } => Some(Self::Out {
+                    amount,
+                    cancelable,
+                    created,
+                    currency,
+                    description,
+                    failure_details,
+                    financial_account,
+                    hosted_regulatory_receipt_url,
+                    id,
+                    linked_flows,
+                    livemode,
+                    metadata,
+                    origin_payment_method,
+                    origin_payment_method_details,
+                    returned,
+                    statement_descriptor,
+                    status,
+                    status_transitions,
+                    transaction,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -153,56 +153,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                checkout_session,
-                Some(created),
-                credit_note,
-                Some(currency),
-                Some(customer),
-                Some(customer_account),
-                Some(description),
-                Some(ending_balance),
-                Some(id),
-                invoice,
-                Some(livemode),
-                Some(metadata),
-                Some(type_),
-            ) = (
-                self.amount,
-                self.checkout_session.take(),
-                self.created,
-                self.credit_note.take(),
-                self.currency.take(),
-                self.customer.take(),
-                self.customer_account.take(),
-                self.description.take(),
-                self.ending_balance,
-                self.id.take(),
-                self.invoice.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                checkout_session,
-                created,
-                credit_note,
-                currency,
-                customer,
-                customer_account,
-                description,
-                ending_balance,
-                id,
-                invoice,
-                livemode,
-                metadata,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    checkout_session,
+                    created: Some(created),
+                    credit_note,
+                    currency: Some(currency),
+                    customer: Some(customer),
+                    customer_account: Some(customer_account),
+                    description: Some(description),
+                    ending_balance: Some(ending_balance),
+                    id: Some(id),
+                    invoice,
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    amount,
+                    checkout_session,
+                    created,
+                    credit_note,
+                    currency,
+                    customer,
+                    customer_account,
+                    description,
+                    ending_balance,
+                    id,
+                    invoice,
+                    livemode,
+                    metadata,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

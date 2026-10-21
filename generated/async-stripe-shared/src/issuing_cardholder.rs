@@ -154,59 +154,45 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(billing),
-                company,
-                Some(created),
-                Some(email),
-                Some(id),
-                individual,
-                Some(livemode),
-                Some(metadata),
-                Some(name),
-                Some(phone_number),
-                Some(preferred_locales),
-                Some(requirements),
-                spending_controls,
-                Some(status),
-                Some(type_),
-            ) = (
-                self.billing.take(),
-                self.company,
-                self.created,
-                self.email.take(),
-                self.id.take(),
-                self.individual.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.name.take(),
-                self.phone_number.take(),
-                self.preferred_locales.take(),
-                self.requirements.take(),
-                self.spending_controls.take(),
-                self.status.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                billing,
-                company,
-                created,
-                email,
-                id,
-                individual,
-                livemode,
-                metadata,
-                name,
-                phone_number,
-                preferred_locales,
-                requirements,
-                spending_controls,
-                status,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    billing: Some(billing),
+                    company,
+                    created: Some(created),
+                    email: Some(email),
+                    id: Some(id),
+                    individual,
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    name: Some(name),
+                    phone_number: Some(phone_number),
+                    preferred_locales: Some(preferred_locales),
+                    requirements: Some(requirements),
+                    spending_controls,
+                    status: Some(status),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    billing,
+                    company,
+                    created,
+                    email,
+                    id,
+                    individual,
+                    livemode,
+                    metadata,
+                    name,
+                    phone_number,
+                    preferred_locales,
+                    requirements,
+                    spending_controls,
+                    status,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

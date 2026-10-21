@@ -82,12 +82,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (setup_future_usage, Some(target_date)) =
-                (self.setup_future_usage.take(), self.target_date.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { setup_future_usage, target_date })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { setup_future_usage, target_date: Some(target_date) } => {
+                    Some(Self::Out { setup_future_usage, target_date })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

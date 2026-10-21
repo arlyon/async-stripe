@@ -274,7 +274,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
+            let Self {
                 acss_debit,
                 affirm,
                 afterpay_clearpay,
@@ -321,57 +321,7 @@ const _: () = {
                 upi,
                 us_bank_account,
                 wechat_pay,
-            ) = (
-                self.acss_debit.take(),
-                self.affirm.take(),
-                self.afterpay_clearpay.take(),
-                self.alipay.take(),
-                self.alma.take(),
-                self.amazon_pay.take(),
-                self.au_becs_debit.take(),
-                self.bacs_debit.take(),
-                self.bancontact.take(),
-                self.billie.take(),
-                self.boleto.take(),
-                self.card.take(),
-                self.cashapp.take(),
-                self.customer_balance.take(),
-                self.eps.take(),
-                self.fpx.take(),
-                self.giropay.take(),
-                self.grabpay.take(),
-                self.ideal.take(),
-                self.kakao_pay.take(),
-                self.klarna.take(),
-                self.konbini.take(),
-                self.kr_card.take(),
-                self.link.take(),
-                self.mobilepay.take(),
-                self.multibanco.take(),
-                self.naver_pay.take(),
-                self.oxxo.take(),
-                self.p24.take(),
-                self.payco.take(),
-                self.paynow.take(),
-                self.paypal.take(),
-                self.payto.take(),
-                self.pix.take(),
-                self.revolut_pay.take(),
-                self.samsung_pay.take(),
-                self.satispay.take(),
-                self.scalapay.take(),
-                self.sepa_debit.take(),
-                self.sofort.take(),
-                self.sunbit.take(),
-                self.swish.take(),
-                self.twint.take(),
-                self.upi.take(),
-                self.us_bank_account.take(),
-                self.wechat_pay.take(),
-            )
-            else {
-                return None;
-            };
+            } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out {
                 acss_debit,
                 affirm,

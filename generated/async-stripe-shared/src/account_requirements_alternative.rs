@@ -71,12 +71,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(alternative_fields_due), Some(original_fields_due)) =
-                (self.alternative_fields_due.take(), self.original_fields_due.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { alternative_fields_due, original_fields_due })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    alternative_fields_due: Some(alternative_fields_due),
+                    original_fields_due: Some(original_fields_due),
+                } => Some(Self::Out { alternative_fields_due, original_fields_due }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

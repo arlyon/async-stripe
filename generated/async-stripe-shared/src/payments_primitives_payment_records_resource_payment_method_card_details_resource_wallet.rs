@@ -98,15 +98,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (apple_pay, Some(dynamic_last4), google_pay, Some(type_)) = (
-                self.apple_pay.take(),
-                self.dynamic_last4.take(),
-                self.google_pay,
-                self.type_.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { apple_pay, dynamic_last4, google_pay, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    apple_pay,
+                    dynamic_last4: Some(dynamic_last4),
+                    google_pay,
+                    type_: Some(type_),
+                } => Some(Self::Out { apple_pay, dynamic_last4, google_pay, type_ }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

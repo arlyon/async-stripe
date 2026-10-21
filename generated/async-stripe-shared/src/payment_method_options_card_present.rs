@@ -90,26 +90,24 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                capture_method,
-                Some(request_extended_authorization),
-                Some(request_incremental_authorization_support),
-                routing,
-            ) = (
-                self.capture_method.take(),
-                self.request_extended_authorization,
-                self.request_incremental_authorization_support,
-                self.routing.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                capture_method,
-                request_extended_authorization,
-                request_incremental_authorization_support,
-                routing,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    capture_method,
+                    request_extended_authorization: Some(request_extended_authorization),
+                    request_incremental_authorization_support:
+                        Some(request_incremental_authorization_support),
+                    routing,
+                } => Some(Self::Out {
+                    capture_method,
+                    request_extended_authorization,
+                    request_incremental_authorization_support,
+                    routing,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

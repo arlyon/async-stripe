@@ -84,21 +84,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(expected_expiry_date),
-                Some(identifier_type),
-                Some(status),
-                Some(supported_networks),
-            ) = (
-                self.expected_expiry_date,
-                self.identifier_type.take(),
-                self.status.take(),
-                self.supported_networks.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { expected_expiry_date, identifier_type, status, supported_networks })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    expected_expiry_date: Some(expected_expiry_date),
+                    identifier_type: Some(identifier_type),
+                    status: Some(status),
+                    supported_networks: Some(supported_networks),
+                } => Some(Self::Out {
+                    expected_expiry_date,
+                    identifier_type,
+                    status,
+                    supported_networks,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

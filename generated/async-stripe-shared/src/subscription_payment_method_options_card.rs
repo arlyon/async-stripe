@@ -82,13 +82,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (mandate_options, network, request_three_d_secure) = (
-                self.mandate_options.take(),
-                self.network.take(),
-                self.request_three_d_secure.take(),
-            ) else {
-                return None;
-            };
+            let Self { mandate_options, network, request_three_d_secure } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { mandate_options, network, request_three_d_secure })
         }
     }

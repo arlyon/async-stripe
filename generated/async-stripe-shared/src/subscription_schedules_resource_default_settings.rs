@@ -134,44 +134,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(application_fee_percent),
-                automatic_tax,
-                Some(billing_cycle_anchor),
-                billing_thresholds,
-                collection_method,
-                default_payment_method,
-                Some(description),
-                Some(invoice_settings),
-                on_behalf_of,
-                transfer_data,
-            ) = (
-                self.application_fee_percent,
-                self.automatic_tax.take(),
-                self.billing_cycle_anchor.take(),
-                self.billing_thresholds,
-                self.collection_method.take(),
-                self.default_payment_method.take(),
-                self.description.take(),
-                self.invoice_settings.take(),
-                self.on_behalf_of.take(),
-                self.transfer_data.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                application_fee_percent,
-                automatic_tax,
-                billing_cycle_anchor,
-                billing_thresholds,
-                collection_method,
-                default_payment_method,
-                description,
-                invoice_settings,
-                on_behalf_of,
-                transfer_data,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    application_fee_percent: Some(application_fee_percent),
+                    automatic_tax,
+                    billing_cycle_anchor: Some(billing_cycle_anchor),
+                    billing_thresholds,
+                    collection_method,
+                    default_payment_method,
+                    description: Some(description),
+                    invoice_settings: Some(invoice_settings),
+                    on_behalf_of,
+                    transfer_data,
+                } => Some(Self::Out {
+                    application_fee_percent,
+                    automatic_tax,
+                    billing_cycle_anchor,
+                    billing_thresholds,
+                    collection_method,
+                    default_payment_method,
+                    description,
+                    invoice_settings,
+                    on_behalf_of,
+                    transfer_data,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

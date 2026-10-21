@@ -153,59 +153,45 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(currency),
-                Some(customer),
-                Some(customer_details),
-                Some(id),
-                Some(line_items),
-                Some(livemode),
-                Some(metadata),
-                Some(posted_at),
-                Some(reference),
-                reversal,
-                ship_from_details,
-                shipping_cost,
-                Some(tax_date),
-                Some(type_),
-            ) = (
-                self.created,
-                self.currency.take(),
-                self.customer.take(),
-                self.customer_details.take(),
-                self.id.take(),
-                self.line_items.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.posted_at,
-                self.reference.take(),
-                self.reversal.take(),
-                self.ship_from_details.take(),
-                self.shipping_cost.take(),
-                self.tax_date,
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                created,
-                currency,
-                customer,
-                customer_details,
-                id,
-                line_items,
-                livemode,
-                metadata,
-                posted_at,
-                reference,
-                reversal,
-                ship_from_details,
-                shipping_cost,
-                tax_date,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    currency: Some(currency),
+                    customer: Some(customer),
+                    customer_details: Some(customer_details),
+                    id: Some(id),
+                    line_items: Some(line_items),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    posted_at: Some(posted_at),
+                    reference: Some(reference),
+                    reversal,
+                    ship_from_details,
+                    shipping_cost,
+                    tax_date: Some(tax_date),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    created,
+                    currency,
+                    customer,
+                    customer_details,
+                    id,
+                    line_items,
+                    livemode,
+                    metadata,
+                    posted_at,
+                    reference,
+                    reversal,
+                    ship_from_details,
+                    shipping_cost,
+                    tax_date,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

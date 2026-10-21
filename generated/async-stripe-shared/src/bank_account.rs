@@ -186,68 +186,51 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                account,
-                Some(account_holder_name),
-                Some(account_holder_type),
-                Some(account_type),
-                Some(available_payout_methods),
-                Some(bank_name),
-                Some(country),
-                Some(currency),
-                customer,
-                Some(default_for_currency),
-                Some(fingerprint),
-                future_requirements,
-                Some(id),
-                Some(last4),
-                Some(metadata),
-                requirements,
-                Some(routing_number),
-                Some(status),
-            ) = (
-                self.account.take(),
-                self.account_holder_name.take(),
-                self.account_holder_type.take(),
-                self.account_type.take(),
-                self.available_payout_methods.take(),
-                self.bank_name.take(),
-                self.country.take(),
-                self.currency.take(),
-                self.customer.take(),
-                self.default_for_currency,
-                self.fingerprint.take(),
-                self.future_requirements.take(),
-                self.id.take(),
-                self.last4.take(),
-                self.metadata.take(),
-                self.requirements.take(),
-                self.routing_number.take(),
-                self.status.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account,
-                account_holder_name,
-                account_holder_type,
-                account_type,
-                available_payout_methods,
-                bank_name,
-                country,
-                currency,
-                customer,
-                default_for_currency,
-                fingerprint,
-                future_requirements,
-                id,
-                last4,
-                metadata,
-                requirements,
-                routing_number,
-                status,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account,
+                    account_holder_name: Some(account_holder_name),
+                    account_holder_type: Some(account_holder_type),
+                    account_type: Some(account_type),
+                    available_payout_methods: Some(available_payout_methods),
+                    bank_name: Some(bank_name),
+                    country: Some(country),
+                    currency: Some(currency),
+                    customer,
+                    default_for_currency: Some(default_for_currency),
+                    fingerprint: Some(fingerprint),
+                    future_requirements,
+                    id: Some(id),
+                    last4: Some(last4),
+                    metadata: Some(metadata),
+                    requirements,
+                    routing_number: Some(routing_number),
+                    status: Some(status),
+                } => Some(Self::Out {
+                    account,
+                    account_holder_name,
+                    account_holder_type,
+                    account_type,
+                    available_payout_methods,
+                    bank_name,
+                    country,
+                    currency,
+                    customer,
+                    default_for_currency,
+                    fingerprint,
+                    future_requirements,
+                    id,
+                    last4,
+                    metadata,
+                    requirements,
+                    routing_number,
+                    status,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

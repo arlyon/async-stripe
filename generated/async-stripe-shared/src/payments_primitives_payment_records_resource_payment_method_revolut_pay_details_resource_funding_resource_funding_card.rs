@@ -97,22 +97,19 @@ last4: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(brand),
-Some(country),
-Some(exp_month),
-Some(exp_year),
-Some(funding),
-Some(last4),
-) = (self.brand.take(),
-self.country.take(),
-self.exp_month,
-self.exp_year,
-self.funding.take(),
-self.last4.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { brand,country,exp_month,exp_year,funding,last4 })
+        match core::mem::replace(self, Self::deser_default()) {
+                Self { brand: Some(brand),
+country: Some(country),
+exp_month: Some(exp_month),
+exp_year: Some(exp_year),
+funding: Some(funding),
+last4: Some(last4),
+ } => Some(Self::Out { brand,country,exp_month,exp_year,funding,last4 }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
     }
 }
 

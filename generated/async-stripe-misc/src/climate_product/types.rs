@@ -113,38 +113,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(current_prices_per_metric_ton),
-                Some(delivery_year),
-                Some(id),
-                Some(livemode),
-                Some(metric_tons_available),
-                Some(name),
-                Some(suppliers),
-            ) = (
-                self.created,
-                self.current_prices_per_metric_ton.take(),
-                self.delivery_year,
-                self.id.take(),
-                self.livemode,
-                self.metric_tons_available.take(),
-                self.name.take(),
-                self.suppliers.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                created,
-                current_prices_per_metric_ton,
-                delivery_year,
-                id,
-                livemode,
-                metric_tons_available,
-                name,
-                suppliers,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    current_prices_per_metric_ton: Some(current_prices_per_metric_ton),
+                    delivery_year: Some(delivery_year),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metric_tons_available: Some(metric_tons_available),
+                    name: Some(name),
+                    suppliers: Some(suppliers),
+                } => Some(Self::Out {
+                    created,
+                    current_prices_per_metric_ton,
+                    delivery_year,
+                    id,
+                    livemode,
+                    metric_tons_available,
+                    name,
+                    suppliers,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

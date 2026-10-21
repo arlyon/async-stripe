@@ -89,23 +89,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(departure_at),
-                Some(passenger_name),
-                Some(refundable),
-                Some(segments),
-                Some(travel_agency),
-            ) = (
-                self.departure_at,
-                self.passenger_name.take(),
-                self.refundable,
-                self.segments.take(),
-                self.travel_agency.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { departure_at, passenger_name, refundable, segments, travel_agency })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    departure_at: Some(departure_at),
+                    passenger_name: Some(passenger_name),
+                    refundable: Some(refundable),
+                    segments: Some(segments),
+                    travel_agency: Some(travel_agency),
+                } => Some(Self::Out {
+                    departure_at,
+                    passenger_name,
+                    refundable,
+                    segments,
+                    travel_agency,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

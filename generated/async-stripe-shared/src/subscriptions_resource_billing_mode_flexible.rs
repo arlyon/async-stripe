@@ -69,9 +69,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (proration_discounts,) = (self.proration_discounts.take(),) else {
-                return None;
-            };
+            let Self { proration_discounts } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { proration_discounts })
         }
     }

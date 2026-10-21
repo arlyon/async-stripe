@@ -135,47 +135,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(active),
-                Some(created),
-                delivery_estimate,
-                Some(display_name),
-                fixed_amount,
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                tax_behavior,
-                tax_code,
-                Some(type_),
-            ) = (
-                self.active,
-                self.created,
-                self.delivery_estimate.take(),
-                self.display_name.take(),
-                self.fixed_amount.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.tax_behavior.take(),
-                self.tax_code.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                active,
-                created,
-                delivery_estimate,
-                display_name,
-                fixed_amount,
-                id,
-                livemode,
-                metadata,
-                tax_behavior,
-                tax_code,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    active: Some(active),
+                    created: Some(created),
+                    delivery_estimate,
+                    display_name: Some(display_name),
+                    fixed_amount,
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    tax_behavior,
+                    tax_code,
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    active,
+                    created,
+                    delivery_estimate,
+                    display_name,
+                    fixed_amount,
+                    id,
+                    livemode,
+                    metadata,
+                    tax_behavior,
+                    tax_code,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

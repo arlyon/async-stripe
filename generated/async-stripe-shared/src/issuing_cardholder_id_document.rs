@@ -71,9 +71,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (back, front) = (self.back.take(), self.front.take()) else {
-                return None;
-            };
+            let Self { back, front } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { back, front })
         }
     }

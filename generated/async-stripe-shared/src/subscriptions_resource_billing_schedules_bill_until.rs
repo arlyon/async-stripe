@@ -81,12 +81,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(computed_timestamp), duration, Some(timestamp), Some(type_)) =
-                (self.computed_timestamp, self.duration.take(), self.timestamp, self.type_.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { computed_timestamp, duration, timestamp, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    computed_timestamp: Some(computed_timestamp),
+                    duration,
+                    timestamp: Some(timestamp),
+                    type_: Some(type_),
+                } => Some(Self::Out { computed_timestamp, duration, timestamp, type_ }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

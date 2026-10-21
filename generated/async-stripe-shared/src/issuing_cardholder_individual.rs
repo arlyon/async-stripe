@@ -97,16 +97,19 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (card_issuing, dob, Some(first_name), Some(last_name), verification) = (
-                self.card_issuing.take(),
-                self.dob,
-                self.first_name.take(),
-                self.last_name.take(),
-                self.verification.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { card_issuing, dob, first_name, last_name, verification })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    card_issuing,
+                    dob,
+                    first_name: Some(first_name),
+                    last_name: Some(last_name),
+                    verification,
+                } => Some(Self::Out { card_issuing, dob, first_name, last_name, verification }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

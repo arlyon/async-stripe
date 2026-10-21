@@ -78,12 +78,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(deleted), Some(device_type), Some(id), Some(serial_number)) =
-                (self.deleted, self.device_type.take(), self.id.take(), self.serial_number.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { deleted, device_type, id, serial_number })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    deleted: Some(deleted),
+                    device_type: Some(device_type),
+                    id: Some(id),
+                    serial_number: Some(serial_number),
+                } => Some(Self::Out { deleted, device_type, id, serial_number }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

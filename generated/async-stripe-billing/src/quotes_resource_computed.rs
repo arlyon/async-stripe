@@ -72,10 +72,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (recurring, Some(upfront)) = (self.recurring.take(), self.upfront.take()) else {
-                return None;
-            };
-            Some(Self::Out { recurring, upfront })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { recurring, upfront: Some(upfront) } => {
+                    Some(Self::Out { recurring, upfront })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

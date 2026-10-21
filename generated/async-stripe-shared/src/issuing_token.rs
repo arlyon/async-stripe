@@ -127,47 +127,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(card),
-                Some(created),
-                Some(device_fingerprint),
-                Some(id),
-                Some(last4),
-                Some(livemode),
-                Some(network),
-                network_data,
-                Some(network_updated_at),
-                Some(status),
-                wallet_provider,
-            ) = (
-                self.card.take(),
-                self.created,
-                self.device_fingerprint.take(),
-                self.id.take(),
-                self.last4.take(),
-                self.livemode,
-                self.network.take(),
-                self.network_data.take(),
-                self.network_updated_at,
-                self.status.take(),
-                self.wallet_provider.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                card,
-                created,
-                device_fingerprint,
-                id,
-                last4,
-                livemode,
-                network,
-                network_data,
-                network_updated_at,
-                status,
-                wallet_provider,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    card: Some(card),
+                    created: Some(created),
+                    device_fingerprint: Some(device_fingerprint),
+                    id: Some(id),
+                    last4: Some(last4),
+                    livemode: Some(livemode),
+                    network: Some(network),
+                    network_data,
+                    network_updated_at: Some(network_updated_at),
+                    status: Some(status),
+                    wallet_provider,
+                } => Some(Self::Out {
+                    card,
+                    created,
+                    device_fingerprint,
+                    id,
+                    last4,
+                    livemode,
+                    network,
+                    network_data,
+                    network_updated_at,
+                    status,
+                    wallet_provider,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

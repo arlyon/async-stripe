@@ -113,44 +113,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(customer_acceptance),
-                Some(id),
-                Some(livemode),
-                multi_use,
-                Some(on_behalf_of),
-                Some(payment_method),
-                Some(payment_method_details),
-                single_use,
-                Some(status),
-                Some(type_),
-            ) = (
-                self.customer_acceptance.take(),
-                self.id.take(),
-                self.livemode,
-                self.multi_use.take(),
-                self.on_behalf_of.take(),
-                self.payment_method.take(),
-                self.payment_method_details.take(),
-                self.single_use.take(),
-                self.status.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                customer_acceptance,
-                id,
-                livemode,
-                multi_use,
-                on_behalf_of,
-                payment_method,
-                payment_method_details,
-                single_use,
-                status,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    customer_acceptance: Some(customer_acceptance),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    multi_use,
+                    on_behalf_of: Some(on_behalf_of),
+                    payment_method: Some(payment_method),
+                    payment_method_details: Some(payment_method_details),
+                    single_use,
+                    status: Some(status),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    customer_acceptance,
+                    id,
+                    livemode,
+                    multi_use,
+                    on_behalf_of,
+                    payment_method,
+                    payment_method_details,
+                    single_use,
+                    status,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

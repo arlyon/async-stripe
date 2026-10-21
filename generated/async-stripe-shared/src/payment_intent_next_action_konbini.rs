@@ -74,12 +74,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(expires_at), Some(hosted_voucher_url), Some(stores)) =
-                (self.expires_at, self.hosted_voucher_url.take(), self.stores.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { expires_at, hosted_voucher_url, stores })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    expires_at: Some(expires_at),
+                    hosted_voucher_url: Some(hosted_voucher_url),
+                    stores: Some(stores),
+                } => Some(Self::Out { expires_at, hosted_voucher_url, stores }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -121,47 +121,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                address,
-                dob,
-                Some(email),
-                Some(first_name),
-                Some(id_number),
-                id_number_type,
-                Some(last_name),
-                Some(phone),
-                sex,
-                Some(unparsed_place_of_birth),
-                Some(unparsed_sex),
-            ) = (
-                self.address.take(),
-                self.dob,
-                self.email.take(),
-                self.first_name.take(),
-                self.id_number.take(),
-                self.id_number_type.take(),
-                self.last_name.take(),
-                self.phone.take(),
-                self.sex.take(),
-                self.unparsed_place_of_birth.take(),
-                self.unparsed_sex.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                address,
-                dob,
-                email,
-                first_name,
-                id_number,
-                id_number_type,
-                last_name,
-                phone,
-                sex,
-                unparsed_place_of_birth,
-                unparsed_sex,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    address,
+                    dob,
+                    email: Some(email),
+                    first_name: Some(first_name),
+                    id_number: Some(id_number),
+                    id_number_type,
+                    last_name: Some(last_name),
+                    phone: Some(phone),
+                    sex,
+                    unparsed_place_of_birth: Some(unparsed_place_of_birth),
+                    unparsed_sex: Some(unparsed_sex),
+                } => Some(Self::Out {
+                    address,
+                    dob,
+                    email,
+                    first_name,
+                    id_number,
+                    id_number_type,
+                    last_name,
+                    phone,
+                    sex,
+                    unparsed_place_of_birth,
+                    unparsed_sex,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

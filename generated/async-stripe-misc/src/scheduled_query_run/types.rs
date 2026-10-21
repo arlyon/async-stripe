@@ -119,44 +119,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(data_load_time),
-                error,
-                file,
-                Some(id),
-                Some(livemode),
-                Some(result_available_until),
-                Some(sql),
-                Some(status),
-                Some(title),
-            ) = (
-                self.created,
-                self.data_load_time,
-                self.error.take(),
-                self.file.take(),
-                self.id.take(),
-                self.livemode,
-                self.result_available_until,
-                self.sql.take(),
-                self.status.take(),
-                self.title.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                created,
-                data_load_time,
-                error,
-                file,
-                id,
-                livemode,
-                result_available_until,
-                sql,
-                status,
-                title,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    data_load_time: Some(data_load_time),
+                    error,
+                    file,
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    result_available_until: Some(result_available_until),
+                    sql: Some(sql),
+                    status: Some(status),
+                    title: Some(title),
+                } => Some(Self::Out {
+                    created,
+                    data_load_time,
+                    error,
+                    file,
+                    id,
+                    livemode,
+                    result_available_until,
+                    sql,
+                    status,
+                    title,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -90,29 +90,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(industry_product_code),
-                Some(quantity_decimal),
-                type_,
-                unit,
-                Some(unit_cost_decimal),
-            ) = (
-                self.industry_product_code.take(),
-                self.quantity_decimal.take(),
-                self.type_.take(),
-                self.unit.take(),
-                self.unit_cost_decimal.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                industry_product_code,
-                quantity_decimal,
-                type_,
-                unit,
-                unit_cost_decimal,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    industry_product_code: Some(industry_product_code),
+                    quantity_decimal: Some(quantity_decimal),
+                    type_,
+                    unit,
+                    unit_cost_decimal: Some(unit_cost_decimal),
+                } => Some(Self::Out {
+                    industry_product_code,
+                    quantity_decimal,
+                    type_,
+                    unit,
+                    unit_cost_decimal,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

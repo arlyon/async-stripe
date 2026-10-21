@@ -88,26 +88,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                additional_documentation,
-                Some(explanation),
-                Some(product_description),
-                product_type,
-            ) = (
-                self.additional_documentation.take(),
-                self.explanation.take(),
-                self.product_description.take(),
-                self.product_type.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                additional_documentation,
-                explanation,
-                product_description,
-                product_type,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    additional_documentation,
+                    explanation: Some(explanation),
+                    product_description: Some(product_description),
+                    product_type,
+                } => Some(Self::Out {
+                    additional_documentation,
+                    explanation,
+                    product_description,
+                    product_type,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -129,47 +129,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount_paid),
-                Some(amount_requested),
-                Some(created),
-                Some(currency),
-                Some(id),
-                Some(invoice),
-                Some(is_default),
-                Some(livemode),
-                Some(payment),
-                Some(status),
-                Some(status_transitions),
-            ) = (
-                self.amount_paid,
-                self.amount_requested,
-                self.created,
-                self.currency.take(),
-                self.id.take(),
-                self.invoice.take(),
-                self.is_default,
-                self.livemode,
-                self.payment.take(),
-                self.status.take(),
-                self.status_transitions,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount_paid,
-                amount_requested,
-                created,
-                currency,
-                id,
-                invoice,
-                is_default,
-                livemode,
-                payment,
-                status,
-                status_transitions,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount_paid: Some(amount_paid),
+                    amount_requested: Some(amount_requested),
+                    created: Some(created),
+                    currency: Some(currency),
+                    id: Some(id),
+                    invoice: Some(invoice),
+                    is_default: Some(is_default),
+                    livemode: Some(livemode),
+                    payment: Some(payment),
+                    status: Some(status),
+                    status_transitions: Some(status_transitions),
+                } => Some(Self::Out {
+                    amount_paid,
+                    amount_requested,
+                    created,
+                    currency,
+                    id,
+                    invoice,
+                    is_default,
+                    livemode,
+                    payment,
+                    status,
+                    status_transitions,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

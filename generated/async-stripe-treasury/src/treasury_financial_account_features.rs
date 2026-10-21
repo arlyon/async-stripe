@@ -113,7 +113,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
+            let Self {
                 card_issuing,
                 deposit_insurance,
                 financial_addresses,
@@ -121,18 +121,7 @@ const _: () = {
                 intra_stripe_flows,
                 outbound_payments,
                 outbound_transfers,
-            ) = (
-                self.card_issuing.take(),
-                self.deposit_insurance.take(),
-                self.financial_addresses.take(),
-                self.inbound_transfers.take(),
-                self.intra_stripe_flows.take(),
-                self.outbound_payments.take(),
-                self.outbound_transfers.take(),
-            )
-            else {
-                return None;
-            };
+            } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out {
                 card_issuing,
                 deposit_insurance,

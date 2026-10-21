@@ -122,47 +122,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account),
-                Some(amount),
-                Some(currency),
-                Some(description),
-                Some(id),
-                Some(livemode),
-                Some(status),
-                Some(status_transitions),
-                Some(transacted_at),
-                Some(transaction_refresh),
-                Some(updated),
-            ) = (
-                self.account.take(),
-                self.amount,
-                self.currency.take(),
-                self.description.take(),
-                self.id.take(),
-                self.livemode,
-                self.status.take(),
-                self.status_transitions,
-                self.transacted_at,
-                self.transaction_refresh.take(),
-                self.updated,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account,
-                amount,
-                currency,
-                description,
-                id,
-                livemode,
-                status,
-                status_transitions,
-                transacted_at,
-                transaction_refresh,
-                updated,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account: Some(account),
+                    amount: Some(amount),
+                    currency: Some(currency),
+                    description: Some(description),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    status: Some(status),
+                    status_transitions: Some(status_transitions),
+                    transacted_at: Some(transacted_at),
+                    transaction_refresh: Some(transaction_refresh),
+                    updated: Some(updated),
+                } => Some(Self::Out {
+                    account,
+                    amount,
+                    currency,
+                    description,
+                    id,
+                    livemode,
+                    status,
+                    status_transitions,
+                    transacted_at,
+                    transaction_refresh,
+                    updated,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

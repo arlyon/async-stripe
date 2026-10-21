@@ -85,13 +85,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (mastercard_compliance, visa_compelling_evidence_3, visa_compliance) = (
-                self.mastercard_compliance.take(),
-                self.visa_compelling_evidence_3.take(),
-                self.visa_compliance.take(),
-            ) else {
-                return None;
-            };
+            let Self { mastercard_compliance, visa_compelling_evidence_3, visa_compliance } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { mastercard_compliance, visa_compelling_evidence_3, visa_compliance })
         }
     }

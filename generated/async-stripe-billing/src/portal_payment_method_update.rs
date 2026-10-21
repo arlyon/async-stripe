@@ -75,12 +75,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(payment_method_configuration)) =
-                (self.enabled, self.payment_method_configuration.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { enabled, payment_method_configuration })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    enabled: Some(enabled),
+                    payment_method_configuration: Some(payment_method_configuration),
+                } => Some(Self::Out { enabled, payment_method_configuration }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

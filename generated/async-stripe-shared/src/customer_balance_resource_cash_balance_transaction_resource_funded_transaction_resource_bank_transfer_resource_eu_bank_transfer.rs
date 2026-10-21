@@ -80,16 +80,16 @@ sender_name: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(bic),
-Some(iban_last4),
-Some(sender_name),
-) = (self.bic.take(),
-self.iban_last4.take(),
-self.sender_name.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { bic,iban_last4,sender_name })
+        match core::mem::replace(self, Self::deser_default()) {
+                Self { bic: Some(bic),
+iban_last4: Some(iban_last4),
+sender_name: Some(sender_name),
+ } => Some(Self::Out { bic,iban_last4,sender_name }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
     }
 }
 

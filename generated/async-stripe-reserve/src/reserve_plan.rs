@@ -132,50 +132,39 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(created_by),
-                Some(currency),
-                Some(disabled_at),
-                fixed_release,
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(percent),
-                rolling_release,
-                Some(status),
-                Some(type_),
-            ) = (
-                self.created,
-                self.created_by.take(),
-                self.currency.take(),
-                self.disabled_at,
-                self.fixed_release,
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.percent,
-                self.rolling_release,
-                self.status.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                created,
-                created_by,
-                currency,
-                disabled_at,
-                fixed_release,
-                id,
-                livemode,
-                metadata,
-                percent,
-                rolling_release,
-                status,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    created_by: Some(created_by),
+                    currency: Some(currency),
+                    disabled_at: Some(disabled_at),
+                    fixed_release,
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    percent: Some(percent),
+                    rolling_release,
+                    status: Some(status),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    created,
+                    created_by,
+                    currency,
+                    disabled_at,
+                    fixed_release,
+                    id,
+                    livemode,
+                    metadata,
+                    percent,
+                    rolling_release,
+                    status,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

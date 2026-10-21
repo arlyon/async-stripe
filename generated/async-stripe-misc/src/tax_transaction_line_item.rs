@@ -129,50 +129,39 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(amount_tax),
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(product),
-                Some(quantity),
-                Some(reference),
-                reversal,
-                Some(tax_behavior),
-                Some(tax_code),
-                Some(type_),
-            ) = (
-                self.amount,
-                self.amount_tax,
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.product.take(),
-                self.quantity,
-                self.reference.take(),
-                self.reversal.take(),
-                self.tax_behavior.take(),
-                self.tax_code.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                amount_tax,
-                id,
-                livemode,
-                metadata,
-                product,
-                quantity,
-                reference,
-                reversal,
-                tax_behavior,
-                tax_code,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    amount_tax: Some(amount_tax),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    product: Some(product),
+                    quantity: Some(quantity),
+                    reference: Some(reference),
+                    reversal,
+                    tax_behavior: Some(tax_behavior),
+                    tax_code: Some(tax_code),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    amount,
+                    amount_tax,
+                    id,
+                    livemode,
+                    metadata,
+                    product,
+                    quantity,
+                    reference,
+                    reversal,
+                    tax_behavior,
+                    tax_code,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

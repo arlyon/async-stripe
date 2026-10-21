@@ -100,25 +100,22 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(aggregated_value),
-                Some(end_time),
-                Some(id),
-                Some(livemode),
-                Some(meter),
-                Some(start_time),
-            ) = (
-                self.aggregated_value,
-                self.end_time,
-                self.id.take(),
-                self.livemode,
-                self.meter.take(),
-                self.start_time,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { aggregated_value, end_time, id, livemode, meter, start_time })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    aggregated_value: Some(aggregated_value),
+                    end_time: Some(end_time),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    meter: Some(meter),
+                    start_time: Some(start_time),
+                } => {
+                    Some(Self::Out { aggregated_value, end_time, id, livemode, meter, start_time })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

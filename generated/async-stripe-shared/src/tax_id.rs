@@ -121,44 +121,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(country),
-                Some(created),
-                customer,
-                Some(customer_account),
-                Some(id),
-                Some(livemode),
-                owner,
-                Some(type_),
-                Some(value),
-                verification,
-            ) = (
-                self.country.take(),
-                self.created,
-                self.customer.take(),
-                self.customer_account.take(),
-                self.id.take(),
-                self.livemode,
-                self.owner.take(),
-                self.type_.take(),
-                self.value.take(),
-                self.verification.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                country,
-                created,
-                customer,
-                customer_account,
-                id,
-                livemode,
-                owner,
-                type_,
-                value,
-                verification,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    country: Some(country),
+                    created: Some(created),
+                    customer,
+                    customer_account: Some(customer_account),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    owner,
+                    type_: Some(type_),
+                    value: Some(value),
+                    verification,
+                } => Some(Self::Out {
+                    country,
+                    created,
+                    customer,
+                    customer_account,
+                    id,
+                    livemode,
+                    owner,
+                    type_,
+                    value,
+                    verification,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

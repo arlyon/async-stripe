@@ -72,12 +72,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(destination_duration), Some(destination_ip_address)) =
-                (self.destination_duration, self.destination_ip_address.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { destination_duration, destination_ip_address })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    destination_duration: Some(destination_duration),
+                    destination_ip_address: Some(destination_ip_address),
+                } => Some(Self::Out { destination_duration, destination_ip_address }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

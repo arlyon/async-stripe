@@ -72,9 +72,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (apple_terms_and_conditions,) = (self.apple_terms_and_conditions.take(),) else {
-                return None;
-            };
+            let Self { apple_terms_and_conditions } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out { apple_terms_and_conditions })
         }
     }

@@ -71,12 +71,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(days_after_charge), Some(expires_on)) =
-                (self.days_after_charge, self.expires_on)
-            else {
-                return None;
-            };
-            Some(Self::Out { days_after_charge, expires_on })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    days_after_charge: Some(days_after_charge),
+                    expires_on: Some(expires_on),
+                } => Some(Self::Out { days_after_charge, expires_on }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

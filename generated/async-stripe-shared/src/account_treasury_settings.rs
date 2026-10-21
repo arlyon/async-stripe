@@ -68,9 +68,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (tos_acceptance,) = (self.tos_acceptance.take(),) else {
-                return None;
-            };
+            let Self { tos_acceptance } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { tos_acceptance })
         }
     }

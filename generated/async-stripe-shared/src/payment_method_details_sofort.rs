@@ -117,41 +117,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(bank_code),
-                Some(bank_name),
-                Some(bic),
-                Some(country),
-                generated_sepa_debit,
-                generated_sepa_debit_mandate,
-                Some(iban_last4),
-                preferred_language,
-                Some(verified_name),
-            ) = (
-                self.bank_code.take(),
-                self.bank_name.take(),
-                self.bic.take(),
-                self.country.take(),
-                self.generated_sepa_debit.take(),
-                self.generated_sepa_debit_mandate.take(),
-                self.iban_last4.take(),
-                self.preferred_language.take(),
-                self.verified_name.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                bank_code,
-                bank_name,
-                bic,
-                country,
-                generated_sepa_debit,
-                generated_sepa_debit_mandate,
-                iban_last4,
-                preferred_language,
-                verified_name,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    bank_code: Some(bank_code),
+                    bank_name: Some(bank_name),
+                    bic: Some(bic),
+                    country: Some(country),
+                    generated_sepa_debit,
+                    generated_sepa_debit_mandate,
+                    iban_last4: Some(iban_last4),
+                    preferred_language,
+                    verified_name: Some(verified_name),
+                } => Some(Self::Out {
+                    bank_code,
+                    bank_name,
+                    bic,
+                    country,
+                    generated_sepa_debit,
+                    generated_sepa_debit_mandate,
+                    iban_last4,
+                    preferred_language,
+                    verified_name,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

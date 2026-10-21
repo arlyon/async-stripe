@@ -144,56 +144,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(created),
-                Some(currency),
-                Some(financial_account),
-                Some(hosted_regulatory_receipt_url),
-                Some(id),
-                linked_flows,
-                Some(livemode),
-                Some(metadata),
-                Some(network),
-                Some(received_debit),
-                Some(status),
-                Some(status_transitions),
-                transaction,
-            ) = (
-                self.amount,
-                self.created,
-                self.currency.take(),
-                self.financial_account.take(),
-                self.hosted_regulatory_receipt_url.take(),
-                self.id.take(),
-                self.linked_flows.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.network.take(),
-                self.received_debit.take(),
-                self.status.take(),
-                self.status_transitions,
-                self.transaction.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                created,
-                currency,
-                financial_account,
-                hosted_regulatory_receipt_url,
-                id,
-                linked_flows,
-                livemode,
-                metadata,
-                network,
-                received_debit,
-                status,
-                status_transitions,
-                transaction,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    created: Some(created),
+                    currency: Some(currency),
+                    financial_account: Some(financial_account),
+                    hosted_regulatory_receipt_url: Some(hosted_regulatory_receipt_url),
+                    id: Some(id),
+                    linked_flows,
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    network: Some(network),
+                    received_debit: Some(received_debit),
+                    status: Some(status),
+                    status_transitions: Some(status_transitions),
+                    transaction,
+                } => Some(Self::Out {
+                    amount,
+                    created,
+                    currency,
+                    financial_account,
+                    hosted_regulatory_receipt_url,
+                    id,
+                    linked_flows,
+                    livemode,
+                    metadata,
+                    network,
+                    received_debit,
+                    status,
+                    status_transitions,
+                    transaction,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

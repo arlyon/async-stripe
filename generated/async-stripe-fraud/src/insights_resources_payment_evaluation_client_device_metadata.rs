@@ -71,10 +71,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(radar_session),) = (self.radar_session.take(),) else {
-                return None;
-            };
-            Some(Self::Out { radar_session })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { radar_session: Some(radar_session) } => Some(Self::Out { radar_session }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

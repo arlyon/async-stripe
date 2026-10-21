@@ -70,9 +70,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (active,) = (self.active.take(),) else {
-                return None;
-            };
+            let Self { active } = core::mem::replace(self, Self::deser_default());
             Some(Self::Out { active })
         }
     }

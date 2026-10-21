@@ -123,32 +123,28 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(payment_method_allow_redisplay_filters),
-                Some(payment_method_redisplay),
-                Some(payment_method_redisplay_limit),
-                Some(payment_method_remove),
-                Some(payment_method_save),
-                payment_method_save_usage,
-            ) = (
-                self.payment_method_allow_redisplay_filters.take(),
-                self.payment_method_redisplay.take(),
-                self.payment_method_redisplay_limit,
-                self.payment_method_remove.take(),
-                self.payment_method_save.take(),
-                self.payment_method_save_usage.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                payment_method_allow_redisplay_filters,
-                payment_method_redisplay,
-                payment_method_redisplay_limit,
-                payment_method_remove,
-                payment_method_save,
-                payment_method_save_usage,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    payment_method_allow_redisplay_filters:
+                        Some(payment_method_allow_redisplay_filters),
+                    payment_method_redisplay: Some(payment_method_redisplay),
+                    payment_method_redisplay_limit: Some(payment_method_redisplay_limit),
+                    payment_method_remove: Some(payment_method_remove),
+                    payment_method_save: Some(payment_method_save),
+                    payment_method_save_usage,
+                } => Some(Self::Out {
+                    payment_method_allow_redisplay_filters,
+                    payment_method_redisplay,
+                    payment_method_redisplay_limit,
+                    payment_method_remove,
+                    payment_method_save,
+                    payment_method_save_usage,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

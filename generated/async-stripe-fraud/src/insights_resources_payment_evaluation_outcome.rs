@@ -90,16 +90,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (merchant_blocked, Some(payment_intent_id), rejected, succeeded, Some(type_)) = (
-                self.merchant_blocked.take(),
-                self.payment_intent_id.take(),
-                self.rejected.take(),
-                self.succeeded.take(),
-                self.type_.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { merchant_blocked, payment_intent_id, rejected, succeeded, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    merchant_blocked,
+                    payment_intent_id: Some(payment_intent_id),
+                    rejected,
+                    succeeded,
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    merchant_blocked,
+                    payment_intent_id,
+                    rejected,
+                    succeeded,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

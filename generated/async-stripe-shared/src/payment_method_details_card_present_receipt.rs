@@ -127,41 +127,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                account_type,
-                Some(application_cryptogram),
-                Some(application_preferred_name),
-                Some(authorization_code),
-                Some(authorization_response_code),
-                Some(cardholder_verification_method),
-                Some(dedicated_file_name),
-                Some(terminal_verification_results),
-                Some(transaction_status_information),
-            ) = (
-                self.account_type.take(),
-                self.application_cryptogram.take(),
-                self.application_preferred_name.take(),
-                self.authorization_code.take(),
-                self.authorization_response_code.take(),
-                self.cardholder_verification_method.take(),
-                self.dedicated_file_name.take(),
-                self.terminal_verification_results.take(),
-                self.transaction_status_information.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account_type,
-                application_cryptogram,
-                application_preferred_name,
-                authorization_code,
-                authorization_response_code,
-                cardholder_verification_method,
-                dedicated_file_name,
-                terminal_verification_results,
-                transaction_status_information,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_type,
+                    application_cryptogram: Some(application_cryptogram),
+                    application_preferred_name: Some(application_preferred_name),
+                    authorization_code: Some(authorization_code),
+                    authorization_response_code: Some(authorization_response_code),
+                    cardholder_verification_method: Some(cardholder_verification_method),
+                    dedicated_file_name: Some(dedicated_file_name),
+                    terminal_verification_results: Some(terminal_verification_results),
+                    transaction_status_information: Some(transaction_status_information),
+                } => Some(Self::Out {
+                    account_type,
+                    application_cryptogram,
+                    application_preferred_name,
+                    authorization_code,
+                    authorization_response_code,
+                    cardholder_verification_method,
+                    dedicated_file_name,
+                    terminal_verification_results,
+                    transaction_status_information,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

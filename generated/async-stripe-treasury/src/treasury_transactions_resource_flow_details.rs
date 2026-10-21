@@ -118,41 +118,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                credit_reversal,
-                debit_reversal,
-                inbound_transfer,
-                issuing_authorization,
-                outbound_payment,
-                outbound_transfer,
-                received_credit,
-                received_debit,
-                Some(type_),
-            ) = (
-                self.credit_reversal.take(),
-                self.debit_reversal.take(),
-                self.inbound_transfer.take(),
-                self.issuing_authorization.take(),
-                self.outbound_payment.take(),
-                self.outbound_transfer.take(),
-                self.received_credit.take(),
-                self.received_debit.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                credit_reversal,
-                debit_reversal,
-                inbound_transfer,
-                issuing_authorization,
-                outbound_payment,
-                outbound_transfer,
-                received_credit,
-                received_debit,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    credit_reversal,
+                    debit_reversal,
+                    inbound_transfer,
+                    issuing_authorization,
+                    outbound_payment,
+                    outbound_transfer,
+                    received_credit,
+                    received_debit,
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    credit_reversal,
+                    debit_reversal,
+                    inbound_transfer,
+                    issuing_authorization,
+                    outbound_payment,
+                    outbound_transfer,
+                    received_credit,
+                    received_debit,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

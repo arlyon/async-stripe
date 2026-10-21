@@ -97,14 +97,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (cardholder_prompt_data, purchase_type, reported_breakdown, service_type) = (
-                self.cardholder_prompt_data.take(),
-                self.purchase_type.take(),
-                self.reported_breakdown.take(),
-                self.service_type.take(),
-            ) else {
-                return None;
-            };
+            let Self { cardholder_prompt_data, purchase_type, reported_breakdown, service_type } =
+                core::mem::replace(self, Self::deser_default());
             Some(Self::Out {
                 cardholder_prompt_data,
                 purchase_type,
