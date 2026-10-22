@@ -14,9 +14,11 @@
 //! stripe trigger account.updated
 //! ```
 
-use std::borrow::Borrow;
-
-use actix_web::{App, HttpRequest, HttpResponse, HttpServer, post, web};
+use actix_web::{
+    App, HttpRequest, HttpResponse, HttpServer,
+    error::{ErrorBadRequest, ErrorInternalServerError},
+    post, web,
+};
 use stripe_connect::Account;
 use stripe_webhook::{EventObject, Webhook, WebhookError};
 
@@ -26,30 +28,31 @@ async fn main() -> std::io::Result<()> {
 }
 
 #[post("stripe_webhooks")]
-pub async fn webhook_handler(req: HttpRequest, payload: web::Bytes) -> HttpResponse {
-    handle_webhook(req, payload).unwrap();
-    HttpResponse::Ok().finish()
+pub async fn webhook_handler(
+    req: HttpRequest,
+    payload: web::Bytes,
+) -> actix_web::Result<HttpResponse> {
+    handle_webhook(req, payload)?;
+    Ok(HttpResponse::Ok().finish())
 }
 
-pub fn handle_webhook(req: HttpRequest, payload: web::Bytes) -> Result<(), WebhookError> {
-    let payload_str = std::str::from_utf8(payload.borrow()).unwrap();
+pub fn handle_webhook(req: HttpRequest, payload: web::Bytes) -> actix_web::Result<()> {
+    let payload_str = std::str::from_utf8(&payload).map_err(ErrorBadRequest)?;
+    let stripe_signature = get_header_value(&req, "Stripe-Signature")
+        .ok_or_else(|| ErrorBadRequest("missing or invalid Stripe-Signature header"))?;
+    let event = Webhook::construct_event(payload_str, stripe_signature, "whsec_xxxxx")
+        .map_err(ErrorBadRequest)?;
 
-    let stripe_signature = get_header_value(&req, "Stripe-Signature").unwrap_or_default();
-
-    if let Ok(event) = Webhook::construct_event(payload_str, stripe_signature, "whsec_xxxxx") {
-        match event.data.object {
-            EventObject::AccountUpdated(account) => {
-                handle_account_updated(*account)?;
-            }
-            EventObject::CheckoutSessionCompleted(session) => {
-                handle_checkout_session(*session)?;
-            }
-            _ => {
-                println!("Unknown event encountered in webhook: {:?}", event.type_);
-            }
+    match event.data.object {
+        EventObject::AccountUpdated(account) => {
+            handle_account_updated(*account).map_err(ErrorInternalServerError)?;
         }
-    } else {
-        println!("Failed to construct webhook event, ensure your webhook secret is correct.");
+        EventObject::CheckoutSessionCompleted(session) => {
+            handle_checkout_session(*session).map_err(ErrorInternalServerError)?;
+        }
+        _ => {
+            println!("Unknown event encountered in webhook: {:?}", event.type_);
+        }
     }
 
     Ok(())
@@ -67,4 +70,76 @@ fn handle_account_updated(account: Account) -> Result<(), WebhookError> {
 fn handle_checkout_session(session: stripe_checkout::CheckoutSession) -> Result<(), WebhookError> {
     println!("Received checkout session completed webhook with id: {:?}", session.id);
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use actix_web::{
+        http::{StatusCode, header::HeaderValue},
+        test,
+    };
+
+    use super::*;
+
+    const VALID_PAYLOAD: &str = r#"{"id":"evt_test","object":"event","created":1492774577,"livemode":false,"pending_webhooks":1,"data":{"object":{"object":"bank_account","country":"us","currency":"usd","id":"ba_test","last4":"6789","status":"verified"}},"type":"account.external_account.created"}"#;
+
+    async fn status(payload: Vec<u8>, signature: Option<HeaderValue>) -> StatusCode {
+        let app = test::init_service(App::new().service(webhook_handler)).await;
+        let mut request = test::TestRequest::post().uri("/stripe_webhooks").set_payload(payload);
+        if let Some(signature) = signature {
+            request = request.insert_header(("stripe-signature", signature));
+        }
+        test::call_service(&app, request.to_request()).await.status()
+    }
+
+    fn signature(payload: &str) -> HeaderValue {
+        Webhook::generate_test_header(payload, "whsec_xxxxx", None).parse().unwrap()
+    }
+
+    #[actix_web::test]
+    async fn accepts_valid_event() {
+        assert_eq!(
+            status(VALID_PAYLOAD.as_bytes().to_vec(), Some(signature(VALID_PAYLOAD))).await,
+            StatusCode::OK
+        );
+    }
+
+    #[actix_web::test]
+    async fn rejects_invalid_signature() {
+        assert_eq!(
+            status(VALID_PAYLOAD.as_bytes().to_vec(), Some(HeaderValue::from_static("invalid")))
+                .await,
+            StatusCode::BAD_REQUEST
+        );
+    }
+
+    #[actix_web::test]
+    async fn rejects_missing_signature() {
+        assert_eq!(status(VALID_PAYLOAD.as_bytes().to_vec(), None).await, StatusCode::BAD_REQUEST);
+    }
+
+    #[actix_web::test]
+    async fn rejects_non_ascii_signature() {
+        assert_eq!(
+            status(
+                VALID_PAYLOAD.as_bytes().to_vec(),
+                Some(HeaderValue::from_bytes(&[0xff]).unwrap())
+            )
+            .await,
+            StatusCode::BAD_REQUEST
+        );
+    }
+
+    #[actix_web::test]
+    async fn rejects_non_utf8_payload() {
+        assert_eq!(
+            status(vec![0xff], Some(HeaderValue::from_static("invalid"))).await,
+            StatusCode::BAD_REQUEST
+        );
+    }
+
+    #[actix_web::test]
+    async fn rejects_correctly_signed_invalid_event() {
+        assert_eq!(status(b"{}".to_vec(), Some(signature("{}"))).await, StatusCode::BAD_REQUEST);
+    }
 }
