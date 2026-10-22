@@ -51,7 +51,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -161,7 +161,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -271,7 +271,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -381,7 +381,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -491,7 +491,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -599,7 +599,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -708,7 +708,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }

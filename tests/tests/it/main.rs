@@ -7,6 +7,7 @@ mod deser;
 mod enums;
 pub mod generated;
 mod price;
+mod strict_deserialization;
 
 mod async_tests;
 mod blocking;
