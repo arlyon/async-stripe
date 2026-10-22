@@ -144,7 +144,8 @@ impl ObjectWriter<'_> {
         ) {
             let with =
                 if field.rust_type.is_option() { "with_serde_json_opt" } else { "with_serde_json" };
-            serde_derive.maybe_write_tag(out, format!(r#"with = "stripe_types::{with}""#));
+            let default = if field.rust_type.is_option() { "default, " } else { "" };
+            serde_derive.maybe_write_tag(out, format!(r#"{default}with = "stripe_types::{with}""#));
         }
 
         // This field is used as a discriminant for `serde(untagged)`
