@@ -196,3 +196,6 @@ jobs:
 
       - name: Check examples
         run: cargo clippy --workspace
+
+      - name: Test webhook examples
+        run: cargo test --locked -p webhook-actix -p webhook-axum
