@@ -1,2 +1,4 @@
-generated/*/src linguist-generated=true
-async-stripe-webhook/src/generated linguist-generated=true
+/generated/*/src/** linguist-generated=true
+/async-stripe-webhook/src/generated/** linguist-generated=true
+/tests/tests/it/generated/** linguist-generated=true
+/crate_info.md linguist-generated=true
