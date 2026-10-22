@@ -15,7 +15,7 @@ jobs:
           components: rustfmt
 
       - name: Run Codegen
-        run: cargo run --release -- --fetch latest --emit-warnings
+        run: cargo run --release -- generate --update-spec latest --emit-warnings
         working-directory: openapi
 
       - name: Check for crate inference warnings
@@ -43,7 +43,6 @@ jobs:
 
             ${{ steps.warnings.outputs.has_warnings == 'true' && steps.warnings.outputs.body || '' }}
           branch: openapi
-          update-pull-request-title-and-body: true
 
       - name: email if failed
         if: failure()
