@@ -92,7 +92,7 @@ fn build_inner(ident: &RustIdent, builder_name: &RustIdent, objects: &EnumOfObje
         }}
 
         fn finish(&mut self) -> Result<()> {{
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }}
     }}
@@ -281,7 +281,7 @@ fn miniserde_struct_inner(
         }}
 
         fn finish(&mut self) -> Result<()> {{
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }}
     }}
