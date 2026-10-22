@@ -7790,10 +7790,10 @@ impl DateOfBirthSpecs {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct PersonVerificationDocumentParam {
-    /// The back of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
+    /// The back of an ID returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<String>,
-    /// The front of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
+    /// The front of an ID returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<String>,
 }

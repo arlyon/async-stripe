@@ -446,6 +446,8 @@ struct CreateSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_thresholds: Option<ItemBillingThresholdsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    current_trial: Option<CurrentTrialParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -479,6 +481,7 @@ impl CreateSubscriptionItemBuilder {
     fn new(subscription: impl Into<String>) -> Self {
         Self {
             billing_thresholds: None,
+            current_trial: None,
             discounts: None,
             expand: None,
             metadata: None,
@@ -905,6 +908,11 @@ impl CreateSubscriptionItem {
         self.inner.billing_thresholds = Some(billing_thresholds.into());
         self
     }
+    /// The trial offer to apply to this subscription item.
+    pub fn current_trial(mut self, current_trial: impl Into<CurrentTrialParam>) -> Self {
+        self.inner.current_trial = Some(current_trial.into());
+        self
+    }
     /// The coupons to redeem into discounts for the subscription item.
     pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
         self.inner.discounts = Some(discounts.into());
@@ -1009,6 +1017,8 @@ struct UpdateSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_thresholds: Option<ItemBillingThresholdsParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    current_trial: Option<CurrentTrialParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     discounts: Option<Vec<DiscountsDataParam>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -1043,6 +1053,7 @@ impl UpdateSubscriptionItemBuilder {
     fn new() -> Self {
         Self {
             billing_thresholds: None,
+            current_trial: None,
             discounts: None,
             expand: None,
             metadata: None,
@@ -1137,7 +1148,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemPaymentBehavior {
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-/// One of `price` or `price_data` is required.
+/// You can use either `price` or `price_data`, but not both, to set or change this item's price.
+/// If you're updating an existing item without changing its price, omit both.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -1471,6 +1483,11 @@ impl UpdateSubscriptionItem {
         self.inner.billing_thresholds = Some(billing_thresholds.into());
         self
     }
+    /// The trial offer to apply to this subscription item.
+    pub fn current_trial(mut self, current_trial: impl Into<CurrentTrialParam>) -> Self {
+        self.inner.current_trial = Some(current_trial.into());
+        self
+    }
     /// The coupons to redeem into discounts for the subscription item.
     pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
         self.inner.discounts = Some(discounts.into());
@@ -1512,14 +1529,16 @@ impl UpdateSubscriptionItem {
         self
     }
     /// The ID of the price object.
-    /// One of `price` or `price_data` is required.
+    /// You can use either `price` or `price_data`, but not both, to set or change this item's price.
+    /// If you're updating an existing item without changing its price, omit both.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     pub fn price(mut self, price: impl Into<String>) -> Self {
         self.inner.price = Some(price.into());
         self
     }
     /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-    /// One of `price` or `price_data` is required.
+    /// You can use either `price` or `price_data`, but not both, to set or change this item's price.
+    /// If you're updating an existing item without changing its price, omit both.
     pub fn price_data(mut self, price_data: impl Into<UpdateSubscriptionItemPriceData>) -> Self {
         self.inner.price_data = Some(price_data.into());
         self
@@ -1596,6 +1615,24 @@ impl std::fmt::Debug for ItemBillingThresholdsParam {
 impl ItemBillingThresholdsParam {
     pub fn new(usage_gte: impl Into<i64>) -> Self {
         Self { usage_gte: usage_gte.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CurrentTrialParam {
+    /// The ID of the trial offer to apply to the subscription item.
+    pub trial_offer: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CurrentTrialParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CurrentTrialParam").finish_non_exhaustive()
+    }
+}
+impl CurrentTrialParam {
+    pub fn new(trial_offer: impl Into<String>) -> Self {
+        Self { trial_offer: trial_offer.into() }
     }
 }
 #[derive(Clone, Eq, PartialEq)]

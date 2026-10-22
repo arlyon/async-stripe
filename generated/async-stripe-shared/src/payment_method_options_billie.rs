@@ -4,7 +4,11 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsBillie {
     /// Controls when the funds will be captured from the customer's account.
-    pub capture_method: Option<PaymentMethodOptionsBillieCaptureMethod>,
+pub capture_method: Option<PaymentMethodOptionsBillieCaptureMethod>,
+pub company_details: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsBilliePaymentMethodOptionsResourceCompanyDetails>,
+    /// An identifier or reference that this payment corresponds to.
+pub reference: Option<String>,
+
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodOptionsBillie {
@@ -15,6 +19,9 @@ impl std::fmt::Debug for PaymentMethodOptionsBillie {
 #[doc(hidden)]
 pub struct PaymentMethodOptionsBillieBuilder {
     capture_method: Option<Option<PaymentMethodOptionsBillieCaptureMethod>>,
+company_details: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsBilliePaymentMethodOptionsResourceCompanyDetails>>,
+reference: Option<Option<String>>,
+
 }
 
 #[allow(
@@ -58,19 +65,23 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "capture_method" => Deserialize::begin(&mut self.capture_method),
+                "company_details" => Deserialize::begin(&mut self.company_details),
+                "reference" => Deserialize::begin(&mut self.reference),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { capture_method: Some(None) }
+            Self { capture_method: Some(None), company_details: Some(None), reference: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(capture_method),) = (self.capture_method.take(),) else {
+            let (Some(capture_method), Some(company_details), Some(reference)) =
+                (self.capture_method.take(), self.company_details.take(), self.reference.take())
+            else {
                 return None;
             };
-            Some(Self::Out { capture_method })
+            Some(Self::Out { capture_method, company_details, reference })
         }
     }
 
@@ -98,6 +109,8 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "capture_method" => b.capture_method = FromValueOpt::from_value(v),
+                    "company_details" => b.company_details = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

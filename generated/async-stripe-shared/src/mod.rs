@@ -85,6 +85,26 @@ pub mod account_payout_settings;
 #[doc(inline)]
 pub use account_payout_settings::*;
 #[doc(hidden)]
+pub mod account_paypay_payments_settings;
+#[doc(inline)]
+pub use account_paypay_payments_settings::*;
+#[doc(hidden)]
+pub mod account_paypay_site_accessible_settings;
+#[doc(inline)]
+pub use account_paypay_site_accessible_settings::*;
+#[doc(hidden)]
+pub mod account_paypay_site_in_development_settings;
+#[doc(inline)]
+pub use account_paypay_site_in_development_settings::*;
+#[doc(hidden)]
+pub mod account_paypay_site_restricted_settings;
+#[doc(inline)]
+pub use account_paypay_site_restricted_settings::*;
+#[doc(hidden)]
+pub mod account_paypay_site_settings;
+#[doc(inline)]
+pub use account_paypay_site_settings::*;
+#[doc(hidden)]
 pub mod account_requirements;
 #[doc(inline)]
 pub use account_requirements::*;
@@ -305,6 +325,10 @@ pub mod card_mandate_payment_method_details;
 #[doc(inline)]
 pub use card_mandate_payment_method_details::*;
 #[doc(hidden)]
+pub mod card_mandate_payment_method_details_india;
+#[doc(inline)]
+pub use card_mandate_payment_method_details_india::*;
+#[doc(hidden)]
 pub mod cash_balance;
 #[doc(inline)]
 pub use cash_balance::*;
@@ -516,6 +540,10 @@ pub use checkout_scalapay_payment_method_options::*;
 pub mod checkout_sepa_debit_payment_method_options;
 #[doc(inline)]
 pub use checkout_sepa_debit_payment_method_options::*;
+#[doc(hidden)]
+pub mod checkout_sequra_payment_method_options;
+#[doc(inline)]
+pub use checkout_sequra_payment_method_options::*;
 #[doc(hidden)]
 pub mod checkout_session_payment_method_options;
 #[doc(inline)]
@@ -961,6 +989,18 @@ pub mod invoice_payment_method_options_billie;
 #[doc(inline)]
 pub use invoice_payment_method_options_billie::*;
 #[doc(hidden)]
+pub mod invoice_payment_method_options_billie_company_details;
+#[doc(inline)]
+pub use invoice_payment_method_options_billie_company_details::*;
+#[doc(hidden)]
+pub mod invoice_payment_method_options_billie_company_details_registered_address;
+#[doc(inline)]
+pub use invoice_payment_method_options_billie_company_details_registered_address::*;
+#[doc(hidden)]
+pub mod invoice_payment_method_options_blik;
+#[doc(inline)]
+pub use invoice_payment_method_options_blik::*;
+#[doc(hidden)]
 pub mod invoice_payment_method_options_card;
 #[doc(inline)]
 pub use invoice_payment_method_options_card::*;
@@ -1085,9 +1125,17 @@ pub mod invoices_resource_shipping_cost;
 #[doc(inline)]
 pub use invoices_resource_shipping_cost::*;
 #[doc(hidden)]
+pub mod invoices_resource_status_details;
+#[doc(inline)]
+pub use invoices_resource_status_details::*;
+#[doc(hidden)]
 pub mod invoices_resource_status_transitions;
 #[doc(inline)]
 pub use invoices_resource_status_transitions::*;
+#[doc(hidden)]
+pub mod invoices_resource_uncollectible_status_details;
+#[doc(inline)]
+pub use invoices_resource_uncollectible_status_details::*;
 #[doc(hidden)]
 pub mod issuing_authorization;
 #[doc(inline)]
@@ -1521,6 +1569,10 @@ pub mod mandate_bacs_debit;
 #[doc(inline)]
 pub use mandate_bacs_debit::*;
 #[doc(hidden)]
+pub mod mandate_blik;
+#[doc(inline)]
+pub use mandate_blik::*;
+#[doc(hidden)]
 pub mod mandate_cashapp;
 #[doc(inline)]
 pub use mandate_cashapp::*;
@@ -1692,6 +1744,14 @@ pub use payment_flows_private_payment_methods_alipay::*;
 pub mod payment_flows_private_payment_methods_alma_details_resource_installments;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_alma_details_resource_installments::*;
+#[doc(hidden)]
+pub mod payment_flows_private_payment_methods_billie_payment_method_options_resource_company_details;
+#[doc(inline)]
+pub use payment_flows_private_payment_methods_billie_payment_method_options_resource_company_details::*;
+#[doc(hidden)]
+pub mod payment_flows_private_payment_methods_billie_payment_method_options_resource_company_details_resource_company_details_registered_address;
+#[doc(inline)]
+pub use payment_flows_private_payment_methods_billie_payment_method_options_resource_company_details_resource_company_details_registered_address::*;
 #[doc(hidden)]
 pub mod payment_flows_private_payment_methods_card_details_api_resource_enterprise_features_extended_authorization_extended_authorization;
 #[doc(inline)]
@@ -1928,6 +1988,10 @@ pub use payment_intent_payment_method_options_mandate_options_acss_debit::*;
 pub mod payment_intent_payment_method_options_mandate_options_bacs_debit;
 #[doc(inline)]
 pub use payment_intent_payment_method_options_mandate_options_bacs_debit::*;
+#[doc(hidden)]
+pub mod payment_intent_payment_method_options_mandate_options_blik;
+#[doc(inline)]
+pub use payment_intent_payment_method_options_mandate_options_blik::*;
 #[doc(hidden)]
 pub mod payment_intent_payment_method_options_mandate_options_payto;
 #[doc(inline)]
@@ -2553,6 +2617,10 @@ pub mod payment_method_details_payment_record_mobilepay;
 #[doc(inline)]
 pub use payment_method_details_payment_record_mobilepay::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_momo;
+#[doc(inline)]
+pub use payment_method_details_payment_record_momo::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_multibanco;
 #[doc(inline)]
 pub use payment_method_details_payment_record_multibanco::*;
@@ -2585,6 +2653,10 @@ pub mod payment_method_details_payment_record_paynow;
 #[doc(inline)]
 pub use payment_method_details_payment_record_paynow::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_paypay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_paypay::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_payto;
 #[doc(inline)]
 pub use payment_method_details_payment_record_payto::*;
@@ -2616,6 +2688,10 @@ pub use payment_method_details_payment_record_scalapay::*;
 pub mod payment_method_details_payment_record_sepa_debit;
 #[doc(inline)]
 pub use payment_method_details_payment_record_sepa_debit::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_sequra;
+#[doc(inline)]
+pub use payment_method_details_payment_record_sequra::*;
 #[doc(hidden)]
 pub mod payment_method_details_payment_record_sofort;
 #[doc(inline)]
@@ -2657,6 +2733,10 @@ pub mod payment_method_details_paypal;
 #[doc(inline)]
 pub use payment_method_details_paypal::*;
 #[doc(hidden)]
+pub mod payment_method_details_paypay;
+#[doc(inline)]
+pub use payment_method_details_paypay::*;
+#[doc(hidden)]
 pub mod payment_method_details_payto;
 #[doc(inline)]
 pub use payment_method_details_payto::*;
@@ -2692,6 +2772,10 @@ pub use payment_method_details_sepa_credit_transfer::*;
 pub mod payment_method_details_sepa_debit;
 #[doc(inline)]
 pub use payment_method_details_sepa_debit::*;
+#[doc(hidden)]
+pub mod payment_method_details_sequra;
+#[doc(inline)]
+pub use payment_method_details_sequra::*;
 #[doc(hidden)]
 pub mod payment_method_details_sofort;
 #[doc(inline)]
@@ -2937,6 +3021,10 @@ pub mod payment_method_options_paypal;
 #[doc(inline)]
 pub use payment_method_options_paypal::*;
 #[doc(hidden)]
+pub mod payment_method_options_paypay;
+#[doc(inline)]
+pub use payment_method_options_paypay::*;
+#[doc(hidden)]
 pub mod payment_method_options_pix;
 #[doc(inline)]
 pub use payment_method_options_pix::*;
@@ -2956,6 +3044,10 @@ pub use payment_method_options_satispay::*;
 pub mod payment_method_options_scalapay;
 #[doc(inline)]
 pub use payment_method_options_scalapay::*;
+#[doc(hidden)]
+pub mod payment_method_options_sequra;
+#[doc(inline)]
+pub use payment_method_options_sequra::*;
 #[doc(hidden)]
 pub mod payment_method_options_sofort;
 #[doc(inline)]
@@ -3009,6 +3101,10 @@ pub mod payment_method_paypal;
 #[doc(inline)]
 pub use payment_method_paypal::*;
 #[doc(hidden)]
+pub mod payment_method_paypay;
+#[doc(inline)]
+pub use payment_method_paypay::*;
+#[doc(hidden)]
 pub mod payment_method_payto;
 #[doc(inline)]
 pub use payment_method_payto::*;
@@ -3040,6 +3136,10 @@ pub use payment_method_scalapay::*;
 pub mod payment_method_sepa_debit;
 #[doc(inline)]
 pub use payment_method_sepa_debit::*;
+#[doc(hidden)]
+pub mod payment_method_sequra;
+#[doc(inline)]
+pub use payment_method_sequra::*;
 #[doc(hidden)]
 pub mod payment_method_sofort;
 #[doc(inline)]
@@ -3321,6 +3421,10 @@ pub mod payments_primitives_payment_records_resource_payment_method_card_details
 #[doc(inline)]
 pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_google_pay::*;
 #[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_link;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_wallet_resource_link::*;
+#[doc(hidden)]
 pub mod payments_primitives_payment_records_resource_payment_method_custom_details;
 #[doc(inline)]
 pub use payments_primitives_payment_records_resource_payment_method_custom_details::*;
@@ -3601,6 +3705,10 @@ pub mod setup_attempt_payment_method_details_bancontact;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_bancontact::*;
 #[doc(hidden)]
+pub mod setup_attempt_payment_method_details_blik;
+#[doc(inline)]
+pub use setup_attempt_payment_method_details_blik::*;
+#[doc(hidden)]
 pub mod setup_attempt_payment_method_details_boleto;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_boleto::*;
@@ -3729,6 +3837,10 @@ pub mod setup_intent_payment_method_options_bizum;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_bizum::*;
 #[doc(hidden)]
+pub mod setup_intent_payment_method_options_blik;
+#[doc(inline)]
+pub use setup_intent_payment_method_options_blik::*;
+#[doc(hidden)]
 pub mod setup_intent_payment_method_options_card;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_card::*;
@@ -3756,6 +3868,10 @@ pub use setup_intent_payment_method_options_mandate_options_acss_debit::*;
 pub mod setup_intent_payment_method_options_mandate_options_bacs_debit;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_mandate_options_bacs_debit::*;
+#[doc(hidden)]
+pub mod setup_intent_payment_method_options_mandate_options_blik;
+#[doc(inline)]
+pub use setup_intent_payment_method_options_mandate_options_blik::*;
 #[doc(hidden)]
 pub mod setup_intent_payment_method_options_mandate_options_payto;
 #[doc(inline)]
@@ -3977,9 +4093,25 @@ pub mod subscription_payment_method_options_billie;
 #[doc(inline)]
 pub use subscription_payment_method_options_billie::*;
 #[doc(hidden)]
+pub mod subscription_payment_method_options_billie_company_details;
+#[doc(inline)]
+pub use subscription_payment_method_options_billie_company_details::*;
+#[doc(hidden)]
+pub mod subscription_payment_method_options_billie_company_details_registered_address;
+#[doc(inline)]
+pub use subscription_payment_method_options_billie_company_details_registered_address::*;
+#[doc(hidden)]
+pub mod subscription_payment_method_options_blik;
+#[doc(inline)]
+pub use subscription_payment_method_options_blik::*;
+#[doc(hidden)]
 pub mod subscription_payment_method_options_card;
 #[doc(inline)]
 pub use subscription_payment_method_options_card::*;
+#[doc(hidden)]
+pub mod subscription_payment_method_options_mandate_options_blik;
+#[doc(inline)]
+pub use subscription_payment_method_options_mandate_options_blik::*;
 #[doc(hidden)]
 pub mod subscription_payment_method_options_mandate_options_pix;
 #[doc(inline)]
@@ -4033,6 +4165,50 @@ pub mod subscription_schedules_resource_invoice_item_period_resource_period_star
 #[doc(inline)]
 pub use subscription_schedules_resource_invoice_item_period_resource_period_start::*;
 #[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule_bill_for;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule_bill_for::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule_outstanding_usage_through;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule_outstanding_usage_through::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule_pause;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule_pause::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule_pause_settings;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule_pause_settings::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule_pause_status;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule_pause_status::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule_resume;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule_resume::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule_resume_settings;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule_resume_settings::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule_resume_status;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule_resume_status::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule_status_error;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule_status_error::*;
+#[doc(hidden)]
+pub mod subscription_schedules_resource_pause_schedule_unused_time_from;
+#[doc(inline)]
+pub use subscription_schedules_resource_pause_schedule_unused_time_from::*;
+#[doc(hidden)]
 pub mod subscription_transfer_data;
 #[doc(inline)]
 pub use subscription_transfer_data::*;
@@ -4069,6 +4245,14 @@ pub mod subscriptions_resource_pause_collection;
 #[doc(inline)]
 pub use subscriptions_resource_pause_collection::*;
 #[doc(hidden)]
+pub mod subscriptions_resource_paused_status_details_public;
+#[doc(inline)]
+pub use subscriptions_resource_paused_status_details_public::*;
+#[doc(hidden)]
+pub mod subscriptions_resource_paused_status_details_subscription;
+#[doc(inline)]
+pub use subscriptions_resource_paused_status_details_subscription::*;
+#[doc(hidden)]
 pub mod subscriptions_resource_payment_method_options;
 #[doc(inline)]
 pub use subscriptions_resource_payment_method_options::*;
@@ -4080,6 +4264,10 @@ pub use subscriptions_resource_payment_settings::*;
 pub mod subscriptions_resource_pending_update;
 #[doc(inline)]
 pub use subscriptions_resource_pending_update::*;
+#[doc(hidden)]
+pub mod subscriptions_resource_status_details_public;
+#[doc(inline)]
+pub use subscriptions_resource_status_details_public::*;
 #[doc(hidden)]
 pub mod subscriptions_resource_subscription_invoice_settings;
 #[doc(inline)]
@@ -4097,6 +4285,10 @@ pub mod subscriptions_resource_trial_settings_trial_settings;
 #[doc(inline)]
 pub use subscriptions_resource_trial_settings_trial_settings::*;
 #[doc(hidden)]
+pub mod subscriptions_trials_resource_current_trial;
+#[doc(inline)]
+pub use subscriptions_trials_resource_current_trial::*;
+#[doc(hidden)]
 pub mod subscriptions_trials_resource_end_behavior;
 #[doc(inline)]
 pub use subscriptions_trials_resource_end_behavior::*;
@@ -4108,6 +4300,10 @@ pub use subscriptions_trials_resource_trial_settings::*;
 pub mod tax_code;
 #[doc(inline)]
 pub use tax_code::*;
+#[doc(hidden)]
+pub mod tax_code_requirements;
+#[doc(inline)]
+pub use tax_code_requirements::*;
 #[doc(hidden)]
 pub mod tax_deducted_at_source;
 #[doc(inline)]
@@ -4124,6 +4320,10 @@ pub use tax_id::*;
 pub mod tax_id_verification;
 #[doc(inline)]
 pub use tax_id_verification::*;
+#[doc(hidden)]
+pub mod tax_product_tax_details_resource_tax_details;
+#[doc(inline)]
+pub use tax_product_tax_details_resource_tax_details::*;
 #[doc(hidden)]
 pub mod tax_rate;
 #[doc(inline)]

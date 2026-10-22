@@ -20,6 +20,9 @@ pub struct AccountBusinessProfile {
     /// Internal-only description of the product sold or service provided by the business.
     /// It's used by Stripe for risk and underwriting purposes.
     pub product_description: Option<String>,
+    /// A link to the business's publicly available terms related to the Specified Commercial Transaction Act.
+    /// Only used for accounts in Japan.
+    pub specified_commercial_transactions_act_url: Option<String>,
     /// A publicly available mailing address for sending support issues to.
     pub support_address: Option<stripe_shared::Address>,
     /// A publicly available email address for sending support issues to.
@@ -47,6 +50,7 @@ pub struct AccountBusinessProfileBuilder {
     monthly_estimated_revenue: Option<Option<stripe_shared::AccountMonthlyEstimatedRevenue>>,
     name: Option<Option<String>>,
     product_description: Option<Option<String>>,
+    specified_commercial_transactions_act_url: Option<Option<String>>,
     support_address: Option<Option<stripe_shared::Address>>,
     support_email: Option<Option<String>>,
     support_phone: Option<Option<String>>,
@@ -105,6 +109,9 @@ const _: () = {
                 }
                 "name" => Deserialize::begin(&mut self.name),
                 "product_description" => Deserialize::begin(&mut self.product_description),
+                "specified_commercial_transactions_act_url" => {
+                    Deserialize::begin(&mut self.specified_commercial_transactions_act_url)
+                }
                 "support_address" => Deserialize::begin(&mut self.support_address),
                 "support_email" => Deserialize::begin(&mut self.support_email),
                 "support_phone" => Deserialize::begin(&mut self.support_phone),
@@ -123,6 +130,7 @@ const _: () = {
                 monthly_estimated_revenue: Some(None),
                 name: Some(None),
                 product_description: Some(None),
+                specified_commercial_transactions_act_url: Some(None),
                 support_address: Some(None),
                 support_email: Some(None),
                 support_phone: Some(None),
@@ -140,6 +148,7 @@ const _: () = {
                 Some(monthly_estimated_revenue),
                 Some(name),
                 Some(product_description),
+                Some(specified_commercial_transactions_act_url),
                 Some(support_address),
                 Some(support_email),
                 Some(support_phone),
@@ -153,6 +162,7 @@ const _: () = {
                 self.monthly_estimated_revenue.take(),
                 self.name.take(),
                 self.product_description.take(),
+                self.specified_commercial_transactions_act_url.take(),
                 self.support_address.take(),
                 self.support_email.take(),
                 self.support_phone.take(),
@@ -170,6 +180,7 @@ const _: () = {
                 monthly_estimated_revenue,
                 name,
                 product_description,
+                specified_commercial_transactions_act_url,
                 support_address,
                 support_email,
                 support_phone,
@@ -215,6 +226,9 @@ const _: () = {
                     }
                     "name" => b.name = FromValueOpt::from_value(v),
                     "product_description" => b.product_description = FromValueOpt::from_value(v),
+                    "specified_commercial_transactions_act_url" => {
+                        b.specified_commercial_transactions_act_url = FromValueOpt::from_value(v)
+                    }
                     "support_address" => b.support_address = FromValueOpt::from_value(v),
                     "support_email" => b.support_email = FromValueOpt::from_value(v),
                     "support_phone" => b.support_phone = FromValueOpt::from_value(v),

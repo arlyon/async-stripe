@@ -28,7 +28,7 @@ impl ListBillingFeedbackOptionBuilder {
         Self { ending_before: None, expand: None, limit: None, starting_after: None, status: None }
     }
 }
-/// An API method for listing the feedback options model
+/// Returns a list of your feedback options.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -132,7 +132,7 @@ impl RetrieveBillingFeedbackOptionBuilder {
         Self { expand: None }
     }
 }
-/// Retrieves a feedback options object given an ID.
+/// Retrieves a feedback option object given an ID.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -291,6 +291,7 @@ impl UpdateBillingFeedbackOption {
     pub fn new(id: impl Into<stripe_shared::BillingFeedbackOptionId>) -> Self {
         Self { id: id.into(), inner: UpdateBillingFeedbackOptionBuilder::new() }
     }
+    /// The text of the feedback option, which customers see when canceling. Maximum 100 characters.
     pub fn description(mut self, description: impl Into<String>) -> Self {
         self.inner.description = Some(description.into());
         self

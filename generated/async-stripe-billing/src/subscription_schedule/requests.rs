@@ -261,6 +261,8 @@ struct CreateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pause_schedules: Option<Vec<CreateSubscriptionSchedulePauseSchedules>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     phases: Option<Vec<CreateSubscriptionSchedulePhases>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     start_date: Option<CreateSubscriptionScheduleStartDate>,
@@ -282,6 +284,7 @@ impl CreateSubscriptionScheduleBuilder {
             expand: None,
             from_subscription: None,
             metadata: None,
+            pause_schedules: None,
             phases: None,
             start_date: None,
         }
@@ -987,6 +990,1149 @@ impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsInvoiceSettin
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Configures the subscription's pause behavior and, optionally, its resume behavior.
+/// Only one entry is supported.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedules {
+    /// A unique identifier for this pause schedule entry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Configuration for when and how the subscription pauses.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pause: Option<CreateSubscriptionSchedulePauseSchedulesPause>,
+    /// Configuration for when and how the subscription resumes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resume: Option<CreateSubscriptionSchedulePauseSchedulesResume>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedules {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePauseSchedules").finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedules {
+    pub fn new() -> Self {
+        Self { key: None, pause: None, resume: None }
+    }
+}
+impl Default for CreateSubscriptionSchedulePauseSchedules {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for when and how the subscription pauses.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedulesPause {
+    /// When to pause the subscription.
+    pub pause_at: CreateSubscriptionSchedulePauseSchedulesPausePauseAt,
+    /// Settings controlling billing behavior during the pause.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub settings: Option<CreateSubscriptionSchedulePauseSchedulesPauseSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesPause {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePauseSchedulesPause").finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedulesPause {
+    pub fn new(pause_at: impl Into<CreateSubscriptionSchedulePauseSchedulesPausePauseAt>) -> Self {
+        Self { pause_at: pause_at.into(), settings: None }
+    }
+}
+/// When to pause the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedulesPausePauseAt {
+    /// The Unix timestamp at which to pause the subscription. Required when `type` is `timestamp`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// When to pause the subscription.
+    /// Use `now` to pause immediately or `timestamp` to pause at a specific time.
+    #[serde(rename = "type")]
+    pub type_: CreateSubscriptionSchedulePauseSchedulesPausePauseAtType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesPausePauseAt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePauseSchedulesPausePauseAt")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedulesPausePauseAt {
+    pub fn new(type_: impl Into<CreateSubscriptionSchedulePauseSchedulesPausePauseAtType>) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// When to pause the subscription.
+/// Use `now` to pause immediately or `timestamp` to pause at a specific time.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    Now,
+    Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionSchedulePauseSchedulesPausePauseAtType::*;
+        match self {
+            Now => "now",
+            Timestamp => "timestamp",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePauseSchedulesPausePauseAtType::*;
+        match s {
+            "now" => Ok(Now),
+            "timestamp" => Ok(Timestamp),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionSchedulePauseSchedulesPausePauseAtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePauseSchedulesPausePauseAtType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Settings controlling billing behavior during the pause.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedulesPauseSettings {
+    /// Controls what to bill for when pausing the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bill_for: Option<CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor>,
+    /// Determines whether to generate an invoice for outstanding amounts when pausing.
+    /// When adding a pause schedule, defaults to `pending_invoice_item`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoicing_behavior:
+        Option<CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior>,
+    /// The pause type. Currently only `subscription` is supported.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreateSubscriptionSchedulePauseSchedulesPauseSettingsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesPauseSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePauseSchedulesPauseSettings")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedulesPauseSettings {
+    pub fn new() -> Self {
+        Self { bill_for: None, invoicing_behavior: None, type_: None }
+    }
+}
+impl Default for CreateSubscriptionSchedulePauseSchedulesPauseSettings {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls what to bill for when pausing the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor {
+    /// Controls whether to collect metered usage accrued up to the pause date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub outstanding_usage_through:
+        Option<CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough>,
+    /// Controls how unused time on subscription items is credited when pausing.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unused_time_from:
+        Option<CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor {
+    pub fn new() -> Self {
+        Self { outstanding_usage_through: None, unused_time_from: None }
+    }
+}
+impl Default for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls whether to collect metered usage accrued up to the pause date.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough {
+    /// Determines whether to collect metered usage accrued up to the pause date.
+    /// When adding a pause schedule, defaults to `pause_at`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<
+        CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType,
+    >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough",
+        )
+        .finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough {
+    pub fn new() -> Self {
+        Self { type_: None }
+    }
+}
+impl Default
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines whether to collect metered usage accrued up to the pause date.
+/// When adding a pause schedule, defaults to `pause_at`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType {
+    None,
+    PauseAt,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType::*;
+        match self {
+            None => "none",
+            PauseAt => "pause_at",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType::*;
+        match s {
+            "none" => Ok(None),
+            "pause_at" => Ok(PauseAt),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Controls how unused time on subscription items is credited when pausing.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom {
+    /// Determines which point in the billing period unused time is credited from.
+    /// When adding a pause schedule, defaults to `pause_at`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_:
+        Option<CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom {
+    pub fn new() -> Self {
+        Self { type_: None }
+    }
+}
+impl Default for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines which point in the billing period unused time is credited from.
+/// When adding a pause schedule, defaults to `pause_at`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType {
+    ItemCurrentPeriodStart,
+    None,
+    PauseAt,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType::*;
+        match self {
+            ItemCurrentPeriodStart => "item_current_period_start",
+            None => "none",
+            PauseAt => "pause_at",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType::*;
+        match s {
+            "item_current_period_start" => Ok(ItemCurrentPeriodStart),
+            "none" => Ok(None),
+            "pause_at" => Ok(PauseAt),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Determines whether to generate an invoice for outstanding amounts when pausing.
+/// When adding a pause schedule, defaults to `pending_invoice_item`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    Invoice,
+    PendingInvoiceItem,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior::*;
+        match self {
+            Invoice => "invoice",
+            PendingInvoiceItem => "pending_invoice_item",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior::*;
+        match s {
+            "invoice" => Ok(Invoice),
+            "pending_invoice_item" => Ok(PendingInvoiceItem),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The pause type. Currently only `subscription` is supported.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    Subscription,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionSchedulePauseSchedulesPauseSettingsType::*;
+        match self {
+            Subscription => "subscription",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePauseSchedulesPauseSettingsType::*;
+        match s {
+            "subscription" => Ok(Subscription),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionSchedulePauseSchedulesPauseSettingsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePauseSchedulesPauseSettingsType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Configuration for when and how the subscription resumes.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedulesResume {
+    /// When to resume the subscription.
+    pub resume_at: CreateSubscriptionSchedulePauseSchedulesResumeResumeAt,
+    /// Settings controlling how the subscription resumes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub settings: Option<CreateSubscriptionSchedulePauseSchedulesResumeSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResume {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePauseSchedulesResume").finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedulesResume {
+    pub fn new(
+        resume_at: impl Into<CreateSubscriptionSchedulePauseSchedulesResumeResumeAt>,
+    ) -> Self {
+        Self { resume_at: resume_at.into(), settings: None }
+    }
+}
+/// When to resume the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedulesResumeResumeAt {
+    /// The duration after which to resume the subscription. Required when `type` is `duration`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDuration>,
+    /// The Unix timestamp at which to resume the subscription. Required when `type` is `timestamp`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// When to resume the subscription.
+    /// Use `now` to resume immediately, `duration` to resume after a set duration, or `timestamp` to resume at a specific time.
+    #[serde(rename = "type")]
+    pub type_: CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeResumeAt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePauseSchedulesResumeResumeAt")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedulesResumeResumeAt {
+    pub fn new(
+        type_: impl Into<CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType>,
+    ) -> Self {
+        Self { duration: None, timestamp: None, type_: type_.into() }
+    }
+}
+/// The duration after which to resume the subscription. Required when `type` is `duration`.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDuration {
+    /// The time unit for the resume duration. One of `day`, `week`, `month`, or `year`.
+    pub interval: CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval,
+    /// The number of intervals after which the subscription resumes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDuration")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDuration {
+    pub fn new(
+        interval: impl Into<CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval>,
+    ) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+/// The time unit for the resume duration. One of `day`, `week`, `month`, or `year`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// When to resume the subscription.
+/// Use `now` to resume immediately, `duration` to resume after a set duration, or `timestamp` to resume at a specific time.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    Duration,
+    Now,
+    Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType::*;
+        match self {
+            Duration => "duration",
+            Now => "now",
+            Timestamp => "timestamp",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType::*;
+        match s {
+            "duration" => Ok(Duration),
+            "now" => Ok(Now),
+            "timestamp" => Ok(Timestamp),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Settings controlling how the subscription resumes.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionSchedulePauseSchedulesResumeSettings {
+    /// Controls the billing cycle anchor when the subscription resumes.
+    /// When adding a pause schedule, defaults to `resume_at`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor:
+        Option<CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor>,
+    /// Controls whether Stripe attempts payment on the resumption invoice and how payment affects the subscription's status.
+    /// When adding a pause schedule, defaults to `resume_on_payment_success`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_behavior:
+        Option<CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior>,
+    /// Determines how to handle prorations when the subscription resumes.
+    /// When adding a pause schedule, defaults to `create_prorations`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_behavior:
+        Option<CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePauseSchedulesResumeSettings")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionSchedulePauseSchedulesResumeSettings {
+    pub fn new() -> Self {
+        Self { billing_cycle_anchor: None, payment_behavior: None, proration_behavior: None }
+    }
+}
+impl Default for CreateSubscriptionSchedulePauseSchedulesResumeSettings {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls the billing cycle anchor when the subscription resumes.
+/// When adding a pause schedule, defaults to `resume_at`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor {
+    ResumeAt,
+    Unchanged,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor::*;
+        match self {
+            ResumeAt => "resume_at",
+            Unchanged => "unchanged",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor::*;
+        match s {
+            "resume_at" => Ok(ResumeAt),
+            "unchanged" => Ok(Unchanged),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Controls whether Stripe attempts payment on the resumption invoice and how payment affects the subscription's status.
+/// When adding a pause schedule, defaults to `resume_on_payment_success`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    ResumeOnPaymentAttempt,
+    ResumeOnPaymentSuccess,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior::*;
+        match self {
+            ResumeOnPaymentAttempt => "resume_on_payment_attempt",
+            ResumeOnPaymentSuccess => "resume_on_payment_success",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior::*;
+        match s {
+            "resume_on_payment_attempt" => Ok(ResumeOnPaymentAttempt),
+            "resume_on_payment_success" => Ok(ResumeOnPaymentSuccess),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Determines how to handle prorations when the subscription resumes.
+/// When adding a pause schedule, defaults to `create_prorations`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    AlwaysInvoice,
+    CreateProrations,
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior::*;
+        match self {
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior::*;
+        match s {
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -2635,6 +3781,15 @@ impl CreateSubscriptionSchedule {
         self.inner.metadata = Some(metadata.into());
         self
     }
+    /// Configures the subscription's pause behavior and, optionally, its resume behavior.
+    /// Only one entry is supported.
+    pub fn pause_schedules(
+        mut self,
+        pause_schedules: impl Into<Vec<CreateSubscriptionSchedulePauseSchedules>>,
+    ) -> Self {
+        self.inner.pause_schedules = Some(pause_schedules.into());
+        self
+    }
     /// List representing phases of the subscription schedule.
     /// Each phase can be customized to have different durations, plans, and coupons.
     /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
@@ -2696,6 +3851,8 @@ struct UpdateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pause_schedules: Option<Vec<UpdateSubscriptionSchedulePauseSchedules>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     phases: Option<Vec<UpdateSubscriptionSchedulePhases>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proration_behavior: Option<UpdateSubscriptionScheduleProrationBehavior>,
@@ -2713,6 +3870,7 @@ impl UpdateSubscriptionScheduleBuilder {
             end_behavior: None,
             expand: None,
             metadata: None,
+            pause_schedules: None,
             phases: None,
             proration_behavior: None,
         }
@@ -3219,6 +4377,1161 @@ impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettin
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Configures the subscription's pause behavior and, optionally, its resume behavior.
+/// Only one entry is supported.
+/// Include a key to update an existing entry.
+/// Omit to leave an existing pause schedule unchanged, or pass "" to clear it.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedules {
+    /// A unique identifier for this pause schedule entry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Configuration for when and how the subscription pauses.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pause: Option<UpdateSubscriptionSchedulePauseSchedulesPause>,
+    /// Configuration for when and how the subscription resumes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resume: Option<UpdateSubscriptionSchedulePauseSchedulesResume>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedules {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePauseSchedules").finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedules {
+    pub fn new() -> Self {
+        Self { key: None, pause: None, resume: None }
+    }
+}
+impl Default for UpdateSubscriptionSchedulePauseSchedules {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for when and how the subscription pauses.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedulesPause {
+    /// When to pause the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pause_at: Option<UpdateSubscriptionSchedulePauseSchedulesPausePauseAt>,
+    /// Settings controlling billing behavior during the pause.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub settings: Option<UpdateSubscriptionSchedulePauseSchedulesPauseSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesPause {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePauseSchedulesPause").finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPause {
+    pub fn new() -> Self {
+        Self { pause_at: None, settings: None }
+    }
+}
+impl Default for UpdateSubscriptionSchedulePauseSchedulesPause {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// When to pause the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedulesPausePauseAt {
+    /// The Unix timestamp at which to pause the subscription. Required when `type` is `timestamp`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// When to pause the subscription.
+    /// Use `now` to pause immediately or `timestamp` to pause at a specific time.
+    #[serde(rename = "type")]
+    pub type_: UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesPausePauseAt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePauseSchedulesPausePauseAt")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPausePauseAt {
+    pub fn new(type_: impl Into<UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType>) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// When to pause the subscription.
+/// Use `now` to pause immediately or `timestamp` to pause at a specific time.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    Now,
+    Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType::*;
+        match self {
+            Now => "now",
+            Timestamp => "timestamp",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType::*;
+        match s {
+            "now" => Ok(Now),
+            "timestamp" => Ok(Timestamp),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePauseSchedulesPausePauseAtType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Settings controlling billing behavior during the pause.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedulesPauseSettings {
+    /// Controls what to bill for when pausing the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bill_for: Option<UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor>,
+    /// Determines whether to generate an invoice for outstanding amounts when pausing.
+    /// When adding a pause schedule, defaults to `pending_invoice_item`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoicing_behavior:
+        Option<UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior>,
+    /// The pause type. Currently only `subscription` is supported.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesPauseSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePauseSchedulesPauseSettings")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPauseSettings {
+    pub fn new() -> Self {
+        Self { bill_for: None, invoicing_behavior: None, type_: None }
+    }
+}
+impl Default for UpdateSubscriptionSchedulePauseSchedulesPauseSettings {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls what to bill for when pausing the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor {
+    /// Controls whether to collect metered usage accrued up to the pause date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub outstanding_usage_through:
+        Option<UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough>,
+    /// Controls how unused time on subscription items is credited when pausing.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unused_time_from:
+        Option<UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor {
+    pub fn new() -> Self {
+        Self { outstanding_usage_through: None, unused_time_from: None }
+    }
+}
+impl Default for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillFor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls whether to collect metered usage accrued up to the pause date.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough {
+    /// Determines whether to collect metered usage accrued up to the pause date.
+    /// When adding a pause schedule, defaults to `pause_at`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<
+        UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType,
+    >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough",
+        )
+        .finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough {
+    pub fn new() -> Self {
+        Self { type_: None }
+    }
+}
+impl Default
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThrough
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines whether to collect metered usage accrued up to the pause date.
+/// When adding a pause schedule, defaults to `pause_at`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType {
+    None,
+    PauseAt,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType::*;
+        match self {
+            None => "none",
+            PauseAt => "pause_at",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType::*;
+        match s {
+            "none" => Ok(None),
+            "pause_at" => Ok(PauseAt),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Controls how unused time on subscription items is credited when pausing.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom {
+    /// Determines which point in the billing period unused time is credited from.
+    /// When adding a pause schedule, defaults to `pause_at`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_:
+        Option<UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom {
+    pub fn new() -> Self {
+        Self { type_: None }
+    }
+}
+impl Default for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFrom {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines which point in the billing period unused time is credited from.
+/// When adding a pause schedule, defaults to `pause_at`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType {
+    ItemCurrentPeriodStart,
+    None,
+    PauseAt,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType::*;
+        match self {
+            ItemCurrentPeriodStart => "item_current_period_start",
+            None => "none",
+            PauseAt => "pause_at",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType::*;
+        match s {
+            "item_current_period_start" => Ok(ItemCurrentPeriodStart),
+            "none" => Ok(None),
+            "pause_at" => Ok(PauseAt),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Determines whether to generate an invoice for outstanding amounts when pausing.
+/// When adding a pause schedule, defaults to `pending_invoice_item`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    Invoice,
+    PendingInvoiceItem,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior::*;
+        match self {
+            Invoice => "invoice",
+            PendingInvoiceItem => "pending_invoice_item",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior::*;
+        match s {
+            "invoice" => Ok(Invoice),
+            "pending_invoice_item" => Ok(PendingInvoiceItem),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsInvoicingBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The pause type. Currently only `subscription` is supported.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    Subscription,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType::*;
+        match self {
+            Subscription => "subscription",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType::*;
+        match s {
+            "subscription" => Ok(Subscription),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePauseSchedulesPauseSettingsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Configuration for when and how the subscription resumes.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedulesResume {
+    /// When to resume the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resume_at: Option<UpdateSubscriptionSchedulePauseSchedulesResumeResumeAt>,
+    /// Settings controlling how the subscription resumes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub settings: Option<UpdateSubscriptionSchedulePauseSchedulesResumeSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResume {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePauseSchedulesResume").finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedulesResume {
+    pub fn new() -> Self {
+        Self { resume_at: None, settings: None }
+    }
+}
+impl Default for UpdateSubscriptionSchedulePauseSchedulesResume {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// When to resume the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedulesResumeResumeAt {
+    /// The duration after which to resume the subscription. Required when `type` is `duration`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDuration>,
+    /// The Unix timestamp at which to resume the subscription. Required when `type` is `timestamp`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// When to resume the subscription.
+    /// Use `now` to resume immediately, `duration` to resume after a set duration, or `timestamp` to resume at a specific time.
+    #[serde(rename = "type")]
+    pub type_: UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePauseSchedulesResumeResumeAt")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedulesResumeResumeAt {
+    pub fn new(
+        type_: impl Into<UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType>,
+    ) -> Self {
+        Self { duration: None, timestamp: None, type_: type_.into() }
+    }
+}
+/// The duration after which to resume the subscription. Required when `type` is `duration`.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDuration {
+    /// The time unit for the resume duration. One of `day`, `week`, `month`, or `year`.
+    pub interval: UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval,
+    /// The number of intervals after which the subscription resumes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDuration")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDuration {
+    pub fn new(
+        interval: impl Into<UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval>,
+    ) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+/// The time unit for the resume duration. One of `day`, `week`, `month`, or `year`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtDurationInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// When to resume the subscription.
+/// Use `now` to resume immediately, `duration` to resume after a set duration, or `timestamp` to resume at a specific time.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    Duration,
+    Now,
+    Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType::*;
+        match self {
+            Duration => "duration",
+            Now => "now",
+            Timestamp => "timestamp",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType::*;
+        match s {
+            "duration" => Ok(Duration),
+            "now" => Ok(Now),
+            "timestamp" => Ok(Timestamp),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePauseSchedulesResumeResumeAtType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Settings controlling how the subscription resumes.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePauseSchedulesResumeSettings {
+    /// Controls the billing cycle anchor when the subscription resumes.
+    /// When adding a pause schedule, defaults to `resume_at`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor:
+        Option<UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor>,
+    /// Controls whether Stripe attempts payment on the resumption invoice and how payment affects the subscription's status.
+    /// When adding a pause schedule, defaults to `resume_on_payment_success`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_behavior:
+        Option<UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior>,
+    /// Determines how to handle prorations when the subscription resumes.
+    /// When adding a pause schedule, defaults to `create_prorations`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_behavior:
+        Option<UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePauseSchedulesResumeSettings")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionSchedulePauseSchedulesResumeSettings {
+    pub fn new() -> Self {
+        Self { billing_cycle_anchor: None, payment_behavior: None, proration_behavior: None }
+    }
+}
+impl Default for UpdateSubscriptionSchedulePauseSchedulesResumeSettings {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls the billing cycle anchor when the subscription resumes.
+/// When adding a pause schedule, defaults to `resume_at`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor {
+    ResumeAt,
+    Unchanged,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor::*;
+        match self {
+            ResumeAt => "resume_at",
+            Unchanged => "unchanged",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor::*;
+        match s {
+            "resume_at" => Ok(ResumeAt),
+            "unchanged" => Ok(Unchanged),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Controls whether Stripe attempts payment on the resumption invoice and how payment affects the subscription's status.
+/// When adding a pause schedule, defaults to `resume_on_payment_success`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    ResumeOnPaymentAttempt,
+    ResumeOnPaymentSuccess,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior::*;
+        match self {
+            ResumeOnPaymentAttempt => "resume_on_payment_attempt",
+            ResumeOnPaymentSuccess => "resume_on_payment_success",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior::*;
+        match s {
+            "resume_on_payment_attempt" => Ok(ResumeOnPaymentAttempt),
+            "resume_on_payment_success" => Ok(ResumeOnPaymentSuccess),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsPaymentBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Determines how to handle prorations when the subscription resumes.
+/// When adding a pause schedule, defaults to `create_prorations`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    AlwaysInvoice,
+    CreateProrations,
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior::*;
+        match self {
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior::*;
+        match s {
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionSchedulePauseSchedulesResumeSettingsProrationBehavior
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -4958,6 +7271,17 @@ impl UpdateSubscriptionSchedule {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// Configures the subscription's pause behavior and, optionally, its resume behavior.
+    /// Only one entry is supported.
+    /// Include a key to update an existing entry.
+    /// Omit to leave an existing pause schedule unchanged, or pass "" to clear it.
+    pub fn pause_schedules(
+        mut self,
+        pause_schedules: impl Into<Vec<UpdateSubscriptionSchedulePauseSchedules>>,
+    ) -> Self {
+        self.inner.pause_schedules = Some(pause_schedules.into());
         self
     }
     /// List representing phases of the subscription schedule.

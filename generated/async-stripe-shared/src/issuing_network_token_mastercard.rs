@@ -3,14 +3,14 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingNetworkTokenMastercard {
-    /// A unique reference ID from MasterCard to represent the card account number.
+    /// A unique reference ID from Mastercard to represent the card account number.
     pub card_reference_id: Option<String>,
     /// The network-unique identifier for the token.
     pub token_reference_id: String,
-    /// The ID of the entity requesting tokenization, specific to MasterCard.
+    /// The ID of the entity requesting tokenization, specific to Mastercard.
     pub token_requestor_id: String,
     /// The name of the entity requesting tokenization, if known.
-    /// This is directly provided from MasterCard.
+    /// This is directly provided from Mastercard.
     pub token_requestor_name: Option<String>,
 }
 #[cfg(feature = "redact-generated-debug")]

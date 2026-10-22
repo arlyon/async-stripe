@@ -39,7 +39,9 @@ payment_link = []
 payment_method = []
 payment_method_configuration = []
 payment_method_domain = []
+payment_record = []
 source = []
+three_d_secure_authentication = []
 
 full = ["bank_account",
 "card",
@@ -49,7 +51,9 @@ full = ["bank_account",
 "payment_method",
 "payment_method_configuration",
 "payment_method_domain",
-"source"]
+"payment_record",
+"source",
+"three_d_secure_authentication"]
 
 
 [package.metadata.docs.rs]

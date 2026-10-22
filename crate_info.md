@@ -14,7 +14,6 @@
 | InvoiceLineItem                                                                                  | async-stripe-billing  | invoice_line_item                       |
 | InvoicePayment                                                                                   | async-stripe-billing  | invoice_payment                         |
 | InvoiceRenderingTemplate                                                                         | async-stripe-billing  | invoice_rendering_template              |
-| PaymentRecord                                                                                    | async-stripe-billing  | payment_record                          |
 | TestHelpersTestClock                                                                             | async-stripe-billing  | test_helpers_test_clock                 |
 | [CreditNoteLineItem](https://stripe.com/docs/api/credit_notes/line_item)                         | async-stripe-billing  | credit_note_line_item                   |
 | [CreditNote](https://stripe.com/docs/api/credit_notes/object)                                    | async-stripe-billing  | credit_note                             |
@@ -27,6 +26,7 @@
 | [Subscription](https://stripe.com/docs/api/subscriptions/object)                                 | async-stripe-billing  | subscription                            |
 | [TaxId](https://stripe.com/docs/api/tax_ids/object)                                              | async-stripe-billing  | tax_id                                  |
 | [CheckoutSession](https://stripe.com/docs/api/checkout/sessions/object)                          | async-stripe-checkout | checkout_session                        |
+| AppsInstall                                                                                      | async-stripe-connect  | apps_install                            |
 | AppsSecret                                                                                       | async-stripe-connect  | apps_secret                             |
 | ExternalAccount                                                                                  | async-stripe-connect  | external_account                        |
 | [AccountLink](https://stripe.com/docs/api/account_links/object)                                  | async-stripe-connect  | account_link                            |
@@ -87,6 +87,7 @@
 | FinancialConnectionsTransaction                                                                  | async-stripe-misc     | financial_connections_transaction       |
 | ForwardingRequest                                                                                | async-stripe-misc     | forwarding_request                      |
 | TaxAssociation                                                                                   | async-stripe-misc     | tax_association                         |
+| TaxLocation                                                                                      | async-stripe-misc     | tax_location                            |
 | TaxRegistration                                                                                  | async-stripe-misc     | tax_registration                        |
 | [FinancialConnectionsAccount](https://stripe.com/docs/api/financial_connections/accounts/object) | async-stripe-misc     | financial_connections_account           |
 | [FinancialConnectionsSession](https://stripe.com/docs/api/financial_connections/sessions/object) | async-stripe-misc     | financial_connections_session           |
@@ -102,12 +103,15 @@
 | BankAccount                                                                                      | async-stripe-payment  | bank_account                            |
 | ConfirmationToken                                                                                | async-stripe-payment  | confirmation_token                      |
 | PaymentAttemptRecord                                                                             | async-stripe-payment  | payment_attempt_record                  |
+| PaymentRecord                                                                                    | async-stripe-payment  | payment_record                          |
+| ThreeDSecureAuthentication                                                                       | async-stripe-payment  | three_d_secure_authentication           |
 | [Card](https://stripe.com/docs/api/cards/object)                                                 | async-stripe-payment  | card                                    |
 | [PaymentLink](https://stripe.com/docs/api/payment_links/payment_links/object)                    | async-stripe-payment  | payment_link                            |
 | [PaymentMethodConfiguration](https://stripe.com/docs/api/payment_method_configurations/object)   | async-stripe-payment  | payment_method_configuration            |
 | [PaymentMethodDomain](https://stripe.com/docs/api/payment_method_domains/object)                 | async-stripe-payment  | payment_method_domain                   |
 | [PaymentMethod](https://stripe.com/docs/api/payment_methods/object)                              | async-stripe-payment  | payment_method                          |
 | [Source](https://stripe.com/docs/api/sources/object)                                             | async-stripe-payment  | source                                  |
+| ProductCatalogTrialOffer                                                                         | async-stripe-product  | product_catalog_trial_offer             |
 | ProductFeature                                                                                   | async-stripe-product  | product_feature                         |
 | [Coupon](https://stripe.com/docs/api/coupons/object)                                             | async-stripe-product  | coupon                                  |
 | [Price](https://stripe.com/docs/api/prices/object)                                               | async-stripe-product  | price                                   |

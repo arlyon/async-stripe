@@ -33,8 +33,26 @@ pub mod price;
 pub use stripe_shared::price::*;
 pub use stripe_shared::price_tier::*;
 pub mod product;
-pub use product_feature::types::*;
+pub use product_catalog_trial_offer::types::*;
 pub use stripe_shared::product::*;
+#[doc(hidden)]
+pub mod product_catalog_impl_endpoints_trial_offer_resource_relative_duration;
+pub mod product_catalog_trial_offer;
+#[doc(inline)]
+pub use product_catalog_impl_endpoints_trial_offer_resource_relative_duration::*;
+#[doc(hidden)]
+pub mod product_catalog_impl_endpoints_trial_offer_resource_transition;
+#[doc(inline)]
+pub use product_catalog_impl_endpoints_trial_offer_resource_transition::*;
+#[doc(hidden)]
+pub mod product_catalog_impl_endpoints_trial_offer_resource_trial_offer_duration;
+#[doc(inline)]
+pub use product_catalog_impl_endpoints_trial_offer_resource_trial_offer_duration::*;
+#[doc(hidden)]
+pub mod product_catalog_impl_endpoints_trial_offer_resource_trial_offer_end_behavior;
+#[doc(inline)]
+pub use product_catalog_impl_endpoints_trial_offer_resource_trial_offer_end_behavior::*;
+pub use product_feature::types::*;
 pub mod product_feature;
 pub use stripe_shared::product_marketing_feature::*;
 pub mod promotion_code;
@@ -47,6 +65,8 @@ pub mod shipping_rate;
 pub use stripe_shared::shipping_rate::*;
 pub mod tax_code;
 pub use stripe_shared::tax_code::*;
+pub use stripe_shared::tax_code_requirements::*;
+pub use stripe_shared::tax_product_tax_details_resource_tax_details::*;
 pub mod tax_rate;
 pub use stripe_shared::tax_rate::*;
 pub use stripe_shared::tax_rate_flat_amount::*;

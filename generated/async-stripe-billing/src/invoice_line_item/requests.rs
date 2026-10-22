@@ -299,6 +299,9 @@ pub struct UpdateInvoiceLineItemPriceDataProductData {
     /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
+    /// Tax details for this product, including the [tax code](/tax/tax-codes) and an optional performance location.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_details: Option<UpdateInvoiceLineItemPriceDataProductDataTaxDetails>,
     /// A label that represents units of this product.
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -318,8 +321,39 @@ impl UpdateInvoiceLineItemPriceDataProductData {
             metadata: None,
             name: name.into(),
             tax_code: None,
+            tax_details: None,
             unit_label: None,
         }
+    }
+}
+/// Tax details for this product, including the [tax code](/tax/tax-codes) and an optional performance location.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateInvoiceLineItemPriceDataProductDataTaxDetails {
+    /// A tax location ID.
+    /// Depending on the [tax code](/tax/tax-for-tickets/reference/tax-location-performance), this is required, optional, or not supported.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub performance_location: Option<String>,
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemPriceDataProductDataTaxDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceLineItemPriceDataProductDataTaxDetails")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateInvoiceLineItemPriceDataProductDataTaxDetails {
+    pub fn new() -> Self {
+        Self { performance_location: None, tax_code: None }
+    }
+}
+impl Default for UpdateInvoiceLineItemPriceDataProductDataTaxDetails {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -625,6 +659,7 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxRateData
 pub enum UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
     AmusementTax,
     CommunicationsTax,
+    DigitalExciseTax,
     Gst,
     Hst,
     Igst,
@@ -638,6 +673,7 @@ pub enum UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
     Rst,
     SalesTax,
     ServiceTax,
+    UtilityUsersTax,
     Vat,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
@@ -648,6 +684,7 @@ impl UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
         match self {
             AmusementTax => "amusement_tax",
             CommunicationsTax => "communications_tax",
+            DigitalExciseTax => "digital_excise_tax",
             Gst => "gst",
             Hst => "hst",
             Igst => "igst",
@@ -661,6 +698,7 @@ impl UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
             Rst => "rst",
             SalesTax => "sales_tax",
             ServiceTax => "service_tax",
+            UtilityUsersTax => "utility_users_tax",
             Vat => "vat",
             Unknown(v) => v,
         }
@@ -674,6 +712,7 @@ impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
         match s {
             "amusement_tax" => Ok(AmusementTax),
             "communications_tax" => Ok(CommunicationsTax),
+            "digital_excise_tax" => Ok(DigitalExciseTax),
             "gst" => Ok(Gst),
             "hst" => Ok(Hst),
             "igst" => Ok(Igst),
@@ -687,6 +726,7 @@ impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
             "rst" => Ok(Rst),
             "sales_tax" => Ok(SalesTax),
             "service_tax" => Ok(ServiceTax),
+            "utility_users_tax" => Ok(UtilityUsersTax),
             "vat" => Ok(Vat),
             v => {
                 tracing::warn!(
