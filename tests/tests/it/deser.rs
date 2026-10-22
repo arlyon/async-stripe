@@ -410,3 +410,63 @@ fn deserialize_customer_deleted_or_not() {
     assert_eq!(cust.id.as_str(), "cus_1234");
     assert_eq!(cust.sources.unwrap().data.len(), 1);
 }
+
+#[test]
+fn buffered_customer_rejects_invalid_optional_fields() {
+    for (field, invalid) in [
+        ("email", json!(123)),
+        ("preferred_locales", json!(["en", 123])),
+        ("default_source", json!({"object": "card", "id": "card_bad"})),
+    ] {
+        let mut customer = mock_customer_with_card();
+        customer[field] = invalid;
+        let body = customer.to_string();
+        assert!(from_str::<Customer>(&body).is_err(), "direct field {field}");
+        assert!(from_str::<RetrieveCustomerReturned>(&body).is_err(), "buffered field {field}");
+    }
+}
+
+#[test]
+fn buffered_customer_preserves_absent_null_and_valid_optional_fields() {
+    for email in [None, Some(Value::Null), Some(json!("customer@example.com"))] {
+        let mut customer = mock_customer_with_card();
+        customer.as_object_mut().unwrap().remove("email");
+        if let Some(email) = &email {
+            customer["email"] = email.clone();
+        }
+        let body = customer.to_string();
+        let direct: Customer = from_str(&body).unwrap();
+        let RetrieveCustomerReturned::Customer(buffered) = from_str(&body).unwrap() else {
+            panic!("expected customer");
+        };
+        let expected = email.as_ref().and_then(Value::as_str);
+        assert_eq!(direct.email.as_deref(), expected);
+        assert_eq!(buffered.email.as_deref(), expected);
+    }
+}
+
+#[test]
+fn buffered_customer_rejects_out_of_range_signed_integers() {
+    for created in [i64::MAX as u64 + 1, u64::MAX] {
+        let mut customer = mock_customer_with_card();
+        customer["created"] = json!(created);
+        let body = customer.to_string();
+        assert!(from_str::<Customer>(&body).is_err());
+        assert!(from_str::<RetrieveCustomerReturned>(&body).is_err());
+    }
+}
+
+#[test]
+fn buffered_customer_preserves_signed_integer_boundaries() {
+    for created in [i64::MIN, 0, i64::MAX] {
+        let mut customer = mock_customer_with_card();
+        customer["created"] = json!(created);
+        let body = customer.to_string();
+        let direct: Customer = from_str(&body).unwrap();
+        let RetrieveCustomerReturned::Customer(buffered) = from_str(&body).unwrap() else {
+            panic!("expected customer");
+        };
+        assert_eq!(direct.created, created);
+        assert_eq!(buffered.created, created);
+    }
+}
