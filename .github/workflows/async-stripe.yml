@@ -148,6 +148,22 @@ jobs:
       - name: Run tests
         run: cargo test --no-default-features --features "full serialize deserialize ${{ matrix.features }}"
 
+  test-parser:
+    name: Test Event Parser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.rust_min }}
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run parser tests
+        run: cargo test --locked -p async-stripe-parser --lib
+
   stripe-mock-tests:
     name: Stripe Mock Tests
     runs-on: ubuntu-latest
