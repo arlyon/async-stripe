@@ -118,6 +118,12 @@ jobs:
       - name: Run clippy with redact-generated-debug
         run: cargo clippy --no-default-features --features "full serialize deserialize redact-generated-debug default-tls"
 
+      - name: Check all webhook features
+        run: cargo clippy --locked -p async-stripe-webhook --all-features --all-targets
+
+      - name: Test all webhook features
+        run: cargo test --locked -p async-stripe-webhook --all-features
+
   test-clients:
     name: Test Clients
     runs-on: ubuntu-latest
