@@ -120,7 +120,8 @@ Each case/profile costs one build. From that build the collector records:
 
 `summary.md` keeps run metadata, measurement tables and any warnings/errors,
 with per-library breakdowns in collapsible tables. `results.json` keeps exact
-bytes, every section and recorded build settings.
+bytes, every section and recorded build settings. Human-readable sizes and
+deltas use decimal B/KB/MB/GB units, with 1 KB = 1,000 bytes.
 
 Section file sizes exclude zero-fill memory, headers and symbol tables. The
 Stripe library columns total first-party build artifacts, not download or
@@ -162,7 +163,7 @@ Registry dependencies do not contribute incremental caches. These measurements
 describe the initial build, not cache growth across edits.
 
 `compare` accepts report directories or `results.json` files. Comparisons match
-workload and profile, show exact byte and percentage deltas,
+workload and profile, show readable size and percentage deltas,
 and identify added or removed rows. Different
 toolchains, platforms, targets, recorded environment settings, Cargo configuration
 hashes, workspace profile tables or Cargo artifact profile fields are rejected unless
@@ -196,6 +197,7 @@ cleared. Timing and RSS are noisy diagnostics.
 Raw samples are retained. Optional RSS uses `/usr/bin/time` on macOS or GNU `time`
 on Linux; it reports a rough largest-process peak, not simultaneous process-tree
 memory. If unavailable, wall-time collection continues.
+The RSS availability notice appears once per collection, report, or comparison.
 
 `--llvm-lines` records the selected consumer root and, once per profile, a
 standalone default-feature `async-stripe-shared` library build. Neither count

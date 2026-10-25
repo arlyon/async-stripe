@@ -163,6 +163,10 @@ esac
         assert_eq!(manifest["arguments"][0], "build");
         assert!(fs::read_to_string(output.join("summary.md"))?.contains("Finished with errors"));
         let stderr = String::from_utf8(result.stderr)?;
+        assert!(
+            stderr.matches("Maximum RSS unavailable; wall time is still collected.").count() <= 1
+        );
+        assert!(!stderr.contains("Maximum RSS unavailable on this host"));
         assert!(!stderr.contains("fixture build progress"));
         assert!(stderr.contains(": finished in "));
         assert!(

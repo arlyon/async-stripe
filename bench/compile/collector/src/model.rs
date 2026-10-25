@@ -5,6 +5,11 @@ use serde::{Deserialize, Serialize};
 
 pub const CASES: &[&str] = &["minimal", "poly", "deser-many", "requests", "webhook"];
 pub const SCHEMA_VERSION: u32 = 1;
+// Keep the stored warning compatible with reports collected before this notice
+// was consolidated in human-readable output.
+pub const RSS_UNAVAILABLE_WARNING: &str =
+    "Maximum RSS unavailable on this host; wall time is still collected.";
+pub const RSS_UNAVAILABLE_NOTICE: &str = "Maximum RSS unavailable; wall time is still collected.";
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Report {
