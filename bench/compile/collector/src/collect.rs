@@ -207,6 +207,9 @@ pub fn collect(args: Collect) -> Result<()> {
         build.offline = true;
     }
     let rss = args.timings.is_some() && rss_available(&output);
+    if args.timings.is_some() && !rss {
+        warn!("{RSS_UNAVAILABLE_NOTICE}");
+    }
     let mut shared_profiles = BTreeSet::new();
     for case in results.options.cases.clone() {
         for profile in &args.profiles {
@@ -226,9 +229,7 @@ pub fn collect(args: Collect) -> Result<()> {
                 retained_artifacts: Vec::new(),
             });
             if args.timings.is_some() && !rss {
-                results.measurements[index].warnings.push(
-                    "Maximum RSS unavailable on this host; wall time is still collected.".into(),
-                );
+                results.measurements[index].warnings.push(RSS_UNAVAILABLE_WARNING.into());
             }
             report::save(&output, &results)?;
             if let Err(error) =
@@ -377,7 +378,9 @@ fn measure(
         }
     }
     for warning in &results.measurements[index].warnings {
-        warn!("{case}: {warning}");
+        if warning != RSS_UNAVAILABLE_WARNING {
+            warn!("{case}: {warning}");
+        }
     }
     Ok(())
 }
@@ -621,10 +624,7 @@ fn rss_available(output: &Path) -> bool {
             .ok()
             .and_then(|text| metrics::max_rss(&text, env::consts::OS))
             .is_some(),
-        _ => {
-            warn!("/usr/bin/time RSS measurement unavailable; collecting wall time only");
-            false
-        }
+        _ => false,
     }
 }
 

@@ -20,7 +20,17 @@ pub fn save(directory: &Path, report: &Report) -> Result<()> {
 }
 
 fn bytes(bytes: u64) -> String {
-    format!("{:.2} MiB", bytes as f64 / 1_048_576.0)
+    const UNITS: &[&str] = &["B", "KB", "MB", "GB", "TB", "PB", "EB"];
+    if bytes < 1_000 {
+        return format!("{bytes} B");
+    }
+    let mut value = bytes as f64;
+    let mut unit = 0;
+    while value >= 999.995 && unit + 1 < UNITS.len() {
+        value /= 1_000.0;
+        unit += 1;
+    }
+    format!("{value:.2} {}", UNITS[unit])
 }
 fn optional(bytes: Option<u64>) -> String {
     bytes.map_or_else(|| "—".into(), self::bytes)
@@ -90,9 +100,18 @@ fn markdown(report: &Report) -> String {
             writeln!(out, "| {} | {} | {columns} |", row.case, row.profile).unwrap();
         }
     }
+    if report
+        .measurements
+        .iter()
+        .any(|row| row.warnings.iter().any(|w| w == RSS_UNAVAILABLE_WARNING))
+    {
+        writeln!(out, "\n{RSS_UNAVAILABLE_NOTICE}\n").unwrap();
+    }
     for row in &report.measurements {
         for warning in &row.warnings {
-            writeln!(out, "\n- {}/{}: {warning}", row.case, row.profile).unwrap();
+            if warning != RSS_UNAVAILABLE_WARNING {
+                writeln!(out, "\n- {}/{}: {warning}", row.case, row.profile).unwrap();
+            }
         }
     }
     if report.options.timing_runs.is_some() {
@@ -238,15 +257,23 @@ fn compare(baseline: &Report, current: &Report, allow_mismatch: bool) -> Result<
             a.version, a.source_sha256, b.version, b.source_sha256
         ));
     }
+    let mut rss_unavailable = false;
     for (label, report) in [("Baseline", baseline), ("Current", current)] {
         if !report.finished || !report.errors.is_empty() {
             notes.push(format!("WARNING: {label} report is unfinished or contains errors; only available measurements are compared."));
         }
         for row in &report.measurements {
             for warning in &row.warnings {
-                notes.push(format!("WARNING: {label} {}/{}: {warning}", row.case, row.profile));
+                if warning == RSS_UNAVAILABLE_WARNING {
+                    rss_unavailable = true;
+                } else {
+                    notes.push(format!("WARNING: {label} {}/{}: {warning}", row.case, row.profile));
+                }
             }
         }
+    }
+    if rss_unavailable {
+        notes.push(RSS_UNAVAILABLE_NOTICE.into());
     }
     let before: BTreeMap<_, _> =
         baseline.measurements.iter().map(|m| ((m.case.as_str(), m.profile.as_str()), m)).collect();
@@ -392,7 +419,8 @@ fn delta(before: Option<u64>, after: Option<u64>) -> String {
     } else {
         format!(" ({:+.2}%)", difference as f64 / before as f64 * 100.0)
     };
-    format!("{difference:+} B{percent}")
+    let sign = if difference < 0 { "-" } else { "+" };
+    format!("{sign}{}{percent}", bytes(before.abs_diff(after)))
 }
 
 #[cfg(test)]
@@ -451,7 +479,49 @@ mod tests {
         assert_eq!(delta(Some(5), None), "—");
         assert_eq!(delta(Some(0), Some(10)), "+10 B");
         assert_eq!(delta(Some(100), Some(90)), "-10 B (-10.00%)");
-        assert_eq!(delta(Some(u64::MAX), Some(0)), "-18446744073709551615 B (-100.00%)");
+        assert_eq!(delta(Some(u64::MAX), Some(0)), "-18.45 EB (-100.00%)");
+        assert_eq!(delta(Some(1_000_000), Some(1_250_000)), "+250.00 KB (+25.00%)");
+        assert_eq!(delta(Some(20_000_000), Some(10_000_000)), "-10.00 MB (-50.00%)");
+    }
+
+    #[test]
+    fn sizes_use_readable_decimal_units() {
+        assert_eq!(bytes(0), "0 B");
+        assert_eq!(bytes(999), "999 B");
+        assert_eq!(bytes(1_000), "1.00 KB");
+        assert_eq!(bytes(999_999), "1.00 MB");
+        assert_eq!(bytes(12_345_678), "12.35 MB");
+        assert_eq!(bytes(1_234_567_890), "1.23 GB");
+        assert_eq!(bytes(u64::MAX), "18.45 EB");
+    }
+
+    #[test]
+    fn rss_notice_is_printed_once_without_hiding_measurement_warnings() -> Result<()> {
+        let mut before = sample();
+        before.measurements[0].warnings = vec![RSS_UNAVAILABLE_WARNING.into()];
+        let mut after = sample();
+        for profile in ["dev", "release"] {
+            after.measurements.push(Measurement {
+                case: "webhook".into(),
+                profile: profile.into(),
+                sizes: None,
+                timing_samples: vec![],
+                consumer_ir: None,
+                warnings: vec![RSS_UNAVAILABLE_WARNING.into()],
+                retained_artifacts: vec![],
+            });
+        }
+        after.measurements[0].warnings =
+            vec![RSS_UNAVAILABLE_WARNING.into(), "consumer incremental cache unavailable".into()];
+        let comparison = compare(&before, &after, false)?;
+        let summary = markdown(&after);
+        for output in [&comparison, &summary] {
+            assert_eq!(output.matches(RSS_UNAVAILABLE_NOTICE).count(), 1);
+            assert!(!output.contains(RSS_UNAVAILABLE_WARNING));
+            assert!(output.contains("minimal/dev: consumer incremental cache unavailable"));
+        }
+        assert!(!markdown(&sample()).contains(RSS_UNAVAILABLE_NOTICE));
+        Ok(())
     }
 
     #[test]
