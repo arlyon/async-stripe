@@ -29,7 +29,6 @@ pub async fn run_payment_intent_example(client: &Client) -> Result<(), StripeErr
 
     // we create an intent to pay
     let payment_intent = CreatePaymentIntent::new(1000, Currency::USD)
-        .payment_method_types([String::from("card")])
         .statement_descriptor("Purchasing a new car")
         .metadata([("color".to_string(), "red".to_string())])
         .send(client)

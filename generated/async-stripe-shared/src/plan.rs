@@ -1,8 +1,8 @@
-/// You can now model subscriptions more flexibly using the [Prices API](https://api.stripe.com#prices).
+/// You can now model subscriptions more flexibly using the [Prices API](https://docs.stripe.com/api#prices).
 /// It replaces the Plans API and is backwards compatible to simplify your migration.
 ///
 /// Plans define the base price, currency, and billing cycle for recurring purchases of products.
-/// [Products](https://api.stripe.com#products) help you track inventory or provisioning, and plans help you track pricing.
+/// [Products](https://docs.stripe.com/api#products) help you track inventory or provisioning, and plans help you track pricing.
 /// Different physical goods or levels of service should be represented by products, and pricing options should be represented by plans.
 /// This approach lets you change prices without having to change your provisioning scheme.
 ///

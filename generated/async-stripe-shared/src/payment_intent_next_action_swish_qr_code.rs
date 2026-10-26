@@ -5,6 +5,8 @@
 pub struct PaymentIntentNextActionSwishQrCode {
     /// The raw data string used to generate QR code, it should be used together with QR code library.
     pub data: String,
+    /// The timestamp at which the QR code expires.
+    pub expires_at: stripe_types::Timestamp,
     /// The image_url_png string used to render QR code
     pub image_url_png: String,
     /// The image_url_svg string used to render QR code
@@ -19,6 +21,7 @@ impl std::fmt::Debug for PaymentIntentNextActionSwishQrCode {
 #[doc(hidden)]
 pub struct PaymentIntentNextActionSwishQrCodeBuilder {
     data: Option<String>,
+    expires_at: Option<stripe_types::Timestamp>,
     image_url_png: Option<String>,
     image_url_svg: Option<String>,
 }
@@ -64,6 +67,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "data" => Deserialize::begin(&mut self.data),
+                "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "image_url_png" => Deserialize::begin(&mut self.image_url_png),
                 "image_url_svg" => Deserialize::begin(&mut self.image_url_svg),
                 _ => <dyn Visitor>::ignore(),
@@ -71,16 +75,19 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { data: None, image_url_png: None, image_url_svg: None }
+            Self { data: None, expires_at: None, image_url_png: None, image_url_svg: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(data), Some(image_url_png), Some(image_url_svg)) =
-                (self.data.take(), self.image_url_png.take(), self.image_url_svg.take())
-            else {
+            let (Some(data), Some(expires_at), Some(image_url_png), Some(image_url_svg)) = (
+                self.data.take(),
+                self.expires_at,
+                self.image_url_png.take(),
+                self.image_url_svg.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { data, image_url_png, image_url_svg })
+            Some(Self::Out { data, expires_at, image_url_png, image_url_svg })
         }
     }
 
@@ -108,6 +115,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "data" => b.data = FromValueOpt::from_value(v),
+                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "image_url_png" => b.image_url_png = FromValueOpt::from_value(v),
                     "image_url_svg" => b.image_url_svg = FromValueOpt::from_value(v),
                     _ => {}

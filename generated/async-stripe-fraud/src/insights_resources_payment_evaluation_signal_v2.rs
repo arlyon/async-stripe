@@ -8,11 +8,9 @@ pub struct InsightsResourcesPaymentEvaluationSignalV2 {
     pub evaluated_at: stripe_types::Timestamp,
     /// Risk level of this signal, based on the score.
     pub risk_level: InsightsResourcesPaymentEvaluationSignalV2RiskLevel,
-    /// Score for this signal.
-    /// Possible values for evaluated payments are between 0 and 100.
-    /// The value is returned with two decimal places and higher scores indicate a higher likelihood of the signal being true.
-    /// A score of -1 is returned when a model evaluation was not performed, such as requests from incomplete integrations.
-    pub score: f64,
+    /// Numeric score for this signal, returned with two decimal places.
+    /// Possible values for evaluated payments are between 0 and 100, where higher scores indicate a higher likelihood of the signal being true.
+    pub score: Option<f64>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSignalV2 {
@@ -24,7 +22,7 @@ impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSignalV2 {
 pub struct InsightsResourcesPaymentEvaluationSignalV2Builder {
     evaluated_at: Option<stripe_types::Timestamp>,
     risk_level: Option<InsightsResourcesPaymentEvaluationSignalV2RiskLevel>,
-    score: Option<f64>,
+    score: Option<Option<f64>>,
 }
 
 #[allow(
@@ -75,7 +73,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { evaluated_at: None, risk_level: None, score: None }
+            Self { evaluated_at: None, risk_level: None, score: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

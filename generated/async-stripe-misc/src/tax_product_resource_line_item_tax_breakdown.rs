@@ -166,6 +166,7 @@ const _: () = {
 pub enum TaxProductResourceLineItemTaxBreakdownSourcing {
     Destination,
     Origin,
+    Performance,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -175,6 +176,7 @@ impl TaxProductResourceLineItemTaxBreakdownSourcing {
         match self {
             Destination => "destination",
             Origin => "origin",
+            Performance => "performance",
             Unknown(v) => v,
         }
     }
@@ -187,6 +189,7 @@ impl std::str::FromStr for TaxProductResourceLineItemTaxBreakdownSourcing {
         match s {
             "destination" => Ok(Destination),
             "origin" => Ok(Origin),
+            "performance" => Ok(Performance),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",

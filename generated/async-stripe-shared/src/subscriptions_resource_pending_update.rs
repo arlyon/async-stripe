@@ -8,6 +8,8 @@ pub struct SubscriptionsResourcePendingUpdate {
     /// If the update is applied, determines the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     /// The timestamp is in UTC format.
     pub billing_cycle_anchor: Option<stripe_types::Timestamp>,
+    /// Indicates whether this subscription should cancel at the end of the current period if the update is applied.
+    pub cancel_at_period_end: Option<bool>,
     /// The pending subscription-level discount that will be applied when the pending update is applied.
     pub discount: Option<stripe_shared::Discount>,
     /// The discounts that will be applied to the subscription when the pending update is applied.
@@ -25,7 +27,7 @@ pub struct SubscriptionsResourcePendingUpdate {
     /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
-    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials/free-trials) to learn more.
     pub trial_from_plan: Option<bool>,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -37,6 +39,7 @@ impl std::fmt::Debug for SubscriptionsResourcePendingUpdate {
 #[doc(hidden)]
 pub struct SubscriptionsResourcePendingUpdateBuilder {
     billing_cycle_anchor: Option<Option<stripe_types::Timestamp>>,
+    cancel_at_period_end: Option<Option<bool>>,
     discount: Option<Option<stripe_shared::Discount>>,
     discounts: Option<Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>>,
     expires_at: Option<stripe_types::Timestamp>,
@@ -87,6 +90,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
+                "cancel_at_period_end" => Deserialize::begin(&mut self.cancel_at_period_end),
                 "discount" => Deserialize::begin(&mut self.discount),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
@@ -101,6 +105,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 billing_cycle_anchor: Some(None),
+                cancel_at_period_end: Some(None),
                 discount: Some(None),
                 discounts: Some(None),
                 expires_at: None,
@@ -114,6 +119,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(billing_cycle_anchor),
+                Some(cancel_at_period_end),
                 Some(discount),
                 Some(discounts),
                 Some(expires_at),
@@ -123,6 +129,7 @@ const _: () = {
                 Some(trial_from_plan),
             ) = (
                 self.billing_cycle_anchor,
+                self.cancel_at_period_end,
                 self.discount.take(),
                 self.discounts.take(),
                 self.expires_at,
@@ -136,6 +143,7 @@ const _: () = {
             };
             Some(Self::Out {
                 billing_cycle_anchor,
+                cancel_at_period_end,
                 discount,
                 discounts,
                 expires_at,
@@ -171,6 +179,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
+                    "cancel_at_period_end" => b.cancel_at_period_end = FromValueOpt::from_value(v),
                     "discount" => b.discount = FromValueOpt::from_value(v),
                     "discounts" => b.discounts = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),

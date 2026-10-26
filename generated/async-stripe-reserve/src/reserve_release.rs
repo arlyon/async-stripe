@@ -13,6 +13,8 @@ pub struct ReserveRelease {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
+    /// The balance destination to which the released funds are sent.
+    pub destination: ReserveReleaseDestination,
     /// Unique identifier for the object.
     pub id: stripe_reserve::ReserveReleaseId,
     /// If the object exists in live mode, the value is `true`.
@@ -45,6 +47,7 @@ pub struct ReserveReleaseBuilder {
     created: Option<stripe_types::Timestamp>,
     created_by: Option<ReserveReleaseCreatedBy>,
     currency: Option<stripe_types::Currency>,
+    destination: Option<ReserveReleaseDestination>,
     id: Option<stripe_reserve::ReserveReleaseId>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
@@ -100,6 +103,7 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "created_by" => Deserialize::begin(&mut self.created_by),
                 "currency" => Deserialize::begin(&mut self.currency),
+                "destination" => Deserialize::begin(&mut self.destination),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
@@ -118,6 +122,7 @@ const _: () = {
                 created: None,
                 created_by: None,
                 currency: None,
+                destination: None,
                 id: None,
                 livemode: None,
                 metadata: Some(None),
@@ -135,6 +140,7 @@ const _: () = {
                 Some(created),
                 Some(created_by),
                 Some(currency),
+                Some(destination),
                 Some(id),
                 Some(livemode),
                 Some(metadata),
@@ -148,6 +154,7 @@ const _: () = {
                 self.created,
                 self.created_by.take(),
                 self.currency.take(),
+                self.destination.take(),
                 self.id.take(),
                 self.livemode,
                 self.metadata.take(),
@@ -165,6 +172,7 @@ const _: () = {
                 created,
                 created_by,
                 currency,
+                destination,
                 id,
                 livemode,
                 metadata,
@@ -204,6 +212,7 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "created_by" => b.created_by = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
+                    "destination" => b.destination = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
@@ -223,11 +232,12 @@ const _: () = {
 impl serde::Serialize for ReserveRelease {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("ReserveRelease", 13)?;
+        let mut s = s.serialize_struct("ReserveRelease", 14)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("created_by", &self.created_by)?;
         s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("destination", &self.destination)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
@@ -325,11 +335,95 @@ impl<'de> serde::Deserialize<'de> for ReserveReleaseCreatedBy {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The balance destination to which the released funds are sent.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ReserveReleaseDestination {
+    Other,
+    Payments,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ReserveReleaseDestination {
+    pub fn as_str(&self) -> &str {
+        use ReserveReleaseDestination::*;
+        match self {
+            Other => "other",
+            Payments => "payments",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ReserveReleaseDestination {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReserveReleaseDestination::*;
+        match s {
+            "other" => Ok(Other),
+            "payments" => Ok(Payments),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReserveReleaseDestination");
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ReserveReleaseDestination {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ReserveReleaseDestination {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReserveReleaseDestination {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReserveReleaseDestination)).finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for ReserveReleaseDestination {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for ReserveReleaseDestination {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<ReserveReleaseDestination> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReserveReleaseDestination::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(ReserveReleaseDestination);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ReserveReleaseDestination {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// The reason for the ReserveRelease, indicating why the funds were released.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ReserveReleaseReason {
-    BulkHoldExpiry,
+    HoldExpired,
     HoldReleasedEarly,
     HoldReversed,
     PlanDisabled,
@@ -340,7 +434,7 @@ impl ReserveReleaseReason {
     pub fn as_str(&self) -> &str {
         use ReserveReleaseReason::*;
         match self {
-            BulkHoldExpiry => "bulk_hold_expiry",
+            HoldExpired => "hold_expired",
             HoldReleasedEarly => "hold_released_early",
             HoldReversed => "hold_reversed",
             PlanDisabled => "plan_disabled",
@@ -354,7 +448,7 @@ impl std::str::FromStr for ReserveReleaseReason {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReserveReleaseReason::*;
         match s {
-            "bulk_hold_expiry" => Ok(BulkHoldExpiry),
+            "hold_expired" => Ok(HoldExpired),
             "hold_released_early" => Ok(HoldReleasedEarly),
             "hold_reversed" => Ok(HoldReversed),
             "plan_disabled" => Ok(PlanDisabled),

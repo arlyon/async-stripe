@@ -1,0 +1,215 @@
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+pub struct CardMandatePaymentMethodDetailsIndia {
+    /// The reason why the mandate has an `inactive` status.
+    /// This field is only populated if the mandate is inactive.
+    pub inactive_reason: Option<CardMandatePaymentMethodDetailsIndiaInactiveReason>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CardMandatePaymentMethodDetailsIndia {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CardMandatePaymentMethodDetailsIndia").finish_non_exhaustive()
+    }
+}
+#[doc(hidden)]
+pub struct CardMandatePaymentMethodDetailsIndiaBuilder {
+    inactive_reason: Option<Option<CardMandatePaymentMethodDetailsIndiaInactiveReason>>,
+}
+
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{Deserialize, Result, make_place};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for CardMandatePaymentMethodDetailsIndia {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<CardMandatePaymentMethodDetailsIndia>,
+        builder: CardMandatePaymentMethodDetailsIndiaBuilder,
+    }
+
+    impl Visitor for Place<CardMandatePaymentMethodDetailsIndia> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: CardMandatePaymentMethodDetailsIndiaBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for CardMandatePaymentMethodDetailsIndiaBuilder {
+        type Out = CardMandatePaymentMethodDetailsIndia;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "inactive_reason" => Deserialize::begin(&mut self.inactive_reason),
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { inactive_reason: Some(None) }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (Some(inactive_reason),) = (self.inactive_reason.take(),) else {
+                return None;
+            };
+            Some(Self::Out { inactive_reason })
+        }
+    }
+
+    impl Map for Builder<'_> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for CardMandatePaymentMethodDetailsIndia {
+        type Builder = CardMandatePaymentMethodDetailsIndiaBuilder;
+    }
+
+    impl FromValueOpt for CardMandatePaymentMethodDetailsIndia {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = CardMandatePaymentMethodDetailsIndiaBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "inactive_reason" => b.inactive_reason = FromValueOpt::from_value(v),
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+/// The reason why the mandate has an `inactive` status.
+/// This field is only populated if the mandate is inactive.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CardMandatePaymentMethodDetailsIndiaInactiveReason {
+    Canceled,
+    CardNotSupported,
+    CurrencyNotSupported,
+    Expired,
+    IssuerNotSupported,
+    ProcessingError,
+    Undetermined,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CardMandatePaymentMethodDetailsIndiaInactiveReason {
+    pub fn as_str(&self) -> &str {
+        use CardMandatePaymentMethodDetailsIndiaInactiveReason::*;
+        match self {
+            Canceled => "canceled",
+            CardNotSupported => "card_not_supported",
+            CurrencyNotSupported => "currency_not_supported",
+            Expired => "expired",
+            IssuerNotSupported => "issuer_not_supported",
+            ProcessingError => "processing_error",
+            Undetermined => "undetermined",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CardMandatePaymentMethodDetailsIndiaInactiveReason {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardMandatePaymentMethodDetailsIndiaInactiveReason::*;
+        match s {
+            "canceled" => Ok(Canceled),
+            "card_not_supported" => Ok(CardNotSupported),
+            "currency_not_supported" => Ok(CurrencyNotSupported),
+            "expired" => Ok(Expired),
+            "issuer_not_supported" => Ok(IssuerNotSupported),
+            "processing_error" => Ok(ProcessingError),
+            "undetermined" => Ok(Undetermined),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CardMandatePaymentMethodDetailsIndiaInactiveReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CardMandatePaymentMethodDetailsIndiaInactiveReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CardMandatePaymentMethodDetailsIndiaInactiveReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CardMandatePaymentMethodDetailsIndiaInactiveReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CardMandatePaymentMethodDetailsIndiaInactiveReason))
+            .finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for CardMandatePaymentMethodDetailsIndiaInactiveReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for CardMandatePaymentMethodDetailsIndiaInactiveReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CardMandatePaymentMethodDetailsIndiaInactiveReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            CardMandatePaymentMethodDetailsIndiaInactiveReason::from_str(s).expect("infallible"),
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CardMandatePaymentMethodDetailsIndiaInactiveReason);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CardMandatePaymentMethodDetailsIndiaInactiveReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}

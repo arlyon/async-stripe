@@ -12,6 +12,7 @@
         "minority_owned_business_designation": null,
         "name": null,
         "product_description": null,
+        "specified_commercial_transactions_act_url": null,
         "support_address": {
           "city": null,
           "country": null,
@@ -348,6 +349,47 @@
         "object": "list",
         "url": "/v1/application_fees/fee_1Pgc6zB7WZ01zgkWOMh2at1m/refunds"
       }
+    },
+    "apps.install": {
+      "account": "account",
+      "app": "app",
+      "approval_required": true,
+      "auth_code": null,
+      "channel": "review",
+      "content_security_policy_granted": {
+        "connect_src": [
+          "connect_src"
+        ],
+        "image_src": [
+          "image_src"
+        ]
+      },
+      "content_security_policy_pending": {
+        "connect_src": [
+          "connect_src"
+        ],
+        "image_src": [
+          "image_src"
+        ]
+      },
+      "created": 1028554472,
+      "created_by": null,
+      "endpoints_granted": [
+        "endpoints_granted"
+      ],
+      "endpoints_pending": [
+        "endpoints_pending"
+      ],
+      "id": "obj_123",
+      "livemode": true,
+      "object": "apps.install",
+      "permissions_granted": [
+        "permissions_granted"
+      ],
+      "permissions_pending": [
+        "permissions_pending"
+      ],
+      "status": "install_failed"
     },
     "apps.secret": {
       "created": 1234567890,
@@ -940,6 +982,7 @@
             "cvc_check": "pass"
           },
           "country": "US",
+          "electronic_commerce_indicator": null,
           "exp_month": 8,
           "exp_year": 2030,
           "extended_authorization": {
@@ -1067,6 +1110,7 @@
         }
       },
       "allow_promotion_codes": null,
+      "allowed_payment_method_types": null,
       "amount_subtotal": null,
       "amount_total": null,
       "automatic_tax": {
@@ -2698,6 +2742,7 @@
       "amount_due": 1000,
       "amount_overpaid": 149300825,
       "amount_paid": 0,
+      "amount_paid_off_stripe": 0,
       "amount_remaining": 1000,
       "amount_shipping": 0,
       "application": null,
@@ -3806,6 +3851,7 @@
       "payment_method_types": [
         "card"
       ],
+      "payment_record": null,
       "processing": {
         "type": "card"
       },
@@ -4375,6 +4421,7 @@
         "minority_owned_business_designation": null,
         "name": null,
         "product_description": null,
+        "specified_commercial_transactions_act_url": null,
         "support_address": {
           "city": null,
           "country": null,
@@ -4681,10 +4728,31 @@
       "shippable": null,
       "statement_descriptor": null,
       "tax_code": null,
+      "tax_details": {
+        "performance_location": null,
+        "tax_code": null
+      },
       "type": "good",
       "unit_label": null,
       "updated": 1234567890,
       "url": null
+    },
+    "product_catalog.trial_offer": {
+      "active": true,
+      "duration": {
+        "type": "relative"
+      },
+      "end_behavior": {
+        "transition": {
+          "price": "price"
+        },
+        "type": "transition"
+      },
+      "id": "obj_123",
+      "livemode": true,
+      "nickname": null,
+      "object": "product_catalog.trial_offer",
+      "price": "price"
     },
     "product_feature": {
       "entitlement_feature": {
@@ -4840,6 +4908,16 @@
       "object": "radar.payment_evaluation",
       "recommended_action": "block",
       "signals": {
+        "early_fraud_warning": {
+          "evaluated_at": 403283463,
+          "risk_level": "low",
+          "score": 109264530
+        },
+        "fraudulent_dispute": {
+          "evaluated_at": 403283463,
+          "risk_level": "low",
+          "score": 109264530
+        },
         "fraudulent_payment": {
           "evaluated_at": 403283463,
           "risk_level": "normal",
@@ -4945,6 +5023,7 @@
       "created": 1028554472,
       "created_by": "application",
       "currency": "usd",
+      "destination": "risk_reserved",
       "id": "obj_123",
       "livemode": true,
       "object": "reserve.hold",
@@ -4961,6 +5040,7 @@
       "created": 1028554472,
       "created_by": "application",
       "currency": null,
+      "destination": "risk_reserved",
       "disabled_at": null,
       "id": "obj_123",
       "livemode": true,
@@ -4974,10 +5054,11 @@
       "created": 1028554472,
       "created_by": "application",
       "currency": "usd",
+      "destination": "other",
       "id": "obj_123",
       "livemode": true,
       "object": "reserve.release",
-      "reason": "bulk_hold_expiry",
+      "reason": "hold_expired",
       "released_at": 213824117,
       "reserve_hold": null,
       "reserve_plan": null
@@ -5379,6 +5460,11 @@
             "created": 1721954054,
             "current_period_end": 976287773,
             "current_period_start": 1896570518,
+            "current_trial": {
+              "end_date": 1725067410,
+              "start_date": 1573629589,
+              "trial_offer": "trial_offer"
+            },
             "discounts": [],
             "id": "si_QXhVnC2h0Jczwc",
             "metadata": {},
@@ -5534,6 +5620,7 @@
       "trial_end": 1234567890,
       "trial_settings": {
         "end_behavior": {
+          "billing_cycle_anchor": null,
           "missing_payment_method": "create_invoice"
         }
       },
@@ -5546,6 +5633,11 @@
       "created": 1721954060,
       "current_period_end": 976287773,
       "current_period_start": 1896570518,
+      "current_trial": {
+        "end_date": 1725067410,
+        "start_date": 1573629589,
+        "trial_offer": "trial_offer"
+      },
       "discounts": [],
       "id": "si_QXhVBoJ7NQdNXh",
       "metadata": {},
@@ -5842,11 +5934,27 @@
       "livemode": false,
       "metadata": null,
       "object": "tax.calculation_line_item",
+      "performance_location": null,
       "product": null,
       "quantity": 1,
       "reference": "Pepperoni Pizza",
       "tax_behavior": "exclusive",
       "tax_code": "txcd_40060003"
+    },
+    "tax.location": {
+      "address": {
+        "city": null,
+        "country": null,
+        "line1": null,
+        "line2": null,
+        "postal_code": null,
+        "state": null
+      },
+      "description": null,
+      "id": "obj_123",
+      "livemode": true,
+      "object": "tax.location",
+      "type": "performance"
     },
     "tax.registration": {
       "active_from": 1234567890,
@@ -5978,7 +6086,10 @@
       "description": "A physical good that can be moved or touched. Also known as tangible personal property.",
       "id": "txcd_99999999",
       "name": "General - Tangible Goods",
-      "object": "tax_code"
+      "object": "tax_code",
+      "requirements": {
+        "performance_location": "optional"
+      }
     },
     "tax_id": {
       "country": "DE",
@@ -6101,6 +6212,45 @@
       "object": "test_helpers.test_clock",
       "status": "ready",
       "status_details": {}
+    },
+    "three_d_secure.authentication": {
+      "acquirer_details": {},
+      "channel": {
+        "type": "browser"
+      },
+      "created": 1028554472,
+      "directory_server": "american_express",
+      "id": "obj_123",
+      "livemode": true,
+      "message_category": "non_payment_authentication",
+      "metadata": null,
+      "object": "three_d_secure.authentication",
+      "payment_method": {
+        "billing_details": {
+          "address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
+          "email": null,
+          "name": null,
+          "phone": null,
+          "tax_id": null
+        },
+        "created": 1028554472,
+        "customer": null,
+        "customer_account": null,
+        "id": "obj_123",
+        "livemode": true,
+        "metadata": null,
+        "object": "payment_method",
+        "type": "klarna"
+      },
+      "shipping_address": {},
+      "status": "canceled"
     },
     "token": {
       "card": {
@@ -6740,5 +6890,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2494"
+  "version": "v2578"
 }

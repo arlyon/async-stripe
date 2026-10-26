@@ -11,7 +11,8 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct WebhookEndpoint {
-    /// The API version events are rendered as for this webhook endpoint.
+    /// The API version that events are rendered as for this webhook endpoint.
+    /// You can't change this value after you create the endpoint.
     pub api_version: Option<String>,
     /// The ID of the associated Connect application.
     pub application: Option<String>,

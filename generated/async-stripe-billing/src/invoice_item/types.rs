@@ -42,6 +42,9 @@ pub struct InvoiceItem {
     pub id: stripe_billing::InvoiceItemId,
     /// The ID of the invoice this invoice item belongs to.
     pub invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
+    /// The rules that control when this invoice item is eligible for invoicing.
+    /// All rules must be satisfied for the item to be invoiced.
+    pub invoicing_rules: Option<Vec<stripe_billing::InvoicingRule>>,
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
@@ -91,6 +94,7 @@ pub struct InvoiceItemBuilder {
     frozen_fields: Option<Option<Vec<InvoiceItemFrozenFields>>>,
     id: Option<stripe_billing::InvoiceItemId>,
     invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
+    invoicing_rules: Option<Option<Vec<stripe_billing::InvoicingRule>>>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     net_amount: Option<Option<i64>>,
@@ -156,6 +160,7 @@ const _: () = {
                 "frozen_fields" => Deserialize::begin(&mut self.frozen_fields),
                 "id" => Deserialize::begin(&mut self.id),
                 "invoice" => Deserialize::begin(&mut self.invoice),
+                "invoicing_rules" => Deserialize::begin(&mut self.invoicing_rules),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "net_amount" => Deserialize::begin(&mut self.net_amount),
@@ -185,6 +190,7 @@ const _: () = {
                 frozen_fields: Some(None),
                 id: None,
                 invoice: Some(None),
+                invoicing_rules: Some(None),
                 livemode: None,
                 metadata: Some(None),
                 net_amount: Some(None),
@@ -213,6 +219,7 @@ const _: () = {
                 Some(frozen_fields),
                 Some(id),
                 Some(invoice),
+                Some(invoicing_rules),
                 Some(livemode),
                 Some(metadata),
                 Some(net_amount),
@@ -237,6 +244,7 @@ const _: () = {
                 self.frozen_fields.take(),
                 self.id.take(),
                 self.invoice.take(),
+                self.invoicing_rules.take(),
                 self.livemode,
                 self.metadata.take(),
                 self.net_amount,
@@ -265,6 +273,7 @@ const _: () = {
                 frozen_fields,
                 id,
                 invoice,
+                invoicing_rules,
                 livemode,
                 metadata,
                 net_amount,
@@ -315,6 +324,7 @@ const _: () = {
                     "frozen_fields" => b.frozen_fields = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "invoice" => b.invoice = FromValueOpt::from_value(v),
+                    "invoicing_rules" => b.invoicing_rules = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "net_amount" => b.net_amount = FromValueOpt::from_value(v),
@@ -338,7 +348,7 @@ const _: () = {
 impl serde::Serialize for InvoiceItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("InvoiceItem", 24)?;
+        let mut s = s.serialize_struct("InvoiceItem", 25)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
@@ -350,6 +360,7 @@ impl serde::Serialize for InvoiceItem {
         s.serialize_field("frozen_fields", &self.frozen_fields)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("invoice", &self.invoice)?;
+        s.serialize_field("invoicing_rules", &self.invoicing_rules)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("net_amount", &self.net_amount)?;

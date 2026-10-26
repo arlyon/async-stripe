@@ -1,6 +1,7 @@
 /// The `Charge` object represents a single attempt to move money into your Stripe account.
 /// PaymentIntent confirmation is the most common way to create Charges, but [Account Debits](https://docs.stripe.com/connect/account-debits) may also create Charges.
-/// Some legacy payment flows create Charges directly, which is not recommended for new integrations.
+/// The create and capture methods are deprecated and will be deleted soon.
+/// If your integration uses either of them, you need to update it to use a different payment flow, such as [the Payment Intents API](https://docs.stripe.com/payments/payment-intents).
 ///
 /// For more details see <<https://stripe.com/docs/api/charges/object>>.
 #[derive(Clone)]

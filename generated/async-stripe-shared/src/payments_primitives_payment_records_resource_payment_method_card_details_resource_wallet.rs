@@ -7,7 +7,8 @@ pub apple_pay: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePay
     /// (For tokenized numbers only.) The last four digits of the device account number.
 pub dynamic_last4: Option<String>,
 pub google_pay: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePay>,
-        /// The type of the card wallet, one of `apple_pay` or `google_pay`.
+pub link: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceLink>,
+        /// The type of the card wallet, one of `apple_pay`, `google_pay`, or `link`.
     /// An additional hash is included on the Wallet subhash with a name matching this value.
     /// It contains additional information specific to the card wallet type.
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
@@ -30,6 +31,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResou
     apple_pay: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceApplePay>>,
 dynamic_last4: Option<Option<String>>,
 google_pay: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceGooglePay>>,
+link: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWalletResourceLink>>,
 type_: Option<String>,
 
 }
@@ -86,6 +88,7 @@ const _: () = {
                 "apple_pay" => Deserialize::begin(&mut self.apple_pay),
                 "dynamic_last4" => Deserialize::begin(&mut self.dynamic_last4),
                 "google_pay" => Deserialize::begin(&mut self.google_pay),
+                "link" => Deserialize::begin(&mut self.link),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -96,20 +99,22 @@ const _: () = {
                 apple_pay: Some(None),
                 dynamic_last4: Some(None),
                 google_pay: Some(None),
+                link: Some(None),
                 type_: None,
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(apple_pay), Some(dynamic_last4), Some(google_pay), Some(type_)) = (
+            let (Some(apple_pay), Some(dynamic_last4), Some(google_pay), Some(link), Some(type_)) = (
                 self.apple_pay.take(),
                 self.dynamic_last4.take(),
                 self.google_pay,
+                self.link,
                 self.type_.take(),
             ) else {
                 return None;
             };
-            Some(Self::Out { apple_pay, dynamic_last4, google_pay, type_ })
+            Some(Self::Out { apple_pay, dynamic_last4, google_pay, link, type_ })
         }
     }
 
@@ -144,6 +149,7 @@ const _: () = {
                     "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
                     "dynamic_last4" => b.dynamic_last4 = FromValueOpt::from_value(v),
                     "google_pay" => b.google_pay = FromValueOpt::from_value(v),
+                    "link" => b.link = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     _ => {}
                 }

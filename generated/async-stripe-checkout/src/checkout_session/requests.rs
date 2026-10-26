@@ -387,6 +387,8 @@ struct CreateCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_promotion_codes: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    allowed_payment_method_types: Option<Vec<CreateCheckoutSessionAllowedPaymentMethodTypes>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     automatic_tax: Option<CreateCheckoutSessionAutomaticTax>,
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_address_collection: Option<stripe_shared::CheckoutSessionBillingAddressCollection>,
@@ -453,8 +455,6 @@ struct CreateCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_options: Option<CreateCheckoutSessionPaymentMethodOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_method_types: Option<Vec<CreateCheckoutSessionPaymentMethodTypes>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     permissions: Option<CreateCheckoutSessionPermissions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     phone_number_collection: Option<CreateCheckoutSessionPhoneNumberCollection>,
@@ -495,6 +495,7 @@ impl CreateCheckoutSessionBuilder {
             adaptive_pricing: None,
             after_expiration: None,
             allow_promotion_codes: None,
+            allowed_payment_method_types: None,
             automatic_tax: None,
             billing_address_collection: None,
             branding_settings: None,
@@ -528,7 +529,6 @@ impl CreateCheckoutSessionBuilder {
             payment_method_configuration: None,
             payment_method_data: None,
             payment_method_options: None,
-            payment_method_types: None,
             permissions: None,
             phone_number_collection: None,
             redirect_on_completion: None,
@@ -620,6 +620,245 @@ impl std::fmt::Debug for CreateCheckoutSessionAfterExpirationRecovery {
 impl CreateCheckoutSessionAfterExpirationRecovery {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { allow_promotion_codes: None, enabled: enabled.into() }
+    }
+}
+/// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
+///
+/// Unlike `payment_method_types`, this acts as a filter on the dynamically computed set of
+/// eligible payment methods rather than an explicit static list. Only payment methods that
+/// are both dynamically eligible and present in this list will be offered to the customer.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionAllowedPaymentMethodTypes {
+    AcssDebit,
+    Affirm,
+    AfterpayClearpay,
+    Alipay,
+    Alma,
+    AmazonPay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Billie,
+    Bizum,
+    Blik,
+    Boleto,
+    Card,
+    Cashapp,
+    Crypto,
+    CustomerBalance,
+    Eps,
+    Fpx,
+    Giropay,
+    Grabpay,
+    Ideal,
+    KakaoPay,
+    Klarna,
+    Konbini,
+    KrCard,
+    Link,
+    MbWay,
+    Mobilepay,
+    Multibanco,
+    NaverPay,
+    NzBankAccount,
+    Oxxo,
+    P24,
+    PayByBank,
+    Payco,
+    Paynow,
+    Paypal,
+    Paypay,
+    Payto,
+    Pix,
+    Promptpay,
+    RevolutPay,
+    SamsungPay,
+    Satispay,
+    Scalapay,
+    SepaDebit,
+    Sequra,
+    Sofort,
+    Sunbit,
+    Swish,
+    Twint,
+    Upi,
+    UsBankAccount,
+    WechatPay,
+    Zip,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionAllowedPaymentMethodTypes {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionAllowedPaymentMethodTypes::*;
+        match self {
+            AcssDebit => "acss_debit",
+            Affirm => "affirm",
+            AfterpayClearpay => "afterpay_clearpay",
+            Alipay => "alipay",
+            Alma => "alma",
+            AmazonPay => "amazon_pay",
+            AuBecsDebit => "au_becs_debit",
+            BacsDebit => "bacs_debit",
+            Bancontact => "bancontact",
+            Billie => "billie",
+            Bizum => "bizum",
+            Blik => "blik",
+            Boleto => "boleto",
+            Card => "card",
+            Cashapp => "cashapp",
+            Crypto => "crypto",
+            CustomerBalance => "customer_balance",
+            Eps => "eps",
+            Fpx => "fpx",
+            Giropay => "giropay",
+            Grabpay => "grabpay",
+            Ideal => "ideal",
+            KakaoPay => "kakao_pay",
+            Klarna => "klarna",
+            Konbini => "konbini",
+            KrCard => "kr_card",
+            Link => "link",
+            MbWay => "mb_way",
+            Mobilepay => "mobilepay",
+            Multibanco => "multibanco",
+            NaverPay => "naver_pay",
+            NzBankAccount => "nz_bank_account",
+            Oxxo => "oxxo",
+            P24 => "p24",
+            PayByBank => "pay_by_bank",
+            Payco => "payco",
+            Paynow => "paynow",
+            Paypal => "paypal",
+            Paypay => "paypay",
+            Payto => "payto",
+            Pix => "pix",
+            Promptpay => "promptpay",
+            RevolutPay => "revolut_pay",
+            SamsungPay => "samsung_pay",
+            Satispay => "satispay",
+            Scalapay => "scalapay",
+            SepaDebit => "sepa_debit",
+            Sequra => "sequra",
+            Sofort => "sofort",
+            Sunbit => "sunbit",
+            Swish => "swish",
+            Twint => "twint",
+            Upi => "upi",
+            UsBankAccount => "us_bank_account",
+            WechatPay => "wechat_pay",
+            Zip => "zip",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionAllowedPaymentMethodTypes {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionAllowedPaymentMethodTypes::*;
+        match s {
+            "acss_debit" => Ok(AcssDebit),
+            "affirm" => Ok(Affirm),
+            "afterpay_clearpay" => Ok(AfterpayClearpay),
+            "alipay" => Ok(Alipay),
+            "alma" => Ok(Alma),
+            "amazon_pay" => Ok(AmazonPay),
+            "au_becs_debit" => Ok(AuBecsDebit),
+            "bacs_debit" => Ok(BacsDebit),
+            "bancontact" => Ok(Bancontact),
+            "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
+            "blik" => Ok(Blik),
+            "boleto" => Ok(Boleto),
+            "card" => Ok(Card),
+            "cashapp" => Ok(Cashapp),
+            "crypto" => Ok(Crypto),
+            "customer_balance" => Ok(CustomerBalance),
+            "eps" => Ok(Eps),
+            "fpx" => Ok(Fpx),
+            "giropay" => Ok(Giropay),
+            "grabpay" => Ok(Grabpay),
+            "ideal" => Ok(Ideal),
+            "kakao_pay" => Ok(KakaoPay),
+            "klarna" => Ok(Klarna),
+            "konbini" => Ok(Konbini),
+            "kr_card" => Ok(KrCard),
+            "link" => Ok(Link),
+            "mb_way" => Ok(MbWay),
+            "mobilepay" => Ok(Mobilepay),
+            "multibanco" => Ok(Multibanco),
+            "naver_pay" => Ok(NaverPay),
+            "nz_bank_account" => Ok(NzBankAccount),
+            "oxxo" => Ok(Oxxo),
+            "p24" => Ok(P24),
+            "pay_by_bank" => Ok(PayByBank),
+            "payco" => Ok(Payco),
+            "paynow" => Ok(Paynow),
+            "paypal" => Ok(Paypal),
+            "paypay" => Ok(Paypay),
+            "payto" => Ok(Payto),
+            "pix" => Ok(Pix),
+            "promptpay" => Ok(Promptpay),
+            "revolut_pay" => Ok(RevolutPay),
+            "samsung_pay" => Ok(SamsungPay),
+            "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
+            "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
+            "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
+            "swish" => Ok(Swish),
+            "twint" => Ok(Twint),
+            "upi" => Ok(Upi),
+            "us_bank_account" => Ok(UsBankAccount),
+            "wechat_pay" => Ok(WechatPay),
+            "zip" => Ok(Zip),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionAllowedPaymentMethodTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionAllowedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateCheckoutSessionAllowedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionAllowedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionAllowedPaymentMethodTypes))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionAllowedPaymentMethodTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionAllowedPaymentMethodTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Settings for automatic tax lookup for this session and resulting payments, invoices, and subscriptions.
@@ -1525,7 +1764,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionConsentCollectionTerm
 }
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -1625,7 +1864,7 @@ impl CreateCheckoutSessionCustomFieldsDropdownOptions {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsLabel {
-    /// Custom text for the label, displayed to the customer. Up to 50 characters.
+    /// Custom text for the label, displayed to the customer. Up to 100 characters.
     pub custom: String,
     /// The type of the label.
     #[serde(rename = "type")]
@@ -1853,7 +2092,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsType {
     }
 }
 /// Display additional text for your customers using custom text.
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -2297,6 +2536,7 @@ pub enum CreateCheckoutSessionExcludedPaymentMethodTypes {
     Payco,
     Paynow,
     Paypal,
+    Paypay,
     Payto,
     Pix,
     Promptpay,
@@ -2305,6 +2545,7 @@ pub enum CreateCheckoutSessionExcludedPaymentMethodTypes {
     Satispay,
     Scalapay,
     SepaDebit,
+    Sequra,
     Sofort,
     Sunbit,
     Swish,
@@ -2357,6 +2598,7 @@ impl CreateCheckoutSessionExcludedPaymentMethodTypes {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Paypay => "paypay",
             Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
@@ -2365,6 +2607,7 @@ impl CreateCheckoutSessionExcludedPaymentMethodTypes {
             Satispay => "satispay",
             Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Sunbit => "sunbit",
             Swish => "swish",
@@ -2420,6 +2663,7 @@ impl std::str::FromStr for CreateCheckoutSessionExcludedPaymentMethodTypes {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "paypay" => Ok(Paypay),
             "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
@@ -2428,6 +2672,7 @@ impl std::str::FromStr for CreateCheckoutSessionExcludedPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
@@ -3243,7 +3488,7 @@ impl CreateCheckoutSessionNameCollectionIndividual {
 ///
 /// For `subscription` mode, there is a maximum of 20 line items and optional items with recurring Prices and 20 line items and optional items with one-time Prices.
 ///
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements` or `form`.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -3881,6 +4126,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the Billie payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billie: Option<CreateCheckoutSessionPaymentMethodOptionsBillie>,
+    /// contains details about the BLIK payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<CreateCheckoutSessionPaymentMethodOptionsBlik>,
     /// contains details about the Boleto payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreateCheckoutSessionPaymentMethodOptionsBoleto>,
@@ -3978,6 +4226,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the Sepa Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateCheckoutSessionPaymentMethodOptionsSepaDebit>,
+    /// contains details about the SeQura payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sequra: Option<CreateCheckoutSessionPaymentMethodOptionsSequra>,
     /// contains details about the Sofort payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateCheckoutSessionPaymentMethodOptionsSofort>,
@@ -4019,6 +4270,7 @@ impl CreateCheckoutSessionPaymentMethodOptions {
             bacs_debit: None,
             bancontact: None,
             billie: None,
+            blik: None,
             boleto: None,
             card: None,
             cashapp: None,
@@ -4051,6 +4303,7 @@ impl CreateCheckoutSessionPaymentMethodOptions {
             satispay: None,
             scalapay: None,
             sepa_debit: None,
+            sequra: None,
             sofort: None,
             sunbit: None,
             swish: None,
@@ -5785,6 +6038,7 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsBancontact {
 #[non_exhaustive]
 pub enum CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage {
     None,
+    OffSession,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -5793,6 +6047,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage {
         use CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage::*;
         match self {
             None => "none",
+            OffSession => "off_session",
             Unknown(v) => v,
         }
     }
@@ -5804,6 +6059,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsBancontactSe
         use CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
+            "off_session" => Ok(OffSession),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -5943,6 +6199,134 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsBillieCapture
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsBillieCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// contains details about the BLIK payment method options.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsBlik {
+    /// Additional fields for Mandate creation
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreateCheckoutSessionPaymentMethodOptionsBlikMandateOptions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBlik {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsBlik").finish_non_exhaustive()
+    }
+}
+impl CreateCheckoutSessionPaymentMethodOptionsBlik {
+    pub fn new() -> Self {
+        Self { mandate_options: None, setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsBlik {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for Mandate creation
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsBlikMandateOptions {
+    /// Date when the mandate expires and no further payments will be charged.
+    /// If not provided, the mandate will be set to be indefinite.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBlikMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsBlikMandateOptions")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateCheckoutSessionPaymentMethodOptionsBlikMandateOptions {
+    pub fn new() -> Self {
+        Self { expires_at: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsBlikMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage {
+    None,
+    OffSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage::*;
+        match self {
+            None => "none",
+            OffSession => "off_session",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsBlikSetupFutureUsage
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -6106,7 +6490,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCard {
         Option<CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure>,
     /// Restrictions to apply to the card payment method.
     /// For example, you can block specific card brands.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub restrictions: Option<CreateCheckoutSessionPaymentMethodOptionsCardRestrictions>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -6660,7 +7044,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Restrictions to apply to the card payment method.
 /// For example, you can block specific card brands.
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -12466,6 +12850,101 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// contains details about the SeQura payment method options.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsSequra {
+    /// Controls when the funds will be captured from the customer's account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSequra {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsSequra").finish_non_exhaustive()
+    }
+}
+impl CreateCheckoutSessionPaymentMethodOptionsSequra {
+    pub fn new() -> Self {
+        Self { capture_method: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsSequra {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls when the funds will be captured from the customer's account.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod {
+    Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod::*;
+        match self {
+            Manual => "manual",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsSequraCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// contains details about the Sofort payment method options.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -13753,246 +14232,8 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
-///
-/// You can omit this attribute to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
-/// See [Dynamic Payment Methods](https://docs.stripe.com/payments/payment-methods/integration-options#using-dynamic-payment-methods) for more details.
-///
-/// Read more about the supported payment methods and their requirements in our [payment
-/// method details guide](/docs/payments/checkout/payment-methods).
-///
-/// If multiple payment methods are passed, Checkout will dynamically reorder them to
-/// prioritize the most relevant payment methods based on the customer's location and
-/// other characteristics.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreateCheckoutSessionPaymentMethodTypes {
-    AcssDebit,
-    Affirm,
-    AfterpayClearpay,
-    Alipay,
-    Alma,
-    AmazonPay,
-    AuBecsDebit,
-    BacsDebit,
-    Bancontact,
-    Billie,
-    Bizum,
-    Blik,
-    Boleto,
-    Card,
-    Cashapp,
-    Crypto,
-    CustomerBalance,
-    Eps,
-    Fpx,
-    Giropay,
-    Grabpay,
-    Ideal,
-    KakaoPay,
-    Klarna,
-    Konbini,
-    KrCard,
-    Link,
-    MbWay,
-    Mobilepay,
-    Multibanco,
-    NaverPay,
-    NzBankAccount,
-    Oxxo,
-    P24,
-    PayByBank,
-    Payco,
-    Paynow,
-    Paypal,
-    Payto,
-    Pix,
-    Promptpay,
-    RevolutPay,
-    SamsungPay,
-    Satispay,
-    Scalapay,
-    SepaDebit,
-    Sofort,
-    Sunbit,
-    Swish,
-    Twint,
-    Upi,
-    UsBankAccount,
-    WechatPay,
-    Zip,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreateCheckoutSessionPaymentMethodTypes {
-    pub fn as_str(&self) -> &str {
-        use CreateCheckoutSessionPaymentMethodTypes::*;
-        match self {
-            AcssDebit => "acss_debit",
-            Affirm => "affirm",
-            AfterpayClearpay => "afterpay_clearpay",
-            Alipay => "alipay",
-            Alma => "alma",
-            AmazonPay => "amazon_pay",
-            AuBecsDebit => "au_becs_debit",
-            BacsDebit => "bacs_debit",
-            Bancontact => "bancontact",
-            Billie => "billie",
-            Bizum => "bizum",
-            Blik => "blik",
-            Boleto => "boleto",
-            Card => "card",
-            Cashapp => "cashapp",
-            Crypto => "crypto",
-            CustomerBalance => "customer_balance",
-            Eps => "eps",
-            Fpx => "fpx",
-            Giropay => "giropay",
-            Grabpay => "grabpay",
-            Ideal => "ideal",
-            KakaoPay => "kakao_pay",
-            Klarna => "klarna",
-            Konbini => "konbini",
-            KrCard => "kr_card",
-            Link => "link",
-            MbWay => "mb_way",
-            Mobilepay => "mobilepay",
-            Multibanco => "multibanco",
-            NaverPay => "naver_pay",
-            NzBankAccount => "nz_bank_account",
-            Oxxo => "oxxo",
-            P24 => "p24",
-            PayByBank => "pay_by_bank",
-            Payco => "payco",
-            Paynow => "paynow",
-            Paypal => "paypal",
-            Payto => "payto",
-            Pix => "pix",
-            Promptpay => "promptpay",
-            RevolutPay => "revolut_pay",
-            SamsungPay => "samsung_pay",
-            Satispay => "satispay",
-            Scalapay => "scalapay",
-            SepaDebit => "sepa_debit",
-            Sofort => "sofort",
-            Sunbit => "sunbit",
-            Swish => "swish",
-            Twint => "twint",
-            Upi => "upi",
-            UsBankAccount => "us_bank_account",
-            WechatPay => "wechat_pay",
-            Zip => "zip",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateCheckoutSessionPaymentMethodTypes::*;
-        match s {
-            "acss_debit" => Ok(AcssDebit),
-            "affirm" => Ok(Affirm),
-            "afterpay_clearpay" => Ok(AfterpayClearpay),
-            "alipay" => Ok(Alipay),
-            "alma" => Ok(Alma),
-            "amazon_pay" => Ok(AmazonPay),
-            "au_becs_debit" => Ok(AuBecsDebit),
-            "bacs_debit" => Ok(BacsDebit),
-            "bancontact" => Ok(Bancontact),
-            "billie" => Ok(Billie),
-            "bizum" => Ok(Bizum),
-            "blik" => Ok(Blik),
-            "boleto" => Ok(Boleto),
-            "card" => Ok(Card),
-            "cashapp" => Ok(Cashapp),
-            "crypto" => Ok(Crypto),
-            "customer_balance" => Ok(CustomerBalance),
-            "eps" => Ok(Eps),
-            "fpx" => Ok(Fpx),
-            "giropay" => Ok(Giropay),
-            "grabpay" => Ok(Grabpay),
-            "ideal" => Ok(Ideal),
-            "kakao_pay" => Ok(KakaoPay),
-            "klarna" => Ok(Klarna),
-            "konbini" => Ok(Konbini),
-            "kr_card" => Ok(KrCard),
-            "link" => Ok(Link),
-            "mb_way" => Ok(MbWay),
-            "mobilepay" => Ok(Mobilepay),
-            "multibanco" => Ok(Multibanco),
-            "naver_pay" => Ok(NaverPay),
-            "nz_bank_account" => Ok(NzBankAccount),
-            "oxxo" => Ok(Oxxo),
-            "p24" => Ok(P24),
-            "pay_by_bank" => Ok(PayByBank),
-            "payco" => Ok(Payco),
-            "paynow" => Ok(Paynow),
-            "paypal" => Ok(Paypal),
-            "payto" => Ok(Payto),
-            "pix" => Ok(Pix),
-            "promptpay" => Ok(Promptpay),
-            "revolut_pay" => Ok(RevolutPay),
-            "samsung_pay" => Ok(SamsungPay),
-            "satispay" => Ok(Satispay),
-            "scalapay" => Ok(Scalapay),
-            "sepa_debit" => Ok(SepaDebit),
-            "sofort" => Ok(Sofort),
-            "sunbit" => Ok(Sunbit),
-            "swish" => Ok(Swish),
-            "twint" => Ok(Twint),
-            "upi" => Ok(Upi),
-            "us_bank_account" => Ok(UsBankAccount),
-            "wechat_pay" => Ok(WechatPay),
-            "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for CreateCheckoutSessionPaymentMethodTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodTypes)).finish_non_exhaustive()
-    }
-}
-impl serde::Serialize for CreateCheckoutSessionPaymentMethodTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodTypes {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// This property is used to set up permissions for various actions (e.g., update) on the CheckoutSession object.
-/// Can only be set when creating `embedded` or `custom` sessions.
+/// This property is used to set up permissions for various actions (for example, update) on the CheckoutSession object.
+/// Can only be set when creating `embedded_page` or `elements` sessions.
 ///
 /// For specific permissions, please refer to their dedicated subsections, such as `permissions.update_shipping_details`.
 #[derive(Clone, Eq, PartialEq)]
@@ -16743,7 +16984,7 @@ pub struct CreateCheckoutSessionTaxIdCollection {
     pub enabled: bool,
     /// Describes whether a tax ID is required during checkout.
     /// Defaults to `never`.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<CreateCheckoutSessionTaxIdCollectionRequired>,
 }
@@ -16760,7 +17001,7 @@ impl CreateCheckoutSessionTaxIdCollection {
 }
 /// Describes whether a tax ID is required during checkout.
 /// Defaults to `never`.
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCheckoutSessionTaxIdCollectionRequired {
@@ -17000,6 +17241,18 @@ impl CreateCheckoutSession {
         self.inner.allow_promotion_codes = Some(allow_promotion_codes.into());
         self
     }
+    /// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
+    ///
+    /// Unlike `payment_method_types`, this acts as a filter on the dynamically computed set of
+    /// eligible payment methods rather than an explicit static list. Only payment methods that
+    /// are both dynamically eligible and present in this list will be offered to the customer.
+    pub fn allowed_payment_method_types(
+        mut self,
+        allowed_payment_method_types: impl Into<Vec<CreateCheckoutSessionAllowedPaymentMethodTypes>>,
+    ) -> Self {
+        self.inner.allowed_payment_method_types = Some(allowed_payment_method_types.into());
+        self
+    }
     /// Settings for automatic tax lookup for this session and resulting payments, invoices, and subscriptions.
     pub fn automatic_tax(
         mut self,
@@ -17055,7 +17308,7 @@ impl CreateCheckoutSession {
     }
     /// Collect additional information from your customer using custom fields.
     /// Up to 3 fields are supported.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     pub fn custom_fields(
         mut self,
         custom_fields: impl Into<Vec<CreateCheckoutSessionCustomFields>>,
@@ -17064,7 +17317,7 @@ impl CreateCheckoutSession {
         self
     }
     /// Display additional text for your customers using custom text.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     pub fn custom_text(mut self, custom_text: impl Into<CreateCheckoutSessionCustomText>) -> Self {
         self.inner.custom_text = Some(custom_text.into());
         self
@@ -17235,7 +17488,7 @@ impl CreateCheckoutSession {
     ///
     /// For `subscription` mode, there is a maximum of 20 line items and optional items with recurring Prices and 20 line items and optional items with one-time Prices.
     ///
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements` or `form`.
     pub fn optional_items(
         mut self,
         optional_items: impl Into<Vec<CreateCheckoutSessionOptionalItems>>,
@@ -17299,26 +17552,8 @@ impl CreateCheckoutSession {
         self.inner.payment_method_options = Some(payment_method_options.into());
         self
     }
-    /// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
-    ///
-    /// You can omit this attribute to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
-    /// See [Dynamic Payment Methods](https://docs.stripe.com/payments/payment-methods/integration-options#using-dynamic-payment-methods) for more details.
-    ///
-    /// Read more about the supported payment methods and their requirements in our [payment
-    /// method details guide](/docs/payments/checkout/payment-methods).
-    ///
-    /// If multiple payment methods are passed, Checkout will dynamically reorder them to
-    /// prioritize the most relevant payment methods based on the customer's location and
-    /// other characteristics.
-    pub fn payment_method_types(
-        mut self,
-        payment_method_types: impl Into<Vec<CreateCheckoutSessionPaymentMethodTypes>>,
-    ) -> Self {
-        self.inner.payment_method_types = Some(payment_method_types.into());
-        self
-    }
-    /// This property is used to set up permissions for various actions (e.g., update) on the CheckoutSession object.
-    /// Can only be set when creating `embedded` or `custom` sessions.
+    /// This property is used to set up permissions for various actions (for example, update) on the CheckoutSession object.
+    /// Can only be set when creating `embedded_page` or `elements` sessions.
     ///
     /// For specific permissions, please refer to their dedicated subsections, such as `permissions.update_shipping_details`.
     pub fn permissions(mut self, permissions: impl Into<CreateCheckoutSessionPermissions>) -> Self {
@@ -17502,7 +17737,7 @@ impl UpdateCheckoutSessionBuilder {
     }
 }
 /// Information about the customer collected within the Checkout Session.
-/// Can only be set when updating `embedded` or `custom` sessions.
+/// Can only be set when updating `embedded_page` or `elements` sessions.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -18616,7 +18851,7 @@ impl UpdateCheckoutSession {
         Self { session: session.into(), inner: UpdateCheckoutSessionBuilder::new() }
     }
     /// Information about the customer collected within the Checkout Session.
-    /// Can only be set when updating `embedded` or `custom` sessions.
+    /// Can only be set when updating `embedded_page` or `elements` sessions.
     pub fn collected_information(
         mut self,
         collected_information: impl Into<UpdateCheckoutSessionCollectedInformation>,
@@ -18787,6 +19022,34 @@ impl CustomTextPositionParam {
         Self { message: message.into() }
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct TaxDetails {
+    /// A tax location ID.
+    /// Depending on the [tax code](/tax/tax-for-tickets/reference/tax-location-performance), this is required, optional, or not supported.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub performance_location: Option<String>,
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxDetails").finish_non_exhaustive()
+    }
+}
+impl TaxDetails {
+    pub fn new() -> Self {
+        Self { performance_location: None, tax_code: None }
+    }
+}
+impl Default for TaxDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -18809,6 +19072,9 @@ pub struct ProductData {
     /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
+    /// Tax details for this product, including the [tax code](/tax/tax-codes) and an optional performance location.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_details: Option<TaxDetails>,
     /// A label that represents units of this product.
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -18828,6 +19094,7 @@ impl ProductData {
             metadata: None,
             name: name.into(),
             tax_code: None,
+            tax_details: None,
             unit_label: None,
         }
     }

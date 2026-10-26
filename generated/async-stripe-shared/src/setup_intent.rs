@@ -1,6 +1,6 @@
 /// A SetupIntent guides you through the process of setting up and saving a customer's payment credentials for future payments.
 /// For example, you can use a SetupIntent to set up and save your customer's card without immediately collecting a payment.
-/// Later, you can use [PaymentIntents](https://api.stripe.com#payment_intents) to drive the payment flow.
+/// Later, you can use [PaymentIntents](https://docs.stripe.com/api#payment_intents) to drive the payment flow.
 ///
 /// Create a SetupIntent when you're ready to collect your customer's payment credentials.
 /// Don't maintain long-lived, unconfirmed SetupIntents because they might not be valid.
@@ -11,9 +11,9 @@
 /// For example, cardholders in [certain regions](https://stripe.com/guides/strong-customer-authentication) might need to be run through.
 /// [Strong Customer Authentication](https://docs.stripe.com/strong-customer-authentication) during payment method collection.
 /// to streamline later [off-session payments](https://docs.stripe.com/payments/setup-intents).
-/// If you use the SetupIntent with a [Customer](https://api.stripe.com#setup_intent_object-customer),
+/// If you use the SetupIntent with a [Customer](https://docs.stripe.com/api#setup_intent_object-customer),.
 /// it automatically attaches the resulting payment method to that Customer after successful setup.
-/// We recommend using SetupIntents or [setup_future_usage](https://api.stripe.com#payment_intent_object-setup_future_usage) on.
+/// We recommend using SetupIntents or [setup_future_usage](https://docs.stripe.com/api#payment_intent_object-setup_future_usage) on.
 /// PaymentIntents to save payment methods to prevent saving invalid or unoptimized payment methods.
 ///
 /// By using SetupIntents, you can reduce friction for your customers, even as regulations change over time.
@@ -598,6 +598,7 @@ pub enum SetupIntentAllowedPaymentMethodTypes {
     Boleto,
     CapchasePay,
     Card,
+    CardPresent,
     Cashapp,
     CheckScan,
     ClickToPay,
@@ -618,6 +619,7 @@ pub enum SetupIntentAllowedPaymentMethodTypes {
     Grabpay,
     IdBankTransfer,
     Ideal,
+    InteracPresent,
     KakaoPay,
     Klarna,
     Knet,
@@ -702,6 +704,7 @@ impl SetupIntentAllowedPaymentMethodTypes {
             Boleto => "boleto",
             CapchasePay => "capchase_pay",
             Card => "card",
+            CardPresent => "card_present",
             Cashapp => "cashapp",
             CheckScan => "check_scan",
             ClickToPay => "click_to_pay",
@@ -722,6 +725,7 @@ impl SetupIntentAllowedPaymentMethodTypes {
             Grabpay => "grabpay",
             IdBankTransfer => "id_bank_transfer",
             Ideal => "ideal",
+            InteracPresent => "interac_present",
             KakaoPay => "kakao_pay",
             Klarna => "klarna",
             Knet => "knet",
@@ -809,6 +813,7 @@ impl std::str::FromStr for SetupIntentAllowedPaymentMethodTypes {
             "boleto" => Ok(Boleto),
             "capchase_pay" => Ok(CapchasePay),
             "card" => Ok(Card),
+            "card_present" => Ok(CardPresent),
             "cashapp" => Ok(Cashapp),
             "check_scan" => Ok(CheckScan),
             "click_to_pay" => Ok(ClickToPay),
@@ -829,6 +834,7 @@ impl std::str::FromStr for SetupIntentAllowedPaymentMethodTypes {
             "grabpay" => Ok(Grabpay),
             "id_bank_transfer" => Ok(IdBankTransfer),
             "ideal" => Ok(Ideal),
+            "interac_present" => Ok(InteracPresent),
             "kakao_pay" => Ok(KakaoPay),
             "klarna" => Ok(Klarna),
             "knet" => Ok(Knet),
@@ -1079,6 +1085,7 @@ pub enum SetupIntentExcludedPaymentMethodTypes {
     Payco,
     Paynow,
     Paypal,
+    Paypay,
     Payto,
     Pix,
     Promptpay,
@@ -1087,6 +1094,7 @@ pub enum SetupIntentExcludedPaymentMethodTypes {
     Satispay,
     Scalapay,
     SepaDebit,
+    Sequra,
     Sofort,
     Sunbit,
     Swish,
@@ -1139,6 +1147,7 @@ impl SetupIntentExcludedPaymentMethodTypes {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Paypay => "paypay",
             Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
@@ -1147,6 +1156,7 @@ impl SetupIntentExcludedPaymentMethodTypes {
             Satispay => "satispay",
             Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Sunbit => "sunbit",
             Swish => "swish",
@@ -1202,6 +1212,7 @@ impl std::str::FromStr for SetupIntentExcludedPaymentMethodTypes {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "paypay" => Ok(Paypay),
             "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
@@ -1210,6 +1221,7 @@ impl std::str::FromStr for SetupIntentExcludedPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),

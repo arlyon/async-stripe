@@ -1,7 +1,7 @@
 /// Invoices are statements of amounts owed by a customer, and are either
 /// generated one-off, or generated periodically from a subscription.
 ///
-/// They contain [invoice items](https://api.stripe.com#invoiceitems), and proration adjustments
+/// They contain [invoice items](https://docs.stripe.com/api#invoiceitems), and proration adjustments
 /// that may be caused by subscription upgrades/downgrades (if necessary).
 ///
 /// If your invoice is configured to be billed through automatic charges,
@@ -219,7 +219,7 @@ pub struct Invoice {
     pub pre_payment_credit_notes_amount: i64,
     /// This is the transaction number that appears on email receipts sent for this invoice.
     pub receipt_number: Option<String>,
-    /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
+    /// The rendering-related settings that control how invoices render in customer-facing interfaces such as the PDF or hosted invoice page.
     pub rendering: Option<stripe_shared::InvoicesResourceInvoiceRendering>,
     /// The details of the cost of shipping, including the ShippingRate applied on the invoice.
     pub shipping_cost: Option<stripe_shared::InvoicesResourceShippingCost>,
@@ -235,6 +235,7 @@ pub struct Invoice {
     /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
     /// [Learn more](https://docs.stripe.com/billing/invoices/workflow#workflow-overview).
     pub status: Option<stripe_shared::InvoiceStatus>,
+    pub status_details: Option<stripe_shared::InvoicesResourceStatusDetails>,
     pub status_transitions: stripe_shared::InvoicesResourceStatusTransitions,
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
     /// Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or exclusive tax is applied.
@@ -336,6 +337,7 @@ pub struct InvoiceBuilder {
     starting_balance: Option<i64>,
     statement_descriptor: Option<Option<String>>,
     status: Option<Option<stripe_shared::InvoiceStatus>>,
+    status_details: Option<Option<stripe_shared::InvoicesResourceStatusDetails>>,
     status_transitions: Option<stripe_shared::InvoicesResourceStatusTransitions>,
     subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
     subtotal: Option<i64>,
@@ -460,6 +462,7 @@ const _: () = {
                 "starting_balance" => Deserialize::begin(&mut self.starting_balance),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
                 "status" => Deserialize::begin(&mut self.status),
+                "status_details" => Deserialize::begin(&mut self.status_details),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
                 "subscription" => Deserialize::begin(&mut self.subscription),
                 "subtotal" => Deserialize::begin(&mut self.subtotal),
@@ -546,6 +549,7 @@ const _: () = {
                 starting_balance: None,
                 statement_descriptor: Some(None),
                 status: Some(None),
+                status_details: Some(None),
                 status_transitions: None,
                 subscription: Some(None),
                 subtotal: None,
@@ -629,6 +633,7 @@ const _: () = {
                 Some(starting_balance),
                 Some(statement_descriptor),
                 Some(status),
+                Some(status_details),
                 Some(status_transitions),
                 Some(subscription),
                 Some(subtotal),
@@ -708,6 +713,7 @@ const _: () = {
                 self.starting_balance,
                 self.statement_descriptor.take(),
                 self.status.take(),
+                self.status_details.take(),
                 self.status_transitions,
                 self.subscription.take(),
                 self.subtotal,
@@ -791,6 +797,7 @@ const _: () = {
                 starting_balance,
                 statement_descriptor,
                 status,
+                status_details,
                 status_transitions,
                 subscription,
                 subtotal,
@@ -908,6 +915,7 @@ const _: () = {
                     "starting_balance" => b.starting_balance = FromValueOpt::from_value(v),
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
+                    "status_details" => b.status_details = FromValueOpt::from_value(v),
                     "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
                     "subscription" => b.subscription = FromValueOpt::from_value(v),
                     "subtotal" => b.subtotal = FromValueOpt::from_value(v),
@@ -939,7 +947,7 @@ const _: () = {
 impl serde::Serialize for Invoice {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Invoice", 79)?;
+        let mut s = s.serialize_struct("Invoice", 80)?;
         s.serialize_field("account_country", &self.account_country)?;
         s.serialize_field("account_name", &self.account_name)?;
         s.serialize_field("account_tax_ids", &self.account_tax_ids)?;
@@ -1012,6 +1020,7 @@ impl serde::Serialize for Invoice {
         s.serialize_field("starting_balance", &self.starting_balance)?;
         s.serialize_field("statement_descriptor", &self.statement_descriptor)?;
         s.serialize_field("status", &self.status)?;
+        s.serialize_field("status_details", &self.status_details)?;
         s.serialize_field("status_transitions", &self.status_transitions)?;
         s.serialize_field("subscription", &self.subscription)?;
         s.serialize_field("subtotal", &self.subtotal)?;

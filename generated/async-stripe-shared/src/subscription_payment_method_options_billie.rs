@@ -1,8 +1,11 @@
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct SubscriptionPaymentMethodOptionsBillie {}
+pub struct SubscriptionPaymentMethodOptionsBillie {
+    pub company_details:
+        Option<stripe_shared::SubscriptionPaymentMethodOptionsBillieCompanyDetails>,
+}
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for SubscriptionPaymentMethodOptionsBillie {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -10,7 +13,10 @@ impl std::fmt::Debug for SubscriptionPaymentMethodOptionsBillie {
     }
 }
 #[doc(hidden)]
-pub struct SubscriptionPaymentMethodOptionsBillieBuilder {}
+pub struct SubscriptionPaymentMethodOptionsBillieBuilder {
+    company_details:
+        Option<Option<stripe_shared::SubscriptionPaymentMethodOptionsBillieCompanyDetails>>,
+}
 
 #[allow(
     unused_variables,
@@ -52,19 +58,20 @@ const _: () = {
         type Out = SubscriptionPaymentMethodOptionsBillie;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "company_details" => Deserialize::begin(&mut self.company_details),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { company_details: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(company_details),) = (self.company_details.take(),) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { company_details })
         }
     }
 
@@ -91,6 +98,7 @@ const _: () = {
             let mut b = SubscriptionPaymentMethodOptionsBillieBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "company_details" => b.company_details = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

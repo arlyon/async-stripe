@@ -34,6 +34,7 @@ pub struct TerminalReader {
     /// Serial number of the reader.
     pub serial_number: String,
     /// The networking status of the reader.
+    /// This value is `null` for mobile readers.
     /// We do not recommend using this field in flows that may block taking payments.
     pub status: Option<stripe_terminal::TerminalReaderStatus>,
 }

@@ -35,6 +35,43 @@ fn enums_requests() {
 }
 
 #[test]
+fn three_d_secure_card_union_serializes_both_payload_shapes() {
+    use serde_json::json;
+    use stripe_payment::three_d_secure_authentication::{
+        CreateThreeDSecureAuthenticationPaymentMethodData,
+        CreateThreeDSecureAuthenticationPaymentMethodDataCard,
+        CreateThreeDSecureAuthenticationPaymentMethodDataCardCard,
+        CreateThreeDSecureAuthenticationPaymentMethodDataCardToken,
+        CreateThreeDSecureAuthenticationPaymentMethodDataType,
+    };
+
+    for (card, expected) in [
+        (
+            CreateThreeDSecureAuthenticationPaymentMethodDataCard::Card(
+                CreateThreeDSecureAuthenticationPaymentMethodDataCardCard::new(
+                    12,
+                    2030,
+                    "4242424242424242",
+                ),
+            ),
+            json!({"exp_month": 12, "exp_year": 2030, "number": "4242424242424242"}),
+        ),
+        (
+            CreateThreeDSecureAuthenticationPaymentMethodDataCard::CardToken(
+                CreateThreeDSecureAuthenticationPaymentMethodDataCardToken::new("tok_test"),
+            ),
+            json!({"token": "tok_test"}),
+        ),
+    ] {
+        let data = CreateThreeDSecureAuthenticationPaymentMethodData::new(
+            card,
+            CreateThreeDSecureAuthenticationPaymentMethodDataType::Card,
+        );
+        assert_eq!(serde_json::to_value(data).unwrap(), json!({"card": expected, "type": "card"}));
+    }
+}
+
+#[test]
 fn from_str_and_deser_behavior_match_on_unknown_variant() {
     let acct_authorized = "account.application.authorized";
     assert_eq!(

@@ -1,5 +1,5 @@
 /// This object represents files hosted on Stripe's servers. You can upload
-/// files with the [create file](https://api.stripe.com#create_file) request
+/// files with the [create file](https://docs.stripe.com/api#create_file) request
 /// (for example, when uploading dispute evidence). Stripe also
 /// creates files independently (for example, the results of a [Sigma scheduled
 /// query](#scheduled_queries)).
@@ -19,7 +19,7 @@ pub struct File {
     pub filename: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_shared::FileId,
-    /// A list of [file links](https://api.stripe.com#file_links) that point at this file.
+    /// A list of [file links](https://docs.stripe.com/api#file_links) that point at this file.
     pub links: Option<stripe_types::List<stripe_shared::FileLink>>,
     /// The [purpose](https://docs.stripe.com/file-upload#uploading-a-file) of the uploaded file.
     pub purpose: stripe_shared::FilePurpose,

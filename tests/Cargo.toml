@@ -22,7 +22,7 @@ async-stripe-billing = { path = "../generated/async-stripe-billing", features = 
 async-stripe-core = { path = "../generated/async-stripe-core", features = ["customer", "charge", "token", "serialize"] }
 async-stripe-checkout = { path = "../generated/async-stripe-checkout", features = ["checkout_session", "serialize"] }
 async-stripe-product = { path = "../generated/async-stripe-product", features = ["product", "price", "promotion_code", "serialize"] }
-async-stripe-payment = { path = "../generated/async-stripe-payment", features = ["serialize"] }
+async-stripe-payment = { path = "../generated/async-stripe-payment", features = ["serialize", "three_d_secure_authentication"] }
 async-stripe-treasury = { path = "../generated/async-stripe-treasury", features = ["serialize"] }
 async-stripe-terminal = { path = "../generated/async-stripe-terminal", features = ["serialize"] }
 async-stripe-fraud = { path = "../generated/async-stripe-fraud", features = ["serialize"] }

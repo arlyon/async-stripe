@@ -769,7 +769,7 @@ impl Default for CreateAccountSessionComponentsPaymentsFeatures {
         Self::new()
     }
 }
-/// Creates a AccountSession object that includes a single-use token that the platform can use on their front-end to grant client-side API access.
+/// Creates an AccountSession object that includes a single-use token that the platform can use on their front-end to grant client-side API access.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

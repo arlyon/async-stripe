@@ -2166,6 +2166,9 @@ pub struct CreateSubscriptionItems {
     /// Pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<ItemBillingThresholdsParam>,
+    /// The trial offer to apply to this subscription item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub current_trial: Option<CurrentTrialParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
@@ -2203,6 +2206,7 @@ impl CreateSubscriptionItems {
     pub fn new() -> Self {
         Self {
             billing_thresholds: None,
+            current_trial: None,
             discounts: None,
             metadata: None,
             plan: None,
@@ -2580,8 +2584,10 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     pub bancontact: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>,
     /// This sub-hash contains details about the Billie payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default, with = "stripe_types::with_serde_json_opt")]
-    pub billie: Option<miniserde::json::Value>,
+    pub billie: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillie>,
+    /// This sub-hash contains details about the Blik payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<SubscriptionPaymentMethodOptionsParam>,
     /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard>,
@@ -2622,6 +2628,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptions {
             acss_debit: None,
             bancontact: None,
             billie: None,
+            blik: None,
             card: None,
             customer_balance: None,
             konbini: None,
@@ -2989,6 +2996,199 @@ impl serde::Serialize
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// This sub-hash contains details about the Billie payment method options to pass to the invoice’s PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillie {
+    /// Registration details about the buyer's organization.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_details:
+        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillie {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillie")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillie {
+    pub fn new() -> Self {
+        Self { company_details: None }
+    }
+}
+impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillie {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Registration details about the buyer's organization.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails {
+    /// The address the company or entity is registered with.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_address: Option<RegisteredAddressParam>,
+    /// Company or entity name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_name: Option<String>,
+    /// The official registration number for the given registration type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registration_number: Option<String>,
+    /// Type of registration the company or entity holds in their registered country.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registration_type: Option<
+        CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType,
+    >,
+    /// VAT ID number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vat: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails {
+    pub fn new() -> Self {
+        Self {
+            registered_address: None,
+            registered_name: None,
+            registration_number: None,
+            registration_type: None,
+            vat: None,
+        }
+    }
+}
+impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of registration the company or entity holds in their registered country.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType {
+    ChEin,
+    DeHrb,
+    DkCvr,
+    EsCif,
+    FiTunnus,
+    FrSiren,
+    FrSiret,
+    ItRea,
+    NlKvk,
+    NoOrgNumber,
+    NoPno,
+    SeOrgNumber,
+    SePno,
+    UkCrn,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType::*;
+        match self {
+            ChEin => "ch_ein",
+            DeHrb => "de_hrb",
+            DkCvr => "dk_cvr",
+            EsCif => "es_cif",
+            FiTunnus => "fi_tunnus",
+            FrSiren => "fr_siren",
+            FrSiret => "fr_siret",
+            ItRea => "it_rea",
+            NlKvk => "nl_kvk",
+            NoOrgNumber => "no_org_number",
+            NoPno => "no_pno",
+            SeOrgNumber => "se_org_number",
+            SePno => "se_pno",
+            UkCrn => "uk_crn",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType::*;
+        match s {
+            "ch_ein" => Ok(ChEin),
+            "de_hrb" => Ok(DeHrb),
+            "dk_cvr" => Ok(DkCvr),
+            "es_cif" => Ok(EsCif),
+            "fi_tunnus" => Ok(FiTunnus),
+            "fr_siren" => Ok(FrSiren),
+            "fr_siret" => Ok(FrSiret),
+            "it_rea" => Ok(ItRea),
+            "nl_kvk" => Ok(NlKvk),
+            "no_org_number" => Ok(NoOrgNumber),
+            "no_pno" => Ok(NoPno),
+            "se_org_number" => Ok(SeOrgNumber),
+            "se_pno" => Ok(SePno),
+            "uk_crn" => Ok(UkCrn),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -4356,6 +4556,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     BacsDebit,
     Bancontact,
     Billie,
+    Blik,
     Boleto,
     Card,
     Cashapp,
@@ -4412,6 +4613,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Blik => "blik",
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
@@ -4471,6 +4673,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
@@ -4814,7 +5017,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionProrationBehavior {
 /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
 /// The special value `now` can be provided to end the customer's trial immediately.
 /// Can be at most two years from `billing_cycle_anchor`.
-/// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
+/// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials/free-trials) to learn more.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -4854,8 +5057,14 @@ impl CreateSubscriptionTrialSettings {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateSubscriptionTrialSettingsEndBehavior {
+    /// Indicates how the subscription's billing cycle anchor is reset when a trial ends.
+    /// Defaults to `now`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor: Option<CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor>,
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-    pub missing_payment_method: CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub missing_payment_method:
+        Option<CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateSubscriptionTrialSettingsEndBehavior {
@@ -4864,12 +5073,87 @@ impl std::fmt::Debug for CreateSubscriptionTrialSettingsEndBehavior {
     }
 }
 impl CreateSubscriptionTrialSettingsEndBehavior {
-    pub fn new(
-        missing_payment_method: impl Into<
-            CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod,
-        >,
-    ) -> Self {
-        Self { missing_payment_method: missing_payment_method.into() }
+    pub fn new() -> Self {
+        Self { billing_cycle_anchor: None, missing_payment_method: None }
+    }
+}
+impl Default for CreateSubscriptionTrialSettingsEndBehavior {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Indicates how the subscription's billing cycle anchor is reset when a trial ends.
+/// Defaults to `now`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    Now,
+    Unchanged,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor::*;
+        match self {
+            Now => "now",
+            Unchanged => "unchanged",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor::*;
+        match s {
+            "now" => Ok(Now),
+            "unchanged" => Ok(Unchanged),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
@@ -5217,7 +5501,7 @@ impl CreateSubscription {
     /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
     /// The special value `now` can be provided to end the customer's trial immediately.
     /// Can be at most two years from `billing_cycle_anchor`.
-    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials/free-trials) to learn more.
     pub fn trial_end(mut self, trial_end: impl Into<CreateSubscriptionTrialEnd>) -> Self {
         self.inner.trial_end = Some(trial_end.into());
         self
@@ -5225,14 +5509,14 @@ impl CreateSubscription {
     /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
-    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials/free-trials) to learn more.
     pub fn trial_from_plan(mut self, trial_from_plan: impl Into<bool>) -> Self {
         self.inner.trial_from_plan = Some(trial_from_plan.into());
         self
     }
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     /// This will always overwrite any trials that might apply via a subscribed plan.
-    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials/free-trials) to learn more.
     pub fn trial_period_days(mut self, trial_period_days: impl Into<u32>) -> Self {
         self.inner.trial_period_days = Some(trial_period_days.into());
         self
@@ -5546,11 +5830,465 @@ impl StripeRequest for MigrateSubscription {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+struct PauseSubscriptionBuilder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    bill_for: Option<PauseSubscriptionBillFor>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expand: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    invoicing_behavior: Option<PauseSubscriptionInvoicingBehavior>,
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_: Option<PauseSubscriptionType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PauseSubscriptionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PauseSubscriptionBuilder").finish_non_exhaustive()
+    }
+}
+impl PauseSubscriptionBuilder {
+    fn new() -> Self {
+        Self { bill_for: None, expand: None, invoicing_behavior: None, type_: None }
+    }
+}
+/// Controls what to bill for when pausing the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct PauseSubscriptionBillFor {
+    /// Controls when to bill for metered usage in the current period. Defaults to `{ type: "now" }`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub outstanding_usage_through: Option<PauseSubscriptionBillForOutstandingUsageThrough>,
+    /// Controls when to credit for unused time on licensed items. Defaults to `{ type: "now" }`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unused_time_from: Option<PauseSubscriptionBillForUnusedTimeFrom>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PauseSubscriptionBillFor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PauseSubscriptionBillFor").finish_non_exhaustive()
+    }
+}
+impl PauseSubscriptionBillFor {
+    pub fn new() -> Self {
+        Self { outstanding_usage_through: None, unused_time_from: None }
+    }
+}
+impl Default for PauseSubscriptionBillFor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls when to bill for metered usage in the current period. Defaults to `{ type: "now" }`.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct PauseSubscriptionBillForOutstandingUsageThrough {
+    /// When to bill metered usage in the current period.
+    #[serde(rename = "type")]
+    pub type_: PauseSubscriptionBillForOutstandingUsageThroughType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PauseSubscriptionBillForOutstandingUsageThrough {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PauseSubscriptionBillForOutstandingUsageThrough").finish_non_exhaustive()
+    }
+}
+impl PauseSubscriptionBillForOutstandingUsageThrough {
+    pub fn new(type_: impl Into<PauseSubscriptionBillForOutstandingUsageThroughType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// When to bill metered usage in the current period.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PauseSubscriptionBillForOutstandingUsageThroughType {
+    None,
+    Now,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PauseSubscriptionBillForOutstandingUsageThroughType {
+    pub fn as_str(&self) -> &str {
+        use PauseSubscriptionBillForOutstandingUsageThroughType::*;
+        match self {
+            None => "none",
+            Now => "now",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PauseSubscriptionBillForOutstandingUsageThroughType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PauseSubscriptionBillForOutstandingUsageThroughType::*;
+        match s {
+            "none" => Ok(None),
+            "now" => Ok(Now),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PauseSubscriptionBillForOutstandingUsageThroughType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PauseSubscriptionBillForOutstandingUsageThroughType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PauseSubscriptionBillForOutstandingUsageThroughType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PauseSubscriptionBillForOutstandingUsageThroughType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PauseSubscriptionBillForOutstandingUsageThroughType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for PauseSubscriptionBillForOutstandingUsageThroughType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PauseSubscriptionBillForOutstandingUsageThroughType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Controls when to credit for unused time on licensed items. Defaults to `{ type: "now" }`.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct PauseSubscriptionBillForUnusedTimeFrom {
+    /// When to credit for unused time.
+    #[serde(rename = "type")]
+    pub type_: PauseSubscriptionBillForUnusedTimeFromType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PauseSubscriptionBillForUnusedTimeFrom {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PauseSubscriptionBillForUnusedTimeFrom").finish_non_exhaustive()
+    }
+}
+impl PauseSubscriptionBillForUnusedTimeFrom {
+    pub fn new(type_: impl Into<PauseSubscriptionBillForUnusedTimeFromType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// When to credit for unused time.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PauseSubscriptionBillForUnusedTimeFromType {
+    ItemCurrentPeriodStart,
+    None,
+    Now,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PauseSubscriptionBillForUnusedTimeFromType {
+    pub fn as_str(&self) -> &str {
+        use PauseSubscriptionBillForUnusedTimeFromType::*;
+        match self {
+            ItemCurrentPeriodStart => "item_current_period_start",
+            None => "none",
+            Now => "now",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PauseSubscriptionBillForUnusedTimeFromType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PauseSubscriptionBillForUnusedTimeFromType::*;
+        match s {
+            "item_current_period_start" => Ok(ItemCurrentPeriodStart),
+            "none" => Ok(None),
+            "now" => Ok(Now),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PauseSubscriptionBillForUnusedTimeFromType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PauseSubscriptionBillForUnusedTimeFromType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PauseSubscriptionBillForUnusedTimeFromType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PauseSubscriptionBillForUnusedTimeFromType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PauseSubscriptionBillForUnusedTimeFromType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for PauseSubscriptionBillForUnusedTimeFromType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PauseSubscriptionBillForUnusedTimeFromType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Determines how to handle debits and credits when pausing. Defaults to `pending_invoice_item`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PauseSubscriptionInvoicingBehavior {
+    Invoice,
+    PendingInvoiceItem,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PauseSubscriptionInvoicingBehavior {
+    pub fn as_str(&self) -> &str {
+        use PauseSubscriptionInvoicingBehavior::*;
+        match self {
+            Invoice => "invoice",
+            PendingInvoiceItem => "pending_invoice_item",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PauseSubscriptionInvoicingBehavior {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PauseSubscriptionInvoicingBehavior::*;
+        match s {
+            "invoice" => Ok(Invoice),
+            "pending_invoice_item" => Ok(PendingInvoiceItem),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PauseSubscriptionInvoicingBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PauseSubscriptionInvoicingBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PauseSubscriptionInvoicingBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PauseSubscriptionInvoicingBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PauseSubscriptionInvoicingBehavior)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for PauseSubscriptionInvoicingBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PauseSubscriptionInvoicingBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The type of pause to apply. Defaults to `subscription`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PauseSubscriptionType {
+    Subscription,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PauseSubscriptionType {
+    pub fn as_str(&self) -> &str {
+        use PauseSubscriptionType::*;
+        match self {
+            Subscription => "subscription",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PauseSubscriptionType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PauseSubscriptionType::*;
+        match s {
+            "subscription" => Ok(Subscription),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PauseSubscriptionType");
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PauseSubscriptionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PauseSubscriptionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PauseSubscriptionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PauseSubscriptionType)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for PauseSubscriptionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PauseSubscriptionType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Pauses a subscription by transitioning it to the paused status.
+/// A paused subscription does not generate invoices and will not advance to new billing periods.
+/// The subscription can be resumed later using the resume endpoint.
+/// Cannot pause subscriptions with attached schedules.
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct PauseSubscription {
+    inner: PauseSubscriptionBuilder,
+    subscription: stripe_shared::SubscriptionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PauseSubscription {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PauseSubscription").finish_non_exhaustive()
+    }
+}
+impl PauseSubscription {
+    /// Construct a new `PauseSubscription`.
+    pub fn new(subscription: impl Into<stripe_shared::SubscriptionId>) -> Self {
+        Self { subscription: subscription.into(), inner: PauseSubscriptionBuilder::new() }
+    }
+    /// Controls what to bill for when pausing the subscription.
+    pub fn bill_for(mut self, bill_for: impl Into<PauseSubscriptionBillFor>) -> Self {
+        self.inner.bill_for = Some(bill_for.into());
+        self
+    }
+    /// Specifies which fields in the response should be expanded.
+    pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
+        self.inner.expand = Some(expand.into());
+        self
+    }
+    /// Determines how to handle debits and credits when pausing. Defaults to `pending_invoice_item`.
+    pub fn invoicing_behavior(
+        mut self,
+        invoicing_behavior: impl Into<PauseSubscriptionInvoicingBehavior>,
+    ) -> Self {
+        self.inner.invoicing_behavior = Some(invoicing_behavior.into());
+        self
+    }
+    /// The type of pause to apply. Defaults to `subscription`.
+    pub fn type_(mut self, type_: impl Into<PauseSubscriptionType>) -> Self {
+        self.inner.type_ = Some(type_.into());
+        self
+    }
+}
+impl PauseSubscription {
+    /// Send the request and return the deserialized response.
+    pub async fn send<C: StripeClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send(client).await
+    }
+
+    /// Send the request and return the deserialized response, blocking until completion.
+    pub fn send_blocking<C: StripeBlockingClient>(
+        &self,
+        client: &C,
+    ) -> Result<<Self as StripeRequest>::Output, C::Err> {
+        self.customize().send_blocking(client)
+    }
+}
+
+impl StripeRequest for PauseSubscription {
+    type Output = stripe_shared::Subscription;
+
+    fn build(&self) -> RequestBuilder {
+        let subscription = &self.subscription;
+        RequestBuilder::new(StripeMethod::Post, format!("/subscriptions/{subscription}/pause"))
+            .form(&self.inner)
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ResumeSubscriptionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_cycle_anchor: Option<ResumeSubscriptionBillingCycleAnchor>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_behavior: Option<ResumeSubscriptionPaymentBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proration_behavior: Option<ResumeSubscriptionProrationBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5567,6 +6305,7 @@ impl ResumeSubscriptionBuilder {
         Self {
             billing_cycle_anchor: None,
             expand: None,
+            payment_behavior: None,
             proration_behavior: None,
             proration_date: None,
         }
@@ -5577,16 +6316,36 @@ impl ResumeSubscriptionBuilder {
 /// The default is `now`.
 /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ResumeSubscriptionBillingCycleAnchor {
+    /// Determines how the billing cycle anchor changes when the subscription resumes.
+    #[serde(rename = "type")]
+    pub type_: ResumeSubscriptionBillingCycleAnchorType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ResumeSubscriptionBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ResumeSubscriptionBillingCycleAnchor").finish_non_exhaustive()
+    }
+}
+impl ResumeSubscriptionBillingCycleAnchor {
+    pub fn new(type_: impl Into<ResumeSubscriptionBillingCycleAnchorType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Determines how the billing cycle anchor changes when the subscription resumes.
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum ResumeSubscriptionBillingCycleAnchor {
+pub enum ResumeSubscriptionBillingCycleAnchorType {
     Now,
     Unchanged,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
-impl ResumeSubscriptionBillingCycleAnchor {
+impl ResumeSubscriptionBillingCycleAnchorType {
     pub fn as_str(&self) -> &str {
-        use ResumeSubscriptionBillingCycleAnchor::*;
+        use ResumeSubscriptionBillingCycleAnchorType::*;
         match self {
             Now => "now",
             Unchanged => "unchanged",
@@ -5595,10 +6354,10 @@ impl ResumeSubscriptionBillingCycleAnchor {
     }
 }
 
-impl std::str::FromStr for ResumeSubscriptionBillingCycleAnchor {
+impl std::str::FromStr for ResumeSubscriptionBillingCycleAnchorType {
     type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ResumeSubscriptionBillingCycleAnchor::*;
+        use ResumeSubscriptionBillingCycleAnchorType::*;
         match s {
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
@@ -5606,32 +6365,32 @@ impl std::str::FromStr for ResumeSubscriptionBillingCycleAnchor {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
-                    "ResumeSubscriptionBillingCycleAnchor"
+                    "ResumeSubscriptionBillingCycleAnchorType"
                 );
                 Ok(Unknown(v.to_owned()))
             }
         }
     }
 }
-impl std::fmt::Display for ResumeSubscriptionBillingCycleAnchor {
+impl std::fmt::Display for ResumeSubscriptionBillingCycleAnchorType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
 #[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for ResumeSubscriptionBillingCycleAnchor {
+impl std::fmt::Debug for ResumeSubscriptionBillingCycleAnchorType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for ResumeSubscriptionBillingCycleAnchor {
+impl std::fmt::Debug for ResumeSubscriptionBillingCycleAnchorType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(ResumeSubscriptionBillingCycleAnchor)).finish_non_exhaustive()
+        f.debug_struct(stringify!(ResumeSubscriptionBillingCycleAnchorType)).finish_non_exhaustive()
     }
 }
-impl serde::Serialize for ResumeSubscriptionBillingCycleAnchor {
+impl serde::Serialize for ResumeSubscriptionBillingCycleAnchorType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -5640,7 +6399,80 @@ impl serde::Serialize for ResumeSubscriptionBillingCycleAnchor {
     }
 }
 #[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for ResumeSubscriptionBillingCycleAnchor {
+impl<'de> serde::Deserialize<'de> for ResumeSubscriptionBillingCycleAnchorType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Controls whether Stripe attempts payment on the resumption invoice in the resume request, and how payment on that invoice affects the subscription's status.
+/// The default is `resume_on_payment_attempt`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ResumeSubscriptionPaymentBehavior {
+    ResumeOnPaymentAttempt,
+    ResumeOnPaymentSuccess,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ResumeSubscriptionPaymentBehavior {
+    pub fn as_str(&self) -> &str {
+        use ResumeSubscriptionPaymentBehavior::*;
+        match self {
+            ResumeOnPaymentAttempt => "resume_on_payment_attempt",
+            ResumeOnPaymentSuccess => "resume_on_payment_success",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ResumeSubscriptionPaymentBehavior {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ResumeSubscriptionPaymentBehavior::*;
+        match s {
+            "resume_on_payment_attempt" => Ok(ResumeOnPaymentAttempt),
+            "resume_on_payment_success" => Ok(ResumeOnPaymentSuccess),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ResumeSubscriptionPaymentBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ResumeSubscriptionPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ResumeSubscriptionPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ResumeSubscriptionPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ResumeSubscriptionPaymentBehavior)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ResumeSubscriptionPaymentBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ResumeSubscriptionPaymentBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -5764,6 +6596,15 @@ impl ResumeSubscription {
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
+        self
+    }
+    /// Controls whether Stripe attempts payment on the resumption invoice in the resume request, and how payment on that invoice affects the subscription's status.
+    /// The default is `resume_on_payment_attempt`.
+    pub fn payment_behavior(
+        mut self,
+        payment_behavior: impl Into<ResumeSubscriptionPaymentBehavior>,
+    ) -> Self {
+        self.inner.payment_behavior = Some(payment_behavior.into());
         self
     }
     /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor` being `unchanged`.
@@ -6450,20 +7291,40 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAutomaticTaxLiabilityTyp
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Either `now` or `unchanged`.
-/// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
+/// Controls how the subscription's billing cycle anchor changes.
+/// Set `type` to `now` to reset the billing cycle anchor to the current time (in UTC), or `unchanged` to preserve it.
 /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionBillingCycleAnchor {
+    /// Determines how the billing cycle anchor changes when the subscription is updated.
+    #[serde(rename = "type")]
+    pub type_: UpdateSubscriptionBillingCycleAnchorType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionBillingCycleAnchor").finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionBillingCycleAnchor {
+    pub fn new(type_: impl Into<UpdateSubscriptionBillingCycleAnchorType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Determines how the billing cycle anchor changes when the subscription is updated.
+#[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum UpdateSubscriptionBillingCycleAnchor {
+pub enum UpdateSubscriptionBillingCycleAnchorType {
     Now,
     Unchanged,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
-impl UpdateSubscriptionBillingCycleAnchor {
+impl UpdateSubscriptionBillingCycleAnchorType {
     pub fn as_str(&self) -> &str {
-        use UpdateSubscriptionBillingCycleAnchor::*;
+        use UpdateSubscriptionBillingCycleAnchorType::*;
         match self {
             Now => "now",
             Unchanged => "unchanged",
@@ -6472,10 +7333,10 @@ impl UpdateSubscriptionBillingCycleAnchor {
     }
 }
 
-impl std::str::FromStr for UpdateSubscriptionBillingCycleAnchor {
+impl std::str::FromStr for UpdateSubscriptionBillingCycleAnchorType {
     type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSubscriptionBillingCycleAnchor::*;
+        use UpdateSubscriptionBillingCycleAnchorType::*;
         match s {
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
@@ -6483,32 +7344,32 @@ impl std::str::FromStr for UpdateSubscriptionBillingCycleAnchor {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
-                    "UpdateSubscriptionBillingCycleAnchor"
+                    "UpdateSubscriptionBillingCycleAnchorType"
                 );
                 Ok(Unknown(v.to_owned()))
             }
         }
     }
 }
-impl std::fmt::Display for UpdateSubscriptionBillingCycleAnchor {
+impl std::fmt::Display for UpdateSubscriptionBillingCycleAnchorType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
 #[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for UpdateSubscriptionBillingCycleAnchor {
+impl std::fmt::Debug for UpdateSubscriptionBillingCycleAnchorType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateSubscriptionBillingCycleAnchor {
+impl std::fmt::Debug for UpdateSubscriptionBillingCycleAnchorType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(UpdateSubscriptionBillingCycleAnchor)).finish_non_exhaustive()
+        f.debug_struct(stringify!(UpdateSubscriptionBillingCycleAnchorType)).finish_non_exhaustive()
     }
 }
-impl serde::Serialize for UpdateSubscriptionBillingCycleAnchor {
+impl serde::Serialize for UpdateSubscriptionBillingCycleAnchorType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -6517,7 +7378,7 @@ impl serde::Serialize for UpdateSubscriptionBillingCycleAnchor {
     }
 }
 #[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingCycleAnchor {
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingCycleAnchorType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -7155,6 +8016,9 @@ pub struct UpdateSubscriptionItems {
     /// `clear_usage` has no effect if the plan has a billing meter attached.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clear_usage: Option<bool>,
+    /// The trial offer to apply to this subscription item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub current_trial: Option<CurrentTrialParam>,
     /// A flag that, if set to `true`, will delete the specified item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deleted: Option<bool>,
@@ -7176,12 +8040,14 @@ pub struct UpdateSubscriptionItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<String>,
     /// The ID of the price object.
-    /// One of `price` or `price_data` is required.
+    /// You can use either `price` or `price_data`, but not both, to set or change this item's price.
+    /// If you're updating an existing item without changing its price, omit both.
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
     /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-    /// One of `price` or `price_data` is required.
+    /// You can use either `price` or `price_data`, but not both, to set or change this item's price.
+    /// If you're updating an existing item without changing its price, omit both.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<UpdateSubscriptionItemsPriceData>,
     /// Quantity for this item.
@@ -7204,6 +8070,7 @@ impl UpdateSubscriptionItems {
         Self {
             billing_thresholds: None,
             clear_usage: None,
+            current_trial: None,
             deleted: None,
             discounts: None,
             id: None,
@@ -7222,7 +8089,8 @@ impl Default for UpdateSubscriptionItems {
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-/// One of `price` or `price_data` is required.
+/// You can use either `price` or `price_data`, but not both, to set or change this item's price.
+/// If you're updating an existing item without changing its price, omit both.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -7683,8 +8551,10 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
     pub bancontact: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>,
     /// This sub-hash contains details about the Billie payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default, with = "stripe_types::with_serde_json_opt")]
-    pub billie: Option<miniserde::json::Value>,
+    pub billie: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillie>,
+    /// This sub-hash contains details about the Blik payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<SubscriptionPaymentMethodOptionsParam>,
     /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard>,
@@ -7725,6 +8595,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
             acss_debit: None,
             bancontact: None,
             billie: None,
+            blik: None,
             card: None,
             customer_balance: None,
             konbini: None,
@@ -8092,6 +8963,199 @@ impl serde::Serialize
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// This sub-hash contains details about the Billie payment method options to pass to the invoice’s PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillie {
+    /// Registration details about the buyer's organization.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_details:
+        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillie {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillie")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillie {
+    pub fn new() -> Self {
+        Self { company_details: None }
+    }
+}
+impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillie {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Registration details about the buyer's organization.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails {
+    /// The address the company or entity is registered with.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_address: Option<RegisteredAddressParam>,
+    /// Company or entity name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_name: Option<String>,
+    /// The official registration number for the given registration type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registration_number: Option<String>,
+    /// Type of registration the company or entity holds in their registered country.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registration_type: Option<
+        UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType,
+    >,
+    /// VAT ID number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vat: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails {
+    pub fn new() -> Self {
+        Self {
+            registered_address: None,
+            registered_name: None,
+            registration_number: None,
+            registration_type: None,
+            vat: None,
+        }
+    }
+}
+impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of registration the company or entity holds in their registered country.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType {
+    ChEin,
+    DeHrb,
+    DkCvr,
+    EsCif,
+    FiTunnus,
+    FrSiren,
+    FrSiret,
+    ItRea,
+    NlKvk,
+    NoOrgNumber,
+    NoPno,
+    SeOrgNumber,
+    SePno,
+    UkCrn,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType::*;
+        match self {
+            ChEin => "ch_ein",
+            DeHrb => "de_hrb",
+            DkCvr => "dk_cvr",
+            EsCif => "es_cif",
+            FiTunnus => "fi_tunnus",
+            FrSiren => "fr_siren",
+            FrSiret => "fr_siret",
+            ItRea => "it_rea",
+            NlKvk => "nl_kvk",
+            NoOrgNumber => "no_org_number",
+            NoPno => "no_pno",
+            SeOrgNumber => "se_org_number",
+            SePno => "se_pno",
+            UkCrn => "uk_crn",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType::*;
+        match s {
+            "ch_ein" => Ok(ChEin),
+            "de_hrb" => Ok(DeHrb),
+            "dk_cvr" => Ok(DkCvr),
+            "es_cif" => Ok(EsCif),
+            "fi_tunnus" => Ok(FiTunnus),
+            "fr_siren" => Ok(FrSiren),
+            "fr_siret" => Ok(FrSiret),
+            "it_rea" => Ok(ItRea),
+            "nl_kvk" => Ok(NlKvk),
+            "no_org_number" => Ok(NoOrgNumber),
+            "no_pno" => Ok(NoPno),
+            "se_org_number" => Ok(SeOrgNumber),
+            "se_pno" => Ok(SePno),
+            "uk_crn" => Ok(UkCrn),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBillieCompanyDetailsRegistrationType
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -9459,6 +10523,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     BacsDebit,
     Bancontact,
     Billie,
+    Blik,
     Boleto,
     Card,
     Cashapp,
@@ -9515,6 +10580,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Blik => "blik",
             Boleto => "boleto",
             Card => "card",
             Cashapp => "cashapp",
@@ -9574,6 +10640,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
@@ -9958,8 +11025,14 @@ impl UpdateSubscriptionTrialSettings {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdateSubscriptionTrialSettingsEndBehavior {
+    /// Indicates how the subscription's billing cycle anchor is reset when a trial ends.
+    /// Defaults to `now`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor: Option<UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor>,
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-    pub missing_payment_method: UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub missing_payment_method:
+        Option<UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateSubscriptionTrialSettingsEndBehavior {
@@ -9968,12 +11041,87 @@ impl std::fmt::Debug for UpdateSubscriptionTrialSettingsEndBehavior {
     }
 }
 impl UpdateSubscriptionTrialSettingsEndBehavior {
-    pub fn new(
-        missing_payment_method: impl Into<
-            UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod,
-        >,
-    ) -> Self {
-        Self { missing_payment_method: missing_payment_method.into() }
+    pub fn new() -> Self {
+        Self { billing_cycle_anchor: None, missing_payment_method: None }
+    }
+}
+impl Default for UpdateSubscriptionTrialSettingsEndBehavior {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Indicates how the subscription's billing cycle anchor is reset when a trial ends.
+/// Defaults to `now`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    Now,
+    Unchanged,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor::*;
+        match self {
+            Now => "now",
+            Unchanged => "unchanged",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor::*;
+        match s {
+            "now" => Ok(Now),
+            "unchanged" => Ok(Unchanged),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionTrialSettingsEndBehaviorBillingCycleAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
@@ -10135,8 +11283,8 @@ impl UpdateSubscription {
         self.inner.automatic_tax = Some(automatic_tax.into());
         self
     }
-    /// Either `now` or `unchanged`.
-    /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
+    /// Controls how the subscription's billing cycle anchor changes.
+    /// Set `type` to `now` to reset the billing cycle anchor to the current time (in UTC), or `unchanged` to preserve it.
     /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     pub fn billing_cycle_anchor(
         mut self,
@@ -10348,7 +11496,7 @@ impl UpdateSubscription {
     /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
-    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials/free-trials) to learn more.
     pub fn trial_from_plan(mut self, trial_from_plan: impl Into<bool>) -> Self {
         self.inner.trial_from_plan = Some(trial_from_plan.into());
         self
@@ -10489,6 +11637,89 @@ impl ItemBillingThresholdsParam {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+pub struct CurrentTrialParam {
+    /// The ID of the trial offer to apply to the subscription item.
+    pub trial_offer: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CurrentTrialParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CurrentTrialParam").finish_non_exhaustive()
+    }
+}
+impl CurrentTrialParam {
+    pub fn new(trial_offer: impl Into<String>) -> Self {
+        Self { trial_offer: trial_offer.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct RegisteredAddressParam {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1 (for example, street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2 (for example, apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RegisteredAddressParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RegisteredAddressParam").finish_non_exhaustive()
+    }
+}
+impl RegisteredAddressParam {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for RegisteredAddressParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct SubscriptionPaymentMethodOptionsMandateOptionsParam {
+    /// Date when the mandate expires and no further payments will be charged.
+    /// If not provided, the mandate will be set to be indefinite.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionPaymentMethodOptionsMandateOptionsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionPaymentMethodOptionsMandateOptionsParam")
+            .finish_non_exhaustive()
+    }
+}
+impl SubscriptionPaymentMethodOptionsMandateOptionsParam {
+    pub fn new() -> Self {
+        Self { expires_at: None }
+    }
+}
+impl Default for SubscriptionPaymentMethodOptionsMandateOptionsParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct EuBankTransferParam {
     /// The desired country code of the bank account information.
     /// Permitted values include: `DE`, `FR`, `IE`, or `NL`.
@@ -10526,6 +11757,30 @@ impl std::fmt::Debug for TransferDataSpecs {
 impl TransferDataSpecs {
     pub fn new(destination: impl Into<String>) -> Self {
         Self { amount_percent: None, destination: destination.into() }
+    }
+}
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct SubscriptionPaymentMethodOptionsParam {
+    /// Configuration options for setting up a mandate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<SubscriptionPaymentMethodOptionsMandateOptionsParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionPaymentMethodOptionsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionPaymentMethodOptionsParam").finish_non_exhaustive()
+    }
+}
+impl SubscriptionPaymentMethodOptionsParam {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for SubscriptionPaymentMethodOptionsParam {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Clone, Eq, PartialEq)]

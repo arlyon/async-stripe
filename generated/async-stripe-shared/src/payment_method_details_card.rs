@@ -1,4 +1,4 @@
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
@@ -20,6 +20,12 @@ pub country: Option<String>,
         /// A high-level description of the type of cards issued in this range.
     /// (For internal use only and not typically available in standard API requests.).
 pub description: Option<String>,
+        /// The Electronic Commerce Indicator (ECI) returned by the card network in the authorization response.
+    /// Indicates the level of authentication used.
+    /// Only populated for Visa and Mastercard transactions.
+    /// This is the network's final ECI and can differ from the request value.
+    /// An authenticated ECI alone doesn't determine liability shift.
+pub electronic_commerce_indicator: Option<String>,
     /// Two-digit number representing the card's expiration month.
 pub exp_month: i64,
     /// Four-digit number representing the card's expiration year.
@@ -47,7 +53,7 @@ pub issuer: Option<String>,
     /// The last four digits of the card.
 pub last4: Option<String>,
     /// ID of the mandate used to make this payment or created by it.
-pub mandate: Option<String>,
+pub mandate: Option<stripe_types::Expandable<stripe_shared::Mandate>>,
     /// True if this payment was marked as MOTO and out of scope for SCA.
 pub moto: Option<bool>,
 pub multicapture: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticapture>,
@@ -88,6 +94,7 @@ capture_before: Option<Option<stripe_types::Timestamp>>,
 checks: Option<Option<stripe_shared::PaymentMethodDetailsCardChecks>>,
 country: Option<Option<String>>,
 description: Option<Option<String>>,
+electronic_commerce_indicator: Option<Option<String>>,
 exp_month: Option<i64>,
 exp_year: Option<i64>,
 extended_authorization: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorization>>,
@@ -98,7 +105,7 @@ incremental_authorization: Option<Option<stripe_shared::PaymentFlowsPrivatePayme
 installments: Option<Option<stripe_shared::PaymentMethodDetailsCardInstallments>>,
 issuer: Option<Option<String>>,
 last4: Option<Option<String>>,
-mandate: Option<Option<String>>,
+mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
 moto: Option<Option<bool>>,
 multicapture: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticapture>>,
 network: Option<Option<String>>,
@@ -159,6 +166,9 @@ const _: () = {
                 "checks" => Deserialize::begin(&mut self.checks),
                 "country" => Deserialize::begin(&mut self.country),
                 "description" => Deserialize::begin(&mut self.description),
+                "electronic_commerce_indicator" => {
+                    Deserialize::begin(&mut self.electronic_commerce_indicator)
+                }
                 "exp_month" => Deserialize::begin(&mut self.exp_month),
                 "exp_year" => Deserialize::begin(&mut self.exp_year),
                 "extended_authorization" => Deserialize::begin(&mut self.extended_authorization),
@@ -195,6 +205,7 @@ const _: () = {
                 checks: Some(None),
                 country: Some(None),
                 description: Some(None),
+                electronic_commerce_indicator: Some(None),
                 exp_month: None,
                 exp_year: None,
                 extended_authorization: Some(None),
@@ -228,6 +239,7 @@ const _: () = {
                 Some(checks),
                 Some(country),
                 Some(description),
+                Some(electronic_commerce_indicator),
                 Some(exp_month),
                 Some(exp_year),
                 Some(extended_authorization),
@@ -257,6 +269,7 @@ const _: () = {
                 self.checks.take(),
                 self.country.take(),
                 self.description.take(),
+                self.electronic_commerce_indicator.take(),
                 self.exp_month,
                 self.exp_year,
                 self.extended_authorization.take(),
@@ -290,6 +303,7 @@ const _: () = {
                 checks,
                 country,
                 description,
+                electronic_commerce_indicator,
                 exp_month,
                 exp_year,
                 extended_authorization,
@@ -345,6 +359,9 @@ const _: () = {
                     "checks" => b.checks = FromValueOpt::from_value(v),
                     "country" => b.country = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
+                    "electronic_commerce_indicator" => {
+                        b.electronic_commerce_indicator = FromValueOpt::from_value(v)
+                    }
                     "exp_month" => b.exp_month = FromValueOpt::from_value(v),
                     "exp_year" => b.exp_year = FromValueOpt::from_value(v),
                     "extended_authorization" => {

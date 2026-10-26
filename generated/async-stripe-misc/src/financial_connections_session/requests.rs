@@ -229,9 +229,9 @@ pub struct CreateFinancialConnectionsSessionFilters {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_subcategories:
         Option<Vec<CreateFinancialConnectionsSessionFiltersAccountSubcategories>>,
-    /// List of countries from which to collect accounts.
+    /// Country from which to collect accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub countries: Option<Vec<String>>,
+    pub country: Option<String>,
     /// Whether the session should require payment method support and successful account number retrieval before completion.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_payment_method_support:
@@ -245,7 +245,7 @@ impl std::fmt::Debug for CreateFinancialConnectionsSessionFilters {
 }
 impl CreateFinancialConnectionsSessionFilters {
     pub fn new() -> Self {
-        Self { account_subcategories: None, countries: None, require_payment_method_support: None }
+        Self { account_subcategories: None, country: None, require_payment_method_support: None }
     }
 }
 impl Default for CreateFinancialConnectionsSessionFilters {

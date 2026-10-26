@@ -64,14 +64,14 @@ pub struct PaymentIntent {
     ///
     /// Payment methods attached to other Customers cannot be used with this PaymentIntent.
     ///
-    /// If [setup_future_usage](https://api.stripe.com#payment_intent_object-setup_future_usage) is set and this PaymentIntent's payment method is not `card_present`, then the payment method attaches to the Customer after the PaymentIntent has been confirmed and any required actions from the user are complete.
+    /// If [setup_future_usage](https://docs.stripe.com/api#payment_intent_object-setup_future_usage) is set and this PaymentIntent's payment method is not `card_present`, then the payment method attaches to the Customer after the PaymentIntent has been confirmed and any required actions from the user are complete.
     /// If the payment method is `card_present` and isn't a digital wallet, then a [generated_card](https://docs.stripe.com/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card is created and attached to the Customer instead.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     /// ID of the Account representing the customer that this PaymentIntent belongs to, if one exists.
     ///
     /// Payment methods attached to other Accounts cannot be used with this PaymentIntent.
     ///
-    /// If [setup_future_usage](https://api.stripe.com#payment_intent_object-setup_future_usage) is set and this PaymentIntent's payment method is not `card_present`, then the payment method attaches to the Account after the PaymentIntent has been confirmed and any required actions from the user are complete.
+    /// If [setup_future_usage](https://docs.stripe.com/api#payment_intent_object-setup_future_usage) is set and this PaymentIntent's payment method is not `card_present`, then the payment method attaches to the Account after the PaymentIntent has been confirmed and any required actions from the user are complete.
     /// If the payment method is `card_present` and isn't a digital wallet, then a [generated_card](https://docs.stripe.com/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card is created and attached to the Account instead.
     pub customer_account: Option<String>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
@@ -115,6 +115,8 @@ pub struct PaymentIntent {
     /// card) that this PaymentIntent is allowed to use.
     /// A comprehensive list of valid payment method types can be found [here](https://docs.stripe.com/api/payment_methods/object#payment_method_object-type).
     pub payment_method_types: Vec<String>,
+    /// ID of the [Payment Record object](https://docs.stripe.com/api/payment-record) created by this PaymentIntent.
+    pub payment_record: Option<stripe_types::Expandable<stripe_shared::PaymentRecord>>,
     pub presentment_details: Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>,
     /// If present, this property tells you about the processing state of the payment.
     pub processing: Option<stripe_shared::PaymentIntentProcessing>,
@@ -202,6 +204,7 @@ pub struct PaymentIntentBuilder {
         Option<Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>>,
     payment_method_options: Option<Option<stripe_shared::PaymentIntentPaymentMethodOptions>>,
     payment_method_types: Option<Vec<String>>,
+    payment_record: Option<Option<stripe_types::Expandable<stripe_shared::PaymentRecord>>>,
     presentment_details: Option<Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>>,
     processing: Option<Option<stripe_shared::PaymentIntentProcessing>>,
     receipt_email: Option<Option<String>>,
@@ -297,6 +300,7 @@ const _: () = {
                 }
                 "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
                 "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
+                "payment_record" => Deserialize::begin(&mut self.payment_record),
                 "presentment_details" => Deserialize::begin(&mut self.presentment_details),
                 "processing" => Deserialize::begin(&mut self.processing),
                 "receipt_email" => Deserialize::begin(&mut self.receipt_email),
@@ -350,6 +354,7 @@ const _: () = {
                 payment_method_configuration_details: Some(None),
                 payment_method_options: Some(None),
                 payment_method_types: None,
+                payment_record: Some(None),
                 presentment_details: Some(None),
                 processing: Some(None),
                 receipt_email: Some(None),
@@ -400,6 +405,7 @@ const _: () = {
                 Some(payment_method_configuration_details),
                 Some(payment_method_options),
                 Some(payment_method_types),
+                Some(payment_record),
                 Some(presentment_details),
                 Some(processing),
                 Some(receipt_email),
@@ -446,6 +452,7 @@ const _: () = {
                 self.payment_method_configuration_details.take(),
                 self.payment_method_options.take(),
                 self.payment_method_types.take(),
+                self.payment_record.take(),
                 self.presentment_details.take(),
                 self.processing.take(),
                 self.receipt_email.take(),
@@ -496,6 +503,7 @@ const _: () = {
                 payment_method_configuration_details,
                 payment_method_options,
                 payment_method_types,
+                payment_record,
                 presentment_details,
                 processing,
                 receipt_email,
@@ -580,6 +588,7 @@ const _: () = {
                         b.payment_method_options = FromValueOpt::from_value(v)
                     }
                     "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
+                    "payment_record" => b.payment_record = FromValueOpt::from_value(v),
                     "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
                     "processing" => b.processing = FromValueOpt::from_value(v),
                     "receipt_email" => b.receipt_email = FromValueOpt::from_value(v),
@@ -605,7 +614,7 @@ const _: () = {
 impl serde::Serialize for PaymentIntent {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentIntent", 46)?;
+        let mut s = s.serialize_struct("PaymentIntent", 47)?;
         s.serialize_field("allowed_payment_method_types", &self.allowed_payment_method_types)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_capturable", &self.amount_capturable)?;
@@ -642,6 +651,7 @@ impl serde::Serialize for PaymentIntent {
         )?;
         s.serialize_field("payment_method_options", &self.payment_method_options)?;
         s.serialize_field("payment_method_types", &self.payment_method_types)?;
+        s.serialize_field("payment_record", &self.payment_record)?;
         s.serialize_field("presentment_details", &self.presentment_details)?;
         s.serialize_field("processing", &self.processing)?;
         s.serialize_field("receipt_email", &self.receipt_email)?;
@@ -895,6 +905,7 @@ pub enum PaymentIntentAllowedPaymentMethodTypes {
     Boleto,
     CapchasePay,
     Card,
+    CardPresent,
     Cashapp,
     CheckScan,
     ClickToPay,
@@ -915,6 +926,7 @@ pub enum PaymentIntentAllowedPaymentMethodTypes {
     Grabpay,
     IdBankTransfer,
     Ideal,
+    InteracPresent,
     KakaoPay,
     Klarna,
     Knet,
@@ -999,6 +1011,7 @@ impl PaymentIntentAllowedPaymentMethodTypes {
             Boleto => "boleto",
             CapchasePay => "capchase_pay",
             Card => "card",
+            CardPresent => "card_present",
             Cashapp => "cashapp",
             CheckScan => "check_scan",
             ClickToPay => "click_to_pay",
@@ -1019,6 +1032,7 @@ impl PaymentIntentAllowedPaymentMethodTypes {
             Grabpay => "grabpay",
             IdBankTransfer => "id_bank_transfer",
             Ideal => "ideal",
+            InteracPresent => "interac_present",
             KakaoPay => "kakao_pay",
             Klarna => "klarna",
             Knet => "knet",
@@ -1106,6 +1120,7 @@ impl std::str::FromStr for PaymentIntentAllowedPaymentMethodTypes {
             "boleto" => Ok(Boleto),
             "capchase_pay" => Ok(CapchasePay),
             "card" => Ok(Card),
+            "card_present" => Ok(CardPresent),
             "cashapp" => Ok(Cashapp),
             "check_scan" => Ok(CheckScan),
             "click_to_pay" => Ok(ClickToPay),
@@ -1126,6 +1141,7 @@ impl std::str::FromStr for PaymentIntentAllowedPaymentMethodTypes {
             "grabpay" => Ok(Grabpay),
             "id_bank_transfer" => Ok(IdBankTransfer),
             "ideal" => Ok(Ideal),
+            "interac_present" => Ok(InteracPresent),
             "kakao_pay" => Ok(KakaoPay),
             "klarna" => Ok(Klarna),
             "knet" => Ok(Knet),
@@ -1458,6 +1474,7 @@ pub enum PaymentIntentExcludedPaymentMethodTypes {
     Payco,
     Paynow,
     Paypal,
+    Paypay,
     Payto,
     Pix,
     Promptpay,
@@ -1466,6 +1483,7 @@ pub enum PaymentIntentExcludedPaymentMethodTypes {
     Satispay,
     Scalapay,
     SepaDebit,
+    Sequra,
     Sofort,
     Sunbit,
     Swish,
@@ -1518,6 +1536,7 @@ impl PaymentIntentExcludedPaymentMethodTypes {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Paypay => "paypay",
             Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
@@ -1526,6 +1545,7 @@ impl PaymentIntentExcludedPaymentMethodTypes {
             Satispay => "satispay",
             Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Sunbit => "sunbit",
             Swish => "swish",
@@ -1581,6 +1601,7 @@ impl std::str::FromStr for PaymentIntentExcludedPaymentMethodTypes {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "paypay" => Ok(Paypay),
             "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
@@ -1589,6 +1610,7 @@ impl std::str::FromStr for PaymentIntentExcludedPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),

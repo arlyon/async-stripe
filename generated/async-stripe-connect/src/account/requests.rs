@@ -659,6 +659,10 @@ pub struct CreateAccountBusinessProfile {
     /// Used by Stripe for risk and underwriting purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_description: Option<String>,
+    /// A link to the business's publicly available terms related to the Specified Commercial Transaction Act.
+    /// Used by the Checkout product and for Japanese payment methods.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub specified_commercial_transactions_act_url: Option<String>,
     /// A publicly available mailing address for sending support issues to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub support_address: Option<CreateAccountBusinessProfileSupportAddress>,
@@ -691,6 +695,7 @@ impl CreateAccountBusinessProfile {
             monthly_estimated_revenue: None,
             name: None,
             product_description: None,
+            specified_commercial_transactions_act_url: None,
             support_address: None,
             support_email: None,
             support_phone: None,
@@ -877,6 +882,9 @@ pub struct CreateAccountCapabilities {
     /// The blik_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blik_payments: Option<CreateAccountCapabilitiesBlikPayments>,
+    /// The blik_recurring_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik_recurring_payments: Option<CreateAccountCapabilitiesBlikRecurringPayments>,
     /// The boleto_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto_payments: Option<CreateAccountCapabilitiesBoletoPayments>,
@@ -974,6 +982,9 @@ pub struct CreateAccountCapabilities {
     /// The paynow_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow_payments: Option<CreateAccountCapabilitiesPaynowPayments>,
+    /// The paypay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypay_payments: Option<CreateAccountCapabilitiesPaypayPayments>,
     /// The payto_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payto_payments: Option<CreateAccountCapabilitiesPaytoPayments>,
@@ -1001,6 +1012,9 @@ pub struct CreateAccountCapabilities {
     /// The sepa_debit_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<CreateAccountCapabilitiesSepaDebitPayments>,
+    /// The sequra_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sequra_payments: Option<CreateAccountCapabilitiesSequraPayments>,
     /// The sofort_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort_payments: Option<CreateAccountCapabilitiesSofortPayments>,
@@ -1060,6 +1074,7 @@ impl CreateAccountCapabilities {
             billie_payments: None,
             bizum_payments: None,
             blik_payments: None,
+            blik_recurring_payments: None,
             boleto_payments: None,
             card_issuing: None,
             card_payments: None,
@@ -1092,6 +1107,7 @@ impl CreateAccountCapabilities {
             pay_by_bank_payments: None,
             payco_payments: None,
             paynow_payments: None,
+            paypay_payments: None,
             payto_payments: None,
             pix_payments: None,
             promptpay_payments: None,
@@ -1101,6 +1117,7 @@ impl CreateAccountCapabilities {
             scalapay_payments: None,
             sepa_bank_transfer_payments: None,
             sepa_debit_payments: None,
+            sequra_payments: None,
             sofort_payments: None,
             sunbit_payments: None,
             swish_payments: None,
@@ -1468,6 +1485,33 @@ impl CreateAccountCapabilitiesBlikPayments {
     }
 }
 impl Default for CreateAccountCapabilitiesBlikPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The blik_recurring_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesBlikRecurringPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesBlikRecurringPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesBlikRecurringPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesBlikRecurringPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesBlikRecurringPayments {
     fn default() -> Self {
         Self::new()
     }
@@ -2338,6 +2382,33 @@ impl Default for CreateAccountCapabilitiesPaynowPayments {
         Self::new()
     }
 }
+/// The paypay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesPaypayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesPaypayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesPaypayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesPaypayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesPaypayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// The payto_payments capability.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -2577,6 +2648,33 @@ impl CreateAccountCapabilitiesSepaDebitPayments {
     }
 }
 impl Default for CreateAccountCapabilitiesSepaDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The sequra_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesSequraPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesSequraPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesSequraPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesSequraPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesSequraPayments {
     fn default() -> Self {
         Self::new()
     }
@@ -4326,7 +4424,7 @@ impl Default for CreateAccountIndividualRegisteredAddress {
     }
 }
 /// Options for customizing how the account functions within Stripe.
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateAccountSettings {
@@ -4351,6 +4449,12 @@ pub struct CreateAccountSettings {
     /// Settings specific to the account's payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts: Option<CreateAccountSettingsPayouts>,
+    /// Settings specific to the PayPay payments method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypay_payments: Option<CreateAccountSettingsPaypayPayments>,
+    /// Settings specific to SEPA Direct Debit payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit_payments: Option<SepaDebitPaymentsSpecs>,
     /// Settings specific to the account's Treasury FinancialAccounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub treasury: Option<TreasurySettingsSpecs>,
@@ -4371,6 +4475,8 @@ impl CreateAccountSettings {
             invoices: None,
             payments: None,
             payouts: None,
+            paypay_payments: None,
+            sepa_debit_payments: None,
             treasury: None,
         }
     }
@@ -4848,6 +4954,226 @@ impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPayoutsScheduleWeekly
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Settings specific to the PayPay payments method.
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountSettingsPaypayPayments {
+    /// Additional files that are required to support the onboarding process of your business.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_files: Option<Vec<String>>,
+    /// The type of goods your business sells.
+    /// Use `digital_content` if you sell digital content.
+    /// Use `other` for all other types of goods or services.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub goods_type: Option<CreateAccountSettingsPaypayPaymentsGoodsType>,
+    /// Details regarding your business's website.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub site: Option<CreateAccountSettingsPaypayPaymentsSite>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSettingsPaypayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSettingsPaypayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountSettingsPaypayPayments {
+    pub fn new() -> Self {
+        Self { additional_files: None, goods_type: None, site: None }
+    }
+}
+impl Default for CreateAccountSettingsPaypayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The type of goods your business sells.
+/// Use `digital_content` if you sell digital content.
+/// Use `other` for all other types of goods or services.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateAccountSettingsPaypayPaymentsGoodsType {
+    DigitalContent,
+    Other,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateAccountSettingsPaypayPaymentsGoodsType {
+    pub fn as_str(&self) -> &str {
+        use CreateAccountSettingsPaypayPaymentsGoodsType::*;
+        match self {
+            DigitalContent => "digital_content",
+            Other => "other",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateAccountSettingsPaypayPaymentsGoodsType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateAccountSettingsPaypayPaymentsGoodsType::*;
+        match s {
+            "digital_content" => Ok(DigitalContent),
+            "other" => Ok(Other),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateAccountSettingsPaypayPaymentsGoodsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateAccountSettingsPaypayPaymentsGoodsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateAccountSettingsPaypayPaymentsGoodsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSettingsPaypayPaymentsGoodsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateAccountSettingsPaypayPaymentsGoodsType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateAccountSettingsPaypayPaymentsGoodsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPaypayPaymentsGoodsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Details regarding your business's website.
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountSettingsPaypayPaymentsSite {
+    /// Additional information about your business's website.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
+    pub accessible: Option<miniserde::json::Value>,
+    /// Additional information about your business's website.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub in_development: Option<PaypaySiteInDevelopmentSpecs>,
+    /// Additional information about your business's website.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restricted: Option<PaypaySiteRestrictedSpecs>,
+    /// The status of your business's website.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreateAccountSettingsPaypayPaymentsSiteType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSettingsPaypayPaymentsSite {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSettingsPaypayPaymentsSite").finish_non_exhaustive()
+    }
+}
+impl CreateAccountSettingsPaypayPaymentsSite {
+    pub fn new() -> Self {
+        Self { accessible: None, in_development: None, restricted: None, type_: None }
+    }
+}
+impl Default for CreateAccountSettingsPaypayPaymentsSite {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The status of your business's website.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateAccountSettingsPaypayPaymentsSiteType {
+    Accessible,
+    InDevelopment,
+    Restricted,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateAccountSettingsPaypayPaymentsSiteType {
+    pub fn as_str(&self) -> &str {
+        use CreateAccountSettingsPaypayPaymentsSiteType::*;
+        match self {
+            Accessible => "accessible",
+            InDevelopment => "in_development",
+            Restricted => "restricted",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateAccountSettingsPaypayPaymentsSiteType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateAccountSettingsPaypayPaymentsSiteType::*;
+        match s {
+            "accessible" => Ok(Accessible),
+            "in_development" => Ok(InDevelopment),
+            "restricted" => Ok(Restricted),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateAccountSettingsPaypayPaymentsSiteType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateAccountSettingsPaypayPaymentsSiteType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateAccountSettingsPaypayPaymentsSiteType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSettingsPaypayPaymentsSiteType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateAccountSettingsPaypayPaymentsSiteType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateAccountSettingsPaypayPaymentsSiteType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPaypayPaymentsSiteType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// The `type` parameter is deprecated.
 /// Use [`controller`](/api/accounts/create#create_account-controller) instead to configure dashboard access, fee payer, loss liability, and requirement collection.
 #[derive(Clone, Eq, PartialEq)]
@@ -4944,7 +5270,7 @@ impl CreateAccount {
     pub fn new() -> Self {
         Self { inner: CreateAccountBuilder::new() }
     }
-    /// An [account token](https://api.stripe.com#create_account_token), used to securely provide details to the account.
+    /// An [account token](https://docs.stripe.com/api#create_account_token), used to securely provide details to the account.
     pub fn account_token(mut self, account_token: impl Into<String>) -> Self {
         self.inner.account_token = Some(account_token.into());
         self
@@ -5196,6 +5522,10 @@ pub struct UpdateAccountBusinessProfile {
     /// Used by Stripe for risk and underwriting purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_description: Option<String>,
+    /// A link to the business's publicly available terms related to the Specified Commercial Transaction Act.
+    /// Only used for accounts in Japan.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub specified_commercial_transactions_act_url: Option<String>,
     /// A publicly available mailing address for sending support issues to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub support_address: Option<UpdateAccountBusinessProfileSupportAddress>,
@@ -5228,6 +5558,7 @@ impl UpdateAccountBusinessProfile {
             monthly_estimated_revenue: None,
             name: None,
             product_description: None,
+            specified_commercial_transactions_act_url: None,
             support_address: None,
             support_email: None,
             support_phone: None,
@@ -5414,6 +5745,9 @@ pub struct UpdateAccountCapabilities {
     /// The blik_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blik_payments: Option<UpdateAccountCapabilitiesBlikPayments>,
+    /// The blik_recurring_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik_recurring_payments: Option<UpdateAccountCapabilitiesBlikRecurringPayments>,
     /// The boleto_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto_payments: Option<UpdateAccountCapabilitiesBoletoPayments>,
@@ -5511,6 +5845,9 @@ pub struct UpdateAccountCapabilities {
     /// The paynow_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow_payments: Option<UpdateAccountCapabilitiesPaynowPayments>,
+    /// The paypay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypay_payments: Option<UpdateAccountCapabilitiesPaypayPayments>,
     /// The payto_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payto_payments: Option<UpdateAccountCapabilitiesPaytoPayments>,
@@ -5538,6 +5875,9 @@ pub struct UpdateAccountCapabilities {
     /// The sepa_debit_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<UpdateAccountCapabilitiesSepaDebitPayments>,
+    /// The sequra_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sequra_payments: Option<UpdateAccountCapabilitiesSequraPayments>,
     /// The sofort_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort_payments: Option<UpdateAccountCapabilitiesSofortPayments>,
@@ -5597,6 +5937,7 @@ impl UpdateAccountCapabilities {
             billie_payments: None,
             bizum_payments: None,
             blik_payments: None,
+            blik_recurring_payments: None,
             boleto_payments: None,
             card_issuing: None,
             card_payments: None,
@@ -5629,6 +5970,7 @@ impl UpdateAccountCapabilities {
             pay_by_bank_payments: None,
             payco_payments: None,
             paynow_payments: None,
+            paypay_payments: None,
             payto_payments: None,
             pix_payments: None,
             promptpay_payments: None,
@@ -5638,6 +5980,7 @@ impl UpdateAccountCapabilities {
             scalapay_payments: None,
             sepa_bank_transfer_payments: None,
             sepa_debit_payments: None,
+            sequra_payments: None,
             sofort_payments: None,
             sunbit_payments: None,
             swish_payments: None,
@@ -6005,6 +6348,33 @@ impl UpdateAccountCapabilitiesBlikPayments {
     }
 }
 impl Default for UpdateAccountCapabilitiesBlikPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The blik_recurring_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesBlikRecurringPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesBlikRecurringPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesBlikRecurringPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesBlikRecurringPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesBlikRecurringPayments {
     fn default() -> Self {
         Self::new()
     }
@@ -6875,6 +7245,33 @@ impl Default for UpdateAccountCapabilitiesPaynowPayments {
         Self::new()
     }
 }
+/// The paypay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesPaypayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesPaypayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesPaypayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesPaypayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesPaypayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// The payto_payments capability.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -7114,6 +7511,33 @@ impl UpdateAccountCapabilitiesSepaDebitPayments {
     }
 }
 impl Default for UpdateAccountCapabilitiesSepaDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The sequra_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesSequraPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesSequraPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesSequraPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesSequraPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesSequraPayments {
     fn default() -> Self {
         Self::new()
     }
@@ -8453,7 +8877,7 @@ impl Default for UpdateAccountIndividualRegisteredAddress {
     }
 }
 /// Options for customizing how the account functions within Stripe.
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdateAccountSettings {
@@ -8478,9 +8902,12 @@ pub struct UpdateAccountSettings {
     /// Settings specific to the account's payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts: Option<UpdateAccountSettingsPayouts>,
+    /// Settings specific to the PayPay payments method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypay_payments: Option<UpdateAccountSettingsPaypayPayments>,
     /// Settings specific to SEPA Direct Debit payments.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit_payments: Option<UpdateAccountSettingsSepaDebitPayments>,
+    pub sepa_debit_payments: Option<SepaDebitPaymentsSpecs>,
     /// Settings specific to the account's Treasury FinancialAccounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub treasury: Option<TreasurySettingsSpecs>,
@@ -8501,6 +8928,7 @@ impl UpdateAccountSettings {
             invoices: None,
             payments: None,
             payouts: None,
+            paypay_payments: None,
             sepa_debit_payments: None,
             treasury: None,
         }
@@ -8983,29 +9411,224 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPayoutsScheduleWeekly
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Settings specific to SEPA Direct Debit payments.
-#[derive(Clone, Eq, PartialEq)]
+/// Settings specific to the PayPay payments method.
+#[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
-pub struct UpdateAccountSettingsSepaDebitPayments {
-    /// The business creditor id for european payments.
+pub struct UpdateAccountSettingsPaypayPayments {
+    /// Additional files that are required to support the onboarding process of your business.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub creditor_id: Option<String>,
+    pub additional_files: Option<Vec<String>>,
+    /// The type of goods your business sells.
+    /// Use `digital_content` if you sell digital content.
+    /// Use `other` for all other types of goods or services.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub goods_type: Option<UpdateAccountSettingsPaypayPaymentsGoodsType>,
+    /// Details regarding your business's website.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub site: Option<UpdateAccountSettingsPaypayPaymentsSite>,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for UpdateAccountSettingsSepaDebitPayments {
+impl std::fmt::Debug for UpdateAccountSettingsPaypayPayments {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("UpdateAccountSettingsSepaDebitPayments").finish_non_exhaustive()
+        f.debug_struct("UpdateAccountSettingsPaypayPayments").finish_non_exhaustive()
     }
 }
-impl UpdateAccountSettingsSepaDebitPayments {
+impl UpdateAccountSettingsPaypayPayments {
     pub fn new() -> Self {
-        Self { creditor_id: None }
+        Self { additional_files: None, goods_type: None, site: None }
     }
 }
-impl Default for UpdateAccountSettingsSepaDebitPayments {
+impl Default for UpdateAccountSettingsPaypayPayments {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// The type of goods your business sells.
+/// Use `digital_content` if you sell digital content.
+/// Use `other` for all other types of goods or services.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateAccountSettingsPaypayPaymentsGoodsType {
+    DigitalContent,
+    Other,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateAccountSettingsPaypayPaymentsGoodsType {
+    pub fn as_str(&self) -> &str {
+        use UpdateAccountSettingsPaypayPaymentsGoodsType::*;
+        match self {
+            DigitalContent => "digital_content",
+            Other => "other",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateAccountSettingsPaypayPaymentsGoodsType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateAccountSettingsPaypayPaymentsGoodsType::*;
+        match s {
+            "digital_content" => Ok(DigitalContent),
+            "other" => Ok(Other),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateAccountSettingsPaypayPaymentsGoodsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateAccountSettingsPaypayPaymentsGoodsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateAccountSettingsPaypayPaymentsGoodsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountSettingsPaypayPaymentsGoodsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateAccountSettingsPaypayPaymentsGoodsType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateAccountSettingsPaypayPaymentsGoodsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPaypayPaymentsGoodsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Details regarding your business's website.
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountSettingsPaypayPaymentsSite {
+    /// Additional information about your business's website.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
+    pub accessible: Option<miniserde::json::Value>,
+    /// Additional information about your business's website.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub in_development: Option<PaypaySiteInDevelopmentSpecs>,
+    /// Additional information about your business's website.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restricted: Option<PaypaySiteRestrictedSpecs>,
+    /// The status of your business's website.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<UpdateAccountSettingsPaypayPaymentsSiteType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountSettingsPaypayPaymentsSite {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountSettingsPaypayPaymentsSite").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountSettingsPaypayPaymentsSite {
+    pub fn new() -> Self {
+        Self { accessible: None, in_development: None, restricted: None, type_: None }
+    }
+}
+impl Default for UpdateAccountSettingsPaypayPaymentsSite {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The status of your business's website.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateAccountSettingsPaypayPaymentsSiteType {
+    Accessible,
+    InDevelopment,
+    Restricted,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateAccountSettingsPaypayPaymentsSiteType {
+    pub fn as_str(&self) -> &str {
+        use UpdateAccountSettingsPaypayPaymentsSiteType::*;
+        match self {
+            Accessible => "accessible",
+            InDevelopment => "in_development",
+            Restricted => "restricted",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateAccountSettingsPaypayPaymentsSiteType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateAccountSettingsPaypayPaymentsSiteType::*;
+        match s {
+            "accessible" => Ok(Accessible),
+            "in_development" => Ok(InDevelopment),
+            "restricted" => Ok(Restricted),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateAccountSettingsPaypayPaymentsSiteType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateAccountSettingsPaypayPaymentsSiteType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateAccountSettingsPaypayPaymentsSiteType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountSettingsPaypayPaymentsSiteType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateAccountSettingsPaypayPaymentsSiteType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateAccountSettingsPaypayPaymentsSiteType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPaypayPaymentsSiteType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates a <a href="/connect/accounts">connected account</a> by setting the values of the parameters passed.
@@ -9041,7 +9664,7 @@ impl UpdateAccount {
     pub fn new(account: impl Into<stripe_shared::AccountId>) -> Self {
         Self { account: account.into(), inner: UpdateAccountBuilder::new() }
     }
-    /// An [account token](https://api.stripe.com#create_account_token), used to securely provide details to the account.
+    /// An [account token](https://docs.stripe.com/api#create_account_token), used to securely provide details to the account.
     pub fn account_token(mut self, account_token: impl Into<String>) -> Self {
         self.inner.account_token = Some(account_token.into());
         self
@@ -9186,7 +9809,7 @@ struct RejectAccountBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payouts_action: Option<RejectAccountPayoutsAction>,
-    reason: String,
+    reason: RejectAccountReason,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for RejectAccountBuilder {
@@ -9195,7 +9818,7 @@ impl std::fmt::Debug for RejectAccountBuilder {
     }
 }
 impl RejectAccountBuilder {
-    fn new(reason: impl Into<String>) -> Self {
+    fn new(reason: impl Into<RejectAccountReason>) -> Self {
         Self { expand: None, payouts_action: None, reason: reason.into() }
     }
 }
@@ -9269,6 +9892,90 @@ impl<'de> serde::Deserialize<'de> for RejectAccountPayoutsAction {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The reason for rejecting the account.
+/// Can be `fraud_payment_method_casher`, `fraud_payment_method_tester`, `fraud_no_intent_to_fulfill`, `fraud_other`, `credit`, `terms_of_service`, or `other`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum RejectAccountReason {
+    Credit,
+    FraudNoIntentToFulfill,
+    FraudOther,
+    FraudPaymentMethodCasher,
+    FraudPaymentMethodTester,
+    Other,
+    TermsOfService,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl RejectAccountReason {
+    pub fn as_str(&self) -> &str {
+        use RejectAccountReason::*;
+        match self {
+            Credit => "credit",
+            FraudNoIntentToFulfill => "fraud_no_intent_to_fulfill",
+            FraudOther => "fraud_other",
+            FraudPaymentMethodCasher => "fraud_payment_method_casher",
+            FraudPaymentMethodTester => "fraud_payment_method_tester",
+            Other => "other",
+            TermsOfService => "terms_of_service",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for RejectAccountReason {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use RejectAccountReason::*;
+        match s {
+            "credit" => Ok(Credit),
+            "fraud_no_intent_to_fulfill" => Ok(FraudNoIntentToFulfill),
+            "fraud_other" => Ok(FraudOther),
+            "fraud_payment_method_casher" => Ok(FraudPaymentMethodCasher),
+            "fraud_payment_method_tester" => Ok(FraudPaymentMethodTester),
+            "other" => Ok(Other),
+            "terms_of_service" => Ok(TermsOfService),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RejectAccountReason");
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for RejectAccountReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for RejectAccountReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RejectAccountReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RejectAccountReason)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for RejectAccountReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for RejectAccountReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// With <a href="/connect">Connect</a>, you can reject accounts that you have flagged as suspicious.
 ///
 /// Only accounts where your platform is liable for negative account balances, which includes Custom and Express accounts, can be rejected.
@@ -9287,7 +9994,10 @@ impl std::fmt::Debug for RejectAccount {
 }
 impl RejectAccount {
     /// Construct a new `RejectAccount`.
-    pub fn new(account: impl Into<stripe_shared::AccountId>, reason: impl Into<String>) -> Self {
+    pub fn new(
+        account: impl Into<stripe_shared::AccountId>,
+        reason: impl Into<RejectAccountReason>,
+    ) -> Self {
         Self { account: account.into(), inner: RejectAccountBuilder::new(reason.into()) }
     }
     /// Specifies which fields in the response should be expanded.
@@ -9577,11 +10287,11 @@ impl Default for CompanyRepresentativeDeclaration {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct VerificationDocumentSpecs {
-    /// The back of a document returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `additional_verification`.
+    /// The back of a document returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `additional_verification`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<String>,
-    /// The front of a document returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `additional_verification`.
+    /// The front of a document returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `additional_verification`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<String>,
@@ -9606,7 +10316,7 @@ impl Default for VerificationDocumentSpecs {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct DocumentsParam {
-    /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
+    /// One or more document ids returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
 }
@@ -9738,11 +10448,11 @@ impl Default for IndividualRelationshipSpecs {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct PersonVerificationDocumentSpecs {
-    /// The back of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
+    /// The back of an ID returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `identity_document`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<String>,
-    /// The front of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
+    /// The front of an ID returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `identity_document`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<String>,
@@ -9928,6 +10638,75 @@ impl Default for PaymentsSettingsSpecs {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+pub struct PaypaySiteInDevelopmentSpecs {
+    /// The password needed to access your business's website.
+    pub password: String,
+    /// The username needed to access your business's website.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaypaySiteInDevelopmentSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaypaySiteInDevelopmentSpecs").finish_non_exhaustive()
+    }
+}
+impl PaypaySiteInDevelopmentSpecs {
+    pub fn new(password: impl Into<String>) -> Self {
+        Self { password: password.into(), username: None }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct PaypaySiteRestrictedSpecs {
+    /// The file explaining the payment flow for your business.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_flow_file: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaypaySiteRestrictedSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaypaySiteRestrictedSpecs").finish_non_exhaustive()
+    }
+}
+impl PaypaySiteRestrictedSpecs {
+    pub fn new() -> Self {
+        Self { payment_flow_file: None }
+    }
+}
+impl Default for PaypaySiteRestrictedSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct SepaDebitPaymentsSpecs {
+    /// The business creditor id for european payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creditor_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SepaDebitPaymentsSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SepaDebitPaymentsSpecs").finish_non_exhaustive()
+    }
+}
+impl SepaDebitPaymentsSpecs {
+    pub fn new() -> Self {
+        Self { creditor_id: None }
+    }
+}
+impl Default for SepaDebitPaymentsSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct TosAcceptanceSpecs {
     /// The Unix timestamp marking when the account representative accepted their service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9986,7 +10765,7 @@ impl Default for VerificationSpecs {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct SignerParam {
-    /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
+    /// One or more document ids returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
     /// Information regarding the person signing the document if applicable.

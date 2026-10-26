@@ -36,6 +36,10 @@ pub mod reserves_reserve_plans_resources_fixed_release;
 #[doc(inline)]
 pub use reserves_reserve_plans_resources_fixed_release::*;
 #[doc(hidden)]
+pub mod reserves_reserve_plans_resources_manual_release;
+#[doc(inline)]
+pub use reserves_reserve_plans_resources_manual_release::*;
+#[doc(hidden)]
 pub mod reserves_reserve_plans_resources_rolling_release;
 #[doc(inline)]
 pub use reserves_reserve_plans_resources_rolling_release::*;

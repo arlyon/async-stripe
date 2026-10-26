@@ -11,6 +11,7 @@ pub struct AccountSettings {
     pub invoices: Option<stripe_shared::AccountInvoicesSettings>,
     pub payments: stripe_shared::AccountPaymentsSettings,
     pub payouts: Option<stripe_shared::AccountPayoutSettings>,
+    pub paypay_payments: Option<stripe_shared::AccountPaypayPaymentsSettings>,
     pub sepa_debit_payments: Option<stripe_shared::AccountSepaDebitPaymentsSettings>,
     pub treasury: Option<stripe_shared::AccountTreasurySettings>,
 }
@@ -30,6 +31,7 @@ pub struct AccountSettingsBuilder {
     invoices: Option<Option<stripe_shared::AccountInvoicesSettings>>,
     payments: Option<stripe_shared::AccountPaymentsSettings>,
     payouts: Option<Option<stripe_shared::AccountPayoutSettings>>,
+    paypay_payments: Option<Option<stripe_shared::AccountPaypayPaymentsSettings>>,
     sepa_debit_payments: Option<Option<stripe_shared::AccountSepaDebitPaymentsSettings>>,
     treasury: Option<Option<stripe_shared::AccountTreasurySettings>>,
 }
@@ -82,6 +84,7 @@ const _: () = {
                 "invoices" => Deserialize::begin(&mut self.invoices),
                 "payments" => Deserialize::begin(&mut self.payments),
                 "payouts" => Deserialize::begin(&mut self.payouts),
+                "paypay_payments" => Deserialize::begin(&mut self.paypay_payments),
                 "sepa_debit_payments" => Deserialize::begin(&mut self.sepa_debit_payments),
                 "treasury" => Deserialize::begin(&mut self.treasury),
                 _ => <dyn Visitor>::ignore(),
@@ -98,6 +101,7 @@ const _: () = {
                 invoices: Some(None),
                 payments: None,
                 payouts: Some(None),
+                paypay_payments: Some(None),
                 sepa_debit_payments: Some(None),
                 treasury: Some(None),
             }
@@ -113,6 +117,7 @@ const _: () = {
                 Some(invoices),
                 Some(payments),
                 Some(payouts),
+                Some(paypay_payments),
                 Some(sepa_debit_payments),
                 Some(treasury),
             ) = (
@@ -124,6 +129,7 @@ const _: () = {
                 self.invoices.take(),
                 self.payments.take(),
                 self.payouts.take(),
+                self.paypay_payments.take(),
                 self.sepa_debit_payments.take(),
                 self.treasury.take(),
             )
@@ -139,6 +145,7 @@ const _: () = {
                 invoices,
                 payments,
                 payouts,
+                paypay_payments,
                 sepa_debit_payments,
                 treasury,
             })
@@ -176,6 +183,7 @@ const _: () = {
                     "invoices" => b.invoices = FromValueOpt::from_value(v),
                     "payments" => b.payments = FromValueOpt::from_value(v),
                     "payouts" => b.payouts = FromValueOpt::from_value(v),
+                    "paypay_payments" => b.paypay_payments = FromValueOpt::from_value(v),
                     "sepa_debit_payments" => b.sepa_debit_payments = FromValueOpt::from_value(v),
                     "treasury" => b.treasury = FromValueOpt::from_value(v),
                     _ => {}

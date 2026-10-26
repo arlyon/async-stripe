@@ -124,7 +124,7 @@ impl RetrieveScheduledQueryRunBuilder {
         Self { expand: None }
     }
 }
-/// Retrieves the details of an scheduled query run.
+/// Retrieves the details of a scheduled query run.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

@@ -924,6 +924,10 @@ pub struct CreateTaxCalculationLineItems {
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// A tax location ID.
+    /// Depending on the [tax code](/tax/tax-for-tickets/reference/tax-location-performance), this is required, optional, or not supported.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub performance_location: Option<String>,
     /// If provided, the product's `tax_code` will be used as the line item's `tax_code`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product: Option<String>,
@@ -956,6 +960,7 @@ impl CreateTaxCalculationLineItems {
         Self {
             amount: amount.into(),
             metadata: None,
+            performance_location: None,
             product: None,
             quantity: None,
             reference: None,

@@ -1,4 +1,4 @@
-/// Billing details attached to this payment evaluation.
+/// Billing details attached to the payment method.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]

@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionCustomFieldsLabel {
-    /// Custom text for the label, displayed to the customer. Up to 50 characters.
+    /// Custom text for the label, displayed to the customer. Up to 100 characters.
     pub custom: Option<String>,
     /// The type of the label.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]

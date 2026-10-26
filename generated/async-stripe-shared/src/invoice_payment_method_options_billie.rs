@@ -1,8 +1,12 @@
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct InvoicePaymentMethodOptionsBillie {}
+pub struct InvoicePaymentMethodOptionsBillie {
+    pub company_details: Option<stripe_shared::InvoicePaymentMethodOptionsBillieCompanyDetails>,
+    /// An identifier or reference that this payment corresponds to.
+    pub reference: Option<String>,
+}
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for InvoicePaymentMethodOptionsBillie {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -10,7 +14,10 @@ impl std::fmt::Debug for InvoicePaymentMethodOptionsBillie {
     }
 }
 #[doc(hidden)]
-pub struct InvoicePaymentMethodOptionsBillieBuilder {}
+pub struct InvoicePaymentMethodOptionsBillieBuilder {
+    company_details: Option<Option<stripe_shared::InvoicePaymentMethodOptionsBillieCompanyDetails>>,
+    reference: Option<Option<String>>,
+}
 
 #[allow(
     unused_variables,
@@ -52,19 +59,23 @@ const _: () = {
         type Out = InvoicePaymentMethodOptionsBillie;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "company_details" => Deserialize::begin(&mut self.company_details),
+                "reference" => Deserialize::begin(&mut self.reference),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { company_details: Some(None), reference: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(company_details), Some(reference)) =
+                (self.company_details.take(), self.reference.take())
+            else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { company_details, reference })
         }
     }
 
@@ -91,6 +102,8 @@ const _: () = {
             let mut b = InvoicePaymentMethodOptionsBillieBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "company_details" => b.company_details = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

@@ -1,3 +1,4 @@
+/// A Tax Transaction Line Item represents an individual item in a Tax Transaction.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]

@@ -1507,7 +1507,7 @@ impl Default for BbposWisePose {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct Cellular {
-    /// Determines whether to allow the reader to connect to a cellular network. Defaults to false.
+    /// Determines whether to allow the reader to connect to a cellular network.
     pub enabled: bool,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -1526,7 +1526,6 @@ impl Cellular {
 #[derive(serde::Serialize)]
 pub struct Offline {
     /// Determines whether to allow transactions to be collected while reader is offline.
-    /// Defaults to false.
     pub enabled: bool,
 }
 #[cfg(feature = "redact-generated-debug")]

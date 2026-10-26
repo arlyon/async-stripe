@@ -726,6 +726,7 @@ version = "1.0.0-rc.9"
 dependencies = [
  "async-stripe-billing",
  "async-stripe-checkout",
+ "async-stripe-connect",
  "async-stripe-core",
  "async-stripe-fraud",
  "async-stripe-misc",

@@ -138,11 +138,11 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// The field defaults to `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_redisplay: Option<CreateConfirmationTokenPaymentMethodDataAllowRedisplay>,
-    /// If this is a Alma PaymentMethod, this hash contains details about the Alma payment method.
+    /// If this is an Alma PaymentMethod, this hash contains details about the Alma payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pub alma: Option<miniserde::json::Value>,
-    /// If this is a AmazonPay PaymentMethod, this hash contains details about the AmazonPay payment method.
+    /// If this is an AmazonPay PaymentMethod, this hash contains details about the AmazonPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pub amazon_pay: Option<miniserde::json::Value>,
@@ -273,6 +273,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pub paypal: Option<miniserde::json::Value>,
+    /// If this is a `paypay` PaymentMethod, this hash contains details about the PayPay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
+    pub paypay: Option<miniserde::json::Value>,
     /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payto: Option<CreateConfirmationTokenPaymentMethodDataPayto>,
@@ -307,6 +311,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateConfirmationTokenPaymentMethodDataSepaDebit>,
+    /// If this is a SeQura PaymentMethod, this hash contains details about the SeQura payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
+    pub sequra: Option<miniserde::json::Value>,
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateConfirmationTokenPaymentMethodDataSofort>,
@@ -392,6 +400,7 @@ impl CreateConfirmationTokenPaymentMethodData {
             payco: None,
             paynow: None,
             paypal: None,
+            paypay: None,
             payto: None,
             pix: None,
             promptpay: None,
@@ -401,6 +410,7 @@ impl CreateConfirmationTokenPaymentMethodData {
             satispay: None,
             scalapay: None,
             sepa_debit: None,
+            sequra: None,
             sofort: None,
             sunbit: None,
             swish: None,
@@ -1826,6 +1836,7 @@ pub enum CreateConfirmationTokenPaymentMethodDataType {
     Payco,
     Paynow,
     Paypal,
+    Paypay,
     Payto,
     Pix,
     Promptpay,
@@ -1834,6 +1845,7 @@ pub enum CreateConfirmationTokenPaymentMethodDataType {
     Satispay,
     Scalapay,
     SepaDebit,
+    Sequra,
     Sofort,
     Sunbit,
     Swish,
@@ -1886,6 +1898,7 @@ impl CreateConfirmationTokenPaymentMethodDataType {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Paypay => "paypay",
             Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
@@ -1894,6 +1907,7 @@ impl CreateConfirmationTokenPaymentMethodDataType {
             Satispay => "satispay",
             Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Sunbit => "sunbit",
             Swish => "swish",
@@ -1949,6 +1963,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "paypay" => Ok(Paypay),
             "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
@@ -1957,6 +1972,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "satispay" => Ok(Satispay),
             "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),

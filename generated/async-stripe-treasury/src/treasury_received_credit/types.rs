@@ -1,4 +1,4 @@
-/// ReceivedCredits represent funds sent to a [FinancialAccount](https://api.stripe.com#financial_accounts) (for example, via ACH or wire).
+/// ReceivedCredits represent funds sent to a [FinancialAccount](https://docs.stripe.com/api#financial_accounts) (for example, via ACH or wire).
 /// These money movements are not initiated from the FinancialAccount.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -383,6 +383,7 @@ impl<'de> serde::Deserialize<'de> for TreasuryReceivedCreditFailureCode {
 pub enum TreasuryReceivedCreditNetwork {
     Ach,
     Card,
+    Rtp,
     Stripe,
     UsDomesticWire,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -394,6 +395,7 @@ impl TreasuryReceivedCreditNetwork {
         match self {
             Ach => "ach",
             Card => "card",
+            Rtp => "rtp",
             Stripe => "stripe",
             UsDomesticWire => "us_domestic_wire",
             Unknown(v) => v,
@@ -408,6 +410,7 @@ impl std::str::FromStr for TreasuryReceivedCreditNetwork {
         match s {
             "ach" => Ok(Ach),
             "card" => Ok(Card),
+            "rtp" => Ok(Rtp),
             "stripe" => Ok(Stripe),
             "us_domestic_wire" => Ok(UsDomesticWire),
             v => {

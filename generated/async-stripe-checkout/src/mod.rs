@@ -59,6 +59,7 @@ pub use stripe_shared::checkout_samsung_pay_payment_method_options::*;
 pub use stripe_shared::checkout_satispay_payment_method_options::*;
 pub use stripe_shared::checkout_scalapay_payment_method_options::*;
 pub use stripe_shared::checkout_sepa_debit_payment_method_options::*;
+pub use stripe_shared::checkout_sequra_payment_method_options::*;
 pub use stripe_shared::checkout_session::*;
 pub use stripe_shared::checkout_session_payment_method_options::*;
 pub use stripe_shared::checkout_session_wallet_options::*;

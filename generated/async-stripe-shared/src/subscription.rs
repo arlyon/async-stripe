@@ -127,7 +127,7 @@ pub struct Subscription {
     /// A subscription that is currently in a trial period is `trialing` and moves to `active` when the trial period is over.
     ///
     ///
-    /// A subscription can only enter a `paused` status [when a trial ends without a payment method](https://docs.stripe.com/billing/subscriptions/trials#create-free-trials-without-payment).
+    /// A subscription can only enter a `paused` status [when a trial ends without a payment method](https://docs.stripe.com/billing/subscriptions/trials/free-trials#create-free-trials-without-payment).
     /// A `paused` subscription doesn't generate invoices and can be resumed after your customer adds their payment method.
     /// The `paused` status is different from [pausing collection](https://docs.stripe.com/billing/subscriptions/pause-payment), which still generates invoices and leaves the subscription's status unchanged.
     ///
@@ -140,6 +140,7 @@ pub struct Subscription {
     /// Note that when a subscription has a status of `unpaid`, no subsequent invoices will be attempted (invoices will be created, but then immediately automatically closed).
     /// After receiving updated payment information from a customer, you may choose to reopen and pay their closed invoices.
     pub status: SubscriptionStatus,
+    pub status_details: Option<stripe_shared::SubscriptionsResourceStatusDetailsPublic>,
     /// ID of the test clock this subscription belongs to.
     pub test_clock: Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>,
     /// The account (if any) the subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
@@ -204,6 +205,7 @@ pub struct SubscriptionBuilder {
     schedule: Option<Option<stripe_types::Expandable<stripe_shared::SubscriptionSchedule>>>,
     start_date: Option<stripe_types::Timestamp>,
     status: Option<SubscriptionStatus>,
+    status_details: Option<Option<stripe_shared::SubscriptionsResourceStatusDetailsPublic>>,
     test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
     transfer_data: Option<Option<stripe_shared::SubscriptionTransferData>>,
     trial_end: Option<Option<stripe_types::Timestamp>>,
@@ -299,6 +301,7 @@ const _: () = {
                 "schedule" => Deserialize::begin(&mut self.schedule),
                 "start_date" => Deserialize::begin(&mut self.start_date),
                 "status" => Deserialize::begin(&mut self.status),
+                "status_details" => Deserialize::begin(&mut self.status_details),
                 "test_clock" => Deserialize::begin(&mut self.test_clock),
                 "transfer_data" => Deserialize::begin(&mut self.transfer_data),
                 "trial_end" => Deserialize::begin(&mut self.trial_end),
@@ -352,6 +355,7 @@ const _: () = {
                 schedule: Some(None),
                 start_date: None,
                 status: None,
+                status_details: Some(None),
                 test_clock: Some(None),
                 transfer_data: Some(None),
                 trial_end: Some(None),
@@ -404,6 +408,7 @@ const _: () = {
                 Some(schedule),
                 Some(start_date),
                 Some(status),
+                Some(status_details),
                 Some(test_clock),
                 Some(transfer_data),
                 Some(trial_end),
@@ -452,6 +457,7 @@ const _: () = {
                 self.schedule.take(),
                 self.start_date,
                 self.status.take(),
+                self.status_details.take(),
                 self.test_clock.take(),
                 self.transfer_data.take(),
                 self.trial_end,
@@ -504,6 +510,7 @@ const _: () = {
                 schedule,
                 start_date,
                 status,
+                status_details,
                 test_clock,
                 transfer_data,
                 trial_end,
@@ -588,6 +595,7 @@ const _: () = {
                     "schedule" => b.schedule = FromValueOpt::from_value(v),
                     "start_date" => b.start_date = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
+                    "status_details" => b.status_details = FromValueOpt::from_value(v),
                     "test_clock" => b.test_clock = FromValueOpt::from_value(v),
                     "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
                     "trial_end" => b.trial_end = FromValueOpt::from_value(v),
@@ -604,7 +612,7 @@ const _: () = {
 impl serde::Serialize for Subscription {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Subscription", 48)?;
+        let mut s = s.serialize_struct("Subscription", 49)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("application_fee_percent", &self.application_fee_percent)?;
         s.serialize_field("automatic_tax", &self.automatic_tax)?;
@@ -650,6 +658,7 @@ impl serde::Serialize for Subscription {
         s.serialize_field("schedule", &self.schedule)?;
         s.serialize_field("start_date", &self.start_date)?;
         s.serialize_field("status", &self.status)?;
+        s.serialize_field("status_details", &self.status_details)?;
         s.serialize_field("test_clock", &self.test_clock)?;
         s.serialize_field("transfer_data", &self.transfer_data)?;
         s.serialize_field("trial_end", &self.trial_end)?;
@@ -673,7 +682,7 @@ impl serde::Serialize for Subscription {
 /// A subscription that is currently in a trial period is `trialing` and moves to `active` when the trial period is over.
 ///
 ///
-/// A subscription can only enter a `paused` status [when a trial ends without a payment method](https://docs.stripe.com/billing/subscriptions/trials#create-free-trials-without-payment).
+/// A subscription can only enter a `paused` status [when a trial ends without a payment method](https://docs.stripe.com/billing/subscriptions/trials/free-trials#create-free-trials-without-payment).
 /// A `paused` subscription doesn't generate invoices and can be resumed after your customer adds their payment method.
 /// The `paused` status is different from [pausing collection](https://docs.stripe.com/billing/subscriptions/pause-payment), which still generates invoices and leaves the subscription's status unchanged.
 ///

@@ -304,6 +304,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     paypal: Option<CreatePaymentMethodConfigurationPaypal>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    paypay: Option<CreatePaymentMethodConfigurationPaypay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payto: Option<CreatePaymentMethodConfigurationPayto>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pix: Option<CreatePaymentMethodConfigurationPix>,
@@ -319,6 +321,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     scalapay: Option<CreatePaymentMethodConfigurationScalapay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sepa_debit: Option<CreatePaymentMethodConfigurationSepaDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sequra: Option<CreatePaymentMethodConfigurationSequra>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sofort: Option<CreatePaymentMethodConfigurationSofort>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -392,6 +396,7 @@ impl CreatePaymentMethodConfigurationBuilder {
             payco: None,
             paynow: None,
             paypal: None,
+            paypay: None,
             payto: None,
             pix: None,
             promptpay: None,
@@ -400,6 +405,7 @@ impl CreatePaymentMethodConfigurationBuilder {
             satispay: None,
             scalapay: None,
             sepa_debit: None,
+            sequra: None,
             sofort: None,
             sunbit: None,
             swish: None,
@@ -6267,6 +6273,137 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Customers can pay with PayPay online or using the PayPay app.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationPaypay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationPaypayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaypay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPaypay").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentMethodConfigurationPaypay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationPaypay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationPaypayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaypayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPaypayDisplayPreference")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentMethodConfigurationPaypayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationPaypayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationPaypayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// PayTo is a [real-time](https://docs.stripe.com/payments/real-time) payment method that enables customers in Australia to pay by providing their bank account details.
 /// Customers must accept a mandate authorizing you to debit their account.
 /// Check this [page](https://docs.stripe.com/payments/payto) for more details.
@@ -7315,6 +7452,139 @@ impl serde::Serialize for CreatePaymentMethodConfigurationSepaDebitDisplayPrefer
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// SeQura is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method that offers customers payment terms ranging from 7-120 days.
+/// Customers are redirected from your website or app, authorize the payment with SeQura, then return to your website or app.
+/// You get [immediate notification](https://docs.stripe.com/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationSequra {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationSequraDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSequra {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSequra").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentMethodConfigurationSequra {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSequra {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationSequraDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationSequraDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSequraDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSequraDisplayPreference")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentMethodConfigurationSequraDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSequraDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentMethodConfigurationSequraDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationSequraDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationSequraDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationSequraDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationSequraDisplayPreferencePreference
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -8745,6 +9015,11 @@ impl CreatePaymentMethodConfiguration {
         self.inner.paypal = Some(paypal.into());
         self
     }
+    /// Customers can pay with PayPay online or using the PayPay app.
+    pub fn paypay(mut self, paypay: impl Into<CreatePaymentMethodConfigurationPaypay>) -> Self {
+        self.inner.paypay = Some(paypay.into());
+        self
+    }
     /// PayTo is a [real-time](https://docs.stripe.com/payments/real-time) payment method that enables customers in Australia to pay by providing their bank account details.
     /// Customers must accept a mandate authorizing you to debit their account.
     /// Check this [page](https://docs.stripe.com/payments/payto) for more details.
@@ -8812,6 +9087,13 @@ impl CreatePaymentMethodConfiguration {
         sepa_debit: impl Into<CreatePaymentMethodConfigurationSepaDebit>,
     ) -> Self {
         self.inner.sepa_debit = Some(sepa_debit.into());
+        self
+    }
+    /// SeQura is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method that offers customers payment terms ranging from 7-120 days.
+    /// Customers are redirected from your website or app, authorize the payment with SeQura, then return to your website or app.
+    /// You get [immediate notification](https://docs.stripe.com/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+    pub fn sequra(mut self, sequra: impl Into<CreatePaymentMethodConfigurationSequra>) -> Self {
+        self.inner.sequra = Some(sequra.into());
         self
     }
     /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
@@ -9002,6 +9284,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     paypal: Option<UpdatePaymentMethodConfigurationPaypal>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    paypay: Option<UpdatePaymentMethodConfigurationPaypay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payto: Option<UpdatePaymentMethodConfigurationPayto>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pix: Option<UpdatePaymentMethodConfigurationPix>,
@@ -9017,6 +9301,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     scalapay: Option<UpdatePaymentMethodConfigurationScalapay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sepa_debit: Option<UpdatePaymentMethodConfigurationSepaDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sequra: Option<UpdatePaymentMethodConfigurationSequra>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sofort: Option<UpdatePaymentMethodConfigurationSofort>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9090,6 +9376,7 @@ impl UpdatePaymentMethodConfigurationBuilder {
             payco: None,
             paynow: None,
             paypal: None,
+            paypay: None,
             payto: None,
             pix: None,
             promptpay: None,
@@ -9098,6 +9385,7 @@ impl UpdatePaymentMethodConfigurationBuilder {
             satispay: None,
             scalapay: None,
             sepa_debit: None,
+            sequra: None,
             sofort: None,
             sunbit: None,
             swish: None,
@@ -14965,6 +15253,137 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Customers can pay with PayPay online or using the PayPay app.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationPaypay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationPaypayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaypay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPaypay").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentMethodConfigurationPaypay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationPaypay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationPaypayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaypayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPaypayDisplayPreference")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentMethodConfigurationPaypayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationPaypayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationPaypayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// PayTo is a [real-time](https://docs.stripe.com/payments/real-time) payment method that enables customers in Australia to pay by providing their bank account details.
 /// Customers must accept a mandate authorizing you to debit their account.
 /// Check this [page](https://docs.stripe.com/payments/payto) for more details.
@@ -16013,6 +16432,139 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationSepaDebitDisplayPrefer
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// SeQura is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method that offers customers payment terms ranging from 7-120 days.
+/// Customers are redirected from your website or app, authorize the payment with SeQura, then return to your website or app.
+/// You get [immediate notification](https://docs.stripe.com/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationSequra {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationSequraDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSequra {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSequra").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentMethodConfigurationSequra {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSequra {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationSequraDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSequraDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSequraDisplayPreference")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentMethodConfigurationSequraDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSequraDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationSequraDisplayPreferencePreference
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -17447,6 +17999,11 @@ impl UpdatePaymentMethodConfiguration {
         self.inner.paypal = Some(paypal.into());
         self
     }
+    /// Customers can pay with PayPay online or using the PayPay app.
+    pub fn paypay(mut self, paypay: impl Into<UpdatePaymentMethodConfigurationPaypay>) -> Self {
+        self.inner.paypay = Some(paypay.into());
+        self
+    }
     /// PayTo is a [real-time](https://docs.stripe.com/payments/real-time) payment method that enables customers in Australia to pay by providing their bank account details.
     /// Customers must accept a mandate authorizing you to debit their account.
     /// Check this [page](https://docs.stripe.com/payments/payto) for more details.
@@ -17514,6 +18071,13 @@ impl UpdatePaymentMethodConfiguration {
         sepa_debit: impl Into<UpdatePaymentMethodConfigurationSepaDebit>,
     ) -> Self {
         self.inner.sepa_debit = Some(sepa_debit.into());
+        self
+    }
+    /// SeQura is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method that offers customers payment terms ranging from 7-120 days.
+    /// Customers are redirected from your website or app, authorize the payment with SeQura, then return to your website or app.
+    /// You get [immediate notification](https://docs.stripe.com/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+    pub fn sequra(mut self, sequra: impl Into<UpdatePaymentMethodConfigurationSequra>) -> Self {
+        self.inner.sequra = Some(sequra.into());
         self
     }
     /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.

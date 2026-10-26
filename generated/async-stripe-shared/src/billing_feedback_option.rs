@@ -1,4 +1,8 @@
-/// A resource for the feedback options model (for custom cancellation reasons)
+/// A feedback option is a reason you can present to customers when they cancel a
+/// subscription through the customer portal. Configure the set of options a customer
+/// can choose from on a [portal configuration](/api/customer_portal/configuration).
+///
+/// Related guide: [Customer management](/customer-management)
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]

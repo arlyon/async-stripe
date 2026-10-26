@@ -237,6 +237,8 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetail
 #[non_exhaustive]
 pub enum BankConnectionsResourceAccountNumberDetailsStatus {
     Deactivated,
+    Expired,
+    Pending,
     Transactable,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
@@ -246,6 +248,8 @@ impl BankConnectionsResourceAccountNumberDetailsStatus {
         use BankConnectionsResourceAccountNumberDetailsStatus::*;
         match self {
             Deactivated => "deactivated",
+            Expired => "expired",
+            Pending => "pending",
             Transactable => "transactable",
             Unknown(v) => v,
         }
@@ -258,6 +262,8 @@ impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsStatus {
         use BankConnectionsResourceAccountNumberDetailsStatus::*;
         match s {
             "deactivated" => Ok(Deactivated),
+            "expired" => Ok(Expired),
+            "pending" => Ok(Pending),
             "transactable" => Ok(Transactable),
             v => {
                 tracing::warn!(

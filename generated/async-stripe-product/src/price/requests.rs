@@ -729,6 +729,9 @@ pub struct CreatePriceProductData {
     /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
+    /// Tax details for this product, including the [tax code](/tax/tax-codes) and an optional performance location.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_details: Option<CreatePriceProductDataTaxDetails>,
     /// A label that represents units of this product.
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -749,8 +752,38 @@ impl CreatePriceProductData {
             name: name.into(),
             statement_descriptor: None,
             tax_code: None,
+            tax_details: None,
             unit_label: None,
         }
+    }
+}
+/// Tax details for this product, including the [tax code](/tax/tax-codes) and an optional performance location.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePriceProductDataTaxDetails {
+    /// A tax location ID.
+    /// Depending on the [tax code](/tax/tax-for-tickets/reference/tax-location-performance), this is required, optional, or not supported.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub performance_location: Option<String>,
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceProductDataTaxDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePriceProductDataTaxDetails").finish_non_exhaustive()
+    }
+}
+impl CreatePriceProductDataTaxDetails {
+    pub fn new() -> Self {
+        Self { performance_location: None, tax_code: None }
+    }
+}
+impl Default for CreatePriceProductDataTaxDetails {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The recurring components of a price such as `interval` and `usage_type`.

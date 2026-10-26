@@ -1,4 +1,4 @@
-/// ReceivedDebits represent funds pulled from a [FinancialAccount](https://api.stripe.com#financial_accounts).
+/// ReceivedDebits represent funds pulled from a [FinancialAccount](https://docs.stripe.com/api#financial_accounts).
 /// These are not initiated from the FinancialAccount.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]

@@ -992,4 +992,61 @@ mod tests {
             assert_eq!(round_trip.type_, event_type);
         }
     }
+
+    #[cfg(feature = "full")]
+    mod app_install {
+        use super::*;
+
+        #[test]
+        fn full_parses_app_install_webhooks() {
+            let fixtures: Value =
+                serde_json::from_str(include_str!("../../openapi/fixtures.json")).unwrap();
+            for event_type in [
+                EventType::AppsInstallCreated,
+                EventType::AppsInstallDeleted,
+                EventType::AppsInstallUpdated,
+            ] {
+                let payload =
+                    mock_webhook_event(&event_type, fixtures["resources"]["apps.install"].clone())
+                        .to_string();
+                let timestamp = 1_492_774_577;
+                let signature = get_mock_stripe_sig(&payload, timestamp);
+                let event = Webhook::construct_event_with_timestamp(
+                    &payload,
+                    &signature,
+                    WEBHOOK_SECRET,
+                    timestamp,
+                )
+                .unwrap();
+                assert_eq!(event.type_, event_type);
+                assert_eq!(event.id.as_str(), "evt_123");
+                assert!(
+                    !matches!(event.data.object, EventObject::Unknown(_)),
+                    "known app-install event must have a typed variant"
+                );
+            }
+        }
+
+        #[test]
+        #[cfg(all(feature = "serialize", feature = "deserialize"))]
+        fn full_round_trips_app_install_webhooks_with_serde() {
+            let fixtures: Value =
+                serde_json::from_str(include_str!("../../openapi/fixtures.json")).unwrap();
+            for event_type in [
+                EventType::AppsInstallCreated,
+                EventType::AppsInstallDeleted,
+                EventType::AppsInstallUpdated,
+            ] {
+                let object = fixtures["resources"]["apps.install"].clone();
+                let expected_id = object["id"].as_str().unwrap().to_owned();
+                let payload = mock_webhook_event(&event_type, object);
+                let event: Event = serde_json::from_value(payload).unwrap();
+                let serialized = serde_json::to_value(event).unwrap();
+                assert_eq!(serialized["data"]["object"]["object"], "apps.install");
+                assert_eq!(serialized["data"]["object"]["id"], expected_id);
+                let event: Event = serde_json::from_value(serialized).unwrap();
+                assert_eq!(event.type_, event_type);
+            }
+        }
+    }
 }

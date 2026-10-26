@@ -13,7 +13,8 @@ pub struct TaxSettings {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
-    /// The status of the Tax `Settings`.
+    /// Whether these settings have the information Stripe Tax needs to calculate tax.
+    /// It doesn't reflect whether your integration is ready to collect tax.
     pub status: TaxSettingsStatus,
     pub status_details: stripe_misc::TaxProductResourceTaxSettingsStatusDetails,
 }
@@ -162,7 +163,8 @@ impl serde::Serialize for TaxSettings {
         s.end()
     }
 }
-/// The status of the Tax `Settings`.
+/// Whether these settings have the information Stripe Tax needs to calculate tax.
+/// It doesn't reflect whether your integration is ready to collect tax.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum TaxSettingsStatus {

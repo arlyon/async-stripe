@@ -69,6 +69,7 @@ pub struct PaymentMethod {
     pub payco: Option<stripe_shared::PaymentMethodPayco>,
     pub paynow: Option<stripe_shared::PaymentMethodPaynow>,
     pub paypal: Option<stripe_shared::PaymentMethodPaypal>,
+    pub paypay: Option<stripe_shared::PaymentMethodPaypay>,
     pub payto: Option<stripe_shared::PaymentMethodPayto>,
     pub pix: Option<stripe_shared::PaymentMethodPix>,
     pub promptpay: Option<stripe_shared::PaymentMethodPromptpay>,
@@ -78,6 +79,7 @@ pub struct PaymentMethod {
     pub satispay: Option<stripe_shared::PaymentMethodSatispay>,
     pub scalapay: Option<stripe_shared::PaymentMethodScalapay>,
     pub sepa_debit: Option<stripe_shared::PaymentMethodSepaDebit>,
+    pub sequra: Option<stripe_shared::PaymentMethodSequra>,
     pub sofort: Option<stripe_shared::PaymentMethodSofort>,
     pub sunbit: Option<stripe_shared::PaymentMethodSunbit>,
     pub swish: Option<stripe_shared::PaymentMethodSwish>,
@@ -149,6 +151,7 @@ pub struct PaymentMethodBuilder {
     payco: Option<Option<stripe_shared::PaymentMethodPayco>>,
     paynow: Option<Option<stripe_shared::PaymentMethodPaynow>>,
     paypal: Option<Option<stripe_shared::PaymentMethodPaypal>>,
+    paypay: Option<Option<stripe_shared::PaymentMethodPaypay>>,
     payto: Option<Option<stripe_shared::PaymentMethodPayto>>,
     pix: Option<Option<stripe_shared::PaymentMethodPix>>,
     promptpay: Option<Option<stripe_shared::PaymentMethodPromptpay>>,
@@ -158,6 +161,7 @@ pub struct PaymentMethodBuilder {
     satispay: Option<Option<stripe_shared::PaymentMethodSatispay>>,
     scalapay: Option<Option<stripe_shared::PaymentMethodScalapay>>,
     sepa_debit: Option<Option<stripe_shared::PaymentMethodSepaDebit>>,
+    sequra: Option<Option<stripe_shared::PaymentMethodSequra>>,
     sofort: Option<Option<stripe_shared::PaymentMethodSofort>>,
     sunbit: Option<Option<stripe_shared::PaymentMethodSunbit>>,
     swish: Option<Option<stripe_shared::PaymentMethodSwish>>,
@@ -258,6 +262,7 @@ const _: () = {
                 "payco" => Deserialize::begin(&mut self.payco),
                 "paynow" => Deserialize::begin(&mut self.paynow),
                 "paypal" => Deserialize::begin(&mut self.paypal),
+                "paypay" => Deserialize::begin(&mut self.paypay),
                 "payto" => Deserialize::begin(&mut self.payto),
                 "pix" => Deserialize::begin(&mut self.pix),
                 "promptpay" => Deserialize::begin(&mut self.promptpay),
@@ -267,6 +272,7 @@ const _: () = {
                 "satispay" => Deserialize::begin(&mut self.satispay),
                 "scalapay" => Deserialize::begin(&mut self.scalapay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
+                "sequra" => Deserialize::begin(&mut self.sequra),
                 "sofort" => Deserialize::begin(&mut self.sofort),
                 "sunbit" => Deserialize::begin(&mut self.sunbit),
                 "swish" => Deserialize::begin(&mut self.swish),
@@ -331,6 +337,7 @@ const _: () = {
                 payco: Some(None),
                 paynow: Some(None),
                 paypal: Some(None),
+                paypay: Some(None),
                 payto: Some(None),
                 pix: Some(None),
                 promptpay: Some(None),
@@ -340,6 +347,7 @@ const _: () = {
                 satispay: Some(None),
                 scalapay: Some(None),
                 sepa_debit: Some(None),
+                sequra: Some(None),
                 sofort: Some(None),
                 sunbit: Some(None),
                 swish: Some(None),
@@ -403,6 +411,7 @@ const _: () = {
                 Some(payco),
                 Some(paynow),
                 Some(paypal),
+                Some(paypay),
                 Some(payto),
                 Some(pix),
                 Some(promptpay),
@@ -412,6 +421,7 @@ const _: () = {
                 Some(satispay),
                 Some(scalapay),
                 Some(sepa_debit),
+                Some(sequra),
                 Some(sofort),
                 Some(sunbit),
                 Some(swish),
@@ -471,6 +481,7 @@ const _: () = {
                 self.payco,
                 self.paynow,
                 self.paypal.take(),
+                self.paypay,
                 self.payto.take(),
                 self.pix.take(),
                 self.promptpay,
@@ -480,6 +491,7 @@ const _: () = {
                 self.satispay,
                 self.scalapay,
                 self.sepa_debit.take(),
+                self.sequra,
                 self.sofort.take(),
                 self.sunbit,
                 self.swish,
@@ -543,6 +555,7 @@ const _: () = {
                 payco,
                 paynow,
                 paypal,
+                paypay,
                 payto,
                 pix,
                 promptpay,
@@ -552,6 +565,7 @@ const _: () = {
                 satispay,
                 scalapay,
                 sepa_debit,
+                sequra,
                 sofort,
                 sunbit,
                 swish,
@@ -637,6 +651,7 @@ const _: () = {
                     "payco" => b.payco = FromValueOpt::from_value(v),
                     "paynow" => b.paynow = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
+                    "paypay" => b.paypay = FromValueOpt::from_value(v),
                     "payto" => b.payto = FromValueOpt::from_value(v),
                     "pix" => b.pix = FromValueOpt::from_value(v),
                     "promptpay" => b.promptpay = FromValueOpt::from_value(v),
@@ -646,6 +661,7 @@ const _: () = {
                     "satispay" => b.satispay = FromValueOpt::from_value(v),
                     "scalapay" => b.scalapay = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
+                    "sequra" => b.sequra = FromValueOpt::from_value(v),
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
                     "sunbit" => b.sunbit = FromValueOpt::from_value(v),
                     "swish" => b.swish = FromValueOpt::from_value(v),
@@ -666,7 +682,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethod {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethod", 68)?;
+        let mut s = s.serialize_struct("PaymentMethod", 70)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("affirm", &self.affirm)?;
         s.serialize_field("afterpay_clearpay", &self.afterpay_clearpay)?;
@@ -716,6 +732,7 @@ impl serde::Serialize for PaymentMethod {
         s.serialize_field("payco", &self.payco)?;
         s.serialize_field("paynow", &self.paynow)?;
         s.serialize_field("paypal", &self.paypal)?;
+        s.serialize_field("paypay", &self.paypay)?;
         s.serialize_field("payto", &self.payto)?;
         s.serialize_field("pix", &self.pix)?;
         s.serialize_field("promptpay", &self.promptpay)?;
@@ -725,6 +742,7 @@ impl serde::Serialize for PaymentMethod {
         s.serialize_field("satispay", &self.satispay)?;
         s.serialize_field("scalapay", &self.scalapay)?;
         s.serialize_field("sepa_debit", &self.sepa_debit)?;
+        s.serialize_field("sequra", &self.sequra)?;
         s.serialize_field("sofort", &self.sofort)?;
         s.serialize_field("sunbit", &self.sunbit)?;
         s.serialize_field("swish", &self.swish)?;
@@ -786,6 +804,7 @@ pub enum PaymentMethodType {
     Payco,
     Paynow,
     Paypal,
+    Paypay,
     Payto,
     Pix,
     Promptpay,
@@ -794,6 +813,7 @@ pub enum PaymentMethodType {
     Satispay,
     Scalapay,
     SepaDebit,
+    Sequra,
     Sofort,
     Sunbit,
     Swish,
@@ -850,6 +870,7 @@ impl PaymentMethodType {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Paypay => "paypay",
             Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
@@ -858,6 +879,7 @@ impl PaymentMethodType {
             Satispay => "satispay",
             Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Sunbit => "sunbit",
             Swish => "swish",
@@ -917,6 +939,7 @@ impl std::str::FromStr for PaymentMethodType {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "paypay" => Ok(Paypay),
             "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
@@ -925,6 +948,7 @@ impl std::str::FromStr for PaymentMethodType {
             "satispay" => Ok(Satispay),
             "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),

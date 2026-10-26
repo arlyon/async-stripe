@@ -3,7 +3,7 @@
 ///
 /// Before April 6, 2017, transfers also represented movement of funds from a
 /// Stripe account to a card or bank account. This behavior has since been split
-/// out into a [Payout](https://api.stripe.com#payout_object) object, with corresponding payout endpoints.
+/// out into a [Payout](https://docs.stripe.com/api#payout_object) object, with corresponding payout endpoints.
 /// For more.
 /// information, read about the
 /// [transfer/payout split](https://docs.stripe.com/transfer-payout-split).

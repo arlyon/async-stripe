@@ -34,6 +34,7 @@ redact-generated-debug = ["async-stripe-types/redact-generated-debug","async-str
 coupon = []
 price = []
 product = []
+product_catalog_trial_offer = []
 product_feature = []
 promotion_code = []
 shipping_rate = []
@@ -43,6 +44,7 @@ tax_rate = []
 full = ["coupon",
 "price",
 "product",
+"product_catalog_trial_offer",
 "product_feature",
 "promotion_code",
 "shipping_rate",
