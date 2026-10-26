@@ -240,6 +240,8 @@ impl Webhook {
 
     /// Construct an event from a webhook payload and signature.
     ///
+    /// Accepts the event if any `v1` signature in the header matches the provided secret.
+    ///
     /// # Errors
     ///
     /// This function will return a WebhookError if:
@@ -289,8 +291,12 @@ impl Webhook {
             Hmac::<Sha256>::new_from_slice(secret.as_bytes()).map_err(|_| WebhookError::BadKey)?;
         mac.update(signed_payload.as_bytes());
 
-        let sig = hex::decode(signature.v1).map_err(|_| WebhookError::BadSignature)?;
-        mac.verify_slice(sig.as_slice()).map_err(|_| WebhookError::BadSignature)?;
+        let matches = signature.v1.iter().any(|candidate| {
+            hex::decode(candidate).is_ok_and(|sig| mac.clone().verify_slice(&sig).is_ok())
+        });
+        if !matches {
+            return Err(WebhookError::BadSignature);
+        }
 
         // Get current timestamp to compare to signature timestamp
         if (self.current_timestamp - signature.t).abs() > 300 {
@@ -353,13 +359,13 @@ impl Webhook {
 #[derive(Debug)]
 struct Signature<'r> {
     t: i64,
-    v1: &'r str,
+    v1: Vec<&'r str>,
 }
 
 impl<'r> Signature<'r> {
     fn parse(raw: &'r str) -> Result<Signature<'r>, WebhookError> {
         let mut t: Option<i64> = None;
-        let mut v1: Option<&'r str> = None;
+        let mut v1 = Vec::new();
         for pair in raw.split(',') {
             let (key, val) = pair.split_once('=').ok_or(WebhookError::BadSignature)?;
             match key {
@@ -367,15 +373,15 @@ impl<'r> Signature<'r> {
                     t = Some(val.parse().map_err(WebhookError::BadHeader)?);
                 }
                 "v1" => {
-                    v1 = Some(val);
+                    v1.push(val);
                 }
                 _ => {}
             }
         }
-        Ok(Signature {
-            t: t.ok_or(WebhookError::BadSignature)?,
-            v1: v1.ok_or(WebhookError::BadSignature)?,
-        })
+        if v1.is_empty() {
+            return Err(WebhookError::BadSignature);
+        }
+        Ok(Signature { t: t.ok_or(WebhookError::BadSignature)?, v1 })
     }
 }
 
@@ -389,6 +395,164 @@ mod tests {
     use crate::{AccountExternalAccountCreated, EventType};
 
     const WEBHOOK_SECRET: &str = "secret";
+
+    mod signature_rotation {
+        use super::*;
+
+        const TIMESTAMP: i64 = 1_492_774_577;
+
+        fn payload() -> String {
+            mock_webhook_event(
+                &EventType::AccountExternalAccountCreated,
+                json!({
+                    "object": "bank_account", "id": "ba_test", "country": "us",
+                    "currency": "usd", "last4": "6789", "status": "verified"
+                }),
+            )
+            .to_string()
+        }
+
+        fn signature_field(header: &str) -> &str {
+            header.split_once(',').unwrap().1
+        }
+
+        #[test]
+        fn accepts_matching_signature_in_any_position() {
+            let payload = payload();
+            let good = get_mock_stripe_sig(&payload, TIMESTAMP);
+            let other = Webhook::generate_test_header(&payload, "other_secret", Some(TIMESTAMP));
+            for header in [
+                format!("{good},{}", signature_field(&other)),
+                format!("{other},{}", signature_field(&good)),
+                format!("{other},{},{}", signature_field(&good), signature_field(&other)),
+                format!("{good},{}", signature_field(&good)),
+            ] {
+                let event = Webhook::construct_event_with_timestamp(
+                    &payload,
+                    &header,
+                    WEBHOOK_SECRET,
+                    TIMESTAMP,
+                )
+                .unwrap();
+                assert_eq!(event.id.as_str(), "evt_123");
+            }
+        }
+
+        #[test]
+        fn accepts_matching_signature_alongside_malformed_candidates() {
+            let payload = payload();
+            let good = get_mock_stripe_sig(&payload, TIMESTAMP);
+            for candidate in [
+                "not_hex".to_owned(),
+                "abc".to_owned(),
+                String::new(),
+                "ff".to_owned(),
+                "00".repeat(64),
+            ] {
+                for header in [
+                    format!("{good},v1={candidate}"),
+                    format!("t={TIMESTAMP},v1={candidate},{}", signature_field(&good)),
+                ] {
+                    assert!(
+                        Webhook::construct_event_with_timestamp(
+                            &payload,
+                            &header,
+                            WEBHOOK_SECRET,
+                            TIMESTAMP,
+                        )
+                        .is_ok(),
+                        "valid signature rejected alongside {candidate:?}"
+                    );
+                }
+            }
+        }
+
+        #[test]
+        fn rejects_missing_and_nonmatching_signatures() {
+            let payload = payload();
+            let other = Webhook::generate_test_header(&payload, "other_secret", Some(TIMESTAMP));
+            for header in [
+                format!("t={TIMESTAMP}"),
+                format!("t={TIMESTAMP},v1="),
+                format!("t={TIMESTAMP},v1=not_hex,v1=abc"),
+                format!("{other},v1={}", "00".repeat(32)),
+                signature_field(&other).to_owned(),
+            ] {
+                assert!(matches!(
+                    Webhook::construct_event_with_timestamp(
+                        &payload,
+                        &header,
+                        WEBHOOK_SECRET,
+                        TIMESTAMP,
+                    ),
+                    Err(WebhookError::BadSignature)
+                ));
+            }
+        }
+
+        #[test]
+        fn preserves_timestamp_tolerance_with_multiple_signatures() {
+            let payload = payload();
+            let good = get_mock_stripe_sig(&payload, TIMESTAMP);
+            let header = format!("{good},v1={}", "00".repeat(32));
+            for offset in [-301_i64, -300, 0, 300, 301] {
+                let result = Webhook::construct_event_with_timestamp(
+                    &payload,
+                    &header,
+                    WEBHOOK_SECRET,
+                    TIMESTAMP + offset,
+                );
+                if offset.abs() > 300 {
+                    assert!(matches!(result, Err(WebhookError::BadTimestamp(TIMESTAMP))));
+                } else {
+                    assert!(result.is_ok(), "rejected timestamp offset {offset}");
+                }
+            }
+        }
+
+        #[test]
+        fn rejects_wrong_secret_and_tampered_payload() {
+            let payload = payload();
+            let good = get_mock_stripe_sig(&payload, TIMESTAMP);
+            let header = format!("t={TIMESTAMP},v1={},{}", "00".repeat(32), signature_field(&good));
+            assert!(matches!(
+                Webhook::construct_event_with_timestamp(
+                    &payload,
+                    &header,
+                    "wrong_secret",
+                    TIMESTAMP,
+                ),
+                Err(WebhookError::BadSignature)
+            ));
+            assert!(matches!(
+                Webhook::construct_event_with_timestamp(
+                    &format!("{payload} "),
+                    &header,
+                    WEBHOOK_SECRET,
+                    TIMESTAMP,
+                ),
+                Err(WebhookError::BadSignature)
+            ));
+        }
+
+        #[test]
+        fn does_not_accept_other_signature_versions() {
+            let payload = payload();
+            let good = get_mock_stripe_sig(&payload, TIMESTAMP);
+            let old_version = good.replace(",v1=", ",v0=");
+            for header in [old_version.clone(), format!("{old_version},v1={}", "00".repeat(32))] {
+                assert!(matches!(
+                    Webhook::construct_event_with_timestamp(
+                        &payload,
+                        &header,
+                        WEBHOOK_SECRET,
+                        TIMESTAMP,
+                    ),
+                    Err(WebhookError::BadSignature)
+                ));
+            }
+        }
+    }
 
     #[cfg(feature = "deserialize")]
     mod optional_json {
@@ -585,7 +749,7 @@ mod tests {
         assert_eq!(signature.t, 1492774577);
         assert_eq!(
             signature.v1,
-            "5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd"
+            vec!["5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd"]
         );
 
         let raw_signature_with_test_mode = "t=1492774577,v1=5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd,v0=6ffbb59b2300aae63f272406069a9788598b792a944a07aba816edb039989a39";
@@ -593,7 +757,7 @@ mod tests {
         assert_eq!(signature.t, 1492774577);
         assert_eq!(
             signature.v1,
-            "5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd"
+            vec!["5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd"]
         );
     }
 
