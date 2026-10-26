@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.0-rc.10](https://github.com/arlyon/async-stripe/compare/async-stripe-types-v1.0.0-rc.9...async-stripe-types-v1.0.0-rc.10) - 2026-10-26
+
+### Fixed
+
+- *(types)* preserve unknown currency codes in Display ([#982](https://github.com/arlyon/async-stripe/pull/982))
+- *(types)* preserve integer precision in arbitrary JSON adapters ([#981](https://github.com/arlyon/async-stripe/pull/981))
+- *(types)* reject invalid optional values and signed integer overflow ([#980](https://github.com/arlyon/async-stripe/pull/980))
+
 ## [1.0.0-rc.9](https://github.com/arlyon/async-stripe/compare/async-stripe-types-v1.0.0-rc.8...async-stripe-types-v1.0.0-rc.9) - 2026-09-11
 
 ### Other
