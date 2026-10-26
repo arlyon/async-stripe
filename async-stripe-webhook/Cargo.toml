@@ -55,6 +55,7 @@ serialize = [
        "async-stripe-payment?/serialize",
        "async-stripe-terminal?/serialize",
        "async-stripe-treasury?/serialize",
+       "async-stripe-reserve?/serialize",
 ]
 deserialize = [
        "async-stripe-types/deserialize",
@@ -68,6 +69,7 @@ deserialize = [
        "async-stripe-payment?/deserialize",
        "async-stripe-terminal?/deserialize",
        "async-stripe-treasury?/deserialize",
+       "async-stripe-reserve?/deserialize",
 ]
 
 redact-generated-debug = [

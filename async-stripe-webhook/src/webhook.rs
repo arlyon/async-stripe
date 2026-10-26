@@ -64,7 +64,7 @@ pub struct EventData {
     /// In Stripe API versions 2017-04-06 or earlier, an updated array attribute in this object includes only the updated array elements.
     #[cfg_attr(
         any(feature = "deserialize", feature = "serialize"),
-        serde(with = "stripe_types::with_serde_json_opt")
+        serde(default, with = "stripe_types::with_serde_json_opt")
     )]
     #[cfg_attr(feature = "serialize", serde(skip_serializing_if = "Option::is_none"))]
     pub previous_attributes: Option<miniserde::json::Value>,
@@ -554,6 +554,122 @@ mod tests {
         }
     }
 
+    #[cfg(feature = "deserialize")]
+    mod optional_json {
+        use stripe_shared::{
+            NotificationEventData, PaymentIntentNextAction, SetupIntentNextAction,
+        };
+
+        use super::*;
+
+        fn redirect_action() -> Value {
+            json!({
+                "type": "redirect_to_url",
+                "redirect_to_url": {
+                    "url": "https://example.com/authenticate",
+                    "return_url": "https://example.com/return"
+                }
+            })
+        }
+
+        fn assert_optional_value(actual: Option<miniserde::json::Value>, expected: Value) {
+            let actual = actual.map(|value| {
+                serde_json::from_str::<Value>(&miniserde::json::to_string(&value)).unwrap()
+            });
+            let expected = if expected.is_null() { None } else { Some(expected) };
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn notification_data_defaults_missing_previous_attributes() {
+            let payload = r#"{"object":{}}"#;
+            let serde: NotificationEventData = serde_json::from_str(payload).unwrap();
+            let mini: NotificationEventData = miniserde::json::from_str(payload).unwrap();
+            assert!(serde.previous_attributes.is_none());
+            assert!(mini.previous_attributes.is_none());
+        }
+
+        #[test]
+        fn notification_data_preserves_explicit_previous_attributes() {
+            for previous in [Value::Null, json!({"status": "old"})] {
+                let payload = json!({"object": {}, "previous_attributes": previous}).to_string();
+                let serde: NotificationEventData = serde_json::from_str(&payload).unwrap();
+                let mini: NotificationEventData = miniserde::json::from_str(&payload).unwrap();
+                assert_optional_value(serde.previous_attributes, previous.clone());
+                assert_optional_value(mini.previous_attributes, previous);
+            }
+        }
+
+        #[test]
+        fn next_actions_default_missing_sdk_data() {
+            let payload = redirect_action().to_string();
+            let payment: PaymentIntentNextAction = serde_json::from_str(&payload).unwrap();
+            let setup: SetupIntentNextAction = serde_json::from_str(&payload).unwrap();
+            assert!(payment.use_stripe_sdk.is_none());
+            assert!(setup.use_stripe_sdk.is_none());
+            assert_eq!(
+                payment.redirect_to_url.unwrap().url.as_deref(),
+                Some("https://example.com/authenticate")
+            );
+            assert_eq!(
+                setup.redirect_to_url.unwrap().url.as_deref(),
+                Some("https://example.com/authenticate")
+            );
+        }
+
+        #[test]
+        fn next_actions_preserve_explicit_sdk_data() {
+            for sdk in [Value::Null, json!({"sdk": "opaque data"})] {
+                let mut payload = redirect_action();
+                payload["use_stripe_sdk"] = sdk.clone();
+                let payment: PaymentIntentNextAction =
+                    serde_json::from_value(payload.clone()).unwrap();
+                let setup: SetupIntentNextAction = serde_json::from_value(payload).unwrap();
+                assert_optional_value(payment.use_stripe_sdk, sdk.clone());
+                assert_optional_value(setup.use_stripe_sdk, sdk);
+            }
+        }
+
+        #[test]
+        fn event_data_accepts_missing_null_and_present_previous_attributes() {
+            for previous in [None, Some(Value::Null), Some(json!({"status": "old"}))] {
+                let mut payload = json!({"object": {
+                    "object": "bank_account", "id": "ba_test", "country": "us",
+                    "currency": "usd", "last4": "6789", "status": "verified"
+                }});
+                if let Some(value) = &previous {
+                    payload["previous_attributes"] = value.clone();
+                }
+                let data: EventData = serde_json::from_value(payload).unwrap();
+                assert_optional_value(data.previous_attributes, previous.unwrap_or(Value::Null));
+            }
+        }
+
+        #[test]
+        fn webhook_accepts_redirect_next_action_without_sdk_data() {
+            let fixtures: Value =
+                serde_json::from_str(include_str!("../../openapi/fixtures.json")).unwrap();
+            let mut payment = fixtures["resources"]["payment_intent"].clone();
+            payment["next_action"] = redirect_action();
+            let payload = mock_webhook_event(&EventType::PaymentIntentRequiresAction, payment);
+            let event: Event = serde_json::from_value(payload).unwrap();
+            let EventObject::PaymentIntentRequiresAction(payment) = event.data.object else {
+                panic!("expected payment intent requiring action");
+            };
+            let action = payment.next_action.unwrap();
+            assert!(action.use_stripe_sdk.is_none());
+            assert_eq!(
+                action.redirect_to_url.unwrap().url.as_deref(),
+                Some("https://example.com/authenticate")
+            );
+        }
+
+        #[test]
+        fn required_json_object_remains_required() {
+            assert!(serde_json::from_str::<NotificationEventData>("{}").is_err());
+        }
+    }
+
     fn parse_with_captured_trace(payload: &str) -> (Result<Event, WebhookError>, String) {
         struct TraceWriter(Arc<Mutex<Vec<u8>>>);
 
@@ -851,5 +967,29 @@ mod tests {
         };
         assert_eq!(bank_account.id.as_str(), "ba_123");
         assert_eq!(bank_account.last4, "1234");
+    }
+
+    #[test]
+    #[cfg(all(feature = "async-stripe-reserve", feature = "serialize", feature = "deserialize"))]
+    fn reserve_events_round_trip_with_serde() {
+        let fixtures: Value =
+            serde_json::from_str(include_str!("../../openapi/fixtures.json")).unwrap();
+        for (event_type, resource) in [
+            (EventType::ReserveHoldCreated, "reserve.hold"),
+            (EventType::ReservePlanCreated, "reserve.plan"),
+            (EventType::ReserveReleaseCreated, "reserve.release"),
+        ] {
+            let object = fixtures["resources"][resource].clone();
+            let expected_id = object["id"].as_str().unwrap().to_owned();
+            let payload = mock_webhook_event(&event_type, object);
+            let event: Event = serde_json::from_value(payload).unwrap();
+            assert_eq!(event.type_, event_type);
+
+            let serialized = serde_json::to_value(event).unwrap();
+            assert_eq!(serialized["data"]["object"]["id"], expected_id);
+            assert_eq!(serialized["data"]["object"]["object"], resource);
+            let round_trip: Event = serde_json::from_value(serialized).unwrap();
+            assert_eq!(round_trip.type_, event_type);
+        }
     }
 }
