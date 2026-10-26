@@ -35,7 +35,7 @@ pub struct PaymentIntentNextAction {
     /// The shape of the contents is subject to change and is only intended to be used by Stripe.js.
     #[cfg_attr(
         any(feature = "deserialize", feature = "serialize"),
-        serde(with = "stripe_types::with_serde_json_opt")
+        serde(default, with = "stripe_types::with_serde_json_opt")
     )]
     pub use_stripe_sdk: Option<miniserde::json::Value>,
     pub verify_with_microdeposits:
@@ -290,7 +290,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }

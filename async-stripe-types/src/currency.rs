@@ -299,7 +299,10 @@ pub enum Currency {
 
 impl std::fmt::Display for Currency {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", format!("{self:?}").to_ascii_lowercase())
+        match self {
+            Self::Unknown(code) => f.write_str(code),
+            _ => write!(f, "{}", format!("{self:?}").to_ascii_lowercase()),
+        }
     }
 }
 
@@ -492,6 +495,25 @@ mod tests {
         assert_eq!(format!("{}", Currency::AED), "aed");
         assert_eq!(format!("{}", Currency::USD), "usd");
         assert_eq!(format!("{}", Currency::ZMW), "zmw");
+    }
+
+    #[test]
+    fn display_unknown_currency_preserves_code() {
+        for code in ["sle", "future_currency", "FuTuRe"] {
+            let currency: Currency = code.parse().unwrap();
+            assert_eq!(currency.to_string(), code);
+            assert_eq!(currency.to_string().parse::<Currency>().unwrap(), currency);
+        }
+    }
+
+    #[test]
+    fn display_currency_matches_serialized_code() {
+        for code in ["aed", "usd", "zmw", "sle", "FuTuRe"] {
+            let currency: Currency = miniserde::json::from_str(&format!("\"{code}\"")).unwrap();
+            let serialized: String =
+                serde_json::from_str(&serde_json::to_string(&currency).unwrap()).unwrap();
+            assert_eq!(currency.to_string(), serialized);
+        }
     }
 
     #[test]

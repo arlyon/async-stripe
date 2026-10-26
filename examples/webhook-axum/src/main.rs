@@ -52,11 +52,12 @@ where
             return Err(StatusCode::BAD_REQUEST.into_response());
         };
 
+        let signature = signature.to_str().map_err(|_| StatusCode::BAD_REQUEST.into_response())?;
         let payload =
             String::from_request(req, state).await.map_err(IntoResponse::into_response)?;
 
         Ok(Self(
-            Webhook::construct_event(&payload, signature.to_str().unwrap(), "whsec_xxxxx")
+            Webhook::construct_event(&payload, signature, "whsec_xxxxx")
                 .map_err(|_| StatusCode::BAD_REQUEST.into_response())?,
         ))
     }
@@ -72,5 +73,80 @@ async fn handle_webhook(StripeEvent(event): StripeEvent) {
             println!("Received account updated webhook for account: {:?}", account.id);
         }
         _ => println!("Unknown event encountered in webhook: {:?}", event.type_),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use axum::http::HeaderValue;
+
+    use super::*;
+
+    const VALID_PAYLOAD: &str = r#"{"id":"evt_test","object":"event","created":1492774577,"livemode":false,"pending_webhooks":1,"data":{"object":{"object":"bank_account","country":"us","currency":"usd","id":"ba_test","last4":"6789","status":"verified"}},"type":"account.external_account.created"}"#;
+
+    async fn status(payload: Vec<u8>, signature: Option<HeaderValue>) -> StatusCode {
+        let mut request = Request::builder().method("POST").uri("/stripe_webhooks");
+        if let Some(signature) = signature {
+            request = request.header("stripe-signature", signature);
+        }
+        let request = request.body(Body::from(payload)).unwrap();
+        match StripeEvent::from_request(request, &()).await {
+            Ok(StripeEvent(event)) => {
+                assert_eq!(event.id.as_str(), "evt_test");
+                StatusCode::OK
+            }
+            Err(response) => response.status(),
+        }
+    }
+
+    fn signature(payload: &str) -> HeaderValue {
+        Webhook::generate_test_header(payload, "whsec_xxxxx", None).parse().unwrap()
+    }
+
+    #[tokio::test]
+    async fn accepts_valid_event() {
+        assert_eq!(
+            status(VALID_PAYLOAD.as_bytes().to_vec(), Some(signature(VALID_PAYLOAD))).await,
+            StatusCode::OK
+        );
+    }
+
+    #[tokio::test]
+    async fn rejects_invalid_signature() {
+        assert_eq!(
+            status(VALID_PAYLOAD.as_bytes().to_vec(), Some(HeaderValue::from_static("invalid")))
+                .await,
+            StatusCode::BAD_REQUEST
+        );
+    }
+
+    #[tokio::test]
+    async fn rejects_missing_signature() {
+        assert_eq!(status(VALID_PAYLOAD.as_bytes().to_vec(), None).await, StatusCode::BAD_REQUEST);
+    }
+
+    #[tokio::test]
+    async fn rejects_non_ascii_signature() {
+        assert_eq!(
+            status(
+                VALID_PAYLOAD.as_bytes().to_vec(),
+                Some(HeaderValue::from_bytes(&[0xff]).unwrap())
+            )
+            .await,
+            StatusCode::BAD_REQUEST
+        );
+    }
+
+    #[tokio::test]
+    async fn rejects_non_utf8_payload() {
+        assert_eq!(
+            status(vec![0xff], Some(HeaderValue::from_static("invalid"))).await,
+            StatusCode::BAD_REQUEST
+        );
+    }
+
+    #[tokio::test]
+    async fn rejects_correctly_signed_invalid_event() {
+        assert_eq!(status(b"{}".to_vec(), Some(signature("{}"))).await, StatusCode::BAD_REQUEST);
     }
 }

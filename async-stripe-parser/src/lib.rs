@@ -9,9 +9,9 @@ pub fn list_types() -> Vec<String> {
 /// Generic function to parse and validate a payload of type T using serde.
 /// Returns Ok(()) if the payload is valid, or an error message with path information if parsing fails.
 fn parse_type_serde<T: serde::de::DeserializeOwned>(payload: &str) -> Result<(), String> {
-    let deserializer = &mut serde_json::Deserializer::from_str(payload);
-    let _: T = serde_path_to_error::deserialize(deserializer).map_err(|e| format!("{e}"))?;
-    Ok(())
+    let mut deserializer = serde_json::Deserializer::from_str(payload);
+    let _: T = serde_path_to_error::deserialize(&mut deserializer).map_err(|e| format!("{e}"))?;
+    deserializer.end().map_err(|e| e.to_string())
 }
 
 /// Parses and validates a payload based on the type name.
@@ -39,10 +39,9 @@ mod tests {
         assert!(types.contains(&"Event".to_string()));
     }
 
-    #[test]
-    fn test_parse_event_valid() {
+    fn valid_event_payload() -> &'static str {
         // Based on test_webhook_construct_event from webhook.rs
-        let payload = r#"{
+        r#"{
           "id": "evt_1SYARgFuzxtsmcCa56A419qD",
           "object": "event",
           "api_version": "2024-06-20",
@@ -80,13 +79,40 @@ mod tests {
             "idempotency_key": null
           },
           "type": "entitlements.active_entitlement_summary.updated"
-        }"#;
+        }"#
+    }
 
-        let result = parse("Event", payload);
+    #[test]
+    fn test_parse_event_valid() {
+        let result = parse("Event", valid_event_payload());
         if let Err(e) = &result {
             eprintln!("Parse error: {}", e);
         }
         assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_parse_event_rejects_trailing_garbage() {
+        for suffix in [" NOT_JSON", "x", "\n// comment"] {
+            let payload = format!("{}{suffix}", valid_event_payload());
+            assert!(parse("Event", &payload).is_err(), "accepted suffix {suffix:?}");
+        }
+    }
+
+    #[test]
+    fn test_parse_event_rejects_multiple_values() {
+        for suffix in [" {}", " null", " []", r#" "extra""#] {
+            let payload = format!("{}{suffix}", valid_event_payload());
+            assert!(parse("Event", &payload).is_err(), "accepted suffix {suffix:?}");
+        }
+    }
+
+    #[test]
+    fn test_parse_event_accepts_trailing_whitespace() {
+        for suffix in ["", " ", "\r\n\t"] {
+            let payload = format!("{}{suffix}", valid_event_payload());
+            assert!(parse("Event", &payload).is_ok(), "rejected whitespace {suffix:?}");
+        }
     }
 
     #[test]

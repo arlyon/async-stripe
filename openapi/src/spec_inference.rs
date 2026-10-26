@@ -307,6 +307,7 @@ impl<'a> Inference<'a> {
         &self,
         fields: Vec<&ReferenceOr<Schema>>,
     ) -> anyhow::Result<Vec<EnumVariant>> {
+        let enum_ident = self.next_ident();
         let mut variants = Vec::with_capacity(fields.len());
         for option in fields {
             match option {
@@ -322,6 +323,10 @@ impl<'a> Inference<'a> {
                     let inferred_name = infer_enum_variant_name(item);
                     if let Some(name) = inferred_name {
                         ctx = ctx.field_name(name);
+                        if ctx.next_ident() == enum_ident {
+                            // Keep the payload from reusing its enclosing enum's identifier.
+                            ctx = ctx.curr_ident(&enum_ident);
+                        }
                     }
                     let rust_type = ctx.required(true).infer_schema_type(item);
                     if let Some(RustObject::FieldlessEnum(fieldless_variants)) =
@@ -470,5 +475,78 @@ fn infer_list_container_kind(field: &Schema) -> Option<ListContainerKind> {
         Some("list") => Some(ListContainerKind::List),
         Some("search_result") => Some(ListContainerKind::SearchList),
         _ => None,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json::json;
+
+    use super::*;
+
+    fn infer_card_union(field_name: &str, card_title: &str) -> RustType {
+        let schema: Schema = serde_json::from_value(json!({
+            "anyOf": [
+                {
+                    "title": card_title,
+                    "type": "object",
+                    "properties": {"number": {"type": "string"}},
+                    "required": ["number"]
+                },
+                {
+                    "title": "card_token",
+                    "type": "object",
+                    "properties": {"token": {"type": "string"}},
+                    "required": ["token"]
+                }
+            ]
+        }))
+        .unwrap();
+        let parent = RustIdent::create("CreateExample");
+        Inference::new(&parent).field_name(field_name).required(true).infer_schema_type(&schema)
+    }
+
+    fn payload_ident(variant: &EnumVariant) -> &RustIdent {
+        let Some(RustType::Object(RustObject::Struct(_), meta)) = &variant.rust_type else {
+            panic!("expected an inline object payload");
+        };
+        &meta.ident
+    }
+
+    #[test]
+    fn union_payload_name_differs_from_enclosing_enum() {
+        let RustType::Object(RustObject::Enum(variants), meta) = infer_card_union("card", "card")
+        else {
+            panic!("expected an inline union");
+        };
+        assert_eq!(meta.ident.as_ref(), "CreateExampleCard");
+        assert_ne!(payload_ident(&variants[0]), &meta.ident);
+        assert_eq!(payload_ident(&variants[0]).as_ref(), "CreateExampleCardCard");
+        assert_eq!(payload_ident(&variants[1]).as_ref(), "CreateExampleCardToken");
+        assert_eq!(variants[0].variant.as_ref(), "Card");
+        assert_eq!(variants[1].variant.as_ref(), "CardToken");
+    }
+
+    #[test]
+    fn union_payload_collision_uses_normalized_identifiers() {
+        let RustType::Object(RustObject::Enum(variants), meta) =
+            infer_card_union("payment_method", "PaymentMethod")
+        else {
+            panic!("expected an inline union");
+        };
+        assert_ne!(payload_ident(&variants[0]), &meta.ident);
+        assert_eq!(payload_ident(&variants[0]).as_ref(), "CreateExamplePaymentMethodPaymentMethod");
+    }
+
+    #[test]
+    fn noncolliding_union_payload_names_remain_unchanged() {
+        let RustType::Object(RustObject::Enum(variants), meta) =
+            infer_card_union("payment_method", "card")
+        else {
+            panic!("expected an inline union");
+        };
+        assert_eq!(meta.ident.as_ref(), "CreateExamplePaymentMethod");
+        assert_eq!(payload_ident(&variants[0]).as_ref(), "CreateExampleCard");
+        assert_eq!(payload_ident(&variants[1]).as_ref(), "CreateExampleCardToken");
     }
 }

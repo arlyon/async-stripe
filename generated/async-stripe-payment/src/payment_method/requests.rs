@@ -463,56 +463,56 @@ struct CreatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     acss_debit: Option<CreatePaymentMethodAcssDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     affirm: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     afterpay_clearpay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     alipay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_redisplay: Option<stripe_shared::PaymentMethodAllowRedisplay>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     alma: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     amazon_pay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     au_becs_debit: Option<CreatePaymentMethodAuBecsDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
     bacs_debit: Option<CreatePaymentMethodBacsDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     bancontact: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     billie: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_details: Option<BillingDetailsInnerParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     bizum: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     blik: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     boleto: Option<CreatePaymentMethodBoleto>,
     #[serde(skip_serializing_if = "Option::is_none")]
     card: Option<CreatePaymentMethodCard>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     cashapp: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     crypto: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     custom: Option<CreatePaymentMethodCustom>,
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     customer_balance: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     eps: Option<CreatePaymentMethodEps>,
@@ -521,104 +521,104 @@ struct CreatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     fpx: Option<CreatePaymentMethodFpx>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     giropay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     grabpay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ideal: Option<CreatePaymentMethodIdeal>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     interac_present: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     kakao_pay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     klarna: Option<CreatePaymentMethodKlarna>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     konbini: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     kr_card: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     link: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     mb_way: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     mobilepay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     multibanco: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     naver_pay: Option<CreatePaymentMethodNaverPay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     nz_bank_account: Option<CreatePaymentMethodNzBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     oxxo: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     p24: Option<CreatePaymentMethodP24>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pay_by_bank: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     payco: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     paynow: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     paypal: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     paypay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payto: Option<CreatePaymentMethodPayto>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pix: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     promptpay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     radar_options: Option<CreatePaymentMethodRadarOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     revolut_pay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     samsung_pay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     satispay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     scalapay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sepa_debit: Option<CreatePaymentMethodSepaDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     sequra: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sofort: Option<CreatePaymentMethodSofort>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     sunbit: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     swish: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     twint: Option<miniserde::json::Value>,
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -628,10 +628,10 @@ struct CreatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     us_bank_account: Option<CreatePaymentMethodUsBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     wechat_pay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     zip: Option<miniserde::json::Value>,
 }
 #[cfg(feature = "redact-generated-debug")]

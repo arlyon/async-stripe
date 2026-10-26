@@ -1591,7 +1591,7 @@ impl Default for CreateThreeDSecureAuthenticationPaymentMethodDataBillingDetails
 #[serde(rename_all = "snake_case")]
 pub enum CreateThreeDSecureAuthenticationPaymentMethodDataCard {
     #[serde(untagged)]
-    Card(CreateThreeDSecureAuthenticationPaymentMethodDataCard),
+    Card(CreateThreeDSecureAuthenticationPaymentMethodDataCardCard),
     #[serde(untagged)]
     CardToken(CreateThreeDSecureAuthenticationPaymentMethodDataCardToken),
 }
@@ -1605,7 +1605,7 @@ impl std::fmt::Debug for CreateThreeDSecureAuthenticationPaymentMethodDataCard {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
-pub struct CreateThreeDSecureAuthenticationPaymentMethodDataCard {
+pub struct CreateThreeDSecureAuthenticationPaymentMethodDataCardCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc: Option<String>,
     pub exp_month: i64,
@@ -1613,13 +1613,13 @@ pub struct CreateThreeDSecureAuthenticationPaymentMethodDataCard {
     pub number: String,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CreateThreeDSecureAuthenticationPaymentMethodDataCard {
+impl std::fmt::Debug for CreateThreeDSecureAuthenticationPaymentMethodDataCardCard {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CreateThreeDSecureAuthenticationPaymentMethodDataCard")
+        f.debug_struct("CreateThreeDSecureAuthenticationPaymentMethodDataCardCard")
             .finish_non_exhaustive()
     }
 }
-impl CreateThreeDSecureAuthenticationPaymentMethodDataCard {
+impl CreateThreeDSecureAuthenticationPaymentMethodDataCardCard {
     pub fn new(
         exp_month: impl Into<i64>,
         exp_year: impl Into<i64>,

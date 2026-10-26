@@ -98,12 +98,12 @@ fn serde_json_to_mini(val: serde_json::Value) -> Option<MiniValue> {
         serde_json::Value::Null => MiniValue::Null,
         serde_json::Value::Bool(bool) => MiniValue::Bool(bool),
         serde_json::Value::Number(num) => {
-            if let Some(float) = num.as_f64() {
-                MiniValue::Number(Number::F64(float))
-            } else if let Some(uint) = num.as_u64() {
+            if let Some(uint) = num.as_u64() {
                 MiniValue::Number(Number::U64(uint))
             } else if let Some(int) = num.as_i64() {
                 MiniValue::Number(Number::I64(int))
+            } else if let Some(float) = num.as_f64() {
+                MiniValue::Number(Number::F64(float))
             } else {
                 return None;
             }
@@ -121,4 +121,62 @@ fn serde_json_to_mini(val: serde_json::Value) -> Option<MiniValue> {
             MiniValue::Object(Object::from_iter(items))
         }
     })
+}
+
+#[cfg(all(test, feature = "deserialize"))]
+mod tests {
+    use serde_json::{Value, json};
+
+    #[derive(Debug, serde::Serialize, serde::Deserialize)]
+    struct JsonFields {
+        #[serde(with = "crate::with_serde_json")]
+        value: miniserde::json::Value,
+        #[serde(with = "crate::with_serde_json_opt")]
+        optional: Option<miniserde::json::Value>,
+    }
+
+    fn assert_round_trip(value: Value) {
+        let original = json!({"value": value.clone(), "optional": value});
+        let fields: JsonFields = serde_json::from_str(&original.to_string()).unwrap();
+        let actual: Value = serde_json::from_str(&serde_json::to_string(&fields).unwrap()).unwrap();
+        assert_eq!(actual, original);
+    }
+
+    #[test]
+    fn arbitrary_json_preserves_integer_values() {
+        for value in [
+            json!(0),
+            json!(9_007_199_254_740_993_u64),
+            json!(i64::MAX),
+            json!(u64::MAX),
+            json!(-9_007_199_254_740_993_i64),
+            json!(i64::MIN),
+        ] {
+            assert_round_trip(value);
+        }
+    }
+
+    #[test]
+    fn arbitrary_json_preserves_nested_integer_values() {
+        assert_round_trip(json!({
+            "amount": 9_007_199_254_740_993_u64,
+            "nested": [u64::MAX, {"minimum": i64::MIN, "zero": 0}],
+        }));
+    }
+
+    #[test]
+    fn arbitrary_json_preserves_fractional_and_non_numeric_values() {
+        for value in [
+            json!(1.5),
+            json!(1.0),
+            json!(-1.0),
+            json!(-0.0),
+            json!(null),
+            json!(true),
+            json!("text"),
+            json!([1.5, false, null, {"text": "value"}]),
+        ] {
+            assert_round_trip(value);
+        }
+    }
 }

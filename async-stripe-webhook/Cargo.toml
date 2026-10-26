@@ -29,6 +29,7 @@ serde_json = { workspace = true, optional = true }
 
 async-stripe-billing = { path = "../generated/async-stripe-billing", optional = true, version = "1.0.0-rc.9" }
 async-stripe-checkout = { path = "../generated/async-stripe-checkout", optional = true, version = "1.0.0-rc.9" }
+async-stripe-connect = { path = "../generated/async-stripe-connect", optional = true, version = "1.0.0-rc.9" }
 async-stripe-core = { path = "../generated/async-stripe-core", optional = true, version = "1.0.0-rc.9" }
 async-stripe-fraud = { path = "../generated/async-stripe-fraud", optional = true, version = "1.0.0-rc.9" }
 async-stripe-misc = { path = "../generated/async-stripe-misc", optional = true, version = "1.0.0-rc.9" }
@@ -49,12 +50,14 @@ serialize = [
        "async-stripe-shared/serialize",
        "async-stripe-billing?/serialize",
        "async-stripe-checkout?/serialize",
+       "async-stripe-connect?/serialize",
        "async-stripe-core?/serialize",
        "async-stripe-fraud?/serialize",
        "async-stripe-misc?/serialize",
        "async-stripe-payment?/serialize",
        "async-stripe-terminal?/serialize",
        "async-stripe-treasury?/serialize",
+       "async-stripe-reserve?/serialize",
 ]
 deserialize = [
        "async-stripe-types/deserialize",
@@ -62,12 +65,14 @@ deserialize = [
        "dep:serde_json",
        "async-stripe-billing?/deserialize",
        "async-stripe-checkout?/deserialize",
+       "async-stripe-connect?/deserialize",
        "async-stripe-core?/deserialize",
        "async-stripe-fraud?/deserialize",
        "async-stripe-misc?/deserialize",
        "async-stripe-payment?/deserialize",
        "async-stripe-terminal?/deserialize",
        "async-stripe-treasury?/deserialize",
+       "async-stripe-reserve?/deserialize",
 ]
 
 redact-generated-debug = [
@@ -75,6 +80,7 @@ redact-generated-debug = [
        "async-stripe-shared/redact-generated-debug",
        "async-stripe-billing?/redact-generated-debug",
        "async-stripe-checkout?/redact-generated-debug",
+       "async-stripe-connect?/redact-generated-debug",
        "async-stripe-core?/redact-generated-debug",
        "async-stripe-fraud?/redact-generated-debug",
        "async-stripe-misc?/redact-generated-debug",
@@ -88,6 +94,7 @@ detailed-errors = ["dep:serde_path_to_error"]
 full = [
     "async-stripe-billing",
     "async-stripe-checkout",
+    "async-stripe-connect",
     "async-stripe-core",
     "async-stripe-fraud",
     "async-stripe-misc",

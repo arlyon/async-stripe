@@ -94,7 +94,7 @@ impl FromValueOpt for i64 {
     fn from_value(v: Value) -> Option<Self> {
         match v {
             Value::Number(num) => match num {
-                Number::U64(u) => Some(u as i64),
+                Number::U64(u) => u.try_into().ok(),
                 Number::I64(i) => Some(i),
                 Number::F64(_) => None,
             },
@@ -166,7 +166,7 @@ impl<T: FromValueOpt> FromValueOpt for Option<T> {
     fn from_value(v: Value) -> Option<Self> {
         match v {
             Value::Null => Some(None),
-            val => Some(T::from_value(val)),
+            val => T::from_value(val).map(Some),
         }
     }
 }
@@ -246,3 +246,40 @@ macro_rules! impl_from_val_with_from_str {
 }
 
 impl_from_val_with_from_str!(Currency);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn optional_values_reject_invalid_non_null_input() {
+        assert_eq!(Option::<String>::from_value(Value::Bool(true)), None);
+        let invalid: Value = miniserde::json::from_str(r#"["valid", 123]"#).unwrap();
+        assert_eq!(Option::<Vec<String>>::from_value(invalid), None);
+    }
+
+    #[test]
+    fn optional_values_preserve_null_and_valid_input() {
+        assert_eq!(Option::<String>::from_value(Value::Null), Some(None));
+        assert_eq!(
+            Option::<String>::from_value(Value::String("valid".into())),
+            Some(Some("valid".into()))
+        );
+        let valid: Value = miniserde::json::from_str(r#"["first", "second"]"#).unwrap();
+        assert_eq!(
+            Option::<Vec<String>>::from_value(valid),
+            Some(Some(vec!["first".into(), "second".into()]))
+        );
+    }
+
+    #[test]
+    fn signed_integers_reject_unsigned_overflow() {
+        for value in [i64::MAX as u64 + 1, u64::MAX] {
+            assert_eq!(i64::from_value(Value::Number(Number::U64(value))), None);
+        }
+        for value in [0, i64::MAX as u64] {
+            assert_eq!(i64::from_value(Value::Number(Number::U64(value))), Some(value as i64));
+        }
+        assert_eq!(i64::from_value(Value::Number(Number::I64(i64::MIN))), Some(i64::MIN));
+    }
+}

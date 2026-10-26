@@ -140,7 +140,7 @@ self.version.take(),
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }

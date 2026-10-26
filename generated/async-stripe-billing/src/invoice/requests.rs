@@ -893,7 +893,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     pub billie: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBillie>,
     /// If paying by `blik`, this sub-hash contains details about the Blik payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pub blik: Option<miniserde::json::Value>,
     /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -903,7 +903,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     pub customer_balance: Option<InvoicePaymentMethodOptionsParam>,
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pub konbini: Option<miniserde::json::Value>,
     /// If paying by `payto`, this sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -913,7 +913,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     pub pix: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsPix>,
     /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Direct Debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pub sepa_debit: Option<miniserde::json::Value>,
     /// If paying by `upi`, this sub-hash contains details about the UPI payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4528,7 +4528,7 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions {
     pub billie: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsBillie>,
     /// If paying by `blik`, this sub-hash contains details about the Blik payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pub blik: Option<miniserde::json::Value>,
     /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4538,7 +4538,7 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions {
     pub customer_balance: Option<InvoicePaymentMethodOptionsParam>,
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pub konbini: Option<miniserde::json::Value>,
     /// If paying by `payto`, this sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4548,7 +4548,7 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions {
     pub pix: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsPix>,
     /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Direct Debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
+    #[serde(default, with = "stripe_types::with_serde_json_opt")]
     pub sepa_debit: Option<miniserde::json::Value>,
     /// If paying by `upi`, this sub-hash contains details about the UPI payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
