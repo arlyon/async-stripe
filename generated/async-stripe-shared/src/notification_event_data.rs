@@ -15,7 +15,7 @@ pub struct NotificationEventData {
     /// In Stripe API versions 2017-04-06 or earlier, an updated array attribute in this object includes only the updated array elements.
     #[cfg_attr(
         any(feature = "deserialize", feature = "serialize"),
-        serde(with = "stripe_types::with_serde_json_opt")
+        serde(default, with = "stripe_types::with_serde_json_opt")
     )]
     pub previous_attributes: Option<miniserde::json::Value>,
 }
