@@ -804,4 +804,28 @@ mod tests {
         assert_eq!(bank_account.id.as_str(), "ba_123");
         assert_eq!(bank_account.last4, "1234");
     }
+
+    #[test]
+    #[cfg(all(feature = "async-stripe-reserve", feature = "serialize", feature = "deserialize"))]
+    fn reserve_events_round_trip_with_serde() {
+        let fixtures: Value =
+            serde_json::from_str(include_str!("../../openapi/fixtures.json")).unwrap();
+        for (event_type, resource) in [
+            (EventType::ReserveHoldCreated, "reserve.hold"),
+            (EventType::ReservePlanCreated, "reserve.plan"),
+            (EventType::ReserveReleaseCreated, "reserve.release"),
+        ] {
+            let object = fixtures["resources"][resource].clone();
+            let expected_id = object["id"].as_str().unwrap().to_owned();
+            let payload = mock_webhook_event(&event_type, object);
+            let event: Event = serde_json::from_value(payload).unwrap();
+            assert_eq!(event.type_, event_type);
+
+            let serialized = serde_json::to_value(event).unwrap();
+            assert_eq!(serialized["data"]["object"]["id"], expected_id);
+            assert_eq!(serialized["data"]["object"]["object"], resource);
+            let round_trip: Event = serde_json::from_value(serialized).unwrap();
+            assert_eq!(round_trip.type_, event_type);
+        }
+    }
 }
