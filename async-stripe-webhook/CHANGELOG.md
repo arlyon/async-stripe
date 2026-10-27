@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.0-rc.11](https://github.com/arlyon/async-stripe/compare/async-stripe-webhook-v1.0.0-rc.10...async-stripe-webhook-v1.0.0-rc.11) - 2026-10-27
+
+### Fixed
+
+- *(webhook)* bound debug deserialization stack usage ([#991](https://github.com/arlyon/async-stripe/pull/991))
+
 ## [1.0.0-rc.10](https://github.com/arlyon/async-stripe/compare/async-stripe-webhook-v1.0.0-rc.9...async-stripe-webhook-v1.0.0-rc.10) - 2026-10-26
 
 ### Fixed
