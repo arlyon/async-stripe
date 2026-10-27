@@ -59,17 +59,21 @@ pub async fn run_payment_intent_example(client: &Client) -> Result<(), StripeErr
         customer.name.unwrap()
     );
 
-    // lets update the payment intent with their details
-    let payment_intent = UpdatePaymentIntent::new(payment_intent.id)
-        .payment_method(payment_method.id.as_str())
-        // this is not strictly required but good practice to ensure we have the right person
-        .customer(customer.id.as_str())
-        .send(client)
-        .await?;
+    // Keep this phase's large request temporaries out of the parent async frame.
+    Box::pin(async {
+        // lets update the payment intent with their details
+        let payment_intent = UpdatePaymentIntent::new(payment_intent.id)
+            .payment_method(payment_method.id.as_str())
+            // this is not strictly required but good practice to ensure we have the right person
+            .customer(customer.id.as_str())
+            .send(client)
+            .await?;
 
-    println!("updated payment intent with status '{}'", payment_intent.status);
+        println!("updated payment intent with status '{}'", payment_intent.status);
 
-    let payment_intent = ConfirmPaymentIntent::new(payment_intent.id).send(client).await?;
-    println!("completed payment intent with status {}", payment_intent.status);
-    Ok(())
+        let payment_intent = ConfirmPaymentIntent::new(payment_intent.id).send(client).await?;
+        println!("completed payment intent with status {}", payment_intent.status);
+        Ok(())
+    })
+    .await
 }

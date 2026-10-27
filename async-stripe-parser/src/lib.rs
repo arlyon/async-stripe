@@ -86,7 +86,7 @@ mod tests {
     fn test_parse_event_valid() {
         let result = parse("Event", valid_event_payload());
         if let Err(e) = &result {
-            eprintln!("Parse error: {}", e);
+            eprintln!("Parse error: {e}");
         }
         assert!(result.is_ok());
     }
@@ -278,14 +278,14 @@ mod tests {
         let event: stripe_webhook::Event =
             serde_json::from_str(payload).expect("Failed to deserialize");
         let serialized = serde_json::to_string(&event).expect("Failed to serialize");
-        println!("{}", serialized);
+        println!("{serialized}");
         let event_2: stripe_webhook::Event =
             serde_json::from_str(&serialized).expect("Failed to deserialize");
 
         let original_value: serde_json::Value = serde_json::from_str(payload).unwrap();
         let serialized_value: serde_json::Value = serde_json::from_str(&serialized).unwrap();
 
-        println!("{:#?}\n\n{:#?}", event, event_2);
+        println!("{event:#?}\n\n{event_2:#?}");
 
         assert_eq!(original_value, serialized_value);
     }

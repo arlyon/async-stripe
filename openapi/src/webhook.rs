@@ -110,8 +110,9 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
         pub(crate) fn from_raw_data(typ: &str, data: miniserde::json::Value) -> Option<Self> {{
             use stripe_types::miniserde_helpers::FromValueOpt;
 
-            // Helper to avoid stack allocation for each branch
-            #[inline(always)]
+            // Keep parsing temporaries out of the dispatcher frame. Inlining this
+            // helper accumulates large stack slots across branches in debug builds.
+            #[inline(never)]
             fn parse_and_box<T: FromValueOpt>(data: miniserde::json::Value) -> Option<Box<T>> {{
                 FromValueOpt::from_value(data).map(Box::new)
             }}
@@ -124,8 +125,9 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
         #[cfg(feature = "deserialize")]
         #[inline(never)]
         pub(crate) fn from_json_value(typ: &str, data: serde_json::Value) -> Result<Self, String> {{
-            // Helper to avoid stack allocation for each branch
-            #[inline(always)]
+            // Keep parsing temporaries out of the dispatcher frame. Inlining this
+            // helper accumulates large stack slots across branches in debug builds.
+            #[inline(never)]
             fn parse_and_box<T: serde::de::DeserializeOwned>(data: serde_json::Value) -> Result<Box<T>, String> {{
                 use serde::de::IntoDeserializer;
                 let deserializer = data.into_deserializer();
