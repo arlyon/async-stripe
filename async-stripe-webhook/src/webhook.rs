@@ -800,7 +800,7 @@ mod tests {
                 assert_eq!(e.id.as_str(), "evt_test");
                 assert_eq!(e.type_, EventType::AccountExternalAccountCreated);
             }
-            Err(e) => panic!("panic! {}", e),
+            Err(e) => panic!("panic! {e}"),
         }
     }
 

@@ -115,7 +115,9 @@ jobs:
         run: cargo clippy --no-default-features --features "full serialize deserialize redact-generated-debug default-tls"
 
       - name: Check all webhook features
-        run: cargo clippy --locked -p async-stripe-webhook --all-features --all-targets
+        run: >-
+          cargo clippy --locked -p async-stripe-webhook
+          --all-features --all-targets
 
       - name: Test all webhook features
         run: cargo test --locked -p async-stripe-webhook --all-features
@@ -213,7 +215,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Check examples
-        run: cargo clippy --workspace
+        run: cargo clippy --workspace -- -D clippy::large_stack_frames
 
       - name: Test webhook examples
         run: cargo test --locked -p webhook-actix -p webhook-axum

@@ -1,0 +1,3 @@
+# Keep individual frames below half Clippy's default 512,000-byte limit.
+# Bounded-stack webhook tests also guard cumulative debug-build stack usage.
+stack-size-threshold = 256000
