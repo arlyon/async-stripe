@@ -25,5 +25,13 @@ pub mod miniserde_helpers;
 #[doc(hidden)]
 pub mod serde_helpers;
 
+/// Logs a value that a generated enum does not know. One shared function, so each generated
+/// enum does not need its own `tracing` callsite.
+#[doc(hidden)]
+#[cold]
+pub fn warn_unknown_enum_value(value: &str, enum_name: &str) {
+    tracing::warn!("Unknown value '{}' for enum '{}'", value, enum_name);
+}
+
 // Allow generated code to use absolute paths starting with `stripe_types` instead of `crate`
 extern crate self as stripe_types;

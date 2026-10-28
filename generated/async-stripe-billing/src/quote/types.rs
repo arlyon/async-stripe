@@ -472,7 +472,7 @@ impl std::str::FromStr for QuoteCollectionMethod {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "QuoteCollectionMethod");
+                stripe_types::warn_unknown_enum_value(v, "QuoteCollectionMethod");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -513,18 +513,26 @@ impl miniserde::Deserialize for QuoteCollectionMethod {
 impl miniserde::de::Visitor for crate::Place<QuoteCollectionMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(QuoteCollectionMethod::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = QuoteCollectionMethod::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(QuoteCollectionMethod);
+impl stripe_types::miniserde_helpers::FromValueOpt for QuoteCollectionMethod {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for QuoteCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -560,7 +568,7 @@ impl std::str::FromStr for QuoteStatus {
             "draft" => Ok(Draft),
             "open" => Ok(Open),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "QuoteStatus");
+                stripe_types::warn_unknown_enum_value(v, "QuoteStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -601,17 +609,25 @@ impl miniserde::Deserialize for QuoteStatus {
 impl miniserde::de::Visitor for crate::Place<QuoteStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(QuoteStatus::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = QuoteStatus::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(QuoteStatus);
+impl stripe_types::miniserde_helpers::FromValueOpt for QuoteStatus {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for QuoteStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

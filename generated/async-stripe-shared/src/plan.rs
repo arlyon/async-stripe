@@ -342,7 +342,7 @@ impl std::str::FromStr for PlanBillingScheme {
             "per_unit" => Ok(PerUnit),
             "tiered" => Ok(Tiered),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanBillingScheme");
+                stripe_types::warn_unknown_enum_value(v, "PlanBillingScheme");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -383,18 +383,26 @@ impl miniserde::Deserialize for PlanBillingScheme {
 impl miniserde::de::Visitor for crate::Place<PlanBillingScheme> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PlanBillingScheme::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PlanBillingScheme::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PlanBillingScheme);
+impl stripe_types::miniserde_helpers::FromValueOpt for PlanBillingScheme {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -430,7 +438,7 @@ impl std::str::FromStr for PlanInterval {
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanInterval");
+                stripe_types::warn_unknown_enum_value(v, "PlanInterval");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -471,18 +479,26 @@ impl miniserde::Deserialize for PlanInterval {
 impl miniserde::de::Visitor for crate::Place<PlanInterval> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PlanInterval::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PlanInterval::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PlanInterval);
+impl stripe_types::miniserde_helpers::FromValueOpt for PlanInterval {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PlanInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -512,7 +528,7 @@ impl std::str::FromStr for PlanTiersMode {
             "graduated" => Ok(Graduated),
             "volume" => Ok(Volume),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanTiersMode");
+                stripe_types::warn_unknown_enum_value(v, "PlanTiersMode");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -553,18 +569,26 @@ impl miniserde::Deserialize for PlanTiersMode {
 impl miniserde::de::Visitor for crate::Place<PlanTiersMode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PlanTiersMode::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PlanTiersMode::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PlanTiersMode);
+impl stripe_types::miniserde_helpers::FromValueOpt for PlanTiersMode {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PlanTiersMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -594,7 +618,7 @@ impl std::str::FromStr for PlanUsageType {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanUsageType");
+                stripe_types::warn_unknown_enum_value(v, "PlanUsageType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -635,17 +659,25 @@ impl miniserde::Deserialize for PlanUsageType {
 impl miniserde::de::Visitor for crate::Place<PlanUsageType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PlanUsageType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PlanUsageType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PlanUsageType);
+impl stripe_types::miniserde_helpers::FromValueOpt for PlanUsageType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PlanUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

@@ -176,10 +176,9 @@ impl std::str::FromStr for AccountUnificationAccountControllerRequirementCollect
             "application" => Ok(Application),
             "stripe" => Ok(Stripe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "AccountUnificationAccountControllerRequirementCollection"
+                    "AccountUnificationAccountControllerRequirementCollection",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -225,23 +224,28 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            AccountUnificationAccountControllerRequirementCollection::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = AccountUnificationAccountControllerRequirementCollection::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    AccountUnificationAccountControllerRequirementCollection
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for AccountUnificationAccountControllerRequirementCollection
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountUnificationAccountControllerRequirementCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The controller type.
@@ -273,11 +277,7 @@ impl std::str::FromStr for AccountUnificationAccountControllerType {
             "account" => Ok(Account),
             "application" => Ok(Application),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountUnificationAccountControllerType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "AccountUnificationAccountControllerType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -319,17 +319,25 @@ impl miniserde::Deserialize for AccountUnificationAccountControllerType {
 impl miniserde::de::Visitor for crate::Place<AccountUnificationAccountControllerType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountUnificationAccountControllerType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = AccountUnificationAccountControllerType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(AccountUnificationAccountControllerType);
+impl stripe_types::miniserde_helpers::FromValueOpt for AccountUnificationAccountControllerType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountUnificationAccountControllerType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

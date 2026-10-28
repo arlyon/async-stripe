@@ -504,11 +504,7 @@ impl std::str::FromStr for CreatePlanTransformUsageRound {
             "down" => Ok(Down),
             "up" => Ok(Up),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePlanTransformUsageRound"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreatePlanTransformUsageRound");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -545,7 +541,8 @@ impl<'de> serde::Deserialize<'de> for CreatePlanTransformUsageRound {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// You can now model subscriptions more flexibly using the [Prices API](https://stripe.com/docs/api#prices).

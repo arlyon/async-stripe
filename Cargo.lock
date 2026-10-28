@@ -728,6 +728,7 @@ dependencies = [
  "serde_json",
  "serde_qs 1.1.3",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]

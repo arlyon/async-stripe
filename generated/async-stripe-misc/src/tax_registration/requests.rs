@@ -62,7 +62,7 @@ impl std::str::FromStr for ListTaxRegistrationStatus {
             "expired" => Ok(Expired),
             "scheduled" => Ok(Scheduled),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListTaxRegistrationStatus");
+                stripe_types::warn_unknown_enum_value(v, "ListTaxRegistrationStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -99,7 +99,8 @@ impl<'de> serde::Deserialize<'de> for ListTaxRegistrationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Returns a list of Tax `Registration` objects.
@@ -812,10 +813,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -856,7 +856,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -884,10 +885,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAeType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAeType"
+                    "CreateTaxRegistrationCountryOptionsAeType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -926,7 +926,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in AL.
@@ -1006,10 +1007,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1050,7 +1050,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -1078,10 +1079,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAlType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAlType"
+                    "CreateTaxRegistrationCountryOptionsAlType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1120,7 +1120,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAlType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in AM.
@@ -1168,10 +1169,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAmType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAmType"
+                    "CreateTaxRegistrationCountryOptionsAmType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1210,7 +1210,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAmType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in AO.
@@ -1290,10 +1291,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1334,7 +1334,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -1362,10 +1363,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAoType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAoType"
+                    "CreateTaxRegistrationCountryOptionsAoType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1404,7 +1404,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAoType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in AT.
@@ -1482,10 +1483,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1524,7 +1524,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAtIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -1581,10 +1582,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1625,7 +1625,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -1662,10 +1663,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAtType"
+                    "CreateTaxRegistrationCountryOptionsAtType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1704,7 +1704,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAtType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in AU.
@@ -1784,10 +1785,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1828,7 +1828,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -1856,10 +1857,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAuType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAuType"
+                    "CreateTaxRegistrationCountryOptionsAuType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1898,7 +1898,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAuType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in AW.
@@ -1978,10 +1979,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2022,7 +2022,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -2050,10 +2051,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAwType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAwType"
+                    "CreateTaxRegistrationCountryOptionsAwType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2092,7 +2092,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAwType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in AZ.
@@ -2140,10 +2141,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAzType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsAzType"
+                    "CreateTaxRegistrationCountryOptionsAzType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2182,7 +2182,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in BA.
@@ -2262,10 +2263,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2306,7 +2306,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -2334,10 +2335,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBaType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBaType"
+                    "CreateTaxRegistrationCountryOptionsBaType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2376,7 +2376,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in BB.
@@ -2456,10 +2457,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2500,7 +2500,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -2528,10 +2529,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBbType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBbType"
+                    "CreateTaxRegistrationCountryOptionsBbType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2570,7 +2570,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBbType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in BD.
@@ -2650,10 +2651,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2694,7 +2694,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -2722,10 +2723,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBdType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBdType"
+                    "CreateTaxRegistrationCountryOptionsBdType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2764,7 +2764,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBdType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in BE.
@@ -2842,10 +2843,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2884,7 +2884,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBeIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -2941,10 +2942,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2985,7 +2985,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -3022,10 +3023,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBeType"
+                    "CreateTaxRegistrationCountryOptionsBeType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3064,7 +3064,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in BF.
@@ -3144,10 +3145,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3188,7 +3188,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -3216,10 +3217,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBfType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBfType"
+                    "CreateTaxRegistrationCountryOptionsBfType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3258,7 +3258,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBfType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in BG.
@@ -3336,10 +3337,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3378,7 +3378,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBgIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -3435,10 +3436,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3479,7 +3479,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -3516,10 +3517,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBgType"
+                    "CreateTaxRegistrationCountryOptionsBgType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3558,7 +3558,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in BH.
@@ -3638,10 +3639,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3682,7 +3682,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -3710,10 +3711,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBhType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBhType"
+                    "CreateTaxRegistrationCountryOptionsBhType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3752,7 +3752,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBhType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in BJ.
@@ -3800,10 +3801,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBjType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBjType"
+                    "CreateTaxRegistrationCountryOptionsBjType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3842,7 +3842,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBjType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in BS.
@@ -3922,10 +3923,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3966,7 +3966,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -3994,10 +3995,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBsType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsBsType"
+                    "CreateTaxRegistrationCountryOptionsBsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4036,7 +4036,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBsType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in BY.
@@ -4084,10 +4085,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsByType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsByType"
+                    "CreateTaxRegistrationCountryOptionsByType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4126,7 +4126,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsByType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in CA.
@@ -4203,10 +4204,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCaType {
             "simplified" => Ok(Simplified),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCaType"
+                    "CreateTaxRegistrationCountryOptionsCaType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4245,7 +4245,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in CD.
@@ -4325,10 +4326,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4369,7 +4369,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -4397,10 +4398,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCdType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCdType"
+                    "CreateTaxRegistrationCountryOptionsCdType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4439,7 +4439,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCdType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in CH.
@@ -4519,10 +4520,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsChStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4563,7 +4563,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -4591,10 +4592,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsChType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsChType"
+                    "CreateTaxRegistrationCountryOptionsChType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4633,7 +4633,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsChType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in CL.
@@ -4681,10 +4682,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsClType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsClType"
+                    "CreateTaxRegistrationCountryOptionsClType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4723,7 +4723,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsClType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in CM.
@@ -4771,10 +4772,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCmType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCmType"
+                    "CreateTaxRegistrationCountryOptionsCmType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4813,7 +4813,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCmType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in CO.
@@ -4861,10 +4862,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCoType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCoType"
+                    "CreateTaxRegistrationCountryOptionsCoType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4903,7 +4903,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCoType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in CR.
@@ -4951,10 +4952,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCrType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCrType"
+                    "CreateTaxRegistrationCountryOptionsCrType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4993,7 +4993,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in CV.
@@ -5041,10 +5042,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCvType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCvType"
+                    "CreateTaxRegistrationCountryOptionsCvType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5083,7 +5083,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCvType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in CY.
@@ -5161,10 +5162,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5203,7 +5203,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCyIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -5260,10 +5261,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5304,7 +5304,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -5341,10 +5342,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCyType"
+                    "CreateTaxRegistrationCountryOptionsCyType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5383,7 +5383,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCyType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in CZ.
@@ -5461,10 +5462,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5503,7 +5503,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCzIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -5560,10 +5561,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5604,7 +5604,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -5641,10 +5642,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsCzType"
+                    "CreateTaxRegistrationCountryOptionsCzType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5683,7 +5683,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in DE.
@@ -5761,10 +5762,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5803,7 +5803,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDeIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -5860,10 +5861,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5904,7 +5904,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -5941,10 +5942,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsDeType"
+                    "CreateTaxRegistrationCountryOptionsDeType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5983,7 +5983,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in DK.
@@ -6061,10 +6062,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6103,7 +6103,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDkIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -6160,10 +6161,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6204,7 +6204,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -6241,10 +6242,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsDkType"
+                    "CreateTaxRegistrationCountryOptionsDkType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6283,7 +6283,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDkType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in EC.
@@ -6331,10 +6332,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEcType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsEcType"
+                    "CreateTaxRegistrationCountryOptionsEcType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6373,7 +6373,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEcType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in EE.
@@ -6451,10 +6452,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6493,7 +6493,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEeIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -6550,10 +6551,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6594,7 +6594,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -6631,10 +6632,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsEeType"
+                    "CreateTaxRegistrationCountryOptionsEeType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6673,7 +6673,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in EG.
@@ -6721,10 +6722,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEgType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsEgType"
+                    "CreateTaxRegistrationCountryOptionsEgType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6763,7 +6763,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in ES.
@@ -6841,10 +6842,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6883,7 +6883,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEsIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -6940,10 +6941,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6984,7 +6984,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -7021,10 +7022,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsEsType"
+                    "CreateTaxRegistrationCountryOptionsEsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7063,7 +7063,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEsType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in ET.
@@ -7143,10 +7144,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7187,7 +7187,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -7215,10 +7216,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEtType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsEtType"
+                    "CreateTaxRegistrationCountryOptionsEtType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7257,7 +7257,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEtType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in FI.
@@ -7335,10 +7336,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7377,7 +7377,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFiIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -7434,10 +7435,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7478,7 +7478,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -7515,10 +7516,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsFiType"
+                    "CreateTaxRegistrationCountryOptionsFiType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7557,7 +7557,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFiType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in FR.
@@ -7635,10 +7636,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7677,7 +7677,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFrIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -7734,10 +7735,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7778,7 +7778,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -7815,10 +7816,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsFrType"
+                    "CreateTaxRegistrationCountryOptionsFrType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7857,7 +7857,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in GB.
@@ -7937,10 +7938,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7981,7 +7981,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -8009,10 +8010,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGbType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsGbType"
+                    "CreateTaxRegistrationCountryOptionsGbType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8051,7 +8051,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGbType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in GE.
@@ -8099,10 +8100,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGeType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsGeType"
+                    "CreateTaxRegistrationCountryOptionsGeType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8141,7 +8141,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in GN.
@@ -8221,10 +8222,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8265,7 +8265,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -8293,10 +8294,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGnType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsGnType"
+                    "CreateTaxRegistrationCountryOptionsGnType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8335,7 +8335,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGnType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in GR.
@@ -8413,10 +8414,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8455,7 +8455,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGrIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -8512,10 +8513,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8556,7 +8556,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -8593,10 +8594,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsGrType"
+                    "CreateTaxRegistrationCountryOptionsGrType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8635,7 +8635,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in HR.
@@ -8713,10 +8714,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8755,7 +8755,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHrIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -8812,10 +8813,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8856,7 +8856,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -8893,10 +8894,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsHrType"
+                    "CreateTaxRegistrationCountryOptionsHrType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8935,7 +8935,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in HU.
@@ -9013,10 +9014,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9055,7 +9055,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHuIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -9112,10 +9113,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9156,7 +9156,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -9193,10 +9194,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsHuType"
+                    "CreateTaxRegistrationCountryOptionsHuType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9235,7 +9235,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHuType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in ID.
@@ -9283,10 +9284,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIdType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsIdType"
+                    "CreateTaxRegistrationCountryOptionsIdType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9325,7 +9325,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIdType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in IE.
@@ -9403,10 +9404,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9445,7 +9445,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIeIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -9502,10 +9503,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9546,7 +9546,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -9583,10 +9584,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsIeType"
+                    "CreateTaxRegistrationCountryOptionsIeType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9625,7 +9625,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in IN.
@@ -9673,10 +9674,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsInType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsInType"
+                    "CreateTaxRegistrationCountryOptionsInType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9715,7 +9715,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsInType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in IS.
@@ -9795,10 +9796,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9839,7 +9839,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -9867,10 +9868,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIsType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsIsType"
+                    "CreateTaxRegistrationCountryOptionsIsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9909,7 +9909,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIsType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in IT.
@@ -9987,10 +9988,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10029,7 +10029,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsItIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -10086,10 +10087,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10130,7 +10130,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -10167,10 +10168,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsItType"
+                    "CreateTaxRegistrationCountryOptionsItType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10209,7 +10209,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsItType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in JP.
@@ -10289,10 +10290,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10333,7 +10333,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -10361,10 +10362,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsJpType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsJpType"
+                    "CreateTaxRegistrationCountryOptionsJpType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10403,7 +10403,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsJpType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in KE.
@@ -10451,10 +10452,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKeType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsKeType"
+                    "CreateTaxRegistrationCountryOptionsKeType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10493,7 +10493,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in KG.
@@ -10541,10 +10542,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKgType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsKgType"
+                    "CreateTaxRegistrationCountryOptionsKgType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10583,7 +10583,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in KH.
@@ -10631,10 +10632,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKhType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsKhType"
+                    "CreateTaxRegistrationCountryOptionsKhType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10673,7 +10673,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKhType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in KR.
@@ -10721,10 +10722,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKrType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsKrType"
+                    "CreateTaxRegistrationCountryOptionsKrType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10763,7 +10763,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in KZ.
@@ -10811,10 +10812,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKzType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsKzType"
+                    "CreateTaxRegistrationCountryOptionsKzType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10853,7 +10853,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in LA.
@@ -10901,10 +10902,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLaType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLaType"
+                    "CreateTaxRegistrationCountryOptionsLaType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10943,7 +10943,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in LK.
@@ -10991,10 +10992,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLkType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLkType"
+                    "CreateTaxRegistrationCountryOptionsLkType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11033,7 +11033,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLkType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in LT.
@@ -11111,10 +11112,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11153,7 +11153,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLtIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -11210,10 +11211,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11254,7 +11254,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -11291,10 +11292,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLtType"
+                    "CreateTaxRegistrationCountryOptionsLtType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11333,7 +11333,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLtType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in LU.
@@ -11411,10 +11412,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11453,7 +11453,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLuIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -11510,10 +11511,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11554,7 +11554,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -11591,10 +11592,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLuType"
+                    "CreateTaxRegistrationCountryOptionsLuType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11633,7 +11633,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLuType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in LV.
@@ -11711,10 +11712,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11753,7 +11753,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLvIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -11810,10 +11811,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11854,7 +11854,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -11891,10 +11892,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsLvType"
+                    "CreateTaxRegistrationCountryOptionsLvType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11933,7 +11933,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLvType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in MA.
@@ -11981,10 +11982,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMaType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMaType"
+                    "CreateTaxRegistrationCountryOptionsMaType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12023,7 +12023,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in MD.
@@ -12071,10 +12072,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMdType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMdType"
+                    "CreateTaxRegistrationCountryOptionsMdType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12113,7 +12113,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMdType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in ME.
@@ -12193,10 +12194,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12237,7 +12237,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -12265,10 +12266,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMeType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMeType"
+                    "CreateTaxRegistrationCountryOptionsMeType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12307,7 +12307,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in MK.
@@ -12387,10 +12388,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12431,7 +12431,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -12459,10 +12460,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMkType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMkType"
+                    "CreateTaxRegistrationCountryOptionsMkType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12501,7 +12501,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMkType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in MR.
@@ -12581,10 +12582,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12625,7 +12625,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -12653,10 +12654,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMrType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMrType"
+                    "CreateTaxRegistrationCountryOptionsMrType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12695,7 +12695,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in MT.
@@ -12773,10 +12774,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12815,7 +12815,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMtIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -12872,10 +12873,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12916,7 +12916,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -12953,10 +12954,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMtType"
+                    "CreateTaxRegistrationCountryOptionsMtType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12995,7 +12995,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMtType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in MX.
@@ -13043,10 +13044,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMxType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMxType"
+                    "CreateTaxRegistrationCountryOptionsMxType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13085,7 +13085,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMxType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in MY.
@@ -13133,10 +13134,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMyType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsMyType"
+                    "CreateTaxRegistrationCountryOptionsMyType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13175,7 +13175,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMyType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in NG.
@@ -13223,10 +13224,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNgType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsNgType"
+                    "CreateTaxRegistrationCountryOptionsNgType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13265,7 +13265,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in NL.
@@ -13343,10 +13344,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13385,7 +13385,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNlIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -13442,10 +13443,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13486,7 +13486,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -13523,10 +13524,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsNlType"
+                    "CreateTaxRegistrationCountryOptionsNlType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13565,7 +13565,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNlType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in NO.
@@ -13645,10 +13646,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13689,7 +13689,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -13717,10 +13718,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNoType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsNoType"
+                    "CreateTaxRegistrationCountryOptionsNoType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13759,7 +13759,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNoType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in NP.
@@ -13807,10 +13808,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNpType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsNpType"
+                    "CreateTaxRegistrationCountryOptionsNpType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13849,7 +13849,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNpType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in NZ.
@@ -13929,10 +13930,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13973,7 +13973,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -14001,10 +14002,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNzType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsNzType"
+                    "CreateTaxRegistrationCountryOptionsNzType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14043,7 +14043,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in OM.
@@ -14123,10 +14124,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14167,7 +14167,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -14195,10 +14196,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsOmType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsOmType"
+                    "CreateTaxRegistrationCountryOptionsOmType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14237,7 +14237,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsOmType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in PE.
@@ -14285,10 +14286,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPeType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsPeType"
+                    "CreateTaxRegistrationCountryOptionsPeType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14327,7 +14327,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in PH.
@@ -14375,10 +14376,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPhType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsPhType"
+                    "CreateTaxRegistrationCountryOptionsPhType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14417,7 +14417,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPhType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in PL.
@@ -14495,10 +14496,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14537,7 +14537,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPlIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -14594,10 +14595,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14638,7 +14638,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -14675,10 +14676,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsPlType"
+                    "CreateTaxRegistrationCountryOptionsPlType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14717,7 +14717,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPlType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in PT.
@@ -14795,10 +14796,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14837,7 +14837,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPtIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -14894,10 +14895,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14938,7 +14938,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -14975,10 +14976,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsPtType"
+                    "CreateTaxRegistrationCountryOptionsPtType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15017,7 +15017,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPtType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in RO.
@@ -15095,10 +15096,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15137,7 +15137,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRoIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -15194,10 +15195,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15238,7 +15238,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -15275,10 +15276,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsRoType"
+                    "CreateTaxRegistrationCountryOptionsRoType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15317,7 +15317,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRoType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in RS.
@@ -15397,10 +15398,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15441,7 +15441,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -15469,10 +15470,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRsType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsRsType"
+                    "CreateTaxRegistrationCountryOptionsRsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15511,7 +15511,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRsType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in RU.
@@ -15559,10 +15560,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRuType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsRuType"
+                    "CreateTaxRegistrationCountryOptionsRuType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15601,7 +15601,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRuType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in SA.
@@ -15649,10 +15650,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSaType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSaType"
+                    "CreateTaxRegistrationCountryOptionsSaType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15691,7 +15691,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in SE.
@@ -15769,10 +15770,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15811,7 +15811,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSeIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -15868,10 +15869,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15912,7 +15912,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -15949,10 +15950,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSeType"
+                    "CreateTaxRegistrationCountryOptionsSeType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15991,7 +15991,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in SG.
@@ -16071,10 +16072,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16115,7 +16115,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -16143,10 +16144,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSgType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSgType"
+                    "CreateTaxRegistrationCountryOptionsSgType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16185,7 +16185,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in SI.
@@ -16263,10 +16264,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16305,7 +16305,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSiIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -16362,10 +16363,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16406,7 +16406,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -16443,10 +16444,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSiType"
+                    "CreateTaxRegistrationCountryOptionsSiType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16485,7 +16485,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSiType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in SK.
@@ -16563,10 +16564,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSuppl
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16605,7 +16605,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSkIgicP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the standard registration.
@@ -16662,10 +16663,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfS
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16706,7 +16706,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in an EU country.
@@ -16743,10 +16744,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkType {
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSkType"
+                    "CreateTaxRegistrationCountryOptionsSkType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16785,7 +16785,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSkType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in SN.
@@ -16833,10 +16834,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSnType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSnType"
+                    "CreateTaxRegistrationCountryOptionsSnType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16875,7 +16875,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSnType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in SR.
@@ -16955,10 +16956,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16999,7 +16999,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -17027,10 +17028,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSrType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsSrType"
+                    "CreateTaxRegistrationCountryOptionsSrType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17069,7 +17069,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in TH.
@@ -17117,10 +17118,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsThType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsThType"
+                    "CreateTaxRegistrationCountryOptionsThType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17159,7 +17159,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsThType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in TJ.
@@ -17207,10 +17208,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTjType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsTjType"
+                    "CreateTaxRegistrationCountryOptionsTjType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17249,7 +17249,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTjType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in TR.
@@ -17297,10 +17298,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTrType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsTrType"
+                    "CreateTaxRegistrationCountryOptionsTrType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17339,7 +17339,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in TW.
@@ -17387,10 +17388,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTwType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsTwType"
+                    "CreateTaxRegistrationCountryOptionsTwType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17429,7 +17429,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTwType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in TZ.
@@ -17477,10 +17478,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTzType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsTzType"
+                    "CreateTaxRegistrationCountryOptionsTzType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17519,7 +17519,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in UA.
@@ -17567,10 +17568,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUaType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsUaType"
+                    "CreateTaxRegistrationCountryOptionsUaType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17609,7 +17609,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in UG.
@@ -17657,10 +17658,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUgType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsUgType"
+                    "CreateTaxRegistrationCountryOptionsUgType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17699,7 +17699,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in US.
@@ -17909,10 +17910,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsStateSalesTaxEle
             "simplified_sellers_use_tax" => Ok(SimplifiedSellersUseTax),
             "single_local_use_tax" => Ok(SingleLocalUseTax),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType"
+                    "CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17953,7 +17953,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in the US.
@@ -17999,10 +18000,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsType {
             "state_retail_delivery_fee" => Ok(StateRetailDeliveryFee),
             "state_sales_tax" => Ok(StateSalesTax),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsUsType"
+                    "CreateTaxRegistrationCountryOptionsUsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18041,7 +18041,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUsType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in UY.
@@ -18121,10 +18122,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18165,7 +18165,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -18193,10 +18194,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUyType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsUyType"
+                    "CreateTaxRegistrationCountryOptionsUyType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18235,7 +18235,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUyType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in UZ.
@@ -18283,10 +18284,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUzType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsUzType"
+                    "CreateTaxRegistrationCountryOptionsUzType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18325,7 +18325,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in VN.
@@ -18373,10 +18374,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsVnType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsVnType"
+                    "CreateTaxRegistrationCountryOptionsVnType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18415,7 +18415,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsVnType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in ZA.
@@ -18495,10 +18496,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18539,7 +18539,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -18567,10 +18568,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZaType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsZaType"
+                    "CreateTaxRegistrationCountryOptionsZaType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18609,7 +18609,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in ZM.
@@ -18657,10 +18658,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZmType {
         match s {
             "simplified" => Ok(Simplified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsZmType"
+                    "CreateTaxRegistrationCountryOptionsZmType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18699,7 +18699,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZmType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Options for the registration in ZW.
@@ -18779,10 +18780,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme"
+                    "CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18823,7 +18823,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of registration to be created in `country`.
@@ -18851,10 +18852,9 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZwType {
         match s {
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTaxRegistrationCountryOptionsZwType"
+                    "CreateTaxRegistrationCountryOptionsZwType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18893,7 +18893,8 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZwType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a new Tax `Registration` object.

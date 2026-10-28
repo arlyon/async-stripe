@@ -171,10 +171,9 @@ impl std::str::FromStr for TaxProductResourceTaxRateDetailsRateType {
             "flat_amount" => Ok(FlatAmount),
             "percentage" => Ok(Percentage),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "TaxProductResourceTaxRateDetailsRateType"
+                    "TaxProductResourceTaxRateDetailsRateType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -217,18 +216,26 @@ impl miniserde::Deserialize for TaxProductResourceTaxRateDetailsRateType {
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxRateDetailsRateType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxProductResourceTaxRateDetailsRateType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = TaxProductResourceTaxRateDetailsRateType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceTaxRateDetailsRateType);
+impl stripe_types::miniserde_helpers::FromValueOpt for TaxProductResourceTaxRateDetailsRateType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxRateDetailsRateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The tax type, such as `vat` or `sales_tax`.
@@ -301,11 +308,7 @@ impl std::str::FromStr for TaxProductResourceTaxRateDetailsTaxType {
             "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceTaxRateDetailsTaxType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "TaxProductResourceTaxRateDetailsTaxType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -347,17 +350,25 @@ impl miniserde::Deserialize for TaxProductResourceTaxRateDetailsTaxType {
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxRateDetailsTaxType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxProductResourceTaxRateDetailsTaxType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = TaxProductResourceTaxRateDetailsTaxType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceTaxRateDetailsTaxType);
+impl stripe_types::miniserde_helpers::FromValueOpt for TaxProductResourceTaxRateDetailsTaxType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxRateDetailsTaxType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

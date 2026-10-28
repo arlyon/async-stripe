@@ -131,10 +131,9 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionConsentPromotions {
             "opt_in" => Ok(OptIn),
             "opt_out" => Ok(OptOut),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentPagesCheckoutSessionConsentPromotions"
+                    "PaymentPagesCheckoutSessionConsentPromotions",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -178,19 +177,28 @@ impl miniserde::Deserialize for PaymentPagesCheckoutSessionConsentPromotions {
 impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionConsentPromotions> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentPagesCheckoutSessionConsentPromotions::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PaymentPagesCheckoutSessionConsentPromotions::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentPagesCheckoutSessionConsentPromotions);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentPagesCheckoutSessionConsentPromotions
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentPromotions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If `accepted`, the customer in this Checkout Session has agreed to the merchant's terms of service.
@@ -218,10 +226,9 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionConsentTermsOfService {
         match s {
             "accepted" => Ok(Accepted),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentPagesCheckoutSessionConsentTermsOfService"
+                    "PaymentPagesCheckoutSessionConsentTermsOfService",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -265,19 +272,27 @@ impl miniserde::Deserialize for PaymentPagesCheckoutSessionConsentTermsOfService
 impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionConsentTermsOfService> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentPagesCheckoutSessionConsentTermsOfService::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = PaymentPagesCheckoutSessionConsentTermsOfService::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentPagesCheckoutSessionConsentTermsOfService);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentPagesCheckoutSessionConsentTermsOfService
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentTermsOfService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

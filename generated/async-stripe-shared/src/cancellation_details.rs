@@ -163,11 +163,7 @@ impl std::str::FromStr for CancellationDetailsFeedback {
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CancellationDetailsFeedback"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CancellationDetailsFeedback");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -209,18 +205,26 @@ impl miniserde::Deserialize for CancellationDetailsFeedback {
 impl miniserde::de::Visitor for crate::Place<CancellationDetailsFeedback> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CancellationDetailsFeedback::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = CancellationDetailsFeedback::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CancellationDetailsFeedback);
+impl stripe_types::miniserde_helpers::FromValueOpt for CancellationDetailsFeedback {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CancellationDetailsFeedback {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Why this subscription was canceled.
@@ -257,7 +261,7 @@ impl std::str::FromStr for CancellationDetailsReason {
             "payment_disputed" => Ok(PaymentDisputed),
             "payment_failed" => Ok(PaymentFailed),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CancellationDetailsReason");
+                stripe_types::warn_unknown_enum_value(v, "CancellationDetailsReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -299,17 +303,25 @@ impl miniserde::Deserialize for CancellationDetailsReason {
 impl miniserde::de::Visitor for crate::Place<CancellationDetailsReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CancellationDetailsReason::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = CancellationDetailsReason::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CancellationDetailsReason);
+impl stripe_types::miniserde_helpers::FromValueOpt for CancellationDetailsReason {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CancellationDetailsReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

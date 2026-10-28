@@ -1107,10 +1107,9 @@ impl std::str::FromStr for IssuingCardholderSpendingLimitCategories {
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IssuingCardholderSpendingLimitCategories"
+                    "IssuingCardholderSpendingLimitCategories",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1153,18 +1152,26 @@ impl miniserde::Deserialize for IssuingCardholderSpendingLimitCategories {
 impl miniserde::de::Visitor for crate::Place<IssuingCardholderSpendingLimitCategories> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingCardholderSpendingLimitCategories::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = IssuingCardholderSpendingLimitCategories::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardholderSpendingLimitCategories);
+impl stripe_types::miniserde_helpers::FromValueOpt for IssuingCardholderSpendingLimitCategories {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderSpendingLimitCategories {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Interval (or event) to which the amount applies.
@@ -1207,11 +1214,7 @@ impl std::str::FromStr for IssuingCardholderSpendingLimitInterval {
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardholderSpendingLimitInterval"
-                );
+                stripe_types::warn_unknown_enum_value(v, "IssuingCardholderSpendingLimitInterval");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1253,17 +1256,25 @@ impl miniserde::Deserialize for IssuingCardholderSpendingLimitInterval {
 impl miniserde::de::Visitor for crate::Place<IssuingCardholderSpendingLimitInterval> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingCardholderSpendingLimitInterval::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = IssuingCardholderSpendingLimitInterval::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardholderSpendingLimitInterval);
+impl stripe_types::miniserde_helpers::FromValueOpt for IssuingCardholderSpendingLimitInterval {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderSpendingLimitInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

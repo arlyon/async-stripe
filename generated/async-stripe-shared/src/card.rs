@@ -463,7 +463,7 @@ impl std::str::FromStr for CardAllowRedisplay {
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CardAllowRedisplay");
+                stripe_types::warn_unknown_enum_value(v, "CardAllowRedisplay");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -505,18 +505,26 @@ impl miniserde::Deserialize for CardAllowRedisplay {
 impl miniserde::de::Visitor for crate::Place<CardAllowRedisplay> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CardAllowRedisplay::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = CardAllowRedisplay::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CardAllowRedisplay);
+impl stripe_types::miniserde_helpers::FromValueOpt for CardAllowRedisplay {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CardAllowRedisplay {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// A set of available payout methods for this card.
@@ -548,7 +556,7 @@ impl std::str::FromStr for CardAvailablePayoutMethods {
             "instant" => Ok(Instant),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CardAvailablePayoutMethods");
+                stripe_types::warn_unknown_enum_value(v, "CardAvailablePayoutMethods");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -590,18 +598,26 @@ impl miniserde::Deserialize for CardAvailablePayoutMethods {
 impl miniserde::de::Visitor for crate::Place<CardAvailablePayoutMethods> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CardAvailablePayoutMethods::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = CardAvailablePayoutMethods::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CardAvailablePayoutMethods);
+impl stripe_types::miniserde_helpers::FromValueOpt for CardAvailablePayoutMethods {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CardAvailablePayoutMethods {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Status of a card based on the card issuer.
@@ -632,7 +648,7 @@ impl std::str::FromStr for CardRegulatedStatus {
             "regulated" => Ok(Regulated),
             "unregulated" => Ok(Unregulated),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CardRegulatedStatus");
+                stripe_types::warn_unknown_enum_value(v, "CardRegulatedStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -674,18 +690,26 @@ impl miniserde::Deserialize for CardRegulatedStatus {
 impl miniserde::de::Visitor for crate::Place<CardRegulatedStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CardRegulatedStatus::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = CardRegulatedStatus::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CardRegulatedStatus);
+impl stripe_types::miniserde_helpers::FromValueOpt for CardRegulatedStatus {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CardRegulatedStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 impl stripe_types::Object for Card {

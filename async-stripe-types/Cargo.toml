@@ -19,6 +19,7 @@ serde.workspace = true
 smol_str.workspace = true
 miniserde.workspace = true
 serde_json = { workspace = true, optional = true }
+tracing = { version = "0.1", default-features = false }
 
 
 [features]

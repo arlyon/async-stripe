@@ -271,11 +271,7 @@ impl std::str::FromStr for CreateBillingMeterCustomerMappingType {
         match s {
             "by_id" => Ok(ById),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingMeterCustomerMappingType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateBillingMeterCustomerMappingType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -312,7 +308,8 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterCustomerMappingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The default settings to aggregate a meter's events with.
@@ -365,10 +362,9 @@ impl std::str::FromStr for CreateBillingMeterDefaultAggregationFormula {
             "last" => Ok(Last),
             "sum" => Ok(Sum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingMeterDefaultAggregationFormula"
+                    "CreateBillingMeterDefaultAggregationFormula",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -407,7 +403,8 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterDefaultAggregationFormul
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Fields that specify how to calculate a meter event's value.

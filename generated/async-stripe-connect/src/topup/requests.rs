@@ -75,7 +75,7 @@ impl std::str::FromStr for ListTopupStatus {
             "pending" => Ok(Pending),
             "succeeded" => Ok(Succeeded),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListTopupStatus");
+                stripe_types::warn_unknown_enum_value(v, "ListTopupStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -112,7 +112,8 @@ impl<'de> serde::Deserialize<'de> for ListTopupStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Returns a list of top-ups.
@@ -392,10 +393,9 @@ impl std::str::FromStr for CreateTopupPaymentMethodOptionsUsBankAccountNetwork {
         match s {
             "ach" => Ok(Ach),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTopupPaymentMethodOptionsUsBankAccountNetwork"
+                    "CreateTopupPaymentMethodOptionsUsBankAccountNetwork",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -434,7 +434,8 @@ impl<'de> serde::Deserialize<'de> for CreateTopupPaymentMethodOptionsUsBankAccou
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Top up the balance of an account

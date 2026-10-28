@@ -128,7 +128,7 @@ impl std::str::FromStr for GelatoPhoneReportErrorCode {
             "phone_unverified_other" => Ok(PhoneUnverifiedOther),
             "phone_verification_declined" => Ok(PhoneVerificationDeclined),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoPhoneReportErrorCode");
+                stripe_types::warn_unknown_enum_value(v, "GelatoPhoneReportErrorCode");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -170,17 +170,25 @@ impl miniserde::Deserialize for GelatoPhoneReportErrorCode {
 impl miniserde::de::Visitor for crate::Place<GelatoPhoneReportErrorCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(GelatoPhoneReportErrorCode::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = GelatoPhoneReportErrorCode::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoPhoneReportErrorCode);
+impl stripe_types::miniserde_helpers::FromValueOpt for GelatoPhoneReportErrorCode {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoPhoneReportErrorCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

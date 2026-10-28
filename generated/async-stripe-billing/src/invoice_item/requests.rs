@@ -426,11 +426,7 @@ impl std::str::FromStr for CreateInvoiceItemPriceDataTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateInvoiceItemPriceDataTaxBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateInvoiceItemPriceDataTaxBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -467,7 +463,8 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceItemPriceDataTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -504,11 +501,7 @@ impl std::str::FromStr for CreateInvoiceItemTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateInvoiceItemTaxBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateInvoiceItemTaxBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -545,7 +538,8 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceItemTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
@@ -865,11 +859,7 @@ impl std::str::FromStr for UpdateInvoiceItemPriceDataTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateInvoiceItemPriceDataTaxBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateInvoiceItemPriceDataTaxBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -906,7 +896,8 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceItemPriceDataTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -943,11 +934,7 @@ impl std::str::FromStr for UpdateInvoiceItemTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateInvoiceItemTaxBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateInvoiceItemTaxBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -984,7 +971,8 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceItemTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates the amount or description of an invoice item on an upcoming invoice.

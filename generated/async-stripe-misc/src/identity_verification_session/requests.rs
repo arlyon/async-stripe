@@ -380,10 +380,9 @@ impl std::str::FromStr for CreateIdentityVerificationSessionOptionsDocumentAllow
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIdentityVerificationSessionOptionsDocumentAllowedTypes"
+                    "CreateIdentityVerificationSessionOptionsDocumentAllowedTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -422,7 +421,8 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionOptionsDo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Tokens referencing a Person resource and its associated account.
@@ -476,11 +476,7 @@ impl std::str::FromStr for CreateIdentityVerificationSessionType {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIdentityVerificationSessionType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateIdentityVerificationSessionType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -517,7 +513,8 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a VerificationSession object.
@@ -767,10 +764,9 @@ impl std::str::FromStr for UpdateIdentityVerificationSessionOptionsDocumentAllow
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes"
+                    "UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -809,7 +805,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionOptionsDo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
@@ -840,11 +837,7 @@ impl std::str::FromStr for UpdateIdentityVerificationSessionType {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIdentityVerificationSessionType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateIdentityVerificationSessionType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -881,7 +874,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates a VerificationSession object.

@@ -174,10 +174,9 @@ impl std::str::FromStr for CreateFinancialConnectionsSessionAccountHolderType {
             "account" => Ok(Account),
             "customer" => Ok(Customer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateFinancialConnectionsSessionAccountHolderType"
+                    "CreateFinancialConnectionsSessionAccountHolderType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -216,7 +215,8 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionAccountHo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Filters to restrict the kinds of accounts to collect.
@@ -291,10 +291,9 @@ impl std::str::FromStr for CreateFinancialConnectionsSessionFiltersAccountSubcat
             "mortgage" => Ok(Mortgage),
             "savings" => Ok(Savings),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateFinancialConnectionsSessionFiltersAccountSubcategories"
+                    "CreateFinancialConnectionsSessionFiltersAccountSubcategories",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -333,7 +332,8 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionFiltersAc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether the session should require payment method support and successful account number retrieval before completion.
@@ -367,10 +367,9 @@ impl std::str::FromStr for CreateFinancialConnectionsSessionFiltersRequirePaymen
             "at_least_one" => Ok(AtLeastOne),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport"
+                    "CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -413,7 +412,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Settings for configuring Session-specific limits.
@@ -489,10 +489,9 @@ impl std::str::FromStr for CreateFinancialConnectionsSessionManualEntryMode {
             "automatic" => Ok(Automatic),
             "disabled" => Ok(Disabled),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateFinancialConnectionsSessionManualEntryMode"
+                    "CreateFinancialConnectionsSessionManualEntryMode",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -531,7 +530,8 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionManualEnt
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// To launch the Financial Connections authorization flow, create a `Session`.

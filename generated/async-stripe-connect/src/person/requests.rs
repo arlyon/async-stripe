@@ -679,10 +679,9 @@ impl std::str::FromStr for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicit
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity"
+                    "CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -721,7 +720,8 @@ impl<'de> serde::Deserialize<'de> for CreateAccountPersonUsCfpbDataEthnicityDeta
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The persons race details
@@ -846,10 +846,9 @@ impl std::str::FromStr for CreateAccountPersonUsCfpbDataRaceDetailsRace {
             "vietnamese" => Ok(Vietnamese),
             "white" => Ok(White),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateAccountPersonUsCfpbDataRaceDetailsRace"
+                    "CreateAccountPersonUsCfpbDataRaceDetailsRace",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -888,7 +887,8 @@ impl<'de> serde::Deserialize<'de> for CreateAccountPersonUsCfpbDataRaceDetailsRa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a new person.
@@ -1500,10 +1500,9 @@ impl std::str::FromStr for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePersonUsCfpbDataEthnicityDetailsEthnicity"
+                    "UpdatePersonUsCfpbDataEthnicityDetailsEthnicity",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1542,7 +1541,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePersonUsCfpbDataEthnicityDetailsEthn
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The persons race details
@@ -1667,11 +1667,7 @@ impl std::str::FromStr for UpdatePersonUsCfpbDataRaceDetailsRace {
             "vietnamese" => Ok(Vietnamese),
             "white" => Ok(White),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePersonUsCfpbDataRaceDetailsRace"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdatePersonUsCfpbDataRaceDetailsRace");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1708,7 +1704,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePersonUsCfpbDataRaceDetailsRace {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates an existing person.

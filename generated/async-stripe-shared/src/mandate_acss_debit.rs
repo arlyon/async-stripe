@@ -157,7 +157,7 @@ impl std::str::FromStr for MandateAcssDebitDefaultFor {
             "invoice" => Ok(Invoice),
             "subscription" => Ok(Subscription),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandateAcssDebitDefaultFor");
+                stripe_types::warn_unknown_enum_value(v, "MandateAcssDebitDefaultFor");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -199,18 +199,26 @@ impl miniserde::Deserialize for MandateAcssDebitDefaultFor {
 impl miniserde::de::Visitor for crate::Place<MandateAcssDebitDefaultFor> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(MandateAcssDebitDefaultFor::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = MandateAcssDebitDefaultFor::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(MandateAcssDebitDefaultFor);
+impl stripe_types::miniserde_helpers::FromValueOpt for MandateAcssDebitDefaultFor {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateAcssDebitDefaultFor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Payment schedule for the mandate.
@@ -244,11 +252,7 @@ impl std::str::FromStr for MandateAcssDebitPaymentSchedule {
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandateAcssDebitPaymentSchedule"
-                );
+                stripe_types::warn_unknown_enum_value(v, "MandateAcssDebitPaymentSchedule");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -290,18 +294,26 @@ impl miniserde::Deserialize for MandateAcssDebitPaymentSchedule {
 impl miniserde::de::Visitor for crate::Place<MandateAcssDebitPaymentSchedule> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(MandateAcssDebitPaymentSchedule::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = MandateAcssDebitPaymentSchedule::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(MandateAcssDebitPaymentSchedule);
+impl stripe_types::miniserde_helpers::FromValueOpt for MandateAcssDebitPaymentSchedule {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateAcssDebitPaymentSchedule {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Transaction type of the mandate.
@@ -332,11 +344,7 @@ impl std::str::FromStr for MandateAcssDebitTransactionType {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandateAcssDebitTransactionType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "MandateAcssDebitTransactionType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -378,17 +386,25 @@ impl miniserde::Deserialize for MandateAcssDebitTransactionType {
 impl miniserde::de::Visitor for crate::Place<MandateAcssDebitTransactionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(MandateAcssDebitTransactionType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = MandateAcssDebitTransactionType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(MandateAcssDebitTransactionType);
+impl stripe_types::miniserde_helpers::FromValueOpt for MandateAcssDebitTransactionType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateAcssDebitTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

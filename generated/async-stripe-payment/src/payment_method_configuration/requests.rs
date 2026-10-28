@@ -493,10 +493,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAcssDebitDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -539,7 +538,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
@@ -626,10 +626,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAffirmDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -672,7 +671,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://docs.stripe.com/payments/afterpay-clearpay) for more details like country availability.
@@ -762,10 +762,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -816,7 +815,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
@@ -904,10 +904,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAlipayDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -950,7 +949,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Alma is a Buy Now, Pay Later payment method that offers customers the ability to pay in 2, 3, or 4 installments.
@@ -1035,10 +1035,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAlmaDisplayPreference
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1079,7 +1078,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
@@ -1164,10 +1164,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAmazonPayDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1210,7 +1209,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users can accept [Apple Pay](https://stripe.com/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
@@ -1297,10 +1297,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationApplePayDisplayPrefer
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1343,7 +1342,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
@@ -1431,10 +1431,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1479,7 +1478,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
@@ -1565,10 +1565,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAuBecsDebitDisplayPre
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1611,7 +1610,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://docs.stripe.com/payments/payment-methods/bacs-debit) for more details.
@@ -1696,10 +1696,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBacsDebitDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1742,7 +1741,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
@@ -1829,10 +1829,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBancontactDisplayPref
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1875,7 +1874,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Billie is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method that offers businesses Pay by Invoice where they offer payment terms ranging from 7-120 days.
@@ -1962,10 +1962,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBillieDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationBillieDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationBillieDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2008,7 +2007,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// To enable Bizum, buyers need a Spanish IBAN from a bank connected to Bizum.
@@ -2094,10 +2094,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBizumDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationBizumDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationBizumDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2138,7 +2137,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// BLIK is a [single use](https://docs.stripe.com/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
@@ -2225,10 +2225,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBlikDisplayPreference
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationBlikDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationBlikDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2269,7 +2268,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
@@ -2355,10 +2355,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBoletoDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2401,7 +2400,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Cards are a popular way for consumers and businesses to pay online or in person.
@@ -2487,10 +2487,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationCardDisplayPreference
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationCardDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationCardDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2531,7 +2530,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Cartes Bancaires is France's local card network.
@@ -2622,10 +2622,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2676,7 +2675,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
@@ -2762,10 +2762,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationCashappDisplayPrefere
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationCashappDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationCashappDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2808,7 +2807,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// [Stablecoin payments](https://docs.stripe.com/payments/stablecoin-payments) enable customers to pay in stablecoins like USDC from 100s of wallets including Phantom and Metamask.
@@ -2893,10 +2893,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationCryptoDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2939,7 +2938,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Uses a customer’s [cash balance](https://docs.stripe.com/payments/customer-balance) for the payment.
@@ -3030,10 +3030,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3084,7 +3083,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
@@ -3171,10 +3171,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationEpsDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationEpsDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationEpsDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3215,7 +3214,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
@@ -3303,10 +3303,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationFpxDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationFpxDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationFpxDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3347,7 +3346,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
@@ -3438,10 +3438,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3492,7 +3491,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// giropay is a German payment method based on online banking, introduced in 2006.
@@ -3581,10 +3581,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationGiropayDisplayPrefere
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3627,7 +3626,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
@@ -3714,10 +3714,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationGooglePayDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3760,7 +3759,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
@@ -3847,10 +3847,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationGrabpayDisplayPrefere
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3893,7 +3892,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
@@ -3980,10 +3980,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationIdealDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationIdealDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationIdealDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4024,7 +4023,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// JCB is a credit card company based in Japan.
@@ -4111,10 +4111,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationJcbDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationJcbDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationJcbDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4155,7 +4154,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Kakao Pay is a popular local wallet available in South Korea.
@@ -4240,10 +4240,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationKakaoPayDisplayPrefer
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4286,7 +4285,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Klarna gives customers a range of [payment options](https://docs.stripe.com/payments/klarna#payment-options) during checkout.
@@ -4374,10 +4374,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationKlarnaDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4420,7 +4419,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
@@ -4506,10 +4506,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationKonbiniDisplayPrefere
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4552,7 +4551,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Korean cards let users pay using locally issued cards from South Korea.
@@ -4637,10 +4637,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationKrCardDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4683,7 +4682,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// [Link](https://docs.stripe.com/payments/link) is a payment method network.
@@ -4769,10 +4769,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationLinkDisplayPreference
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationLinkDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationLinkDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4813,7 +4812,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// MB WAY is the most popular wallet in Portugal.
@@ -4900,10 +4900,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationMbWayDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4944,7 +4943,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// MobilePay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
@@ -5031,10 +5031,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationMobilepayDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5077,7 +5076,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in Europe and the United States can accept Multibanco payments from customers in Portugal using [Sources](https://stripe.com/docs/sources)—a single integration path for creating payments using any supported method.
@@ -5162,10 +5162,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationMultibancoDisplayPref
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5208,7 +5207,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Naver Pay is a popular local wallet available in South Korea.
@@ -5293,10 +5293,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationNaverPayDisplayPrefer
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5339,7 +5338,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in New Zealand can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with a New Zeland bank account.
@@ -5428,10 +5428,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5476,7 +5475,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
@@ -5563,10 +5563,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationOxxoDisplayPreference
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5607,7 +5606,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
@@ -5694,10 +5694,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationP24DisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationP24DisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationP24DisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5738,7 +5737,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Pay by bank is a redirect payment method backed by bank transfers.
@@ -5825,10 +5825,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPayByBankDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5871,7 +5870,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// PAYCO is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
@@ -5956,10 +5956,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPaycoDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6000,7 +5999,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
@@ -6086,10 +6086,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPaynowDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6132,7 +6131,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
@@ -6218,10 +6218,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPaypalDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6264,7 +6263,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// PayTo is a [real-time](https://docs.stripe.com/payments/real-time) payment method that enables customers in Australia to pay by providing their bank account details.
@@ -6351,10 +6351,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPaytoDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationPaytoDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationPaytoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6395,7 +6394,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Pix is a payment method popular in Brazil.
@@ -6482,10 +6482,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPixDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationPixDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationPixDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6526,7 +6525,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
@@ -6612,10 +6612,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPromptpayDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6658,7 +6657,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
@@ -6744,10 +6744,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationRevolutPayDisplayPref
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6790,7 +6789,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Samsung Pay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
@@ -6875,10 +6875,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSamsungPayDisplayPref
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6921,7 +6920,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Satispay is a [single-use](/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
@@ -7008,10 +7008,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSatispayDisplayPrefer
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7054,7 +7053,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Scalapay is a [single-use](/payments/payment-methods#usage) payment method that lets customers pay in 3 or 4 installments.
@@ -7141,10 +7141,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationScalapayDisplayPrefer
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7187,7 +7186,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
@@ -7273,10 +7273,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSepaDebitDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7319,7 +7318,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
@@ -7405,10 +7405,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSofortDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationSofortDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationSofortDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7451,7 +7450,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Sunbit is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers choose to pay in 3, 6, or 12 installments.
@@ -7538,10 +7538,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSunbitDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7584,7 +7583,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Swish is a [real-time](https://docs.stripe.com/payments/real-time) payment method popular in Sweden.
@@ -7671,10 +7671,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSwishDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationSwishDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationSwishDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7715,7 +7714,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Twint is a payment method popular in Switzerland.
@@ -7802,10 +7802,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationTwintDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationTwintDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationTwintDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7846,7 +7845,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Unified Payment Interface (UPI) is India's leading payment method with exponential growth since it launched in 2016.
@@ -7931,10 +7931,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationUpiDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationUpiDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationUpiDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7975,7 +7974,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
@@ -8064,10 +8064,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8112,7 +8111,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
@@ -8200,10 +8200,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationWechatPayDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8246,7 +8245,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Zip gives your customers a way to split purchases over a series of payments.
@@ -8332,10 +8332,9 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationZipDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentMethodConfigurationZipDisplayPreferencePreference"
+                    "CreatePaymentMethodConfigurationZipDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8376,7 +8375,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a payment method configuration
@@ -9191,10 +9191,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAcssDebitDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9237,7 +9236,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
@@ -9324,10 +9324,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAffirmDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9370,7 +9369,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://docs.stripe.com/payments/afterpay-clearpay) for more details like country availability.
@@ -9460,10 +9460,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9514,7 +9513,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
@@ -9602,10 +9602,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAlipayDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9648,7 +9647,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Alma is a Buy Now, Pay Later payment method that offers customers the ability to pay in 2, 3, or 4 installments.
@@ -9733,10 +9733,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAlmaDisplayPreference
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9777,7 +9776,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
@@ -9862,10 +9862,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAmazonPayDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9908,7 +9907,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users can accept [Apple Pay](https://stripe.com/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
@@ -9995,10 +9995,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationApplePayDisplayPrefer
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10041,7 +10040,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
@@ -10129,10 +10129,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10177,7 +10176,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
@@ -10263,10 +10263,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPre
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10309,7 +10308,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://docs.stripe.com/payments/payment-methods/bacs-debit) for more details.
@@ -10394,10 +10394,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBacsDebitDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10440,7 +10439,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
@@ -10527,10 +10527,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBancontactDisplayPref
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10573,7 +10572,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Billie is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method that offers businesses Pay by Invoice where they offer payment terms ranging from 7-120 days.
@@ -10660,10 +10660,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBillieDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10706,7 +10705,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// To enable Bizum, buyers need a Spanish IBAN from a bank connected to Bizum.
@@ -10792,10 +10792,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBizumDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10836,7 +10835,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// BLIK is a [single use](https://docs.stripe.com/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
@@ -10923,10 +10923,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBlikDisplayPreference
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10967,7 +10966,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
@@ -11053,10 +11053,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBoletoDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11099,7 +11098,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Cards are a popular way for consumers and businesses to pay online or in person.
@@ -11185,10 +11185,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationCardDisplayPreference
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationCardDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationCardDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11229,7 +11228,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Cartes Bancaires is France's local card network.
@@ -11320,10 +11320,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11374,7 +11373,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
@@ -11460,10 +11460,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationCashappDisplayPrefere
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11506,7 +11505,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// [Stablecoin payments](https://docs.stripe.com/payments/stablecoin-payments) enable customers to pay in stablecoins like USDC from 100s of wallets including Phantom and Metamask.
@@ -11591,10 +11591,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationCryptoDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11637,7 +11636,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Uses a customer’s [cash balance](https://docs.stripe.com/payments/customer-balance) for the payment.
@@ -11728,10 +11728,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11782,7 +11781,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
@@ -11869,10 +11869,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationEpsDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11913,7 +11912,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
@@ -12001,10 +12001,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationFpxDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12045,7 +12044,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
@@ -12136,10 +12136,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12190,7 +12189,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// giropay is a German payment method based on online banking, introduced in 2006.
@@ -12279,10 +12279,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationGiropayDisplayPrefere
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12325,7 +12324,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
@@ -12412,10 +12412,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationGooglePayDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12458,7 +12457,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
@@ -12545,10 +12545,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationGrabpayDisplayPrefere
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12591,7 +12590,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
@@ -12678,10 +12678,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationIdealDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12722,7 +12721,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// JCB is a credit card company based in Japan.
@@ -12809,10 +12809,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationJcbDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12853,7 +12852,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Kakao Pay is a popular local wallet available in South Korea.
@@ -12938,10 +12938,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationKakaoPayDisplayPrefer
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12984,7 +12983,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Klarna gives customers a range of [payment options](https://docs.stripe.com/payments/klarna#payment-options) during checkout.
@@ -13072,10 +13072,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationKlarnaDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13118,7 +13117,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
@@ -13204,10 +13204,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationKonbiniDisplayPrefere
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13250,7 +13249,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Korean cards let users pay using locally issued cards from South Korea.
@@ -13335,10 +13335,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationKrCardDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13381,7 +13380,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// [Link](https://docs.stripe.com/payments/link) is a payment method network.
@@ -13467,10 +13467,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationLinkDisplayPreference
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13511,7 +13510,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// MB WAY is the most popular wallet in Portugal.
@@ -13598,10 +13598,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationMbWayDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13642,7 +13641,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// MobilePay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
@@ -13729,10 +13729,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationMobilepayDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13775,7 +13774,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in Europe and the United States can accept Multibanco payments from customers in Portugal using [Sources](https://stripe.com/docs/sources)—a single integration path for creating payments using any supported method.
@@ -13860,10 +13860,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationMultibancoDisplayPref
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13906,7 +13905,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Naver Pay is a popular local wallet available in South Korea.
@@ -13991,10 +13991,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationNaverPayDisplayPrefer
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14037,7 +14036,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in New Zealand can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with a New Zeland bank account.
@@ -14126,10 +14126,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14174,7 +14173,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
@@ -14261,10 +14261,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationOxxoDisplayPreference
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14305,7 +14304,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
@@ -14392,10 +14392,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationP24DisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationP24DisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationP24DisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14436,7 +14435,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Pay by bank is a redirect payment method backed by bank transfers.
@@ -14523,10 +14523,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPayByBankDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14569,7 +14568,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// PAYCO is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
@@ -14654,10 +14654,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPaycoDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14698,7 +14697,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
@@ -14784,10 +14784,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPaynowDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14830,7 +14829,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
@@ -14916,10 +14916,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPaypalDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14962,7 +14961,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// PayTo is a [real-time](https://docs.stripe.com/payments/real-time) payment method that enables customers in Australia to pay by providing their bank account details.
@@ -15049,10 +15049,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPaytoDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationPaytoDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationPaytoDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15093,7 +15092,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Pix is a payment method popular in Brazil.
@@ -15180,10 +15180,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPixDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationPixDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationPixDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15224,7 +15223,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
@@ -15310,10 +15310,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPromptpayDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15356,7 +15355,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
@@ -15442,10 +15442,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationRevolutPayDisplayPref
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15488,7 +15487,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Samsung Pay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
@@ -15573,10 +15573,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSamsungPayDisplayPref
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15619,7 +15618,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Satispay is a [single-use](/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
@@ -15706,10 +15706,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSatispayDisplayPrefer
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15752,7 +15751,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Scalapay is a [single-use](/payments/payment-methods#usage) payment method that lets customers pay in 3 or 4 installments.
@@ -15839,10 +15839,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationScalapayDisplayPrefer
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15885,7 +15884,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
@@ -15971,10 +15971,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSepaDebitDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16017,7 +16016,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
@@ -16103,10 +16103,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSofortDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16149,7 +16148,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Sunbit is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers choose to pay in 3, 6, or 12 installments.
@@ -16236,10 +16236,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSunbitDisplayPreferen
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16282,7 +16281,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Swish is a [real-time](https://docs.stripe.com/payments/real-time) payment method popular in Sweden.
@@ -16369,10 +16369,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSwishDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16413,7 +16412,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Twint is a payment method popular in Switzerland.
@@ -16500,10 +16500,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationTwintDisplayPreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16544,7 +16543,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Unified Payment Interface (UPI) is India's leading payment method with exponential growth since it launched in 2016.
@@ -16629,10 +16629,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationUpiDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16673,7 +16672,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
@@ -16762,10 +16762,9 @@ impl std::str::FromStr
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16810,7 +16809,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
@@ -16898,10 +16898,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationWechatPayDisplayPrefe
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16944,7 +16943,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Zip gives your customers a way to split purchases over a series of payments.
@@ -17030,10 +17030,9 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationZipDisplayPreferenceP
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentMethodConfigurationZipDisplayPreferencePreference"
+                    "UpdatePaymentMethodConfigurationZipDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17074,7 +17073,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Update payment method configuration

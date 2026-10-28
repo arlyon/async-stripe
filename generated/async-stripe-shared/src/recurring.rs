@@ -166,7 +166,7 @@ impl std::str::FromStr for RecurringInterval {
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RecurringInterval");
+                stripe_types::warn_unknown_enum_value(v, "RecurringInterval");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -208,18 +208,26 @@ impl miniserde::Deserialize for RecurringInterval {
 impl miniserde::de::Visitor for crate::Place<RecurringInterval> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(RecurringInterval::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = RecurringInterval::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(RecurringInterval);
+impl stripe_types::miniserde_helpers::FromValueOpt for RecurringInterval {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configures how the quantity per period should be determined.
@@ -254,7 +262,7 @@ impl std::str::FromStr for RecurringUsageType {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RecurringUsageType");
+                stripe_types::warn_unknown_enum_value(v, "RecurringUsageType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -296,17 +304,25 @@ impl miniserde::Deserialize for RecurringUsageType {
 impl miniserde::de::Visitor for crate::Place<RecurringUsageType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(RecurringUsageType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = RecurringUsageType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(RecurringUsageType);
+impl stripe_types::miniserde_helpers::FromValueOpt for RecurringUsageType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RecurringUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

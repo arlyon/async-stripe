@@ -589,10 +589,9 @@ impl std::str::FromStr for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavi
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior"
+                    "CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -631,7 +630,8 @@ impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataCurrencyOptio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Each element represents a pricing tier.
@@ -754,10 +754,9 @@ impl std::str::FromStr for CreateProductDefaultPriceDataRecurringInterval {
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateProductDefaultPriceDataRecurringInterval"
+                    "CreateProductDefaultPriceDataRecurringInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -796,7 +795,8 @@ impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataRecurringInte
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -833,10 +833,9 @@ impl std::str::FromStr for CreateProductDefaultPriceDataTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateProductDefaultPriceDataTaxBehavior"
+                    "CreateProductDefaultPriceDataTaxBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -874,7 +873,8 @@ impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a new product object.

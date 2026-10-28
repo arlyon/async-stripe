@@ -248,7 +248,7 @@ impl std::str::FromStr for ReserveReleaseCreatedBy {
             "application" => Ok(Application),
             "stripe" => Ok(Stripe),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReserveReleaseCreatedBy");
+                stripe_types::warn_unknown_enum_value(v, "ReserveReleaseCreatedBy");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -290,18 +290,26 @@ impl miniserde::Deserialize for ReserveReleaseCreatedBy {
 impl miniserde::de::Visitor for crate::Place<ReserveReleaseCreatedBy> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReserveReleaseCreatedBy::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ReserveReleaseCreatedBy::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReserveReleaseCreatedBy);
+impl stripe_types::miniserde_helpers::FromValueOpt for ReserveReleaseCreatedBy {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReserveReleaseCreatedBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The reason for the ReserveRelease, indicating why the funds were released.
@@ -338,7 +346,7 @@ impl std::str::FromStr for ReserveReleaseReason {
             "hold_reversed" => Ok(HoldReversed),
             "plan_disabled" => Ok(PlanDisabled),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReserveReleaseReason");
+                stripe_types::warn_unknown_enum_value(v, "ReserveReleaseReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -380,18 +388,26 @@ impl miniserde::Deserialize for ReserveReleaseReason {
 impl miniserde::de::Visitor for crate::Place<ReserveReleaseReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReserveReleaseReason::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ReserveReleaseReason::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReserveReleaseReason);
+impl stripe_types::miniserde_helpers::FromValueOpt for ReserveReleaseReason {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReserveReleaseReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 impl stripe_types::Object for ReserveRelease {

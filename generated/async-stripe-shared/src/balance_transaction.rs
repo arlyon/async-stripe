@@ -291,11 +291,7 @@ impl std::str::FromStr for BalanceTransactionBalanceType {
             "refund_and_dispute_prefunding" => Ok(RefundAndDisputePrefunding),
             "risk_reserved" => Ok(RiskReserved),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BalanceTransactionBalanceType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "BalanceTransactionBalanceType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -337,18 +333,26 @@ impl miniserde::Deserialize for BalanceTransactionBalanceType {
 impl miniserde::de::Visitor for crate::Place<BalanceTransactionBalanceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BalanceTransactionBalanceType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = BalanceTransactionBalanceType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BalanceTransactionBalanceType);
+impl stripe_types::miniserde_helpers::FromValueOpt for BalanceTransactionBalanceType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BalanceTransactionBalanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Transaction type: `tax_fund`, `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`, `contribution`, `inbound_transfer`, `inbound_transfer_reversal`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`, `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `payout_minimum_balance_hold`, `payout_minimum_balance_release`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `reserve_hold`, `reserve_release`, `stripe_fee`, `stripe_fx_fee`, `stripe_balance_payment_debit`, `stripe_balance_payment_debit_reversal`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, `transfer_refund`, or `fee_credit_funding`.
@@ -525,7 +529,7 @@ impl std::str::FromStr for BalanceTransactionType {
             "transfer_failure" => Ok(TransferFailure),
             "transfer_refund" => Ok(TransferRefund),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BalanceTransactionType");
+                stripe_types::warn_unknown_enum_value(v, "BalanceTransactionType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -567,18 +571,26 @@ impl miniserde::Deserialize for BalanceTransactionType {
 impl miniserde::de::Visitor for crate::Place<BalanceTransactionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BalanceTransactionType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = BalanceTransactionType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BalanceTransactionType);
+impl stripe_types::miniserde_helpers::FromValueOpt for BalanceTransactionType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 impl stripe_types::Object for BalanceTransaction {

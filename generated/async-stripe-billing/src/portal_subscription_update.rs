@@ -190,10 +190,9 @@ impl std::str::FromStr for PortalSubscriptionUpdateBillingCycleAnchor {
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PortalSubscriptionUpdateBillingCycleAnchor"
+                    "PortalSubscriptionUpdateBillingCycleAnchor",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -237,19 +236,26 @@ impl miniserde::Deserialize for PortalSubscriptionUpdateBillingCycleAnchor {
 impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateBillingCycleAnchor> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PortalSubscriptionUpdateBillingCycleAnchor::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PortalSubscriptionUpdateBillingCycleAnchor::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateBillingCycleAnchor);
+impl stripe_types::miniserde_helpers::FromValueOpt for PortalSubscriptionUpdateBillingCycleAnchor {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateBillingCycleAnchor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The types of subscription updates that are supported for items listed in the `products` attribute.
@@ -284,10 +290,9 @@ impl std::str::FromStr for PortalSubscriptionUpdateDefaultAllowedUpdates {
             "promotion_code" => Ok(PromotionCode),
             "quantity" => Ok(Quantity),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PortalSubscriptionUpdateDefaultAllowedUpdates"
+                    "PortalSubscriptionUpdateDefaultAllowedUpdates",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -331,19 +336,28 @@ impl miniserde::Deserialize for PortalSubscriptionUpdateDefaultAllowedUpdates {
 impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateDefaultAllowedUpdates> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PortalSubscriptionUpdateDefaultAllowedUpdates::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PortalSubscriptionUpdateDefaultAllowedUpdates::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateDefaultAllowedUpdates);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PortalSubscriptionUpdateDefaultAllowedUpdates
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateDefaultAllowedUpdates {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Determines how to handle prorations resulting from subscription updates.
@@ -379,10 +393,9 @@ impl std::str::FromStr for PortalSubscriptionUpdateProrationBehavior {
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PortalSubscriptionUpdateProrationBehavior"
+                    "PortalSubscriptionUpdateProrationBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -426,19 +439,26 @@ impl miniserde::Deserialize for PortalSubscriptionUpdateProrationBehavior {
 impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateProrationBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PortalSubscriptionUpdateProrationBehavior::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PortalSubscriptionUpdateProrationBehavior::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateProrationBehavior);
+impl stripe_types::miniserde_helpers::FromValueOpt for PortalSubscriptionUpdateProrationBehavior {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Determines how handle updates to trialing subscriptions.
@@ -471,10 +491,9 @@ impl std::str::FromStr for PortalSubscriptionUpdateTrialUpdateBehavior {
             "continue_trial" => Ok(ContinueTrial),
             "end_trial" => Ok(EndTrial),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PortalSubscriptionUpdateTrialUpdateBehavior"
+                    "PortalSubscriptionUpdateTrialUpdateBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -518,18 +537,25 @@ impl miniserde::Deserialize for PortalSubscriptionUpdateTrialUpdateBehavior {
 impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateTrialUpdateBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PortalSubscriptionUpdateTrialUpdateBehavior::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PortalSubscriptionUpdateTrialUpdateBehavior::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateTrialUpdateBehavior);
+impl stripe_types::miniserde_helpers::FromValueOpt for PortalSubscriptionUpdateTrialUpdateBehavior {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateTrialUpdateBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

@@ -210,10 +210,9 @@ impl std::str::FromStr for PaymentMethodDetailsPaymentRecordP24Bank {
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentMethodDetailsPaymentRecordP24Bank"
+                    "PaymentMethodDetailsPaymentRecordP24Bank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -256,17 +255,25 @@ impl miniserde::Deserialize for PaymentMethodDetailsPaymentRecordP24Bank {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsPaymentRecordP24Bank> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentMethodDetailsPaymentRecordP24Bank::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PaymentMethodDetailsPaymentRecordP24Bank::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsPaymentRecordP24Bank);
+impl stripe_types::miniserde_helpers::FromValueOpt for PaymentMethodDetailsPaymentRecordP24Bank {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsPaymentRecordP24Bank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

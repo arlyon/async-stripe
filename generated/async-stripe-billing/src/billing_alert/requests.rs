@@ -309,10 +309,9 @@ impl std::str::FromStr for CreateBillingAlertUsageThresholdFiltersType {
         match s {
             "customer" => Ok(Customer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingAlertUsageThresholdFiltersType"
+                    "CreateBillingAlertUsageThresholdFiltersType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -351,7 +350,8 @@ impl<'de> serde::Deserialize<'de> for CreateBillingAlertUsageThresholdFiltersTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Defines how the alert will behave.
@@ -379,10 +379,9 @@ impl std::str::FromStr for CreateBillingAlertUsageThresholdRecurrence {
         match s {
             "one_time" => Ok(OneTime),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingAlertUsageThresholdRecurrence"
+                    "CreateBillingAlertUsageThresholdRecurrence",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -421,7 +420,8 @@ impl<'de> serde::Deserialize<'de> for CreateBillingAlertUsageThresholdRecurrence
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a billing alert

@@ -67,7 +67,7 @@ impl std::str::FromStr for CreateAccountLinkCollect {
             "currently_due" => Ok(CurrentlyDue),
             "eventually_due" => Ok(EventuallyDue),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAccountLinkCollect");
+                stripe_types::warn_unknown_enum_value(v, "CreateAccountLinkCollect");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -104,7 +104,8 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollect {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
@@ -166,10 +167,9 @@ impl std::str::FromStr for CreateAccountLinkCollectionOptionsFields {
             "currently_due" => Ok(CurrentlyDue),
             "eventually_due" => Ok(EventuallyDue),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateAccountLinkCollectionOptionsFields"
+                    "CreateAccountLinkCollectionOptionsFields",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -207,7 +207,8 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollectionOptionsFields {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Specifies whether the platform collects future_requirements in addition to requirements in Connect Onboarding.
@@ -239,10 +240,9 @@ impl std::str::FromStr for CreateAccountLinkCollectionOptionsFutureRequirements 
             "include" => Ok(Include),
             "omit" => Ok(Omit),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateAccountLinkCollectionOptionsFutureRequirements"
+                    "CreateAccountLinkCollectionOptionsFutureRequirements",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -281,7 +281,8 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollectionOptionsFutureRe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of account link the user is requesting.
@@ -317,7 +318,7 @@ impl std::str::FromStr for CreateAccountLinkType {
             "account_onboarding" => Ok(AccountOnboarding),
             "account_update" => Ok(AccountUpdate),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAccountLinkType");
+                stripe_types::warn_unknown_enum_value(v, "CreateAccountLinkType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -354,7 +355,8 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.

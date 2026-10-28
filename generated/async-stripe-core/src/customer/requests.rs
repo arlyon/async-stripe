@@ -587,10 +587,9 @@ impl std::str::FromStr for ListPaymentMethodsCustomerAllowRedisplay {
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ListPaymentMethodsCustomerAllowRedisplay"
+                    "ListPaymentMethodsCustomerAllowRedisplay",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -628,7 +627,8 @@ impl<'de> serde::Deserialize<'de> for ListPaymentMethodsCustomerAllowRedisplay {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// An optional filter on the list, based on the object `type` field.
@@ -820,11 +820,7 @@ impl std::str::FromStr for ListPaymentMethodsCustomerType {
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListPaymentMethodsCustomerType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ListPaymentMethodsCustomerType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -861,7 +857,8 @@ impl<'de> serde::Deserialize<'de> for ListPaymentMethodsCustomerType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Returns a list of PaymentMethods for a given Customer
@@ -1314,10 +1311,9 @@ impl std::str::FromStr for CreateCustomerCashBalanceSettingsReconciliationMode {
             "manual" => Ok(Manual),
             "merchant_default" => Ok(MerchantDefault),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerCashBalanceSettingsReconciliationMode"
+                    "CreateCustomerCashBalanceSettingsReconciliationMode",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1356,7 +1352,8 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerCashBalanceSettingsReconcili
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Default invoice settings for this customer.
@@ -1461,10 +1458,9 @@ impl std::str::FromStr for CreateCustomerInvoiceSettingsRenderingOptionsAmountTa
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay"
+                    "CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1505,7 +1501,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Tax details about the customer.
@@ -1568,11 +1565,7 @@ impl std::str::FromStr for CreateCustomerTaxValidateLocation {
             "deferred" => Ok(Deferred),
             "immediately" => Ok(Immediately),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCustomerTaxValidateLocation"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateCustomerTaxValidateLocation");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1609,7 +1602,8 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxValidateLocation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The customer's tax IDs.
@@ -2007,11 +2001,7 @@ impl std::str::FromStr for CreateCustomerTaxIdDataType {
             "zm_tin" => Ok(ZmTin),
             "zw_tin" => Ok(ZwTin),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCustomerTaxIdDataType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateCustomerTaxIdDataType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -2048,7 +2038,8 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxIdDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a new customer object.
@@ -2394,10 +2385,9 @@ impl std::str::FromStr for UpdateCustomerCashBalanceSettingsReconciliationMode {
             "manual" => Ok(Manual),
             "merchant_default" => Ok(MerchantDefault),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateCustomerCashBalanceSettingsReconciliationMode"
+                    "UpdateCustomerCashBalanceSettingsReconciliationMode",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2436,7 +2426,8 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerCashBalanceSettingsReconcili
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Default invoice settings for this customer.
@@ -2541,10 +2532,9 @@ impl std::str::FromStr for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTa
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay"
+                    "UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2585,7 +2575,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Tax details about the customer.
@@ -2649,11 +2640,7 @@ impl std::str::FromStr for UpdateCustomerTaxValidateLocation {
             "deferred" => Ok(Deferred),
             "immediately" => Ok(Immediately),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCustomerTaxValidateLocation"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateCustomerTaxValidateLocation");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -2690,7 +2677,8 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerTaxValidateLocation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates the specified customer by setting the values of the parameters passed.
@@ -2986,10 +2974,9 @@ impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferRequeste
             "spei" => Ok(Spei),
             "zengin" => Ok(Zengin),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes"
+                    "CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3032,7 +3019,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of the `bank_transfer`
@@ -3072,10 +3060,9 @@ impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferType {
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateFundingInstructionsCustomerBankTransferType"
+                    "CreateFundingInstructionsCustomerBankTransferType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3114,7 +3101,8 @@ impl<'de> serde::Deserialize<'de> for CreateFundingInstructionsCustomerBankTrans
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The `funding_type` to get the instructions for.
@@ -3142,10 +3130,9 @@ impl std::str::FromStr for CreateFundingInstructionsCustomerFundingType {
         match s {
             "bank_transfer" => Ok(BankTransfer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateFundingInstructionsCustomerFundingType"
+                    "CreateFundingInstructionsCustomerFundingType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3184,7 +3171,8 @@ impl<'de> serde::Deserialize<'de> for CreateFundingInstructionsCustomerFundingTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Retrieve funding instructions for a customer cash balance.

@@ -194,10 +194,9 @@ impl std::str::FromStr for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFu
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage"
+                    "PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -243,17 +242,21 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
@@ -261,7 +264,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The purpose of the transaction.
@@ -298,10 +302,9 @@ impl std::str::FromStr for PaymentIntentPaymentMethodOptionsUsBankAccountTransac
             "services" => Ok(Services),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose"
+                    "PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -347,17 +350,22 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) =
+                PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose
@@ -365,7 +373,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Bank account verification method. The default value is `automatic`.
@@ -399,10 +408,9 @@ impl std::str::FromStr for PaymentIntentPaymentMethodOptionsUsBankAccountVerific
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod"
+                    "PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -448,17 +456,22 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) =
+                PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod
@@ -466,6 +479,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

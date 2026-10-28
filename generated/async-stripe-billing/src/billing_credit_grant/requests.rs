@@ -318,11 +318,7 @@ impl std::str::FromStr for CreateBillingCreditGrantAmountType {
         match s {
             "monetary" => Ok(Monetary),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingCreditGrantAmountType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateBillingCreditGrantAmountType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -359,7 +355,8 @@ impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configuration specifying what this credit grant applies to.
@@ -442,10 +439,9 @@ impl std::str::FromStr for CreateBillingCreditGrantApplicabilityConfigScopePrice
         match s {
             "metered" => Ok(Metered),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingCreditGrantApplicabilityConfigScopePriceType"
+                    "CreateBillingCreditGrantApplicabilityConfigScopePriceType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -484,7 +480,8 @@ impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantApplicabilityConfi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// A list of prices that the credit grant can apply to.

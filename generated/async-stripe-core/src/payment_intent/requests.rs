@@ -718,10 +718,9 @@ impl std::str::FromStr
             "donation" => Ok(Donation),
             "physical_goods" => Ok(PhysicalGoods),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory"
+                    "CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -772,7 +771,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// When you enable this parameter, this PaymentIntent accepts payment methods that you enable in the Dashboard and that are compatible with this PaymentIntent's other parameters.
@@ -831,10 +831,9 @@ impl std::str::FromStr for CreatePaymentIntentAutomaticPaymentMethodsAllowRedire
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects"
+                    "CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -873,7 +872,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentAutomaticPaymentMethods
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This hash contains details about the Mandate to create.
@@ -958,10 +958,9 @@ impl std::str::FromStr for CreatePaymentIntentMandateDataCustomerAcceptanceType 
             "offline" => Ok(Offline),
             "online" => Ok(Online),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentMandateDataCustomerAcceptanceType"
+                    "CreatePaymentIntentMandateDataCustomerAcceptanceType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1000,7 +999,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentMandateDataCustomerAcce
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
@@ -1390,10 +1390,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataAllowRedisplay {
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataAllowRedisplay"
+                    "CreatePaymentIntentPaymentMethodDataAllowRedisplay",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1432,7 +1431,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataAllowR
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
@@ -1713,10 +1713,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataEpsBank {
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataEpsBank"
+                    "CreatePaymentIntentPaymentMethodDataEpsBank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1755,7 +1754,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataEpsBan
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -1808,10 +1808,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataFpxAccountHolderT
             "company" => Ok(Company),
             "individual" => Ok(Individual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataFpxAccountHolderType"
+                    "CreatePaymentIntentPaymentMethodDataFpxAccountHolderType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1850,7 +1849,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataFpxAcc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The customer's bank.
@@ -1950,10 +1950,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataFpxBank {
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataFpxBank"
+                    "CreatePaymentIntentPaymentMethodDataFpxBank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1992,7 +1991,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataFpxBan
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
@@ -2106,10 +2106,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataIdealBank {
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataIdealBank"
+                    "CreatePaymentIntentPaymentMethodDataIdealBank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2148,7 +2147,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataIdealB
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -2231,10 +2231,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataNaverPayFunding {
             "card" => Ok(Card),
             "points" => Ok(Points),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataNaverPayFunding"
+                    "CreatePaymentIntentPaymentMethodDataNaverPayFunding",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2273,7 +2272,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataNaverP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
@@ -2444,10 +2444,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataP24Bank {
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataP24Bank"
+                    "CreatePaymentIntentPaymentMethodDataP24Bank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2486,7 +2485,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataP24Ban
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
@@ -2598,10 +2598,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataSofortCountry {
             "IT" => Ok(It),
             "NL" => Ok(Nl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataSofortCountry"
+                    "CreatePaymentIntentPaymentMethodDataSofortCountry",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2640,7 +2639,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataSofort
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of the PaymentMethod.
@@ -2826,10 +2826,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataType {
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataType"
+                    "CreatePaymentIntentPaymentMethodDataType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2867,7 +2866,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
@@ -2962,10 +2962,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataUpiMandateOptions
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType"
+                    "CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3006,7 +3005,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -3081,10 +3081,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataUsBankAccountAcco
             "company" => Ok(Company),
             "individual" => Ok(Individual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType"
+                    "CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3127,7 +3126,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Account type: checkings or savings. Defaults to checking if omitted.
@@ -3158,10 +3158,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataUsBankAccountAcco
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType"
+                    "CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3200,7 +3199,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataUsBank
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Payment method-specific configuration for this PaymentIntent.
@@ -3583,10 +3583,9 @@ impl std::str::FromStr
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule"
+                    "CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3637,7 +3636,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Transaction type of the mandate.
@@ -3670,10 +3670,9 @@ impl std::str::FromStr
             "business" => Ok(Business),
             "personal" => Ok(Personal),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"
+                    "CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3724,7 +3723,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3767,10 +3767,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetup
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3811,7 +3810,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Bank account verification method. The default value is `automatic`.
@@ -3845,10 +3845,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerif
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3891,7 +3890,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
@@ -3967,10 +3967,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4009,7 +4008,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsAff
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4046,10 +4046,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4090,7 +4089,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
@@ -4171,10 +4171,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAfterpayClearp
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4217,7 +4216,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4254,10 +4254,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAfterpayClearp
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4300,7 +4299,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
@@ -4374,10 +4374,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4418,7 +4417,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `alma` PaymentMethod, this sub-hash contains details about the Alma payment method options.
@@ -4479,10 +4479,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAlmaCaptureMet
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4521,7 +4520,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsAlm
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `amazon_pay` PaymentMethod, this sub-hash contains details about the Amazon Pay payment method options.
@@ -4593,10 +4593,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAmazonPayCaptu
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4637,7 +4636,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4675,10 +4675,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAmazonPaySetup
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4719,7 +4718,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
@@ -4802,10 +4802,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSet
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4848,7 +4847,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
@@ -4934,10 +4934,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetup
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4978,7 +4977,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
@@ -5054,10 +5054,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBancontactPref
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage"
+                    "CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5100,7 +5099,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -5140,10 +5140,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBancontactSetu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5186,7 +5185,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `billie` PaymentMethod, this sub-hash contains details about the Billie payment method options.
@@ -5247,10 +5247,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBillieCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsBillieCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsBillieCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5289,7 +5288,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsBil
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
@@ -5364,10 +5364,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBlikSetupFutur
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5406,7 +5405,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsBli
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `boleto` PaymentMethod, this sub-hash contains details about the Boleto payment method options.
@@ -5487,10 +5487,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFut
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5531,7 +5530,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
@@ -5686,10 +5686,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardCaptureMet
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5728,7 +5727,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCar
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Installment configuration for payments attempted on this PaymentIntent.
@@ -5825,10 +5825,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardInstallmen
         match s {
             "month" => Ok(Month),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval"
+                    "CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5871,7 +5870,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
@@ -5905,10 +5905,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardInstallmen
             "fixed_count" => Ok(FixedCount),
             "revolving" => Ok(Revolving),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType"
+                    "CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5949,7 +5948,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
@@ -6046,10 +6046,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardMandateOpt
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType"
+                    "CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6092,7 +6091,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Specifies payment frequency. One of `day`, `week`, `month`, `year`, or `sporadic`.
@@ -6132,10 +6132,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardMandateOpt
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval"
+                    "CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6178,7 +6177,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Specifies the type of mandates supported. Possible values are `india`.
@@ -6206,10 +6206,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardMandateOpt
         match s {
             "india" => Ok(India),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes"
+                    "CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6252,7 +6251,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Selected network to process this PaymentIntent on.
@@ -6319,10 +6319,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardNetwork"
+                    "CreatePaymentIntentPaymentMethodOptionsCardNetwork",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -6361,7 +6360,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCar
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to [capture beyond the standard authorization validity window](https://docs.stripe.com/payments/extended-authorization) for this PaymentIntent.
@@ -6392,10 +6392,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardRequestExt
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization"
+                    "CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6438,7 +6437,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to [increment the authorization](https://docs.stripe.com/payments/incremental-authorization) for this PaymentIntent.
@@ -6471,10 +6471,9 @@ impl std::str::FromStr
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization"
+                    "CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6525,7 +6524,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to make [multiple captures](https://docs.stripe.com/payments/multicapture) for this PaymentIntent.
@@ -6556,10 +6556,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardRequestMul
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture"
+                    "CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6600,7 +6599,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to [overcapture](https://docs.stripe.com/payments/overcapture) for this PaymentIntent.
@@ -6631,10 +6631,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardRequestOve
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture"
+                    "CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6675,7 +6674,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
@@ -6712,10 +6712,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardRequestThr
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure"
+                    "CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6756,7 +6755,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -6799,10 +6799,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardSetupFutur
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6841,7 +6840,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCar
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If 3D Secure authentication was performed with a third-party provider,
@@ -6952,10 +6952,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecu
             "U" => Ok(U),
             "Y" => Ok(Y),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus"
+                    "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6998,7 +6997,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
@@ -7041,10 +7041,9 @@ impl std::str::FromStr
             "06" => Ok(V06),
             "07" => Ok(V07),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator"
+                    "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7095,7 +7094,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The exemption requested via 3DS and accepted by the issuer at authentication time.
@@ -7128,10 +7128,9 @@ impl std::str::FromStr
             "low_risk" => Ok(LowRisk),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator"
+                    "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7178,7 +7177,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Network specific 3DS fields. Network specific arguments require an
@@ -7295,10 +7295,9 @@ impl std::str::FromStr
             "4" => Ok(V4),
             "A" => Ok(A),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo"
+                    "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7346,7 +7345,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The version of 3D Secure that was performed.
@@ -7386,10 +7386,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecu
             "2.3.0" => Ok(V2_3_0),
             "2.3.1" => Ok(V2_3_1),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion"
+                    "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7430,7 +7429,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
@@ -7509,10 +7509,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardPresentCap
             "manual" => Ok(Manual),
             "manual_preferred" => Ok(ManualPreferred),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7553,7 +7552,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
@@ -7613,10 +7613,9 @@ impl std::str::FromStr
             "domestic" => Ok(Domestic),
             "international" => Ok(International),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority"
+                    "CreatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7667,7 +7666,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
@@ -7740,10 +7740,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCashappCapture
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7782,7 +7781,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCas
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -7825,10 +7825,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCashappSetupFu
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7869,7 +7868,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `crypto` PaymentMethod, this sub-hash contains details about the Crypto payment method options.
@@ -7940,10 +7940,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCryptoSetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7984,7 +7983,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
@@ -8114,10 +8114,9 @@ impl std::str::FromStr
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes"
+                    "CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8168,7 +8167,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
@@ -8208,10 +8208,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanc
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType"
+                    "CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8254,7 +8253,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The funding method type to be used when there are not enough funds in the customer balance.
@@ -8283,10 +8283,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanc
         match s {
             "bank_transfer" => Ok(BankTransfer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType"
+                    "CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8329,7 +8328,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -8366,10 +8366,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanc
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8412,7 +8411,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
@@ -8483,10 +8483,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsEpsSetupFuture
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8525,7 +8524,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsEps
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
@@ -8596,10 +8596,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsFpxSetupFuture
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8638,7 +8637,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsFpx
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
@@ -8709,10 +8709,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8753,7 +8752,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
@@ -8824,10 +8824,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8868,7 +8867,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
@@ -8942,10 +8942,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8984,7 +8983,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsIde
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `kakao_pay` PaymentMethod, this sub-hash contains details about the Kakao Pay payment method options.
@@ -9055,10 +9055,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKakaoPayCaptur
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9097,7 +9096,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsKak
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -9135,10 +9135,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKakaoPaySetupF
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9179,7 +9178,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
@@ -9267,10 +9267,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9309,7 +9308,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsKla
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// On-demand details if setting up or charging an on-demand payment.
@@ -9394,10 +9394,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemand
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval"
+                    "CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9440,7 +9439,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Preferred language of the Klarna authorization page that the customer is redirected to
@@ -9603,10 +9603,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferre
             "sv-FI" => Ok(SvMinusFi),
             "sv-SE" => Ok(SvMinusSe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale"
+                    "CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9645,7 +9644,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsKla
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -9688,10 +9688,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFut
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9732,7 +9731,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Subscription details if setting up or charging a subscription.
@@ -9811,10 +9811,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaSubscrip
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval"
+                    "CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9857,7 +9856,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
@@ -9951,10 +9951,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9995,7 +9994,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `kr_card` PaymentMethod, this sub-hash contains details about the KR Card payment method options.
@@ -10066,10 +10066,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKrCardCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10108,7 +10107,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsKrC
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -10146,10 +10146,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKrCardSetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10190,7 +10189,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
@@ -10266,10 +10266,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMet
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10308,7 +10307,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsLin
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -10348,10 +10348,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutur
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10390,7 +10389,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsLin
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
@@ -10461,10 +10461,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10503,7 +10502,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsMbW
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
@@ -10577,10 +10577,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsMobilepayCaptu
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10621,7 +10620,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -10658,10 +10658,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsMobilepaySetup
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10702,7 +10701,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `multibanco` PaymentMethod, this sub-hash contains details about the Multibanco payment method options.
@@ -10774,10 +10774,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsMultibancoSetu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10820,7 +10819,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this sub-hash contains details about the Naver Pay payment method options.
@@ -10891,10 +10891,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsNaverPayCaptur
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10933,7 +10932,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsNav
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -10971,10 +10971,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsNaverPaySetupF
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11015,7 +11014,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `nz_bank_account` PaymentMethod, this sub-hash contains details about the NZ BECS Direct Debit payment method options.
@@ -11099,10 +11099,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsNzBankAccountS
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11145,7 +11144,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
@@ -11220,10 +11220,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutur
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11262,7 +11261,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsOxx
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
@@ -11336,10 +11336,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsP24SetupFuture
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11378,7 +11377,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsP24
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `payco` PaymentMethod, this sub-hash contains details about the PAYCO payment method options.
@@ -11449,10 +11449,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMe
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11491,7 +11490,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -11526,10 +11526,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11568,7 +11567,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
@@ -11639,10 +11639,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11683,7 +11682,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
@@ -11764,10 +11764,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11806,7 +11805,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// [Preferred locale](https://docs.stripe.com/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
@@ -11894,10 +11894,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaypalPreferre
             "sk-SK" => Ok(SkMinusSk),
             "sv-SE" => Ok(SvMinusSe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale"
+                    "CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -11936,7 +11935,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -11976,10 +11976,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12020,7 +12019,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `payto` PaymentMethod, this sub-hash contains details about the PayTo payment method options.
@@ -12147,10 +12147,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOp
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType"
+                    "CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12193,7 +12192,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The periodicity at which payments will be collected. Defaults to `adhoc`.
@@ -12244,10 +12244,9 @@ impl std::str::FromStr
             "semi_annual" => Ok(SemiAnnual),
             "weekly" => Ok(Weekly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule"
+                    "CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12294,7 +12293,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The purpose for which payments are made. Has a default value based on your merchant category code.
@@ -12352,10 +12352,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOp
             "tax" => Ok(Tax),
             "utility" => Ok(Utility),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose"
+                    "CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12398,7 +12397,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -12438,10 +12438,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaytoSetupFutu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12480,7 +12479,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
@@ -12563,10 +12563,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPixAmountInclu
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof"
+                    "CreatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12605,7 +12604,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPix
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Additional fields for mandate creation. Only applicable when `setup_future_usage=off_session`.
@@ -12703,10 +12703,9 @@ impl std::str::FromStr
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof"
+                    "CreatePaymentIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12753,7 +12752,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of amount. Defaults to `maximum`.
@@ -12784,10 +12784,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPixMandateOpti
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPixMandateOptionsAmountType"
+                    "CreatePaymentIntentPaymentMethodOptionsPixMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12830,7 +12829,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Schedule at which the future payments will be charged. Defaults to `monthly`.
@@ -12870,10 +12870,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPixMandateOpti
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule"
+                    "CreatePaymentIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12916,7 +12915,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -12954,10 +12954,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPixSetupFuture
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -12996,7 +12995,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPix
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
@@ -13068,10 +13068,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPromptpaySetup
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13112,7 +13111,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
@@ -13184,10 +13184,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsRevolutPayCapt
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13228,7 +13227,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -13266,10 +13266,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsRevolutPaySetu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13312,7 +13311,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `samsung_pay` PaymentMethod, this sub-hash contains details about the Samsung Pay payment method options.
@@ -13384,10 +13384,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSamsungPayCapt
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13428,7 +13427,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -13463,10 +13463,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSamsungPaySetu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13509,7 +13508,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
@@ -13580,10 +13580,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSatispayCaptur
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13622,7 +13621,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsSat
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -13663,10 +13663,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSatispaySetupF
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsSatispaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsSatispaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13707,7 +13706,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `scalapay` PaymentMethod, this sub-hash contains details about the ScalaPay payment method options.
@@ -13768,10 +13768,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsScalapayCaptur
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13810,7 +13809,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsSca
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
@@ -13925,10 +13925,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetup
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -13969,7 +13968,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
@@ -14052,10 +14052,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSofortPreferre
             "nl" => Ok(Nl),
             "pl" => Ok(Pl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage"
+                    "CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14096,7 +14095,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -14136,10 +14136,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSofortSetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14180,7 +14179,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `sunbit` PaymentMethod, this sub-hash contains details about the Sunbit payment method options.
@@ -14251,10 +14251,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSunbitCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsSunbitCaptureMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsSunbitCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14293,7 +14292,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsSun
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -14328,10 +14328,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSunbitSetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsSunbitSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsSunbitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14372,7 +14371,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `Swish` PaymentMethod, this sub-hash contains details about the Swish payment method options.
@@ -14446,10 +14446,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSwishSetupFutu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14488,7 +14487,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsSwi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `twint` PaymentMethod, this sub-hash contains details about the TWINT payment method options.
@@ -14562,10 +14562,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsTwintSetupFutu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14604,7 +14603,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsTwi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
@@ -14701,10 +14701,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUpiMandateOpti
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType"
+                    "CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14747,7 +14746,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -14780,10 +14780,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUpiSetupFuture
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -14822,7 +14821,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsUpi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
@@ -14997,7 +14997,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountF
         match s {
     "checking" => Ok(Checking),
 "savings" => Ok(Savings),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -15030,7 +15030,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsUsB
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// The list of permissions to request.
@@ -15071,10 +15072,9 @@ impl std::str::FromStr
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"
+                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15125,7 +15125,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// List of data features that you would like to retrieve upon account creation.
@@ -15161,10 +15162,9 @@ impl std::str::FromStr
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"
+                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15215,7 +15215,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Additional fields for Mandate creation
@@ -15272,10 +15273,9 @@ impl std::str::FromStr
         match s {
             "paper" => Ok(Paper),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15326,7 +15326,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Additional fields for network related functions
@@ -15384,10 +15385,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountN
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested"
+                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15430,7 +15430,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -15473,10 +15474,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountS
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15519,7 +15519,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The purpose of the transaction.
@@ -15556,10 +15557,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountT
             "services" => Ok(Services),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose"
+                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15602,7 +15602,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Bank account verification method. The default value is `automatic`.
@@ -15636,10 +15637,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountV
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod"
+                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15682,7 +15682,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
@@ -15757,10 +15758,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsWechatPayClien
             "ios" => Ok(Ios),
             "web" => Ok(Web),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsWechatPayClient"
+                    "CreatePaymentIntentPaymentMethodOptionsWechatPayClient",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15799,7 +15799,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsWec
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -15836,10 +15837,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsWechatPaySetup
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15880,7 +15880,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
@@ -15951,10 +15952,9 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsZipSetupFuture
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage"
+                    "CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -15993,7 +15993,8 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsZip
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Shipping information for this PaymentIntent.
@@ -16825,10 +16826,9 @@ impl std::str::FromStr
             "donation" => Ok(Donation),
             "physical_goods" => Ok(PhysicalGoods),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory"
+                    "UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -16879,7 +16879,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Provides industry-specific information about the charge.
@@ -17250,10 +17251,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataAllowRedisplay {
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataAllowRedisplay"
+                    "UpdatePaymentIntentPaymentMethodDataAllowRedisplay",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17292,7 +17292,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataAllowR
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
@@ -17573,10 +17574,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataEpsBank {
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataEpsBank"
+                    "UpdatePaymentIntentPaymentMethodDataEpsBank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17615,7 +17615,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataEpsBan
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -17668,10 +17669,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderT
             "company" => Ok(Company),
             "individual" => Ok(Individual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType"
+                    "UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17710,7 +17710,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataFpxAcc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The customer's bank.
@@ -17810,10 +17811,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataFpxBank {
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataFpxBank"
+                    "UpdatePaymentIntentPaymentMethodDataFpxBank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -17852,7 +17852,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataFpxBan
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
@@ -17966,10 +17967,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataIdealBank {
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataIdealBank"
+                    "UpdatePaymentIntentPaymentMethodDataIdealBank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18008,7 +18008,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataIdealB
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -18091,10 +18092,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataNaverPayFunding {
             "card" => Ok(Card),
             "points" => Ok(Points),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataNaverPayFunding"
+                    "UpdatePaymentIntentPaymentMethodDataNaverPayFunding",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18133,7 +18133,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataNaverP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
@@ -18304,10 +18305,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataP24Bank {
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataP24Bank"
+                    "UpdatePaymentIntentPaymentMethodDataP24Bank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18346,7 +18346,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataP24Ban
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
@@ -18458,10 +18459,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataSofortCountry {
             "IT" => Ok(It),
             "NL" => Ok(Nl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataSofortCountry"
+                    "UpdatePaymentIntentPaymentMethodDataSofortCountry",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18500,7 +18500,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataSofort
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of the PaymentMethod.
@@ -18686,10 +18687,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataType {
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataType"
+                    "UpdatePaymentIntentPaymentMethodDataType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18727,7 +18727,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
@@ -18822,10 +18823,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataUpiMandateOptions
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType"
+                    "UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18866,7 +18866,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -18941,10 +18942,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataUsBankAccountAcco
             "company" => Ok(Company),
             "individual" => Ok(Individual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType"
+                    "UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -18987,7 +18987,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Account type: checkings or savings. Defaults to checking if omitted.
@@ -19018,10 +19019,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataUsBankAccountAcco
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType"
+                    "UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -19060,7 +19060,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataUsBank
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Payment-method-specific configuration for this PaymentIntent.
@@ -19443,10 +19444,9 @@ impl std::str::FromStr
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule"
+                    "UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -19497,7 +19497,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Transaction type of the mandate.
@@ -19530,10 +19531,9 @@ impl std::str::FromStr
             "business" => Ok(Business),
             "personal" => Ok(Personal),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"
+                    "UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -19584,7 +19584,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -19627,10 +19628,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetup
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -19671,7 +19671,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Bank account verification method. The default value is `automatic`.
@@ -19705,10 +19706,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerif
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -19751,7 +19751,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
@@ -19827,10 +19828,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -19869,7 +19869,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsAff
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -19906,10 +19907,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -19950,7 +19950,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
@@ -20031,10 +20032,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearp
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -20077,7 +20077,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -20114,10 +20115,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearp
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -20160,7 +20160,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
@@ -20234,10 +20235,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -20278,7 +20278,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `alma` PaymentMethod, this sub-hash contains details about the Alma payment method options.
@@ -20339,10 +20340,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAlmaCaptureMet
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -20381,7 +20381,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsAlm
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `amazon_pay` PaymentMethod, this sub-hash contains details about the Amazon Pay payment method options.
@@ -20453,10 +20454,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAmazonPayCaptu
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -20497,7 +20497,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -20535,10 +20536,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAmazonPaySetup
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -20579,7 +20579,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
@@ -20662,10 +20663,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSet
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -20708,7 +20708,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
@@ -20794,10 +20795,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetup
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -20838,7 +20838,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
@@ -20914,10 +20915,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBancontactPref
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage"
+                    "UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -20960,7 +20960,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -21000,10 +21001,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBancontactSetu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -21046,7 +21046,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `billie` PaymentMethod, this sub-hash contains details about the Billie payment method options.
@@ -21107,10 +21108,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBillieCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsBillieCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsBillieCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -21149,7 +21149,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsBil
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
@@ -21224,10 +21225,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutur
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -21266,7 +21266,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsBli
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `boleto` PaymentMethod, this sub-hash contains details about the Boleto payment method options.
@@ -21347,10 +21348,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFut
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -21391,7 +21391,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
@@ -21546,10 +21547,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMet
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -21588,7 +21588,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCar
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Installment configuration for payments attempted on this PaymentIntent.
@@ -21685,10 +21686,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardInstallmen
         match s {
             "month" => Ok(Month),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -21731,7 +21731,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
@@ -21765,10 +21766,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardInstallmen
             "fixed_count" => Ok(FixedCount),
             "revolving" => Ok(Revolving),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -21809,7 +21809,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
@@ -21906,10 +21907,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpt
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -21952,7 +21952,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Specifies payment frequency. One of `day`, `week`, `month`, `year`, or `sporadic`.
@@ -21992,10 +21993,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpt
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -22038,7 +22038,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Specifies the type of mandates supported. Possible values are `india`.
@@ -22066,10 +22067,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpt
         match s {
             "india" => Ok(India),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -22112,7 +22112,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Selected network to process this PaymentIntent on.
@@ -22179,10 +22180,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardNetwork"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardNetwork",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -22221,7 +22221,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCar
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to [capture beyond the standard authorization validity window](https://docs.stripe.com/payments/extended-authorization) for this PaymentIntent.
@@ -22252,10 +22253,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardRequestExt
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -22298,7 +22298,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to [increment the authorization](https://docs.stripe.com/payments/incremental-authorization) for this PaymentIntent.
@@ -22331,10 +22332,9 @@ impl std::str::FromStr
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -22385,7 +22385,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to make [multiple captures](https://docs.stripe.com/payments/multicapture) for this PaymentIntent.
@@ -22416,10 +22417,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardRequestMul
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -22460,7 +22460,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to [overcapture](https://docs.stripe.com/payments/overcapture) for this PaymentIntent.
@@ -22491,10 +22492,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardRequestOve
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -22535,7 +22535,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
@@ -22572,10 +22573,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardRequestThr
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -22616,7 +22616,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -22659,10 +22660,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutur
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -22701,7 +22701,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCar
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If 3D Secure authentication was performed with a third-party provider,
@@ -22812,10 +22813,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecu
             "U" => Ok(U),
             "Y" => Ok(Y),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -22858,7 +22858,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
@@ -22901,10 +22902,9 @@ impl std::str::FromStr
             "06" => Ok(V06),
             "07" => Ok(V07),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -22955,7 +22955,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The exemption requested via 3DS and accepted by the issuer at authentication time.
@@ -22988,10 +22989,9 @@ impl std::str::FromStr
             "low_risk" => Ok(LowRisk),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -23038,7 +23038,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Network specific 3DS fields. Network specific arguments require an
@@ -23155,10 +23156,9 @@ impl std::str::FromStr
             "4" => Ok(V4),
             "A" => Ok(A),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -23206,7 +23206,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The version of 3D Secure that was performed.
@@ -23246,10 +23247,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecu
             "2.3.0" => Ok(V2_3_0),
             "2.3.1" => Ok(V2_3_1),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -23290,7 +23290,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
@@ -23369,10 +23370,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardPresentCap
             "manual" => Ok(Manual),
             "manual_preferred" => Ok(ManualPreferred),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -23413,7 +23413,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
@@ -23473,10 +23474,9 @@ impl std::str::FromStr
             "domestic" => Ok(Domestic),
             "international" => Ok(International),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority"
+                    "UpdatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -23527,7 +23527,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
@@ -23600,10 +23601,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCashappCapture
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -23642,7 +23642,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCas
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -23685,10 +23686,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFu
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -23729,7 +23729,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `crypto` PaymentMethod, this sub-hash contains details about the Crypto payment method options.
@@ -23800,10 +23801,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCryptoSetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -23844,7 +23844,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
@@ -23974,10 +23975,9 @@ impl std::str::FromStr
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes"
+                    "UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -24028,7 +24028,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
@@ -24068,10 +24069,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanc
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType"
+                    "UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -24114,7 +24114,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The funding method type to be used when there are not enough funds in the customer balance.
@@ -24143,10 +24144,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanc
         match s {
             "bank_transfer" => Ok(BankTransfer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType"
+                    "UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -24189,7 +24189,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -24226,10 +24227,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanc
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -24272,7 +24272,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
@@ -24343,10 +24344,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFuture
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -24385,7 +24385,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsEps
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
@@ -24456,10 +24457,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFuture
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -24498,7 +24498,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsFpx
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
@@ -24569,10 +24570,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -24613,7 +24613,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
@@ -24684,10 +24685,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -24728,7 +24728,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
@@ -24802,10 +24803,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -24844,7 +24844,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsIde
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `kakao_pay` PaymentMethod, this sub-hash contains details about the Kakao Pay payment method options.
@@ -24915,10 +24916,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKakaoPayCaptur
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -24957,7 +24957,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsKak
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -24995,10 +24996,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKakaoPaySetupF
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -25039,7 +25039,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
@@ -25127,10 +25128,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -25169,7 +25169,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsKla
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// On-demand details if setting up or charging an on-demand payment.
@@ -25254,10 +25255,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemand
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval"
+                    "UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -25300,7 +25300,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Preferred language of the Klarna authorization page that the customer is redirected to
@@ -25463,10 +25464,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferre
             "sv-FI" => Ok(SvMinusFi),
             "sv-SE" => Ok(SvMinusSe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale"
+                    "UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -25505,7 +25505,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsKla
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -25548,10 +25549,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFut
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -25592,7 +25592,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Subscription details if setting up or charging a subscription.
@@ -25671,10 +25672,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscrip
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval"
+                    "UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -25717,7 +25717,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
@@ -25811,10 +25812,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -25855,7 +25855,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `kr_card` PaymentMethod, this sub-hash contains details about the KR Card payment method options.
@@ -25926,10 +25927,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKrCardCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -25968,7 +25968,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsKrC
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -26006,10 +26007,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKrCardSetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -26050,7 +26050,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
@@ -26126,10 +26127,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMet
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -26168,7 +26168,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsLin
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -26208,10 +26209,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutur
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -26250,7 +26250,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsLin
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
@@ -26321,10 +26322,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -26363,7 +26363,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsMbW
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
@@ -26437,10 +26438,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsMobilepayCaptu
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -26481,7 +26481,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -26518,10 +26519,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsMobilepaySetup
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -26562,7 +26562,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `multibanco` PaymentMethod, this sub-hash contains details about the Multibanco payment method options.
@@ -26634,10 +26635,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsMultibancoSetu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -26680,7 +26680,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this sub-hash contains details about the Naver Pay payment method options.
@@ -26751,10 +26752,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsNaverPayCaptur
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -26793,7 +26793,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsNav
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -26831,10 +26832,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsNaverPaySetupF
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -26875,7 +26875,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `nz_bank_account` PaymentMethod, this sub-hash contains details about the NZ BECS Direct Debit payment method options.
@@ -26959,10 +26960,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsNzBankAccountS
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -27005,7 +27005,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
@@ -27080,10 +27081,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutur
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -27122,7 +27122,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsOxx
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
@@ -27196,10 +27197,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsP24SetupFuture
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -27238,7 +27238,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsP24
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `payco` PaymentMethod, this sub-hash contains details about the PAYCO payment method options.
@@ -27309,10 +27310,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMe
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -27351,7 +27351,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -27386,10 +27387,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -27428,7 +27428,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
@@ -27499,10 +27500,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -27543,7 +27543,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
@@ -27624,10 +27625,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -27666,7 +27666,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// [Preferred locale](https://docs.stripe.com/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
@@ -27754,10 +27755,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferre
             "sk-SK" => Ok(SkMinusSk),
             "sv-SE" => Ok(SvMinusSe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale"
+                    "UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -27796,7 +27796,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -27836,10 +27837,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -27880,7 +27880,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `payto` PaymentMethod, this sub-hash contains details about the PayTo payment method options.
@@ -28007,10 +28008,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOp
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType"
+                    "UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -28053,7 +28053,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The periodicity at which payments will be collected. Defaults to `adhoc`.
@@ -28104,10 +28105,9 @@ impl std::str::FromStr
             "semi_annual" => Ok(SemiAnnual),
             "weekly" => Ok(Weekly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule"
+                    "UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -28154,7 +28154,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The purpose for which payments are made. Has a default value based on your merchant category code.
@@ -28212,10 +28213,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOp
             "tax" => Ok(Tax),
             "utility" => Ok(Utility),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose"
+                    "UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -28258,7 +28258,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -28298,10 +28299,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaytoSetupFutu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -28340,7 +28340,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
@@ -28423,10 +28424,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPixAmountInclu
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof"
+                    "UpdatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -28465,7 +28465,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPix
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Additional fields for mandate creation. Only applicable when `setup_future_usage=off_session`.
@@ -28563,10 +28564,9 @@ impl std::str::FromStr
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof"
+                    "UpdatePaymentIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -28613,7 +28613,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of amount. Defaults to `maximum`.
@@ -28644,10 +28645,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPixMandateOpti
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPixMandateOptionsAmountType"
+                    "UpdatePaymentIntentPaymentMethodOptionsPixMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -28690,7 +28690,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Schedule at which the future payments will be charged. Defaults to `monthly`.
@@ -28730,10 +28731,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPixMandateOpti
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule"
+                    "UpdatePaymentIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -28776,7 +28776,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -28814,10 +28815,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPixSetupFuture
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -28856,7 +28856,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPix
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
@@ -28928,10 +28929,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetup
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -28972,7 +28972,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
@@ -29044,10 +29045,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsRevolutPayCapt
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -29088,7 +29088,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -29126,10 +29127,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -29172,7 +29172,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `samsung_pay` PaymentMethod, this sub-hash contains details about the Samsung Pay payment method options.
@@ -29244,10 +29245,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSamsungPayCapt
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -29288,7 +29288,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -29323,10 +29324,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -29369,7 +29369,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
@@ -29440,10 +29441,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptur
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -29482,7 +29482,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsSat
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -29523,10 +29524,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSatispaySetupF
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsSatispaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsSatispaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -29567,7 +29567,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `scalapay` PaymentMethod, this sub-hash contains details about the ScalaPay payment method options.
@@ -29628,10 +29629,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsScalapayCaptur
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -29670,7 +29670,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsSca
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
@@ -29785,10 +29786,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetup
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -29829,7 +29829,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
@@ -29912,10 +29913,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSofortPreferre
             "nl" => Ok(Nl),
             "pl" => Ok(Pl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage"
+                    "UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -29956,7 +29956,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -29996,10 +29997,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -30040,7 +30040,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `sunbit` PaymentMethod, this sub-hash contains details about the Sunbit payment method options.
@@ -30111,10 +30112,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSunbitCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsSunbitCaptureMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsSunbitCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -30153,7 +30153,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsSun
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -30188,10 +30189,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSunbitSetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsSunbitSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsSunbitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -30232,7 +30232,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `Swish` PaymentMethod, this sub-hash contains details about the Swish payment method options.
@@ -30306,10 +30307,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -30348,7 +30348,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsSwi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `twint` PaymentMethod, this sub-hash contains details about the TWINT payment method options.
@@ -30422,10 +30423,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -30464,7 +30464,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsTwi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
@@ -30561,10 +30562,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOpti
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType"
+                    "UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -30607,7 +30607,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -30640,10 +30641,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUpiSetupFuture
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -30682,7 +30682,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsUpi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
@@ -30857,7 +30858,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountF
         match s {
     "checking" => Ok(Checking),
 "savings" => Ok(Savings),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -30890,7 +30891,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsUsB
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// The list of permissions to request.
@@ -30931,10 +30933,9 @@ impl std::str::FromStr
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"
+                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -30985,7 +30986,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// List of data features that you would like to retrieve upon account creation.
@@ -31021,10 +31023,9 @@ impl std::str::FromStr
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"
+                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -31075,7 +31076,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Additional fields for Mandate creation
@@ -31132,10 +31134,9 @@ impl std::str::FromStr
         match s {
             "paper" => Ok(Paper),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -31186,7 +31187,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Additional fields for network related functions
@@ -31244,10 +31246,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountN
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested"
+                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -31290,7 +31291,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -31333,10 +31335,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountS
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -31379,7 +31380,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The purpose of the transaction.
@@ -31416,10 +31418,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountT
             "services" => Ok(Services),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose"
+                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -31462,7 +31463,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Bank account verification method. The default value is `automatic`.
@@ -31496,10 +31498,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountV
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod"
+                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -31542,7 +31543,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
@@ -31617,10 +31619,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsWechatPayClien
             "ios" => Ok(Ios),
             "web" => Ok(Web),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsWechatPayClient"
+                    "UpdatePaymentIntentPaymentMethodOptionsWechatPayClient",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -31659,7 +31660,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsWec
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -31696,10 +31698,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetup
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -31740,7 +31741,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
@@ -31811,10 +31813,9 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsZipSetupFuture
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage"
+                    "UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -31853,7 +31854,8 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsZip
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Shipping information for this PaymentIntent.
@@ -32388,11 +32390,7 @@ impl std::str::FromStr for CancelPaymentIntentCancellationReason {
             "fraudulent" => Ok(Fraudulent),
             "requested_by_customer" => Ok(RequestedByCustomer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CancelPaymentIntentCancellationReason"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CancelPaymentIntentCancellationReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -32429,7 +32427,8 @@ impl<'de> serde::Deserialize<'de> for CancelPaymentIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// You can cancel a PaymentIntent object when it’s in one of these statuses: `requires_payment_method`, `requires_capture`, `requires_confirmation`, `requires_action` or, [in rare cases](https://stripe.com/docs/payments/intents), `processing`.
@@ -32821,10 +32820,9 @@ impl std::str::FromStr
             "donation" => Ok(Donation),
             "physical_goods" => Ok(PhysicalGoods),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory"
+                    "CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -32875,7 +32873,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Provides industry-specific information about the charge.
@@ -33433,10 +33432,9 @@ impl std::str::FromStr
             "donation" => Ok(Donation),
             "physical_goods" => Ok(PhysicalGoods),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory"
+                    "ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -33487,7 +33485,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone)]
@@ -33587,10 +33586,9 @@ impl std::str::FromStr for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceT
             "offline" => Ok(Offline),
             "online" => Ok(Online),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType"
+                    "ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -33629,7 +33627,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentSecretKeyParamCustomer
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -33732,10 +33731,9 @@ impl std::str::FromStr for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceT
         match s {
             "online" => Ok(Online),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType"
+                    "ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -33774,7 +33772,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentClientKeyParamCustomer
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
@@ -34163,10 +34162,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataAllowRedisplay {
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataAllowRedisplay"
+                    "ConfirmPaymentIntentPaymentMethodDataAllowRedisplay",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -34205,7 +34203,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataAllow
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
@@ -34487,10 +34486,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataEpsBank {
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataEpsBank"
+                    "ConfirmPaymentIntentPaymentMethodDataEpsBank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -34529,7 +34527,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataEpsBa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -34582,10 +34581,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolder
             "company" => Ok(Company),
             "individual" => Ok(Individual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType"
+                    "ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -34624,7 +34622,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataFpxAc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The customer's bank.
@@ -34724,10 +34723,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataFpxBank {
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataFpxBank"
+                    "ConfirmPaymentIntentPaymentMethodDataFpxBank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -34766,7 +34764,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataFpxBa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
@@ -34880,10 +34879,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataIdealBank {
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataIdealBank"
+                    "ConfirmPaymentIntentPaymentMethodDataIdealBank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -34922,7 +34920,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataIdeal
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -35005,10 +35004,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataNaverPayFunding 
             "card" => Ok(Card),
             "points" => Ok(Points),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataNaverPayFunding"
+                    "ConfirmPaymentIntentPaymentMethodDataNaverPayFunding",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -35047,7 +35045,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataNaver
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
@@ -35218,10 +35217,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataP24Bank {
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataP24Bank"
+                    "ConfirmPaymentIntentPaymentMethodDataP24Bank",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -35260,7 +35258,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataP24Ba
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
@@ -35372,10 +35371,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
             "IT" => Ok(It),
             "NL" => Ok(Nl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataSofortCountry"
+                    "ConfirmPaymentIntentPaymentMethodDataSofortCountry",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -35414,7 +35412,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataSofor
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of the PaymentMethod.
@@ -35600,10 +35599,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataType {
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataType"
+                    "ConfirmPaymentIntentPaymentMethodDataType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -35642,7 +35640,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
@@ -35737,10 +35736,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataUpiMandateOption
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType"
+                    "ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -35781,7 +35779,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -35856,10 +35855,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAcc
             "company" => Ok(Company),
             "individual" => Ok(Individual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType"
+                    "ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -35902,7 +35900,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Account type: checkings or savings. Defaults to checking if omitted.
@@ -35933,10 +35932,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAcc
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType"
+                    "ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -35977,7 +35975,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Payment method-specific configuration for this PaymentIntent.
@@ -36360,10 +36359,9 @@ impl std::str::FromStr
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -36414,7 +36412,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Transaction type of the mandate.
@@ -36447,10 +36446,9 @@ impl std::str::FromStr
             "business" => Ok(Business),
             "personal" => Ok(Personal),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -36501,7 +36499,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -36544,10 +36543,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetu
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -36590,7 +36588,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Bank account verification method. The default value is `automatic`.
@@ -36624,10 +36623,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVeri
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -36670,7 +36668,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
@@ -36746,10 +36745,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAffirmCapture
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -36788,7 +36786,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsAf
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -36825,10 +36824,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -36869,7 +36867,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
@@ -36950,10 +36949,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClear
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -36996,7 +36994,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -37035,10 +37034,9 @@ impl std::str::FromStr
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -37083,7 +37081,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
@@ -37157,10 +37156,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -37201,7 +37199,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `alma` PaymentMethod, this sub-hash contains details about the Alma payment method options.
@@ -37262,10 +37261,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAlmaCaptureMe
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAlmaCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAlmaCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -37304,7 +37302,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsAl
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `amazon_pay` PaymentMethod, this sub-hash contains details about the Amazon Pay payment method options.
@@ -37376,10 +37375,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAmazonPayCapt
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -37420,7 +37418,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -37458,10 +37457,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAmazonPaySetu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -37504,7 +37502,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
@@ -37588,10 +37587,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSe
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -37634,7 +37632,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
@@ -37720,10 +37719,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetu
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -37766,7 +37764,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
@@ -37842,10 +37841,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBancontactPre
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -37888,7 +37886,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -37928,10 +37927,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBancontactSet
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -37974,7 +37972,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `billie` PaymentMethod, this sub-hash contains details about the Billie payment method options.
@@ -38035,10 +38034,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBillieCapture
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsBillieCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsBillieCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -38077,7 +38075,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsBi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
@@ -38152,10 +38151,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -38194,7 +38192,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsBl
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `boleto` PaymentMethod, this sub-hash contains details about the Boleto payment method options.
@@ -38275,10 +38274,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFu
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -38319,7 +38317,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
@@ -38474,10 +38473,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMe
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -38516,7 +38514,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Installment configuration for payments attempted on this PaymentIntent.
@@ -38613,10 +38612,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardInstallme
         match s {
             "month" => Ok(Month),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -38659,7 +38657,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
@@ -38693,10 +38692,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardInstallme
             "fixed_count" => Ok(FixedCount),
             "revolving" => Ok(Revolving),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -38737,7 +38735,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
@@ -38834,10 +38833,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOp
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -38880,7 +38878,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Specifies payment frequency. One of `day`, `week`, `month`, `year`, or `sporadic`.
@@ -38920,10 +38919,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOp
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -38966,7 +38964,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Specifies the type of mandates supported. Possible values are `india`.
@@ -38996,10 +38995,9 @@ impl std::str::FromStr
         match s {
             "india" => Ok(India),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -39044,7 +39042,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Selected network to process this PaymentIntent on.
@@ -39111,10 +39110,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardNetwork"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardNetwork",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -39153,7 +39151,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to [capture beyond the standard authorization validity window](https://docs.stripe.com/payments/extended-authorization) for this PaymentIntent.
@@ -39186,10 +39185,9 @@ impl std::str::FromStr
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -39234,7 +39232,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to [increment the authorization](https://docs.stripe.com/payments/incremental-authorization) for this PaymentIntent.
@@ -39267,10 +39266,9 @@ impl std::str::FromStr
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -39321,7 +39319,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to make [multiple captures](https://docs.stripe.com/payments/multicapture) for this PaymentIntent.
@@ -39352,10 +39351,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardRequestMu
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -39396,7 +39394,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Request ability to [overcapture](https://docs.stripe.com/payments/overcapture) for this PaymentIntent.
@@ -39427,10 +39426,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardRequestOv
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -39471,7 +39469,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
@@ -39508,10 +39507,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardRequestTh
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -39552,7 +39550,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -39595,10 +39594,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutu
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -39637,7 +39635,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If 3D Secure authentication was performed with a third-party provider,
@@ -39748,10 +39747,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSec
             "U" => Ok(U),
             "Y" => Ok(Y),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -39794,7 +39792,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
@@ -39837,10 +39836,9 @@ impl std::str::FromStr
             "06" => Ok(V06),
             "07" => Ok(V07),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -39891,7 +39889,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The exemption requested via 3DS and accepted by the issuer at authentication time.
@@ -39924,10 +39923,9 @@ impl std::str::FromStr
             "low_risk" => Ok(LowRisk),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -39978,7 +39976,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Network specific 3DS fields. Network specific arguments require an
@@ -40092,7 +40091,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSec
 "3" => Ok(V3),
 "4" => Ok(V4),
 "A" => Ok(A),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -40125,7 +40124,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// The version of 3D Secure that was performed.
@@ -40165,10 +40165,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSec
             "2.3.0" => Ok(V2_3_0),
             "2.3.1" => Ok(V2_3_1),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -40209,7 +40208,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
@@ -40289,10 +40289,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCa
             "manual" => Ok(Manual),
             "manual_preferred" => Ok(ManualPreferred),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -40333,7 +40332,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
@@ -40393,10 +40393,9 @@ impl std::str::FromStr
             "domestic" => Ok(Domestic),
             "international" => Ok(International),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -40447,7 +40446,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
@@ -40520,10 +40520,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptur
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -40562,7 +40561,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -40605,10 +40605,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCashappSetupF
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -40649,7 +40648,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `crypto` PaymentMethod, this sub-hash contains details about the Crypto payment method options.
@@ -40720,10 +40720,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCryptoSetupFu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -40764,7 +40763,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
@@ -40891,10 +40891,9 @@ impl std::str::FromStr
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -40942,7 +40941,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
@@ -40982,10 +40982,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalan
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -41028,7 +41027,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The funding method type to be used when there are not enough funds in the customer balance.
@@ -41057,10 +41057,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalan
         match s {
             "bank_transfer" => Ok(BankTransfer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -41103,7 +41102,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -41140,10 +41140,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalan
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -41186,7 +41185,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
@@ -41257,10 +41257,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutur
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -41299,7 +41298,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsEp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
@@ -41370,10 +41370,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutur
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -41412,7 +41411,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsFp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
@@ -41483,10 +41483,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupF
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -41527,7 +41526,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
@@ -41598,10 +41598,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupF
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -41642,7 +41641,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
@@ -41716,10 +41716,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -41760,7 +41759,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `kakao_pay` PaymentMethod, this sub-hash contains details about the Kakao Pay payment method options.
@@ -41832,10 +41832,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKakaoPayCaptu
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -41876,7 +41875,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -41914,10 +41914,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKakaoPaySetup
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -41958,7 +41957,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
@@ -42046,10 +42046,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCapture
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -42088,7 +42087,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsKl
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// On-demand details if setting up or charging an on-demand payment.
@@ -42173,10 +42173,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDeman
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval"
+                    "ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -42219,7 +42218,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Preferred language of the Klarna authorization page that the customer is redirected to
@@ -42382,10 +42382,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferr
             "sv-FI" => Ok(SvMinusFi),
             "sv-SE" => Ok(SvMinusSe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale"
+                    "ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -42426,7 +42425,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -42469,10 +42469,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFu
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -42513,7 +42512,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Subscription details if setting up or charging a subscription.
@@ -42592,10 +42592,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscri
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval"
+                    "ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -42638,7 +42637,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
@@ -42732,10 +42732,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupF
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -42776,7 +42775,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `kr_card` PaymentMethod, this sub-hash contains details about the KR Card payment method options.
@@ -42847,10 +42847,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKrCardCapture
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsKrCardCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsKrCardCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -42889,7 +42888,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsKr
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -42927,10 +42927,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKrCardSetupFu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -42971,7 +42970,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
@@ -43047,10 +43047,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMe
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -43089,7 +43088,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsLi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -43129,10 +43129,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -43171,7 +43170,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsLi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
@@ -43242,10 +43242,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -43286,7 +43285,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
@@ -43360,10 +43360,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsMobilepayCapt
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsMobilepayCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsMobilepayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -43404,7 +43403,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -43441,10 +43441,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsMobilepaySetu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -43487,7 +43486,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `multibanco` PaymentMethod, this sub-hash contains details about the Multibanco payment method options.
@@ -43559,10 +43559,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsMultibancoSet
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -43605,7 +43604,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this sub-hash contains details about the Naver Pay payment method options.
@@ -43677,10 +43677,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsNaverPayCaptu
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsNaverPayCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsNaverPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -43721,7 +43720,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -43759,10 +43759,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsNaverPaySetup
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -43803,7 +43802,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `nz_bank_account` PaymentMethod, this sub-hash contains details about the NZ BECS Direct Debit payment method options.
@@ -43887,10 +43887,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsNzBankAccount
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -43933,7 +43932,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
@@ -44008,10 +44008,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -44050,7 +44049,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsOx
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
@@ -44124,10 +44124,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutur
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -44166,7 +44165,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsP2
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `payco` PaymentMethod, this sub-hash contains details about the PAYCO payment method options.
@@ -44237,10 +44237,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureM
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -44279,7 +44278,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsPa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -44314,10 +44314,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaycoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -44358,7 +44357,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
@@ -44429,10 +44429,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -44473,7 +44472,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
@@ -44554,10 +44554,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaypalCapture
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -44596,7 +44595,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsPa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// [Preferred locale](https://docs.stripe.com/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
@@ -44684,10 +44684,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferr
             "sk-SK" => Ok(SkMinusSk),
             "sv-SE" => Ok(SvMinusSe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -44728,7 +44727,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -44768,10 +44768,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -44812,7 +44811,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `payto` PaymentMethod, this sub-hash contains details about the PayTo payment method options.
@@ -44939,10 +44939,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateO
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -44985,7 +44984,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The periodicity at which payments will be collected. Defaults to `adhoc`.
@@ -45036,10 +45036,9 @@ impl std::str::FromStr
             "semi_annual" => Ok(SemiAnnual),
             "weekly" => Ok(Weekly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -45090,7 +45089,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The purpose for which payments are made. Has a default value based on your merchant category code.
@@ -45148,10 +45148,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateO
             "tax" => Ok(Tax),
             "utility" => Ok(Utility),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -45194,7 +45193,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -45234,10 +45234,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaytoSetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -45278,7 +45277,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
@@ -45361,10 +45361,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPixAmountIncl
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPixAmountIncludesIof"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPixAmountIncludesIof",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -45403,7 +45402,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsPi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Additional fields for mandate creation. Only applicable when `setup_future_usage=off_session`.
@@ -45501,10 +45501,9 @@ impl std::str::FromStr
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -45555,7 +45554,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of amount. Defaults to `maximum`.
@@ -45586,10 +45586,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPixMandateOpt
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPixMandateOptionsAmountType"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPixMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -45632,7 +45631,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Schedule at which the future payments will be charged. Defaults to `monthly`.
@@ -45674,10 +45674,9 @@ impl std::str::FromStr
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -45722,7 +45721,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -45760,10 +45760,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutur
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -45802,7 +45801,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsPi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
@@ -45874,10 +45874,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -45920,7 +45919,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
@@ -45992,10 +45992,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsRevolutPayCap
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -46036,7 +46035,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -46074,10 +46074,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySet
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -46120,7 +46119,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `samsung_pay` PaymentMethod, this sub-hash contains details about the Samsung Pay payment method options.
@@ -46192,10 +46192,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCap
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -46236,7 +46235,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -46271,10 +46271,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySet
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsSamsungPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -46317,7 +46316,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
@@ -46389,10 +46389,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptu
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -46433,7 +46432,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -46474,10 +46474,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSatispaySetup
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsSatispaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsSatispaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -46518,7 +46517,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `scalapay` PaymentMethod, this sub-hash contains details about the ScalaPay payment method options.
@@ -46579,10 +46579,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptu
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -46623,7 +46622,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
@@ -46738,10 +46738,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetu
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -46784,7 +46783,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
@@ -46867,10 +46867,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferr
             "nl" => Ok(Nl),
             "pl" => Ok(Pl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -46911,7 +46910,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -46951,10 +46951,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -46995,7 +46994,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `sunbit` PaymentMethod, this sub-hash contains details about the Sunbit payment method options.
@@ -47066,10 +47066,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSunbitCapture
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsSunbitCaptureMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsSunbitCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -47108,7 +47107,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsSu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -47143,10 +47143,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSunbitSetupFu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsSunbitSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsSunbitSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -47187,7 +47186,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `Swish` PaymentMethod, this sub-hash contains details about the Swish payment method options.
@@ -47261,10 +47261,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFut
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -47305,7 +47304,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `twint` PaymentMethod, this sub-hash contains details about the TWINT payment method options.
@@ -47379,10 +47379,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFut
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -47423,7 +47422,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
@@ -47520,10 +47520,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOpt
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType"
+                    "ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -47566,7 +47565,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -47599,10 +47599,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutur
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -47641,7 +47640,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsUp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
@@ -47817,7 +47817,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
         match s {
     "checking" => Ok(Checking),
 "savings" => Ok(Savings),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -47850,7 +47850,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsUs
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// The list of permissions to request.
@@ -47891,10 +47892,9 @@ impl std::str::FromStr
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"
+                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -47945,7 +47945,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// List of data features that you would like to retrieve upon account creation.
@@ -47981,10 +47982,9 @@ impl std::str::FromStr
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"
+                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -48035,7 +48035,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Additional fields for Mandate creation
@@ -48092,10 +48093,9 @@ impl std::str::FromStr
         match s {
             "paper" => Ok(Paper),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -48146,7 +48146,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Additional fields for network related functions
@@ -48204,10 +48205,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested"
+                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -48250,7 +48250,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -48293,10 +48294,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -48339,7 +48339,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The purpose of the transaction.
@@ -48376,10 +48377,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
             "services" => Ok(Services),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose"
+                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -48422,7 +48422,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Bank account verification method. The default value is `automatic`.
@@ -48456,10 +48457,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod"
+                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -48502,7 +48502,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
@@ -48577,10 +48578,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClie
             "ios" => Ok(Ios),
             "web" => Ok(Web),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient"
+                    "ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -48619,7 +48619,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsWe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -48656,10 +48657,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetu
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -48702,7 +48702,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
@@ -48773,10 +48774,9 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutur
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage"
+                    "ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -48815,7 +48815,8 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsZi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Shipping information for this PaymentIntent.
@@ -49482,10 +49483,9 @@ impl std::str::FromStr
             "donation" => Ok(Donation),
             "physical_goods" => Ok(PhysicalGoods),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory"
+                    "IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -49533,7 +49533,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Provides industry-specific information about the charge.

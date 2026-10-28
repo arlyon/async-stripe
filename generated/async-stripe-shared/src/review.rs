@@ -276,7 +276,7 @@ impl std::str::FromStr for ReviewClosedReason {
             "refunded" => Ok(Refunded),
             "refunded_as_fraud" => Ok(RefundedAsFraud),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReviewClosedReason");
+                stripe_types::warn_unknown_enum_value(v, "ReviewClosedReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -318,18 +318,26 @@ impl miniserde::Deserialize for ReviewClosedReason {
 impl miniserde::de::Visitor for crate::Place<ReviewClosedReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReviewClosedReason::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ReviewClosedReason::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReviewClosedReason);
+impl stripe_types::miniserde_helpers::FromValueOpt for ReviewClosedReason {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReviewClosedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The reason the review was opened. One of `rule` or `manual`.
@@ -360,7 +368,7 @@ impl std::str::FromStr for ReviewOpenedReason {
             "manual" => Ok(Manual),
             "rule" => Ok(Rule),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReviewOpenedReason");
+                stripe_types::warn_unknown_enum_value(v, "ReviewOpenedReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -402,18 +410,26 @@ impl miniserde::Deserialize for ReviewOpenedReason {
 impl miniserde::de::Visitor for crate::Place<ReviewOpenedReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReviewOpenedReason::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ReviewOpenedReason::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReviewOpenedReason);
+impl stripe_types::miniserde_helpers::FromValueOpt for ReviewOpenedReason {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReviewOpenedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 impl stripe_types::Object for Review {

@@ -253,7 +253,7 @@ impl std::str::FromStr for GelatoDocumentReportSex {
             "male" => Ok(Male),
             "unknown" => Ok(Unknown),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoDocumentReportSex");
+                stripe_types::warn_unknown_enum_value(v, "GelatoDocumentReportSex");
                 Ok(_Unknown(v.to_owned()))
             }
         }
@@ -295,18 +295,26 @@ impl miniserde::Deserialize for GelatoDocumentReportSex {
 impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportSex> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(GelatoDocumentReportSex::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = GelatoDocumentReportSex::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoDocumentReportSex);
+impl stripe_types::miniserde_helpers::FromValueOpt for GelatoDocumentReportSex {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoDocumentReportSex {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Status of this `document` check.
@@ -337,7 +345,7 @@ impl std::str::FromStr for GelatoDocumentReportStatus {
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoDocumentReportStatus");
+                stripe_types::warn_unknown_enum_value(v, "GelatoDocumentReportStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -379,18 +387,26 @@ impl miniserde::Deserialize for GelatoDocumentReportStatus {
 impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(GelatoDocumentReportStatus::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = GelatoDocumentReportStatus::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoDocumentReportStatus);
+impl stripe_types::miniserde_helpers::FromValueOpt for GelatoDocumentReportStatus {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoDocumentReportStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of the document.
@@ -424,7 +440,7 @@ impl std::str::FromStr for GelatoDocumentReportType {
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoDocumentReportType");
+                stripe_types::warn_unknown_enum_value(v, "GelatoDocumentReportType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -466,17 +482,25 @@ impl miniserde::Deserialize for GelatoDocumentReportType {
 impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(GelatoDocumentReportType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = GelatoDocumentReportType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoDocumentReportType);
+impl stripe_types::miniserde_helpers::FromValueOpt for GelatoDocumentReportType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoDocumentReportType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

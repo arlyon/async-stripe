@@ -144,11 +144,7 @@ impl std::str::FromStr for PersonEthnicityDetailsEthnicity {
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PersonEthnicityDetailsEthnicity"
-                );
+                stripe_types::warn_unknown_enum_value(v, "PersonEthnicityDetailsEthnicity");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -190,17 +186,25 @@ impl miniserde::Deserialize for PersonEthnicityDetailsEthnicity {
 impl miniserde::de::Visitor for crate::Place<PersonEthnicityDetailsEthnicity> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PersonEthnicityDetailsEthnicity::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PersonEthnicityDetailsEthnicity::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PersonEthnicityDetailsEthnicity);
+impl stripe_types::miniserde_helpers::FromValueOpt for PersonEthnicityDetailsEthnicity {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PersonEthnicityDetailsEthnicity {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

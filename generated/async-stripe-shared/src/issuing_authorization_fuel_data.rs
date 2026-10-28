@@ -174,11 +174,7 @@ impl std::str::FromStr for IssuingAuthorizationFuelDataType {
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFuelDataType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "IssuingAuthorizationFuelDataType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -220,18 +216,26 @@ impl miniserde::Deserialize for IssuingAuthorizationFuelDataType {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFuelDataType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingAuthorizationFuelDataType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = IssuingAuthorizationFuelDataType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFuelDataType);
+impl stripe_types::miniserde_helpers::FromValueOpt for IssuingAuthorizationFuelDataType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFuelDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The units for `quantity_decimal`.
@@ -280,11 +284,7 @@ impl std::str::FromStr for IssuingAuthorizationFuelDataUnit {
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFuelDataUnit"
-                );
+                stripe_types::warn_unknown_enum_value(v, "IssuingAuthorizationFuelDataUnit");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -326,17 +326,25 @@ impl miniserde::Deserialize for IssuingAuthorizationFuelDataUnit {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFuelDataUnit> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingAuthorizationFuelDataUnit::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = IssuingAuthorizationFuelDataUnit::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFuelDataUnit);
+impl stripe_types::miniserde_helpers::FromValueOpt for IssuingAuthorizationFuelDataUnit {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFuelDataUnit {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

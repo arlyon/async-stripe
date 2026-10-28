@@ -214,10 +214,9 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderCardNumberSource {
             "on_file" => Ok(OnFile),
             "other" => Ok(Other),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IssuingNetworkTokenWalletProviderCardNumberSource"
+                    "IssuingNetworkTokenWalletProviderCardNumberSource",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -261,20 +260,28 @@ impl miniserde::Deserialize for IssuingNetworkTokenWalletProviderCardNumberSourc
 impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderCardNumberSource> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingNetworkTokenWalletProviderCardNumberSource::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = IssuingNetworkTokenWalletProviderCardNumberSource::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingNetworkTokenWalletProviderCardNumberSource);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for IssuingNetworkTokenWalletProviderCardNumberSource
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderCardNumberSource {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The reasons for suggested tokenization given by the card network.
@@ -391,10 +398,9 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderReasonCodes {
             "too_many_recent_attempts" => Ok(TooManyRecentAttempts),
             "too_many_recent_tokens" => Ok(TooManyRecentTokens),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IssuingNetworkTokenWalletProviderReasonCodes"
+                    "IssuingNetworkTokenWalletProviderReasonCodes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -438,19 +444,28 @@ impl miniserde::Deserialize for IssuingNetworkTokenWalletProviderReasonCodes {
 impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderReasonCodes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IssuingNetworkTokenWalletProviderReasonCodes::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = IssuingNetworkTokenWalletProviderReasonCodes::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingNetworkTokenWalletProviderReasonCodes);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for IssuingNetworkTokenWalletProviderReasonCodes
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderReasonCodes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The recommendation on responding to the tokenization request.
@@ -484,10 +499,9 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderSuggestedDecision {
             "decline" => Ok(Decline),
             "require_auth" => Ok(RequireAuth),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IssuingNetworkTokenWalletProviderSuggestedDecision"
+                    "IssuingNetworkTokenWalletProviderSuggestedDecision",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -531,19 +545,27 @@ impl miniserde::Deserialize for IssuingNetworkTokenWalletProviderSuggestedDecisi
 impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderSuggestedDecision> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingNetworkTokenWalletProviderSuggestedDecision::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = IssuingNetworkTokenWalletProviderSuggestedDecision::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingNetworkTokenWalletProviderSuggestedDecision);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for IssuingNetworkTokenWalletProviderSuggestedDecision
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderSuggestedDecision {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

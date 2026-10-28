@@ -97,11 +97,7 @@ impl std::str::FromStr for ListInvoicePaymentPaymentType {
             "payment_intent" => Ok(PaymentIntent),
             "payment_record" => Ok(PaymentRecord),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListInvoicePaymentPaymentType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ListInvoicePaymentPaymentType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -138,7 +134,8 @@ impl<'de> serde::Deserialize<'de> for ListInvoicePaymentPaymentType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The status of the invoice payments to return.
@@ -172,7 +169,7 @@ impl std::str::FromStr for ListInvoicePaymentStatus {
             "open" => Ok(Open),
             "paid" => Ok(Paid),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListInvoicePaymentStatus");
+                stripe_types::warn_unknown_enum_value(v, "ListInvoicePaymentStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -209,7 +206,8 @@ impl<'de> serde::Deserialize<'de> for ListInvoicePaymentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// When retrieving an invoice, there is an includable payments property containing the first handful of those items.

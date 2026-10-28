@@ -74,11 +74,7 @@ impl std::str::FromStr for ListTreasuryTransactionOrderBy {
             "created" => Ok(Created),
             "posted_at" => Ok(PostedAt),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListTreasuryTransactionOrderBy"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ListTreasuryTransactionOrderBy");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -115,7 +111,8 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryTransactionOrderBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// A filter for the `status_transitions.posted_at` timestamp.

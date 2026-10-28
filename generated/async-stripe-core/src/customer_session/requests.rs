@@ -229,10 +229,9 @@ impl std::str::FromStr
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters"
+                    "CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -283,7 +282,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Controls whether the customer sheet displays the option to remove a saved payment method."
@@ -317,10 +317,9 @@ impl std::str::FromStr for CreateCustomerSessionComponentsCustomerSheetFeaturesP
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove"
+                    "CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -363,7 +362,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configuration for the mobile payment element.
@@ -480,7 +480,7 @@ impl std::str::FromStr for CreateCustomerSessionComponentsMobilePaymentElementFe
     "always" => Ok(Always),
 "limited" => Ok(Limited),
 "unspecified" => Ok(Unspecified),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -513,7 +513,8 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerSessionComponentsMobilePayme
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// Controls whether or not the mobile payment element shows saved payment methods.
@@ -546,10 +547,9 @@ impl std::str::FromStr
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay"
+                    "CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -600,7 +600,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Controls whether the mobile payment element displays the option to remove a saved payment method."
@@ -636,10 +637,9 @@ impl std::str::FromStr
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove"
+                    "CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -690,7 +690,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Controls whether the mobile payment element displays a checkbox offering to save a new payment method.
@@ -726,10 +727,9 @@ impl std::str::FromStr
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave"
+                    "CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -780,7 +780,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Allows overriding the value of allow_override when saving a new payment method when payment_method_save is set to disabled.
@@ -818,7 +819,7 @@ impl std::str::FromStr for CreateCustomerSessionComponentsMobilePaymentElementFe
     "always" => Ok(Always),
 "limited" => Ok(Limited),
 "unspecified" => Ok(Unspecified),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -851,7 +852,8 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerSessionComponentsMobilePayme
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// Configuration for the Payment Element.
@@ -984,10 +986,9 @@ impl std::str::FromStr
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodAllowRedisplayFilters"
+                    "CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodAllowRedisplayFilters",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1038,7 +1039,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Controls whether or not the Payment Element shows saved payment methods.
@@ -1072,10 +1074,9 @@ impl std::str::FromStr
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRedisplay"
+                    "CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRedisplay",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1126,7 +1127,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Controls whether the Payment Element displays the option to remove a saved payment method.
@@ -1163,10 +1165,9 @@ impl std::str::FromStr
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRemove"
+                    "CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRemove",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1211,7 +1212,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Controls whether the Payment Element displays a checkbox offering to save a new payment method.
@@ -1246,10 +1248,9 @@ impl std::str::FromStr for CreateCustomerSessionComponentsPaymentElementFeatures
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSave"
+                    "CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSave",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1292,7 +1293,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// When using PaymentIntents and the customer checks the save checkbox, this field determines the [`setup_future_usage`](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-setup_future_usage) value used to confirm the PaymentIntent.
@@ -1327,10 +1329,9 @@ impl std::str::FromStr
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSaveUsage"
+                    "CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSaveUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1381,7 +1382,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configuration for the pricing table.

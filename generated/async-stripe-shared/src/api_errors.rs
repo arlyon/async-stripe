@@ -925,7 +925,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "transfers_not_allowed" => Ok(TransfersNotAllowed),
             "url_invalid" => Ok(UrlInvalid),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ApiErrorsCode");
+                stripe_types::warn_unknown_enum_value(v, "ApiErrorsCode");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -967,18 +967,26 @@ impl miniserde::Deserialize for ApiErrorsCode {
 impl miniserde::de::Visitor for crate::Place<ApiErrorsCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ApiErrorsCode::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ApiErrorsCode::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ApiErrorsCode);
+impl stripe_types::miniserde_helpers::FromValueOpt for ApiErrorsCode {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ApiErrorsCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of error returned.
@@ -1016,7 +1024,7 @@ impl std::str::FromStr for ApiErrorsType {
             "idempotency_error" => Ok(IdempotencyError),
             "invalid_request_error" => Ok(InvalidRequestError),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ApiErrorsType");
+                stripe_types::warn_unknown_enum_value(v, "ApiErrorsType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1058,17 +1066,25 @@ impl miniserde::Deserialize for ApiErrorsType {
 impl miniserde::de::Visitor for crate::Place<ApiErrorsType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ApiErrorsType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ApiErrorsType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ApiErrorsType);
+impl stripe_types::miniserde_helpers::FromValueOpt for ApiErrorsType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ApiErrorsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

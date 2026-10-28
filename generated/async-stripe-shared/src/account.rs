@@ -350,7 +350,7 @@ impl std::str::FromStr for AccountType {
             "none" => Ok(None),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AccountType");
+                stripe_types::warn_unknown_enum_value(v, "AccountType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -392,18 +392,26 @@ impl miniserde::Deserialize for AccountType {
 impl miniserde::de::Visitor for crate::Place<AccountType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = AccountType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(AccountType);
+impl stripe_types::miniserde_helpers::FromValueOpt for AccountType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 impl stripe_types::Object for Account {
@@ -450,7 +458,7 @@ impl std::str::FromStr for AccountBusinessType {
             "individual" => Ok(Individual),
             "non_profit" => Ok(NonProfit),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AccountBusinessType");
+                stripe_types::warn_unknown_enum_value(v, "AccountBusinessType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -491,17 +499,25 @@ impl miniserde::Deserialize for AccountBusinessType {
 impl miniserde::de::Visitor for crate::Place<AccountBusinessType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountBusinessType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = AccountBusinessType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(AccountBusinessType);
+impl stripe_types::miniserde_helpers::FromValueOpt for AccountBusinessType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountBusinessType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

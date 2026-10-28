@@ -153,7 +153,7 @@ impl std::str::FromStr for CustomerSessionResourceComponentsResourceCustomerShee
     "always" => Ok(Always),
 "limited" => Ok(Limited),
 "unspecified" => Ok(Unspecified),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -191,18 +191,23 @@ impl miniserde::Deserialize for CustomerSessionResourceComponentsResourceCustome
 impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters::from_str(s).expect("infallible"));
+        self.out = { let Ok(v) = CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters::from_str(s); Some(v) };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters);
+impl stripe_types::miniserde_helpers::FromValueOpt for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// Controls whether the customer sheet displays the option to remove a saved payment method."
@@ -238,10 +243,9 @@ impl std::str::FromStr
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove"
+                    "CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -298,14 +302,21 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove
@@ -313,6 +324,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

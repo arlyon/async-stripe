@@ -86,7 +86,7 @@ impl std::str::FromStr for ListAppsSecretScopeType {
             "account" => Ok(Account),
             "user" => Ok(User),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListAppsSecretScopeType");
+                stripe_types::warn_unknown_enum_value(v, "ListAppsSecretScopeType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -123,7 +123,8 @@ impl<'de> serde::Deserialize<'de> for ListAppsSecretScopeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// List all secrets stored on the given scope.
@@ -274,7 +275,7 @@ impl std::str::FromStr for FindAppsSecretScopeType {
             "account" => Ok(Account),
             "user" => Ok(User),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "FindAppsSecretScopeType");
+                stripe_types::warn_unknown_enum_value(v, "FindAppsSecretScopeType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -311,7 +312,8 @@ impl<'de> serde::Deserialize<'de> for FindAppsSecretScopeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Finds a secret in the secret store by name and scope.
@@ -449,7 +451,7 @@ impl std::str::FromStr for CreateAppsSecretScopeType {
             "account" => Ok(Account),
             "user" => Ok(User),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAppsSecretScopeType");
+                stripe_types::warn_unknown_enum_value(v, "CreateAppsSecretScopeType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -486,7 +488,8 @@ impl<'de> serde::Deserialize<'de> for CreateAppsSecretScopeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Create or replace a secret in the secret store.
@@ -620,11 +623,7 @@ impl std::str::FromStr for DeleteWhereAppsSecretScopeType {
             "account" => Ok(Account),
             "user" => Ok(User),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DeleteWhereAppsSecretScopeType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "DeleteWhereAppsSecretScopeType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -661,7 +660,8 @@ impl<'de> serde::Deserialize<'de> for DeleteWhereAppsSecretScopeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Deletes a secret from the secret store by name and scope.

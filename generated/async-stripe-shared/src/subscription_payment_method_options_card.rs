@@ -178,10 +178,9 @@ impl std::str::FromStr for SubscriptionPaymentMethodOptionsCardNetwork {
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "SubscriptionPaymentMethodOptionsCardNetwork"
+                    "SubscriptionPaymentMethodOptionsCardNetwork",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -225,19 +224,26 @@ impl miniserde::Deserialize for SubscriptionPaymentMethodOptionsCardNetwork {
 impl miniserde::de::Visitor for crate::Place<SubscriptionPaymentMethodOptionsCardNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(SubscriptionPaymentMethodOptionsCardNetwork::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = SubscriptionPaymentMethodOptionsCardNetwork::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SubscriptionPaymentMethodOptionsCardNetwork);
+impl stripe_types::miniserde_helpers::FromValueOpt for SubscriptionPaymentMethodOptionsCardNetwork {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionPaymentMethodOptionsCardNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
@@ -273,10 +279,9 @@ impl std::str::FromStr for SubscriptionPaymentMethodOptionsCardRequestThreeDSecu
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "SubscriptionPaymentMethodOptionsCardRequestThreeDSecure"
+                    "SubscriptionPaymentMethodOptionsCardRequestThreeDSecure",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -322,20 +327,27 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SubscriptionPaymentMethodOptionsCardRequestThreeDSecure::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = SubscriptionPaymentMethodOptionsCardRequestThreeDSecure::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SubscriptionPaymentMethodOptionsCardRequestThreeDSecure);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for SubscriptionPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

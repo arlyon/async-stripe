@@ -218,7 +218,7 @@ impl std::str::FromStr for TaxRegistrationStatus {
             "expired" => Ok(Expired),
             "scheduled" => Ok(Scheduled),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxRegistrationStatus");
+                stripe_types::warn_unknown_enum_value(v, "TaxRegistrationStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -260,18 +260,26 @@ impl miniserde::Deserialize for TaxRegistrationStatus {
 impl miniserde::de::Visitor for crate::Place<TaxRegistrationStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxRegistrationStatus::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = TaxRegistrationStatus::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxRegistrationStatus);
+impl stripe_types::miniserde_helpers::FromValueOpt for TaxRegistrationStatus {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxRegistrationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 impl stripe_types::Object for TaxRegistration {

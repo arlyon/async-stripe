@@ -118,7 +118,7 @@ impl std::str::FromStr for ListPriceRecurringInterval {
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListPriceRecurringInterval");
+                stripe_types::warn_unknown_enum_value(v, "ListPriceRecurringInterval");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -155,7 +155,8 @@ impl<'de> serde::Deserialize<'de> for ListPriceRecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Filter by the usage type for this price. Can be either `metered` or `licensed`.
@@ -186,11 +187,7 @@ impl std::str::FromStr for ListPriceRecurringUsageType {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListPriceRecurringUsageType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ListPriceRecurringUsageType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -227,7 +224,8 @@ impl<'de> serde::Deserialize<'de> for ListPriceRecurringUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
@@ -830,11 +828,7 @@ impl std::str::FromStr for CreatePriceRecurringInterval {
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePriceRecurringInterval"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreatePriceRecurringInterval");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -871,7 +865,8 @@ impl<'de> serde::Deserialize<'de> for CreatePriceRecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configures how the quantity per period should be determined.
@@ -906,11 +901,7 @@ impl std::str::FromStr for CreatePriceRecurringUsageType {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePriceRecurringUsageType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreatePriceRecurringUsageType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -947,7 +938,8 @@ impl<'de> serde::Deserialize<'de> for CreatePriceRecurringUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Each element represents a pricing tier.
@@ -1064,11 +1056,7 @@ impl std::str::FromStr for CreatePriceTransformQuantityRound {
             "down" => Ok(Down),
             "up" => Ok(Up),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePriceTransformQuantityRound"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreatePriceTransformQuantityRound");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1105,7 +1093,8 @@ impl<'de> serde::Deserialize<'de> for CreatePriceTransformQuantityRound {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a new [Price](https://docs.stripe.com/api/prices) for an existing [Product](https://docs.stripe.com/api/products).

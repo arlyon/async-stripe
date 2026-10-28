@@ -129,11 +129,7 @@ impl std::str::FromStr for PaypalSellerProtectionDisputeCategories {
             "fraudulent" => Ok(Fraudulent),
             "product_not_received" => Ok(ProductNotReceived),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaypalSellerProtectionDisputeCategories"
-                );
+                stripe_types::warn_unknown_enum_value(v, "PaypalSellerProtectionDisputeCategories");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -175,18 +171,26 @@ impl miniserde::Deserialize for PaypalSellerProtectionDisputeCategories {
 impl miniserde::de::Visitor for crate::Place<PaypalSellerProtectionDisputeCategories> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaypalSellerProtectionDisputeCategories::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PaypalSellerProtectionDisputeCategories::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaypalSellerProtectionDisputeCategories);
+impl stripe_types::miniserde_helpers::FromValueOpt for PaypalSellerProtectionDisputeCategories {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaypalSellerProtectionDisputeCategories {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates whether the transaction is eligible for PayPal's seller protection.
@@ -220,11 +224,7 @@ impl std::str::FromStr for PaypalSellerProtectionStatus {
             "not_eligible" => Ok(NotEligible),
             "partially_eligible" => Ok(PartiallyEligible),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaypalSellerProtectionStatus"
-                );
+                stripe_types::warn_unknown_enum_value(v, "PaypalSellerProtectionStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -266,17 +266,25 @@ impl miniserde::Deserialize for PaypalSellerProtectionStatus {
 impl miniserde::de::Visitor for crate::Place<PaypalSellerProtectionStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaypalSellerProtectionStatus::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PaypalSellerProtectionStatus::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaypalSellerProtectionStatus);
+impl stripe_types::miniserde_helpers::FromValueOpt for PaypalSellerProtectionStatus {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaypalSellerProtectionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

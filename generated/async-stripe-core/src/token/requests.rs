@@ -181,11 +181,7 @@ impl std::str::FromStr for CreateTokenAccountBusinessType {
             "individual" => Ok(Individual),
             "non_profit" => Ok(NonProfit),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenAccountBusinessType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateTokenAccountBusinessType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -222,7 +218,8 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountBusinessType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about the company or business.
@@ -640,10 +637,9 @@ impl std::str::FromStr for CreateTokenAccountCompanyOwnershipExemptionReason {
             }
             "qualifies_as_financial_institution" => Ok(QualifiesAsFinancialInstitution),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTokenAccountCompanyOwnershipExemptionReason"
+                    "CreateTokenAccountCompanyOwnershipExemptionReason",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -682,7 +678,8 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyOwnershipExemptio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The primary location where the business conducts operations.
@@ -872,11 +869,7 @@ impl std::str::FromStr for CreateTokenAccountCompanyStructure {
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenAccountCompanyStructure"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateTokenAccountCompanyStructure");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -913,7 +906,8 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyStructure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information on the verification state of the company.
@@ -1263,10 +1257,9 @@ impl std::str::FromStr for CreateTokenAccountIndividualPoliticalExposure {
             "existing" => Ok(Existing),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTokenAccountIndividualPoliticalExposure"
+                    "CreateTokenAccountIndividualPoliticalExposure",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1305,7 +1298,8 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountIndividualPoliticalExpos
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The individual's registered address.
@@ -1477,11 +1471,7 @@ impl std::str::FromStr for CreateTokenBankAccountAccountHolderType {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenBankAccountAccountHolderType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateTokenBankAccountAccountHolderType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1518,7 +1508,8 @@ impl<'de> serde::Deserialize<'de> for CreateTokenBankAccountAccountHolderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The bank account type.
@@ -1557,11 +1548,7 @@ impl std::str::FromStr for CreateTokenBankAccountAccountType {
             "savings" => Ok(Savings),
             "toza" => Ok(Toza),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenBankAccountAccountType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateTokenBankAccountAccountType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1598,7 +1585,8 @@ impl<'de> serde::Deserialize<'de> for CreateTokenBankAccountAccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The card this token will represent.
@@ -1754,10 +1742,9 @@ impl std::str::FromStr for CreateTokenCreditCardSpecsNetworksPreferred {
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTokenCreditCardSpecsNetworksPreferred"
+                    "CreateTokenCreditCardSpecsNetworksPreferred",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1796,7 +1783,8 @@ impl<'de> serde::Deserialize<'de> for CreateTokenCreditCardSpecsNetworksPreferre
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The updated CVC value this token represents.
@@ -2220,11 +2208,7 @@ impl std::str::FromStr for CreateTokenPersonPoliticalExposure {
             "existing" => Ok(Existing),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenPersonPoliticalExposure"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateTokenPersonPoliticalExposure");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -2261,7 +2245,8 @@ impl<'de> serde::Deserialize<'de> for CreateTokenPersonPoliticalExposure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The person's registered address.
@@ -2465,10 +2450,9 @@ impl std::str::FromStr for CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity 
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity"
+                    "CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2507,7 +2491,8 @@ impl<'de> serde::Deserialize<'de> for CreateTokenPersonUsCfpbDataEthnicityDetail
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The persons race details
@@ -2632,10 +2617,9 @@ impl std::str::FromStr for CreateTokenPersonUsCfpbDataRaceDetailsRace {
             "vietnamese" => Ok(Vietnamese),
             "white" => Ok(White),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTokenPersonUsCfpbDataRaceDetailsRace"
+                    "CreateTokenPersonUsCfpbDataRaceDetailsRace",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2674,7 +2658,8 @@ impl<'de> serde::Deserialize<'de> for CreateTokenPersonUsCfpbDataRaceDetailsRace
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The PII this token represents.

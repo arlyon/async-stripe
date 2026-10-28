@@ -792,10 +792,9 @@ impl std::str::FromStr for RejectIssuingPersonalizationDesignRejectionReasonsCar
             "other_entity" => Ok(OtherEntity),
             "promotional_material" => Ok(PromotionalMaterial),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "RejectIssuingPersonalizationDesignRejectionReasonsCardLogo"
+                    "RejectIssuingPersonalizationDesignRejectionReasonsCardLogo",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -834,7 +833,8 @@ impl<'de> serde::Deserialize<'de> for RejectIssuingPersonalizationDesignRejectio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The reason(s) the carrier text was rejected.
@@ -880,10 +880,9 @@ impl std::str::FromStr for RejectIssuingPersonalizationDesignRejectionReasonsCar
             "other_entity" => Ok(OtherEntity),
             "promotional_material" => Ok(PromotionalMaterial),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "RejectIssuingPersonalizationDesignRejectionReasonsCarrierText"
+                    "RejectIssuingPersonalizationDesignRejectionReasonsCarrierText",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -924,7 +923,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates the `status` of the specified testmode personalization design object to `rejected`.

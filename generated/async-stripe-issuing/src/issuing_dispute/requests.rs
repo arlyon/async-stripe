@@ -391,10 +391,9 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceCanceledProductType {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingDisputeEvidenceCanceledProductType"
+                    "CreateIssuingDisputeEvidenceCanceledProductType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -433,7 +432,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceCanceledProduc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Result of cardholder's attempt to return the product.
@@ -464,10 +464,9 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceCanceledReturnStatus {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingDisputeEvidenceCanceledReturnStatus"
+                    "CreateIssuingDisputeEvidenceCanceledReturnStatus",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -506,7 +505,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceCanceledReturn
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Evidence provided when `reason` is 'fraudulent'.
@@ -613,10 +613,9 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"
+                    "CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -659,7 +658,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Evidence provided when `reason` is 'no_valid_authorization'.
@@ -761,10 +761,9 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceNotReceivedProductType {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingDisputeEvidenceNotReceivedProductType"
+                    "CreateIssuingDisputeEvidenceNotReceivedProductType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -803,7 +802,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceNotReceivedPro
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Evidence provided when `reason` is 'other'.
@@ -873,10 +873,9 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceOtherProductType {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingDisputeEvidenceOtherProductType"
+                    "CreateIssuingDisputeEvidenceOtherProductType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -915,7 +914,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceOtherProductTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The reason for filing the dispute. The evidence should be submitted in the field of the same name.
@@ -964,11 +964,7 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceReason {
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingDisputeEvidenceReason"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateIssuingDisputeEvidenceReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1005,7 +1001,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Params for disputes related to Treasury FinancialAccounts
@@ -1291,10 +1288,9 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceCanceledProductType {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingDisputeEvidenceCanceledProductType"
+                    "UpdateIssuingDisputeEvidenceCanceledProductType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1333,7 +1329,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceCanceledProduc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Result of cardholder's attempt to return the product.
@@ -1364,10 +1361,9 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceCanceledReturnStatus {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingDisputeEvidenceCanceledReturnStatus"
+                    "UpdateIssuingDisputeEvidenceCanceledReturnStatus",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1406,7 +1402,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceCanceledReturn
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Evidence provided when `reason` is 'fraudulent'.
@@ -1513,10 +1510,9 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"
+                    "UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1559,7 +1555,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Evidence provided when `reason` is 'no_valid_authorization'.
@@ -1661,10 +1658,9 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceNotReceivedProductType {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingDisputeEvidenceNotReceivedProductType"
+                    "UpdateIssuingDisputeEvidenceNotReceivedProductType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1703,7 +1699,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceNotReceivedPro
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Evidence provided when `reason` is 'other'.
@@ -1773,10 +1770,9 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceOtherProductType {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingDisputeEvidenceOtherProductType"
+                    "UpdateIssuingDisputeEvidenceOtherProductType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1815,7 +1811,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceOtherProductTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The reason for filing the dispute. The evidence should be submitted in the field of the same name.
@@ -1864,11 +1861,7 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceReason {
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingDisputeEvidenceReason"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateIssuingDisputeEvidenceReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1905,7 +1898,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates the specified Issuing `Dispute` object by setting the values of the parameters passed.

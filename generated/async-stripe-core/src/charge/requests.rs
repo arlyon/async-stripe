@@ -733,11 +733,7 @@ impl std::str::FromStr for UpdateChargeFraudDetailsUserReport {
             "fraudulent" => Ok(Fraudulent),
             "safe" => Ok(Safe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateChargeFraudDetailsUserReport"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateChargeFraudDetailsUserReport");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -774,7 +770,8 @@ impl<'de> serde::Deserialize<'de> for UpdateChargeFraudDetailsUserReport {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates the specified charge by setting the values of the parameters passed.

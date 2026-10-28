@@ -267,10 +267,9 @@ impl std::str::FromStr for ReportPaymentAttemptPaymentRecordOutcome {
             "failed" => Ok(Failed),
             "guaranteed" => Ok(Guaranteed),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ReportPaymentAttemptPaymentRecordOutcome"
+                    "ReportPaymentAttemptPaymentRecordOutcome",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -308,7 +307,8 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentAttemptPaymentRecordOutcome {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about the Payment Method debited for this payment.
@@ -376,10 +376,9 @@ impl std::str::FromStr for ReportPaymentAttemptPaymentRecordPaymentMethodDetails
         match s {
             "custom" => Ok(Custom),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType"
+                    "ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -418,7 +417,8 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentAttemptPaymentRecordPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Report a new payment attempt on the specified Payment Record. A new payment
@@ -987,11 +987,7 @@ impl std::str::FromStr for ReportRefundPaymentRecordOutcome {
         match s {
             "refunded" => Ok(Refunded),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportRefundPaymentRecordOutcome"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ReportRefundPaymentRecordOutcome");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1028,7 +1024,8 @@ impl<'de> serde::Deserialize<'de> for ReportRefundPaymentRecordOutcome {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Processor information for this refund.
@@ -1102,10 +1099,9 @@ impl std::str::FromStr for ReportRefundPaymentRecordProcessorDetailsType {
         match s {
             "custom" => Ok(Custom),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ReportRefundPaymentRecordProcessorDetailsType"
+                    "ReportRefundPaymentRecordProcessorDetailsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1144,7 +1140,8 @@ impl<'de> serde::Deserialize<'de> for ReportRefundPaymentRecordProcessorDetailsT
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about the payment attempt refund.
@@ -1338,11 +1335,7 @@ impl std::str::FromStr for ReportPaymentPaymentRecordOutcome {
             "failed" => Ok(Failed),
             "guaranteed" => Ok(Guaranteed),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentPaymentRecordOutcome"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ReportPaymentPaymentRecordOutcome");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1379,7 +1372,8 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordOutcome {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about the Payment Method debited for this payment.
@@ -1446,10 +1440,9 @@ impl std::str::FromStr for ReportPaymentPaymentRecordPaymentMethodDetailsType {
         match s {
             "custom" => Ok(Custom),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ReportPaymentPaymentRecordPaymentMethodDetailsType"
+                    "ReportPaymentPaymentRecordPaymentMethodDetailsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1488,7 +1481,8 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordPaymentMethodDet
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Processor information for this payment.
@@ -1562,10 +1556,9 @@ impl std::str::FromStr for ReportPaymentPaymentRecordProcessorDetailsType {
         match s {
             "custom" => Ok(Custom),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ReportPaymentPaymentRecordProcessorDetailsType"
+                    "ReportPaymentPaymentRecordProcessorDetailsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1604,7 +1597,8 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordProcessorDetails
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Report a new Payment Record. You may report a Payment Record as it is

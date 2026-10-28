@@ -380,10 +380,9 @@ impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesCustomerUpdat
             "shipping" => Ok(Shipping),
             "tax_id" => Ok(TaxId),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates"
+                    "CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -426,7 +425,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about canceling subscriptions in the portal.
@@ -553,10 +553,9 @@ impl std::str::FromStr
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions"
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -607,7 +606,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether to cancel subscriptions immediately or at the end of the billing period.
@@ -638,10 +638,9 @@ impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesSubscriptionC
             "at_period_end" => Ok(AtPeriodEnd),
             "immediately" => Ok(Immediately),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode"
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -682,7 +681,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether to create prorations when canceling subscriptions.
@@ -721,10 +721,9 @@ impl std::str::FromStr
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior"
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -775,7 +774,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about updating subscriptions in the portal.
@@ -867,10 +867,9 @@ impl std::str::FromStr
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor"
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -921,7 +920,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
@@ -957,10 +957,9 @@ impl std::str::FromStr
             "promotion_code" => Ok(PromotionCode),
             "quantity" => Ok(Quantity),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates"
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1011,7 +1010,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Determines how to handle prorations resulting from subscription updates.
@@ -1048,10 +1048,9 @@ impl std::str::FromStr
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior"
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1102,7 +1101,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
@@ -1197,10 +1197,9 @@ impl std::str::FromStr
             "decreasing_item_amount" => Ok(DecreasingItemAmount),
             "shortening_interval" => Ok(ShorteningInterval),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType"
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1248,7 +1247,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The behavior when updating a subscription that is trialing.
@@ -1281,10 +1281,9 @@ impl std::str::FromStr
             "continue_trial" => Ok(ContinueTrial),
             "end_trial" => Ok(EndTrial),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior"
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1335,7 +1334,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The hosted login page for this configuration.
@@ -1631,10 +1631,9 @@ impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesCustomerUpdat
             "shipping" => Ok(Shipping),
             "tax_id" => Ok(TaxId),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates"
+                    "UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1677,7 +1676,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about canceling subscriptions in the portal.
@@ -1800,10 +1800,9 @@ impl std::str::FromStr
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions"
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1854,7 +1853,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether to cancel subscriptions immediately or at the end of the billing period.
@@ -1885,10 +1885,9 @@ impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesSubscriptionC
             "at_period_end" => Ok(AtPeriodEnd),
             "immediately" => Ok(Immediately),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode"
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1929,7 +1928,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether to create prorations when canceling subscriptions.
@@ -1968,10 +1968,9 @@ impl std::str::FromStr
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior"
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2022,7 +2021,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about updating subscriptions in the portal.
@@ -2120,10 +2120,9 @@ impl std::str::FromStr
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor"
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2174,7 +2173,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
@@ -2210,10 +2210,9 @@ impl std::str::FromStr
             "promotion_code" => Ok(PromotionCode),
             "quantity" => Ok(Quantity),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates"
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2264,7 +2263,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Determines how to handle prorations resulting from subscription updates.
@@ -2301,10 +2301,9 @@ impl std::str::FromStr
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior"
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2355,7 +2354,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
@@ -2450,10 +2450,9 @@ impl std::str::FromStr
             "decreasing_item_amount" => Ok(DecreasingItemAmount),
             "shortening_interval" => Ok(ShorteningInterval),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType"
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2501,7 +2500,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The behavior when updating a subscription that is trialing.
@@ -2534,10 +2534,9 @@ impl std::str::FromStr
             "continue_trial" => Ok(ContinueTrial),
             "end_trial" => Ok(EndTrial),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior"
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2588,7 +2587,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The hosted login page for this configuration.

@@ -106,11 +106,7 @@ impl std::str::FromStr for ListAccountExternalAccountObject {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListAccountExternalAccountObject"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ListAccountExternalAccountObject");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -147,7 +143,8 @@ impl<'de> serde::Deserialize<'de> for ListAccountExternalAccountObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// List external accounts for an account.
@@ -512,11 +509,7 @@ impl std::str::FromStr for UpdateExternalAccountAccountHolderType {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateExternalAccountAccountHolderType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateExternalAccountAccountHolderType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -553,7 +546,8 @@ impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountHolderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The bank account type.
@@ -592,11 +586,7 @@ impl std::str::FromStr for UpdateExternalAccountAccountType {
             "savings" => Ok(Savings),
             "toza" => Ok(Toza),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateExternalAccountAccountType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateExternalAccountAccountType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -633,7 +623,8 @@ impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.

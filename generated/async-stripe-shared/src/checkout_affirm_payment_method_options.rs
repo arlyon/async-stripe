@@ -133,10 +133,9 @@ impl std::str::FromStr for CheckoutAffirmPaymentMethodOptionsCaptureMethod {
         match s {
             "manual" => Ok(Manual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CheckoutAffirmPaymentMethodOptionsCaptureMethod"
+                    "CheckoutAffirmPaymentMethodOptionsCaptureMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -180,19 +179,28 @@ impl miniserde::Deserialize for CheckoutAffirmPaymentMethodOptionsCaptureMethod 
 impl miniserde::de::Visitor for crate::Place<CheckoutAffirmPaymentMethodOptionsCaptureMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(CheckoutAffirmPaymentMethodOptionsCaptureMethod::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = CheckoutAffirmPaymentMethodOptionsCaptureMethod::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutAffirmPaymentMethodOptionsCaptureMethod);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for CheckoutAffirmPaymentMethodOptionsCaptureMethod
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutAffirmPaymentMethodOptionsCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -227,10 +235,9 @@ impl std::str::FromStr for CheckoutAffirmPaymentMethodOptionsSetupFutureUsage {
         match s {
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CheckoutAffirmPaymentMethodOptionsSetupFutureUsage"
+                    "CheckoutAffirmPaymentMethodOptionsSetupFutureUsage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -274,19 +281,27 @@ impl miniserde::Deserialize for CheckoutAffirmPaymentMethodOptionsSetupFutureUsa
 impl miniserde::de::Visitor for crate::Place<CheckoutAffirmPaymentMethodOptionsSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            CheckoutAffirmPaymentMethodOptionsSetupFutureUsage::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = CheckoutAffirmPaymentMethodOptionsSetupFutureUsage::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutAffirmPaymentMethodOptionsSetupFutureUsage);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for CheckoutAffirmPaymentMethodOptionsSetupFutureUsage
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutAffirmPaymentMethodOptionsSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

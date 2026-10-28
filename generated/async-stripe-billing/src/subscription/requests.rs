@@ -103,10 +103,9 @@ impl std::str::FromStr for CancelSubscriptionCancellationDetailsFeedback {
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CancelSubscriptionCancellationDetailsFeedback"
+                    "CancelSubscriptionCancellationDetailsFeedback",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -145,7 +144,8 @@ impl<'de> serde::Deserialize<'de> for CancelSubscriptionCancellationDetailsFeedb
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Cancels a customer’s subscription immediately.
@@ -423,7 +423,7 @@ impl std::str::FromStr for ListSubscriptionStatus {
             "trialing" => Ok(Trialing),
             "unpaid" => Ok(Unpaid),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListSubscriptionStatus");
+                stripe_types::warn_unknown_enum_value(v, "ListSubscriptionStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -460,7 +460,8 @@ impl<'de> serde::Deserialize<'de> for ListSubscriptionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// By default, returns a list of subscriptions that have not been canceled.
@@ -1047,10 +1048,9 @@ impl std::str::FromStr for CreateSubscriptionAddInvoiceItemsPeriodEndType {
             "min_item_period_end" => Ok(MinItemPeriodEnd),
             "timestamp" => Ok(Timestamp),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionAddInvoiceItemsPeriodEndType"
+                    "CreateSubscriptionAddInvoiceItemsPeriodEndType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1089,7 +1089,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPeriodEnd
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Start of the invoice item period.
@@ -1147,10 +1148,9 @@ impl std::str::FromStr for CreateSubscriptionAddInvoiceItemsPeriodStartType {
             "now" => Ok(Now),
             "timestamp" => Ok(Timestamp),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionAddInvoiceItemsPeriodStartType"
+                    "CreateSubscriptionAddInvoiceItemsPeriodStartType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1189,7 +1189,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPeriodSta
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
@@ -1268,10 +1269,9 @@ impl std::str::FromStr for CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior"
+                    "CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1310,7 +1310,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPriceData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Automatic tax settings for this subscription.
@@ -1390,10 +1391,9 @@ impl std::str::FromStr for CreateSubscriptionAutomaticTaxLiabilityType {
             "account" => Ok(Account),
             "self" => Ok(Self_),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionAutomaticTaxLiabilityType"
+                    "CreateSubscriptionAutomaticTaxLiabilityType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1432,7 +1432,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAutomaticTaxLiabilityTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Mutually exclusive with billing_cycle_anchor and only valid with monthly and yearly price intervals.
@@ -1550,10 +1551,9 @@ impl std::str::FromStr for CreateSubscriptionBillingModeFlexibleProrationDiscoun
             "included" => Ok(Included),
             "itemized" => Ok(Itemized),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionBillingModeFlexibleProrationDiscounts"
+                    "CreateSubscriptionBillingModeFlexibleProrationDiscounts",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1592,7 +1592,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingModeFlexibleProra
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
@@ -1624,11 +1625,7 @@ impl std::str::FromStr for CreateSubscriptionBillingModeType {
             "classic" => Ok(Classic),
             "flexible" => Ok(Flexible),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionBillingModeType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateSubscriptionBillingModeType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1665,7 +1662,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingModeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// An array of billing schedules, which allow you to bill customers in advance for multiple service periods.
@@ -1746,10 +1744,9 @@ impl std::str::FromStr for CreateSubscriptionBillingSchedulesAppliesToType {
         match s {
             "price" => Ok(Price),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionBillingSchedulesAppliesToType"
+                    "CreateSubscriptionBillingSchedulesAppliesToType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1788,7 +1785,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingSchedulesAppliesT
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The end date for the billing schedule.
@@ -1877,10 +1875,9 @@ impl std::str::FromStr for CreateSubscriptionBillingSchedulesBillUntilDurationIn
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionBillingSchedulesBillUntilDurationInterval"
+                    "CreateSubscriptionBillingSchedulesBillUntilDurationInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1919,7 +1916,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingSchedulesBillUnti
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Describes how the billing schedule will determine the end date. Either `duration` or `timestamp`.
@@ -1950,10 +1948,9 @@ impl std::str::FromStr for CreateSubscriptionBillingSchedulesBillUntilType {
             "duration" => Ok(Duration),
             "timestamp" => Ok(Timestamp),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionBillingSchedulesBillUntilType"
+                    "CreateSubscriptionBillingSchedulesBillUntilType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1992,7 +1989,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingSchedulesBillUnti
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// A timestamp at which the subscription should cancel.
@@ -2112,10 +2110,9 @@ impl std::str::FromStr for CreateSubscriptionInvoiceSettingsIssuerType {
             "account" => Ok(Account),
             "self" => Ok(Self_),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionInvoiceSettingsIssuerType"
+                    "CreateSubscriptionInvoiceSettingsIssuerType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2154,7 +2151,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionInvoiceSettingsIssuerTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -2324,10 +2322,9 @@ impl std::str::FromStr for CreateSubscriptionItemsPriceDataRecurringInterval {
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionItemsPriceDataRecurringInterval"
+                    "CreateSubscriptionItemsPriceDataRecurringInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2366,7 +2363,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemsPriceDataRecurringI
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -2403,10 +2401,9 @@ impl std::str::FromStr for CreateSubscriptionItemsPriceDataTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionItemsPriceDataTaxBehavior"
+                    "CreateSubscriptionItemsPriceDataTaxBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2445,7 +2442,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemsPriceDataTaxBehavio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Controls how Stripe handles the first invoice when payment is required and `collection_method=charge_automatically`.
@@ -2483,11 +2481,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentBehavior {
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionPaymentBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateSubscriptionPaymentBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -2524,7 +2518,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Payment settings to pass to invoices created by the subscription.
@@ -2732,10 +2727,9 @@ impl std::str::FromStr
             "business" => Ok(Business),
             "personal" => Ok(Personal),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2783,7 +2777,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Verification method for the intent
@@ -2819,10 +2814,9 @@ impl std::str::FromStr
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2873,7 +2867,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
@@ -2939,10 +2934,9 @@ impl std::str::FromStr
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2993,7 +2987,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
@@ -3101,10 +3096,9 @@ impl std::str::FromStr
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3155,7 +3149,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Selected network to process this Subscription on.
@@ -3222,10 +3217,9 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptions
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -3266,7 +3260,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
@@ -3304,10 +3299,9 @@ impl std::str::FromStr
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3358,7 +3352,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
@@ -3476,10 +3471,9 @@ impl std::str::FromStr
             "tax" => Ok(Tax),
             "utility" => Ok(Utility),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3530,7 +3524,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the Pix payment method options to pass to the invoice’s PaymentIntent.
@@ -3635,10 +3630,9 @@ impl std::str::FromStr
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsPixMandateOptionsAmountIncludesIof"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsPixMandateOptionsAmountIncludesIof",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3689,7 +3683,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Schedule at which the future payments will be charged.
@@ -3732,10 +3727,9 @@ impl std::str::FromStr
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsPixMandateOptionsPaymentSchedule"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsPixMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3786,7 +3780,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the UPI payment method options to pass to the invoice’s PaymentIntent.
@@ -3886,10 +3881,9 @@ impl std::str::FromStr
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3940,7 +3934,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
@@ -4071,7 +4066,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptions
         match s {
     "checking" => Ok(Checking),
 "savings" => Ok(Savings),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -4104,7 +4099,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// The list of permissions to request.
@@ -4144,7 +4140,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptions
 "ownership" => Ok(Ownership),
 "payment_method" => Ok(PaymentMethod),
 "transactions" => Ok(Transactions),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -4177,7 +4173,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// List of data features that you would like to retrieve upon account creation.
@@ -4213,7 +4210,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptions
     "balances" => Ok(Balances),
 "ownership" => Ok(Ownership),
 "transactions" => Ok(Transactions),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -4246,7 +4243,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// Verification method for the intent
@@ -4282,10 +4280,9 @@ impl std::str::FromStr
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4336,7 +4333,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The list of payment method types (e.g.
@@ -4511,10 +4509,9 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsPaymentMethodTypes"
+                    "CreateSubscriptionPaymentSettingsPaymentMethodTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4553,7 +4550,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
@@ -4585,10 +4583,9 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsSaveDefaultPaymentMe
             "off" => Ok(Off),
             "on_subscription" => Ok(OnSubscription),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod"
+                    "CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4627,7 +4624,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsSaveDefau
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
@@ -4689,10 +4687,9 @@ impl std::str::FromStr for CreateSubscriptionPendingInvoiceItemIntervalInterval 
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionPendingInvoiceItemIntervalInterval"
+                    "CreateSubscriptionPendingInvoiceItemIntervalInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4731,7 +4728,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPendingInvoiceItemInterv
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor`.
@@ -4766,11 +4764,7 @@ impl std::str::FromStr for CreateSubscriptionProrationBehavior {
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionProrationBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateSubscriptionProrationBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -4807,7 +4801,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
@@ -4903,10 +4898,9 @@ impl std::str::FromStr for CreateSubscriptionTrialSettingsEndBehaviorMissingPaym
             "create_invoice" => Ok(CreateInvoice),
             "pause" => Ok(Pause),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod"
+                    "CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4947,7 +4941,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a new subscription on an existing customer.
@@ -5371,10 +5366,9 @@ impl std::str::FromStr for MigrateSubscriptionBillingModeFlexibleProrationDiscou
             "included" => Ok(Included),
             "itemized" => Ok(Itemized),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "MigrateSubscriptionBillingModeFlexibleProrationDiscounts"
+                    "MigrateSubscriptionBillingModeFlexibleProrationDiscounts",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -5413,7 +5407,8 @@ impl<'de> serde::Deserialize<'de> for MigrateSubscriptionBillingModeFlexiblePror
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
@@ -5441,11 +5436,7 @@ impl std::str::FromStr for MigrateSubscriptionBillingModeType {
         match s {
             "flexible" => Ok(Flexible),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MigrateSubscriptionBillingModeType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "MigrateSubscriptionBillingModeType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -5482,7 +5473,8 @@ impl<'de> serde::Deserialize<'de> for MigrateSubscriptionBillingModeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Upgrade the billing_mode of an existing subscription.
@@ -5603,11 +5595,7 @@ impl std::str::FromStr for ResumeSubscriptionBillingCycleAnchor {
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ResumeSubscriptionBillingCycleAnchor"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ResumeSubscriptionBillingCycleAnchor");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -5644,7 +5632,8 @@ impl<'de> serde::Deserialize<'de> for ResumeSubscriptionBillingCycleAnchor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor` being `unchanged`.
@@ -5680,11 +5669,7 @@ impl std::str::FromStr for ResumeSubscriptionProrationBehavior {
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ResumeSubscriptionProrationBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ResumeSubscriptionProrationBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -5721,7 +5706,8 @@ impl<'de> serde::Deserialize<'de> for ResumeSubscriptionProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Initiates resumption of a paused subscription, optionally resetting the billing cycle anchor and creating prorations.
@@ -6061,10 +6047,9 @@ impl std::str::FromStr for UpdateSubscriptionAddInvoiceItemsPeriodEndType {
             "min_item_period_end" => Ok(MinItemPeriodEnd),
             "timestamp" => Ok(Timestamp),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionAddInvoiceItemsPeriodEndType"
+                    "UpdateSubscriptionAddInvoiceItemsPeriodEndType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6103,7 +6088,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAddInvoiceItemsPeriodEnd
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Start of the invoice item period.
@@ -6161,10 +6147,9 @@ impl std::str::FromStr for UpdateSubscriptionAddInvoiceItemsPeriodStartType {
             "now" => Ok(Now),
             "timestamp" => Ok(Timestamp),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionAddInvoiceItemsPeriodStartType"
+                    "UpdateSubscriptionAddInvoiceItemsPeriodStartType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6203,7 +6188,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAddInvoiceItemsPeriodSta
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
@@ -6282,10 +6268,9 @@ impl std::str::FromStr for UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior"
+                    "UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6324,7 +6309,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAddInvoiceItemsPriceData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Automatic tax settings for this subscription.
@@ -6405,10 +6391,9 @@ impl std::str::FromStr for UpdateSubscriptionAutomaticTaxLiabilityType {
             "account" => Ok(Account),
             "self" => Ok(Self_),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionAutomaticTaxLiabilityType"
+                    "UpdateSubscriptionAutomaticTaxLiabilityType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6447,7 +6432,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAutomaticTaxLiabilityTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Either `now` or `unchanged`.
@@ -6480,11 +6466,7 @@ impl std::str::FromStr for UpdateSubscriptionBillingCycleAnchor {
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionBillingCycleAnchor"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateSubscriptionBillingCycleAnchor");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -6521,7 +6503,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingCycleAnchor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// An array of billing schedules, which allow you to bill customers in advance for multiple service periods.
@@ -6608,10 +6591,9 @@ impl std::str::FromStr for UpdateSubscriptionBillingSchedulesAppliesToType {
         match s {
             "price" => Ok(Price),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionBillingSchedulesAppliesToType"
+                    "UpdateSubscriptionBillingSchedulesAppliesToType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6650,7 +6632,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingSchedulesAppliesT
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The end date for the billing schedule.
@@ -6739,10 +6722,9 @@ impl std::str::FromStr for UpdateSubscriptionBillingSchedulesBillUntilDurationIn
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionBillingSchedulesBillUntilDurationInterval"
+                    "UpdateSubscriptionBillingSchedulesBillUntilDurationInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6781,7 +6763,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingSchedulesBillUnti
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Describes how the billing schedule will determine the end date. Either `duration` or `timestamp`.
@@ -6812,10 +6795,9 @@ impl std::str::FromStr for UpdateSubscriptionBillingSchedulesBillUntilType {
             "duration" => Ok(Duration),
             "timestamp" => Ok(Timestamp),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionBillingSchedulesBillUntilType"
+                    "UpdateSubscriptionBillingSchedulesBillUntilType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6854,7 +6836,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingSchedulesBillUnti
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// A timestamp at which the subscription should cancel.
@@ -6954,10 +6937,9 @@ impl std::str::FromStr for UpdateSubscriptionCancellationDetailsFeedback {
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionCancellationDetailsFeedback"
+                    "UpdateSubscriptionCancellationDetailsFeedback",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6996,7 +6978,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionCancellationDetailsFeedb
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -7096,10 +7079,9 @@ impl std::str::FromStr for UpdateSubscriptionInvoiceSettingsIssuerType {
             "account" => Ok(Account),
             "self" => Ok(Self_),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionInvoiceSettingsIssuerType"
+                    "UpdateSubscriptionInvoiceSettingsIssuerType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7138,7 +7120,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionInvoiceSettingsIssuerTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -7328,10 +7311,9 @@ impl std::str::FromStr for UpdateSubscriptionItemsPriceDataRecurringInterval {
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionItemsPriceDataRecurringInterval"
+                    "UpdateSubscriptionItemsPriceDataRecurringInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7370,7 +7352,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemsPriceDataRecurringI
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -7407,10 +7390,9 @@ impl std::str::FromStr for UpdateSubscriptionItemsPriceDataTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionItemsPriceDataTaxBehavior"
+                    "UpdateSubscriptionItemsPriceDataTaxBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7449,7 +7431,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemsPriceDataTaxBehavio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// If specified, payment collection for this subscription will be paused.
@@ -7507,10 +7490,9 @@ impl std::str::FromStr for UpdateSubscriptionPauseCollectionBehavior {
             "mark_uncollectible" => Ok(MarkUncollectible),
             "void" => Ok(Void),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPauseCollectionBehavior"
+                    "UpdateSubscriptionPauseCollectionBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7549,7 +7531,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPauseCollectionBehavior 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Controls how Stripe handles payment when a subscription update requires payment and `collection_method=charge_automatically`.
@@ -7586,11 +7569,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentBehavior {
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionPaymentBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateSubscriptionPaymentBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -7627,7 +7606,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Payment settings to pass to invoices created by the subscription.
@@ -7835,10 +7815,9 @@ impl std::str::FromStr
             "business" => Ok(Business),
             "personal" => Ok(Personal),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7886,7 +7865,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Verification method for the intent
@@ -7922,10 +7902,9 @@ impl std::str::FromStr
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7976,7 +7955,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
@@ -8042,10 +8022,9 @@ impl std::str::FromStr
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8096,7 +8075,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
@@ -8204,10 +8184,9 @@ impl std::str::FromStr
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8258,7 +8237,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Selected network to process this Subscription on.
@@ -8325,10 +8305,9 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptions
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -8369,7 +8348,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
@@ -8407,10 +8387,9 @@ impl std::str::FromStr
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8461,7 +8440,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
@@ -8579,10 +8559,9 @@ impl std::str::FromStr
             "tax" => Ok(Tax),
             "utility" => Ok(Utility),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8633,7 +8612,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the Pix payment method options to pass to the invoice’s PaymentIntent.
@@ -8738,10 +8718,9 @@ impl std::str::FromStr
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPixMandateOptionsAmountIncludesIof"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPixMandateOptionsAmountIncludesIof",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8792,7 +8771,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Schedule at which the future payments will be charged.
@@ -8835,10 +8815,9 @@ impl std::str::FromStr
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPixMandateOptionsPaymentSchedule"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPixMandateOptionsPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8889,7 +8868,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the UPI payment method options to pass to the invoice’s PaymentIntent.
@@ -8989,10 +8969,9 @@ impl std::str::FromStr
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9043,7 +9022,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
@@ -9174,7 +9154,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptions
         match s {
     "checking" => Ok(Checking),
 "savings" => Ok(Savings),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -9207,7 +9187,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// The list of permissions to request.
@@ -9247,7 +9228,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptions
 "ownership" => Ok(Ownership),
 "payment_method" => Ok(PaymentMethod),
 "transactions" => Ok(Transactions),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -9280,7 +9261,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// List of data features that you would like to retrieve upon account creation.
@@ -9316,7 +9298,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptions
     "balances" => Ok(Balances),
 "ownership" => Ok(Ownership),
 "transactions" => Ok(Transactions),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"); Ok(Unknown(v.to_owned())) }
+v => { stripe_types::warn_unknown_enum_value(v, "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -9349,7 +9331,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+                    Ok(v)
     }
 }
 /// Verification method for the intent
@@ -9385,10 +9368,9 @@ impl std::str::FromStr
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9439,7 +9421,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The list of payment method types (e.g.
@@ -9614,10 +9597,9 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsPaymentMethodTypes"
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9656,7 +9638,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
@@ -9688,10 +9671,9 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMe
             "off" => Ok(Off),
             "on_subscription" => Ok(OnSubscription),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod"
+                    "UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9730,7 +9712,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsSaveDefau
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
@@ -9792,10 +9775,9 @@ impl std::str::FromStr for UpdateSubscriptionPendingInvoiceItemIntervalInterval 
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionPendingInvoiceItemIntervalInterval"
+                    "UpdateSubscriptionPendingInvoiceItemIntervalInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -9834,7 +9816,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPendingInvoiceItemInterv
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
@@ -9869,11 +9852,7 @@ impl std::str::FromStr for UpdateSubscriptionProrationBehavior {
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionProrationBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateSubscriptionProrationBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -9910,7 +9889,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
@@ -10007,10 +9987,9 @@ impl std::str::FromStr for UpdateSubscriptionTrialSettingsEndBehaviorMissingPaym
             "create_invoice" => Ok(CreateInvoice),
             "pause" => Ok(Pause),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod"
+                    "UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -10051,7 +10030,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates an existing subscription to match the specified parameters.

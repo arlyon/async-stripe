@@ -121,10 +121,9 @@ impl std::str::FromStr
         match s {
             "metered" => Ok(Metered),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType"
+                    "RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -175,7 +174,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// A list of prices that the credit grant can apply to.
@@ -233,10 +233,9 @@ impl std::str::FromStr for RetrieveForMyAccountBillingCreditBalanceSummaryFilter
             "applicability_scope" => Ok(ApplicabilityScope),
             "credit_grant" => Ok(CreditGrant),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "RetrieveForMyAccountBillingCreditBalanceSummaryFilterType"
+                    "RetrieveForMyAccountBillingCreditBalanceSummaryFilterType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -275,7 +274,8 @@ impl<'de> serde::Deserialize<'de> for RetrieveForMyAccountBillingCreditBalanceSu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Retrieves the credit balance summary for a customer.

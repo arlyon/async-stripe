@@ -312,7 +312,7 @@ impl std::str::FromStr for TerminalReaderDeviceType {
             "verifone_ux700" => Ok(VerifoneUx700),
             "verifone_v660p" => Ok(VerifoneV660p),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TerminalReaderDeviceType");
+                stripe_types::warn_unknown_enum_value(v, "TerminalReaderDeviceType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -353,18 +353,26 @@ impl miniserde::Deserialize for TerminalReaderDeviceType {
 impl miniserde::de::Visitor for crate::Place<TerminalReaderDeviceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TerminalReaderDeviceType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = TerminalReaderDeviceType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TerminalReaderDeviceType);
+impl stripe_types::miniserde_helpers::FromValueOpt for TerminalReaderDeviceType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TerminalReaderDeviceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -394,7 +402,7 @@ impl std::str::FromStr for TerminalReaderStatus {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TerminalReaderStatus");
+                stripe_types::warn_unknown_enum_value(v, "TerminalReaderStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -435,17 +443,25 @@ impl miniserde::Deserialize for TerminalReaderStatus {
 impl miniserde::de::Visitor for crate::Place<TerminalReaderStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TerminalReaderStatus::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = TerminalReaderStatus::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TerminalReaderStatus);
+impl stripe_types::miniserde_helpers::FromValueOpt for TerminalReaderStatus {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TerminalReaderStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

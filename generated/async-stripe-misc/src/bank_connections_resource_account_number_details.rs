@@ -151,10 +151,9 @@ impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsIdentifier
             "account_number" => Ok(AccountNumber),
             "tokenized_account_number" => Ok(TokenizedAccountNumber),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "BankConnectionsResourceAccountNumberDetailsIdentifierType"
+                    "BankConnectionsResourceAccountNumberDetailsIdentifierType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -200,23 +199,28 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BankConnectionsResourceAccountNumberDetailsIdentifierType::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = BankConnectionsResourceAccountNumberDetailsIdentifierType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    BankConnectionsResourceAccountNumberDetailsIdentifierType
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for BankConnectionsResourceAccountNumberDetailsIdentifierType
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetailsIdentifierType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether the account number is currently active and usable for transactions.
@@ -247,10 +251,9 @@ impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsStatus {
             "deactivated" => Ok(Deactivated),
             "transactable" => Ok(Transactable),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "BankConnectionsResourceAccountNumberDetailsStatus"
+                    "BankConnectionsResourceAccountNumberDetailsStatus",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -294,20 +297,28 @@ impl miniserde::Deserialize for BankConnectionsResourceAccountNumberDetailsStatu
 impl miniserde::de::Visitor for crate::Place<BankConnectionsResourceAccountNumberDetailsStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BankConnectionsResourceAccountNumberDetailsStatus::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = BankConnectionsResourceAccountNumberDetailsStatus::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BankConnectionsResourceAccountNumberDetailsStatus);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for BankConnectionsResourceAccountNumberDetailsStatus
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetailsStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The payment networks that the account number can be used for.
@@ -335,10 +346,9 @@ impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsSupportedN
         match s {
             "ach" => Ok(Ach),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "BankConnectionsResourceAccountNumberDetailsSupportedNetworks"
+                    "BankConnectionsResourceAccountNumberDetailsSupportedNetworks",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -384,22 +394,27 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BankConnectionsResourceAccountNumberDetailsSupportedNetworks::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = BankConnectionsResourceAccountNumberDetailsSupportedNetworks::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    BankConnectionsResourceAccountNumberDetailsSupportedNetworks
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for BankConnectionsResourceAccountNumberDetailsSupportedNetworks
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

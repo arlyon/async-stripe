@@ -298,7 +298,7 @@ impl std::str::FromStr for PreviewCreditNoteEmailType {
             "credit_note" => Ok(CreditNote),
             "none" => Ok(None),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PreviewCreditNoteEmailType");
+                stripe_types::warn_unknown_enum_value(v, "PreviewCreditNoteEmailType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -335,7 +335,8 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteEmailType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Line items that make up the credit note.
@@ -437,7 +438,7 @@ impl std::str::FromStr for PreviewCreditNoteLinesType {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PreviewCreditNoteLinesType");
+                stripe_types::warn_unknown_enum_value(v, "PreviewCreditNoteLinesType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -474,7 +475,8 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteLinesType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Refunds to link to this credit note.
@@ -542,11 +544,7 @@ impl std::str::FromStr for PreviewCreditNoteRefundsType {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewCreditNoteRefundsType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "PreviewCreditNoteRefundsType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -583,7 +581,8 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteRefundsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Get a preview of a credit note without creating it.
@@ -802,11 +801,7 @@ impl std::str::FromStr for PreviewLinesCreditNoteEmailType {
             "credit_note" => Ok(CreditNote),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewLinesCreditNoteEmailType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "PreviewLinesCreditNoteEmailType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -843,7 +838,8 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteEmailType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Line items that make up the credit note.
@@ -945,11 +941,7 @@ impl std::str::FromStr for PreviewLinesCreditNoteLinesType {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewLinesCreditNoteLinesType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "PreviewLinesCreditNoteLinesType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -986,7 +978,8 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteLinesType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Refunds to link to this credit note.
@@ -1054,11 +1047,7 @@ impl std::str::FromStr for PreviewLinesCreditNoteRefundsType {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewLinesCreditNoteRefundsType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "PreviewLinesCreditNoteRefundsType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1095,7 +1084,8 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteRefundsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
@@ -1333,7 +1323,7 @@ impl std::str::FromStr for CreateCreditNoteEmailType {
             "credit_note" => Ok(CreditNote),
             "none" => Ok(None),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCreditNoteEmailType");
+                stripe_types::warn_unknown_enum_value(v, "CreateCreditNoteEmailType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1370,7 +1360,8 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteEmailType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Line items that make up the credit note.
@@ -1472,7 +1463,7 @@ impl std::str::FromStr for CreateCreditNoteLinesType {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCreditNoteLinesType");
+                stripe_types::warn_unknown_enum_value(v, "CreateCreditNoteLinesType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1509,7 +1500,8 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteLinesType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Refunds to link to this credit note.
@@ -1577,11 +1569,7 @@ impl std::str::FromStr for CreateCreditNoteRefundsType {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCreditNoteRefundsType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateCreditNoteRefundsType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1618,7 +1606,8 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteRefundsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Issue a credit note to adjust the amount of a finalized invoice.

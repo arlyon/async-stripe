@@ -188,10 +188,9 @@ impl std::str::FromStr for PaymentMethodOptionsMandateOptionsPixAmountIncludesIo
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentMethodOptionsMandateOptionsPixAmountIncludesIof"
+                    "PaymentMethodOptionsMandateOptionsPixAmountIncludesIof",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -237,21 +236,28 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsMandateOptionsPixAmountIncludesIof::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = PaymentMethodOptionsMandateOptionsPixAmountIncludesIof::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsMandateOptionsPixAmountIncludesIof);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentMethodOptionsMandateOptionsPixAmountIncludesIof
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Type of amount.
@@ -282,10 +288,9 @@ impl std::str::FromStr for PaymentMethodOptionsMandateOptionsPixAmountType {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentMethodOptionsMandateOptionsPixAmountType"
+                    "PaymentMethodOptionsMandateOptionsPixAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -329,19 +334,28 @@ impl miniserde::Deserialize for PaymentMethodOptionsMandateOptionsPixAmountType 
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsMandateOptionsPixAmountType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodOptionsMandateOptionsPixAmountType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PaymentMethodOptionsMandateOptionsPixAmountType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsMandateOptionsPixAmountType);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentMethodOptionsMandateOptionsPixAmountType
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsMandateOptionsPixAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Schedule at which the future payments will be charged.
@@ -381,10 +395,9 @@ impl std::str::FromStr for PaymentMethodOptionsMandateOptionsPixPaymentSchedule 
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentMethodOptionsMandateOptionsPixPaymentSchedule"
+                    "PaymentMethodOptionsMandateOptionsPixPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -428,19 +441,27 @@ impl miniserde::Deserialize for PaymentMethodOptionsMandateOptionsPixPaymentSche
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsMandateOptionsPixPaymentSchedule> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsMandateOptionsPixPaymentSchedule::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = PaymentMethodOptionsMandateOptionsPixPaymentSchedule::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsMandateOptionsPixPaymentSchedule);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentMethodOptionsMandateOptionsPixPaymentSchedule
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

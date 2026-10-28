@@ -352,7 +352,7 @@ impl std::str::FromStr for PriceBillingScheme {
             "per_unit" => Ok(PerUnit),
             "tiered" => Ok(Tiered),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceBillingScheme");
+                stripe_types::warn_unknown_enum_value(v, "PriceBillingScheme");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -393,18 +393,26 @@ impl miniserde::Deserialize for PriceBillingScheme {
 impl miniserde::de::Visitor for crate::Place<PriceBillingScheme> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PriceBillingScheme::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PriceBillingScheme::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PriceBillingScheme);
+impl stripe_types::miniserde_helpers::FromValueOpt for PriceBillingScheme {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PriceBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -437,7 +445,7 @@ impl std::str::FromStr for PriceTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceTaxBehavior");
+                stripe_types::warn_unknown_enum_value(v, "PriceTaxBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -478,18 +486,26 @@ impl miniserde::Deserialize for PriceTaxBehavior {
 impl miniserde::de::Visitor for crate::Place<PriceTaxBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PriceTaxBehavior::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PriceTaxBehavior::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PriceTaxBehavior);
+impl stripe_types::miniserde_helpers::FromValueOpt for PriceTaxBehavior {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PriceTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -519,7 +535,7 @@ impl std::str::FromStr for PriceTiersMode {
             "graduated" => Ok(Graduated),
             "volume" => Ok(Volume),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceTiersMode");
+                stripe_types::warn_unknown_enum_value(v, "PriceTiersMode");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -560,18 +576,26 @@ impl miniserde::Deserialize for PriceTiersMode {
 impl miniserde::de::Visitor for crate::Place<PriceTiersMode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PriceTiersMode::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PriceTiersMode::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PriceTiersMode);
+impl stripe_types::miniserde_helpers::FromValueOpt for PriceTiersMode {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PriceTiersMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -601,7 +625,7 @@ impl std::str::FromStr for PriceType {
             "one_time" => Ok(OneTime),
             "recurring" => Ok(Recurring),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceType");
+                stripe_types::warn_unknown_enum_value(v, "PriceType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -642,17 +666,25 @@ impl miniserde::Deserialize for PriceType {
 impl miniserde::de::Visitor for crate::Place<PriceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PriceType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PriceType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PriceType);
+impl stripe_types::miniserde_helpers::FromValueOpt for PriceType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PriceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

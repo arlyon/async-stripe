@@ -150,10 +150,9 @@ impl std::str::FromStr for BalanceSettingsResourcePayoutScheduleInterval {
             "monthly" => Ok(Monthly),
             "weekly" => Ok(Weekly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "BalanceSettingsResourcePayoutScheduleInterval"
+                    "BalanceSettingsResourcePayoutScheduleInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -197,19 +196,28 @@ impl miniserde::Deserialize for BalanceSettingsResourcePayoutScheduleInterval {
 impl miniserde::de::Visitor for crate::Place<BalanceSettingsResourcePayoutScheduleInterval> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(BalanceSettingsResourcePayoutScheduleInterval::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = BalanceSettingsResourcePayoutScheduleInterval::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BalanceSettingsResourcePayoutScheduleInterval);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for BalanceSettingsResourcePayoutScheduleInterval
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BalanceSettingsResourcePayoutScheduleInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The days of the week when available funds are paid out, specified as an array, for example, [`monday`, `tuesday`].
@@ -250,10 +258,9 @@ impl std::str::FromStr for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays"
+                    "BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -299,19 +306,27 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

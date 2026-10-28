@@ -256,7 +256,7 @@ impl std::str::FromStr for ShippingRateTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ShippingRateTaxBehavior");
+                stripe_types::warn_unknown_enum_value(v, "ShippingRateTaxBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -297,18 +297,26 @@ impl miniserde::Deserialize for ShippingRateTaxBehavior {
 impl miniserde::de::Visitor for crate::Place<ShippingRateTaxBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ShippingRateTaxBehavior::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ShippingRateTaxBehavior::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ShippingRateTaxBehavior);
+impl stripe_types::miniserde_helpers::FromValueOpt for ShippingRateTaxBehavior {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ShippingRateTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -335,7 +343,7 @@ impl std::str::FromStr for ShippingRateType {
         match s {
             "fixed_amount" => Ok(FixedAmount),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ShippingRateType");
+                stripe_types::warn_unknown_enum_value(v, "ShippingRateType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -376,17 +384,25 @@ impl miniserde::Deserialize for ShippingRateType {
 impl miniserde::de::Visitor for crate::Place<ShippingRateType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ShippingRateType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ShippingRateType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ShippingRateType);
+impl stripe_types::miniserde_helpers::FromValueOpt for ShippingRateType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ShippingRateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

@@ -465,7 +465,7 @@ impl std::str::FromStr for SetupIntentStatus {
             "requires_payment_method" => Ok(RequiresPaymentMethod),
             "succeeded" => Ok(Succeeded),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SetupIntentStatus");
+                stripe_types::warn_unknown_enum_value(v, "SetupIntentStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -507,18 +507,26 @@ impl miniserde::Deserialize for SetupIntentStatus {
 impl miniserde::de::Visitor for crate::Place<SetupIntentStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SetupIntentStatus::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = SetupIntentStatus::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentStatus);
+impl stripe_types::miniserde_helpers::FromValueOpt for SetupIntentStatus {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 impl stripe_types::Object for SetupIntent {
@@ -844,11 +852,7 @@ impl std::str::FromStr for SetupIntentAllowedPaymentMethodTypes {
             "wero" => Ok(Wero),
             "zip" => Ok(Zip),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentAllowedPaymentMethodTypes"
-                );
+                stripe_types::warn_unknown_enum_value(v, "SetupIntentAllowedPaymentMethodTypes");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -889,18 +893,26 @@ impl miniserde::Deserialize for SetupIntentAllowedPaymentMethodTypes {
 impl miniserde::de::Visitor for crate::Place<SetupIntentAllowedPaymentMethodTypes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SetupIntentAllowedPaymentMethodTypes::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = SetupIntentAllowedPaymentMethodTypes::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentAllowedPaymentMethodTypes);
+impl stripe_types::miniserde_helpers::FromValueOpt for SetupIntentAllowedPaymentMethodTypes {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentAllowedPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -933,11 +945,7 @@ impl std::str::FromStr for SetupIntentCancellationReason {
             "duplicate" => Ok(Duplicate),
             "requested_by_customer" => Ok(RequestedByCustomer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentCancellationReason"
-                );
+                stripe_types::warn_unknown_enum_value(v, "SetupIntentCancellationReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -978,18 +986,26 @@ impl miniserde::Deserialize for SetupIntentCancellationReason {
 impl miniserde::de::Visitor for crate::Place<SetupIntentCancellationReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SetupIntentCancellationReason::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = SetupIntentCancellationReason::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentCancellationReason);
+impl stripe_types::miniserde_helpers::FromValueOpt for SetupIntentCancellationReason {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -1172,11 +1188,7 @@ impl std::str::FromStr for SetupIntentExcludedPaymentMethodTypes {
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentExcludedPaymentMethodTypes"
-                );
+                stripe_types::warn_unknown_enum_value(v, "SetupIntentExcludedPaymentMethodTypes");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1217,18 +1229,26 @@ impl miniserde::Deserialize for SetupIntentExcludedPaymentMethodTypes {
 impl miniserde::de::Visitor for crate::Place<SetupIntentExcludedPaymentMethodTypes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SetupIntentExcludedPaymentMethodTypes::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = SetupIntentExcludedPaymentMethodTypes::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentExcludedPaymentMethodTypes);
+impl stripe_types::miniserde_helpers::FromValueOpt for SetupIntentExcludedPaymentMethodTypes {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentExcludedPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -1258,7 +1278,7 @@ impl std::str::FromStr for SetupIntentFlowDirections {
             "inbound" => Ok(Inbound),
             "outbound" => Ok(Outbound),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SetupIntentFlowDirections");
+                stripe_types::warn_unknown_enum_value(v, "SetupIntentFlowDirections");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1299,17 +1319,25 @@ impl miniserde::Deserialize for SetupIntentFlowDirections {
 impl miniserde::de::Visitor for crate::Place<SetupIntentFlowDirections> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SetupIntentFlowDirections::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = SetupIntentFlowDirections::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentFlowDirections);
+impl stripe_types::miniserde_helpers::FromValueOpt for SetupIntentFlowDirections {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentFlowDirections {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

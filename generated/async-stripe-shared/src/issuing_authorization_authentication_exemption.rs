@@ -129,10 +129,9 @@ impl std::str::FromStr for IssuingAuthorizationAuthenticationExemptionClaimedBy 
             "acquirer" => Ok(Acquirer),
             "issuer" => Ok(Issuer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IssuingAuthorizationAuthenticationExemptionClaimedBy"
+                    "IssuingAuthorizationAuthenticationExemptionClaimedBy",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -176,20 +175,28 @@ impl miniserde::Deserialize for IssuingAuthorizationAuthenticationExemptionClaim
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationAuthenticationExemptionClaimedBy> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationAuthenticationExemptionClaimedBy::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = IssuingAuthorizationAuthenticationExemptionClaimedBy::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationAuthenticationExemptionClaimedBy);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for IssuingAuthorizationAuthenticationExemptionClaimedBy
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthenticationExemptionClaimedBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The specific exemption claimed for this authorization.
@@ -224,10 +231,9 @@ impl std::str::FromStr for IssuingAuthorizationAuthenticationExemptionType {
             "transaction_risk_analysis" => Ok(TransactionRiskAnalysis),
             "unknown" => Ok(Unknown),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IssuingAuthorizationAuthenticationExemptionType"
+                    "IssuingAuthorizationAuthenticationExemptionType",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -271,18 +277,27 @@ impl miniserde::Deserialize for IssuingAuthorizationAuthenticationExemptionType 
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationAuthenticationExemptionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IssuingAuthorizationAuthenticationExemptionType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = IssuingAuthorizationAuthenticationExemptionType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationAuthenticationExemptionType);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for IssuingAuthorizationAuthenticationExemptionType
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthenticationExemptionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

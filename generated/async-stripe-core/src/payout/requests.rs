@@ -290,7 +290,7 @@ impl std::str::FromStr for CreatePayoutMethod {
             "instant" => Ok(Instant),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePayoutMethod");
+                stripe_types::warn_unknown_enum_value(v, "CreatePayoutMethod");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -327,7 +327,8 @@ impl<'de> serde::Deserialize<'de> for CreatePayoutMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The balance type of your Stripe balance to draw this payout from.
@@ -364,7 +365,7 @@ impl std::str::FromStr for CreatePayoutSourceType {
             "card" => Ok(Card),
             "fpx" => Ok(Fpx),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePayoutSourceType");
+                stripe_types::warn_unknown_enum_value(v, "CreatePayoutSourceType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -401,7 +402,8 @@ impl<'de> serde::Deserialize<'de> for CreatePayoutSourceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// To send funds to your own bank account, create a new payout object.

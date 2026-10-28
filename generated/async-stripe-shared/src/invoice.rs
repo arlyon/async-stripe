@@ -980,7 +980,7 @@ impl std::str::FromStr for InvoiceBillingReason {
             "subscription_update" => Ok(SubscriptionUpdate),
             "upcoming" => Ok(Upcoming),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceBillingReason");
+                stripe_types::warn_unknown_enum_value(v, "InvoiceBillingReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1022,18 +1022,26 @@ impl miniserde::Deserialize for InvoiceBillingReason {
 impl miniserde::de::Visitor for crate::Place<InvoiceBillingReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InvoiceBillingReason::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = InvoiceBillingReason::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InvoiceBillingReason);
+impl stripe_types::miniserde_helpers::FromValueOpt for InvoiceBillingReason {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoiceBillingReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The customer's tax exempt status.
@@ -1069,7 +1077,7 @@ impl std::str::FromStr for InvoiceCustomerTaxExempt {
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceCustomerTaxExempt");
+                stripe_types::warn_unknown_enum_value(v, "InvoiceCustomerTaxExempt");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1111,18 +1119,26 @@ impl miniserde::Deserialize for InvoiceCustomerTaxExempt {
 impl miniserde::de::Visitor for crate::Place<InvoiceCustomerTaxExempt> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InvoiceCustomerTaxExempt::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = InvoiceCustomerTaxExempt::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InvoiceCustomerTaxExempt);
+impl stripe_types::miniserde_helpers::FromValueOpt for InvoiceCustomerTaxExempt {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoiceCustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 impl stripe_types::Object for Invoice {
@@ -1163,7 +1179,7 @@ impl std::str::FromStr for InvoiceCollectionMethod {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceCollectionMethod");
+                stripe_types::warn_unknown_enum_value(v, "InvoiceCollectionMethod");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1204,18 +1220,26 @@ impl miniserde::Deserialize for InvoiceCollectionMethod {
 impl miniserde::de::Visitor for crate::Place<InvoiceCollectionMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InvoiceCollectionMethod::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = InvoiceCollectionMethod::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InvoiceCollectionMethod);
+impl stripe_types::miniserde_helpers::FromValueOpt for InvoiceCollectionMethod {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoiceCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -1254,7 +1278,7 @@ impl std::str::FromStr for InvoiceStatus {
             "uncollectible" => Ok(Uncollectible),
             "void" => Ok(Void),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceStatus");
+                stripe_types::warn_unknown_enum_value(v, "InvoiceStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1295,17 +1319,25 @@ impl miniserde::Deserialize for InvoiceStatus {
 impl miniserde::de::Visitor for crate::Place<InvoiceStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InvoiceStatus::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = InvoiceStatus::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InvoiceStatus);
+impl stripe_types::miniserde_helpers::FromValueOpt for InvoiceStatus {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoiceStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

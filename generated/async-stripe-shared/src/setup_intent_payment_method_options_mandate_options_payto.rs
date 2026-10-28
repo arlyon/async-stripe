@@ -187,10 +187,9 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmo
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType"
+                    "SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -236,23 +235,28 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The periodicity at which payments will be collected. Defaults to `adhoc`.
@@ -301,10 +305,9 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPay
             "semi_annual" => Ok(SemiAnnual),
             "weekly" => Ok(Weekly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule"
+                    "SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -352,17 +355,22 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) =
+                SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule
@@ -370,7 +378,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The purpose for which payments are made. Has a default value based on your merchant category code.
@@ -428,10 +437,9 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPur
             "tax" => Ok(Tax),
             "utility" => Ok(Utility),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose"
+                    "SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -477,22 +485,27 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

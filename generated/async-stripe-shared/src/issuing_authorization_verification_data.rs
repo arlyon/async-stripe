@@ -189,10 +189,9 @@ impl std::str::FromStr for IssuingAuthorizationVerificationDataAddressLine1Check
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IssuingAuthorizationVerificationDataAddressLine1Check"
+                    "IssuingAuthorizationVerificationDataAddressLine1Check",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -238,20 +237,28 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationVerificationDataAddressLine1Check::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = IssuingAuthorizationVerificationDataAddressLine1Check::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationVerificationDataAddressLine1Check);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for IssuingAuthorizationVerificationDataAddressLine1Check
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataAddressLine1Check {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether the cardholder provided a postal code and if it matched the cardholder’s `billing.address.postal_code`.
@@ -285,10 +292,9 @@ impl std::str::FromStr for IssuingAuthorizationVerificationDataAddressPostalCode
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IssuingAuthorizationVerificationDataAddressPostalCodeCheck"
+                    "IssuingAuthorizationVerificationDataAddressPostalCodeCheck",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -334,23 +340,28 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationVerificationDataAddressPostalCodeCheck::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = IssuingAuthorizationVerificationDataAddressPostalCodeCheck::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    IssuingAuthorizationVerificationDataAddressPostalCodeCheck
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for IssuingAuthorizationVerificationDataAddressPostalCodeCheck
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether the cardholder provided a CVC and if it matched Stripe’s record.
@@ -384,10 +395,9 @@ impl std::str::FromStr for IssuingAuthorizationVerificationDataCvcCheck {
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IssuingAuthorizationVerificationDataCvcCheck"
+                    "IssuingAuthorizationVerificationDataCvcCheck",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -431,19 +441,28 @@ impl miniserde::Deserialize for IssuingAuthorizationVerificationDataCvcCheck {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationVerificationDataCvcCheck> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IssuingAuthorizationVerificationDataCvcCheck::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = IssuingAuthorizationVerificationDataCvcCheck::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationVerificationDataCvcCheck);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for IssuingAuthorizationVerificationDataCvcCheck
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataCvcCheck {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether the cardholder provided an expiry date and if it matched Stripe’s record.
@@ -477,10 +496,9 @@ impl std::str::FromStr for IssuingAuthorizationVerificationDataExpiryCheck {
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "IssuingAuthorizationVerificationDataExpiryCheck"
+                    "IssuingAuthorizationVerificationDataExpiryCheck",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -524,18 +542,27 @@ impl miniserde::Deserialize for IssuingAuthorizationVerificationDataExpiryCheck 
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationVerificationDataExpiryCheck> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IssuingAuthorizationVerificationDataExpiryCheck::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = IssuingAuthorizationVerificationDataExpiryCheck::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationVerificationDataExpiryCheck);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for IssuingAuthorizationVerificationDataExpiryCheck
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataExpiryCheck {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

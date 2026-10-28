@@ -137,10 +137,9 @@ impl std::str::FromStr for PaymentMethodConfigResourceDisplayPreferencePreferenc
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentMethodConfigResourceDisplayPreferencePreference"
+                    "PaymentMethodConfigResourceDisplayPreferencePreference",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -186,21 +185,28 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodConfigResourceDisplayPreferencePreference::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = PaymentMethodConfigResourceDisplayPreferencePreference::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodConfigResourceDisplayPreferencePreference);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentMethodConfigResourceDisplayPreferencePreference
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodConfigResourceDisplayPreferencePreference {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The effective display preference value.
@@ -231,10 +237,9 @@ impl std::str::FromStr for PaymentMethodConfigResourceDisplayPreferenceValue {
             "off" => Ok(Off),
             "on" => Ok(On),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentMethodConfigResourceDisplayPreferenceValue"
+                    "PaymentMethodConfigResourceDisplayPreferenceValue",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -278,19 +283,27 @@ impl miniserde::Deserialize for PaymentMethodConfigResourceDisplayPreferenceValu
 impl miniserde::de::Visitor for crate::Place<PaymentMethodConfigResourceDisplayPreferenceValue> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodConfigResourceDisplayPreferenceValue::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = PaymentMethodConfigResourceDisplayPreferenceValue::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodConfigResourceDisplayPreferenceValue);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentMethodConfigResourceDisplayPreferenceValue
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodConfigResourceDisplayPreferenceValue {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

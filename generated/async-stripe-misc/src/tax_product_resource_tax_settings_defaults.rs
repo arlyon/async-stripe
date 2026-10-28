@@ -142,10 +142,9 @@ impl std::str::FromStr for TaxProductResourceTaxSettingsDefaultsProvider {
             "sphere" => Ok(Sphere),
             "stripe" => Ok(Stripe),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "TaxProductResourceTaxSettingsDefaultsProvider"
+                    "TaxProductResourceTaxSettingsDefaultsProvider",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -189,19 +188,28 @@ impl miniserde::Deserialize for TaxProductResourceTaxSettingsDefaultsProvider {
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxSettingsDefaultsProvider> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(TaxProductResourceTaxSettingsDefaultsProvider::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = TaxProductResourceTaxSettingsDefaultsProvider::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceTaxSettingsDefaultsProvider);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for TaxProductResourceTaxSettingsDefaultsProvider
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxSettingsDefaultsProvider {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) used to specify whether the price is considered inclusive of taxes or exclusive of taxes.
@@ -236,10 +244,9 @@ impl std::str::FromStr for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "inferred_by_currency" => Ok(InferredByCurrency),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "TaxProductResourceTaxSettingsDefaultsTaxBehavior"
+                    "TaxProductResourceTaxSettingsDefaultsTaxBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -283,19 +290,27 @@ impl miniserde::Deserialize for TaxProductResourceTaxSettingsDefaultsTaxBehavior
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxSettingsDefaultsTaxBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TaxProductResourceTaxSettingsDefaultsTaxBehavior::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = TaxProductResourceTaxSettingsDefaultsTaxBehavior::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceTaxSettingsDefaultsTaxBehavior);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for TaxProductResourceTaxSettingsDefaultsTaxBehavior
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

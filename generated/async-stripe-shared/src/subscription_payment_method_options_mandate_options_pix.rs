@@ -148,10 +148,9 @@ impl std::str::FromStr for SubscriptionPaymentMethodOptionsMandateOptionsPixAmou
             "always" => Ok(Always),
             "never" => Ok(Never),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "SubscriptionPaymentMethodOptionsMandateOptionsPixAmountIncludesIof"
+                    "SubscriptionPaymentMethodOptionsMandateOptionsPixAmountIncludesIof",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -199,17 +198,22 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SubscriptionPaymentMethodOptionsMandateOptionsPixAmountIncludesIof::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) =
+                SubscriptionPaymentMethodOptionsMandateOptionsPixAmountIncludesIof::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionPaymentMethodOptionsMandateOptionsPixAmountIncludesIof
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for SubscriptionPaymentMethodOptionsMandateOptionsPixAmountIncludesIof
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for SubscriptionPaymentMethodOptionsMandateOptionsPixAmountIncludesIof
@@ -217,7 +221,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Schedule at which the future payments will be charged.
@@ -257,10 +262,9 @@ impl std::str::FromStr for SubscriptionPaymentMethodOptionsMandateOptionsPixPaym
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "SubscriptionPaymentMethodOptionsMandateOptionsPixPaymentSchedule"
+                    "SubscriptionPaymentMethodOptionsMandateOptionsPixPaymentSchedule",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -306,17 +310,22 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SubscriptionPaymentMethodOptionsMandateOptionsPixPaymentSchedule::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) =
+                SubscriptionPaymentMethodOptionsMandateOptionsPixPaymentSchedule::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionPaymentMethodOptionsMandateOptionsPixPaymentSchedule
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for SubscriptionPaymentMethodOptionsMandateOptionsPixPaymentSchedule
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for SubscriptionPaymentMethodOptionsMandateOptionsPixPaymentSchedule
@@ -324,6 +333,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

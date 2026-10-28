@@ -180,11 +180,7 @@ impl std::str::FromStr for MandateBacsDebitNetworkStatus {
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandateBacsDebitNetworkStatus"
-                );
+                stripe_types::warn_unknown_enum_value(v, "MandateBacsDebitNetworkStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -226,18 +222,26 @@ impl miniserde::Deserialize for MandateBacsDebitNetworkStatus {
 impl miniserde::de::Visitor for crate::Place<MandateBacsDebitNetworkStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(MandateBacsDebitNetworkStatus::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = MandateBacsDebitNetworkStatus::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(MandateBacsDebitNetworkStatus);
+impl stripe_types::miniserde_helpers::FromValueOpt for MandateBacsDebitNetworkStatus {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateBacsDebitNetworkStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// When the mandate is revoked on the Bacs network this field displays the reason for the revocation.
@@ -277,11 +281,7 @@ impl std::str::FromStr for MandateBacsDebitRevocationReason {
             "could_not_process" => Ok(CouldNotProcess),
             "debit_not_authorized" => Ok(DebitNotAuthorized),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandateBacsDebitRevocationReason"
-                );
+                stripe_types::warn_unknown_enum_value(v, "MandateBacsDebitRevocationReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -323,17 +323,25 @@ impl miniserde::Deserialize for MandateBacsDebitRevocationReason {
 impl miniserde::de::Visitor for crate::Place<MandateBacsDebitRevocationReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(MandateBacsDebitRevocationReason::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = MandateBacsDebitRevocationReason::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(MandateBacsDebitRevocationReason);
+impl stripe_types::miniserde_helpers::FromValueOpt for MandateBacsDebitRevocationReason {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateBacsDebitRevocationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

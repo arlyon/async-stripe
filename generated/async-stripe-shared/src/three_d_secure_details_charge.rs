@@ -199,10 +199,9 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeAuthenticationFlow {
             "challenge" => Ok(Challenge),
             "frictionless" => Ok(Frictionless),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ThreeDSecureDetailsChargeAuthenticationFlow"
+                    "ThreeDSecureDetailsChargeAuthenticationFlow",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -246,19 +245,26 @@ impl miniserde::Deserialize for ThreeDSecureDetailsChargeAuthenticationFlow {
 impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeAuthenticationFlow> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(ThreeDSecureDetailsChargeAuthenticationFlow::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ThreeDSecureDetailsChargeAuthenticationFlow::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeAuthenticationFlow);
+impl stripe_types::miniserde_helpers::FromValueOpt for ThreeDSecureDetailsChargeAuthenticationFlow {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeAuthenticationFlow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The Electronic Commerce Indicator (ECI). A protocol-level field
@@ -299,10 +305,9 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeElectronicCommerceIndicator 
             "06" => Ok(V06),
             "07" => Ok(V07),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ThreeDSecureDetailsChargeElectronicCommerceIndicator"
+                    "ThreeDSecureDetailsChargeElectronicCommerceIndicator",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -346,20 +351,28 @@ impl miniserde::Deserialize for ThreeDSecureDetailsChargeElectronicCommerceIndic
 impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeElectronicCommerceIndicator> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            ThreeDSecureDetailsChargeElectronicCommerceIndicator::from_str(s).expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = ThreeDSecureDetailsChargeElectronicCommerceIndicator::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeElectronicCommerceIndicator);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for ThreeDSecureDetailsChargeElectronicCommerceIndicator
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The exemption requested via 3DS and accepted by the issuer at authentication time.
@@ -390,10 +403,9 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeExemptionIndicator {
             "low_risk" => Ok(LowRisk),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ThreeDSecureDetailsChargeExemptionIndicator"
+                    "ThreeDSecureDetailsChargeExemptionIndicator",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -437,19 +449,26 @@ impl miniserde::Deserialize for ThreeDSecureDetailsChargeExemptionIndicator {
 impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeExemptionIndicator> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(ThreeDSecureDetailsChargeExemptionIndicator::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ThreeDSecureDetailsChargeExemptionIndicator::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeExemptionIndicator);
+impl stripe_types::miniserde_helpers::FromValueOpt for ThreeDSecureDetailsChargeExemptionIndicator {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeExemptionIndicator {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Indicates the outcome of 3D Secure authentication.
@@ -495,11 +514,7 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeResult {
             "not_supported" => Ok(NotSupported),
             "processing_error" => Ok(ProcessingError),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThreeDSecureDetailsChargeResult"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ThreeDSecureDetailsChargeResult");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -541,18 +556,26 @@ impl miniserde::Deserialize for ThreeDSecureDetailsChargeResult {
 impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeResult> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ThreeDSecureDetailsChargeResult::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ThreeDSecureDetailsChargeResult::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeResult);
+impl stripe_types::miniserde_helpers::FromValueOpt for ThreeDSecureDetailsChargeResult {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeResult {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Additional information about why 3D Secure succeeded or failed based
@@ -599,11 +622,7 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeResultReason {
             "protocol_error" => Ok(ProtocolError),
             "rejected" => Ok(Rejected),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThreeDSecureDetailsChargeResultReason"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ThreeDSecureDetailsChargeResultReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -645,18 +664,26 @@ impl miniserde::Deserialize for ThreeDSecureDetailsChargeResultReason {
 impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeResultReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ThreeDSecureDetailsChargeResultReason::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ThreeDSecureDetailsChargeResultReason::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeResultReason);
+impl stripe_types::miniserde_helpers::FromValueOpt for ThreeDSecureDetailsChargeResultReason {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeResultReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The version of 3D Secure that was used.
@@ -696,11 +723,7 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeVersion {
             "2.3.0" => Ok(V2_3_0),
             "2.3.1" => Ok(V2_3_1),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThreeDSecureDetailsChargeVersion"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ThreeDSecureDetailsChargeVersion");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -742,17 +765,25 @@ impl miniserde::Deserialize for ThreeDSecureDetailsChargeVersion {
 impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeVersion> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ThreeDSecureDetailsChargeVersion::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = ThreeDSecureDetailsChargeVersion::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeVersion);
+impl stripe_types::miniserde_helpers::FromValueOpt for ThreeDSecureDetailsChargeVersion {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeVersion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

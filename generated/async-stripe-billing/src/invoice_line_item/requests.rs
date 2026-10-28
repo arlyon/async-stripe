@@ -356,10 +356,9 @@ impl std::str::FromStr for UpdateInvoiceLineItemPriceDataTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateInvoiceLineItemPriceDataTaxBehavior"
+                    "UpdateInvoiceLineItemPriceDataTaxBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -398,7 +397,8 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemPriceDataTaxBehavior 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The pricing information for the invoice item.
@@ -574,10 +574,9 @@ impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictio
             "multiple" => Ok(Multiple),
             "state" => Ok(State),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel"
+                    "UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -616,7 +615,8 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxRateData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The high-level tax type, such as `vat` or `sales_tax`.
@@ -689,10 +689,9 @@ impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
             "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType"
+                    "UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -731,7 +730,8 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxRateData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The reasoning behind this tax, for example, if the product is tax exempt.
@@ -801,10 +801,9 @@ impl std::str::FromStr for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
             "taxable_basis_reduced" => Ok(TaxableBasisReduced),
             "zero_rated" => Ok(ZeroRated),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateInvoiceLineItemTaxAmountsTaxabilityReason"
+                    "UpdateInvoiceLineItemTaxAmountsTaxabilityReason",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -843,7 +842,8 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxabilityR
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates an invoice’s line item.

@@ -171,7 +171,7 @@ impl ObjectWriter<'_> {
             let unknown_variant = if self.use_underscore_unknown { "_Unknown" } else { "Unknown" };
             let _ = writeln!(
                 from_str_body,
-                r#"v => {{ tracing::warn!("Unknown value '{{}}' for enum '{{}}'", v, "{enum_name}"); Ok({unknown_variant}(v.to_owned())) }}"#
+                r#"v => {{ stripe_types::warn_unknown_enum_value(v, "{enum_name}"); Ok({unknown_variant}(v.to_owned())) }}"#
             );
             "std::convert::Infallible"
         } else {
@@ -245,7 +245,7 @@ impl ObjectWriter<'_> {
         );
 
         let miniserde_assign_line = if self.provide_unknown_variant {
-            format!("Some({enum_name}::from_str(s).expect(\"infallible\"))")
+            format!("{{ let Ok(v) = {enum_name}::from_str(s); Some(v) }}")
         } else {
             format!("Some({enum_name}::from_str(s).map_err(|_| miniserde::Error)?)")
         };
@@ -268,13 +268,17 @@ impl ObjectWriter<'_> {
                 }}
             }}
 
-            stripe_types::impl_from_val_with_from_str!({enum_name});
+            impl stripe_types::miniserde_helpers::FromValueOpt for {enum_name} {{
+                fn from_value(v: miniserde::json::Value) -> Option<Self> {{
+                    stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+                }}
+            }}
            "#
             );
         }
 
         let serde_ret_line = if self.provide_unknown_variant {
-            "Ok(Self::from_str(&s).expect(\"infallible\"))".into()
+            "let Ok(v) = Self::from_str(&s);\n                    Ok(v)".into()
         } else {
             format!(
                 r#"Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))"#

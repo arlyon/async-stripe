@@ -239,10 +239,9 @@ impl std::str::FromStr
             "transfer_all" => Ok(TransferAll),
             "transfer_up_to_amount" => Ok(TransferUpToAmount),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType"
+                    "UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -287,7 +286,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Details on when funds from charges are available, and when they are paid out to an external account.
@@ -364,10 +364,9 @@ impl std::str::FromStr for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval 
             "monthly" => Ok(Monthly),
             "weekly" => Ok(Weekly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBalanceSettingsPaymentsPayoutsScheduleInterval"
+                    "UpdateBalanceSettingsPaymentsPayoutsScheduleInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -406,7 +405,8 @@ impl<'de> serde::Deserialize<'de> for UpdateBalanceSettingsPaymentsPayoutsSchedu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
@@ -447,10 +447,9 @@ impl std::str::FromStr for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPay
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays"
+                    "UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -489,7 +488,8 @@ impl<'de> serde::Deserialize<'de> for UpdateBalanceSettingsPaymentsPayoutsSchedu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Settings related to the account's balance settlement timing.

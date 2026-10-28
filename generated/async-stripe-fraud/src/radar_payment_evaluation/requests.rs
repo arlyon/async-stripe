@@ -234,10 +234,9 @@ impl std::str::FromStr
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence"
+                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -288,7 +287,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Describes the type of payment.
@@ -327,10 +327,9 @@ impl std::str::FromStr
             "setup_one_off" => Ok(SetupOneOff),
             "setup_recurring" => Ok(SetupRecurring),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType"
+                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -381,7 +380,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Describes the type of money movement. Currently only `card` is supported.
@@ -411,10 +411,9 @@ impl std::str::FromStr
         match s {
             "card" => Ok(Card),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType"
+                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -465,7 +464,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Details about the payment method to use for the payment.

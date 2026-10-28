@@ -340,10 +340,9 @@ impl std::str::FromStr for CreateShippingRateDeliveryEstimateMaximumUnit {
             "month" => Ok(Month),
             "week" => Ok(Week),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateShippingRateDeliveryEstimateMaximumUnit"
+                    "CreateShippingRateDeliveryEstimateMaximumUnit",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -382,7 +381,8 @@ impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMaximumU
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The lower bound of the estimated range. If empty, represents no lower bound.
@@ -446,10 +446,9 @@ impl std::str::FromStr for CreateShippingRateDeliveryEstimateMinimumUnit {
             "month" => Ok(Month),
             "week" => Ok(Week),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateShippingRateDeliveryEstimateMinimumUnit"
+                    "CreateShippingRateDeliveryEstimateMinimumUnit",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -488,7 +487,8 @@ impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMinimumU
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.

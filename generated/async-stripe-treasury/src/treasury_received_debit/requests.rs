@@ -282,10 +282,9 @@ impl std::str::FromStr for CreateTreasuryReceivedDebitInitiatingPaymentMethodDet
         match s {
             "us_bank_account" => Ok(UsBankAccount),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType"
+                    "CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -326,7 +325,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Optional fields for `us_bank_account`.
@@ -388,11 +388,7 @@ impl std::str::FromStr for CreateTreasuryReceivedDebitNetwork {
         match s {
             "ach" => Ok(Ach),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryReceivedDebitNetwork"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateTreasuryReceivedDebitNetwork");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -429,7 +425,8 @@ impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedDebitNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Use this endpoint to simulate a test mode ReceivedDebit initiated by a third party.

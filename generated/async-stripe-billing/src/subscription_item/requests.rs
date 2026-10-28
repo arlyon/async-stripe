@@ -65,11 +65,7 @@ impl std::str::FromStr for DeleteSubscriptionItemPaymentBehavior {
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DeleteSubscriptionItemPaymentBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "DeleteSubscriptionItemPaymentBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -106,7 +102,8 @@ impl<'de> serde::Deserialize<'de> for DeleteSubscriptionItemPaymentBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
@@ -141,11 +138,7 @@ impl std::str::FromStr for DeleteSubscriptionItemProrationBehavior {
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DeleteSubscriptionItemProrationBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "DeleteSubscriptionItemProrationBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -182,7 +175,8 @@ impl<'de> serde::Deserialize<'de> for DeleteSubscriptionItemProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Deletes an item from the subscription.
@@ -528,11 +522,7 @@ impl std::str::FromStr for CreateSubscriptionItemPaymentBehavior {
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionItemPaymentBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateSubscriptionItemPaymentBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -569,7 +559,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemPaymentBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
@@ -678,10 +669,9 @@ impl std::str::FromStr for CreateSubscriptionItemPriceDataRecurringInterval {
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionItemPriceDataRecurringInterval"
+                    "CreateSubscriptionItemPriceDataRecurringInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -720,7 +710,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemPriceDataRecurringIn
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -757,10 +748,9 @@ impl std::str::FromStr for CreateSubscriptionItemPriceDataTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSubscriptionItemPriceDataTaxBehavior"
+                    "CreateSubscriptionItemPriceDataTaxBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -799,7 +789,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemPriceDataTaxBehavior
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
@@ -834,11 +825,7 @@ impl std::str::FromStr for CreateSubscriptionItemProrationBehavior {
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionItemProrationBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateSubscriptionItemProrationBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -875,7 +862,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Adds a new item to an existing subscription. No existing items will be changed or replaced.
@@ -1092,11 +1080,7 @@ impl std::str::FromStr for UpdateSubscriptionItemPaymentBehavior {
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionItemPaymentBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateSubscriptionItemPaymentBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1133,7 +1117,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemPaymentBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
@@ -1243,10 +1228,9 @@ impl std::str::FromStr for UpdateSubscriptionItemPriceDataRecurringInterval {
             "week" => Ok(Week),
             "year" => Ok(Year),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionItemPriceDataRecurringInterval"
+                    "UpdateSubscriptionItemPriceDataRecurringInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1285,7 +1269,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemPriceDataRecurringIn
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -1322,10 +1307,9 @@ impl std::str::FromStr for UpdateSubscriptionItemPriceDataTaxBehavior {
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateSubscriptionItemPriceDataTaxBehavior"
+                    "UpdateSubscriptionItemPriceDataTaxBehavior",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1364,7 +1348,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemPriceDataTaxBehavior
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
@@ -1399,11 +1384,7 @@ impl std::str::FromStr for UpdateSubscriptionItemProrationBehavior {
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionItemProrationBehavior"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateSubscriptionItemProrationBehavior");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1440,7 +1421,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates the plan or quantity of an item on a current subscription.

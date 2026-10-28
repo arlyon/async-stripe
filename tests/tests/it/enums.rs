@@ -1,9 +1,11 @@
 use std::str::FromStr;
 
+use miniserde::json::Value;
 use stripe_billing::plan::{CreatePlanInlineProductParams, CreatePlanProduct};
 use stripe_connect::AccountType;
 use stripe_core::EventType;
 use stripe_product::price::CreatePriceTiersUpTo;
+use stripe_types::miniserde_helpers::FromValueOpt;
 
 #[test]
 fn enums_basic() {
@@ -52,4 +54,9 @@ fn from_str_and_deser_behavior_match_on_unknown_variant() {
         serde_json::from_str::<EventType>(r#""acct""#).unwrap(),
         EventType::Unknown(String::from("acct"))
     );
+    assert_eq!(
+        EventType::from_value(Value::String(String::from("acct"))),
+        Some(EventType::Unknown(String::from("acct")))
+    );
+    assert_eq!(EventType::from_value(Value::Bool(true)), None);
 }

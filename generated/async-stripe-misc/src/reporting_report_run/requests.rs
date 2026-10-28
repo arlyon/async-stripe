@@ -398,10 +398,9 @@ impl std::str::FromStr for CreateReportingReportRunParametersReportingCategory {
             "transfer_reversal" => Ok(TransferReversal),
             "unreconciled_customer_funds" => Ok(UnreconciledCustomerFunds),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateReportingReportRunParametersReportingCategory"
+                    "CreateReportingReportRunParametersReportingCategory",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -440,7 +439,8 @@ impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersReportin
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Defaults to `Etc/UTC`.
@@ -2265,10 +2265,9 @@ impl std::str::FromStr for CreateReportingReportRunParametersTimezone {
             "WET" => Ok(Wet),
             "Zulu" => Ok(Zulu),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateReportingReportRunParametersTimezone"
+                    "CreateReportingReportRunParametersTimezone",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2307,7 +2306,8 @@ impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersTimezone
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a new object and begin running the report.

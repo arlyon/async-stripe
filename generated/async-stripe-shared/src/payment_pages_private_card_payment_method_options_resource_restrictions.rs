@@ -150,10 +150,9 @@ impl std::str::FromStr
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked"
+                    "PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -211,19 +210,21 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked::from_str(
-                s,
-            )
-            .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
@@ -231,7 +232,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Card funding types to block for this Checkout Session.
@@ -268,10 +270,9 @@ impl std::str::FromStr
             "debit" => Ok(Debit),
             "prepaid" => Ok(Prepaid),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked"
+                    "PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -331,14 +332,21 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsFundingTypesBlocked
@@ -346,6 +354,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

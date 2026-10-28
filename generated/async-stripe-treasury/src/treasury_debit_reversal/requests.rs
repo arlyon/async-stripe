@@ -70,11 +70,7 @@ impl std::str::FromStr for ListTreasuryDebitReversalResolution {
             "lost" => Ok(Lost),
             "won" => Ok(Won),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListTreasuryDebitReversalResolution"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ListTreasuryDebitReversalResolution");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -111,7 +107,8 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryDebitReversalResolution {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Only return DebitReversals for a given status.
@@ -145,11 +142,7 @@ impl std::str::FromStr for ListTreasuryDebitReversalStatus {
             "completed" => Ok(Completed),
             "processing" => Ok(Processing),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListTreasuryDebitReversalStatus"
-                );
+                stripe_types::warn_unknown_enum_value(v, "ListTreasuryDebitReversalStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -186,7 +179,8 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryDebitReversalStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Returns a list of DebitReversals.

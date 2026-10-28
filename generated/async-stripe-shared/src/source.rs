@@ -485,7 +485,7 @@ impl std::str::FromStr for SourceAllowRedisplay {
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SourceAllowRedisplay");
+                stripe_types::warn_unknown_enum_value(v, "SourceAllowRedisplay");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -527,18 +527,26 @@ impl miniserde::Deserialize for SourceAllowRedisplay {
 impl miniserde::de::Visitor for crate::Place<SourceAllowRedisplay> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SourceAllowRedisplay::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = SourceAllowRedisplay::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SourceAllowRedisplay);
+impl stripe_types::miniserde_helpers::FromValueOpt for SourceAllowRedisplay {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SourceAllowRedisplay {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The `type` of the source.
@@ -623,7 +631,7 @@ impl std::str::FromStr for SourceType {
             "three_d_secure" => Ok(ThreeDSecure),
             "wechat" => Ok(Wechat),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SourceType");
+                stripe_types::warn_unknown_enum_value(v, "SourceType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -665,18 +673,26 @@ impl miniserde::Deserialize for SourceType {
 impl miniserde::de::Visitor for crate::Place<SourceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SourceType::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = SourceType::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SourceType);
+impl stripe_types::miniserde_helpers::FromValueOpt for SourceType {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SourceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 impl stripe_types::Object for Source {

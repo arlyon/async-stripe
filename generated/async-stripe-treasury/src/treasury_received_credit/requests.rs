@@ -97,10 +97,9 @@ impl std::str::FromStr for ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
             "outbound_transfer" => Ok(OutboundTransfer),
             "payout" => Ok(Payout),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "ListTreasuryReceivedCreditLinkedFlowsSourceFlowType"
+                    "ListTreasuryReceivedCreditLinkedFlowsSourceFlowType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -139,7 +138,8 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryReceivedCreditLinkedFlowsSourc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Returns a list of ReceivedCredits.
@@ -397,10 +397,9 @@ impl std::str::FromStr for CreateTreasuryReceivedCreditInitiatingPaymentMethodDe
         match s {
             "us_bank_account" => Ok(UsBankAccount),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType"
+                    "CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -441,7 +440,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Optional fields for `us_bank_account`.
@@ -506,11 +506,7 @@ impl std::str::FromStr for CreateTreasuryReceivedCreditNetwork {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryReceivedCreditNetwork"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateTreasuryReceivedCreditNetwork");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -547,7 +543,8 @@ impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedCreditNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Use this endpoint to simulate a test mode ReceivedCredit initiated by a third party.

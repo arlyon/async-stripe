@@ -714,10 +714,9 @@ impl std::str::FromStr for CreateTreasuryFinancialAccountPlatformRestrictionsInb
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows"
+                    "CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -758,7 +757,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Restricts all outbound money movement.
@@ -789,10 +789,9 @@ impl std::str::FromStr for CreateTreasuryFinancialAccountPlatformRestrictionsOut
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows"
+                    "CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -833,7 +832,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a new FinancialAccount.
@@ -1350,10 +1350,9 @@ impl std::str::FromStr for UpdateTreasuryFinancialAccountForwardingSettingsType 
             "financial_account" => Ok(FinancialAccount),
             "payment_method" => Ok(PaymentMethod),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateTreasuryFinancialAccountForwardingSettingsType"
+                    "UpdateTreasuryFinancialAccountForwardingSettingsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1392,7 +1391,8 @@ impl<'de> serde::Deserialize<'de> for UpdateTreasuryFinancialAccountForwardingSe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The set of functionalities that the platform can restrict on the FinancialAccount.
@@ -1451,10 +1451,9 @@ impl std::str::FromStr for UpdateTreasuryFinancialAccountPlatformRestrictionsInb
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows"
+                    "UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1495,7 +1494,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Restricts all outbound money movement.
@@ -1526,10 +1526,9 @@ impl std::str::FromStr for UpdateTreasuryFinancialAccountPlatformRestrictionsOut
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows"
+                    "UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1570,7 +1569,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates the details of a FinancialAccount.
@@ -1743,10 +1743,9 @@ impl std::str::FromStr for CloseTreasuryFinancialAccountForwardingSettingsType {
             "financial_account" => Ok(FinancialAccount),
             "payment_method" => Ok(PaymentMethod),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CloseTreasuryFinancialAccountForwardingSettingsType"
+                    "CloseTreasuryFinancialAccountForwardingSettingsType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1785,7 +1784,8 @@ impl<'de> serde::Deserialize<'de> for CloseTreasuryFinancialAccountForwardingSet
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Closes a FinancialAccount.

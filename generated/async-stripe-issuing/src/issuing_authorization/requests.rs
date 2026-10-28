@@ -667,10 +667,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationFleetPurchaseType {
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationFleetPurchaseType"
+                    "CreateIssuingAuthorizationFleetPurchaseType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -709,7 +708,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFleetPurchaseTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
@@ -743,10 +743,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationFleetServiceType {
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationFleetServiceType"
+                    "CreateIssuingAuthorizationFleetServiceType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -785,7 +784,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFleetServiceType
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Probability that this transaction can be disputed in the event of fraud.
@@ -824,10 +824,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationFraudDisputabilityLikelihoo
             "very_likely" => Ok(VeryLikely),
             "very_unlikely" => Ok(VeryUnlikely),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationFraudDisputabilityLikelihood"
+                    "CreateIssuingAuthorizationFraudDisputabilityLikelihood",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -866,7 +865,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFraudDisputabili
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about fuel that was purchased with this transaction.
@@ -953,11 +953,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationFuelType {
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationFuelType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateIssuingAuthorizationFuelType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -994,7 +990,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFuelType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The units for `quantity_decimal`.
@@ -1044,11 +1041,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationFuelUnit {
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationFuelUnit"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateIssuingAuthorizationFuelUnit");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1085,7 +1078,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFuelUnit {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
@@ -2146,10 +2140,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationMerchantDataCategory {
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationMerchantDataCategory"
+                    "CreateIssuingAuthorizationMerchantDataCategory",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2188,7 +2181,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationMerchantDataCate
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Details about the authorization, such as identifiers, set by the card network.
@@ -2326,10 +2320,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentCardTestingRi
             "not_assessed" => Ok(NotAssessed),
             "unknown" => Ok(Unknown),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel"
+                    "CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -2368,7 +2361,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationRiskAssessmentCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Stripe’s assessment of this authorization’s likelihood to be fraudulent.
@@ -2435,10 +2429,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentFraudRiskLeve
             "not_assessed" => Ok(NotAssessed),
             "unknown" => Ok(Unknown),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel"
+                    "CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -2477,7 +2470,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationRiskAssessmentFr
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The dispute risk of the merchant (the seller on a purchase) on an authorization based on all Stripe Issuing activity.
@@ -2549,10 +2543,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentMerchantDispu
             "not_assessed" => Ok(NotAssessed),
             "unknown" => Ok(Unknown),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel"
+                    "CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -2593,7 +2586,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Verifications that Stripe performed on information that the cardholder provided to the merchant.
@@ -2676,10 +2670,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataAddressLine
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationVerificationDataAddressLine1Check"
+                    "CreateIssuingAuthorizationVerificationDataAddressLine1Check",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2718,7 +2711,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationVerificationData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether the cardholder provided a postal code and if it matched the cardholder’s `billing.address.postal_code`.
@@ -2752,10 +2746,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataAddressPost
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck"
+                    "CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2796,7 +2789,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The exemption applied to this authorization.
@@ -2857,10 +2851,9 @@ impl std::str::FromStr
             "acquirer" => Ok(Acquirer),
             "issuer" => Ok(Issuer),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy"
+                    "CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -2911,7 +2904,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The specific exemption claimed for this authorization.
@@ -2946,10 +2940,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataAuthenticat
             "transaction_risk_analysis" => Ok(TransactionRiskAnalysis),
             "unknown" => Ok(Unknown),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType"
+                    "CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType",
                 );
                 Ok(_Unknown(v.to_owned()))
             }
@@ -2992,7 +2985,8 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether the cardholder provided a CVC and if it matched Stripe’s record.
@@ -3026,10 +3020,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataCvcCheck {
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationVerificationDataCvcCheck"
+                    "CreateIssuingAuthorizationVerificationDataCvcCheck",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3068,7 +3061,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationVerificationData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether the cardholder provided an expiry date and if it matched Stripe’s record.
@@ -3102,10 +3096,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataExpiryCheck
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationVerificationDataExpiryCheck"
+                    "CreateIssuingAuthorizationVerificationDataExpiryCheck",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3144,7 +3137,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationVerificationData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// 3D Secure details.
@@ -3203,10 +3197,9 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataThreeDSecur
             "failed" => Ok(Failed),
             "required" => Ok(Required),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingAuthorizationVerificationDataThreeDSecureResult"
+                    "CreateIssuingAuthorizationVerificationDataThreeDSecureResult",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3245,7 +3238,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationVerificationData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The digital wallet used for this transaction.
@@ -3281,11 +3275,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationWallet {
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationWallet"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateIssuingAuthorizationWallet");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -3322,7 +3312,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationWallet {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Create a test-mode authorization.
@@ -3637,10 +3628,9 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFleetPurcha
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType"
+                    "CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3679,7 +3669,8 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
@@ -3713,10 +3704,9 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFleetServic
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType"
+                    "CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3755,7 +3745,8 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about the flight that was purchased with this transaction.
@@ -3933,10 +3924,9 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFuelType {
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CaptureIssuingAuthorizationPurchaseDetailsFuelType"
+                    "CaptureIssuingAuthorizationPurchaseDetailsFuelType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3975,7 +3965,8 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The units for `quantity_decimal`.
@@ -4025,10 +4016,9 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CaptureIssuingAuthorizationPurchaseDetailsFuelUnit"
+                    "CaptureIssuingAuthorizationPurchaseDetailsFuelUnit",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4067,7 +4057,8 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about lodging that was purchased with this transaction.
@@ -4380,10 +4371,9 @@ impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "FinalizeAmountIssuingAuthorizationFleetPurchaseType"
+                    "FinalizeAmountIssuingAuthorizationFleetPurchaseType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4422,7 +4412,8 @@ impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFleetPur
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
@@ -4456,10 +4447,9 @@ impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFleetServiceType {
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "FinalizeAmountIssuingAuthorizationFleetServiceType"
+                    "FinalizeAmountIssuingAuthorizationFleetServiceType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4498,7 +4488,8 @@ impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFleetSer
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about fuel that was purchased with this transaction.
@@ -4585,10 +4576,9 @@ impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFuelType {
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "FinalizeAmountIssuingAuthorizationFuelType"
+                    "FinalizeAmountIssuingAuthorizationFuelType",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4627,7 +4617,8 @@ impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFuelType
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The units for `quantity_decimal`.
@@ -4677,10 +4668,9 @@ impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFuelUnit {
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "FinalizeAmountIssuingAuthorizationFuelUnit"
+                    "FinalizeAmountIssuingAuthorizationFuelUnit",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4719,7 +4709,8 @@ impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFuelUnit
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Finalize the amount on an Authorization prior to capture, when the initial authorization was for an estimated amount.

@@ -298,10 +298,9 @@ impl std::str::FromStr for SubscriptionsResourcePaymentSettingsPaymentMethodType
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "SubscriptionsResourcePaymentSettingsPaymentMethodTypes"
+                    "SubscriptionsResourcePaymentSettingsPaymentMethodTypes",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -347,21 +346,28 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = SubscriptionsResourcePaymentSettingsPaymentMethodTypes::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SubscriptionsResourcePaymentSettingsPaymentMethodTypes);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for SubscriptionsResourcePaymentSettingsPaymentMethodTypes
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
@@ -393,10 +399,9 @@ impl std::str::FromStr for SubscriptionsResourcePaymentSettingsSaveDefaultPaymen
             "off" => Ok(Off),
             "on_subscription" => Ok(OnSubscription),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod"
+                    "SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -442,22 +447,27 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod::from_str(s)
-                .expect("infallible"),
-        );
+        self.out = {
+            let Ok(v) = SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod
-);
+impl stripe_types::miniserde_helpers::FromValueOpt
+    for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod
+{
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

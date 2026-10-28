@@ -448,7 +448,7 @@ impl std::str::FromStr for CreateSourceFlow {
             "receiver" => Ok(Receiver),
             "redirect" => Ok(Redirect),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSourceFlow");
+                stripe_types::warn_unknown_enum_value(v, "CreateSourceFlow");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -485,7 +485,8 @@ impl<'de> serde::Deserialize<'de> for CreateSourceFlow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
@@ -617,11 +618,7 @@ impl std::str::FromStr for CreateSourceMandateAcceptanceStatus {
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateAcceptanceStatus"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateSourceMandateAcceptanceStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -658,7 +655,8 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateAcceptanceStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of acceptance information included with the mandate. Either `online` or `offline`
@@ -689,11 +687,7 @@ impl std::str::FromStr for CreateSourceMandateAcceptanceType {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateAcceptanceType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateSourceMandateAcceptanceType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -730,7 +724,8 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateAcceptanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The interval of debits permitted by the mandate.
@@ -765,11 +760,7 @@ impl std::str::FromStr for CreateSourceMandateInterval {
             "scheduled" => Ok(Scheduled),
             "variable" => Ok(Variable),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateInterval"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateSourceMandateInterval");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -806,7 +797,8 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
@@ -847,11 +839,7 @@ impl std::str::FromStr for CreateSourceMandateNotificationMethod {
             "none" => Ok(None),
             "stripe_email" => Ok(StripeEmail),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateNotificationMethod"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateSourceMandateNotificationMethod");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -888,7 +876,8 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateNotificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Optional parameters for the receiver flow.
@@ -952,10 +941,9 @@ impl std::str::FromStr for CreateSourceReceiverRefundAttributesMethod {
             "manual" => Ok(Manual),
             "none" => Ok(None),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateSourceReceiverRefundAttributesMethod"
+                    "CreateSourceReceiverRefundAttributesMethod",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -994,7 +982,8 @@ impl<'de> serde::Deserialize<'de> for CreateSourceReceiverRefundAttributesMethod
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Parameters required for the redirect flow.
@@ -1126,11 +1115,7 @@ impl std::str::FromStr for CreateSourceSourceOrderItemsType {
             "sku" => Ok(Sku),
             "tax" => Ok(Tax),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceSourceOrderItemsType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateSourceSourceOrderItemsType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1167,7 +1152,8 @@ impl<'de> serde::Deserialize<'de> for CreateSourceSourceOrderItemsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -1197,7 +1183,7 @@ impl std::str::FromStr for CreateSourceUsage {
             "reusable" => Ok(Reusable),
             "single_use" => Ok(SingleUse),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSourceUsage");
+                stripe_types::warn_unknown_enum_value(v, "CreateSourceUsage");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1234,7 +1220,8 @@ impl<'de> serde::Deserialize<'de> for CreateSourceUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates a new source object.
@@ -1544,11 +1531,7 @@ impl std::str::FromStr for UpdateSourceMandateAcceptanceStatus {
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateAcceptanceStatus"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateSourceMandateAcceptanceStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1585,7 +1568,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateAcceptanceStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The type of acceptance information included with the mandate. Either `online` or `offline`
@@ -1616,11 +1600,7 @@ impl std::str::FromStr for UpdateSourceMandateAcceptanceType {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateAcceptanceType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateSourceMandateAcceptanceType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1657,7 +1637,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateAcceptanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The interval of debits permitted by the mandate.
@@ -1692,11 +1673,7 @@ impl std::str::FromStr for UpdateSourceMandateInterval {
             "scheduled" => Ok(Scheduled),
             "variable" => Ok(Variable),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateInterval"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateSourceMandateInterval");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1733,7 +1710,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
@@ -1774,11 +1752,7 @@ impl std::str::FromStr for UpdateSourceMandateNotificationMethod {
             "none" => Ok(None),
             "stripe_email" => Ok(StripeEmail),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateNotificationMethod"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateSourceMandateNotificationMethod");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1815,7 +1789,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateNotificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Information about the items and shipping associated with the source.
@@ -1926,11 +1901,7 @@ impl std::str::FromStr for UpdateSourceSourceOrderItemsType {
             "sku" => Ok(Sku),
             "tax" => Ok(Tax),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceSourceOrderItemsType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateSourceSourceOrderItemsType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -1967,7 +1938,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceSourceOrderItemsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates the specified source by setting the values of the parameters passed.

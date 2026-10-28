@@ -225,10 +225,9 @@ impl std::str::FromStr for AccountCapabilityRequirementsDisabledReason {
             "rejected.unsupported_business" => Ok(RejectedUnsupportedBusiness),
             "requirements.fields_needed" => Ok(RequirementsFieldsNeeded),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "AccountCapabilityRequirementsDisabledReason"
+                    "AccountCapabilityRequirementsDisabledReason",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -272,18 +271,25 @@ impl miniserde::Deserialize for AccountCapabilityRequirementsDisabledReason {
 impl miniserde::de::Visitor for crate::Place<AccountCapabilityRequirementsDisabledReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(AccountCapabilityRequirementsDisabledReason::from_str(s).expect("infallible"));
+        self.out = {
+            let Ok(v) = AccountCapabilityRequirementsDisabledReason::from_str(s);
+            Some(v)
+        };
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(AccountCapabilityRequirementsDisabledReason);
+impl stripe_types::miniserde_helpers::FromValueOpt for AccountCapabilityRequirementsDisabledReason {
+    fn from_value(v: miniserde::json::Value) -> Option<Self> {
+        stripe_types::miniserde_helpers::from_value_via_deserialize(v)
+    }
+}
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountCapabilityRequirementsDisabledReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }

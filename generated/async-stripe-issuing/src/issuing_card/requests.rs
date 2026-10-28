@@ -389,11 +389,7 @@ impl std::str::FromStr for CreateIssuingCardReplacementReason {
             "lost" => Ok(Lost),
             "stolen" => Ok(Stolen),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardReplacementReason"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateIssuingCardReplacementReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -430,7 +426,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardReplacementReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// The address where the card will be shipped.
@@ -538,10 +535,9 @@ impl std::str::FromStr for CreateIssuingCardShippingAddressValidationMode {
             "normalization_only" => Ok(NormalizationOnly),
             "validation_and_normalization" => Ok(ValidationAndNormalization),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingCardShippingAddressValidationMode"
+                    "CreateIssuingCardShippingAddressValidationMode",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -580,7 +576,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardShippingAddressValidation
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Shipment service.
@@ -614,11 +611,7 @@ impl std::str::FromStr for CreateIssuingCardShippingService {
             "priority" => Ok(Priority),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardShippingService"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateIssuingCardShippingService");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -655,7 +648,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardShippingService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Packaging options.
@@ -686,11 +680,7 @@ impl std::str::FromStr for CreateIssuingCardShippingType {
             "bulk" => Ok(Bulk),
             "individual" => Ok(Individual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardShippingType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "CreateIssuingCardShippingType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -727,7 +717,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardShippingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Rules that control spending for this card.
@@ -834,10 +825,9 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsAllowedCardPresences
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingCardSpendingControlsAllowedCardPresences"
+                    "CreateIssuingCardSpendingControlsAllowedCardPresences",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -876,7 +866,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardSpendingControlsAllowedCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
@@ -1880,10 +1871,9 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsAllowedCategories {
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingCardSpendingControlsAllowedCategories"
+                    "CreateIssuingCardSpendingControlsAllowedCategories",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1922,7 +1912,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardSpendingControlsAllowedCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Array of card presence statuses from which authorizations will be declined.
@@ -1956,10 +1947,9 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsBlockedCardPresences
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingCardSpendingControlsBlockedCardPresences"
+                    "CreateIssuingCardSpendingControlsBlockedCardPresences",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -1998,7 +1988,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardSpendingControlsBlockedCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
@@ -3002,10 +2993,9 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsBlockedCategories {
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingCardSpendingControlsBlockedCategories"
+                    "CreateIssuingCardSpendingControlsBlockedCategories",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -3044,7 +3034,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardSpendingControlsBlockedCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).
@@ -4075,10 +4066,9 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsSpendingLimitsCatego
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingCardSpendingControlsSpendingLimitsCategories"
+                    "CreateIssuingCardSpendingControlsSpendingLimitsCategories",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4117,7 +4107,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardSpendingControlsSpendingL
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Interval (or event) to which the amount applies.
@@ -4160,10 +4151,9 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsSpendingLimitsInterv
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "CreateIssuingCardSpendingControlsSpendingLimitsInterval"
+                    "CreateIssuingCardSpendingControlsSpendingLimitsInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4202,7 +4192,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardSpendingControlsSpendingL
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Whether authorizations can be approved on this card.
@@ -4235,7 +4226,7 @@ impl std::str::FromStr for CreateIssuingCardStatus {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
             v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateIssuingCardStatus");
+                stripe_types::warn_unknown_enum_value(v, "CreateIssuingCardStatus");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -4272,7 +4263,8 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Creates an Issuing `Card` object.
@@ -4486,11 +4478,7 @@ impl std::str::FromStr for UpdateIssuingCardCancellationReason {
             "lost" => Ok(Lost),
             "stolen" => Ok(Stolen),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardCancellationReason"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateIssuingCardCancellationReason");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -4527,7 +4515,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updated shipping information for the card.
@@ -4635,10 +4624,9 @@ impl std::str::FromStr for UpdateIssuingCardShippingAddressValidationMode {
             "normalization_only" => Ok(NormalizationOnly),
             "validation_and_normalization" => Ok(ValidationAndNormalization),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingCardShippingAddressValidationMode"
+                    "UpdateIssuingCardShippingAddressValidationMode",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4677,7 +4665,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardShippingAddressValidation
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Shipment service.
@@ -4711,11 +4700,7 @@ impl std::str::FromStr for UpdateIssuingCardShippingService {
             "priority" => Ok(Priority),
             "standard" => Ok(Standard),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardShippingService"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateIssuingCardShippingService");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -4752,7 +4737,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardShippingService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Packaging options.
@@ -4783,11 +4769,7 @@ impl std::str::FromStr for UpdateIssuingCardShippingType {
             "bulk" => Ok(Bulk),
             "individual" => Ok(Individual),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardShippingType"
-                );
+                stripe_types::warn_unknown_enum_value(v, "UpdateIssuingCardShippingType");
                 Ok(Unknown(v.to_owned()))
             }
         }
@@ -4824,7 +4806,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardShippingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Rules that control spending for this card.
@@ -4931,10 +4914,9 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsAllowedCardPresences
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingCardSpendingControlsAllowedCardPresences"
+                    "UpdateIssuingCardSpendingControlsAllowedCardPresences",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -4973,7 +4955,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardSpendingControlsAllowedCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
@@ -5977,10 +5960,9 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsAllowedCategories {
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingCardSpendingControlsAllowedCategories"
+                    "UpdateIssuingCardSpendingControlsAllowedCategories",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6019,7 +6001,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardSpendingControlsAllowedCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Array of card presence statuses from which authorizations will be declined.
@@ -6053,10 +6036,9 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsBlockedCardPresences
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingCardSpendingControlsBlockedCardPresences"
+                    "UpdateIssuingCardSpendingControlsBlockedCardPresences",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -6095,7 +6077,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardSpendingControlsBlockedCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
@@ -7099,10 +7082,9 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsBlockedCategories {
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingCardSpendingControlsBlockedCategories"
+                    "UpdateIssuingCardSpendingControlsBlockedCategories",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -7141,7 +7123,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardSpendingControlsBlockedCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).
@@ -8172,10 +8155,9 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsSpendingLimitsCatego
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingCardSpendingControlsSpendingLimitsCategories"
+                    "UpdateIssuingCardSpendingControlsSpendingLimitsCategories",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8214,7 +8196,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardSpendingControlsSpendingL
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Interval (or event) to which the amount applies.
@@ -8257,10 +8240,9 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsSpendingLimitsInterv
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
             v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
+                stripe_types::warn_unknown_enum_value(
                     v,
-                    "UpdateIssuingCardSpendingControlsSpendingLimitsInterval"
+                    "UpdateIssuingCardSpendingControlsSpendingLimitsInterval",
                 );
                 Ok(Unknown(v.to_owned()))
             }
@@ -8299,7 +8281,8 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardSpendingControlsSpendingL
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
+        let Ok(v) = Self::from_str(&s);
+        Ok(v)
     }
 }
 /// Updates the specified Issuing `Card` object by setting the values of the parameters passed.
