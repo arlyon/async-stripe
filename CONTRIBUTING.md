@@ -66,7 +66,7 @@ If you'd like to update the version of the OpenAPI specification being used to g
 can run (in the `openapi` directory)
 
 ```sh
-cargo run --release -- --fetch latest
+cargo run --release -- generate --update-spec latest
 ```
 
 This will automatically pull the latest OpenAPI spec, generate new code, format it, and copy it into
@@ -121,7 +121,7 @@ The project uses automated versioning via [release-plz](https://release-plz.ieme
 
 When updating generated code:
 
-1. Run code generation: `cd openapi && cargo run --release -- --fetch latest`
+1. Run code generation: `cd openapi && cargo run --release -- generate --update-spec latest`
 2. Commit with conventional message: `feat(codegen): update to latest Stripe OpenAPI spec`
 3. Create PR and merge normally
 4. Release-plz will handle version updates automatically
